@@ -1,6 +1,6 @@
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Title from 'components/Title/Title';
 import Inner from 'components/Inner/Inner';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
@@ -18,16 +18,13 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<HomePageInterface>> {
+  const { locale, query } = context;
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
-    params,
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
     locale,
   });
 
@@ -37,8 +34,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
 
   return {
     props,
-    revalidate,
   };
-};
+}
 
 export default Home;

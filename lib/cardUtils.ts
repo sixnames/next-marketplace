@@ -90,7 +90,16 @@ export async function getCardBreadcrumbs({
       return [];
     }
 
-    const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+    const rubric = await rubricsCollection.findOne(
+      { slug: rubricSlug },
+      {
+        projection: {
+          _id: 1,
+          slug: 1,
+          nameI18n: 1,
+        },
+      },
+    );
 
     // Return empty configs list if no rubric
     if (!rubric) {
@@ -193,6 +202,7 @@ export async function getCardData({
   }
 
   try {
+    // const startTime = new Date().getTime();
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
@@ -209,9 +219,11 @@ export async function getCardData({
     if (!product) {
       return null;
     }
+    // console.log(`product `, new Date().getTime() - startTime);
 
     // shopsCount
     const shopsCount = noNaN(product.shopProductsCountCities[city]);
+    // console.log(`shopsCount `, new Date().getTime() - startTime);
 
     // prices
     const minPrice = noNaN(product.minPriceCities[city]);
@@ -221,6 +233,7 @@ export async function getCardData({
       min: getCurrencyString({ value: minPrice, locale }),
       max: getCurrencyString({ value: maxPrice, locale }),
     };
+    // console.log(`prices `, new Date().getTime() - startTime);
 
     // image
     const sortedAssets = product.assets.sort((assetA, assetB) => {
@@ -232,6 +245,7 @@ export async function getCardData({
     if (firstAsset) {
       mainImage = firstAsset.url;
     }
+    // console.log(`image `, new Date().getTime() - startTime);
 
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
@@ -239,6 +253,7 @@ export async function getCardData({
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       getFieldLocale,
     });
+    // console.log(`listFeatures `, new Date().getTime() - startTime);
 
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
@@ -246,6 +261,7 @@ export async function getCardData({
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       getFieldLocale,
     });
+    // console.log(`textFeatures `, new Date().getTime() - startTime);
 
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
@@ -253,6 +269,7 @@ export async function getCardData({
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       getFieldLocale,
     });
+    // console.log(`tagFeatures `, new Date().getTime() - startTime);
 
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
@@ -260,6 +277,7 @@ export async function getCardData({
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       getFieldLocale,
     });
+    // console.log(`iconFeatures `, new Date().getTime() - startTime);
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
@@ -267,6 +285,7 @@ export async function getCardData({
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       getFieldLocale,
     });
+    // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -347,6 +366,7 @@ export async function getCardData({
         },
       });
     });
+    // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // connections
     const connections: ProductConnectionModel[] = [];
@@ -385,6 +405,7 @@ export async function getCardData({
         connectionProducts,
       });
     }
+    // console.log(`connections `, new Date().getTime() - startTime);
 
     // cardBreadcrumbs
     const cardBreadcrumbs: ProductCardBreadcrumbModel[] = await getCardBreadcrumbs({
@@ -393,6 +414,7 @@ export async function getCardData({
       city,
       slug,
     });
+    // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);
 
     return {
       ...product,

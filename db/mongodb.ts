@@ -18,17 +18,17 @@ export async function getDatabase(): Promise<Db> {
     throw new Error('Unable to connect to database, no URI provided');
   }
 
-  /*const client = await MongoClient.connect(uri, {
+  const client = await MongoClient.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     tls: true,
     tlsCAFile: path.join(process.cwd(), 'db/ca-certificates/Yandex/root.crt'),
     replicaSet: process.env.MONGO_DB_RS,
     authSource: process.env.MONGO_DB_NAME,
-  });*/
+  });
 
   // If no connection is cached, create a new one
-  const client = await MongoClient.connect(
+  /*const client = await MongoClient.connect(
     uri,
     process.env.NODE_ENV === 'production'
       ? {
@@ -43,7 +43,7 @@ export async function getDatabase(): Promise<Db> {
           useNewUrlParser: true,
           useUnifiedTopology: true,
         },
-  );
+  );*/
 
   // Select the database through the connection
   const db = await client.db(process.env.MONGO_DB_NAME);

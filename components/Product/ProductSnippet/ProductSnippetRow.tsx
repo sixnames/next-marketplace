@@ -18,12 +18,14 @@ interface ProductSnippetRowInterface {
   product: ProductSnippetFragment;
   testId?: string;
   additionalSlug?: string;
+  className?: string;
 }
 
 const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   product,
   testId,
   additionalSlug,
+  className,
 }) => {
   const city = useSessionCity();
   const [amount, setAmount] = React.useState<number>(1);
@@ -46,7 +48,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   const isShopless = shopsCount < 1;
 
   return (
-    <LayoutCard className={classes.snippetCard} testId={testId}>
+    <LayoutCard className={`${classes.snippetCard} ${className ? className : ''}`} testId={testId}>
       <div className={`${classes.leftColumn}`}>
         <div className={`${classes.image}`}>
           <div className={classes.imageHolder}>

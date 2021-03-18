@@ -81,11 +81,9 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
   cart,
   isOpen,
 }) => {
-  const { isMobile } = useAppContext();
   const {
     isBurgerDropdownOpen,
     hideBurgerDropdown,
-    fixBodyScroll,
     isSearchOpen,
     hideSearchDropdown,
   } = useSiteContext();
@@ -99,15 +97,6 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
       hideSearchDropdown();
     }
   }, [hideBurgerDropdown, hideSearchDropdown, isBurgerDropdownOpen, isOpen, isSearchOpen]);
-
-  // Fix scroll on mobile while cart dropdown open
-  useEffect(() => {
-    if (isMobile && isOpen) {
-      fixBodyScroll(true);
-    } else {
-      fixBodyScroll(false);
-    }
-  }, [fixBodyScroll, isMobile, isOpen]);
 
   return (
     <Fragment>

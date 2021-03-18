@@ -102,7 +102,7 @@ export function getPriceAttribute(): RubricAttributeModel {
         nameI18n: {
           ru: '30 000 – 50 000',
         },
-        slug: `${optionSlugPrefix}3000_50000`,
+        slug: `${optionSlugPrefix}30000_50000`,
       },
       {
         _id: new ObjectId(),

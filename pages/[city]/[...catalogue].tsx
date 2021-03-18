@@ -20,7 +20,6 @@ import {
 } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
@@ -46,7 +45,6 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
   const router = useRouter();
   const { isMobile } = useAppContext();
-  const { fixBodyScroll } = useSiteContext();
   const [skip, setSkip] = React.useState<boolean>(true);
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -54,6 +52,23 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const [state, setState] = React.useState<CatalogueDataFragment>(() => {
     return catalogueData;
   });
+  const [isCatalogueLoading, setIsCatalogueLoading] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const handleRouteStart = () => {
+      setIsCatalogueLoading(true);
+    };
+    const handleRouteComplete = () => {
+      setIsCatalogueLoading(false);
+    };
+    router.events.on('routeChangeStart', handleRouteStart);
+    router.events.on('routeChangeComplete', handleRouteComplete);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteStart);
+      router.events.off('routeChangeComplete', handleRouteComplete);
+    };
+    // eslint-disable-next-line
+  }, []);
 
   React.useEffect(() => {
     setState(catalogueData);
@@ -108,13 +123,11 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
-    fixBodyScroll(true);
-  }, [fixBodyScroll]);
+  }, []);
 
   const hideFilterHandler = React.useCallback(() => {
     setIsFilterVisible(false);
-    fixBodyScroll(false);
-  }, [fixBodyScroll]);
+  }, []);
 
   const catalogueCounterString = React.useMemo(() => {
     return `Найдено ${catalogueData.totalProducts}`;
@@ -273,36 +286,46 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                 </div>
               )}
 
-              <InfiniteScroll
-                className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
-                next={fetchMoreHandler}
-                hasMore={state.products.length < state.totalProducts}
-                dataLength={state.products.length}
-                scrollableTarget={'#catalogue-products'}
-                loader={<span />}
-              >
-                {state.products.map((product) => {
-                  if (isRowView && !isMobile) {
+              <div className={classes.loaderHolder}>
+                {isCatalogueLoading ? (
+                  <div className={classes.loaderFrame}>
+                    <Spinner className={classes.loaderSpinner} isNested={true} />
+                  </div>
+                ) : null}
+
+                <InfiniteScroll
+                  className={`${classes.list} ${
+                    isRowView ? classes.listRows : classes.listColumns
+                  }`}
+                  next={fetchMoreHandler}
+                  hasMore={state.products.length < state.totalProducts}
+                  dataLength={state.products.length}
+                  scrollableTarget={'#catalogue-products'}
+                  loader={<span />}
+                >
+                  {state.products.map((product) => {
+                    if (isRowView && !isMobile) {
+                      return (
+                        <ProductSnippetRow
+                          product={product}
+                          key={product._id}
+                          testId={`catalogue-item-${product.slug}`}
+                          additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
+                        />
+                      );
+                    }
+
                     return (
-                      <ProductSnippetRow
+                      <ProductSnippetGrid
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product.slug}`}
                         additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                       />
                     );
-                  }
-
-                  return (
-                    <ProductSnippetGrid
-                      product={product}
-                      key={product._id}
-                      testId={`catalogue-item-${product.slug}`}
-                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
-                    />
-                  );
-                })}
-              </InfiniteScroll>
+                  })}
+                </InfiniteScroll>
+              </div>
 
               {loading ? (
                 <div className={`${classes.catalogueSpinner}`}>

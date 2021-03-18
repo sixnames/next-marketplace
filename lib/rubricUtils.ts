@@ -276,36 +276,18 @@ export async function getRubricCatalogueAttributes({
 export interface GetRubricNavOptionsInterface {
   options: RubricOptionModel[];
   locale: string;
-  maxVisibleOptions: number;
-  city: string;
 }
 
 export function getRubricNavOptions({
   options,
-  maxVisibleOptions,
-  city,
   locale,
 }: GetRubricNavOptionsInterface): RubricOptionModel[] {
-  const visibleOptions = options.filter(({ isSelected }) => {
-    return isSelected;
-  });
-
-  const sortedOptions = visibleOptions
-    .sort((optionA, optionB) => {
-      const optionACounter = noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
-      const optionBCounter = noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
-      return optionBCounter - optionACounter;
-    })
-    .slice(0, maxVisibleOptions);
-
-  return sortedOptions.map((option) => {
+  return options.map((option) => {
     return {
       ...option,
       name: getI18nLocaleValue(option.nameI18n, locale),
       options: getRubricNavOptions({
         options: option.options,
-        maxVisibleOptions,
-        city,
         locale,
       }),
     };
@@ -313,39 +295,21 @@ export function getRubricNavOptions({
 }
 
 export interface GetRubricNavAttributesInterface {
-  city: string;
   locale: string;
   attributes: RubricAttributeModel[];
-  visibleOptionsCount: number;
-  visibleAttributesCount: number;
 }
 
 export function getRubricNavAttributes({
-  city,
   locale,
   attributes,
-  visibleOptionsCount,
-  visibleAttributesCount,
 }: GetRubricNavAttributesInterface): RubricAttributeModel[] {
-  const visibleAttributes = attributes
-    .filter((attribute) => {
-      return (
-        attribute.showInCatalogueNav &&
-        (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-          attribute.variant === ATTRIBUTE_VARIANT_SELECT)
-      );
-    })
-    .slice(0, visibleAttributesCount);
-
   const sortedAttributes: RubricAttributeModel[] = [];
-  visibleAttributes.forEach((attribute) => {
+  attributes.forEach((attribute) => {
     sortedAttributes.push({
       ...attribute,
       name: getI18nLocaleValue(attribute.nameI18n, locale),
       options: getRubricNavOptions({
         options: attribute.options,
-        maxVisibleOptions: visibleOptionsCount,
-        city,
         locale,
       }),
     });

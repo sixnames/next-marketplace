@@ -20,7 +20,6 @@ import {
 } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
@@ -46,7 +45,6 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
   const router = useRouter();
   const { isMobile } = useAppContext();
-  const { fixBodyScroll } = useSiteContext();
   const [skip, setSkip] = React.useState<boolean>(true);
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -125,13 +123,11 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
-    fixBodyScroll(true);
-  }, [fixBodyScroll]);
+  }, []);
 
   const hideFilterHandler = React.useCallback(() => {
     setIsFilterVisible(false);
-    fixBodyScroll(false);
-  }, [fixBodyScroll]);
+  }, []);
 
   const catalogueCounterString = React.useMemo(() => {
     return `Найдено ${catalogueData.totalProducts}`;

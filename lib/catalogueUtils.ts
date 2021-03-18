@@ -23,6 +23,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   ProductOptionInterface,
+  ProductPricesInterface,
   RubricAttributeModel,
   RubricCatalogueTitleModel,
   RubricModel,
@@ -198,13 +199,10 @@ export function getCatalogueTitle({
 
 export interface GetCatalogueAttributesInterface {
   filter: string[];
-  realFilterOptions: string[];
   attributes: RubricAttributeModel[];
   city: string;
   getFieldLocale: GetFieldLocaleType;
-  noFiltersSelected: boolean;
-  rubricId: ObjectIdModel;
-  pricesStage: any;
+  productsPrices: ProductPricesInterface[];
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -214,16 +212,11 @@ export interface GetCatalogueAttributesPayloadInterface {
 
 export async function getCatalogueAttributes({
   filter,
-  realFilterOptions,
   getFieldLocale,
   attributes,
   city,
-  noFiltersSelected,
-  rubricId,
-  pricesStage,
+  productsPrices,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
-  const db = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeModel[] = [];
 
@@ -231,9 +224,6 @@ export async function getCatalogueAttributes({
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
     const selectedOptions: RubricOptionModel[] = [];
-
-    // console.log('');
-    // console.log(`Attribute ${slug} >>>>>>>>>`);
 
     for await (const option of options) {
       // check if selected
@@ -264,37 +254,9 @@ export async function getCatalogueAttributes({
         if (!minPrice || !maxPrice) {
           continue;
         }
-        const isPricesSelected = Object.keys(pricesStage).length > 0;
 
-        const optionPricesStage = {
-          [`minPriceCities.${city}`]: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        };
-
-        const optionFinalPricesStage = {
-          $and: isPricesSelected ? [optionPricesStage, pricesStage] : [optionPricesStage],
-        };
-
-        const optionProductsMatch = noFiltersSelected
-          ? {
-              rubricId,
-              active: true,
-              ...optionFinalPricesStage,
-            }
-          : {
-              rubricId,
-              active: true,
-
-              selectedOptionsSlugs: {
-                $all: realFilterOptions,
-              },
-              ...optionFinalPricesStage,
-            };
-
-        const optionProduct = await productsCollection.findOne(optionProductsMatch, {
-          projection: { _id: 1 },
+        const optionProduct = productsPrices.find(({ _id }) => {
+          return noNaN(_id) >= minPrice && noNaN(_id) <= maxPrice;
         });
 
         if (optionProduct) {
@@ -624,7 +586,6 @@ export const getCatalogueData = async ({
         connections,
       });
     }
-
     // const productsEndTime = new Date().getTime();
     // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
@@ -639,8 +600,8 @@ export const getCatalogueData = async ({
       ])
       .toArray();
     const totalProducts = productsCountAggregation[0] ? productsCountAggregation[0].counter : 0;
-    // const productsCountEndTime = new Date().getTime();
-    /*console.log(
+    /*const productsCountEndTime = new Date().getTime();
+    console.log(
       `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
       productsCountEndTime - productsCountStartTime,
     );*/
@@ -687,10 +648,38 @@ export const getCatalogueData = async ({
         },
       ])
       .toArray();
-    // const productOptionsAggregationEnd = new Date().getTime();
-    /*console.log(
+    /*const productOptionsAggregationEnd = new Date().getTime();
+    console.log(
       `Product options >>>>>>>>>>>>>>>> `,
       productOptionsAggregationEnd - productOptionsAggregationStart,
+    );*/
+
+    // Get prices for catalogue attributes
+    // const productPricesAggregationStart = new Date().getTime();
+    const productPricesAggregation = await productsCollection
+      .aggregate<ProductPricesInterface>([
+        { $match: productsInitialMatch },
+        {
+          $project: {
+            minPriceCities: 1,
+          },
+        },
+        {
+          $addFields: {
+            minPrice: `$minPriceCities.${city}`,
+          },
+        },
+        {
+          $group: {
+            _id: '$minPrice',
+          },
+        },
+      ])
+      .toArray();
+    /*const productPricesAggregationEnd = new Date().getTime();
+    console.log(
+      `Product prices >>>>>>>>>>>>>>>> `,
+      productPricesAggregationEnd - productPricesAggregationStart,
     );*/
 
     // Get filter attributes
@@ -705,16 +694,12 @@ export const getCatalogueData = async ({
     const finalAttributes = [getPriceAttribute(), ...attributes];
     const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
       attributes: finalAttributes,
-      rubricId: rubric._id,
-      realFilterOptions,
       getFieldLocale,
       city,
       filter,
-      noFiltersSelected,
-      pricesStage,
+      productsPrices: productPricesAggregation,
     });
-    // const afterOptions = new Date().getTime();
-    // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+    // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get selected attributes
     const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
@@ -832,6 +817,9 @@ export const getPageInitialData = async ({
   locale,
   city,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
+  // console.log(' ');
+  // console.log('=================== getPageInitialData =======================');
+  // const timeStart = new Date().getTime();
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
       return '';
@@ -873,7 +861,7 @@ export const getPageInitialData = async ({
 
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection.find({}, { sort: { index: SORT_ASC } }).toArray();
+  const initialConfigs = await configsCollection.find({}, { sort: { _id: SORT_ASC } }).toArray();
   const configs = initialConfigs.map((config) => {
     return {
       ...config,
@@ -881,6 +869,7 @@ export const getPageInitialData = async ({
       singleValue: getCityLocale(config.cities)[0],
     };
   });
+  // console.log('After configs ', new Date().getTime() - timeStart);
 
   // languages
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
@@ -894,16 +883,18 @@ export const getPageInitialData = async ({
       },
     )
     .toArray();
+  // console.log('After languages ', new Date().getTime() - timeStart);
 
   // cities
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  const initialCities = await citiesCollection.find({}, { sort: { itemId: SORT_DESC } }).toArray();
+  const initialCities = await citiesCollection.find({}, { sort: { _id: SORT_DESC } }).toArray();
   const cities = initialCities.map((city) => {
     return {
       ...city,
       name: getFieldLocale(city.nameI18n),
     };
   });
+  // console.log('After cities ', new Date().getTime() - timeStart);
 
   // currency
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
@@ -913,6 +904,7 @@ export const getPageInitialData = async ({
   if (country) {
     currency = country.currency;
   }
+  // console.log('After currency ', new Date().getTime() - timeStart);
 
   return {
     configs,

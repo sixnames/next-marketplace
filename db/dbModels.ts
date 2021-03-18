@@ -736,3 +736,7 @@ export interface ProductOptionInterface {
   _id: string;
   optionsSlugs: string[];
 }
+
+export interface ProductPricesInterface {
+  _id: number;
+}

@@ -1,4 +1,4 @@
-import NextAuth, { InitOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import Providers from 'next-auth/providers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDatabase } from 'db/mongodb';
@@ -6,12 +6,11 @@ import bcrypt from 'bcryptjs';
 import { UserModel } from 'db/dbModels';
 import { COL_USERS } from 'db/collectionNames';
 
-const options: InitOptions = {
+const options: NextAuthOptions = {
   session: {
     jwt: true,
   },
-  /*database: process.env.MONGO_URL,
-  pages: {
+  /*pages: {
     signIn: '/sign-in',
   },*/
   /*jwt: {

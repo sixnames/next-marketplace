@@ -18,15 +18,6 @@ export async function getDatabase(): Promise<Db> {
     throw new Error('Unable to connect to database, no URI provided');
   }
 
-  /*const client = await MongoClient.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    tls: true,
-    tlsCAFile: path.join(process.cwd(), 'db/ca-certificates/Yandex/root.crt'),
-    replicaSet: process.env.MONGO_DB_RS,
-    authSource: process.env.MONGO_DB_NAME,
-  });*/
-
   // If no connection is cached, create a new one
   const client = await MongoClient.connect(
     uri,

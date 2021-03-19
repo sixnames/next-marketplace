@@ -17,9 +17,7 @@
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
-    "test": "yarn cy:start",
-    "create-indexes": "npx ts-node -O '{\"module\":\"commonjs\"}' db/initialData/indexes.ts",
-    "seed-test-data": "env-cmd seed --drop-database ./db/initialData/initial && env-cmd seed ./db/initialData/parsed && env-cmd seed ./db/initialData/parsedBigCollections/allProducts && env-cmd seed ./db/initialData/parsedBigCollections/wine-a && env-cmd seed ./db/initialData/parsedBigCollections/wine-b && env-cmd seed ./db/initialData/parsedBigCollections/wine-c && env-cmd seed ./db/initialData/parsedBigCollections/wine-d && yarn create-indexes"
+    "test": "yarn cy:start"
   },
   "dependencies": {
     "@apollo/client": "^3.3.12",
@@ -110,7 +108,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "mongo-seeding": "^3.6.0",
     "mongo-seeding-cli": "^3.6.0",
-    "env-cmd": "^10.1.0",
     "prettier": "^2.2.1",
     "typescript": "^4.2.3"
   }

@@ -22,8 +22,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
 }) => {
-  // const [isSeoTextOpen, setIsSeoTextOpen] = React.useState<boolean>(false);
-  // const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoading, isModal, isMobile } = useAppContext();
   const { isBurgerDropdownOpen } = useSiteContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -34,9 +32,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     top: 0,
     height: 0,
   });
-  // const seoText = getSiteConfigSingleValue('seoText');
-  // const seoTextTitle = getSiteConfigSingleValue('seoTextTitle');
-  // const seoTextButtonLabel = isSeoTextOpen ? 'Скрыть' : 'Читать далее';
 
   // Set burger dropdown sizes
   React.useEffect(() => {
@@ -70,33 +65,15 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 
       <div ref={contentRef} className={classes.content}>
         <main className={classes.main}>
-          <ErrorBoundary>
-            <div>
-              {children}
-              {/*<Inner>
-                <div className={`${classes.seoTextHolder}`}>
-                  <Title size={'small'} tag={'h3'}>
-                    {seoTextTitle}
-                  </Title>
-                  <div
-                    className={`${classes.seoText} ${isSeoTextOpen ? classes.seoTextActive : ''}`}
-                    dangerouslySetInnerHTML={{ __html: seoText }}
-                  />
-                  <StringButton onClick={() => setIsSeoTextOpen((prevState) => !prevState)}>
-                    {seoTextButtonLabel}
-                  </StringButton>
-                </div>
-              </Inner>*/}
-            </div>
-          </ErrorBoundary>
+          <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
         <Footer />
         <BurgerDropdown top={burgerDropdownSizes.top} height={burgerDropdownSizes.height} />
       </div>
 
-      {isLoading && <Spinner wide />}
-      {isModal.show && <Modal modalType={isModal.variant} modalProps={isModal.props} />}
+      {isLoading ? <Spinner wide /> : null}
+      {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
   );
 };
@@ -114,7 +91,7 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
   description,
 }) => {
   return (
-    <SiteContextProvider catalogueNavRubrics={navRubrics}>
+    <SiteContextProvider navRubrics={navRubrics}>
       <SiteLayoutConsumer title={title} description={description}>
         {children}
       </SiteLayoutConsumer>

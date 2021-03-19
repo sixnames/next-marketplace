@@ -7,11 +7,20 @@ module.exports = {
     defaultLocale: 'ru',
   },
   images: {
-    domains: [process.env.NEXT_AWS_DOMAIN],
+    domains: [process.env.OBJECT_STORAGE_DOMAIN],
   },
   env: {
-    NEXT_AWS_IMAGE_FALLBACK: process.env.NEXT_AWS_IMAGE_FALLBACK,
-    NEXT_AWS_PRODUCT_IMAGE_FALLBACK: process.env.NEXT_AWS_PRODUCT_IMAGE_FALLBACK,
+    OBJECT_STORAGE_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_IMAGE_FALLBACK,
+    OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
     NEXT_GOOGLE_MAPS_API_KEY: process.env.NEXT_GOOGLE_MAPS_API_KEY,
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: `/${process.env.DEFAULT_CITY}`,
+        permanent: true,
+      },
+    ];
   },
 };

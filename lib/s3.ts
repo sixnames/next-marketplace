@@ -1,50 +1,46 @@
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  DeleteObjectCommand,
-} from '@aws-sdk/client-s3';
-import mime from 'mime-types';
+// import mime from 'mime-types';
 import path from 'path';
 import fs from 'fs';
+import EasyYandexS3 from 'easy-yandex-s3';
 
-// Set the AWS region
-const awsRegion = `${process.env.NEXT_AWS_BUCKET_REGION}`; // e.g., "us-east-1"
-
-// Create an S3 client service object
-const s3 = new S3Client({
-  region: awsRegion,
-  credentials: {
-    secretAccessKey: `${process.env.NEXT_AWS_SECRET_ACCESS_KEY}`,
-    accessKeyId: `${process.env.NEXT_AWS_ACCESS_KEY_ID}`,
+const s3 = new EasyYandexS3({
+  auth: {
+    accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
+    secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
   },
+  Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
+  // debug: process.env.NODE_ENV !== 'production',
 });
 
 export interface UploadFileToS3Interface {
   filePath: string;
+  fileName: string;
   buffer: Buffer;
-  contentType?: string;
 }
 
 export const uploadFileToS3 = async ({
   filePath,
+  fileName,
   buffer,
-  contentType,
 }: UploadFileToS3Interface): Promise<string> => {
   try {
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
-        Key: filePath,
-        Body: buffer,
-        ContentType: contentType || undefined,
-      }),
+    const upload = await s3.Upload(
+      {
+        buffer,
+        name: fileName,
+      },
+      filePath,
     );
 
-    return `https://${process.env.NEXT_AWS_DOMAIN}/${filePath}`;
+    if (upload) {
+      return upload.Location;
+    }
+
+    // TODO
+    return `https://${process.env.OBJECT_STORAGE_DOMAIN}/${filePath}`;
   } catch (e) {
     console.log('Error in uploadFileToS3 ', e);
-    return `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
+    return `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   }
 };
 
@@ -54,16 +50,11 @@ export interface DeleteFileToS3Interface {
 
 export const deleteFileFromS3 = async ({ filePath }: DeleteFileToS3Interface): Promise<boolean> => {
   try {
-    const filePathArr = filePath.split(`https://${process.env.NEXT_AWS_DOMAIN}/`);
+    const filePathArr = filePath.split(`https://${process.env.OBJECT_STORAGE_DOMAIN}/`);
     const Key = filePathArr[1];
-    await s3.send(
-      new DeleteObjectCommand({
-        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
-        Key,
-      }),
-    );
+    const remove = await s3.Remove(Key);
 
-    return true;
+    return remove;
   } catch (e) {
     console.log('Error in deleteFileFromS3 ', e);
     return false;
@@ -72,27 +63,22 @@ export const deleteFileFromS3 = async ({ filePath }: DeleteFileToS3Interface): P
 
 export const findOrCreateFileInS3 = async ({
   filePath,
+  fileName,
   buffer,
-  contentType,
 }: UploadFileToS3Interface): Promise<string> => {
   try {
     // Check if asset already exist
-    const file = await s3.send(
-      new GetObjectCommand({
-        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
-        Key: filePath,
-      }),
-    );
+    const file = await s3.Download(filePath);
 
     if (file) {
-      return `https://${process.env.NEXT_AWS_DOMAIN}/${filePath}`;
+      return `https://${process.env.OBJECT_STORAGE_DOMAIN}/${filePath}`;
     }
 
-    const url = await uploadFileToS3({ filePath, buffer, contentType });
+    const url = await uploadFileToS3({ filePath, buffer, fileName });
     return url;
   } catch (e) {
     console.log(`Uploading new file ${filePath} via findOrCreateFileInS3 `);
-    const url = await uploadFileToS3({ filePath, buffer, contentType });
+    const url = await uploadFileToS3({ filePath, buffer, fileName });
     return url;
   }
 };
@@ -108,15 +94,15 @@ export async function findOrCreateTestAsset({
   dist,
   fileName,
 }: FindOrCreateTestAssetInterface): Promise<string> {
-  const mimetype = mime.lookup(localFilePath) || undefined;
+  // const mimetype = mime.lookup(localFilePath) || undefined;
   const ext = path.extname(localFilePath);
   const buffer = fs.readFileSync(localFilePath);
-  const contentType = ext === '.svg' ? 'image/svg+xml' : mimetype;
+  // const contentType = ext === '.svg' ? 'image/svg+xml' : mimetype;
 
   const s3Url = await findOrCreateFileInS3({
     buffer,
-    contentType,
-    filePath: `${dist}/${fileName}${ext}`,
+    filePath: `${dist}`,
+    fileName: `${fileName}${ext}`,
   });
 
   return s3Url;

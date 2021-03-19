@@ -53,7 +53,7 @@ function useConfigContext() {
     (configSlug: string) => {
       const config = getSiteConfig(configSlug);
       if (!config) {
-        return `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
+        return `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
       }
 
       return `${config?.singleValue}`;

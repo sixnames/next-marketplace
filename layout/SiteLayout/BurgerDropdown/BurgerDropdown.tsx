@@ -29,7 +29,7 @@ const BurgerDropdownChevron: React.FC = () => {
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
   const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
-  const { isBurgerDropdownOpen, hideBurgerDropdown, catalogueNavRubrics } = useSiteContext();
+  const { isBurgerDropdownOpen, hideBurgerDropdown, navRubrics } = useSiteContext();
   const [isCatalogueVisible, setIsCatalogueVisible] = React.useState<boolean>(true);
   const [currentRubric, setCurrentRubric] = React.useState<RubricModel | null>(null);
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -131,7 +131,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                       </React.Fragment>
                     ) : (
                       <ul>
-                        {catalogueNavRubrics.map((rubric) => {
+                        {navRubrics.map((rubric) => {
                           const { _id, name, slug } = rubric;
                           const isCurrent = slug === catalogueSlug;
 

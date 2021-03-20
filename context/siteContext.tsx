@@ -7,25 +7,22 @@ interface SiteContextStateInterface {
 }
 
 interface SiteContextInterface extends SiteContextStateInterface {
-  catalogueNavRubrics: RubricModel[];
+  navRubrics: RubricModel[];
   setState: React.Dispatch<React.SetStateAction<SiteContextStateInterface>>;
 }
 
 const SiteContext = React.createContext<SiteContextInterface>({
-  catalogueNavRubrics: [],
+  navRubrics: [],
   isBurgerDropdownOpen: false,
   isSearchOpen: false,
   setState: () => null,
 });
 
 interface SiteContextProviderInterface {
-  catalogueNavRubrics: RubricModel[];
+  navRubrics: RubricModel[];
 }
 
-const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
-  children,
-  catalogueNavRubrics,
-}) => {
+const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({ children, navRubrics }) => {
   const [state, setState] = React.useState<SiteContextStateInterface>(() => ({
     isBurgerDropdownOpen: false,
     isSearchOpen: false,
@@ -35,11 +32,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const initialValue = React.useMemo(() => {
     return {
-      catalogueNavRubrics,
+      navRubrics,
       setState,
       ...state,
     };
-  }, [catalogueNavRubrics, state]);
+  }, [navRubrics, state]);
 
   return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;
 };

@@ -53,7 +53,7 @@ function useConfigContext() {
     (configSlug: string) => {
       const config = getSiteConfig(configSlug);
       if (!config) {
-        return `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
+        return `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
       }
 
       return `${config?.singleValue}`;
@@ -64,10 +64,14 @@ function useConfigContext() {
   const themeStyles = React.useMemo(() => {
     const themeColor = getSiteConfigSingleValue('siteThemeColor');
     const themeRGB = themeColor.split(',').map((num) => noNaN(num));
-    const themeR = themeRGB[0] || '219';
-    const themeG = themeRGB[1] || '83';
-    const themeB = themeRGB[2] || '96';
-    return `--theme: rgb(${themeColor}); --themeR: ${themeR}; --themeG: ${themeG}; --themeB: ${themeB};`;
+    const toShort = themeRGB.length < 3;
+    const finalThemeColor = toShort ? `219, 83, 96` : themeColor;
+
+    const themeR = toShort ? '219' : themeRGB[0];
+    const themeG = toShort ? '83' : themeRGB[1];
+    const themeB = toShort ? '96' : themeRGB[2];
+
+    return `--theme: rgb(${finalThemeColor}); --themeR: ${themeR}; --themeG: ${themeG}; --themeB: ${themeB};`;
   }, [getSiteConfigSingleValue]);
 
   return {

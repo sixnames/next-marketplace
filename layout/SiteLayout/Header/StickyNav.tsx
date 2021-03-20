@@ -123,7 +123,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 };
 
 const StickyNav: React.FC = () => {
-  const { isBurgerDropdownOpen, catalogueNavRubrics } = useSiteContext();
+  const { isBurgerDropdownOpen, navRubrics } = useSiteContext();
 
   return (
     <nav className={classes.nav}>
@@ -136,7 +136,7 @@ const StickyNav: React.FC = () => {
           </div>
         ) : null}
         <ul className={classes.navList}>
-          {catalogueNavRubrics.map((rubric) => {
+          {navRubrics.map((rubric) => {
             return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;
           })}
         </ul>

@@ -53,7 +53,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
     isMobile: isMobileDevice,
     isModal: defaultModalState,
     isLoading: false,
-    sessionCity,
+    sessionCity: sessionCity || DEFAULT_CITY,
   }));
 
   React.useEffect(() => {

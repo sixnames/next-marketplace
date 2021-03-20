@@ -43,7 +43,7 @@ export const storeUploads = async ({
   startIndex = 0,
 }: StoreUploadsInterface): Promise<AssetModel[]> => {
   try {
-    const filesPath = `${dist}/${itemId}`;
+    const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
 
     for await (const [index, file] of files.entries()) {
@@ -51,7 +51,11 @@ export const storeUploads = async ({
       const finalStartIndex = startIndex + 1;
       const finalIndex = finalStartIndex + fileIndex;
 
-      const { createReadStream, ext, mimetype } = await file;
+      const {
+        createReadStream,
+        ext,
+        // mimetype
+      } = await file;
       const fileName = `${itemId}-${finalIndex}-${new Date().getTime()}${ext}`;
 
       // Read file into stream.Readable
@@ -61,13 +65,14 @@ export const storeUploads = async ({
       const buffer = await getBufferFromFileStream(fileStream);
 
       // Content-Type header
-      const contentType = ext === '.svg' ? 'image/svg+xml' : mimetype;
+      // const contentType = ext === '.svg' ? 'image/svg+xml' : mimetype;
 
       // Upload Buffer to the S3
       const url = await uploadFileToS3({
         buffer,
-        contentType,
-        filePath: `${filesPath}/${fileName}`,
+        // contentType,
+        filePath,
+        fileName,
       });
 
       assets.push({ index: finalIndex, url });

@@ -1,13 +1,12 @@
 /// <reference types="cypress" />
 /// <reference path="../../types/index.d.ts" />
-import { DEFAULT_CITY } from 'config/common';
 
 export {};
 
 describe('Authorization', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.visit(`/${DEFAULT_CITY}/`);
+    cy.visit(`/`);
   });
 
   after(() => {
@@ -21,13 +20,11 @@ describe('Authorization', () => {
     cy.getByCy(`sign-in-email`).clear().type(Cypress.env('adminEmail'));
     cy.getByCy(`sign-in-password`).clear().type(Cypress.env('adminPassword'));
     cy.getByCy(`sign-in-submit`).click();
-    cy.location('pathname').should('eq', `/${DEFAULT_CITY}`);
 
     // User should sign out
     cy.getByCy(`burger-trigger`).click();
     cy.getByCy(`burger-dropdown`).should('exist');
     cy.getByCy(`burger-sign-out-link`).click();
-    cy.location('pathname').should('eq', `/${DEFAULT_CITY}`);
     cy.getByCy(`profile-link`).should('not.exist');
   });
 });

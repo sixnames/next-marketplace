@@ -240,7 +240,7 @@ export async function getCardData({
       return assetA.index - assetB.index;
     });
     const firstAsset = sortedAssets[0];
-    let mainImage = `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
+    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
 
     if (firstAsset) {
       mainImage = firstAsset.url;

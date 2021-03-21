@@ -5,7 +5,6 @@ import {
   COL_LANGUAGES,
   COL_METRICS,
 } from 'db/collectionNames';
-import { INITIAL_METRICS } from 'db/createInitialLocalizationData';
 import { CityModel, CountryModel, CurrencyModel, LanguageModel, MetricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -19,6 +18,172 @@ import {
   SECONDARY_LOCALE,
 } from 'config/common';
 import { ObjectId } from 'mongodb';
+
+// Metrics
+export const INITIAL_METRICS = [
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'км/ч',
+      [SECONDARY_LOCALE]: 'km/h',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'мм',
+      [SECONDARY_LOCALE]: 'mm',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'шт.',
+      [SECONDARY_LOCALE]: 'units',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'м2',
+      [SECONDARY_LOCALE]: 'm2',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'мест',
+      [SECONDARY_LOCALE]: 'places',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'км',
+      [SECONDARY_LOCALE]: 'km',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'кВт',
+      [SECONDARY_LOCALE]: 'kw',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'р.',
+      [SECONDARY_LOCALE]: 'rub.',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'лет',
+      [SECONDARY_LOCALE]: 'years',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'см',
+      [SECONDARY_LOCALE]: 'cm',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: '%',
+      [SECONDARY_LOCALE]: '%',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'м',
+      [SECONDARY_LOCALE]: 'm',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'часов',
+      [SECONDARY_LOCALE]: 'hours',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'кг',
+      [SECONDARY_LOCALE]: 'kg',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'чел.',
+      [SECONDARY_LOCALE]: 'people',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'м/с',
+      [SECONDARY_LOCALE]: 'm/s',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'год',
+      [SECONDARY_LOCALE]: 'year',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'мин.',
+      [SECONDARY_LOCALE]: 'minutes',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'ед.',
+      [SECONDARY_LOCALE]: 'units',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'мл.',
+      [SECONDARY_LOCALE]: 'ml',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'л/ч.',
+      [SECONDARY_LOCALE]: 'p/h',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Hz',
+      [SECONDARY_LOCALE]: 'Hz',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Вт',
+      [SECONDARY_LOCALE]: 'Wt',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: '°',
+      [SECONDARY_LOCALE]: '°',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: '°C',
+      [SECONDARY_LOCALE]: '°C',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'кд/м2',
+      [SECONDARY_LOCALE]: 'kd/m2',
+    },
+  },
+  {
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'м3/ч',
+      [SECONDARY_LOCALE]: 'm3/h',
+    },
+  },
+];
 
 export interface CreateTestLocalizationDataPayloadInterface {
   metrics: MetricModel[];

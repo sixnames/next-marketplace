@@ -2,6 +2,7 @@ import Button from 'components/Buttons/Button';
 import Input, { InputEvent } from 'components/FormElements/Input/Input';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
+import { ROUTE_SIGN_IN } from 'config/common';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -120,23 +121,18 @@ const SignIn: NextPage<SignInPageInterface> = ({ token, navRubrics }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<SignInPageInterface>> {
-  const { locale, query } = context;
   const session = await getSession(context);
 
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   // Redirect user to the Home page if already authorized
   if (session?.user) {
     return {
       redirect: {
         permanent: false,
-        destination: redirectPayload.redirect.destination,
+        destination: ROUTE_SIGN_IN,
       },
     };
   }

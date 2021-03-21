@@ -1,7 +1,6 @@
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import useCart from 'hooks/useCart';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -17,7 +16,6 @@ export interface CartModalInterface {
 }
 
 const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был добавлен в корзину' }) => {
-  const city = useSessionCity();
   const router = useRouter();
   const { hideModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
@@ -62,7 +60,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
         <Button
           onClick={() => {
             hideModal();
-            router.push(`/${city}/cart`).catch(() => {
+            router.push(`/cart`).catch(() => {
               showErrorNotification();
             });
           }}

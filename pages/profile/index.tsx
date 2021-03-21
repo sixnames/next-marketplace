@@ -1,23 +1,30 @@
-import useCartMutations from 'hooks/useCartMutations';
-import * as React from 'react';
-import classes from './ProfileOrdersRoute.module.css';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import ControlButton from 'components/Buttons/ControlButton';
+import ControlButtonChevron from 'components/Buttons/ControlButtonChevron';
+import Currency from 'components/Currency/Currency';
+import FormattedDate from 'components/FormattedDateTime/FormattedDate';
+import Icon from 'components/Icon/Icon';
+import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import RequestError from 'components/RequestError/RequestError';
+import Spinner from 'components/Spinner/Spinner';
+import Tooltip from 'components/TTip/Tooltip';
+import { ROUTE_SIGN_IN } from 'config/common';
 import {
   MyOrderFragment,
   MyOrderProductFragment,
   useGetAllMyOrdersQuery,
 } from 'generated/apolloComponents';
-import Spinner from '../../components/Spinner/Spinner';
-import RequestError from '../../components/RequestError/RequestError';
-import Currency from '../../components/Currency/Currency';
-import ControlButtonChevron from '../../components/Buttons/ControlButtonChevron';
-import FormattedDate from '../../components/FormattedDateTime/FormattedDate';
-import ControlButton from '../../components/Buttons/ControlButton';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import Tooltip from '../../components/TTip/Tooltip';
-import Image from 'next/image';
-import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
-import Icon from '../../components/Icon/Icon';
+import useCartMutations from 'hooks/useCartMutations';
+import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import { noNaN } from 'lib/numbers';
+import { getSession } from 'next-auth/client';
+import Image from 'next/image';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { getSiteInitialData } from 'lib/ssrUtils';
+import classes from 'routes/ProfileOrdersRoute/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
   orderProduct: MyOrderProductFragment;
@@ -212,4 +219,38 @@ const ProfileOrdersRoute: React.FC = () => {
   );
 };
 
-export default ProfileOrdersRoute;
+interface ProfileInterface extends PagePropsInterface, SiteLayoutInterface {}
+
+const Profile: NextPage<ProfileInterface> = ({ navRubrics }) => {
+  return (
+    <SiteLayout title={'История заказов'} navRubrics={navRubrics}>
+      <ProfileLayout>
+        <ProfileOrdersRoute />
+      </ProfileLayout>
+    </SiteLayout>
+  );
+};
+
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<ProfileInterface>> {
+  const { props } = await getSiteInitialData({
+    context,
+  });
+
+  const session = await getSession(context);
+  if (!session?.user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  return {
+    props,
+  };
+}
+
+export default Profile;

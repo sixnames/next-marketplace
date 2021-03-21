@@ -17,7 +17,6 @@ import {
 } from 'generated/apolloComponents';
 import useCart from 'hooks/useCart';
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -254,7 +253,6 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 };
 
 const CartRoute: React.FC = () => {
-  const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   const { cart, loadingCart } = useCart();
@@ -297,7 +295,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/${city}/`).catch(() => {
+                router.push(`/`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -308,7 +306,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/${city}/vino`).catch(() => {
+                router.push(`/vino`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -348,7 +346,7 @@ const CartRoute: React.FC = () => {
               cart={cart}
               buttonText={'Купить'}
               onConfirmHandler={() => {
-                router.push(`/${city}/make-an-order`).catch(() => {
+                router.push(`/make-an-order`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -373,16 +371,9 @@ const Cart: NextPage<CartInterface> = ({ navRubrics }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CartInterface>> {
-  const { locale, query } = context;
-
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   return {
     props,

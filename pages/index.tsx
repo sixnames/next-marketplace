@@ -21,16 +21,9 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<HomePageInterface>> {
-  const { locale, query } = context;
-
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   return {
     props,

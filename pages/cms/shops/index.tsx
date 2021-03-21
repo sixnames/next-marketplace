@@ -13,7 +13,6 @@ import TableRowImage from 'components/Table/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
 import { ShopInListFragment, useGetAllShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
-import useSessionCity from 'hooks/useSessionCity';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -46,7 +45,6 @@ const ShopsFilter: React.FC = () => {
 
 const ShopsContent: React.FC = () => {
   const router = useRouter();
-  const city = useSessionCity();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { data, loading, error } = useGetAllShopsQuery({
     fetchPolicy: 'network-only',
@@ -68,7 +66,7 @@ const ShopsContent: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`/${city}${ROUTE_CMS}/shops/${dataItem._id}`}>
+        <Link href={`${ROUTE_CMS}/shops/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),
@@ -97,9 +95,7 @@ const ShopsContent: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router
-                .push(`/${city}${ROUTE_CMS}/shops/${dataItem._id}`)
-                .catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/shops/${dataItem._id}`).catch((e) => console.log(e));
             }}
             testId={dataItem.name}
           />

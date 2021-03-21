@@ -9,7 +9,7 @@ import type { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from 'apollo/apolloClient';
 import { Provider } from 'next-auth/client';
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
 import NProgress from 'nprogress';
@@ -17,6 +17,8 @@ import NProgress from 'nprogress';
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;
   sessionCity: string;
+  sessionLocale: string;
+  initialApolloState?: any;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -24,10 +26,13 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-function App({ Component, pageProps }: AppProps) {
-  const { locale } = useRouter();
+function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
   const { session, initialData } = pageProps;
-  const apolloClient = useApollo(pageProps.initialApolloState, locale, pageProps.sessionCity);
+  const apolloClient = useApollo(
+    pageProps.initialApolloState,
+    pageProps.sessionLocale,
+    pageProps.sessionCity,
+  );
 
   return (
     <Provider session={session}>

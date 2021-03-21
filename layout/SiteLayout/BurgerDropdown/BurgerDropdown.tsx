@@ -1,5 +1,4 @@
 import { RubricModel } from 'db/dbModels';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 // import OutsideClickHandler from 'react-outside-click-handler';
 import Inner from '../../../components/Inner/Inner';
@@ -27,7 +26,6 @@ const BurgerDropdownChevron: React.FC = () => {
 };
 
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
-  const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
   const { isBurgerDropdownOpen, hideBurgerDropdown, navRubrics } = useSiteContext();
   const [isCatalogueVisible, setIsCatalogueVisible] = React.useState<boolean>(true);
@@ -92,7 +90,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                         {currentRubric.slug !== catalogueSlug ? (
                           <div className={classes.dropdownGroup}>
                             <Link
-                              href={`/${city}/${currentRubric.slug}`}
+                              href={`${currentRubric.slug}`}
                               onClick={hideDropdownHandler}
                               className={`${classes.dropdownGroupLink}`}
                             >
@@ -112,7 +110,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                   return (
                                     <li key={`${option._id}`}>
                                       <Link
-                                        href={`/${city}/${currentRubric.slug}/${option.slug}`}
+                                        href={`/${currentRubric.slug}/${option.slug}`}
                                         onClick={hideDropdownHandler}
                                         className={`${classes.dropdownGroupLink} ${
                                           isCurrent ? classes.dropdownGroupLinkCurrent : ''
@@ -203,7 +201,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                         <Link
                           onClick={hideDropdownHandler}
                           testId={me ? `burger-profile-link` : `burger-sign-in-link`}
-                          href={me ? `/${city}${ROUTE_PROFILE}` : `/${city}${ROUTE_SIGN_IN}`}
+                          href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
                           className={`${classes.dropdownGroupLink}`}
                         >
                           <span>Личный кабинет</span>
@@ -256,7 +254,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           <li>
                             <Link
                               onClick={hideDropdownHandler}
-                              href={`/${city}${ROUTE_CMS}`}
+                              href={ROUTE_CMS}
                               className={`${classes.dropdownGroupLink}`}
                             >
                               <span>CMS</span>
@@ -266,7 +264,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           <li>
                             <Link
                               onClick={hideDropdownHandler}
-                              href={`/${city}${ROUTE_APP}`}
+                              href={ROUTE_APP}
                               className={`${classes.dropdownGroupLink}`}
                             >
                               <span>APP</span>

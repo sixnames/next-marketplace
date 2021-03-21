@@ -19,7 +19,6 @@ import {
   useUpdateProductInCartMutation,
 } from 'generated/apolloComponents';
 import { SESSION_CART_QUERY } from 'graphql/query/initialQueries';
-import useSessionCity from 'hooks/useSessionCity';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -36,7 +35,6 @@ export interface UseCartMutationsPayloadInterface {
 
 const useCartMutations = (): UseCartMutationsPayloadInterface => {
   const router = useRouter();
-  const city = useSessionCity();
   const { showModal } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
 
@@ -88,7 +86,7 @@ const useCartMutations = (): UseCartMutationsPayloadInterface => {
     ...refetchConfig,
     onCompleted: ({ makeAnOrder }) => {
       const { order } = makeAnOrder;
-      router.push(`/${city}/thank-you?orderId=${order?.itemId}`).catch(() => {
+      router.push(`/thank-you?orderId=${order?.itemId}`).catch(() => {
         showErrorNotification();
       });
     },

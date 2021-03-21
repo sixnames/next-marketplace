@@ -1,35 +1,18 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_SIGN_IN } from 'config/common';
-import { IncomingMessage, ServerResponse } from 'http';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
-import { GetServerSidePropsResult } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { getSession } from 'next-auth/client';
-import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
 import { PagePropsInterface } from 'pages/_app';
-import { ParsedUrlQuery } from 'querystring';
-
-export interface SsrContext {
-  req?: IncomingMessage & {
-    cookies: NextApiRequestCookies;
-  };
-  res?: ServerResponse;
-  params?: any;
-  query?: ParsedUrlQuery;
-  preview?: boolean;
-  previewData?: any;
-  resolvedUrl?: string;
-  locale?: string;
-  locales?: string[];
-  defaultLocale?: string;
-  city?: string | null;
-}
+import { getSubdomain, getDomain } from 'tldts';
 
 export async function getAppInitialData(
-  context: SsrContext,
+  context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PagePropsInterface>> {
-  const { locale, query } = context;
-  const { city } = query || {};
-  const sessionCity = city ? `${city}` : DEFAULT_CITY;
+  const { locale, req } = context;
+  const { referer } = req.headers;
+  const subdomain = referer ? getSubdomain(referer) : null;
+  const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
   const initialDataProps = {
@@ -40,29 +23,13 @@ export async function getAppInitialData(
   const rawInitialData = await getPageInitialData(initialDataProps);
   const initialData = castDbData(rawInitialData);
 
-  const currentCity = rawInitialData.cities.find(({ slug }) => {
-    return slug === city;
-  });
-  if (!currentCity) {
-    return {
-      props: {
-        initialData,
-        sessionCity,
-      },
-      redirect: {
-        destination: `/404`,
-        permanent: true,
-      },
-    };
-  }
-
   // Check if user authenticated
   const session = await getSession(context);
   if (!session?.user) {
     return {
       redirect: {
         permanent: false,
-        destination: `/${sessionCity}${ROUTE_SIGN_IN}`,
+        destination: ROUTE_SIGN_IN,
       },
     };
   }
@@ -71,6 +38,7 @@ export async function getAppInitialData(
     props: {
       initialData,
       sessionCity,
+      sessionLocale,
     },
   };
 }
@@ -80,8 +48,7 @@ export function castDbData(data: any): any {
 }
 
 export interface GetSiteInitialDataInterface {
-  params?: ParsedUrlQuery;
-  locale?: string;
+  context: GetServerSidePropsContext;
 }
 
 export interface SiteInitialDataPropsInterface
@@ -90,24 +57,19 @@ export interface SiteInitialDataPropsInterface
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;
-  cityNotFound: boolean;
-  revalidate: number;
-  redirectPayload: {
-    props: Record<string, any>;
-    redirect: {
-      destination: string;
-      permanent: boolean;
-    };
-  };
 }
 
 export async function getSiteInitialData({
-  params,
-  locale,
+  context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
-  const { city } = params || {};
-  const sessionCity = city ? `${city}` : DEFAULT_CITY;
+  const { locale, req } = context;
+  const { referer } = req.headers;
+  const subdomain = referer ? getSubdomain(referer) : null;
+  const domain = referer ? getDomain(referer) : null;
+  const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
+
+  console.log({ sessionCity, referer, subdomain, domain, sessionLocale });
 
   const initialDataProps = {
     locale: sessionLocale,
@@ -120,25 +82,12 @@ export async function getSiteInitialData({
   const initialData = castDbData(rawInitialData);
   const navRubrics = castDbData(rawNavRubrics);
 
-  const currentCity = rawInitialData.cities.find(({ slug }) => {
-    return slug === city;
-  });
-  const cityNotFound = !currentCity;
-
   return {
-    cityNotFound,
     props: {
       initialData,
       navRubrics,
-      sessionCity: cityNotFound ? DEFAULT_CITY : sessionCity,
-    },
-    revalidate: 5,
-    redirectPayload: {
-      props: {},
-      redirect: {
-        destination: `/404`,
-        permanent: true,
-      },
+      sessionCity,
+      sessionLocale,
     },
   };
 }

@@ -1,14 +1,12 @@
 import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
-import useSessionCity from 'hooks/useSessionCity';
 import Image from 'next/image';
 import * as React from 'react';
 import Inner from '../../../components/Inner/Inner';
 import classes from './Footer.module.css';
 
 const Footer: React.FC = () => {
-  const city = useSessionCity();
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
 
@@ -18,7 +16,7 @@ const Footer: React.FC = () => {
   return (
     <footer className={classes.frame}>
       <Inner className={classes.inner} lowBottom>
-        <Link href={`/${city}/`} className={classes.logo} aria-label={'Главная страница'}>
+        <Link href={`/`} className={classes.logo} aria-label={'Главная страница'}>
           <Image src={siteLogoSrc} width={166} height={27} alt={configSiteName} />
         </Link>
         <small className={classes.copyright}>

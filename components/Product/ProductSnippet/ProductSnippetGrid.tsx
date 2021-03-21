@@ -1,5 +1,4 @@
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
@@ -26,7 +25,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   size = 'normal',
   className,
 }) => {
-  const city = useSessionCity();
   const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
@@ -114,7 +112,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         // style={{ display: 'none' }}
         prefetch={false}
         className={classes.link}
-        href={`/${city}/product${additionalLinkSlug}/${slug}`}
+        href={`/product${additionalLinkSlug}/${slug}`}
       >
         {originalName}
       </Link>

@@ -18,8 +18,8 @@ module.exports = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: `/${process.env.DEFAULT_CITY}`,
+        source: `/${process.env.DEFAULT_CITY}`,
+        destination: `/`,
         permanent: true,
       },
     ];

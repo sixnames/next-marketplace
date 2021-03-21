@@ -21,7 +21,6 @@ import {
 import { COMPANIES_LIST_QUERY } from 'graphql/query/companiesQueries';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useSessionCity from 'hooks/useSessionCity';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -53,7 +52,6 @@ const CompaniesFilter: React.FC = () => {
 };
 
 const CompaniesContent: React.FC = () => {
-  const city = useSessionCity();
   const router = useRouter();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
@@ -113,7 +111,7 @@ const CompaniesContent: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`/${city}${ROUTE_CMS}/companies/${dataItem._id}`}>
+        <Link href={`${ROUTE_CMS}/companies/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),
@@ -147,9 +145,7 @@ const CompaniesContent: React.FC = () => {
             deleteHandler={() => deleteCompanyHandler(dataItem)}
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
-              router
-                .push(`/${city}${ROUTE_CMS}/companies/${dataItem._id}`)
-                .catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/companies/${dataItem._id}`).catch((e) => console.log(e));
             }}
           />
         );
@@ -169,7 +165,6 @@ const CompaniesContent: React.FC = () => {
 
 const CompaniesRoute: React.FC = () => {
   const router = useRouter();
-  const city = useSessionCity();
 
   return (
     <DataLayout
@@ -179,7 +174,7 @@ const CompaniesRoute: React.FC = () => {
       filterResult={() => <CompaniesContent />}
       contentControlsConfig={{
         createTitle: 'Создать компанию',
-        createHandler: () => router.push(`/${city}${ROUTE_CMS}/companies/create`),
+        createHandler: () => router.push(`${ROUTE_CMS}/companies/create`),
         testId: 'company',
       }}
     />

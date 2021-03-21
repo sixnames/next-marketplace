@@ -10,7 +10,6 @@ import { ROUTE_CMS } from 'config/common';
 import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useSessionCity from 'hooks/useSessionCity';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
@@ -35,13 +34,12 @@ const CreateCompanyContent: React.FC = () => {
     showErrorNotification,
     hideLoading,
   } = useMutationCallbacks();
-  const city = useSessionCity();
   const [createCompanyMutation] = useCreateCompanyMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
       if (data?.createCompany?.success) {
         onCompleteCallback(data.createCompany);
-        router.replace(`/${city}${ROUTE_CMS}/companies`).catch((e) => console.log(e));
+        router.replace(`${ROUTE_CMS}/companies`).catch((e) => console.log(e));
       } else {
         hideLoading();
         showErrorNotification({ title: data?.createCompany?.message });

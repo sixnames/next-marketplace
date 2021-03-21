@@ -25,12 +25,6 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
 
   return (
     <Head>
-      {/*<meta charSet='utf-8' />
-      <meta
-        name='viewport'
-        content='width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=0'
-      />*/}
-
       <title>{pageTitle}</title>
       <meta name={'description'} content={pageDescription} />
 
@@ -45,8 +39,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
       <meta property='og:type' content='website' />
       <meta property='og:image' content={pagePreviewImage} />
 
-      {/*TODO pass trough current url*/}
-      <meta property='og:url' content='url' />
+      <meta property='og:url' content={process.env.SITE} />
       <meta property='og:description' content={pageDescription} />
 
       <meta name='twitter:title' content={title} />
@@ -66,6 +59,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
       <link rel='mask-icon' href={'/safari-pinned-tab.svg'} color='#5bbad5' />
       <meta name='msapplication-TileColor' content='#ffffff' />
       <meta name='theme-color' content='#ffffff' />
+      <meta name='yandex-verification' content='9c0683d181d7c811' />
     </Head>
   );
 };

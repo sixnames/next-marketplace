@@ -19,6 +19,7 @@ export interface PagePropsInterface {
   sessionCity: string;
   sessionLocale: string;
   initialApolloState?: any;
+  domain?: any;
 }
 
 NProgress.configure({ showSpinner: false });

@@ -69,7 +69,7 @@ export async function getSiteInitialData({
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
-  console.log({ sessionCity, referer, subdomain, domain, sessionLocale });
+  // console.log({ sessionCity, referer, subdomain, domain, sessionLocale });
 
   const initialDataProps = {
     locale: sessionLocale,
@@ -88,6 +88,7 @@ export async function getSiteInitialData({
       navRubrics,
       sessionCity,
       sessionLocale,
+      domain,
     },
   };
 }

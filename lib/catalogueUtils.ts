@@ -236,12 +236,12 @@ export async function getCatalogueAttributes({
       }
 
       const optionNextSlug = isSelected
-        ? [city, ...filter]
+        ? [...filter]
             .filter((pathArg) => {
               return pathArg !== optionSlug;
             })
             .join('/')
-        : [city, ...filter, optionSlug].join('/');
+        : [...filter, optionSlug].join('/');
 
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {

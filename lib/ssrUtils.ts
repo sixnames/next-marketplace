@@ -102,6 +102,7 @@ export async function getSiteInitialData({
         sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
         sessionLocale,
         domain,
+        host: context.req.headers.host,
         company,
       },
     };
@@ -113,7 +114,8 @@ export async function getSiteInitialData({
       navRubrics,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
-      domain: process.env.SITE,
+      domain,
+      host: context.req.headers.host,
     },
   };
 }

@@ -21,7 +21,6 @@ export interface PagePropsInterface {
   sessionLocale: string;
   initialApolloState?: any;
   domain?: any;
-  host?: any;
   company?: CompanyModel | null;
 }
 

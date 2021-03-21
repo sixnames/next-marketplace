@@ -63,10 +63,18 @@ export const User = objectType({
     t.nonNull.field('formattedPhone', {
       type: 'FormattedPhone',
       resolve: (source): FormattedPhoneModel => {
-        return {
-          raw: phoneToRaw(source.phone),
-          readable: phoneToReadable(source.phone),
-        };
+        try {
+          return {
+            raw: phoneToRaw(source.phone),
+            readable: phoneToReadable(source.phone),
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            raw: '',
+            readable: '',
+          };
+        }
       },
     });
 
@@ -317,10 +325,11 @@ export const UserMutations = mutationType({
           }
 
           // Create password for user
-          const password = generator.generate({
+          const newPassword = generator.generate({
             length: 10,
             numbers: true,
           });
+          const password = await hash(newPassword, 10);
 
           // Create user
           const itemId = await getNextItemId(COL_USERS);

@@ -13,8 +13,9 @@ export async function getAppInitialData(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PagePropsInterface>> {
   const { locale } = context;
-  const referer = `${process.env.SITE}`;
-  const subdomain = getSubdomain(referer);
+  const referer = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
+  const domain = getDomain(referer, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -46,6 +47,7 @@ export async function getAppInitialData(
       initialData,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
+      domain,
     },
   };
 }
@@ -70,9 +72,9 @@ export async function getSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
   const { locale } = context;
-  const referer = `${process.env.SITE}`;
-  const subdomain = getSubdomain(referer);
-  const domain = getDomain(referer);
+  const referer = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
+  const domain = getDomain(referer, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -91,21 +93,11 @@ export async function getSiteInitialData({
     return slug === sessionCity;
   });
 
+  let company: CompanyModel | null | undefined = null;
+
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
     const db = await getDatabase();
-    const company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
-
-    return {
-      props: {
-        initialData,
-        navRubrics,
-        sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
-        sessionLocale,
-        domain,
-        host: context.req.headers.host,
-        company,
-      },
-    };
+    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
 
   return {
@@ -114,8 +106,8 @@ export async function getSiteInitialData({
       navRubrics,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
+      company,
       domain,
-      host: context.req.headers.host,
     },
   };
 }

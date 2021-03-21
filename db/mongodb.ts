@@ -21,7 +21,7 @@ export async function getDatabase(): Promise<Db> {
   // If no connection is cached, create a new one
   const client = await MongoClient.connect(
     uri,
-    process.env.NODE_ENV === 'production'
+    process.env.NEXT_NODE_ENV === 'production'
       ? {
           useNewUrlParser: true,
           useUnifiedTopology: true,

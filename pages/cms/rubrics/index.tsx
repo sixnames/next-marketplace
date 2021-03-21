@@ -16,7 +16,6 @@ import {
 } from 'generated/apolloComponents';
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useSessionCity from 'hooks/useSessionCity';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -24,7 +23,6 @@ import { NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const RubricsRoute: React.FC = () => {
-  const city = useSessionCity();
   const router = useRouter();
   const { data, loading, error } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
@@ -88,9 +86,7 @@ const RubricsRoute: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router
-                .push(`/${city}${ROUTE_CMS}/rubrics/${dataItem.slug}`)
-                .catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/rubrics/${dataItem.slug}`).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -162,7 +158,7 @@ const RubricsRoute: React.FC = () => {
                 emptyMessage={'Список пуст'}
                 onRowDoubleClick={(rubric) => {
                   router
-                    .push(`/${city}${ROUTE_CMS}/rubrics/${rubric.slug}/products/1`)
+                    .push(`${ROUTE_CMS}/rubrics/${rubric.slug}/products/1`)
                     .catch((e) => console.log(e));
                 }}
               />

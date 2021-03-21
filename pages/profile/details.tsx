@@ -1,23 +1,30 @@
-import { phoneToRaw } from 'lib/phoneUtils';
-import * as React from 'react';
+import Button from 'components/Buttons/Button';
+import StringButton from 'components/Buttons/StringButton';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
+import RequestError from 'components/RequestError/RequestError';
+import Title from 'components/Title/Title';
+import { ROUTE_SIGN_IN } from 'config/common';
+import { UPDATE_MY_PASSWORD_MODAL } from 'config/modals';
 import { useUserContext } from 'context/userContext';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { Form, Formik } from 'formik';
 import {
   UpdateMyProfileInput,
   useUpdateMyPasswordMutation,
   useUpdateMyProfileMutation,
 } from 'generated/apolloComponents';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
-import { UPDATE_MY_PASSWORD_MODAL } from 'config/modals';
-import RequestError from '../../components/RequestError/RequestError';
-import { Form, Formik } from 'formik';
-import FormikInput from '../../components/FormElements/Input/FormikInput';
-import classes from './ProfileDetailsRoute.module.css';
-import Button from '../../components/Buttons/Button';
-import Title from '../../components/Title/Title';
-import RowWithGap from '../../layout/RowWithGap/RowWithGap';
-import StringButton from '../../components/Buttons/StringButton';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
+import RowWithGap from 'layout/RowWithGap/RowWithGap';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { getSession } from 'next-auth/client';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { getSiteInitialData } from 'lib/ssrUtils';
+import classes from 'routes/ProfileDetailsRoute/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
 
 const ProfileDetailsRoute: React.FC = () => {
@@ -169,4 +176,38 @@ const ProfileDetailsRoute: React.FC = () => {
   );
 };
 
-export default ProfileDetailsRoute;
+interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
+
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics }) => {
+  return (
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics}>
+      <ProfileLayout>
+        <ProfileDetailsRoute />
+      </ProfileLayout>
+    </SiteLayout>
+  );
+};
+
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<ProfileDetailsInterface>> {
+  const { props } = await getSiteInitialData({
+    context,
+  });
+
+  const session = await getSession(context);
+  if (!session?.user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  return {
+    props,
+  };
+}
+
+export default ProfileDetails;

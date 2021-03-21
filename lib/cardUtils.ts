@@ -26,7 +26,6 @@ import { ObjectId } from 'mongodb';
 
 export interface GetCardBreadcrumbsInterface {
   locale: string;
-  city: string;
   product: ProductModel;
   slug: string[];
 }
@@ -34,7 +33,6 @@ export interface GetCardBreadcrumbsInterface {
 export async function getCardBreadcrumbs({
   locale,
   product,
-  city,
   slug,
 }: GetCardBreadcrumbsInterface): Promise<ProductCardBreadcrumbModel[]> {
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
@@ -147,7 +145,7 @@ export async function getCardBreadcrumbs({
       attributesBreadcrumbs.push({
         _id: attribute._id,
         name: filterNameString,
-        href: `/${city}/${rubricSlug}/${firstSelectedOption.slug}`,
+        href: `/${rubricSlug}/${firstSelectedOption.slug}`,
       });
     }
 
@@ -156,7 +154,7 @@ export async function getCardBreadcrumbs({
       {
         _id: rubric._id,
         name: getFieldLocale(rubric.nameI18n),
-        href: `/${city}/${rubricSlug}`,
+        href: `/${rubricSlug}`,
       },
       ...attributesBreadcrumbs,
     ];
@@ -411,7 +409,6 @@ export async function getCardData({
     const cardBreadcrumbs: ProductCardBreadcrumbModel[] = await getCardBreadcrumbs({
       locale,
       product,
-      city,
       slug,
     });
     // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);

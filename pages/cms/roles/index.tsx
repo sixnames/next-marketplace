@@ -17,7 +17,6 @@ import {
 } from 'generated/apolloComponents';
 import { GET_ALL_ROLES_QUERY } from 'graphql/query/rolesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useSessionCity from 'hooks/useSessionCity';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
@@ -25,7 +24,6 @@ import { NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const RolesContent: React.FC = () => {
-  const city = useSessionCity();
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal } = useMutationCallbacks({
     withModal: true,
@@ -83,9 +81,7 @@ const RolesContent: React.FC = () => {
             testId={dataItem.name}
             updateTitle={'Редактировать роль'}
             updateHandler={() => {
-              router
-                .push(`/${city}${ROUTE_CMS}/roles/${dataItem._id}`)
-                .catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/roles/${dataItem._id}`).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить роль'}
             deleteHandler={() => {

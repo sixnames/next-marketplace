@@ -1,4 +1,3 @@
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import {
   CompanyFragment,
@@ -30,7 +29,6 @@ interface CompanyShopsInterface {
 }
 
 const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
-  const city = useSessionCity();
   const router = useRouter();
   const companyId = company._id;
   const {
@@ -112,9 +110,7 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router
-                .push(`/${city}${ROUTE_CMS}/shops/${dataItem._id}`)
-                .catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/shops/${dataItem._id}`).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {

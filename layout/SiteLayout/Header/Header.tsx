@@ -1,5 +1,4 @@
 import useCart from 'hooks/useCart';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import { Fragment, useEffect, useRef } from 'react';
 import classes from './Header.module.css';
@@ -56,12 +55,11 @@ const HeaderSearchTrigger: React.FC = () => {
 
 const HeaderProfileLink: React.FC = () => {
   const { me } = useUserContext();
-  const city = useSessionCity();
 
   return (
     <Link
       testId={me ? `profile-link` : `sign-in-link`}
-      href={me ? `/${city}${ROUTE_PROFILE}` : `/${city}${ROUTE_SIGN_IN}`}
+      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
       className={`${classes.middleLink}`}
       activeClassName={`${classes.middleLinkActive}`}
     >
@@ -183,7 +181,6 @@ const HeaderMiddleRight: React.FC = () => {
 };
 
 const Header: React.FC = () => {
-  const city = useSessionCity();
   const { isSearchOpen } = useSiteContext();
   const { isMobile } = useAppContext();
   const headerRef = useRef<HTMLElement | null>(null);
@@ -200,7 +197,7 @@ const Header: React.FC = () => {
         <Inner className={classes.middle} lowTop>
           {isMobile ? null : <HeaderMiddleLeft />}
 
-          <Link href={`/${city}/`} className={classes.middleLogo} aria-label={'Главная страница'}>
+          <Link href={`/`} className={classes.middleLogo} aria-label={'Главная страница'}>
             <Image src={siteLogoSrc} width={166} height={27} alt={configSiteName} />
           </Link>
 

@@ -1,5 +1,4 @@
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
@@ -27,7 +26,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   additionalSlug,
   className,
 }) => {
-  const city = useSessionCity();
   const [amount, setAmount] = React.useState<number>(1);
   const { addShoplessProductToCart } = useCartMutations();
   const {
@@ -175,7 +173,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         // style={{ display: 'none' }}
         prefetch={false}
         className={classes.link}
-        href={`/${city}/product${additionalLinkSlug}/${slug}`}
+        href={`/product${additionalLinkSlug}/${slug}`}
       >
         {originalName}
       </Link>

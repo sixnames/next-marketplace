@@ -30,7 +30,6 @@ import {
 } from 'generated/apolloComponents';
 import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from 'graphql/query/optionsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useSessionCity from 'hooks/useSessionCity';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -46,7 +45,6 @@ interface OptionsGroupControlsInterface {
 
 const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }) => {
   const router = useRouter();
-  const city = useSessionCity();
   const { _id, name, variant } = group;
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
@@ -64,7 +62,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
     awaitRefetchQueries: true,
     onCompleted: (data) => {
       onCompleteCallback(data.deleteOptionsGroup);
-      router.replace(`/${city}${ROUTE_CMS}/options-groups`).catch((e) => console.log(e));
+      router.replace(`${ROUTE_CMS}/options-groups`).catch((e) => console.log(e));
     },
     onError: onErrorCallback,
   });

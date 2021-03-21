@@ -15,7 +15,6 @@ import { Form, Formik } from 'formik';
 import { CartProductFragment } from 'generated/apolloComponents';
 import useCart from 'hooks/useCart';
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
@@ -98,7 +97,6 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 };
 
 const MakeAnOrderRoute: React.FC = () => {
-  const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { loadingCart, cart } = useCart();
@@ -146,7 +144,7 @@ const MakeAnOrderRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/${city}/`).catch(() => {
+                router.push(`/`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -248,7 +246,7 @@ const MakeAnOrderRoute: React.FC = () => {
                     <CartAside
                       cart={cart}
                       buttonText={'подтвердить заказ'}
-                      backLinkHref={`/${city}/cart`}
+                      backLinkHref={`/cart`}
                       buttonType={'submit'}
                     />
                   </div>
@@ -275,16 +273,9 @@ const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<MakeAnOrderInterface>> {
-  const { locale, query } = context;
-
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   return {
     props,

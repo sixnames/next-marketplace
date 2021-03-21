@@ -8,11 +8,24 @@ import { getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomePageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Home: NextPage<HomePageInterface> = ({ navRubrics }) => {
+const Home: NextPage<HomePageInterface> = ({ navRubrics, domain, company }) => {
+  if (company) {
+    return (
+      <SiteLayout navRubrics={navRubrics}>
+        <Inner>
+          <Title>{company.name}</Title>
+          {domain}
+          <pre>{JSON.stringify(company, null, 2)}</pre>
+        </Inner>
+      </SiteLayout>
+    );
+  }
+
   return (
     <SiteLayout navRubrics={navRubrics}>
       <Inner>
         <Title>Main page</Title>
+        {domain}
       </Inner>
     </SiteLayout>
   );
@@ -21,16 +34,9 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<HomePageInterface>> {
-  const { locale, query } = context;
-
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   return {
     props,

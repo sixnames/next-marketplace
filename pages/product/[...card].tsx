@@ -18,7 +18,6 @@ import {
   useUpdateProductCounterMutation,
 } from 'generated/apolloComponents';
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
@@ -77,7 +76,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardBreadcrumbs,
     cardShopProducts,
   } = cardData;
-  const city = useSessionCity();
   const { query } = useRouter();
   const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
@@ -201,7 +199,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                                 data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={option._id}
-                                href={`/${city}/product${additionalLinkSlug}/${product.slug}`}
+                                href={`/product${additionalLinkSlug}/${product.slug}`}
                               >
                                 {option.name}
                               </Link>
@@ -379,15 +377,10 @@ export async function getServerSideProps(
   // console.log('==================================');
   // const startTime = new Date().getTime();
 
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { props } = await getSiteInitialData({
+    context,
   });
   // console.log(`After initial data `, new Date().getTime() - startTime);
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   // card data
   const rawCardData = await getCardData({

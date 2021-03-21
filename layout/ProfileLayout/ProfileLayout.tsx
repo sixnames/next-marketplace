@@ -10,7 +10,6 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -25,7 +24,6 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const city = useSessionCity();
   const { me, loadingUser } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
@@ -35,27 +33,27 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'История заказов',
-            href: `/${city}${ROUTE_PROFILE}`,
+            href: ROUTE_PROFILE,
             testId: 'profile-orders-link',
           },
           {
             name: 'Избранное',
-            href: `/${city}${ROUTE_PROFILE_FAVORITE}`,
+            href: ROUTE_PROFILE_FAVORITE,
             testId: 'profile-favorite-link',
           },
           {
             name: 'Сравнение',
-            href: `/${city}${ROUTE_PROFILE_COMPARE}`,
+            href: ROUTE_PROFILE_COMPARE,
             testId: 'profile-compare-link',
           },
           {
             name: 'Просмотренные товары',
-            href: `/${city}${ROUTE_PROFILE_VIEWED}`,
+            href: ROUTE_PROFILE_VIEWED,
             testId: 'profile-viewed-link',
           },
           {
             name: 'Персональные предложения',
-            href: `/${city}${ROUTE_PROFILE_PROPOSALS}`,
+            href: ROUTE_PROFILE_PROPOSALS,
             testId: 'profile-proposals-link',
           },
         ],
@@ -65,33 +63,33 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'Бонусный счет',
-            href: `/${city}${ROUTE_PROFILE_BONUS}`,
+            href: ROUTE_PROFILE_BONUS,
             testId: 'profile-bonus-link',
           },
           {
             name: 'Мои предпочтения',
-            href: `/${city}${ROUTE_PROFILE_PREFERENCES}`,
+            href: ROUTE_PROFILE_PREFERENCES,
             testId: 'profile-preferences-link',
           },
           {
             name: 'Моя переписка',
-            href: `/${city}${ROUTE_PROFILE_CHATS}`,
+            href: ROUTE_PROFILE_CHATS,
             testId: 'profile-chats-link',
           },
           {
             name: 'Мои отзывы',
-            href: `/${city}${ROUTE_PROFILE_FEEDBACK}`,
+            href: ROUTE_PROFILE_FEEDBACK,
             testId: 'profile-feedback-link',
           },
           {
             name: 'Профиль',
-            href: `/${city}${ROUTE_PROFILE_DETAILS}`,
+            href: ROUTE_PROFILE_DETAILS,
             testId: 'profile-details-link',
           },
         ],
       },
     ];
-  }, [city]);
+  }, []);
 
   if (loadingUser || !me) {
     return (

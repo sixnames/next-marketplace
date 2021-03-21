@@ -236,12 +236,12 @@ export async function getCatalogueAttributes({
       }
 
       const optionNextSlug = isSelected
-        ? [city, ...filter]
+        ? [...filter]
             .filter((pathArg) => {
               return pathArg !== optionSlug;
             })
             .join('/')
-        : [city, ...filter, optionSlug].join('/');
+        : [...filter, optionSlug].join('/');
 
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {
@@ -737,7 +737,7 @@ export const getCatalogueData = async ({
                 counter: 1,
                 isSelected: true,
                 isDisabled: false,
-                nextSlug: `/${city}/${nextSlug}`,
+                nextSlug: `/${nextSlug}`,
               },
             ];
           },
@@ -783,7 +783,7 @@ export const getCatalogueData = async ({
       _id: rubric._id,
       lastProductId: lastProduct?._id,
       hasMore,
-      clearSlug: `/${city}/${rubricSlug}${sortPathname}`,
+      clearSlug: `/${rubricSlug}${sortPathname}`,
       filter,
       rubric: {
         ...rubric,

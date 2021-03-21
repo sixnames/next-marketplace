@@ -15,7 +15,6 @@ import Table, { TableColumn } from 'components/Table/Table';
 import { ROUTE_CMS } from 'config/common';
 import { CmsOrderInListFragment, useGetAllCmsOrdersQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
-import useSessionCity from 'hooks/useSessionCity';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import * as React from 'react';
 import { NextPage } from 'next';
@@ -45,7 +44,6 @@ const CmsOrdersFilter: React.FC = () => {
 };
 
 const CmsOrdersContent: React.FC = () => {
-  const city = useSessionCity();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { data, loading, error } = useGetAllCmsOrdersQuery({
     variables: {
@@ -68,10 +66,7 @@ const CmsOrdersContent: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link
-          testId={`order-${dataItem.itemId}-link`}
-          href={`/${city}${ROUTE_CMS}/orders/${dataItem._id}`}
-        >
+        <Link testId={`order-${dataItem.itemId}-link`} href={`${ROUTE_CMS}/orders/${dataItem._id}`}>
           {cellData}
         </Link>
       ),

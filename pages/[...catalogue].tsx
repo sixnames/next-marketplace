@@ -363,15 +363,10 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics }) 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CatalogueInterface>> {
-  const { locale, query } = context;
-  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
-    params: query,
-    locale,
+  const { query } = context;
+  const { props } = await getSiteInitialData({
+    context,
   });
-
-  if (cityNotFound) {
-    return redirectPayload;
-  }
 
   const { catalogue } = query;
 
@@ -386,7 +381,7 @@ export async function getServerSideProps(
 
   // catalogue
   const rawCatalogueData = await getCatalogueData({
-    locale: `${locale}`,
+    locale: props.sessionLocale,
     city: props.sessionCity,
     input: {
       filter: alwaysArray(catalogue),

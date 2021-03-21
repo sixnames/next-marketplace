@@ -1,5 +1,4 @@
 import useCartMutations from 'hooks/useCartMutations';
-import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './CartDropdown.module.css';
 import { CartFragment } from 'generated/apolloComponents';
@@ -20,7 +19,6 @@ interface CartDropdownInterface {
 }
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
-  const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { deleteProductFromCart, updateProductInCart, clearCart } = useCartMutations();
@@ -142,7 +140,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
         <Button
           className={classes.totalsButton}
           onClick={() => {
-            router.push(`/${city}/cart`).catch(() => {
+            router.push(`/cart`).catch(() => {
               showErrorNotification();
             });
           }}

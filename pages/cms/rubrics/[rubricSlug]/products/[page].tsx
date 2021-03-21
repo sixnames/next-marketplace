@@ -17,7 +17,6 @@ import {
 import { RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useProductsListColumns from 'hooks/useProductsListColumns';
-import useSessionCity from 'hooks/useSessionCity';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
@@ -27,7 +26,6 @@ import { getAppInitialData } from 'lib/ssrUtils';
 
 const RubricProducts: React.FC = () => {
   const router = useRouter();
-  const city = useSessionCity();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
   });
@@ -39,10 +37,10 @@ const RubricProducts: React.FC = () => {
   const setPage = React.useCallback(
     (page) => {
       router
-        .push(`/${city}${ROUTE_CMS}/rubrics/${router.query.rubricSlug}/products/${page}`)
+        .push(`${ROUTE_CMS}/rubrics/${router.query.rubricSlug}/products/${page}`)
         .catch((e) => console.log(e));
     },
-    [city, router],
+    [router],
   );
 
   const { data, loading, error, refetch } = useGetRubricProductsQuery({
@@ -113,7 +111,7 @@ const RubricProducts: React.FC = () => {
     deleteTitle: 'Удалить товар из рубрики',
     deleteHandler: deleteProductFromRubricHandler,
     updateTitle: 'Редактировать товар',
-    updateHandler: ({ _id }) => router.push(`/${city}${ROUTE_CMS}/products/${_id}`),
+    updateHandler: ({ _id }) => router.push(`${ROUTE_CMS}/products/${_id}`),
     isDeleteDisabled: ({ rubricId }) => {
       return rubricId !== `${data?.getRubricBySlug?._id}`;
     },

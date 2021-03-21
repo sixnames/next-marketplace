@@ -1,5 +1,4 @@
 import { getFieldTranslation } from 'config/constantTranslations';
-import useSessionCity from 'hooks/useSessionCity';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './Breadcrumbs.module.css';
@@ -17,7 +16,6 @@ interface BreadcrumbsInterface {
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config = [] }) => {
-  const city = useSessionCity();
   const { locale } = useRouter();
   const { isMobile } = useAppContext();
 
@@ -34,7 +32,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config =
       <Inner>
         <ul className={classes.list}>
           <li className={classes.listItem}>
-            <Link className={classes.link} href={`/${city}/`}>
+            <Link className={classes.link} href={`/`}>
               <span>{mainPageName}</span> —
             </Link>
           </li>

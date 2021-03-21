@@ -27,7 +27,7 @@ export async function getServerSideProps(
     params: query,
     locale,
   });
-  console.log(props.sessionCity);
+
   if (cityNotFound) {
     return redirectPayload;
   }

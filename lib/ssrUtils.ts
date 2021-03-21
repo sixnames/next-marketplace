@@ -1,4 +1,7 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_SIGN_IN } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { CompanyModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -73,8 +76,6 @@ export async function getSiteInitialData({
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
-  // console.log({ sessionCity, referer, subdomain, domain, sessionLocale });
-
   const initialDataProps = {
     locale: sessionLocale,
     city: sessionCity,
@@ -89,6 +90,22 @@ export async function getSiteInitialData({
   const currentCity = rawInitialData.cities.find(({ slug }) => {
     return slug === sessionCity;
   });
+
+  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
+    const db = await getDatabase();
+    const company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+
+    return {
+      props: {
+        initialData,
+        navRubrics,
+        sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
+        sessionLocale,
+        domain,
+        company,
+      },
+    };
+  }
 
   return {
     props: {

@@ -31,7 +31,6 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.NEXT_DEV_ADMIN_PASSWORD }}
           MONGO_URL: ${{ secrets.NEXT_DEV_MONGO_URL }}
           MONGO_DB_NAME: ${{ secrets.NEXT_DEV_MONGO_DB_NAME }}
-          HOST: ${{ secrets.NEXT_TEST_HOST }}
           SITE: ${{ secrets.NEXT_TEST_SITE }}
           NEXTAUTH_URL: ${{ secrets.NEXT_TEST_NEXTAUTH_URL }}
           TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}
@@ -54,7 +53,6 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.NEXT_DEV_ADMIN_PASSWORD }}
           MONGO_URL: ${{ secrets.NEXT_DEV_MONGO_URL }}
           MONGO_DB_NAME: ${{ secrets.NEXT_DEV_MONGO_DB_NAME }}
-          HOST: ${{ secrets.NEXT_TEST_HOST }}
           SITE: ${{ secrets.NEXT_TEST_SITE }}
           NEXTAUTH_URL: ${{ secrets.NEXT_TEST_NEXTAUTH_URL }}
           TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}

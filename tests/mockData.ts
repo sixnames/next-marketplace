@@ -1,13 +1,3 @@
-// Users
-export const ME_AS_ADMIN = {
-  password: `${process.env.ADMIN_PASSWORD}`,
-  name: `${process.env.ADMIN_NAME}`,
-  lastName: `${process.env.ADMIN_LAST_NAME}`,
-  secondName: `${process.env.ADMIN_SECOND_NAME}`,
-  email: `${process.env.ADMIN_EMAIL}`,
-  phone: `${process.env.ADMIN_PHONE}`,
-};
-
 // Addresses
 export const MOCK_ADDRESS_A = {
   formattedAddress: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',

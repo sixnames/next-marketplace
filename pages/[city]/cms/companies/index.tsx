@@ -113,7 +113,7 @@ const CompaniesContent: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/companies/${dataItem._id}`}>
+        <Link href={`/${city}${ROUTE_CMS}/companies/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),

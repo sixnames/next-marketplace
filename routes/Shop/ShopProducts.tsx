@@ -1,3 +1,4 @@
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import { useRouter } from 'next/router';
 import {
@@ -35,7 +36,7 @@ const ShopProducts: React.FC = () => {
   const shopProductsVariables = {
     shopId: `${shopId}`,
     input: {
-      page: contentFilters.page,
+      page: noNaN(contentFilters.page) || 1,
     },
   };
 

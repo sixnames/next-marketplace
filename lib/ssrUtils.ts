@@ -113,7 +113,7 @@ export async function getSiteInitialData({
       navRubrics,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
-      domain,
+      domain: process.env.SITE,
     },
   };
 }

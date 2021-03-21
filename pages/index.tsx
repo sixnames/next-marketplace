@@ -15,6 +15,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, domain, company }) => {
         <Inner>
           <Title>{company.name}</Title>
           {domain}
+          <div>Site {process.env.SITE}</div>
           <pre>{JSON.stringify(company, null, 2)}</pre>
         </Inner>
       </SiteLayout>

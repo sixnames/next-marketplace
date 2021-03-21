@@ -34,10 +34,14 @@ export async function getAppInitialData(
     };
   }
 
+  const currentCity = rawInitialData.cities.find(({ slug }) => {
+    return slug === sessionCity;
+  });
+
   return {
     props: {
       initialData,
-      sessionCity,
+      sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
     },
   };
@@ -82,11 +86,15 @@ export async function getSiteInitialData({
   const initialData = castDbData(rawInitialData);
   const navRubrics = castDbData(rawNavRubrics);
 
+  const currentCity = rawInitialData.cities.find(({ slug }) => {
+    return slug === sessionCity;
+  });
+
   return {
     props: {
       initialData,
       navRubrics,
-      sessionCity,
+      sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       domain,
     },

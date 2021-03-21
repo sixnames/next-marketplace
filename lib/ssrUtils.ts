@@ -12,9 +12,9 @@ import { getSubdomain, getDomain } from 'tldts';
 export async function getAppInitialData(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PagePropsInterface>> {
-  const { locale, req } = context;
-  const { referer } = req.headers;
-  const subdomain = referer ? getSubdomain(referer) : null;
+  const { locale } = context;
+  const referer = `${process.env.SITE}`;
+  const subdomain = getSubdomain(referer);
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -69,10 +69,10 @@ export interface SiteInitialDataPayloadInterface {
 export async function getSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
-  const { locale, req } = context;
-  const { referer } = req.headers;
-  const subdomain = referer ? getSubdomain(referer) : null;
-  const domain = referer ? getDomain(referer) : null;
+  const { locale } = context;
+  const referer = `${process.env.SITE}`;
+  const subdomain = getSubdomain(referer);
+  const domain = getDomain(referer);
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -113,7 +113,7 @@ export async function getSiteInitialData({
       navRubrics,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
-      domain: `${process.env.SITE}`,
+      domain,
     },
   };
 }

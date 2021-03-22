@@ -36,6 +36,7 @@ const SignInRoute: React.FC = () => {
               if (ok) {
                 setIsError(false);
                 window.location.pathname = '/';
+                return;
               }
 
               setIsError(true);

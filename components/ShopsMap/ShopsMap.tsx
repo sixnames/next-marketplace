@@ -50,7 +50,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
 
   const panTo = React.useCallback((coords: Coordinates) => {
     mapRef.current.panTo(coords);
-    mapRef.current.setZoom(14);
+    mapRef.current.setZoom(12);
   }, []);
 
   const options = React.useMemo(() => {
@@ -86,6 +86,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                     title={name}
                     width={shopImageSize}
                     height={shopImageSize}
+                    objectFit={'cover'}
                   />
                 </div>
 

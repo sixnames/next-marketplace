@@ -326,6 +326,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
           <div className={classes.cardFeaturesContent}>
             {textFeatures.map(({ attributeName, _id, readableValue }) => {
+              if (!readableValue) {
+                return null;
+              }
               return (
                 <div className={classes.cardFeaturesGroup} key={_id}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>

@@ -38,7 +38,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
       <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
       <meta property='og:image' content={pagePreviewImage} />
-
+      {/*TODO canonical url*/}
       <meta property='og:url' content={process.env.SITE} />
       <meta property='og:description' content={pageDescription} />
 

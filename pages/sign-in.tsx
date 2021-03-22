@@ -1,5 +1,5 @@
 import Button from 'components/Buttons/Button';
-import Input, { InputEvent } from 'components/FormElements/Input/Input';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -8,111 +8,88 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { csrfToken, getSession } from 'next-auth/client';
+import { getSession, signIn } from 'next-auth/client';
 import classes from 'routes/SignInRoute/SignInRoute.module.css';
 import { signInSchema } from 'validation/userSchema';
+import { Form, Formik } from 'formik';
 
-interface SignInInputs {
-  username: string;
-  password: string;
-}
-
-interface SignInErrors {
-  username: boolean;
-  password: boolean;
-}
-
-interface SignInRouteInterface {
-  token: string | null;
-}
-
-// TODO refactor this page to Formik
-const SignInRoute: React.FC<SignInRouteInterface> = ({ token }) => {
+const SignInRoute: React.FC = () => {
+  const [isError, setIsError] = React.useState<boolean>(false);
   const validationSchema = useValidationSchema({
     schema: signInSchema,
   });
 
-  const [inputs, setInputs] = React.useState<SignInInputs>({
-    username: '',
-    password: '',
-  });
-
-  const [errors, setErrors] = React.useState<SignInErrors>({
-    username: false,
-    password: false,
-  });
-
-  // Validate inputs
-  React.useEffect(() => {
-    try {
-      validationSchema.validateSync(inputs);
-      setErrors({
-        username: false,
-        password: false,
-      });
-    } catch (e) {
-      setErrors({
-        username: e.path === 'username',
-        password: e.path === 'password',
-      });
-    }
-  }, [inputs, validationSchema]);
-
-  function onChangeHandler(e: InputEvent) {
-    setInputs((prevState) => {
-      return {
-        ...prevState,
-        [`${e.target.name}`]: e.target.value,
-      };
-    });
-  }
-
   return (
     <Inner>
-      <form className={classes.form} method='post' action={'/api/auth/callback/credentials'}>
-        <Title className={classes.title}>Авторизация</Title>
-        <input name='csrfToken' type='hidden' defaultValue={`${token}`} />
+      <Formik
+        validationSchema={validationSchema}
+        initialValues={{
+          username: '',
+          password: '',
+        }}
+        onSubmit={(values) => {
+          signIn('credentials', {
+            redirect: false,
+            ...values,
+          })
+            .then(({ ok }) => {
+              if (ok) {
+                setIsError(false);
+                window.location.pathname = '/';
+              }
 
-        <Input
-          onChange={onChangeHandler}
-          value={inputs.username}
-          label={'Ваш Email'}
-          name={'username'}
-          type={'email'}
-          testId={'sign-in-email'}
-          notValid={errors.username}
-        />
+              setIsError(true);
+            })
+            .catch(() => {
+              setIsError(true);
+            });
+        }}
+      >
+        {() => {
+          return (
+            <Form className={classes.form}>
+              <Title className={classes.title}>Авторизация</Title>
 
-        <Input
-          onChange={onChangeHandler}
-          value={inputs.password}
-          label={'Ваш пароль'}
-          name={'password'}
-          type={'password'}
-          testId={'sign-in-password'}
-          notValid={errors.password}
-        />
+              <FormikInput
+                label={'Ваш Email'}
+                name={'username'}
+                type={'email'}
+                testId={'sign-in-email'}
+              />
 
-        <Button
-          disabled={errors.username || errors.password}
-          type={'submit'}
-          testId={'sign-in-submit'}
-        >
-          Войти
-        </Button>
-      </form>
+              <FormikInput
+                label={'Ваш пароль'}
+                name={'password'}
+                type={'password'}
+                testId={'sign-in-password'}
+              />
+
+              <Button
+                // disabled={errors.username || errors.password}
+                type={'submit'}
+                testId={'sign-in-submit'}
+              >
+                Войти
+              </Button>
+              {isError ? (
+                <div className={classes.error}>
+                  Пожалуйста проверьте правильность введённых данных
+                </div>
+              ) : null}
+            </Form>
+          );
+        }}
+      </Formik>
     </Inner>
   );
 };
 
-export interface SignInPageInterface extends PagePropsInterface, SiteLayoutInterface {
-  token: string | null;
-}
+export interface SignInPageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const SignIn: NextPage<SignInPageInterface> = ({ token, navRubrics }) => {
+const SignIn: NextPage<SignInPageInterface> = ({ navRubrics }) => {
   return (
     <SiteLayout title={'Авторизация'} navRubrics={navRubrics}>
-      <SignInRoute token={token} />
+      <SignInRoute />
     </SiteLayout>
   );
 };
@@ -136,14 +113,8 @@ export async function getServerSideProps(
     };
   }
 
-  // Get session token
-  const token = await csrfToken(context);
-
   return {
-    props: {
-      token,
-      ...props,
-    },
+    props,
   };
 }
 

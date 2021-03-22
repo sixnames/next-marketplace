@@ -1,3 +1,4 @@
+import { ROUTE_SIGN_IN } from 'config/common';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Providers from 'next-auth/providers';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -6,13 +7,10 @@ import bcrypt from 'bcryptjs';
 import { UserModel } from 'db/dbModels';
 import { COL_USERS } from 'db/collectionNames';
 
-const options: NextAuthOptions = {
+const options = (redirectUrl: string): NextAuthOptions => ({
   session: {
     jwt: true,
   },
-  /*pages: {
-    signIn: '/sign-in',
-  },*/
   /*jwt: {
     signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,
 
@@ -26,6 +24,15 @@ const options: NextAuthOptions = {
     //   algorithms: ['HS512']
     // },
   },*/
+  pages: {
+    signIn: ROUTE_SIGN_IN,
+    error: ROUTE_SIGN_IN,
+  },
+  callbacks: {
+    async redirect() {
+      return `http://${redirectUrl}`;
+    },
+  },
   providers: [
     Providers.Credentials({
       name: 'Credentials',
@@ -60,6 +67,8 @@ const options: NextAuthOptions = {
       },
     }),
   ],
-};
+});
 
-export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, options);
+export default (req: NextApiRequest, res: NextApiResponse) => {
+  return NextAuth(req, res, options(`${req.headers.host}`));
+};

@@ -345,6 +345,7 @@ export async function getCardData({
         discountedPercent,
         shop: {
           ...shop,
+          productsCount: shop.shopProductsIds.length,
           address: {
             ...shop.address,
             formattedCoordinates: {

@@ -628,6 +628,9 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   shopProductsIds: ObjectIdModel[];
+
+  // types for ui
+  productsCount?: number;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {

@@ -2,7 +2,6 @@ import Button from 'components/Buttons/Button';
 import Input, { InputEvent } from 'components/FormElements/Input/Input';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_SIGN_IN } from 'config/common';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -132,7 +131,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: `/`,
       },
     };
   }

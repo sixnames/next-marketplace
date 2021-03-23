@@ -71,6 +71,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 {isShopless && !shopProduct ? (
                   <React.Fragment>
                     <ProductSnippetPrice
+                      shopsCount={productData.shopsCount}
                       className={classes.productPrice}
                       value={productData.cardPrices.min}
                     />

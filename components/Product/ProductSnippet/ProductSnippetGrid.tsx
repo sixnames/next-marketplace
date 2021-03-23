@@ -38,7 +38,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     shopsCount,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-  const isShopless = shopsCount < 1;
 
   const firstRatingFeature = ratingFeatures[0];
 
@@ -72,7 +71,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           <div className={classes.nameTranslation}>{name}</div>
           <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
-        <ProductSnippetPrice isShopless={isShopless} value={cardPrices.min} />
+        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>

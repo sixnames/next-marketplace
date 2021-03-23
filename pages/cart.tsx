@@ -157,7 +157,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
         </div>
 
         <div className={classes.productGridRight}>
-          <ProductSnippetPrice value={cardPrices.min} />
+          <ProductSnippetPrice shopsCount={productData.shopsCount} value={cardPrices.min} />
           <CartProductConnections connections={connections} productId={product._id} />
         </div>
       </div>

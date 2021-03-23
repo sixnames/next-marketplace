@@ -102,7 +102,7 @@ export const storeUploads = async ({
       const finalIndex = finalStartIndex + fileIndex;
 
       const { createReadStream, ext } = await file;
-      const fileName = `${itemId}-${finalIndex}-${ext}`;
+      let fileName = ``;
 
       // Read file into stream.Readable
       const fileStream = createReadStream();
@@ -111,7 +111,9 @@ export const storeUploads = async ({
       let buffer: Buffer | null = null;
       if (!asImage) {
         buffer = await getBufferFromFileStream(fileStream);
+        fileName = `${itemId}-${finalIndex}-${ext}`;
       } else {
+        const extension = format ? `.${format}` : '.webp';
         buffer = await getSharpBuffer({
           file,
           width,
@@ -119,6 +121,7 @@ export const storeUploads = async ({
           format,
           quality,
         });
+        fileName = `${itemId}-${finalIndex}-${extension}`;
       }
 
       if (!buffer) {

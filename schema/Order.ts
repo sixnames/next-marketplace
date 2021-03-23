@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CartModel,
@@ -344,10 +345,11 @@ export const OrderMutations = extendType({
             }
 
             // Create password for user
-            const password = generator.generate({
+            const newPassword = generator.generate({
               length: 10,
               numbers: true,
             });
+            const password = await hash(newPassword, 10);
 
             // Create user
             const itemId = await getNextItemId(COL_USERS);

@@ -23,12 +23,19 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
         user: testAccount.user, // generated ethereal user
         pass: testAccount.pass, // generated ethereal password
       },*/
-      host: 'localhost',
+      host: process.env.EMAIL_HOST,
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      /*host: 'localhost',
       port: 1025,
       auth: {
         user: 'project.1',
         pass: 'secret.1',
-      },
+      },*/
     });
 
     // send mail with defined transport object

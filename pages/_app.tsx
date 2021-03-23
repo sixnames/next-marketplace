@@ -2,7 +2,7 @@ import { ConfigContextProvider } from 'context/configContext';
 import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
-import { CompanyModel } from 'db/dbModels';
+import { CompanyModel, UserModel } from 'db/dbModels';
 import { PageInitialDataPayload } from 'lib/catalogueUtils';
 import * as React from 'react';
 import './reset.css';
@@ -22,6 +22,7 @@ export interface PagePropsInterface {
   initialApolloState?: any;
   domain?: any;
   company?: CompanyModel | null;
+  sessionUser?: UserModel | null;
 }
 
 NProgress.configure({ showSpinner: false });

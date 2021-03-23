@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import ConfigsRoute from 'routes/ConfigsRoute/ConfigsRoute';
 
@@ -12,6 +12,8 @@ const Config: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default Config;

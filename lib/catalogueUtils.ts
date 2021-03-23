@@ -200,7 +200,6 @@ export function getCatalogueTitle({
 export interface GetCatalogueAttributesInterface {
   filter: string[];
   attributes: RubricAttributeModel[];
-  city: string;
   getFieldLocale: GetFieldLocaleType;
   productsPrices: ProductPricesInterface[];
 }
@@ -214,7 +213,6 @@ export async function getCatalogueAttributes({
   filter,
   getFieldLocale,
   attributes,
-  city,
   productsPrices,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
@@ -285,7 +283,7 @@ export async function getCatalogueAttributes({
     }
 
     // attribute
-    const otherSelectedValues = [city, ...filter].filter((param) => {
+    const otherSelectedValues = filter.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });
@@ -695,7 +693,6 @@ export const getCatalogueData = async ({
     const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
       attributes: finalAttributes,
       getFieldLocale,
-      city,
       filter,
       productsPrices: productPricesAggregation,
     });

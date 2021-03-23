@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
-import classes from 'routes/CmsOrderRoute/CmsOrderRoute.module.css';
+import classes from 'styles/CmsOrderRoute.module.css';
 
 const CmsOrderRoute: React.FC = () => {
   const { query } = useRouter();

@@ -36,7 +36,7 @@ import {
 import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
-import classes from 'routes/CatalogueRoute/CatalogueRoute.module.css';
+import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataFragment;

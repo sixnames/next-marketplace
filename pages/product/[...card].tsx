@@ -28,7 +28,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import classes from 'routes/CardRoute/CardRoute.module.css';
+import classes from 'styles/CardRoute.module.css';
 import CardShops from 'routes/CardRoute/CardShops';
 
 interface CardRouteFeaturesInterface {

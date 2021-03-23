@@ -9,7 +9,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSession, signIn } from 'next-auth/client';
-import classes from 'routes/SignInRoute/SignInRoute.module.css';
+import classes from 'styles/SignInRoute.module.css';
 import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
 

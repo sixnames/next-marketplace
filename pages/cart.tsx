@@ -27,7 +27,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CartAside from 'routes/CartRoute/CartAside';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'routes/CartRoute/CartRoute.module.css';
+import classes from 'styles/CartRoute.module.css';
 import CartShopsList from 'routes/CartRoute/CartShopsList';
 
 interface CartProductFrameInterface {

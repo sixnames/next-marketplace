@@ -36,7 +36,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
-import classes from 'routes/OptionsGroups/OptionsGroupsContent.module.css';
+import classes from 'styles/OptionsGroupsContent.module.css';
 import { ObjectType } from 'types/clientTypes';
 
 interface OptionsGroupControlsInterface {

@@ -6,10 +6,8 @@ import Header from './Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import Meta from '../Meta';
 import { useAppContext } from 'context/appContext';
-import { SiteContextProvider, useSiteContext } from 'context/siteContext';
+import { SiteContextProvider } from 'context/siteContext';
 import classes from './SiteLayout.module.css';
-import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
-import { debounce } from 'lodash';
 import Modal from 'components/Modal/Modal';
 
 interface SiteLayoutConsumerInterface {
@@ -22,40 +20,8 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
 }) => {
-  const { isLoading, isModal, isMobile } = useAppContext();
-  const { isBurgerDropdownOpen } = useSiteContext();
+  const { isLoading, isModal } = useAppContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
-  const [
-    burgerDropdownSizes,
-    setBurgerDropdownSizes,
-  ] = React.useState<BurgerDropdownSizesInterface>({
-    top: 0,
-    height: 0,
-  });
-
-  // Set burger dropdown sizes
-  React.useEffect(() => {
-    function resizeHandler() {
-      if (contentRef && contentRef.current && isBurgerDropdownOpen && !isMobile) {
-        setBurgerDropdownSizes({
-          top: contentRef.current.offsetTop,
-          height: window.innerHeight - contentRef.current.offsetTop,
-        });
-      }
-    }
-
-    const debouncedResizeHandler = debounce(resizeHandler, 250);
-
-    if (burgerDropdownSizes.height === 0) {
-      debouncedResizeHandler();
-    }
-
-    window.addEventListener('resize', debouncedResizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', debouncedResizeHandler);
-    };
-  }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
     <div className={classes.frame}>
@@ -69,7 +35,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         </main>
 
         <Footer />
-        <BurgerDropdown top={burgerDropdownSizes.top} height={burgerDropdownSizes.height} />
       </div>
 
       {isLoading ? <Spinner wide /> : null}

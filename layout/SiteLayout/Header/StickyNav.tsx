@@ -55,7 +55,6 @@ interface StickyNavItemInterface {
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { query } = useRouter();
-  const { hideBurgerDropdown } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { catalogue = [], card = [] } = query;
   const realCatalogueQuery = alwaysArray(catalogue);
@@ -72,7 +71,6 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
 
   function showDropdownHandler() {
-    hideBurgerDropdown();
     setIsDropdownOpen(true);
   }
 
@@ -120,18 +118,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 };
 
 const StickyNav: React.FC = () => {
-  const { isBurgerDropdownOpen, navRubrics } = useSiteContext();
+  const { navRubrics } = useSiteContext();
 
   return (
     <nav className={classes.nav}>
       <Inner lowBottom lowTop>
-        {isBurgerDropdownOpen ? (
-          <div className={classes.navCover}>
-            <Inner className={classes.navCoverInner} lowBottom lowTop>
-              <div className={classes.navCoverContent} />
-            </Inner>
-          </div>
-        ) : null}
         <ul className={classes.navList}>
           {navRubrics.map((rubric) => {
             return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;

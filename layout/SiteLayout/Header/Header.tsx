@@ -1,6 +1,5 @@
 import useCart from 'hooks/useCart';
 import * as React from 'react';
-import { Fragment, useEffect, useRef } from 'react';
 import classes from './Header.module.css';
 import StickyNav from './StickyNav';
 import HeaderTop from './HeaderTop';
@@ -19,24 +18,6 @@ import CartDropdown from './CartDropdown';
 import { CartFragment } from 'generated/apolloComponents';
 import { ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
 import Image from 'next/image';
-
-const HeaderBurgerDropdownTrigger: React.FC = () => {
-  const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
-  return (
-    <div
-      data-cy={`burger-trigger`}
-      onClick={toggleBurgerDropdown}
-      className={`${classes.middleLink} ${classes.middleLinkBurger} ${
-        isBurgerDropdownOpen ? classes.middleLinkActive : ''
-      }`}
-    >
-      <div className={`${classes.middleLinkIconHolder}`}>
-        <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
-      </div>
-      <span>меню</span>
-    </div>
-  );
-};
 
 const HeaderSearchTrigger: React.FC = () => {
   const { isSearchOpen, showSearchDropdown } = useSiteContext();
@@ -71,33 +52,12 @@ const HeaderProfileLink: React.FC = () => {
 };
 
 interface HeaderCartDropdownButtonInterface {
-  isOpen: boolean;
   cart: CartFragment;
 }
 
-const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
-  cart,
-  isOpen,
-}) => {
-  const {
-    isBurgerDropdownOpen,
-    hideBurgerDropdown,
-    isSearchOpen,
-    hideSearchDropdown,
-  } = useSiteContext();
-
-  // Hide burger and search dropdown while cart dropdown open
-  useEffect(() => {
-    if (isOpen && isBurgerDropdownOpen) {
-      hideBurgerDropdown();
-    }
-    if (isOpen && isSearchOpen) {
-      hideSearchDropdown();
-    }
-  }, [hideBurgerDropdown, hideSearchDropdown, isBurgerDropdownOpen, isOpen, isSearchOpen]);
-
+const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {
   return (
-    <Fragment>
+    <React.Fragment>
       <MenuButton>
         <span
           data-cy={'cart-dropdown-trigger'}
@@ -113,7 +73,7 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
       <MenuPopover>
         <CartDropdown cart={cart} />
       </MenuPopover>
-    </Fragment>
+    </React.Fragment>
   );
 };
 
@@ -123,8 +83,8 @@ const HeaderCartLink: React.FC = () => {
   if (cart && cart.productsCount > 0) {
     return (
       <Menu>
-        {({ isOpen }) => {
-          return <HeaderCartDropdownButton isOpen={isOpen} cart={cart} />;
+        {() => {
+          return <HeaderCartDropdownButton cart={cart} />;
         }}
       </Menu>
     );
@@ -146,8 +106,6 @@ const HeaderCartLink: React.FC = () => {
 const HeaderMiddleLeft: React.FC = () => {
   return (
     <div className={classes.middleSide}>
-      <HeaderBurgerDropdownTrigger />
-
       <div className={`${classes.middleLink}`}>
         <div className={`${classes.middleLinkIconHolder}`}>
           <Icon name={'marker'} className={classes.middleLinkShopsIcon} />
@@ -183,7 +141,7 @@ const HeaderMiddleRight: React.FC = () => {
 const Header: React.FC = () => {
   const { isSearchOpen } = useSiteContext();
   const { isMobile } = useAppContext();
-  const headerRef = useRef<HTMLElement | null>(null);
+  const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
 
@@ -191,7 +149,7 @@ const Header: React.FC = () => {
   const configSiteName = getSiteConfigSingleValue('siteName');
 
   return (
-    <Fragment>
+    <React.Fragment>
       <header className={classes.frame} ref={headerRef}>
         {isMobile ? null : <HeaderTop />}
         <Inner className={classes.middle} lowTop>
@@ -210,8 +168,6 @@ const Header: React.FC = () => {
       {isMobile ? (
         <div className={classes.mobileNav}>
           <Inner className={classes.mobileNavInner}>
-            <HeaderBurgerDropdownTrigger />
-
             <div className={classes.mobileNavRight}>
               <HeaderSearchTrigger />
               <HeaderProfileLink />
@@ -222,7 +178,7 @@ const Header: React.FC = () => {
       ) : (
         <StickyNav />
       )}
-    </Fragment>
+    </React.Fragment>
   );
 };
 

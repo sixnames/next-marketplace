@@ -2,7 +2,6 @@ import { RubricModel } from 'db/dbModels';
 import * as React from 'react';
 
 interface SiteContextStateInterface {
-  isBurgerDropdownOpen: boolean;
   isSearchOpen: boolean;
 }
 
@@ -13,7 +12,6 @@ interface SiteContextInterface extends SiteContextStateInterface {
 
 const SiteContext = React.createContext<SiteContextInterface>({
   navRubrics: [],
-  isBurgerDropdownOpen: false,
   isSearchOpen: false,
   setState: () => null,
 });
@@ -24,7 +22,6 @@ interface SiteContextProviderInterface {
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({ children, navRubrics }) => {
   const [state, setState] = React.useState<SiteContextStateInterface>(() => ({
-    isBurgerDropdownOpen: false,
     isSearchOpen: false,
     loadingCart: true,
     lastOrderItemId: null,
@@ -42,9 +39,6 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({ children,
 };
 
 interface UseSiteContextInterface extends SiteContextInterface {
-  showBurgerDropdown: () => void;
-  hideBurgerDropdown: () => void;
-  toggleBurgerDropdown: () => void;
   showSearchDropdown: () => void;
   hideSearchDropdown: () => void;
   toggleSearchDropdown: () => void;
@@ -55,32 +49,6 @@ function useSiteContext(): UseSiteContextInterface {
   if (!context) {
     throw new Error('useSiteContext must be used within a SiteContextProvider');
   }
-
-  const showBurgerDropdown = React.useCallback(() => {
-    context.setState((prevState) => ({
-      ...prevState,
-      isSearchOpen: false,
-      isBurgerDropdownOpen: true,
-    }));
-  }, [context]);
-
-  const hideBurgerDropdown = React.useCallback(() => {
-    context.setState((prevState) => ({
-      ...prevState,
-      isSearchOpen: false,
-      isBurgerDropdownOpen: false,
-    }));
-  }, [context]);
-
-  const toggleBurgerDropdown = React.useCallback(() => {
-    context.setState((prevState) => {
-      return {
-        ...prevState,
-        isSearchOpen: false,
-        isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
-      };
-    });
-  }, [context]);
 
   const showSearchDropdown = React.useCallback(() => {
     context.setState((prevState) => ({
@@ -108,9 +76,6 @@ function useSiteContext(): UseSiteContextInterface {
 
   return {
     ...context,
-    showBurgerDropdown,
-    hideBurgerDropdown,
-    toggleBurgerDropdown,
     showSearchDropdown,
     hideSearchDropdown,
     toggleSearchDropdown,

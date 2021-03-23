@@ -26,7 +26,12 @@ import {
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT, VIEWS_COUNTER_STEP } from 'config/common';
+import {
+  ASSETS_DIST_PRODUCTS,
+  ASSETS_PRODUCT_IMAGE_WIDTH,
+  ATTRIBUTE_VARIANT_SELECT,
+  VIEWS_COUNTER_STEP,
+} from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
   addProductToConnectionSchema,
@@ -218,7 +223,15 @@ export const ProductMutations = extendType({
             itemId,
             dist: ASSETS_DIST_PRODUCTS,
             files: input.assets,
+            asImage: true,
+            width: ASSETS_PRODUCT_IMAGE_WIDTH,
           });
+          if (!assets) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.create.error`),
+            };
+          }
 
           // Get selected options
           const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
@@ -459,7 +472,15 @@ export const ProductMutations = extendType({
             dist: ASSETS_DIST_PRODUCTS,
             files: input.assets,
             startIndex,
+            asImage: true,
+            width: ASSETS_PRODUCT_IMAGE_WIDTH,
           });
+          if (!assets) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(

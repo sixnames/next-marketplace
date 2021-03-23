@@ -232,6 +232,12 @@ export const ConfigMutations = extendType({
             dist: ASSETS_DIST_CONFIGS,
             itemId: config.slug,
           });
+          if (!assets) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.updateAsset.error'),
+            };
+          }
           const currentAsset = assets[0];
           if (!currentAsset) {
             return {

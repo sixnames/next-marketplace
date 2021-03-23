@@ -68,7 +68,7 @@ export const QUERY_DATA_LAYOUT_PAGE = 'page';
 // links
 export const PRODUCT_CARD_RUBRIC_SLUG_PREFIX = 'rubric-';
 
-//profile
+// profile
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
@@ -79,9 +79,6 @@ export const ROUTE_PROFILE_PREFERENCES = `${ROUTE_PROFILE}/preferences`;
 export const ROUTE_PROFILE_CHATS = `${ROUTE_PROFILE}/chats`;
 export const ROUTE_PROFILE_FEEDBACK = `${ROUTE_PROFILE}/feedback`;
 export const ROUTE_PROFILE_DETAILS = `${ROUTE_PROFILE}/details`;
-
-// Codes
-export const ROUTE_TEMPORARY_REDIRECT_CODE = 302;
 
 // CONFIG VARIANTS
 export const CONFIG_VARIANT_STRING = 'string';
@@ -177,7 +174,6 @@ export const SORT_DESC_STR = 'DESC';
 export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
-export const CATALOGUE_FILTER_VISIBLE_ATTRIBUTES = '5';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
@@ -243,3 +239,6 @@ export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';
 export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_CONFIGS = 'configs';
+export const ASSETS_LOGO_WIDTH = 150;
+export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
+export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;

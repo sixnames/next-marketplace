@@ -31,7 +31,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
         content={`minimum-scale=1 height=device-height,
                       width=device-width, initial-scale=1.0,
                       minimum-scale=1.0, maximum-scale=1.0,
-                      user-scalable=no, target-densitydpi=device-dpi`}
+                      user-scalable=no`}
       />
       <meta name={'description'} content={pageDescription} />
 

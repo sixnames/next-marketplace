@@ -1,4 +1,6 @@
 import useCart from 'hooks/useCart';
+import useSignOut from 'hooks/useSignOut';
+import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import * as React from 'react';
 import classes from './Header.module.css';
 import StickyNav from './StickyNav';
@@ -16,7 +18,15 @@ import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from './CartDropdown';
 import { CartFragment } from 'generated/apolloComponents';
-import { ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
+import {
+  ROLE_SLUG_ADMIN,
+  ROLE_SLUG_COMPANY_MANAGER,
+  ROLE_SLUG_COMPANY_OWNER,
+  ROUTE_APP,
+  ROUTE_CMS,
+  ROUTE_PROFILE,
+  ROUTE_SIGN_IN,
+} from 'config/common';
 import Image from 'next/image';
 
 const HeaderSearchTrigger: React.FC = () => {
@@ -35,7 +45,64 @@ const HeaderSearchTrigger: React.FC = () => {
 };
 
 const HeaderProfileLink: React.FC = () => {
+  const signOut = useSignOut();
   const { me } = useUserContext();
+
+  if (me) {
+    return (
+      <Menu>
+        {() => {
+          return (
+            <React.Fragment>
+              <MenuButton className={`${classes.middleLink}`} data-cy={'user-dropdown-trigger'}>
+                <span
+                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
+                >
+                  <Icon name={'user'} className={classes.middleLinkUserIcon} />
+                </span>
+              </MenuButton>
+              <MenuPopover>
+                <LayoutCard>
+                  <div className={classes.userDropdownTop}>
+                    <div className={classes.userDropdownName}>{me?.shortName}</div>
+                  </div>
+
+                  <ul>
+                    <li className={classes.userDropdownListItem}>
+                      <Link className={classes.userDropdownListLink} href={ROUTE_PROFILE}>
+                        <span>Личный кабинет</span>
+                      </Link>
+                    </li>
+
+                    {me?.role.slug === ROLE_SLUG_ADMIN ? (
+                      <li className={classes.userDropdownListItem}>
+                        <Link className={classes.userDropdownListLink} href={ROUTE_CMS}>
+                          <span>CMS</span>
+                        </Link>
+                      </li>
+                    ) : null}
+
+                    {me?.role.slug === ROLE_SLUG_COMPANY_MANAGER ||
+                    me?.role.slug === ROLE_SLUG_COMPANY_OWNER ? (
+                      <li className={classes.userDropdownListItem}>
+                        <Link className={classes.userDropdownListLink} href={ROUTE_APP}>
+                          <span>Панель управления</span>
+                        </Link>
+                      </li>
+                    ) : null}
+
+                    <li className={classes.userDropdownListItem} onClick={signOut}>
+                      <span className={classes.userDropdownListLink}>Выйти из аккаунта</span>
+                    </li>
+                  </ul>
+                </LayoutCard>
+              </MenuPopover>
+            </React.Fragment>
+          );
+        }}
+      </Menu>
+    );
+  }
 
   return (
     <Link
@@ -150,7 +217,7 @@ const Header: React.FC = () => {
 
   return (
     <React.Fragment>
-      <header className={classes.frame} ref={headerRef}>
+      <header className={classes.header} ref={headerRef}>
         {isMobile ? null : <HeaderTop />}
         <Inner className={classes.middle} lowTop>
           {isMobile ? null : <HeaderMiddleLeft />}

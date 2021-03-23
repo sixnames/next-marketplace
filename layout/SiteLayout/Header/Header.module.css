@@ -1,4 +1,4 @@
-.frame {
+.header {
   position: relative;
   z-index: 130;
   background-color: var(--primaryBackground);
@@ -39,9 +39,11 @@
   justify-content: flex-end;
 }
 
+.middleLink[data-reach-menu-button],
 .middleLink {
   display: flex;
   align-items: center;
+  justify-content: center;
   min-height: 3rem;
   color: var(--textSecondaryColor);
   cursor: pointer;
@@ -59,6 +61,7 @@
   padding-right: 0.6rem;
 }
 
+.middleLink[data-reach-menu-button]:hover,
 .middleLinkActive,
 .middleLink:hover {
   color: var(--theme);
@@ -125,8 +128,48 @@
   align-items: center;
 }
 
+.userDropdownTop {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: var(--reachMenuItemHorizontalPadding);
+  padding-right: var(--reachMenuItemHorizontalPadding);
+}
+
+.userDropdownName {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.userDropdownListItem {
+  border-top: 1px solid var(--lightGray);
+}
+
+[data-theme='dark'] .userDropdownListItem {
+  border-top: 1px solid var(--midGray);
+}
+
+.userDropdownListLink {
+  display: flex;
+  align-items: center;
+  min-height: var(--reachMenuItemMinimalHeight);
+  padding-top: var(--reachMenuItemVerticalPadding);
+  padding-left: var(--reachMenuItemHorizontalPadding);
+  padding-bottom: var(--reachMenuItemVerticalPadding);
+  padding-right: var(--reachMenuItemHorizontalPadding);
+  font-size: 1rem;
+  color: var(--textColor);
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.userDropdownListLink:hover {
+  color: var(--theme);
+  text-decoration: none;
+}
+
 @media only screen and (max-width: 1024px) {
-  .frame {
+  .header {
     box-shadow: var(--wp-shadow-100);
   }
 

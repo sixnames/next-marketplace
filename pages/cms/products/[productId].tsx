@@ -8,7 +8,7 @@ import useRouterQuery from 'hooks/useRouterQuery';
 import useTabsConfig from 'hooks/useTabsConfig';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import ProductAssets from 'routes/Product/ProductAssets';
 import ProductConnections from 'routes/Product/ProductConnections';
@@ -82,6 +82,8 @@ const Product: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default Product;

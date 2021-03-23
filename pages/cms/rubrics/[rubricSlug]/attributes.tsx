@@ -28,7 +28,7 @@ import { RUBRIC_ATTRIBUTES_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getAppInitialData } from 'lib/ssrUtils';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from 'routes/Rubrics/RubricAttributes.module.css';
@@ -309,6 +309,8 @@ const RubricAttributesPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default RubricAttributesPage;

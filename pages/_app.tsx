@@ -5,7 +5,7 @@ import { UserContextProvider } from 'context/userContext';
 import { CompanyModel, UserModel } from 'db/dbModels';
 import { PageInitialDataPayload } from 'lib/catalogueUtils';
 import * as React from 'react';
-import './reset.css';
+import 'styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from 'apollo/apolloClient';

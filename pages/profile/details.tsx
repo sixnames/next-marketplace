@@ -178,9 +178,9 @@ const ProfileDetailsRoute: React.FC = () => {
 
 interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics }) => {
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Профиль'} navRubrics={navRubrics}>
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>

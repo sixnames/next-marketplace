@@ -6,9 +6,10 @@ interface MetaInterface {
   title?: string;
   description?: string;
   previewImage?: string;
+  canonicalUrl: string;
 }
 
-const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => {
+const Meta: React.FC<MetaInterface> = ({ title, description, canonicalUrl, previewImage }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
 
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
@@ -45,8 +46,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => 
       <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
       <meta property='og:image' content={pagePreviewImage} />
-      {/*TODO canonical url*/}
-      <meta property='og:url' content={process.env.SITE} />
+      <meta property='og:url' content={canonicalUrl} />
       <meta property='og:description' content={pageDescription} />
 
       <meta name='twitter:title' content={title} />

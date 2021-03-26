@@ -221,9 +221,9 @@ const ProfileOrdersRoute: React.FC = () => {
 
 interface ProfileInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Profile: NextPage<ProfileInterface> = ({ navRubrics }) => {
+const Profile: NextPage<ProfileInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'История заказов'} navRubrics={navRubrics}>
+    <SiteLayout title={'История заказов'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>

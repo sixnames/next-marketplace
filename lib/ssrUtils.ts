@@ -18,10 +18,11 @@ export async function getAppInitialData({
   context,
   isCms,
 }: GetAppInitialDataInterface): Promise<GetServerSidePropsResult<PagePropsInterface>> {
-  const { locale } = context;
-  const referer = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
-  const domain = getDomain(referer, { validHosts: ['localhost'] });
+  const { locale, resolvedUrl } = context;
+  const path = `${resolvedUrl}`;
+  const host = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
+  const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -83,8 +84,9 @@ export async function getAppInitialData({
       initialData,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
-      domain,
       sessionUser: castDbData(user),
+      domain: `${domain}`,
+      canonicalUrl: `https://${host}${path}`,
     },
   };
 }
@@ -108,10 +110,11 @@ export interface SiteInitialDataPayloadInterface {
 export async function getSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
-  const { locale } = context;
-  const referer = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
-  const domain = getDomain(referer, { validHosts: ['localhost'] });
+  const { locale, resolvedUrl } = context;
+  const path = `${resolvedUrl}`;
+  const host = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
+  const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -144,7 +147,8 @@ export async function getSiteInitialData({
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       company,
-      domain,
+      domain: `${domain}`,
+      canonicalUrl: `https://${host}${path}`,
     },
   };
 }

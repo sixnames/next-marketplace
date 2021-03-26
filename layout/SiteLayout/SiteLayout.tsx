@@ -13,19 +13,21 @@ import Modal from 'components/Modal/Modal';
 interface SiteLayoutConsumerInterface {
   title?: string;
   description?: string;
+  canonicalUrl: string;
 }
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
   title,
   description,
+  canonicalUrl,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className={classes.frame}>
-      <Meta title={title} description={description} />
+      <Meta title={title} description={description} canonicalUrl={canonicalUrl} />
 
       <Header />
 
@@ -47,6 +49,7 @@ export interface SiteLayoutInterface {
   title?: string;
   description?: string;
   navRubrics: RubricModel[];
+  canonicalUrl: string;
 }
 
 const SiteLayout: React.FC<SiteLayoutInterface> = ({
@@ -54,10 +57,11 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
   navRubrics,
   title,
   description,
+  canonicalUrl,
 }) => {
   return (
     <SiteContextProvider navRubrics={navRubrics}>
-      <SiteLayoutConsumer title={title} description={description}>
+      <SiteLayoutConsumer title={title} description={description} canonicalUrl={canonicalUrl}>
         {children}
       </SiteLayoutConsumer>
     </SiteContextProvider>

@@ -360,9 +360,9 @@ const CartRoute: React.FC = () => {
 
 interface CartInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Cart: NextPage<CartInterface> = ({ navRubrics }) => {
+const Cart: NextPage<CartInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <CartRoute />
     </SiteLayout>
   );

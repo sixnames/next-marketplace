@@ -20,7 +20,8 @@ export interface PagePropsInterface {
   sessionCity: string;
   sessionLocale: string;
   initialApolloState?: any;
-  domain?: any;
+  domain?: string;
+  canonicalUrl: string;
   company?: CompanyModel | null;
   sessionUser?: UserModel | null;
 }

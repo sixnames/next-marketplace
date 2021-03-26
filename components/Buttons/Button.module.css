@@ -95,15 +95,6 @@
   width: 3.5rem;
 }
 
-.button [class*='excel-icon'] {
-  top: 1px;
-  fill: var(--excel);
-}
-
-.button:hover [class*='excel-icon'] {
-  fill: var(--wp-white);
-}
-
 .primary {
   color: var(--wp-white);
   border: 2px solid var(--theme);

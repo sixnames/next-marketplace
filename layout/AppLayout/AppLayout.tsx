@@ -31,7 +31,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
 
   return (
     <div className={classes.frame}>
-      <Meta title={title} />
+      <Meta title={title} canonicalUrl={''} />
 
       <AppNav compact={compact} navItems={navItems} />
 

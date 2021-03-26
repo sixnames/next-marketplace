@@ -8,10 +8,10 @@ import { getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomePageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Home: NextPage<HomePageInterface> = ({ navRubrics, company }) => {
+const Home: NextPage<HomePageInterface> = ({ navRubrics, company, canonicalUrl }) => {
   if (company) {
     return (
-      <SiteLayout navRubrics={navRubrics}>
+      <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
         <Inner>
           <Title>{company.name}</Title>
         </Inner>
@@ -20,7 +20,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, company }) => {
   }
 
   return (
-    <SiteLayout navRubrics={navRubrics}>
+    <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <Inner>
         <Title>Main page</Title>
       </Inner>

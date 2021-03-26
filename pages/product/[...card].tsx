@@ -214,13 +214,23 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
               <div className={classes.mainDataBottom}>
                 <div>
-                  {isShopless ? null : (
+                  {isShopless ? null : shopsCount > 1 ? (
                     <div className={classes.price}>
                       <div className={classes.cardLabel}>Цена от</div>
                       <div className={classes.priceValue}>
                         <Currency className={classes.priceItem} value={cardPrices.min} />
                         до
                         <Currency className={classes.priceItem} value={cardPrices.max} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={classes.price}>
+                      <div className={classes.cardLabel}>Цена</div>
+                      <div className={classes.priceValue}>
+                        <Currency
+                          className={`${classes.priceItem} ${classes.priceItemSingle}`}
+                          value={cardPrices.min}
+                        />
                       </div>
                     </div>
                   )}

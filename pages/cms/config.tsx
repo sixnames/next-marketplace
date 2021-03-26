@@ -32,6 +32,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ConfigsContent.module.css';
+import { InputType } from 'types/clientTypes';
 import { updateConfigSchema } from 'validation/configSchema';
 
 interface ConfigsAssetFormInterface {
@@ -101,7 +102,7 @@ interface ConfigInputInterface extends FormikInputPropsInterface {
   multi?: boolean;
 }
 
-const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId }) => {
+const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId, type }) => {
   const { showModal } = useAppContext();
   const [field, meta, { setValue }] = useField(name);
 
@@ -140,7 +141,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId }) =>
         return (
           <div className={`${classes.inputHolder}`} key={index}>
             <div className={`${classes.input} ${multi ? classes.inputMulti : ''}`}>
-              <FormikInput name={fieldName} testId={fieldTestId} low />
+              <FormikInput name={fieldName} testId={fieldTestId} type={type} low />
             </div>
 
             {multi && (
@@ -283,7 +284,10 @@ const ConfigsContent: React.FC = () => {
         </div>
 
         {notAssetConfigs.map(
-          ({ slug: configSlug, name, cities: configCities, _id, multi, description }) => {
+          ({ slug: configSlug, name, cities: configCities, _id, multi, description, variant }) => {
+            const initialType = variant === 'string' ? 'text' : variant;
+            const type = initialType as InputType;
+
             return (
               <div className={classes.config} data-cy={`${configSlug}-config`} key={configSlug}>
                 <div className={classes.configName} data-cy={`${configSlug}-config-name`}>
@@ -321,6 +325,7 @@ const ConfigsContent: React.FC = () => {
                                   name={`cities.${slug}`}
                                   testId={`${configSlug}-${slug}`}
                                   multi={multi}
+                                  type={type}
                                 />
                               </div>
                             </Accordion>

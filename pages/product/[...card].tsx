@@ -241,7 +241,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                         ? 'Нет в наличии'
                         : `В наличии в ${shopsCount} ${isShopsPlural ? 'винотеках' : 'винотеке'}`}
                     </div>
-                    {isShopless ? null : <div>Сравнить цены</div>}
+                    {isShopless || shopsCount < 2 ? null : <div>Сравнить цены</div>}
                   </div>
                 </div>
 
@@ -375,7 +375,6 @@ const Card: NextPage<CardInterface> = ({ cardData, canonicalUrl, navRubrics, ses
     );
   }
 
-  // TODO title, description
   return (
     <SiteLayout
       canonicalUrl={canonicalUrl}

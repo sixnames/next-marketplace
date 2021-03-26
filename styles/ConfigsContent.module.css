@@ -57,11 +57,11 @@
 }
 
 .accordionIcon.iconDone svg {
-  fill: var(--md-green-A700);
+  fill: green;
 }
 
 .accordionIcon.iconEmpty svg {
-  fill: var(--md-red-700);
+  fill: var(--wp-dark-pink);
 }
 
 .inputsFrame {
@@ -93,3 +93,18 @@
   flex-shrink: 0;
   width: 40px;
 }
+
+.assetLine {
+  display: flex;
+  align-items: flex-start;
+}
+
+.assetInfo {
+  padding-left: 1rem;
+}
+
+.assetError {
+  font-weight: 600;
+  color: var(--red);
+}
+

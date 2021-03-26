@@ -34,9 +34,9 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
-import classes from 'routes/OptionsGroups/OptionsGroupsContent.module.css';
+import classes from 'styles/OptionsGroupsContent.module.css';
 import { ObjectType } from 'types/clientTypes';
 
 interface OptionsGroupControlsInterface {
@@ -352,6 +352,8 @@ const OptionsGroups: NextPage<PagePropsInterface> = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default OptionsGroups;

@@ -25,7 +25,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import CartAside from 'routes/CartRoute/CartAside';
-import classes from 'routes/MakeAnOrderRoute/MakeAnOrderRoute.module.css';
+import classes from 'styles/MakeAnOrderRoute.module.css';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OrderRouteProductInterface {
@@ -262,9 +262,9 @@ const MakeAnOrderRoute: React.FC = () => {
 
 interface MakeAnOrderInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics }) => {
+const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <MakeAnOrderRoute />
     </SiteLayout>
   );

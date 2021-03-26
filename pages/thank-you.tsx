@@ -8,7 +8,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'routes/ThankYouRoute/ThankYouRoute.module.css';
+import classes from 'styles/ThankYouRoute.module.css';
 
 const ThankYouRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
@@ -57,9 +57,9 @@ const ThankYouRoute: React.FC = () => {
 
 interface ThankYouInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics }) => {
+const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics}>
+    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <ThankYouRoute />
     </SiteLayout>
   );

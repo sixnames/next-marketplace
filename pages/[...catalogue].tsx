@@ -36,7 +36,7 @@ import {
 import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
-import classes from 'routes/CatalogueRoute/CatalogueRoute.module.css';
+import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataFragment;
@@ -344,17 +344,22 @@ interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
   catalogueData?: CatalogueDataFragment | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, canonicalUrl }) => {
   if (!catalogueData) {
     return (
-      <SiteLayout navRubrics={navRubrics}>
+      <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
   }
 
   return (
-    <SiteLayout title={catalogueData.catalogueTitle} navRubrics={navRubrics}>
+    <SiteLayout
+      title={catalogueData.catalogueTitle}
+      description={catalogueData.catalogueTitle}
+      navRubrics={navRubrics}
+      canonicalUrl={canonicalUrl}
+    >
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>
   );

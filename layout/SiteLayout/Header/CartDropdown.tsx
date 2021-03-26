@@ -56,10 +56,11 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 <div className={classes.productImageHolder}>
                   <Image
                     src={mainImage}
-                    layout='fill'
                     objectFit='contain'
                     alt={name}
                     title={name}
+                    width={70}
+                    height={185}
                   />
                 </div>
               </div>
@@ -70,6 +71,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 {isShopless && !shopProduct ? (
                   <React.Fragment>
                     <ProductSnippetPrice
+                      shopsCount={productData.shopsCount}
                       className={classes.productPrice}
                       value={productData.cardPrices.min}
                     />

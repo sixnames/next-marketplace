@@ -5,21 +5,24 @@ import Currency from '../../Currency/Currency';
 interface ProductSnippetPriceInterface {
   value?: string | null;
   className?: string;
-  isShopless?: boolean;
+  shopsCount?: number;
 }
 
 const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
   value,
   className,
-  isShopless,
+  shopsCount,
 }) => {
-  if (isShopless) {
+  const minimalShopsCount = 1;
+
+  if (!shopsCount || shopsCount < minimalShopsCount) {
     return <div className={`${classes.price} ${className ? className : ''}`}>Нет в наличии</div>;
   }
 
   return (
     <div className={`${classes.price} ${className ? className : ''}`}>
-      от <Currency className={classes.priceValue} value={value} />
+      {shopsCount === minimalShopsCount ? '' : 'от '}
+      <Currency className={classes.priceValue} value={value} />
     </div>
   );
 };

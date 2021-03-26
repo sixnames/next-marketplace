@@ -1,4 +1,4 @@
-import { ASSETS_DIST_SHOPS } from 'config/common';
+import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
 import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
@@ -417,7 +417,15 @@ export const ShopMutations = extendType({
             dist: ASSETS_DIST_SHOPS,
             files: input.assets,
             startIndex,
+            asImage: true,
+            width: ASSETS_SHOP_IMAGE_WIDTH,
           });
+          if (!assets) {
+            return {
+              success: false,
+              message: await getApiMessage(`shops.update.error`),
+            };
+          }
 
           // Update shop
           const updatedShopResult = await shopsCollection.findOneAndUpdate(
@@ -661,7 +669,15 @@ export const ShopMutations = extendType({
             dist: ASSETS_DIST_SHOPS,
             files: input.logo,
             startIndex: 0,
+            asImage: true,
+            width: ASSETS_LOGO_WIDTH,
           });
+          if (!uploadedLogo) {
+            return {
+              success: false,
+              message: await getApiMessage(`shops.update.error`),
+            };
+          }
 
           // Update shop
           const updatedShopResult = await shopsCollection.findOneAndUpdate(

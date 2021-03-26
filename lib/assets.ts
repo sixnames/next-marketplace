@@ -1,6 +1,7 @@
 import { ReadStream } from 'fs';
 import { AssetModel, UploadModel } from 'db/dbModels';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
+// import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
 
 export const getBufferFromFileStream = (stream: ReadStream) => {
   return new Promise<Buffer>((resolve, reject) => {
@@ -29,11 +30,60 @@ export const getBufferFromFileStream = (stream: ReadStream) => {
   });
 };
 
+/*interface GetSharpBufferInterface {
+  file: UploadModel;
+  format?: keyof FormatEnum | AvailableFormatInfo;
+  width?: number;
+  height?: number;
+  quality?: number;
+}
+
+export async function getSharpBuffer({
+  file,
+  format,
+  width,
+  height,
+  quality = 80,
+}: GetSharpBufferInterface): Promise<Buffer | null> {
+  try {
+    const { createReadStream } = await file;
+
+    // Read file into stream.Readable
+    const fileStream = createReadStream();
+
+    // Convert stream to the Buffer
+    const buffer = await getBufferFromFileStream(fileStream);
+
+    let transform = sharp(buffer);
+
+    if (width || height) {
+      transform = transform.resize(width, height);
+    }
+
+    if (format) {
+      transform = transform.toFormat(format, { quality });
+    } else {
+      transform = transform.webp({ quality });
+    }
+
+    return transform.toBuffer();
+  } catch (e) {
+    console.log('getSharpImage ERROR==== ', e);
+    return null;
+  }
+}*/
+
+// export interface StoreUploadsInterface extends Omit<GetSharpBufferInterface, 'file'> {
 export interface StoreUploadsInterface {
   files: UploadModel[];
   itemId: number | string;
   dist: string;
   startIndex?: number;
+  asImage?: boolean;
+
+  width?: number;
+  height?: number;
+  quality?: number;
 }
 
 export const storeUploads = async ({
@@ -41,7 +91,12 @@ export const storeUploads = async ({
   itemId,
   dist,
   startIndex = 0,
-}: StoreUploadsInterface): Promise<AssetModel[]> => {
+}: // asImage,
+// width,
+// height,
+// format,
+// quality,
+StoreUploadsInterface): Promise<AssetModel[] | null> => {
   try {
     const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
@@ -51,26 +106,40 @@ export const storeUploads = async ({
       const finalStartIndex = startIndex + 1;
       const finalIndex = finalStartIndex + fileIndex;
 
-      const {
-        createReadStream,
-        ext,
-        // mimetype
-      } = await file;
-      const fileName = `${itemId}-${finalIndex}-${new Date().getTime()}${ext}`;
+      const { createReadStream, ext } = await file;
+      let fileName = ``;
 
       // Read file into stream.Readable
       const fileStream = createReadStream();
 
       // Convert stream to the Buffer
-      const buffer = await getBufferFromFileStream(fileStream);
+      let buffer: Buffer | null = null;
 
-      // Content-Type header
-      // const contentType = ext === '.svg' ? 'image/svg+xml' : mimetype;
+      buffer = await getBufferFromFileStream(fileStream);
+      fileName = `${itemId}-${finalIndex}-${ext}`;
+
+      /*if (!asImage) {
+        buffer = await getBufferFromFileStream(fileStream);
+        fileName = `${itemId}-${finalIndex}-${ext}`;
+      } else {
+        const extension = format ? `.${format}` : '.webp';
+        buffer = await getSharpBuffer({
+          file,
+          width,
+          height,
+          format,
+          quality,
+        });
+        fileName = `${itemId}-${finalIndex}-${extension}`;
+      }*/
+
+      if (!buffer) {
+        return null;
+      }
 
       // Upload Buffer to the S3
       const url = await uploadFileToS3({
         buffer,
-        // contentType,
         filePath,
         fileName,
       });

@@ -7,9 +7,9 @@ import { useGetCmsOrderQuery } from 'generated/apolloComponents';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
-import classes from 'routes/CmsOrderRoute/CmsOrderRoute.module.css';
+import classes from 'styles/CmsOrderRoute.module.css';
 
 const CmsOrderRoute: React.FC = () => {
   const { query } = useRouter();
@@ -52,6 +52,8 @@ const Order: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default Order;

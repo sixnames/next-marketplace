@@ -21,7 +21,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const RubricProducts: React.FC = () => {
@@ -188,6 +188,8 @@ const RubricProductsPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default RubricProductsPage;

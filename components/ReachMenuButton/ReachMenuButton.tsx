@@ -10,6 +10,7 @@ export interface ReachMenuItemConfig {
   slug?: string;
   onSelect: (menuItem: ReachMenuItemConfig) => void;
   current?: boolean | CurrentAction;
+  hidden?: boolean;
 }
 
 interface ButtonTextPropsInterface {
@@ -25,6 +26,7 @@ export interface MenuButtonInterface {
   initialValue?: string;
   // buttonAs?: keyof JSX.IntrinsicElements | React.ComponentType;
   buttonAs?: any;
+  testId?: string;
 }
 
 const ReachMenuButton: React.FC<MenuButtonInterface> = ({
@@ -34,6 +36,7 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
   config,
   initialValue,
   buttonAs,
+  testId,
 }) => {
   const [internalButtonText, setInternalButtonText] = React.useState<string>(() => {
     return `${config[0]?._id}`;
@@ -64,14 +67,22 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
         {({ isOpen }) => {
           return (
             <React.Fragment>
-              <MenuButton as={buttonAs} className={`${buttonClassName ? buttonClassName : ''}`}>
+              <MenuButton
+                as={buttonAs}
+                className={`${buttonClassName ? buttonClassName : ''}`}
+                data-cy={testId}
+              >
                 {buttonText ? buttonText({ internalButtonText, isOpen }) : internalButtonText}
               </MenuButton>
 
               <MenuList>
                 {config.map((menuItem) => {
-                  const { name, _id, onSelect } = menuItem;
+                  const { name, _id, onSelect, hidden } = menuItem;
                   const isSelected = _id === internalButtonText;
+
+                  if (hidden) {
+                    return null;
+                  }
 
                   return (
                     <MenuItem

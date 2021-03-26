@@ -24,7 +24,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'routes/ProfileDetailsRoute/ProfileDetailsRoute.module.css';
+import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
 
 const ProfileDetailsRoute: React.FC = () => {
@@ -178,9 +178,9 @@ const ProfileDetailsRoute: React.FC = () => {
 
 interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics }) => {
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Профиль'} navRubrics={navRubrics}>
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>

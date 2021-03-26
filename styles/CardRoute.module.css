@@ -5,11 +5,11 @@
 
 .mainFrame {
   --mainColumnsGap: 1.5rem;
-  --secondaryColumnsWidht: 180px;
+  --secondaryColumnsWidth: 180px;
 
   position: relative;
   display: grid;
-  grid-template-columns: var(--secondaryColumnsWidht) 1fr;
+  grid-template-columns: var(--secondaryColumnsWidth) 1fr;
   grid-column-gap: var(--mainColumnsGap);
   background-color: var(--secondaryBackground);
   border-radius: var(--radius-2-3);
@@ -56,7 +56,7 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: var(--secondaryColumnsWidht) 1fr;
+  grid-template-columns: var(--secondaryColumnsWidth) 1fr;
   grid-column-gap: var(--mainColumnsGap);
   padding-right: 2rem;
 }
@@ -266,6 +266,11 @@
 
 .priceItem:last-child {
   margin-left: 0.75rem;
+}
+
+.priceItem.priceItemSingle {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .helpers {

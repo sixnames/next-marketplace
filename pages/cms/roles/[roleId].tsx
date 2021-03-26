@@ -19,7 +19,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { NavItemInterface } from 'types/clientTypes';
 import { updateRoleSchema } from 'validation/roleSchema';
@@ -136,6 +136,8 @@ const Role: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default Role;

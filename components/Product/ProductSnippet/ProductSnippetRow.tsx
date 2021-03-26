@@ -101,7 +101,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
 
           <div className={classes.contentColumn}>
-            {isShopless ? null : <ProductSnippetPrice value={cardPrices.min} />}
+            {isShopless ? null : (
+              <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices.min} />
+            )}
 
             <div className={classes.productConnections}>
               {connections.map(({ _id, attributeName, connectionProducts }) => {

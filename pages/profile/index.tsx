@@ -24,7 +24,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'routes/ProfileOrdersRoute/ProfileOrdersRoute.module.css';
+import classes from 'styles/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
   orderProduct: MyOrderProductFragment;
@@ -221,9 +221,9 @@ const ProfileOrdersRoute: React.FC = () => {
 
 interface ProfileInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Profile: NextPage<ProfileInterface> = ({ navRubrics }) => {
+const Profile: NextPage<ProfileInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'История заказов'} navRubrics={navRubrics}>
+    <SiteLayout title={'История заказов'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>

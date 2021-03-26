@@ -17,7 +17,7 @@ import { CmsOrderInListFragment, useGetAllCmsOrdersQuery } from 'generated/apoll
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import * as React from 'react';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const CmsOrdersFilter: React.FC = () => {
@@ -144,6 +144,8 @@ const Orders: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context, isCms: true });
+};
 
 export default Orders;

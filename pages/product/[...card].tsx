@@ -28,7 +28,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import classes from 'routes/CardRoute/CardRoute.module.css';
+import classes from 'styles/CardRoute.module.css';
 import CardShops from 'routes/CardRoute/CardShops';
 
 interface CardRouteFeaturesInterface {
@@ -214,13 +214,23 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
               <div className={classes.mainDataBottom}>
                 <div>
-                  {isShopless ? null : (
+                  {isShopless ? null : shopsCount > 1 ? (
                     <div className={classes.price}>
                       <div className={classes.cardLabel}>Цена от</div>
                       <div className={classes.priceValue}>
                         <Currency className={classes.priceItem} value={cardPrices.min} />
                         до
                         <Currency className={classes.priceItem} value={cardPrices.max} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={classes.price}>
+                      <div className={classes.cardLabel}>Цена</div>
+                      <div className={classes.priceValue}>
+                        <Currency
+                          className={`${classes.priceItem} ${classes.priceItemSingle}`}
+                          value={cardPrices.min}
+                        />
                       </div>
                     </div>
                   )}
@@ -356,17 +366,23 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: GetCatalogueCardQuery['getProductCard'] | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, navRubrics }) => {
+const Card: NextPage<CardInterface> = ({ cardData, canonicalUrl, navRubrics, sessionCity }) => {
   if (!cardData) {
     return (
-      <SiteLayout navRubrics={navRubrics}>
+      <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
   }
 
+  // TODO title, description
   return (
-    <SiteLayout navRubrics={navRubrics}>
+    <SiteLayout
+      canonicalUrl={canonicalUrl}
+      navRubrics={navRubrics}
+      title={`Купить ${cardData.originalName} в городе ${sessionCity}`}
+      description={`Купить ${cardData.originalName} в городе ${sessionCity}`}
+    >
       <CardRoute cardData={cardData} />
     </SiteLayout>
   );

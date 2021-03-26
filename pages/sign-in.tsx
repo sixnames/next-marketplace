@@ -9,7 +9,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSession, signIn } from 'next-auth/client';
-import classes from 'routes/SignInRoute/SignInRoute.module.css';
+import classes from 'styles/SignInRoute.module.css';
 import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
 
@@ -36,6 +36,7 @@ const SignInRoute: React.FC = () => {
               if (ok) {
                 setIsError(false);
                 window.location.pathname = '/';
+                return;
               }
 
               setIsError(true);
@@ -86,9 +87,9 @@ const SignInRoute: React.FC = () => {
 
 export interface SignInPageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const SignIn: NextPage<SignInPageInterface> = ({ navRubrics }) => {
+const SignIn: NextPage<SignInPageInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Авторизация'} navRubrics={navRubrics}>
+    <SiteLayout title={'Авторизация'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <SignInRoute />
     </SiteLayout>
   );

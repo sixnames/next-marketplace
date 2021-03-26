@@ -1,6 +1,6 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_SIGN_IN } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { CompanyModel } from 'db/dbModels';
+import { DEFAULT_CITY, DEFAULT_LOCALE, ROLE_SLUG_ADMIN, ROUTE_SIGN_IN } from 'config/common';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { CompanyModel, RoleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
@@ -9,23 +9,22 @@ import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
 
-export async function getAppInitialData(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<PagePropsInterface>> {
-  const { locale } = context;
-  const referer = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
-  const domain = getDomain(referer, { validHosts: ['localhost'] });
+interface GetAppInitialDataInterface {
+  context: GetServerSidePropsContext;
+  isCms?: boolean;
+}
+
+export async function getAppInitialData({
+  context,
+  isCms,
+}: GetAppInitialDataInterface): Promise<GetServerSidePropsResult<PagePropsInterface>> {
+  const { locale, resolvedUrl } = context;
+  const path = `${resolvedUrl}`;
+  const host = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
+  const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
-
-  const initialDataProps = {
-    locale: `${sessionLocale}`,
-    city: sessionCity,
-  };
-
-  const rawInitialData = await getPageInitialData(initialDataProps);
-  const initialData = castDbData(rawInitialData);
 
   // Check if user authenticated
   const session = await getSession(context);
@@ -38,6 +37,44 @@ export async function getAppInitialData(
     };
   }
 
+  // Session user
+  const db = await getDatabase();
+  const user = await db.collection<UserModel>(COL_USERS).findOne(
+    { email: `${session.user.email}` },
+    {
+      projection: {
+        password: false,
+      },
+    },
+  );
+
+  if (!user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  const role = await db.collection<RoleModel>(COL_ROLES).findOne({ _id: user.roleId });
+  if ((!role || role.slug !== ROLE_SLUG_ADMIN) && isCms) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
+      },
+    };
+  }
+
+  const initialDataProps = {
+    locale: `${sessionLocale}`,
+    city: sessionCity,
+  };
+
+  const rawInitialData = await getPageInitialData(initialDataProps);
+  const initialData = castDbData(rawInitialData);
+
   const currentCity = rawInitialData.cities.find(({ slug }) => {
     return slug === sessionCity;
   });
@@ -47,7 +84,9 @@ export async function getAppInitialData(
       initialData,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
-      domain,
+      sessionUser: castDbData(user),
+      domain: `${domain}`,
+      canonicalUrl: `https://${host}${path}`,
     },
   };
 }
@@ -71,10 +110,11 @@ export interface SiteInitialDataPayloadInterface {
 export async function getSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
-  const { locale } = context;
-  const referer = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(referer, { validHosts: ['localhost'] });
-  const domain = getDomain(referer, { validHosts: ['localhost'] });
+  const { locale, resolvedUrl } = context;
+  const path = `${resolvedUrl}`;
+  const host = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
+  const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -107,7 +147,8 @@ export async function getSiteInitialData({
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       company,
-      domain,
+      domain: `${domain}`,
+      canonicalUrl: `https://${host}${path}`,
     },
   };
 }

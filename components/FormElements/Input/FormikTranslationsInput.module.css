@@ -13,9 +13,9 @@
 }
 
 .accordionIcon.iconDone svg {
-  fill: var(--md-green-A700);
+  fill: var(--wp-dark-pink);
 }
 
 .accordionIcon.iconEmpty svg {
-  fill: var(--md-red-700);
+  fill: var(--wp-dark-pink);
 }

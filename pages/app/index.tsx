@@ -2,7 +2,7 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import * as React from 'react';
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const App: NextPage = () => {
@@ -15,6 +15,8 @@ const App: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getAppInitialData;
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  return getAppInitialData({ context });
+};
 
 export default App;

@@ -24,7 +24,13 @@ import {
   updateCompanySchema,
 } from 'validation/companySchema';
 import { deleteUpload, storeUploads } from 'lib/assets';
-import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from 'config/common';
+import {
+  ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_SHOPS,
+  ASSETS_DIST_SHOPS_LOGOS,
+  ASSETS_LOGO_WIDTH,
+  ASSETS_SHOP_IMAGE_WIDTH,
+} from 'config/common';
 
 export const Company = objectType({
   name: 'Company',
@@ -263,7 +269,15 @@ export const CompanyMutations = extendType({
             files: input.logo,
             dist: ASSETS_DIST_COMPANIES,
             itemId,
+            asImage: true,
+            width: ASSETS_LOGO_WIDTH,
           });
+          if (!logoAssets) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.create.error'),
+            };
+          }
           const logo = logoAssets[0];
           if (!logo) {
             return {
@@ -441,7 +455,22 @@ export const CompanyMutations = extendType({
             dist: ASSETS_DIST_COMPANIES,
             files: input.logo,
             startIndex: 0,
+            asImage: true,
+            width: ASSETS_LOGO_WIDTH,
           });
+          if (!uploadedLogo) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.update.error'),
+            };
+          }
+          const logo = uploadedLogo[0];
+          if (!logo) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.update.error'),
+            };
+          }
 
           // Update company
           const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
@@ -449,7 +478,7 @@ export const CompanyMutations = extendType({
             {
               $set: {
                 updatedAt: new Date(),
-                logo: uploadedLogo[0],
+                logo,
               },
             },
             {
@@ -605,7 +634,15 @@ export const CompanyMutations = extendType({
             files: input.logo,
             dist: ASSETS_DIST_SHOPS_LOGOS,
             itemId: itemId,
+            asImage: true,
+            width: ASSETS_LOGO_WIDTH,
           });
+          if (!logoAssets) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.create.error'),
+            };
+          }
           const logo = logoAssets[0];
           if (!logo) {
             return {
@@ -618,7 +655,15 @@ export const CompanyMutations = extendType({
             files: input.assets,
             dist: ASSETS_DIST_SHOPS,
             itemId: itemId,
+            asImage: true,
+            width: ASSETS_SHOP_IMAGE_WIDTH,
           });
+          if (!assets) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.create.error'),
+            };
+          }
 
           // Create shop
           const slug = generateSlug(values.name);

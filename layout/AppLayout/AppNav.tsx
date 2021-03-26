@@ -1,4 +1,5 @@
 import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import useSignOut from 'hooks/useSignOut';
 import * as React from 'react';
 import AppNavUser from './AppNavUser';
 import AppNavItem from './AppNavItem';
@@ -10,7 +11,6 @@ import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 import { useAppContext } from 'context/appContext';
 import Tooltip from '../../components/TTip/Tooltip';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
-import { signOut } from 'next-auth/client';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -18,6 +18,7 @@ interface AppNavInterface {
 }
 
 const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
+  const signOut = useSignOut();
   const { pathname } = useRouter();
   const { isMobile } = useAppContext();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
@@ -76,7 +77,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
               <li className={`${classes.bottom} ${classes.bottom}`}>
                 <Tooltip title={isCompact ? 'Выйти из аккаунта' : null}>
                   <div
-                    onClick={() => signOut()}
+                    onClick={signOut}
                     className={`${classes.bottomLink} ${
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}

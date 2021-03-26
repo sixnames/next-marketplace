@@ -27,7 +27,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CartAside from 'routes/CartRoute/CartAside';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'routes/CartRoute/CartRoute.module.css';
+import classes from 'styles/CartRoute.module.css';
 import CartShopsList from 'routes/CartRoute/CartShopsList';
 
 interface CartProductFrameInterface {
@@ -157,7 +157,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
         </div>
 
         <div className={classes.productGridRight}>
-          <ProductSnippetPrice value={cardPrices.min} />
+          <ProductSnippetPrice shopsCount={productData.shopsCount} value={cardPrices.min} />
           <CartProductConnections connections={connections} productId={product._id} />
         </div>
       </div>
@@ -360,9 +360,9 @@ const CartRoute: React.FC = () => {
 
 interface CartInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Cart: NextPage<CartInterface> = ({ navRubrics }) => {
+const Cart: NextPage<CartInterface> = ({ navRubrics, canonicalUrl }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
       <CartRoute />
     </SiteLayout>
   );

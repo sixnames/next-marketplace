@@ -1,6 +1,6 @@
 .frame {
   width: 100%;
-  max-width: var(--innerBlockMaxWidht);
+  max-width: var(--innerBlockMaxWidth);
   margin-left: auto;
   margin-right: auto;
   padding-top: var(--innerBlockVerticalPadding);

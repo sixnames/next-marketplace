@@ -65,6 +65,8 @@ const ThemeContextProvider: React.FC = ({ children }) => {
     if (theme !== 'undefined' && localStorageTheme !== theme) {
       window.localStorage.setItem(THEME_COOKIE_KEY, theme);
       document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.remove(`${localStorageTheme}`);
+      document.documentElement.classList.add(theme);
     }
   }, [theme]);
 

@@ -104,30 +104,10 @@
   --gray: #a2a9b5;
   --midGray: #5c626e;
   --lightGray: #f5f5f5;
-  --lighterGray: #ebebeb;
-  --blueGray: #e5e8eb;
 
   --placeholder: #7a7d81;
-  --darkBg: #292929;
 
-  --green: #27ae60;
   --red: #ec482f;
-  --blue: #00c2ff;
-  --yellow: #ffde1b;
-  --orange: #f68620;
-
-  /*Socials*/
-  --facebook: #3a5997;
-  --twitter: #30acee;
-  --telegram: #30acee;
-  --vk: #45668e;
-  --ok: #f68620;
-  --viber: #79489c;
-  --facetime: #46b96d;
-  --skype: #1eabe2;
-  --whatsapp: #50b948;
-  --excel: #267248;
-  --google: #d8634f;
 
   /*Gaps*/
   --lineGap-50: 0.5rem;
@@ -140,7 +120,7 @@
   --lineGap-500: calc(var(--lineGap-100) * 5);;
 
   /*Sizes*/
-  --innerBlockMaxWidht: 1296px;
+  --innerBlockMaxWidth: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;
@@ -317,6 +297,10 @@ a:hover {
 a[href*='mailto:']:hover,
 a[href*='tel:']:hover {
   text-decoration: none;
+}
+
+table {
+  width: 100%;
 }
 
 ::-webkit-input-placeholder {

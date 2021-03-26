@@ -51,7 +51,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
         {title}
       </ModalTitle>
       <ModalText>
-        Товаров в вашей корзине: <mark data-cy={'cart-modal-counter'}>{productsCount}</mark>
+        Товаров в вашей корзине: <span data-cy={'cart-modal-counter'}>{productsCount}</span>
       </ModalText>
       <ModalButtons>
         <Button theme={'secondary'} onClick={hideModal} testId={`cart-modal-close`}>

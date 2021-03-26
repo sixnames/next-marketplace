@@ -346,6 +346,8 @@ html [data-reach-menu-button] {
   border-width: 0;
   cursor: pointer;
   color: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 html [data-reach-menu-list],
@@ -404,16 +406,6 @@ html.dark [data-reach-menu-item]:not(:first-child) {
 
 html [data-reach-menu], html [data-reach-menu-popover] {
   z-index: 9999;
-}
-
-[data-reach-menu-button][type="button"] {
-  background: none;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  border: none;
-  font-family: inherit;
-  display: block;
 }
 
 /* NG Progressbar */

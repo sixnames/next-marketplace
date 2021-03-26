@@ -132,16 +132,23 @@
 }
 
 .burgerDropdown {
-  position: absolute;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom: 0;
   z-index: 1;
-  bottom: var(--mobileNavHeight);
-  left: 0;
   width: 100%;
-  height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
+  /*height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));*/
+  height: 100vh;
   background-color: var(--secondaryBackground);
   padding-top: 1rem;
   padding-bottom: 2rem;
   overflow-y: auto;
+}
+
+.burgerDropdownInner {
+  padding-bottom: var(--mobileNavHeight);
 }
 
 .burgerDropdownTop {

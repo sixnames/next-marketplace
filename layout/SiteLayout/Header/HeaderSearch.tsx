@@ -118,7 +118,7 @@ const HeaderSearch: React.FC = () => {
   return (
     <div className={classes.frame} data-cy={'search-dropdown'}>
       <OutsideClickHandler onOutsideClick={hideSearchDropdown}>
-        <Inner>
+        <Inner className={classes.searchInner}>
           {isMobile ? (
             <div className={classes.frameTitle}>
               <div className={classes.frameTitleName}>Поиск</div>

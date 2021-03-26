@@ -109,11 +109,17 @@
   .frame {
     position: fixed;
     z-index: 110;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
+    top:0;
+    left:0;
+    right:0;
+    bottom: 0;
+    height: 100vh;
+    /*height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));*/
     overflow: auto;
+  }
+
+  .searchInner {
+    padding-bottom: calc(var(--mobileNavHeight) + 3rem);
   }
 
   .form {

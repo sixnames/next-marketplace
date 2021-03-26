@@ -57,11 +57,11 @@
 }
 
 .accordionIcon.iconDone svg {
-  fill: var(--md-green-A700);
+  fill: green;
 }
 
 .accordionIcon.iconEmpty svg {
-  fill: var(--md-red-700);
+  fill: var(--wp-dark-pink);
 }
 
 .inputsFrame {

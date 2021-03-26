@@ -13,9 +13,9 @@
 }
 
 .accordionIcon.iconDone {
-  color: var(--md-green-A700);
+  color: green;
 }
 
 .accordionIcon.iconEmpty {
-  color: var(--md-red-700);
+  color: var(--wp-dark-pink);
 }

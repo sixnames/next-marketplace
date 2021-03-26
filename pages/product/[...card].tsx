@@ -356,7 +356,7 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: GetCatalogueCardQuery['getProductCard'] | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, navRubrics }) => {
+const Card: NextPage<CardInterface> = ({ cardData, navRubrics, sessionCity }) => {
   if (!cardData) {
     return (
       <SiteLayout navRubrics={navRubrics}>
@@ -365,8 +365,13 @@ const Card: NextPage<CardInterface> = ({ cardData, navRubrics }) => {
     );
   }
 
+  // TODO title, description
   return (
-    <SiteLayout navRubrics={navRubrics}>
+    <SiteLayout
+      navRubrics={navRubrics}
+      title={`Купить ${cardData.originalName} в городе ${sessionCity}`}
+      description={`Купить ${cardData.originalName} в городе ${sessionCity}`}
+    >
       <CardRoute cardData={cardData} />
     </SiteLayout>
   );

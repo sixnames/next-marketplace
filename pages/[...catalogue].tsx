@@ -354,7 +354,11 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics }) 
   }
 
   return (
-    <SiteLayout title={catalogueData.catalogueTitle} navRubrics={navRubrics}>
+    <SiteLayout
+      title={catalogueData.catalogueTitle}
+      description={catalogueData.catalogueTitle}
+      navRubrics={navRubrics}
+    >
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>
   );

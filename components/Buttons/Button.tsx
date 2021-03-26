@@ -43,7 +43,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   const widthClass = short ? classes.short : '';
   const circleClass = circle ? classes.circle : '';
   const additionalClass = className ? className : '';
-  const buttonClass = `${classes.butn} ${sizeClass} ${widthClass} ${themeClass} ${childrenClass} ${circleClass} ${additionalClass}`;
+  const buttonClass = `relative z-10 flex items-center justify-center min-w-button cursor-pointer px-4 text-sm uppercase rounded-md shadow-md font-semibold ${classes.butn} ${sizeClass} ${widthClass} ${themeClass} ${childrenClass} ${circleClass} ${additionalClass}`;
 
   return (
     <React.Fragment>

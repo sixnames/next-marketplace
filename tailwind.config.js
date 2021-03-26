@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   purge: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -5,9 +7,17 @@ module.exports = {
     './hooks/**/*.{js,ts,jsx,tsx}',
     './routes/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        gilroy: ['Gilroy', ...defaultTheme.fontFamily.sans],
+      },
+      minWidth: {
+        button: '12rem',
+        'button-small': '9rem',
+      },
+    },
   },
   variants: {
     extend: {},

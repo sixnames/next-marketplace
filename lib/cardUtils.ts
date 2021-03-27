@@ -105,7 +105,6 @@ export async function getCardBreadcrumbs({
     }
 
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
     for await (const productAttribute of product.attributes) {
@@ -113,14 +112,6 @@ export async function getCardBreadcrumbs({
         continue;
       }
 
-      const attribute = rubric.attributes.find(({ _id }) => {
-        return productAttribute.attributeId.equals(_id);
-      });
-
-      // Continue if no attribute or no selectedOptionsSlugs
-      if (!attribute) {
-        continue;
-      }
       if (
         !productAttribute.selectedOptionsSlugs ||
         productAttribute.selectedOptionsSlugs.length < 1
@@ -129,9 +120,8 @@ export async function getCardBreadcrumbs({
       }
 
       // Get all selected options
-      const options = await attribute.options.filter(({ slug }) => {
-        return productAttribute.selectedOptionsSlugs.includes(slug);
-      });
+      const options = productAttribute.selectedOptions;
+
       // Get first selected option
       const firstSelectedOption = options[0];
       if (!firstSelectedOption) {
@@ -143,7 +133,7 @@ export async function getCardBreadcrumbs({
 
       // Push breadcrumb config to the list
       attributesBreadcrumbs.push({
-        _id: attribute._id,
+        _id: productAttribute.attributeId,
         name: filterNameString,
         href: `/${rubricSlug}/${firstSelectedOption.slug}`,
       });

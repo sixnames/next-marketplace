@@ -251,7 +251,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
   return (
     <div className={classes.burgerDropdown}>
-      <Inner>
+      <Inner className={classes.burgerDropdownInner}>
         <div className={classes.burgerDropdownTop}>
           <ThemeTrigger />
           <LanguageTrigger />

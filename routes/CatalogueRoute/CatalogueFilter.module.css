@@ -139,6 +139,7 @@
     top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
     overflow: auto;
     background-color: var(--primaryBackground);
@@ -152,9 +153,9 @@
     position: relative;
     top: 0;
     padding-top: var(--innerBlockVerticalPadding);
-    padding-bottom: var(--innerBlockVerticalPadding);
     padding-right: var(--innerBlockHorizontalPadding);
     padding-left: var(--innerBlockHorizontalPadding);
+    padding-bottom: var(--mobileNavHeight);
   }
 
   .totalCounter {

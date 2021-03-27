@@ -1,4 +1,4 @@
-.frame {
+.footer {
   position: relative;
   z-index: 100;
   padding-top: 1.5rem;
@@ -7,7 +7,7 @@
   box-shadow: var(--wp-shadow-100);
 }
 
-.frame a {
+.footer a {
   color: var(--textColor);
 }
 
@@ -18,17 +18,13 @@
   justify-content: space-between;
 }
 
-.logo {
-  flex-shrink: 0;
-  width: var(--logo-widht);
-}
-
-.logo img {
-  width: 100%;
-  height: auto;
-}
-
 .copyright {
   font-size: 0.875em;
   color: var(--textSecondaryColor);
+}
+
+@media only screen and (max-width: 1024px) {
+  .footer {
+    padding-bottom: calc(var(--mobileNavHeight) + 2rem);
+  }
 }

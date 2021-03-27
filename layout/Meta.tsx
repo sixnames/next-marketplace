@@ -29,10 +29,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, canonicalUrl, previ
       <title>{pageTitle}</title>
       <meta
         name='viewport'
-        content={`minimum-scale=1 height=device-height,
-                      width=device-width, initial-scale=1.0,
-                      minimum-scale=1.0, maximum-scale=1.0,
-                      user-scalable=no`}
+        content={`minimum-scale=1, height=device-height, width=device-width, initial-scale=1.0`}
       />
       <meta name={'description'} content={pageDescription} />
 

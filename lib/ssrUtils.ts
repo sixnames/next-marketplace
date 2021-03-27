@@ -140,6 +140,9 @@ export async function getSiteInitialData({
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
 
+  // Cache header
+  context.res.setHeader('cache-control', 's-maxage=60, stale-while-revalidate');
+
   return {
     props: {
       initialData,

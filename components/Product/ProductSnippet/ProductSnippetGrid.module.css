@@ -79,19 +79,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: var(--controlButtonHeight);
+  margin-top: auto;
 }
 
 .bottomRight {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  height: var(--controlButtonHeight);
+  margin-top: auto;
 }
 
 .outerRatingList {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  min-height: var(--controlButtonHeight);
+  height: var(--controlButtonHeight);
 }
 
 .outerRating {

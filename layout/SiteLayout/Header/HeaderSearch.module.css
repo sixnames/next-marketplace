@@ -92,7 +92,7 @@
 
 .resultList {
   display: grid;
-  align-items: start;
+  align-items: stretch;
   flex-grow: 1;
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: var(--catalogueGridGap);

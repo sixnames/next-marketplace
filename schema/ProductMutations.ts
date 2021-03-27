@@ -7,7 +7,6 @@ import {
   AttributeModel,
   ManufacturerModel,
   OptionModel,
-  OptionsGroupModel,
   ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
@@ -21,7 +20,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_OPTIONS_GROUPS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -201,9 +199,18 @@ export const ProductMutations = extendType({
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricId, ...values } = input;
+
+          // Get selected rubric
+          const rubric = await rubricsCollection.findOne({ _id: rubricId });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           const manufacturerEntity = manufacturerSlug
             ? await manufacturersCollection.findOne({ slug: manufacturerSlug })
@@ -238,17 +245,28 @@ export const ProductMutations = extendType({
             const { selectedOptionsSlugs } = attributeInput;
             return [...acc, ...selectedOptionsSlugs];
           }, []);
-          const optionsGroups = await optionsGroupsCollection
-            .find({
-              'options.slug': { $in: selectedOptionsSlugs },
-            })
-            .toArray();
-          const options = optionsGroups.reduce((acc: OptionModel[], optionsGroup) => {
+
+          const options = rubric.attributes.reduce((acc: OptionModel[], optionsGroup) => {
             return [...acc, ...optionsGroup.options];
           }, []);
 
           // Create product
           const slug = generateDefaultLangSlug(values.nameI18n);
+
+          // Get product attributes
+          const attributes = values.attributes.map((attributeInput) => {
+            let selectedOptions: OptionModel[] = [];
+            const { selectedOptionsSlugs } = attributeInput;
+            if (selectedOptionsSlugs.length > 0) {
+              selectedOptions = options.filter(({ slug }) => {
+                return selectedOptionsSlugs.includes(slug);
+              });
+            }
+            return {
+              ...attributeInput,
+              selectedOptions,
+            };
+          });
 
           const createdProductResult = await productsCollection.insertOne({
             ...values,
@@ -270,17 +288,7 @@ export const ProductMutations = extendType({
             updatedAt: new Date(),
             rubricId,
             selectedOptionsSlugs,
-            attributes: values.attributes.map((attributeInput) => {
-              let selectedOptions: OptionModel[] = [];
-              const { selectedOptionsSlugs } = attributeInput;
-              if (selectedOptionsSlugs.length > 0) {
-                selectedOptions = options.filter(({ slug }) => selectedOptionsSlugs.includes(slug));
-              }
-              return {
-                ...attributeInput,
-                selectedOptions,
-              };
-            }),
+            attributes,
           });
 
           const createdProduct = createdProductResult.ops[0];
@@ -331,14 +339,18 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { productId, rubricId, ...values } = input;
 
-          // Get selected rubrics
-          const rubrics = await rubricsCollection.find({ _id: rubricId }).toArray();
-          const rubricsSlugs = rubrics.map(({ slug }) => slug);
+          // Get selected rubric
+          const rubric = await rubricsCollection.findOne({ _id: rubricId });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           // Check product availability
           const product = await productsCollection.findOne({ _id: productId });
@@ -354,12 +366,8 @@ export const ProductMutations = extendType({
             const { selectedOptionsSlugs } = attributeInput;
             return [...acc, ...selectedOptionsSlugs];
           }, []);
-          const optionsGroups = await optionsGroupsCollection
-            .find({
-              'options.slug': { $in: selectedOptionsSlugs },
-            })
-            .toArray();
-          const options = optionsGroups.reduce((acc: OptionModel[], optionsGroup) => {
+
+          const options = rubric.attributes.reduce((acc: OptionModel[], optionsGroup) => {
             return [...acc, ...optionsGroup.options];
           }, []);
 
@@ -367,6 +375,21 @@ export const ProductMutations = extendType({
           const { updatedSlug } = createProductSlugWithConnections({
             product,
             connections: product.connections,
+          });
+
+          // Get product attributes
+          const attributes = values.attributes.map((attributeInput) => {
+            let selectedOptions: OptionModel[] = [];
+            const { selectedOptionsSlugs } = attributeInput;
+            if (selectedOptionsSlugs.length > 0) {
+              selectedOptions = options.filter(({ slug }) => {
+                return selectedOptionsSlugs.includes(slug);
+              });
+            }
+            return {
+              ...attributeInput,
+              selectedOptions,
+            };
           });
 
           // Update product
@@ -380,20 +403,8 @@ export const ProductMutations = extendType({
                 slug: updatedSlug,
                 updatedAt: new Date(),
                 rubricId,
-                selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
-                attributes: values.attributes.map((attributeInput) => {
-                  let selectedOptions: OptionModel[] = [];
-                  const { selectedOptionsSlugs } = attributeInput;
-                  if (selectedOptionsSlugs.length > 0) {
-                    selectedOptions = options.filter(({ slug }) =>
-                      selectedOptionsSlugs.includes(slug),
-                    );
-                  }
-                  return {
-                    ...attributeInput,
-                    selectedOptions,
-                  };
-                }),
+                selectedOptionsSlugs,
+                attributes,
               },
             },
             {
@@ -415,7 +426,7 @@ export const ProductMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            // payload: updatedProduct,
           };
         } catch (e) {
           return {

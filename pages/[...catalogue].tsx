@@ -353,10 +353,12 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, ca
     );
   }
 
+  const rubricName = catalogueData.rubric.name;
+
   return (
     <SiteLayout
-      title={catalogueData.catalogueTitle}
-      description={catalogueData.catalogueTitle}
+      title={`Купить ${rubricName} по лучшей цене в Winepoint`}
+      description={`Купить ${rubricName} по лучшей цене в Winepoint`}
       navRubrics={navRubrics}
       canonicalUrl={canonicalUrl}
     >

@@ -437,7 +437,7 @@ export const getCatalogueData = async ({
           {
             $match: {
               _id: {
-                $lt: lastProductId,
+                $lt: new ObjectId(lastProductId),
               },
             },
           },
@@ -776,7 +776,7 @@ export const getCatalogueData = async ({
     // Get keySet pagination
     const lastProduct = products[products.length - 1];
     const hasMore = Boolean(
-      lastProduct && lastProductId && !lastProductId.equals(lastProduct?._id),
+      lastProduct && lastProductId && !new ObjectId(lastProductId).equals(lastProduct?._id),
     );
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

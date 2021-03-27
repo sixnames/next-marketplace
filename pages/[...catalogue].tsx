@@ -30,7 +30,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
   CatalogueDataFragment,
-  useGetCatalogueRubricQuery,
   useUpdateCatalogueCountersMutation,
 } from 'generated/apolloComponents';
 import { PagePropsInterface } from 'pages/_app';
@@ -45,7 +44,6 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
   const router = useRouter();
   const { isMobile } = useAppContext();
-  const [skip, setSkip] = React.useState<boolean>(true);
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [isRowView, setIsRowView] = React.useState<boolean>(true);
@@ -88,38 +86,34 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
     });
   }, [catalogueData, updateCatalogueCountersMutation]);
 
-  const { loading } = useGetCatalogueRubricQuery({
-    fetchPolicy: 'network-only',
-    onError: () => showErrorNotification(),
-    skip,
-    variables: {
-      input: {
-        filter: state.filter,
-        lastProductId: state.products[state.products.length - 1]?._id,
-      },
-    },
-    onCompleted: (data) => {
-      setSkip(true);
-      if (data) {
-        const { getCatalogueData } = data;
-
-        if (getCatalogueData) {
-          setState((prevState) => {
-            return {
-              ...getCatalogueData,
-              products: [...prevState.products, ...getCatalogueData.products],
-            };
-          });
-        }
-      }
-    },
-  });
-
+  // fetch more products handler
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
-      setSkip(false);
+      fetch(
+        `/api/catalogue${router.asPath}?locale=${router.locale}&lastProductId=${state.lastProductId}`,
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setState((prevState) => {
+            return {
+              ...data,
+              products: [...prevState.products, ...data.products],
+            };
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
-  }, [state.products.length, state.totalProducts]);
+  }, [
+    router.asPath,
+    router.locale,
+    state.lastProductId,
+    state.products.length,
+    state.totalProducts,
+  ]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -301,7 +295,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                   hasMore={state.products.length < state.totalProducts}
                   dataLength={state.products.length}
                   scrollableTarget={'#catalogue-products'}
-                  loader={<span />}
+                  loader={<Spinner isNested />}
                 >
                   {state.products.map((product) => {
                     if (isRowView && !isMobile) {
@@ -326,12 +320,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                   })}
                 </InfiniteScroll>
               </div>
-
-              {loading ? (
-                <div className={`${classes.catalogueSpinner}`}>
-                  <Spinner isNested />
-                </div>
-              ) : null}
             </div>
           </div>
         </div>

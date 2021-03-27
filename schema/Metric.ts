@@ -5,9 +5,10 @@ import {
   MetricModel,
   MetricsPaginationPayloadModel,
   MetricPayloadModel,
+  ProductModel,
 } from 'db/dbModels';
 import { aggregatePagination } from 'db/aggregatePagination';
-import { COL_ATTRIBUTES, COL_METRICS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { SORT_ASC } from 'config/common';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
@@ -196,6 +197,7 @@ export const MetricMutations = extendType({
           const db = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { metricId, ...values } = input;
 
@@ -249,6 +251,30 @@ export const MetricMutations = extendType({
               $set: {
                 metric: updatedMetric,
               },
+            },
+          );
+          const updatedAttributes = await attributesCollection
+            .find(
+              { 'metric._id': metricId },
+              {
+                projection: {
+                  _id: true,
+                },
+              },
+            )
+            .toArray();
+          const updatedAttributesIds = updatedAttributes.map(({ _id }) => _id);
+
+          // Update products metric
+          await productsCollection.updateMany(
+            { 'attributes.attributeId': { $in: updatedAttributesIds } },
+            {
+              $set: {
+                'attributes.$[attribute].metric': updatedMetric,
+              },
+            },
+            {
+              arrayFilters: [{ 'attribute.attributeId': { $in: updatedAttributesIds } }],
             },
           );
 

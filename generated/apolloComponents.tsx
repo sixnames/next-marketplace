@@ -2206,6 +2206,7 @@ export type ProductAttribute = {
   /** List of selected options slug */
   selectedOptionsSlugs: Array<Scalars['String']>;
   selectedOptions: Array<Option>;
+  attributeMetric?: Maybe<Metric>;
   attributeName: Scalars['String'];
   text: Scalars['String'];
   attribute: Attribute;
@@ -4011,9 +4012,17 @@ export type ProductSnippetFragment = (
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
+    & { attributeMetric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, '_id' | 'name'>
+    )> }
   )>, ratingFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
+    & { attributeMetric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, '_id' | 'name'>
+    )> }
   )>, connections: Array<(
     { __typename?: 'ProductConnection' }
     & SnippetConnectionFragment
@@ -5094,12 +5103,20 @@ export const ProductSnippetFragmentDoc = gql`
     attributeId
     attributeName
     readableValue
+    attributeMetric {
+      _id
+      name
+    }
   }
   ratingFeatures {
     _id
     attributeId
     attributeName
     readableValue
+    attributeMetric {
+      _id
+      name
+    }
   }
   connections {
     ...SnippetConnection

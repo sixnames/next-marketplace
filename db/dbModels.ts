@@ -465,6 +465,7 @@ export interface ProductAttributeModel {
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
   attributeName?: string | null;
+  attributeMetric?: MetricModel | null;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   selectedOptions: OptionModel[];
@@ -729,7 +730,7 @@ export interface CatalogueDataModel {
   clearSlug: string;
   filter: string[];
   rubric: RubricModel;
-  products: ProductModel[];
+  products: Omit<ProductModel, 'attributes'>[];
   totalProducts: number;
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];

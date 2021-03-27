@@ -1463,6 +1463,7 @@ type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
+  attributeMetric: Metric
   attributeName: String!
   attributeNameI18n: JSONObject!
   attributeSlug: String!

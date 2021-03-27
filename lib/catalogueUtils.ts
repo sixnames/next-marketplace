@@ -505,9 +505,11 @@ export const getCatalogueData = async ({
     // Get catalogue products
     // const productsStartTime = new Date().getTime();
     const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
+
     const products = [];
     for await (const product of initialProducts) {
       // prices
+      const { attributes, ...restProduct } = product;
       const minPrice = noNaN(product.minPriceCities[city]);
       const maxPrice = noNaN(product.maxPriceCities[city]);
       const cardPrices = {
@@ -529,14 +531,14 @@ export const getCatalogueData = async ({
 
       // listFeatures
       const listFeatures = getProductCurrentViewCastedAttributes({
-        attributes: product.attributes,
+        attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         getFieldLocale,
       });
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({
-        attributes: product.attributes,
+        attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         getFieldLocale,
       });
@@ -580,7 +582,7 @@ export const getCatalogueData = async ({
       }
 
       products.push({
-        ...product,
+        ...restProduct,
         listFeatures,
         ratingFeatures,
         name: getFieldLocale(product.nameI18n),

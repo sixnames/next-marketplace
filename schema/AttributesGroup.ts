@@ -723,9 +723,11 @@ export const attributesGroupMutations = extendType({
                 'attributes.$[attribute].attributeNameI18n': updatedAttribute.nameI18n,
                 'attributes.$[attribute].attributeVariant': updatedAttribute.variant,
                 'attributes.$[attribute].attributeViewVariant': updatedAttribute.viewVariant,
+                'attributes.$[attribute].attributeMetric': updatedAttribute.metric,
                 'connections.$[connection].attributeNameI18n': updatedAttribute.nameI18n,
                 'connections.$[connection].attributeVariant': updatedAttribute.variant,
                 'connections.$[connection].attributeViewVariant': updatedAttribute.viewVariant,
+                'connections.$[connection].attributeMetric': updatedAttribute.metric,
               },
             },
             {

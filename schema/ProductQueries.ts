@@ -291,6 +291,7 @@ export const ProductQueries = extendType({
             textI18n: productAttribute?.textI18n || {},
             showAsBreadcrumb: productAttribute?.showAsBreadcrumb || false,
             showInCard: productAttribute?.showInCard || true,
+            attributeMetric: productAttribute?.attributeMetric || null,
           });
         }
 

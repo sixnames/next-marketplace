@@ -36,12 +36,20 @@ export const productSnippedFragment = gql`
       attributeId
       attributeName
       readableValue
+      attributeMetric {
+        _id
+        name
+      }
     }
     ratingFeatures {
       _id
       attributeId
       attributeName
       readableValue
+      attributeMetric {
+        _id
+        name
+      }
     }
     connections {
       ...SnippetConnection

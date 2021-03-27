@@ -257,6 +257,11 @@ export const ProductMutations = extendType({
           const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
+
+            const attribute = rubric.attributes.find(({ _id }) => {
+              return _id.equals(attributeInput.attributeId);
+            });
+
             if (selectedOptionsSlugs.length > 0) {
               selectedOptions = options.filter(({ slug }) => {
                 return selectedOptionsSlugs.includes(slug);
@@ -264,6 +269,7 @@ export const ProductMutations = extendType({
             }
             return {
               ...attributeInput,
+              attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
           });
@@ -381,6 +387,11 @@ export const ProductMutations = extendType({
           const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
+
+            const attribute = rubric.attributes.find(({ _id }) => {
+              return _id.equals(attributeInput.attributeId);
+            });
+
             if (selectedOptionsSlugs.length > 0) {
               selectedOptions = options.filter(({ slug }) => {
                 return selectedOptionsSlugs.includes(slug);
@@ -388,6 +399,7 @@ export const ProductMutations = extendType({
             }
             return {
               ...attributeInput,
+              attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
           });

@@ -1467,6 +1467,7 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeMetric: NexusGenRootTypes['Metric'] | null; // Metric
     attributeName: string; // String!
     attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
@@ -2521,6 +2522,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
+    attributeMetric: 'Metric';
     attributeName: 'String';
     attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';

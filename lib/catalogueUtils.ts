@@ -119,8 +119,14 @@ export function getCatalogueTitle({
   }
 
   const titleSeparator = getFieldTranslation(`catalogueTitleSeparator.${locale}`);
-  const rubricKeyword = getFieldLocale(keywordI18n);
-  const finalPrefix = prefixI18n ? getFieldLocale(prefixI18n) : '';
+  const rubricKeywordTranslation = getFieldLocale(keywordI18n);
+  const rubricKeyword =
+    rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : rubricKeywordTranslation;
+
+  const finalPrefixTranslation = getFieldLocale(prefixI18n);
+  const finalPrefix =
+    finalPrefixTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : finalPrefixTranslation;
+
   const beginOfTitle: string[] = [];
   const beforeKeyword: string[] = [];
   const afterKeyword: string[] = [];

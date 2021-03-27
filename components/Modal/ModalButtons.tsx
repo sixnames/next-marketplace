@@ -9,7 +9,7 @@ interface ModalButtonsInterface {
 const ModalButtons: React.FC<ModalButtonsInterface> = ({ children, className, withInner }) => {
   return (
     <div
-      className={`${classes.frame} ${className ? className : ''} ${
+      className={`${classes.buttons} ${className ? className : ''} ${
         withInner ? classes.withInner : ''
       }`}
     >

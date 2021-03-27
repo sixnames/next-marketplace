@@ -1,19 +1,20 @@
-.frame {
+.buttons {
   display: flex;
   flex-wrap: wrap;
   margin-top: 1.25rem;
 }
 
-.frame > * {
+.buttons > a,
+.buttons > button {
   margin-bottom: 1rem;
   margin-right: 1rem;
 }
 
-.frame a {
+.buttons a {
   display: block;
 }
 
-.frame a:hover {
+.buttons a:hover {
   text-decoration: none;
 }
 

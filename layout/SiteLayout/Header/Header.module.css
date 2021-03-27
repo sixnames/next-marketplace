@@ -140,7 +140,6 @@
   z-index: 1;
   width: 100%;
   height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
-  /*height: 100vh;*/
   background-color: var(--secondaryBackground);
   padding-top: 1rem;
   padding-bottom: 2rem;

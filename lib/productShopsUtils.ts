@@ -2,12 +2,13 @@ import { ObjectId } from 'mongodb';
 import { getDatabase } from 'db/mongodb';
 import { COL_CITIES, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
+  CitiesBooleanModel,
+  CitiesCounterModel,
   CityModel,
   ObjectIdModel,
   ProductModel,
   ShopModel,
   ShopProductModel,
-  TranslationModel,
 } from 'db/dbModels';
 
 interface UpdateProductShopsDataInterface {
@@ -22,9 +23,10 @@ export async function updateProductShopsData({
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const cities = await citiesCollection.find({}).toArray();
 
-  const shopProductsCountCities: TranslationModel = {};
-  const minPriceCities: TranslationModel = {};
-  const maxPriceCities: TranslationModel = {};
+  const availabilityCities: CitiesBooleanModel = {};
+  const shopProductsCountCities: CitiesCounterModel = {};
+  const minPriceCities: CitiesCounterModel = {};
+  const maxPriceCities: CitiesCounterModel = {};
   let shopProductsIds: ObjectIdModel[] = [];
 
   for await (const city of cities) {
@@ -40,12 +42,14 @@ export async function updateProductShopsData({
             count: { $sum: 1 },
             prices: { $push: '$price' },
             ids: { $push: '$_id' },
+            available: { $push: '$available' },
           },
         },
         {
           $addFields: {
             minPrice: { $min: '$prices' },
             maxPrice: { $max: '$prices' },
+            available: { $max: '$available' },
           },
         },
       ])
@@ -55,15 +59,17 @@ export async function updateProductShopsData({
       shopProductsCountCities[citySlug] = 0;
       minPriceCities[citySlug] = 0;
       maxPriceCities[citySlug] = 0;
+      availabilityCities[citySlug] = false;
       continue;
     }
 
     // Cast shop products data
     const cityShopProductsIds = shopProductsData.reduce((acc: ObjectId[], group) => {
-      const { ids = [], minPrice, maxPrice, count } = group;
+      const { ids = [], minPrice, maxPrice, count, available } = group;
       shopProductsCountCities[citySlug] = count || 0;
       minPriceCities[citySlug] = minPrice || 0;
       maxPriceCities[citySlug] = maxPrice || 0;
+      availabilityCities[citySlug] = available > 0;
 
       return [...acc, ...ids];
     }, []);
@@ -80,6 +86,7 @@ export async function updateProductShopsData({
         shopProductsCountCities,
         minPriceCities,
         maxPriceCities,
+        availabilityCities,
       },
     },
     {

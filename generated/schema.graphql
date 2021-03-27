@@ -1413,6 +1413,7 @@ type Product implements Base & Timestamp {
   allShopProducts: [ShopProduct!]!
   assets: [Asset!]!
   attributes: [ProductAttribute!]!
+  available: Boolean
   brand: Brand
   brandCollection: BrandCollection
   brandCollectionSlug: String

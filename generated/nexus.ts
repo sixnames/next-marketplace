@@ -1429,6 +1429,7 @@ export interface NexusGenFieldTypes {
     allShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    available: boolean | null; // Boolean
     brand: NexusGenRootTypes['Brand'] | null; // Brand
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
@@ -2484,6 +2485,7 @@ export interface NexusGenFieldTypeNames {
     allShopProducts: 'ShopProduct';
     assets: 'Asset';
     attributes: 'ProductAttribute';
+    available: 'Boolean';
     brand: 'Brand';
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';

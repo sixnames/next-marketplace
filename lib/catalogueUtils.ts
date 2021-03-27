@@ -473,7 +473,8 @@ export const getCatalogueData = async ({
 
     // sort stage
     const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
-    let sortStage = {
+    let sortStage: any = {
+      [`availabilityCities.${city}`]: SORT_DESC,
       [`views.${city}`]: SORT_DESC,
       [`priorities.${city}`]: SORT_DESC,
       _id: SORT_DESC,
@@ -482,6 +483,7 @@ export const getCatalogueData = async ({
     // sort by price
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
+        [`availabilityCities.${city}`]: SORT_DESC,
         [`minPriceCities.${city}`]: castedSortDir,
         _id: SORT_DESC,
       };

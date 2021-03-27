@@ -100,6 +100,7 @@ export const Product = objectType({
     t.nonNull.objectId('rubricId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
+    t.boolean('available');
     t.nonNull.list.nonNull.field('assets', {
       type: 'Asset',
       resolve: (source) => {

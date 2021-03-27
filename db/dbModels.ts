@@ -502,12 +502,14 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   connections: ProductConnectionModel[];
   minPriceCities: CitiesCounterModel;
   maxPriceCities: CitiesCounterModel;
+  availabilityCities: CitiesBooleanModel;
 
   // types for ui
   name?: string | null;
   description?: string | null;
   shopsCount?: number;
   mainImage?: string;
+  available?: boolean;
   listFeatures?: ProductAttributeModel[];
   textFeatures?: ProductAttributeModel[];
   tagFeatures?: ProductAttributeModel[];

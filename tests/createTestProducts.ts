@@ -296,6 +296,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       shopProductsCountCities: {},
       minPriceCities: {},
       maxPriceCities: {},
+      availabilityCities: {},
       selectedOptionsSlugs,
       slug,
       connections,

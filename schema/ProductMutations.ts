@@ -287,6 +287,7 @@ export const ProductMutations = extendType({
             views: {},
             shopProductsIds: [],
             shopProductsCountCities: {},
+            availabilityCities: {},
             minPriceCities: {},
             maxPriceCities: {},
             connections: [],

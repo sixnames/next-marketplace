@@ -113,8 +113,8 @@
     left:0;
     right:0;
     bottom: 0;
-    height: 100vh;
-    /*height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));*/
+    /*height: 100vh;*/
+    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
     overflow: auto;
   }
 

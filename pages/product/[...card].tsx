@@ -377,6 +377,7 @@ const Card: NextPage<CardInterface> = ({ cardData, canonicalUrl, navRubrics, ses
 
   return (
     <SiteLayout
+      previewImage={cardData.mainImage}
       canonicalUrl={canonicalUrl}
       navRubrics={navRubrics}
       title={`Купить ${cardData.originalName} в городе ${sessionCity}`}

@@ -14,6 +14,7 @@ interface SiteLayoutConsumerInterface {
   title?: string;
   description?: string;
   canonicalUrl: string;
+  previewImage?: string;
 }
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
@@ -50,6 +51,7 @@ export interface SiteLayoutInterface {
   description?: string;
   navRubrics: RubricModel[];
   canonicalUrl: string;
+  previewImage?: string;
 }
 
 const SiteLayout: React.FC<SiteLayoutInterface> = ({

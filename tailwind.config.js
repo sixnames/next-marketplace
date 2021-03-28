@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   purge: [
@@ -7,11 +7,11 @@ module.exports = {
     './hooks/**/*.{js,ts,jsx,tsx}',
     './routes/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class', // or 'media' or 'class'
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
-        gilroy: ['Gilroy', ...defaultTheme.fontFamily.sans],
+        gilroy: ['Gilroy', ...fontFamily.sans],
       },
       minWidth: {
         button: '12rem',

@@ -26,7 +26,8 @@ module.exports = {
         ],
       },
       {
-        source: '/fonts/(.*)',
+        source: '/:all*(woff2|woff)',
+        // source: '/fonts/(.*)',
         locale: false,
         headers: [
           {

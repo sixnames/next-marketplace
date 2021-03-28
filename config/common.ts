@@ -15,6 +15,8 @@ export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 export const CART_COOKIE_KEY = 'cart';
 export const THEME_COOKIE_KEY = 'theme';
 export const ADULT_KEY = 'adult';
+export const ADULT_TRUE = 'true';
+export const ADULT_FALSE = 'false';
 
 // THEME
 export const THEME_DARK = 'dark';

@@ -1,4 +1,4 @@
-import { ADULT_KEY, DEFAULT_CITY } from 'config/common';
+import { ADULT_FALSE, ADULT_KEY, DEFAULT_CITY } from 'config/common';
 import { ADULT_MODAL } from 'config/modals';
 import * as React from 'react';
 import Router from 'next/router';
@@ -59,7 +59,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
 
   React.useEffect(() => {
     const inStorage = window.localStorage.getItem(ADULT_KEY);
-    if (!inStorage || inStorage === 'false') {
+    if (!inStorage || inStorage === ADULT_FALSE) {
       setState((prevState: ContextState) => ({
         ...prevState,
         isModal: {

@@ -2,7 +2,7 @@ import Button from 'components/Buttons/Button';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalText from 'components/Modal/ModalText';
 import ModalTitle from 'components/Modal/ModalTitle';
-import { ADULT_KEY } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import * as React from 'react';
 
@@ -20,7 +20,7 @@ const AdultModal: React.FC = () => {
       </ModalText>
       <Button
         onClick={() => {
-          window.localStorage.setItem(ADULT_KEY, 'true');
+          window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
           hideModal();
         }}
       >

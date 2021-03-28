@@ -34,7 +34,12 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
       } ${withInner ? classes.withInner : ''}`}
     >
       <div>{children}</div>
-      <ButtonCross onClick={hideModal} className={classes.close} testId={'close-modal'} />
+      <ButtonCross
+        ariaLabel={'Закрыть окно'}
+        onClick={hideModal}
+        className={classes.close}
+        testId={'close-modal'}
+      />
 
       <div className={classes.closeLeft} onClick={hideModal} />
       <div className={classes.closeRight} onClick={hideModal} />

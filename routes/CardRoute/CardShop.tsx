@@ -32,7 +32,6 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const {
     assets,
     name,
-    productsCount,
     slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
@@ -94,8 +93,6 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
             {inCartCount > 0 ? (
               <div className={classes.available}>В корзине {` ${inCartCount} `}шт.</div>
             ) : null}
-
-            <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
 
             <div className={classes.moreLink}>
               <a href='#'>Узнать больше</a>

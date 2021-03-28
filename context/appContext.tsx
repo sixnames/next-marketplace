@@ -1,4 +1,5 @@
-import { DEFAULT_CITY } from 'config/common';
+import { ADULT_KEY, DEFAULT_CITY } from 'config/common';
+import { ADULT_MODAL } from 'config/modals';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
@@ -55,6 +56,20 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
     isLoading: false,
     sessionCity: sessionCity || DEFAULT_CITY,
   }));
+
+  React.useEffect(() => {
+    const inStorage = window.localStorage.getItem(ADULT_KEY);
+    if (!inStorage || inStorage === 'false') {
+      setState((prevState: ContextState) => ({
+        ...prevState,
+        isModal: {
+          show: true,
+          props: {},
+          variant: ADULT_MODAL,
+        },
+      }));
+    }
+  }, []);
 
   React.useEffect(() => {
     Router.events.on('routeChangeStart', () => {

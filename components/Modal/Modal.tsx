@@ -23,8 +23,10 @@ import {
   SHOP_PRODUCT_MODAL,
   CART_MODAL,
   CREATE_ROLE_MODAL,
+  ADULT_MODAL,
 } from 'config/modals';
 
+const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
 const ConfirmModal = dynamic(() => import('./ConfirmModal/ConfirmModal'));
 const LanguageModal = dynamic(() => import('./LanguageModal/LanguageModal'));
 const OptionsGroupModal = dynamic(() => import('./OptionsGroupModal/OptionsGroupModal'));
@@ -67,6 +69,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
     <div className={classes.frame}>
       <div className={classes.scroll}>
         <React.Suspense fallback={<Spinner />}>
+          {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
+
           {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
 
           {modalType === LANGUAGE_MODAL && <LanguageModal {...modalProps} />}

@@ -11,9 +11,10 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 
-// Cookies
+// Cookies / Local storage
 export const CART_COOKIE_KEY = 'cart';
 export const THEME_COOKIE_KEY = 'theme';
+export const ADULT_KEY = 'adult';
 
 // THEME
 export const THEME_DARK = 'dark';

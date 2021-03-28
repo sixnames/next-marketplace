@@ -20,8 +20,8 @@ const ModalText: React.FC<ModalTextInterface> = ({
   return (
     <div
       style={{ textAlign: centered ? 'center' : 'left' }}
-      className={`${classes.frame} ${lowBottom ? classes.frameLowBottom : ''} ${
-        lowTop ? classes.frameLowTop : ''
+      className={`${classes.text} ${lowBottom ? classes.textLowBottom : ''} ${
+        lowTop ? classes.textLowTop : ''
       } ${className ? className : ''} ${warning ? classes.warning : ''}`}
     >
       {children}

@@ -3,6 +3,7 @@ import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
 import { CompanyModel, UserModel } from 'db/dbModels';
+import { PageUrlsInterface } from 'layout/Meta';
 import { PageInitialDataPayload } from 'lib/catalogueUtils';
 import * as React from 'react';
 import 'styles/globals.css';
@@ -20,10 +21,9 @@ export interface PagePropsInterface {
   sessionCity: string;
   sessionLocale: string;
   initialApolloState?: any;
-  domain?: string;
-  canonicalUrl: string;
   company?: CompanyModel | null;
   sessionUser?: UserModel | null;
+  pageUrls: PageUrlsInterface;
 }
 
 NProgress.configure({ showSpinner: false });

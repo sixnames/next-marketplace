@@ -16,6 +16,7 @@ import { ROUTE_CMS } from 'config/common';
 import { CmsOrderInListFragment, useGetAllCmsOrdersQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import AppLayout from 'layout/AppLayout/AppLayout';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -136,9 +137,9 @@ const CmsOrdersRoute: React.FC = () => {
   );
 };
 
-const Orders: NextPage = () => {
+const Orders: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <CmsOrdersRoute />
     </AppLayout>
   );

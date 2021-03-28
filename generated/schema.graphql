@@ -1438,6 +1438,7 @@ type Product implements Base & Timestamp {
   description: String!
   descriptionI18n: JSONObject!
   iconFeatures: [ProductAttribute!]!
+  isCustomersChoice: Boolean!
   itemId: String!
   listFeatures: [ProductAttribute!]!
   mainImage: String!

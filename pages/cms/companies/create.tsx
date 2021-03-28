@@ -124,9 +124,9 @@ const CreateCompanyRoute: React.FC = () => {
   return <DataLayout title={'Создание компании'} filterResult={() => <CreateCompanyContent />} />;
 };
 
-const CompaniesCreate: NextPage<PagePropsInterface> = () => {
+const CompaniesCreate: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <CreateCompanyRoute />
     </AppLayout>
   );

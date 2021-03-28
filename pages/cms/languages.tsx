@@ -22,6 +22,7 @@ import {
 } from 'generated/apolloComponents';
 import { GET_ALL_LANGUAGES_QUERY } from 'graphql/query/languagesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -176,9 +177,9 @@ const LanguagesRoute: React.FC = () => {
   return <DataLayout title={'Языки сайта'} filterResult={() => <LanguagesContent />} />;
 };
 
-const Languages: NextPage = () => {
+const Languages: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <LanguagesRoute />
     </AppLayout>
   );

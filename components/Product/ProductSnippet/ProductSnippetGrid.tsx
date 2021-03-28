@@ -36,6 +36,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     listFeatures,
     ratingFeatures,
     shopsCount,
+    isCustomersChoice,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
 
@@ -105,7 +106,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         </div>
       </div>
 
-      <ProductMarker>Выбор покупателей</ProductMarker>
+      {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
 
       <Link
         // style={{ display: 'none' }}

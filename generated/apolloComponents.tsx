@@ -2026,6 +2026,7 @@ export type Product = Base & Timestamp & {
   rubricId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
+  available?: Maybe<Scalars['Boolean']>;
   assets: Array<Asset>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
@@ -2042,6 +2043,7 @@ export type Product = Base & Timestamp & {
   /** Returns all shop products that product connected to */
   allShopProducts: Array<ShopProduct>;
   minPrice: Scalars['Int'];
+  isCustomersChoice: Scalars['Boolean'];
   maxPrice: Scalars['Int'];
   /** Should find all connected shop products and return minimal and maximal price. */
   cardPrices: ProductCardPrices;
@@ -3920,7 +3922,7 @@ export type ShopProductSnippetFragment = (
 
 export type ProductCardFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'description' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'description' | 'shopsCount' | 'isCustomersChoice'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -4008,7 +4010,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount' | 'isCustomersChoice'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -5098,6 +5100,7 @@ export const ProductSnippetFragmentDoc = gql`
   slug
   mainImage
   shopsCount
+  isCustomersChoice
   listFeatures {
     _id
     attributeId
@@ -5305,6 +5308,7 @@ export const ProductCardFragmentDoc = gql`
     max
   }
   shopsCount
+  isCustomersChoice
   cardShopProducts {
     ...ShopProductSnippet
   }

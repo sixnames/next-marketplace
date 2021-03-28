@@ -20,6 +20,7 @@ import useProductsListColumns from 'hooks/useProductsListColumns';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -180,9 +181,9 @@ const RubricProducts: React.FC = () => {
   );
 };
 
-const RubricProductsPage: NextPage = () => {
+const RubricProductsPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <RubricProducts />
     </AppLayout>
   );

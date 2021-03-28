@@ -262,6 +262,18 @@ export const Product = objectType({
       },
     });
 
+    // Product isCustomersChoice field resolver
+    t.nonNull.field('isCustomersChoice', {
+      type: 'Boolean',
+      resolve: async (source, _args, context): Promise<boolean> => {
+        const { city } = await getRequestParams(context);
+        if (source.shopProductsCountCities[city]) {
+          return true;
+        }
+        return false;
+      },
+    });
+
     // Product maxPrice field resolver
     t.nonNull.field('maxPrice', {
       type: 'Int',

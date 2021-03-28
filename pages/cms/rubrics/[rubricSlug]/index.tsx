@@ -20,6 +20,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -170,9 +171,9 @@ const RubricDetails: React.FC = () => {
   );
 };
 
-const Rubric: NextPage = () => {
+const Rubric: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <RubricDetails />
     </AppLayout>
   );

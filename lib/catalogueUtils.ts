@@ -592,6 +592,7 @@ export const getCatalogueData = async ({
         mainImage,
         shopsCount: noNaN(product.shopProductsCountCities[city]),
         connections,
+        isCustomersChoice: product.isCustomersChoiceCities[city],
       });
     }
     // const productsEndTime = new Date().getTime();
@@ -1036,6 +1037,7 @@ export const getCatalogueNavRubrics = async ({
         $sort: {
           [`views.${city}`]: SORT_DESC,
           [`priorities.${city}`]: SORT_DESC,
+          _id: SORT_DESC,
         },
       },
     ])

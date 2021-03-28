@@ -23,6 +23,7 @@ import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -181,9 +182,9 @@ const CompaniesRoute: React.FC = () => {
   );
 };
 
-const Companies: NextPage = () => {
+const Companies: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <CompaniesRoute />
     </AppLayout>
   );

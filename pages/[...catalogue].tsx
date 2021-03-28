@@ -338,10 +338,10 @@ interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
   catalogueData?: CatalogueDataFragment | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, canonicalUrl }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, pageUrls }) => {
   if (!catalogueData) {
     return (
-      <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
+      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -354,7 +354,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, ca
       title={`Купить ${rubricName} по лучшей цене в Winepoint`}
       description={`Купить ${rubricName} по лучшей цене в Winepoint`}
       navRubrics={navRubrics}
-      canonicalUrl={canonicalUrl}
+      pageUrls={pageUrls}
     >
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>

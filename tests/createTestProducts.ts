@@ -10,6 +10,7 @@ import { generateSlug } from 'lib/slugUtils';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import {
   ASSETS_DIST_PRODUCTS,
+  DEFAULT_CITY,
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
@@ -297,6 +298,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       minPriceCities: {},
       maxPriceCities: {},
       availabilityCities: {},
+      isCustomersChoiceCities: {
+        [DEFAULT_CITY]: true,
+      },
       selectedOptionsSlugs,
       slug,
       connections,

@@ -31,6 +31,7 @@ export const productSnippedFragment = gql`
     slug
     mainImage
     shopsCount
+    isCustomersChoice
     listFeatures {
       _id
       attributeId

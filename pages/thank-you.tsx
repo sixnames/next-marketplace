@@ -57,9 +57,9 @@ const ThankYouRoute: React.FC = () => {
 
 interface ThankYouInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, canonicalUrl }) => {
+const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, pageUrls }) => {
   return (
-    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
+    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} pageUrls={pageUrls}>
       <ThankYouRoute />
     </SiteLayout>
   );

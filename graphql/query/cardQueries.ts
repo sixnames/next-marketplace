@@ -110,6 +110,7 @@ export const productCardFragment = gql`
       max
     }
     shopsCount
+    isCustomersChoice
     cardShopProducts {
       ...ShopProductSnippet
     }

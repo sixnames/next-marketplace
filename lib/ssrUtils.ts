@@ -85,8 +85,11 @@ export async function getAppInitialData({
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       sessionUser: castDbData(user),
-      domain: `${domain}`,
-      canonicalUrl: `https://${host}${path}`,
+      pageUrls: {
+        canonicalUrl: `https://${host}${path}`,
+        siteUrl: `https://${host}`,
+        domain: `${domain}`,
+      },
     },
   };
 }
@@ -141,7 +144,7 @@ export async function getSiteInitialData({
   }
 
   // Cache header
-  context.res.setHeader('cache-control', 's-maxage=60, stale-while-revalidate');
+  context.res.setHeader('cache-control', 's-maxage=300, stale-while-revalidate');
 
   return {
     props: {
@@ -150,8 +153,11 @@ export async function getSiteInitialData({
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       company,
-      domain: `${domain}`,
-      canonicalUrl: `https://${host}${path}`,
+      pageUrls: {
+        canonicalUrl: `https://${host}${path}`,
+        siteUrl: `https://${host}`,
+        domain: `${domain}`,
+      },
     },
   };
 }

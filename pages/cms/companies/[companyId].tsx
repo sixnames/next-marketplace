@@ -6,6 +6,7 @@ import TabsContent from 'components/TabsContent/TabsContent';
 import { useGetCompanyQuery } from 'generated/apolloComponents';
 import useTabsConfig from 'hooks/useTabsConfig';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -72,9 +73,9 @@ const CompanyRoute: React.FC = () => {
   );
 };
 
-const Company: NextPage = () => {
+const Company: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <CompanyRoute />
     </AppLayout>
   );

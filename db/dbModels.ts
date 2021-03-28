@@ -492,6 +492,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
+  isCustomersChoiceCities: CitiesBooleanModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -510,6 +511,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   shopsCount?: number;
   mainImage?: string;
   available?: boolean;
+  isCustomersChoice?: boolean;
   listFeatures?: ProductAttributeModel[];
   textFeatures?: ProductAttributeModel[];
   tagFeatures?: ProductAttributeModel[];

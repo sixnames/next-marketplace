@@ -17,6 +17,7 @@ import {
 import { GET_ALL_RUBRIC_VARIANTS } from 'graphql/query/rubricVariantsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -163,9 +164,9 @@ const RubricVariantsRoute: React.FC = () => {
   return <DataLayout title={'Типы рубрик'} filterResult={() => <RubricVariantsContent />} />;
 };
 
-const RubricVariants: NextPage = () => {
+const RubricVariants: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <RubricVariantsRoute />
     </AppLayout>
   );

@@ -1442,6 +1442,7 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     iconFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    isCustomersChoice: boolean; // Boolean!
     itemId: string; // String!
     listFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     mainImage: string; // String!
@@ -2498,6 +2499,7 @@ export interface NexusGenFieldTypeNames {
     description: 'String';
     descriptionI18n: 'JSONObject';
     iconFeatures: 'ProductAttribute';
+    isCustomersChoice: 'Boolean';
     itemId: 'String';
     listFeatures: 'ProductAttribute';
     mainImage: 'String';

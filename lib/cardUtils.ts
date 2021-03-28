@@ -419,6 +419,7 @@ export async function getCardData({
       cardShopProducts,
       connections,
       cardBreadcrumbs,
+      isCustomersChoice: product.isCustomersChoiceCities[city],
     };
   } catch (e) {
     console.log(e);

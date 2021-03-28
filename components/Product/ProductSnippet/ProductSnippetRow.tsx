@@ -40,6 +40,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     ratingFeatures,
     connections,
     shopsCount,
+    isCustomersChoice,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
@@ -169,7 +170,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         </div>
       </div>
 
-      <ProductMarker>Выбор покупателей</ProductMarker>
+      {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
 
       <Link
         // style={{ display: 'none' }}

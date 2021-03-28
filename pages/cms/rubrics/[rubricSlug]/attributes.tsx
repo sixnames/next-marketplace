@@ -30,6 +30,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import classes from 'routes/Rubrics/RubricAttributes.module.css';
 
@@ -277,7 +278,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   );
 };
 
-const RubricAttributesPage: NextPage = () => {
+const RubricAttributesPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   const { query } = useRouter();
   const { data, loading, error } = useGetRubricBySlugQuery({
     variables: {
@@ -294,7 +295,7 @@ const RubricAttributesPage: NextPage = () => {
   }
 
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <DataLayout
         title={data.getRubricBySlug.name}
         filterResult={() => {

@@ -241,6 +241,7 @@ export interface NexusGenInputs {
   CreateCompanyInput: {
     // input type
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    domain?: string | null; // String
     logo: NexusGenScalars['Upload'][]; // [Upload!]!
     name: string; // String!
     ownerId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -521,6 +522,7 @@ export interface NexusGenInputs {
     // input type
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    domain?: string | null; // String
     name: string; // String!
     ownerId: NexusGenScalars['ObjectId']; // ObjectId!
     staffIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
@@ -1020,6 +1022,7 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenRootTypes['Contacts']; // Contacts!
     createdAt: NexusGenScalars['Date']; // Date!
+    domain: string | null; // String
     itemId: string; // String!
     logo: NexusGenRootTypes['Asset']; // Asset!
     name: string; // String!
@@ -2077,6 +2080,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     contacts: 'Contacts';
     createdAt: 'Date';
+    domain: 'String';
     itemId: 'String';
     logo: 'Asset';
     name: 'String';

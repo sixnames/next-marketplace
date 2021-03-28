@@ -43,8 +43,8 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
     shopId: shop._id,
     citySlug: shop.city.slug,
     contacts: {
-      emails: shop.contacts.emails,
-      phones: shop.contacts.phones,
+      emails: shop.contacts.emails[0] ? shop.contacts.emails : [''],
+      phones: shop.contacts.phones[0] ? shop.contacts.phones : [''],
     },
     address: {
       formattedAddress: shop.address.formattedAddress,

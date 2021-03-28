@@ -38,9 +38,13 @@ const CompanyDetails: React.FC<CompanyDetailsInterface> = ({ company }) => {
   });
 
   const initialCompany = removeApolloFields(omit(company, ['itemId', 'slug', '_id', 'logo']));
+  const initialContacts = removeApolloFields(initialCompany.contacts);
   const initialValues: CompanyFormMainValuesInterface = {
     ...initialCompany,
-    contacts: removeApolloFields(initialCompany.contacts),
+    contacts: {
+      emails: initialContacts.emails[0] ? initialContacts.emails : [''],
+      phones: initialContacts.phones[0] ? initialContacts.phones : [''],
+    },
   };
 
   return (

@@ -246,7 +246,7 @@ export interface CompanyModel extends BaseModel, TimestampModel {
   staffIds: ObjectIdModel[];
   contacts: ContactsModel;
   shopsIds: ObjectIdModel[];
-  domain?: string;
+  domain?: string | null;
 }
 
 export enum ConfigVariantModel {

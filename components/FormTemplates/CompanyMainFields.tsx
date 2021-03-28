@@ -105,6 +105,8 @@ const CompanyMainFields: React.FC = () => {
         showInlineError
       />
 
+      <FormikInput name={'domain'} label={'Домен'} testId={'domain'} />
+
       <FakeInput value={owner?.fullName} label={'Владелец'} testId={'ownerId'} />
 
       <InputLine labelTag={'div'}>

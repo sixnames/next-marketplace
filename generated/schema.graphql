@@ -338,6 +338,7 @@ type Company implements Base & Timestamp {
   _id: ObjectId!
   contacts: Contacts!
   createdAt: Date!
+  domain: String
   itemId: String!
   logo: Asset!
   name: String!
@@ -455,6 +456,7 @@ input CreateBrandInput {
 
 input CreateCompanyInput {
   contacts: ContactsInput!
+  domain: String
   logo: [Upload!]!
   name: String!
   ownerId: ObjectId!
@@ -2205,6 +2207,7 @@ input UpdateCollectionInBrandInput {
 input UpdateCompanyInput {
   companyId: ObjectId!
   contacts: ContactsInput!
+  domain: String
   name: String!
   ownerId: ObjectId!
   staffIds: [ObjectId!]!

@@ -262,9 +262,9 @@ const MakeAnOrderRoute: React.FC = () => {
 
 interface MakeAnOrderInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, canonicalUrl }) => {
+const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, pageUrls }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} pageUrls={pageUrls}>
       <MakeAnOrderRoute />
     </SiteLayout>
   );

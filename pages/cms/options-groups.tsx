@@ -344,9 +344,9 @@ const OptionsGroupsRoute = () => (
   />
 );
 
-const OptionsGroups: NextPage<PagePropsInterface> = () => {
+const OptionsGroups: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <OptionsGroupsRoute />
     </AppLayout>
   );

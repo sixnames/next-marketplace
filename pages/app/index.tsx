@@ -1,13 +1,14 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import AppLayout from 'layout/AppLayout/AppLayout';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const App: NextPage = () => {
+const App: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout title={'App'}>
+    <AppLayout title={'App'} pageUrls={pageUrls}>
       <Inner>
         <Title>App</Title>
       </Inner>

@@ -30,6 +30,14 @@ export const ProductAttribute = objectType({
       type: 'Option',
     });
 
+    // ProductAttribute metric field resolver
+    t.field('attributeMetric', {
+      type: 'Metric',
+      resolve: (source) => {
+        return source.attributeMetric || null;
+      },
+    });
+
     // ProductAttribute name translation field resolver
     t.nonNull.field('attributeName', {
       type: 'String',

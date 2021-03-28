@@ -6,6 +6,7 @@ import TabsContent from 'components/TabsContent/TabsContent';
 import { useGetShopQuery } from 'generated/apolloComponents';
 import useTabsConfig from 'hooks/useTabsConfig';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -72,9 +73,9 @@ const ShopRoute: React.FC = () => {
   );
 };
 
-const Shop: NextPage = () => {
+const Shop: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <ShopRoute />
     </AppLayout>
   );

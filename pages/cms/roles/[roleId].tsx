@@ -17,6 +17,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useTabsConfig from 'hooks/useTabsConfig';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -128,9 +129,9 @@ const RoleRoute: React.FC = () => {
   );
 };
 
-const Role: NextPage = () => {
+const Role: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <RoleRoute />
     </AppLayout>
   );

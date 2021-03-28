@@ -75,7 +75,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     shopsCount,
     cardBreadcrumbs,
     cardShopProducts,
+    isCustomersChoice,
   } = cardData;
+
   const { query } = useRouter();
   const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
@@ -254,7 +256,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             </div>
           </div>
 
-          <ProductMarker>Выбор покупателей</ProductMarker>
+          {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
         </div>
 
         <div
@@ -366,10 +368,10 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: GetCatalogueCardQuery['getProductCard'] | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, canonicalUrl, navRubrics, sessionCity }) => {
+const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, sessionCity }) => {
   if (!cardData) {
     return (
-      <SiteLayout navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
+      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -377,7 +379,8 @@ const Card: NextPage<CardInterface> = ({ cardData, canonicalUrl, navRubrics, ses
 
   return (
     <SiteLayout
-      canonicalUrl={canonicalUrl}
+      previewImage={cardData.mainImage}
+      pageUrls={pageUrls}
       navRubrics={navRubrics}
       title={`Купить ${cardData.originalName} в городе ${sessionCity}`}
       description={`Купить ${cardData.originalName} в городе ${sessionCity}`}

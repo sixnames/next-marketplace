@@ -18,6 +18,7 @@ import {
 import { GET_ALL_ROLES_QUERY } from 'graphql/query/rolesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -145,9 +146,9 @@ const RolesRoute: React.FC = () => {
   );
 };
 
-const Roles: NextPage = () => {
+const Roles: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <RolesRoute />
     </AppLayout>
   );

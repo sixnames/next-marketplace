@@ -28,6 +28,9 @@ import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
   ATTRIBUTE_VARIANT_SELECT,
+  CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
+  DEFAULT_CITY,
+  SORT_DESC,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -257,6 +260,11 @@ export const ProductMutations = extendType({
           const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
+
+            const attribute = rubric.attributes.find(({ _id }) => {
+              return _id.equals(attributeInput.attributeId);
+            });
+
             if (selectedOptionsSlugs.length > 0) {
               selectedOptions = options.filter(({ slug }) => {
                 return selectedOptionsSlugs.includes(slug);
@@ -264,6 +272,7 @@ export const ProductMutations = extendType({
             }
             return {
               ...attributeInput,
+              attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
           });
@@ -277,10 +286,14 @@ export const ProductMutations = extendType({
             brandSlug: brandEntity ? brandEntity.slug : undefined,
             brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
             active: true,
+            isCustomersChoiceCities: {
+              [DEFAULT_CITY]: false,
+            },
             priorities: {},
             views: {},
             shopProductsIds: [],
             shopProductsCountCities: {},
+            availabilityCities: {},
             minPriceCities: {},
             maxPriceCities: {},
             connections: [],
@@ -381,6 +394,11 @@ export const ProductMutations = extendType({
           const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
+
+            const attribute = rubric.attributes.find(({ _id }) => {
+              return _id.equals(attributeInput.attributeId);
+            });
+
             if (selectedOptionsSlugs.length > 0) {
               selectedOptions = options.filter(({ slug }) => {
                 return selectedOptionsSlugs.includes(slug);
@@ -388,6 +406,7 @@ export const ProductMutations = extendType({
             }
             return {
               ...attributeInput,
+              attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
           });
@@ -1187,17 +1206,91 @@ export const ProductMutations = extendType({
           if (!sessionRole.isStuff) {
             // Args
             const { input } = args;
-            await productsCollection.findOneAndUpdate(
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
               { slug: input.productSlug },
               {
                 $inc: {
                   [`views.${city}`]: VIEWS_COUNTER_STEP,
                 },
               },
+              {
+                projection: {
+                  rubricId: true,
+                },
+                returnOriginal: false,
+              },
             );
+            const updatedProduct = updatedProductResult.value;
+
+            if (!updatedProductResult.ok || !updatedProduct) {
+              return false;
+            }
+
+            await productsCollection.updateMany(
+              {
+                rubricId: updatedProduct.rubricId,
+                active: true,
+              },
+              {
+                $set: {
+                  isCustomersChoiceCities: {
+                    [city]: false,
+                  },
+                },
+              },
+            );
+            const topProducts = await productsCollection
+              .aggregate([
+                {
+                  $match: {
+                    rubricId: updatedProduct.rubricId,
+                    active: true,
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    views: 1,
+                    priorities: 1,
+                  },
+                },
+                {
+                  $sort: {
+                    [`views.${city}`]: SORT_DESC,
+                    [`priorities.${city}`]: SORT_DESC,
+                    _id: SORT_DESC,
+                  },
+                },
+                {
+                  $limit: CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
+                },
+              ])
+              .toArray();
+            const topProductsIds = topProducts.map(({ _id }) => _id);
+
+            const updatedTopProductsResult = await productsCollection.updateMany(
+              {
+                _id: {
+                  $in: topProductsIds,
+                },
+              },
+              {
+                $set: {
+                  isCustomersChoiceCities: {
+                    [city]: true,
+                  },
+                },
+              },
+            );
+
+            if (updatedTopProductsResult.result.ok) {
+              return true;
+            }
+            return false;
           }
           return true;
         } catch (e) {
+          console.log(e);
           return false;
         }
       },

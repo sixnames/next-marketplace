@@ -6,6 +6,7 @@ import TabsContent from 'components/TabsContent/TabsContent';
 import { useGetProductQuery } from 'generated/apolloComponents';
 import useRouterQuery from 'hooks/useRouterQuery';
 import useTabsConfig from 'hooks/useTabsConfig';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -74,9 +75,9 @@ const ProductRoute: React.FC = () => {
   );
 };
 
-const Product: NextPage = () => {
+const Product: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <ProductRoute />
     </AppLayout>
   );

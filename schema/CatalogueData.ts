@@ -390,11 +390,16 @@ export const CatalogueMutations = extendType({
             });
 
             const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
-              const optionACounter =
-                noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
-              const optionBCounter =
-                noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
-              return optionBCounter - optionACounter;
+              const attributeAViews = attributeA.views || { [city]: 0 };
+              const attributeAPriorities = attributeA.priorities || { [city]: 0 };
+              const attributeBViews = attributeB.views || { [city]: 0 };
+              const attributeBPriorities = attributeB.priorities || { [city]: 0 };
+
+              const attributeACounter =
+                noNaN(attributeAViews[city]) + noNaN(attributeAPriorities[city]);
+              const attributeBCounter =
+                noNaN(attributeBViews[city]) + noNaN(attributeBPriorities[city]);
+              return attributeBCounter - attributeACounter;
             });
 
             await rubricsCollection.findOneAndUpdate(

@@ -4,7 +4,7 @@ import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
-import Meta from '../Meta';
+import Meta, { PageUrlsInterface } from '../Meta';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
 import classes from './SiteLayout.module.css';
@@ -13,21 +13,22 @@ import Modal from 'components/Modal/Modal';
 interface SiteLayoutConsumerInterface {
   title?: string;
   description?: string;
-  canonicalUrl: string;
+  previewImage?: string;
+  pageUrls: PageUrlsInterface;
 }
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
   title,
   description,
-  canonicalUrl,
+  pageUrls,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className={classes.frame}>
-      <Meta title={title} description={description} canonicalUrl={canonicalUrl} />
+      <Meta title={title} description={description} pageUrls={pageUrls} />
 
       <Header />
 
@@ -49,7 +50,8 @@ export interface SiteLayoutInterface {
   title?: string;
   description?: string;
   navRubrics: RubricModel[];
-  canonicalUrl: string;
+  previewImage?: string;
+  pageUrls: PageUrlsInterface;
 }
 
 const SiteLayout: React.FC<SiteLayoutInterface> = ({
@@ -57,11 +59,11 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
   navRubrics,
   title,
   description,
-  canonicalUrl,
+  pageUrls,
 }) => {
   return (
     <SiteContextProvider navRubrics={navRubrics}>
-      <SiteLayoutConsumer title={title} description={description} canonicalUrl={canonicalUrl}>
+      <SiteLayoutConsumer title={title} description={description} pageUrls={pageUrls}>
         {children}
       </SiteLayoutConsumer>
     </SiteContextProvider>

@@ -100,6 +100,7 @@ export const Product = objectType({
     t.nonNull.objectId('rubricId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
+    t.boolean('available');
     t.nonNull.list.nonNull.field('assets', {
       type: 'Asset',
       resolve: (source) => {
@@ -258,6 +259,18 @@ export const Product = objectType({
       resolve: async (source, _args, context): Promise<number> => {
         const { city } = await getRequestParams(context);
         return noNaN(source.minPriceCities[city]);
+      },
+    });
+
+    // Product isCustomersChoice field resolver
+    t.nonNull.field('isCustomersChoice', {
+      type: 'Boolean',
+      resolve: async (source, _args, context): Promise<boolean> => {
+        const { city } = await getRequestParams(context);
+        if (source.shopProductsCountCities[city]) {
+          return true;
+        }
+        return false;
       },
     });
 

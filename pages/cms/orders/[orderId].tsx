@@ -6,6 +6,7 @@ import Spinner from 'components/Spinner/Spinner';
 import { useGetCmsOrderQuery } from 'generated/apolloComponents';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -44,9 +45,9 @@ const CmsOrderRoute: React.FC = () => {
   );
 };
 
-const Order: NextPage = () => {
+const Order: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <CmsOrderRoute />
     </AppLayout>
   );

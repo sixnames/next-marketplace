@@ -465,6 +465,7 @@ export interface ProductAttributeModel {
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
   attributeName?: string | null;
+  attributeMetric?: MetricModel | null;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   selectedOptions: OptionModel[];
@@ -491,6 +492,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
+  isCustomersChoiceCities: CitiesBooleanModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -501,12 +503,15 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   connections: ProductConnectionModel[];
   minPriceCities: CitiesCounterModel;
   maxPriceCities: CitiesCounterModel;
+  availabilityCities: CitiesBooleanModel;
 
   // types for ui
   name?: string | null;
   description?: string | null;
   shopsCount?: number;
   mainImage?: string;
+  available?: boolean;
+  isCustomersChoice?: boolean;
   listFeatures?: ProductAttributeModel[];
   textFeatures?: ProductAttributeModel[];
   tagFeatures?: ProductAttributeModel[];
@@ -729,7 +734,7 @@ export interface CatalogueDataModel {
   clearSlug: string;
   filter: string[];
   rubric: RubricModel;
-  products: ProductModel[];
+  products: Omit<ProductModel, 'attributes'>[];
   totalProducts: number;
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];

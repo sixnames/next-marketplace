@@ -1429,6 +1429,7 @@ export interface NexusGenFieldTypes {
     allShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    available: boolean | null; // Boolean
     brand: NexusGenRootTypes['Brand'] | null; // Brand
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
@@ -1441,6 +1442,7 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     iconFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    isCustomersChoice: boolean; // Boolean!
     itemId: string; // String!
     listFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     mainImage: string; // String!
@@ -1467,6 +1469,7 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeMetric: NexusGenRootTypes['Metric'] | null; // Metric
     attributeName: string; // String!
     attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
@@ -2483,6 +2486,7 @@ export interface NexusGenFieldTypeNames {
     allShopProducts: 'ShopProduct';
     assets: 'Asset';
     attributes: 'ProductAttribute';
+    available: 'Boolean';
     brand: 'Brand';
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';
@@ -2495,6 +2499,7 @@ export interface NexusGenFieldTypeNames {
     description: 'String';
     descriptionI18n: 'JSONObject';
     iconFeatures: 'ProductAttribute';
+    isCustomersChoice: 'Boolean';
     itemId: 'String';
     listFeatures: 'ProductAttribute';
     mainImage: 'String';
@@ -2521,6 +2526,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
+    attributeMetric: 'Metric';
     attributeName: 'String';
     attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';

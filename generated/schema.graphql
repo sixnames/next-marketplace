@@ -1413,6 +1413,7 @@ type Product implements Base & Timestamp {
   allShopProducts: [ShopProduct!]!
   assets: [Asset!]!
   attributes: [ProductAttribute!]!
+  available: Boolean
   brand: Brand
   brandCollection: BrandCollection
   brandCollectionSlug: String
@@ -1437,6 +1438,7 @@ type Product implements Base & Timestamp {
   description: String!
   descriptionI18n: JSONObject!
   iconFeatures: [ProductAttribute!]!
+  isCustomersChoice: Boolean!
   itemId: String!
   listFeatures: [ProductAttribute!]!
   mainImage: String!
@@ -1463,6 +1465,7 @@ type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
+  attributeMetric: Metric
   attributeName: String!
   attributeNameI18n: JSONObject!
   attributeSlug: String!

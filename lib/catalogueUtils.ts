@@ -437,7 +437,7 @@ export const getCatalogueData = async ({
           {
             $match: {
               _id: {
-                $lt: lastProductId,
+                $lt: new ObjectId(lastProductId),
               },
             },
           },
@@ -473,7 +473,8 @@ export const getCatalogueData = async ({
 
     // sort stage
     const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
-    let sortStage = {
+    let sortStage: any = {
+      [`availabilityCities.${city}`]: SORT_DESC,
       [`views.${city}`]: SORT_DESC,
       [`priorities.${city}`]: SORT_DESC,
       _id: SORT_DESC,
@@ -482,6 +483,7 @@ export const getCatalogueData = async ({
     // sort by price
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
+        [`availabilityCities.${city}`]: SORT_DESC,
         [`minPriceCities.${city}`]: castedSortDir,
         _id: SORT_DESC,
       };
@@ -505,9 +507,11 @@ export const getCatalogueData = async ({
     // Get catalogue products
     // const productsStartTime = new Date().getTime();
     const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
+
     const products = [];
     for await (const product of initialProducts) {
       // prices
+      const { attributes, ...restProduct } = product;
       const minPrice = noNaN(product.minPriceCities[city]);
       const maxPrice = noNaN(product.maxPriceCities[city]);
       const cardPrices = {
@@ -529,14 +533,14 @@ export const getCatalogueData = async ({
 
       // listFeatures
       const listFeatures = getProductCurrentViewCastedAttributes({
-        attributes: product.attributes,
+        attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         getFieldLocale,
       });
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({
-        attributes: product.attributes,
+        attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         getFieldLocale,
       });
@@ -580,7 +584,7 @@ export const getCatalogueData = async ({
       }
 
       products.push({
-        ...product,
+        ...restProduct,
         listFeatures,
         ratingFeatures,
         name: getFieldLocale(product.nameI18n),
@@ -588,6 +592,7 @@ export const getCatalogueData = async ({
         mainImage,
         shopsCount: noNaN(product.shopProductsCountCities[city]),
         connections,
+        isCustomersChoice: product.isCustomersChoiceCities[city],
       });
     }
     // const productsEndTime = new Date().getTime();
@@ -774,7 +779,7 @@ export const getCatalogueData = async ({
     // Get keySet pagination
     const lastProduct = products[products.length - 1];
     const hasMore = Boolean(
-      lastProduct && lastProductId && !lastProductId.equals(lastProduct?._id),
+      lastProduct && lastProductId && !new ObjectId(lastProductId).equals(lastProduct?._id),
     );
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
@@ -1032,6 +1037,7 @@ export const getCatalogueNavRubrics = async ({
         $sort: {
           [`views.${city}`]: SORT_DESC,
           [`priorities.${city}`]: SORT_DESC,
+          _id: SORT_DESC,
         },
       },
     ])

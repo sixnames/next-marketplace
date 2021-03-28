@@ -2,14 +2,20 @@ import * as React from 'react';
 import Head from 'next/head';
 import { useConfigContext } from 'context/configContext';
 
+export interface PageUrlsInterface {
+  canonicalUrl: string;
+  siteUrl: string;
+  domain: string;
+}
+
 interface MetaInterface {
   title?: string;
   description?: string;
   previewImage?: string;
-  canonicalUrl: string;
+  pageUrls: PageUrlsInterface;
 }
 
-const Meta: React.FC<MetaInterface> = ({ title, description, canonicalUrl, previewImage }) => {
+const Meta: React.FC<MetaInterface> = ({ title, description, pageUrls, previewImage }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
 
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
@@ -43,7 +49,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, canonicalUrl, previ
       <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
       <meta property='og:image' content={pagePreviewImage} />
-      <meta property='og:url' content={canonicalUrl} />
+      <meta property='og:url' content={pageUrls.canonicalUrl} />
       <meta property='og:description' content={pageDescription} />
 
       <meta name='twitter:title' content={title} />
@@ -54,7 +60,7 @@ const Meta: React.FC<MetaInterface> = ({ title, description, canonicalUrl, previ
       <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
       <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />
       <link rel='icon' type='image/png' sizes='16x16' href={'/favicon-16x16.png'} />
-      <link rel='icon' type='image/x-icon' className='js-site-favicon' href={'/favicon.ico'} />
+      <link rel='icon' type='image/x-icon' href={`${pageUrls.siteUrl}/favicon.ico`} />
 
       <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
       <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />

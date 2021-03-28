@@ -31,17 +31,26 @@ export const productSnippedFragment = gql`
     slug
     mainImage
     shopsCount
+    isCustomersChoice
     listFeatures {
       _id
       attributeId
       attributeName
       readableValue
+      attributeMetric {
+        _id
+        name
+      }
     }
     ratingFeatures {
       _id
       attributeId
       attributeName
       readableValue
+      attributeMetric {
+        _id
+        name
+      }
     }
     connections {
       ...SnippetConnection

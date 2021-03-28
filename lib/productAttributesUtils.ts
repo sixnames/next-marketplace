@@ -53,26 +53,31 @@ export function getAttributeReadableValue({
   attribute,
   getFieldLocale,
 }: GetAttributeReadableValueInterface): string | null {
+  const metricName = attribute.attributeMetric
+    ? ` ${getFieldLocale(attribute.attributeMetric.nameI18n)}`
+    : '';
   if (
     (attribute.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       attribute.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
     attribute.selectedOptions.length > 0
   ) {
-    return attribute.selectedOptions
+    const asString = attribute.selectedOptions
       .map(({ nameI18n }) => {
         return getFieldLocale(nameI18n);
       })
       .join(', ');
+
+    return `${asString}${metricName}`;
   }
 
   // String
   if (attribute.attributeVariant === ATTRIBUTE_VARIANT_STRING) {
-    return attribute.textI18n ? getFieldLocale(attribute.textI18n) : null;
+    return attribute.textI18n ? `${getFieldLocale(attribute.textI18n)}${metricName}` : null;
   }
 
   // Number
   if (attribute.attributeVariant === ATTRIBUTE_VARIANT_NUMBER) {
-    return attribute.number ? `${attribute.number}` : null;
+    return attribute.number ? `${attribute.number}${metricName}` : null;
   }
 
   return null;
@@ -108,6 +113,12 @@ export function getProductCurrentViewCastedAttributes({
         ...attribute,
         readableValue,
         attributeName: getFieldLocale(attribute.attributeNameI18n),
+        attributeMetric: attribute.attributeMetric
+          ? {
+              ...attribute.attributeMetric,
+              name: getFieldLocale(attribute.attributeMetric.nameI18n),
+            }
+          : null,
         selectedOptions: attribute.selectedOptions.map((option) => {
           return {
             ...option,

@@ -78,6 +78,7 @@
   z-index: 1;
   max-width: 100%;
   flex-grow: 1;
+  overflow-x: auto;
 }
 
 .Controls {

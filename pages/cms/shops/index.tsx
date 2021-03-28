@@ -15,6 +15,7 @@ import { ShopInListFragment, useGetAllShopsQuery } from 'generated/apolloCompone
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -125,9 +126,9 @@ const ShopsRoute: React.FC = () => {
   );
 };
 
-const Shops: NextPage = () => {
+const Shops: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <ShopsRoute />
     </AppLayout>
   );

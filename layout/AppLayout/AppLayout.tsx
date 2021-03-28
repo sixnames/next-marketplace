@@ -5,7 +5,7 @@ import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
 import { useUserContext } from 'context/userContext';
 import AppNav from './AppNav';
 import { useAppContext } from 'context/appContext';
-import Meta from '../Meta';
+import Meta, { PageUrlsInterface } from '../Meta';
 import Modal from 'components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from 'hooks/useCompact';
@@ -13,9 +13,10 @@ import useCompact from 'hooks/useCompact';
 interface AppLayoutInterface {
   description?: string;
   title?: string;
+  pageUrls: PageUrlsInterface;
 }
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   const { pathname } = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
@@ -31,7 +32,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
 
   return (
     <div className={classes.frame}>
-      <Meta title={title} canonicalUrl={''} />
+      <Meta title={title} pageUrls={pageUrls} />
 
       <AppNav compact={compact} navItems={navItems} />
 

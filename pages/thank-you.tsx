@@ -57,9 +57,9 @@ const ThankYouRoute: React.FC = () => {
 
 interface ThankYouInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, canonicalUrl }) => {
+const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, pageUrls }) => {
   return (
-    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} canonicalUrl={canonicalUrl}>
+    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} pageUrls={pageUrls}>
       <ThankYouRoute />
     </SiteLayout>
   );
@@ -68,6 +68,17 @@ const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, canonicalUrl }) => 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ThankYouInterface>> {
+  const { query } = context;
+
+  if (!query?.orderId) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
+      },
+    };
+  }
+
   const { props } = await getSiteInitialData({
     context,
   });

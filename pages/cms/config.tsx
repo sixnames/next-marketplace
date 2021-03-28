@@ -27,6 +27,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { get } from 'lodash';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -358,9 +359,9 @@ const ConfigsRoute: React.FC = () => {
   return <DataLayout title={'Настройки сайта'} filterResult={() => <ConfigsContent />} />;
 };
 
-const Config: NextPage = () => {
+const Config: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout>
+    <AppLayout pageUrls={pageUrls}>
       <ConfigsRoute />
     </AppLayout>
   );

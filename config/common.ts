@@ -11,9 +11,12 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 
-// Cookies
+// Cookies / Local storage
 export const CART_COOKIE_KEY = 'cart';
 export const THEME_COOKIE_KEY = 'theme';
+export const ADULT_KEY = 'adult';
+export const ADULT_TRUE = 'true';
+export const ADULT_FALSE = 'false';
 
 // THEME
 export const THEME_DARK = 'dark';
@@ -174,7 +177,7 @@ export const SORT_DESC_STR = 'DESC';
 export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
-export const CATALOGUE_PRODUCTS_LIMIT = 40;
+export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_CUSTOMERS_CHOICE_LIMIT = 10;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';

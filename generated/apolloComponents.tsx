@@ -2386,6 +2386,7 @@ export type Company = Base & Timestamp & {
   name: Scalars['String'];
   slug: Scalars['String'];
   ownerId: Scalars['ObjectId'];
+  domain?: Maybe<Scalars['String']>;
   staffIds: Array<Scalars['ObjectId']>;
   shopsIds: Array<Scalars['ObjectId']>;
   logo: Asset;
@@ -2418,6 +2419,7 @@ export type CreateCompanyInput = {
   name: Scalars['String'];
   ownerId: Scalars['ObjectId'];
   staffIds: Array<Scalars['ObjectId']>;
+  domain?: Maybe<Scalars['String']>;
   logo: Array<Scalars['Upload']>;
   contacts: ContactsInput;
 };
@@ -2427,6 +2429,7 @@ export type UpdateCompanyInput = {
   name: Scalars['String'];
   ownerId: Scalars['ObjectId'];
   staffIds: Array<Scalars['ObjectId']>;
+  domain?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
 };
 
@@ -4100,7 +4103,7 @@ export type UpdateCatalogueCountersMutation = (
 
 export type CompanyInListFragment = (
   { __typename?: 'Company' }
-  & Pick<Company, '_id' | 'itemId' | 'slug' | 'name' | 'ownerId' | 'staffIds'>
+  & Pick<Company, '_id' | 'itemId' | 'slug' | 'name' | 'ownerId' | 'staffIds' | 'domain'>
   & { owner: (
     { __typename?: 'User' }
     & Pick<User, '_id' | 'fullName'>
@@ -4141,7 +4144,7 @@ export type ShopInListFragment = (
 
 export type CompanyFragment = (
   { __typename?: 'Company' }
-  & Pick<Company, '_id' | 'itemId' | 'slug' | 'name' | 'ownerId' | 'staffIds'>
+  & Pick<Company, '_id' | 'itemId' | 'slug' | 'name' | 'ownerId' | 'staffIds' | 'domain'>
   & { staff: Array<(
     { __typename?: 'User' }
     & UserInListFragment
@@ -5400,6 +5403,7 @@ export const CompanyInListFragmentDoc = gql`
   name
   ownerId
   staffIds
+  domain
   owner {
     _id
     fullName
@@ -5452,6 +5456,7 @@ export const CompanyFragmentDoc = gql`
   name
   ownerId
   staffIds
+  domain
   staff {
     ...UserInList
   }

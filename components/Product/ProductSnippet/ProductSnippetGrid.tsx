@@ -89,9 +89,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         </div>
 
         <div className={classes.btns}>
-          <ControlButton icon={'compare'} />
-          <ControlButton icon={'heart'} />
+          <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+          <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
           <ControlButton
+            ariaLabel={'Добавить в корзину'}
             testId={`catalogue-item-${slug}-add-to-cart`}
             onClick={() =>
               addShoplessProductToCart({

@@ -1,30 +1,30 @@
-.frame {
+.text {
   color: var(--textSecondaryColor);
   margin-bottom: 1.75rem;
   margin-top: 0.5rem;
 }
 
-.frameLowTop {
+.textLowTop {
   margin-top: 0;
 }
 
-.frameLowBottom {
+.textLowBottom {
   margin-bottom: 0;
 }
 
-.frame p {
-  line-height: 1.4;
+.text p {
+  line-height: 1.8;
 }
 
-.frame p:not(:first-child) {
+.text p:not(:first-child) {
   margin-top: 0.33rem;
 }
 
-.frame mark {
+.text mark {
   font-weight: 600;
 }
 
-.frame span {
+.text span {
   color: var(--theme);
 }
 

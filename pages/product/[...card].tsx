@@ -248,9 +248,17 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
 
                 <div className={classes.btns}>
-                  <ControlButton icon={'compare'} iconSize={'mid'} />
-                  <ControlButton icon={'heart'} iconSize={'mid'} />
-                  <ControlButton icon={'upload'} iconSize={'mid'} />
+                  <ControlButton
+                    icon={'compare'}
+                    iconSize={'mid'}
+                    ariaLabel={'Добавить в сравнение'}
+                  />
+                  <ControlButton
+                    icon={'heart'}
+                    iconSize={'mid'}
+                    ariaLabel={'Добавить в избранное'}
+                  />
+                  <ControlButton icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
                 </div>
               </div>
             </div>

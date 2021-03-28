@@ -9,6 +9,7 @@ export const companyInListFragment = gql`
     name
     ownerId
     staffIds
+    domain
     owner {
       _id
       fullName
@@ -60,6 +61,7 @@ export const companyFragment = gql`
     name
     ownerId
     staffIds
+    domain
     staff {
       ...UserInList
     }

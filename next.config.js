@@ -14,12 +14,16 @@ module.exports = {
     OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
     NEXT_GOOGLE_MAPS_API_KEY: process.env.NEXT_GOOGLE_MAPS_API_KEY,
   },
-  async redirects() {
+  async headers() {
     return [
       {
-        source: `/${process.env.DEFAULT_CITY}`,
-        destination: `/`,
-        permanent: true,
+        source: '/_next/image(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=180, s-maxage=180, stale-while-revalidate=180',
+          },
+        ],
       },
     ];
   },

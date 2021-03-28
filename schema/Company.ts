@@ -40,6 +40,7 @@ export const Company = objectType({
     t.nonNull.string('name');
     t.nonNull.string('slug');
     t.nonNull.objectId('ownerId');
+    t.string('domain');
     t.nonNull.list.nonNull.objectId('staffIds');
     t.nonNull.list.nonNull.objectId('shopsIds');
     t.nonNull.field('logo', {
@@ -160,6 +161,7 @@ export const CreateCompanyInput = inputObjectType({
     t.nonNull.string('name');
     t.nonNull.objectId('ownerId');
     t.nonNull.list.nonNull.objectId('staffIds');
+    t.string('domain');
     t.nonNull.list.nonNull.upload('logo');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
@@ -174,6 +176,7 @@ export const UpdateCompanyInput = inputObjectType({
     t.nonNull.string('name');
     t.nonNull.objectId('ownerId');
     t.nonNull.list.nonNull.objectId('staffIds');
+    t.string('domain');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });
@@ -294,7 +297,6 @@ export const CompanyMutations = extendType({
             slug,
             logo,
             shopsIds: [],
-
             createdAt: new Date(),
             updatedAt: new Date(),
           });

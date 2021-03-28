@@ -95,8 +95,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               </div>
 
               <div className={classes.btns}>
-                <ControlButton icon={'compare'} />
-                <ControlButton icon={'heart'} />
+                <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+                <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
               </div>
             </div>
           </div>
@@ -157,6 +157,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               disabled={isShopless}
               theme={'gray'}
               testId={`card-shops-${slug}-add-to-cart`}
+              ariaLabel={'Добавить в корзину'}
               onClick={() => {
                 addShoplessProductToCart({
                   amount,

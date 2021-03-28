@@ -101,6 +101,34 @@ const Meta: React.FC<MetaInterface> = ({ title, description, pageUrls, previewIm
         type='font/woff2'
         crossOrigin='anonymous'
       />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Regular.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Bold.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Medium.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Light.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
     </Head>
   );
 };

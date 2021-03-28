@@ -24,6 +24,7 @@ import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getCatalogueData } from 'lib/catalogueUtils';
+import { getNumWord } from 'lib/i18n';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -124,7 +125,12 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   }, []);
 
   const catalogueCounterString = React.useMemo(() => {
-    return `Найдено ${catalogueData.totalProducts}`;
+    const catalogueCounterPostfix = getNumWord(catalogueData.totalProducts, [
+      'наименование',
+      'наименования',
+      'наименований',
+    ]);
+    return `Найдено ${catalogueData.totalProducts} ${catalogueCounterPostfix}`;
   }, [catalogueData.totalProducts]);
 
   const sortConfig = React.useMemo(

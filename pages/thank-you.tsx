@@ -68,6 +68,17 @@ const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, canonicalUrl }) => 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ThankYouInterface>> {
+  const { query } = context;
+
+  if (!query?.orderId) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
+      },
+    };
+  }
+
   const { props } = await getSiteInitialData({
     context,
   });

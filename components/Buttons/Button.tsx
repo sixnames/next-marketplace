@@ -19,6 +19,7 @@ export interface ButtonPropsInterface {
   onClick?: (e: any) => void;
   testId?: string;
   short?: boolean;
+  ariaLabel?: string;
 }
 
 const Button: React.FC<ButtonPropsInterface> = ({
@@ -34,6 +35,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   className,
   testId,
   short,
+  ariaLabel,
   ...props
 }) => {
   const noChildren = !children;
@@ -48,7 +50,14 @@ const Button: React.FC<ButtonPropsInterface> = ({
   return (
     <React.Fragment>
       <Tooltip title={!disabled ? title : null}>
-        <button data-cy={testId} disabled={disabled} className={buttonClass} type={type} {...props}>
+        <button
+          aria-label={ariaLabel}
+          data-cy={testId}
+          disabled={disabled}
+          className={buttonClass}
+          type={type}
+          {...props}
+        >
           {icon && (
             <Icon
               name={icon}

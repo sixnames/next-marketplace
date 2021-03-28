@@ -13,6 +13,7 @@ export interface LinkInterface
   isTab?: boolean;
   onClick?: () => void;
   href: string;
+  ariaLabel?: string;
 }
 
 const Link: React.FC<LinkInterface> = ({
@@ -26,6 +27,7 @@ const Link: React.FC<LinkInterface> = ({
   replace,
   onClick,
   prefetch,
+  ariaLabel,
   ...props
 }) => {
   const { query, asPath } = useRouter() || { pathname: '', query: '' };
@@ -50,6 +52,7 @@ const Link: React.FC<LinkInterface> = ({
   return (
     <NextLink href={href} replace={replace} prefetch={prefetch}>
       <a
+        aria-label={ariaLabel}
         onClick={onClick}
         className={`${className ? className : ''} ${isCurrent ? activeClassName : ''}`}
         data-cy={testId}

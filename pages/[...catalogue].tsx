@@ -267,6 +267,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
                   <div className={`${classes.viewControls}`}>
                     <button
+                      aria-label={'Отображение сетка'}
                       className={`${classes.viewControlsItem} ${
                         isRowView ? '' : classes.viewControlsItemActive
                       }`}
@@ -275,6 +276,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                       <Icon name={'grid'} />
                     </button>
                     <button
+                      aria-label={'Отображение список'}
                       className={`${classes.viewControlsItem} ${
                         isRowView ? classes.viewControlsItemActive : ''
                       }`}

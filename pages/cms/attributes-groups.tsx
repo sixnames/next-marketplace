@@ -294,6 +294,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
                           attributesGroupId,
                           attributeId: dataItem._id,
                           ...input,
+                          metricId: input.metricId || null,
                         },
                       },
                     }).catch((e) => console.log(e));

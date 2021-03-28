@@ -109,6 +109,7 @@ const HeaderProfileLink: React.FC = () => {
 
   return (
     <Link
+      ariaLabel={'Войти'}
       testId={me ? `profile-link` : `sign-in-link`}
       href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
       className={`${classes.middleLink}`}

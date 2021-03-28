@@ -23,6 +23,7 @@ export interface ControlButtonInterface {
   iconSize?: 'smaller' | 'small' | 'normal' | 'mid' | 'big';
   size?: 'smaller' | 'small' | 'normal';
   theme?: 'blank' | 'accent';
+  ariaLabel?: string;
 }
 
 const ControlButton: React.FC<ControlButtonInterface> = ({
@@ -41,6 +42,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   size = 'normal',
   iconPositionLeft,
   iconPositionTop,
+  ariaLabel,
 }) => {
   const themeClass = classes[theme];
   const sizeClass = classes[size];
@@ -58,6 +60,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
     <React.Fragment>
       <Tooltip title={!disabled ? title : null}>
         <button
+          aria-label={ariaLabel}
           onClick={onClick}
           data-cy={testId}
           disabled={disabled}

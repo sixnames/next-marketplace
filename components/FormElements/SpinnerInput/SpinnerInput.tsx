@@ -54,7 +54,6 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
 
   return (
     <div
-      id={`${name}-frame`}
       className={`${classes.frame} ${isSmall ? classes.frameSmall : ''} ${
         frameClassName ? frameClassName : ''
       }`}
@@ -79,7 +78,6 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
       </button>
       <input
         aria-label={'Количество'}
-        id={name}
         className={`${inputClassName} ${sizeClass}`}
         value={currentValue}
         name={name}

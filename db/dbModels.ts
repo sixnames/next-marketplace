@@ -727,14 +727,17 @@ export interface CatalogueFilterAttributeModel {
   options: CatalogueFilterAttributeOptionModel[];
 }
 
-export interface CatalogueDataModel {
+export type CatalogueProductInterface = Omit<ProductModel, 'attributes'>;
+
+export interface CatalogueDataInterface {
   _id: ObjectIdModel;
   lastProductId: ObjectIdModel;
   hasMore: boolean;
   clearSlug: string;
   filter: string[];
-  rubric: RubricModel;
-  products: Omit<ProductModel, 'attributes'>[];
+  rubricName: string;
+  rubricSlug: string;
+  products: CatalogueProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];

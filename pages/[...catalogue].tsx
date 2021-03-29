@@ -20,6 +20,7 @@ import {
 } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
+import { CatalogueDataInterface } from 'db/dbModels';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
@@ -29,17 +30,14 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import {
-  CatalogueDataFragment,
-  useUpdateCatalogueCountersMutation,
-} from 'generated/apolloComponents';
+import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
 import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
-  catalogueData: CatalogueDataFragment;
+  catalogueData: CatalogueDataInterface;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
@@ -48,7 +46,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [isRowView, setIsRowView] = React.useState<boolean>(true);
-  const [state, setState] = React.useState<CatalogueDataFragment>(() => {
+  const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
   const [isCatalogueLoading, setIsCatalogueLoading] = React.useState<boolean>(false);
@@ -213,7 +211,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   if (catalogueData.totalProducts < 1) {
     return (
       <div className={classes.catalogue}>
-        <Breadcrumbs currentPageName={catalogueData.rubric.name} />
+        <Breadcrumbs currentPageName={catalogueData.rubricName} />
         <Inner lowTop testId={'catalogue'}>
           <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
@@ -224,7 +222,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
   return (
     <div className={classes.catalogue}>
-      <Breadcrumbs currentPageName={catalogueData.rubric.name} />
+      <Breadcrumbs currentPageName={catalogueData.rubricName} />
       <Inner lowTop testId={'catalogue'}>
         <Title testId={'catalogue-title'} subtitle={isMobile ? catalogueCounterString : undefined}>
           {catalogueData.catalogueTitle}
@@ -310,9 +308,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                       return (
                         <ProductSnippetRow
                           product={product}
-                          key={product._id}
+                          key={`${product._id}`}
                           testId={`catalogue-item-${product.slug}`}
-                          additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
+                          additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubricSlug}`}
                         />
                       );
                     }
@@ -320,9 +318,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                     return (
                       <ProductSnippetGrid
                         product={product}
-                        key={product._id}
+                        key={`${product._id}`}
                         testId={`catalogue-item-${product.slug}`}
-                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
+                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubricSlug}`}
                       />
                     );
                   })}
@@ -337,7 +335,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 };
 
 interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
-  catalogueData?: CatalogueDataFragment | null;
+  catalogueData?: CatalogueDataInterface | null;
 }
 
 const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, pageUrls }) => {
@@ -349,7 +347,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, pa
     );
   }
 
-  const rubricName = catalogueData.rubric.name;
+  const rubricName = catalogueData.rubricName;
 
   return (
     <SiteLayout

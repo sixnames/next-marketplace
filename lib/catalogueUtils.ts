@@ -9,7 +9,7 @@ import {
 } from 'db/collectionNames';
 import {
   AttributeModel,
-  CatalogueDataModel,
+  CatalogueDataInterface,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
   CityModel,
@@ -57,7 +57,6 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
 } from 'config/common';
-import capitalize from 'capitalize';
 import { getDatabase } from 'db/mongodb';
 import { getCityFieldData, getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -105,12 +104,7 @@ export function getCatalogueTitle({
   const { gender: rubricGender, defaultTitleI18n, keywordI18n, prefixI18n } = catalogueTitle;
 
   function castArrayToTitle(arr: any[]): string {
-    return capitalize(
-      arr
-        .filter((value) => value)
-        .join(' ')
-        .toLocaleLowerCase(),
-    );
+    return arr.filter((value) => value).join(' ');
   }
 
   // Return default rubric title if no filters selected
@@ -335,7 +329,7 @@ export const getCatalogueData = async ({
   locale,
   city,
   input,
-}: GetCatalogueDataInterface): Promise<CatalogueDataModel | null> => {
+}: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
       return '';
@@ -793,10 +787,8 @@ export const getCatalogueData = async ({
       hasMore,
       clearSlug: `/${rubricSlug}${sortPathname}`,
       filter,
-      rubric: {
-        ...rubric,
-        name: getFieldLocale(rubric.nameI18n),
-      },
+      rubricName: getFieldLocale(rubric.nameI18n),
+      rubricSlug: rubric.slug,
       products,
       catalogueTitle,
       totalProducts,
@@ -1033,13 +1025,6 @@ export const getCatalogueNavRubrics = async ({
           },
         },
       },
-      {
-        $sort: {
-          [`priorities.${city}`]: SORT_DESC,
-          [`views.${city}`]: SORT_DESC,
-          _id: SORT_DESC,
-        },
-      },
     ])
     .toArray();
   // console.log('After rubrics', new Date().getTime() - timeStart);
@@ -1056,7 +1041,18 @@ export const getCatalogueNavRubrics = async ({
     });
   });
 
+  const sortedRubrics = rubrics.sort((rubricA, rubricB) => {
+    const rubricAViews = rubricA.views || { [city]: 0 };
+    const rubricAPriorities = rubricA.priorities || { [city]: 0 };
+    const rubricBViews = rubricB.views || { [city]: 0 };
+    const rubricBPriorities = rubricB.priorities || { [city]: 0 };
+
+    const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
+    const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);
+    return rubricBCounter - rubricACounter;
+  });
+
   // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
-  return rubrics;
+  return sortedRubrics;
 };

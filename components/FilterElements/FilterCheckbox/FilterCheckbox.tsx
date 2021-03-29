@@ -1,11 +1,11 @@
+import { CatalogueFilterAttributeOptionModel } from 'db/dbModels';
 import * as React from 'react';
 import Link from 'next/link';
 import Icon from '../../Icon/Icon';
 import classes from './FilterCheckbox.module.css';
-import { CatalogueFilterAttributeOptionFragment } from 'generated/apolloComponents';
 
 export interface FilterCheckboxInterface {
-  option: CatalogueFilterAttributeOptionFragment;
+  option: CatalogueFilterAttributeOptionModel;
   testId?: string;
   className?: string;
   excludedQueries?: string[];

@@ -1,11 +1,10 @@
-import { castCatalogueParamToObject, getCatalogueData } from 'lib/catalogueUtils';
+import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
   BrandCollectionModel,
   BrandModel,
-  CatalogueDataModel,
   CatalogueSearchResultModel,
   LanguageModel,
   ManufacturerModel,
@@ -45,93 +44,9 @@ export const CatalogueSearchResult = objectType({
   },
 });
 
-export const CatalogueFilterAttributeOption = objectType({
-  name: 'CatalogueFilterAttributeOption',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('name');
-    t.nonNull.string('slug');
-    t.nonNull.string('nextSlug');
-    t.nonNull.boolean('isSelected');
-  },
-});
-
-export const CatalogueFilterAttribute = objectType({
-  name: 'CatalogueFilterAttribute',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('name');
-    t.nonNull.string('slug');
-    t.nonNull.string('clearSlug');
-    t.nonNull.boolean('isSelected');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'CatalogueFilterAttributeOption',
-    });
-  },
-});
-
-export const CatalogueData = objectType({
-  name: 'CatalogueData',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.objectId('lastProductId');
-    t.nonNull.boolean('hasMore');
-    t.nonNull.string('clearSlug');
-    t.nonNull.list.nonNull.string('filter');
-    t.nonNull.field('rubric', {
-      type: 'Rubric',
-    });
-    t.nonNull.list.nonNull.field('products', {
-      type: 'Product',
-    });
-    t.nonNull.int('totalProducts');
-    t.nonNull.string('catalogueTitle');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-    t.nonNull.list.nonNull.field('selectedAttributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-  },
-});
-
-export const CatalogueDataInput = inputObjectType({
-  name: 'CatalogueDataInput',
-  definition(t) {
-    t.objectId('lastProductId');
-    t.nonNull.list.nonNull.string('filter');
-  },
-});
-
-export const CatalogueAdditionalAttributesInput = inputObjectType({
-  name: 'CatalogueAdditionalAttributesInput',
-  definition(t) {
-    t.nonNull.list.nonNull.string('shownAttributesSlugs');
-    t.nonNull.list.nonNull.string('filter');
-  },
-});
-
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
-    // Should return catalogue page data
-    t.field('getCatalogueData', {
-      type: 'CatalogueData',
-      description: 'Should return catalogue page data',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CatalogueDataInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CatalogueDataModel | null> => {
-        const { city, locale } = await getRequestParams(context);
-        const { input } = args;
-        return getCatalogueData({ city, locale, input });
-      },
-    });
-
     // Should return top search items
     t.nonNull.field('getCatalogueSearchTopItems', {
       type: 'CatalogueSearchResult',
@@ -278,6 +193,14 @@ export const CatalogueQueries = extendType({
   },
 });
 
+export const CatalogueDataInput = inputObjectType({
+  name: 'CatalogueDataInput',
+  definition(t) {
+    t.objectId('lastProductId');
+    t.nonNull.list.nonNull.string('filter');
+  },
+});
+
 export const CatalogueMutations = extendType({
   type: 'Mutation',
   definition(t) {
@@ -372,7 +295,11 @@ export const CatalogueMutations = extendType({
             const updatedAttributes: RubricAttributeModel[] = [];
             rubric.attributes.forEach((attribute: RubricAttributeModel) => {
               if (attributesSlugs.includes(attribute.slug)) {
-                attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                if (!attribute.views) {
+                  attribute.views = { [city]: VIEWS_COUNTER_STEP };
+                } else {
+                  attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                }
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,
                   options: attribute.options,

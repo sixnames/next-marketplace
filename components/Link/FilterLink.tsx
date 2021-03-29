@@ -1,12 +1,12 @@
+import { CatalogueFilterAttributeOptionModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './FilterLink.module.css';
 import TagLink, { TagLinkInterface } from './TagLink';
-import { CatalogueFilterAttributeOptionFragment } from 'generated/apolloComponents';
 import Icon from '../Icon/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
-  option: CatalogueFilterAttributeOptionFragment;
+  option: CatalogueFilterAttributeOptionModel;
   withCross?: boolean;
   disabled?: boolean;
 }

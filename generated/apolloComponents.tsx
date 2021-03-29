@@ -199,47 +199,8 @@ export type CatalogueSearchResult = {
   products: Array<Product>;
 };
 
-export type CatalogueFilterAttributeOption = {
-  __typename?: 'CatalogueFilterAttributeOption';
-  _id: Scalars['ObjectId'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  nextSlug: Scalars['String'];
-  isSelected: Scalars['Boolean'];
-};
-
-export type CatalogueFilterAttribute = {
-  __typename?: 'CatalogueFilterAttribute';
-  _id: Scalars['ObjectId'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  clearSlug: Scalars['String'];
-  isSelected: Scalars['Boolean'];
-  options: Array<CatalogueFilterAttributeOption>;
-};
-
-export type CatalogueData = {
-  __typename?: 'CatalogueData';
-  _id: Scalars['ObjectId'];
-  lastProductId?: Maybe<Scalars['ObjectId']>;
-  hasMore: Scalars['Boolean'];
-  clearSlug: Scalars['String'];
-  filter: Array<Scalars['String']>;
-  rubric: Rubric;
-  products: Array<Product>;
-  totalProducts: Scalars['Int'];
-  catalogueTitle: Scalars['String'];
-  attributes: Array<CatalogueFilterAttribute>;
-  selectedAttributes: Array<CatalogueFilterAttribute>;
-};
-
 export type CatalogueDataInput = {
   lastProductId?: Maybe<Scalars['ObjectId']>;
-  filter: Array<Scalars['String']>;
-};
-
-export type CatalogueAdditionalAttributesInput = {
-  shownAttributesSlugs: Array<Scalars['String']>;
   filter: Array<Scalars['String']>;
 };
 
@@ -425,8 +386,6 @@ export type Query = {
   getAllCurrencies: Array<Currency>;
   /** Should all languages list */
   getAllLanguages: Array<Language>;
-  /** Should return catalogue page data */
-  getCatalogueData?: Maybe<CatalogueData>;
   /** Should return top search items */
   getCatalogueSearchTopItems: CatalogueSearchResult;
   /** Should return top search items */
@@ -548,11 +507,6 @@ export type QueryGetUserArgs = {
 
 export type QueryGetAllUsersArgs = {
   input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetCatalogueDataArgs = {
-  input: CatalogueDataInput;
 };
 
 
@@ -4037,20 +3991,6 @@ export type ProductSnippetFragment = (
   ) }
 );
 
-export type CatalogueFilterAttributeOptionFragment = (
-  { __typename?: 'CatalogueFilterAttributeOption' }
-  & Pick<CatalogueFilterAttributeOption, '_id' | 'name' | 'slug' | 'nextSlug' | 'isSelected'>
-);
-
-export type CatalogueFilterAttributeFragment = (
-  { __typename?: 'CatalogueFilterAttribute' }
-  & Pick<CatalogueFilterAttribute, '_id' | 'slug' | 'clearSlug' | 'isSelected' | 'name'>
-  & { options: Array<(
-    { __typename?: 'CatalogueFilterAttributeOption' }
-    & CatalogueFilterAttributeOptionFragment
-  )> }
-);
-
 export type CatalogueRubricFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, '_id' | 'name' | 'slug'>
@@ -4058,37 +3998,6 @@ export type CatalogueRubricFragment = (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
   ) }
-);
-
-export type CatalogueDataFragment = (
-  { __typename?: 'CatalogueData' }
-  & Pick<CatalogueData, '_id' | 'lastProductId' | 'hasMore' | 'clearSlug' | 'filter' | 'catalogueTitle' | 'totalProducts'>
-  & { rubric: (
-    { __typename?: 'Rubric' }
-    & CatalogueRubricFragment
-  ), products: Array<(
-    { __typename?: 'Product' }
-    & ProductSnippetFragment
-  )>, attributes: Array<(
-    { __typename?: 'CatalogueFilterAttribute' }
-    & CatalogueFilterAttributeFragment
-  )>, selectedAttributes: Array<(
-    { __typename?: 'CatalogueFilterAttribute' }
-    & CatalogueFilterAttributeFragment
-  )> }
-);
-
-export type GetCatalogueRubricQueryVariables = Exact<{
-  input: CatalogueDataInput;
-}>;
-
-
-export type GetCatalogueRubricQuery = (
-  { __typename?: 'Query' }
-  & { getCatalogueData?: Maybe<(
-    { __typename?: 'CatalogueData' }
-    & CatalogueDataFragment
-  )> }
 );
 
 export type UpdateCatalogueCountersMutationVariables = Exact<{
@@ -5348,53 +5257,6 @@ export const CatalogueRubricFragmentDoc = gql`
   }
 }
     `;
-export const CatalogueFilterAttributeOptionFragmentDoc = gql`
-    fragment CatalogueFilterAttributeOption on CatalogueFilterAttributeOption {
-  _id
-  name
-  slug
-  nextSlug
-  isSelected
-}
-    `;
-export const CatalogueFilterAttributeFragmentDoc = gql`
-    fragment CatalogueFilterAttribute on CatalogueFilterAttribute {
-  _id
-  slug
-  clearSlug
-  isSelected
-  name
-  options {
-    ...CatalogueFilterAttributeOption
-  }
-}
-    ${CatalogueFilterAttributeOptionFragmentDoc}`;
-export const CatalogueDataFragmentDoc = gql`
-    fragment CatalogueData on CatalogueData {
-  _id
-  lastProductId
-  hasMore
-  clearSlug
-  filter
-  catalogueTitle
-  rubric {
-    ...CatalogueRubric
-  }
-  products {
-    ...ProductSnippet
-  }
-  totalProducts
-  catalogueTitle
-  attributes {
-    ...CatalogueFilterAttribute
-  }
-  selectedAttributes {
-    ...CatalogueFilterAttribute
-  }
-}
-    ${CatalogueRubricFragmentDoc}
-${ProductSnippetFragmentDoc}
-${CatalogueFilterAttributeFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id
@@ -8639,41 +8501,6 @@ export function useUpdateProductCounterMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateProductCounterMutationHookResult = ReturnType<typeof useUpdateProductCounterMutation>;
 export type UpdateProductCounterMutationResult = Apollo.MutationResult<UpdateProductCounterMutation>;
 export type UpdateProductCounterMutationOptions = Apollo.BaseMutationOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
-export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($input: CatalogueDataInput!) {
-  getCatalogueData(input: $input) {
-    ...CatalogueData
-  }
-}
-    ${CatalogueDataFragmentDoc}`;
-
-/**
- * __useGetCatalogueRubricQuery__
- *
- * To run a query within a React component, call `useGetCatalogueRubricQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueRubricQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetCatalogueRubricQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, options);
-      }
-export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, options);
-        }
-export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
-export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
-export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)

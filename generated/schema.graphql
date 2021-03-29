@@ -255,45 +255,9 @@ type CartProduct implements Base {
   totalPrice: Int!
 }
 
-input CatalogueAdditionalAttributesInput {
-  filter: [String!]!
-  shownAttributesSlugs: [String!]!
-}
-
-type CatalogueData {
-  _id: ObjectId!
-  attributes: [CatalogueFilterAttribute!]!
-  catalogueTitle: String!
-  clearSlug: String!
-  filter: [String!]!
-  hasMore: Boolean!
-  lastProductId: ObjectId
-  products: [Product!]!
-  rubric: Rubric!
-  selectedAttributes: [CatalogueFilterAttribute!]!
-  totalProducts: Int!
-}
-
 input CatalogueDataInput {
   filter: [String!]!
   lastProductId: ObjectId
-}
-
-type CatalogueFilterAttribute {
-  _id: ObjectId!
-  clearSlug: String!
-  isSelected: Boolean!
-  name: String!
-  options: [CatalogueFilterAttributeOption!]!
-  slug: String!
-}
-
-type CatalogueFilterAttributeOption {
-  _id: ObjectId!
-  isSelected: Boolean!
-  name: String!
-  nextSlug: String!
-  slug: String!
 }
 
 type CatalogueSearchResult {
@@ -1729,11 +1693,6 @@ type Query {
   Should return brands list
   """
   getBrandsOptions: [Brand!]!
-
-  """
-  Should return catalogue page data
-  """
-  getCatalogueData(input: CatalogueDataInput!): CatalogueData
 
   """
   Should return catalogue nav rubrics

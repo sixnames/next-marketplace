@@ -1,10 +1,10 @@
+import { CatalogueFilterAttributeOptionModel } from 'db/dbModels';
 import * as React from 'react';
 import FilterCheckbox from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
-import { CatalogueFilterAttributeOptionFragment } from 'generated/apolloComponents';
 
 interface FilterCheckboxGroupInterface {
-  checkboxItems: CatalogueFilterAttributeOptionFragment[];
+  checkboxItems: CatalogueFilterAttributeOptionModel[];
   className?: string;
   checkboxClassName?: string;
   label?: string;

@@ -150,8 +150,10 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <FormikTranslationsSelect
-                disabled={variant !== ATTRIBUTE_VARIANT_SELECT}
-                isRequired={variant === ATTRIBUTE_VARIANT_SELECT}
+                disabled={
+                  variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+                }
                 name={'positioningInTitle'}
                 testId={'positioningInTitle'}
                 options={getAttributePositioningOptions}

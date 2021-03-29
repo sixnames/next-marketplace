@@ -1,6 +1,6 @@
+import { CatalogueFilterAttributeModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
-import { CatalogueFilterAttributeFragment } from 'generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
@@ -9,7 +9,7 @@ import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 
 interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueFilterAttributeFragment;
+  attribute: CatalogueFilterAttributeModel;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
@@ -77,8 +77,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  attributes: CatalogueFilterAttributeFragment[];
-  selectedAttributes: CatalogueFilterAttributeFragment[];
+  attributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
   catalogueCounterString: string;
   rubricClearSlug: string;
   isFilterVisible: boolean;
@@ -146,7 +146,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         ) : null}
 
         {attributes.map((attribute) => {
-          return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
+          return <CatalogueFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
         })}
       </div>
     </div>

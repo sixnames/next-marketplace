@@ -475,8 +475,8 @@ export const getCatalogueData = async ({
     const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
     let sortStage: any = {
       [`availabilityCities.${city}`]: SORT_DESC,
-      [`views.${city}`]: SORT_DESC,
       [`priorities.${city}`]: SORT_DESC,
+      [`views.${city}`]: SORT_DESC,
       _id: SORT_DESC,
     };
 
@@ -959,8 +959,8 @@ export const getCatalogueNavRubrics = async ({
     _id: 1,
     slug: 1,
     nameI18n: 1,
-    views: 1,
     priorities: 1,
+    views: 1,
   };
 
   const initialRubrics = await rubricsCollection
@@ -1026,8 +1026,8 @@ export const getCatalogueNavRubrics = async ({
           _id: '$_id',
           slug: { $first: '$slug' },
           nameI18n: { $first: '$nameI18n' },
-          views: { $first: '$views' },
           priorities: { $first: '$priorities' },
+          views: { $first: '$views' },
           attributes: {
             $push: '$attributes',
           },
@@ -1035,8 +1035,8 @@ export const getCatalogueNavRubrics = async ({
       },
       {
         $sort: {
-          [`views.${city}`]: SORT_DESC,
           [`priorities.${city}`]: SORT_DESC,
+          [`views.${city}`]: SORT_DESC,
           _id: SORT_DESC,
         },
       },

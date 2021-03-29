@@ -64,30 +64,6 @@ export const productSnippedFragment = gql`
   ${SnippetConnectionFragment}
 `;
 
-export const catalogueFilterAttributeOptionFragment = gql`
-  fragment CatalogueFilterAttributeOption on CatalogueFilterAttributeOption {
-    _id
-    name
-    slug
-    nextSlug
-    isSelected
-  }
-`;
-
-export const catalogueFilterAttributeFragment = gql`
-  fragment CatalogueFilterAttribute on CatalogueFilterAttribute {
-    _id
-    slug
-    clearSlug
-    isSelected
-    name
-    options {
-      ...CatalogueFilterAttributeOption
-    }
-  }
-  ${catalogueFilterAttributeOptionFragment}
-`;
-
 export const catalogueRubricFragment = gql`
   fragment CatalogueRubric on Rubric {
     _id
@@ -98,43 +74,6 @@ export const catalogueRubricFragment = gql`
       name
     }
   }
-`;
-
-export const catalogueDataFragment = gql`
-  fragment CatalogueData on CatalogueData {
-    _id
-    lastProductId
-    hasMore
-    clearSlug
-    filter
-    catalogueTitle
-    rubric {
-      ...CatalogueRubric
-    }
-    products {
-      ...ProductSnippet
-    }
-    totalProducts
-    catalogueTitle
-    attributes {
-      ...CatalogueFilterAttribute
-    }
-    selectedAttributes {
-      ...CatalogueFilterAttribute
-    }
-  }
-  ${catalogueFilterAttributeFragment}
-  ${catalogueRubricFragment}
-  ${productSnippedFragment}
-`;
-
-export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($input: CatalogueDataInput!) {
-    getCatalogueData(input: $input) {
-      ...CatalogueData
-    }
-  }
-  ${catalogueDataFragment}
 `;
 
 export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`

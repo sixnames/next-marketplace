@@ -33,6 +33,7 @@ export const Attribute = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.string('slug');
+    t.boolean('capitalise');
     t.objectId('optionsGroupId');
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',

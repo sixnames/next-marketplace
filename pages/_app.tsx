@@ -2,7 +2,7 @@ import { ConfigContextProvider } from 'context/configContext';
 import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
-import { CompanyModel, UserModel } from 'db/dbModels';
+import { CityModel, CompanyModel, UserModel } from 'db/dbModels';
 import { PageUrlsInterface } from 'layout/Meta';
 import { PageInitialDataPayload } from 'lib/catalogueUtils';
 import * as React from 'react';
@@ -23,6 +23,7 @@ export interface PagePropsInterface {
   initialApolloState?: any;
   company?: CompanyModel | null;
   sessionUser?: UserModel | null;
+  currentCity?: CityModel | null;
   pageUrls: PageUrlsInterface;
 }
 

@@ -2,6 +2,7 @@ import Button from 'components/Buttons/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
+import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -14,6 +15,7 @@ import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
 
 const SignInRoute: React.FC = () => {
+  const { showLoading, hideLoading } = useAppContext();
   const [isError, setIsError] = React.useState<boolean>(false);
   const validationSchema = useValidationSchema({
     schema: signInSchema,
@@ -28,11 +30,13 @@ const SignInRoute: React.FC = () => {
           password: '',
         }}
         onSubmit={(values) => {
+          showLoading();
           signIn('credentials', {
             redirect: false,
             ...values,
           })
             .then(({ ok }) => {
+              hideLoading();
               if (ok) {
                 setIsError(false);
                 window.location.pathname = '/';
@@ -42,8 +46,10 @@ const SignInRoute: React.FC = () => {
               setIsError(true);
             })
             .catch(() => {
+              hideLoading();
               setIsError(true);
             });
+          hideLoading();
         }}
       >
         {() => {

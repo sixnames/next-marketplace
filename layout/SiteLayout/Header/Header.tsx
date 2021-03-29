@@ -341,7 +341,8 @@ const Header: React.FC = () => {
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
 
-  const siteLogoSrc = getSiteConfigSingleValue(logoSlug);
+  const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
+  const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
 
   const toggleBurgerDropdown = React.useCallback(() => {
@@ -364,7 +365,7 @@ const Header: React.FC = () => {
           <HeaderMiddleLeft />
 
           <Link href={`/`} className={classes.middleLogo} aria-label={'Главная страница'}>
-            <Image src={siteLogoSrc} width={166} height={27} alt={configSiteName} />
+            <Image src={siteLogoSrc} width={166} height={27} alt={`${configSiteName}`} />
           </Link>
 
           <HeaderMiddleRight />

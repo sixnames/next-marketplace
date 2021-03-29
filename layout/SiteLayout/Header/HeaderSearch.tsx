@@ -1,3 +1,4 @@
+import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
@@ -23,9 +24,7 @@ type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
   | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['rubrics'];
 
-type ResultProducts =
-  | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['products']
-  | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['products'];
+type ResultProducts = CatalogueProductInterface[];
 
 interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
@@ -59,7 +58,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
             <ProductSnippetGrid
               size={'small'}
               product={product}
-              key={product._id}
+              key={`${product._id}`}
               testId={`search-product`}
             />
           );
@@ -109,8 +108,10 @@ const HeaderSearch: React.FC = () => {
 
   const searchRubrics = searchData?.getCatalogueSearchResult.rubrics;
   const topRubrics = data?.getCatalogueSearchTopItems.rubrics;
-  const searchProducts = searchData?.getCatalogueSearchResult.products;
-  const topProducts = data?.getCatalogueSearchTopItems.products;
+  const initialSearchProducts = searchData?.getCatalogueSearchResult.products as unknown;
+  const searchProducts = initialSearchProducts as CatalogueProductInterface[];
+  const initialTopProducts = data?.getCatalogueSearchTopItems.products as unknown;
+  const topProducts = initialTopProducts as CatalogueProductInterface[];
 
   const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
   const products = searchProducts && searchProducts.length ? searchProducts : topProducts;

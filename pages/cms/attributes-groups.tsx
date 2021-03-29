@@ -268,8 +268,21 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     },
     {
       accessor: 'metric',
-      headTitle: 'Единица измерения',
+      headTitle: 'Ед. измерения',
       render: ({ cellData }) => cellData?.name || null,
+    },
+
+    {
+      accessor: 'positioningInTitle',
+      headTitle: 'Поз-ие в заголове',
+      render: ({ cellData }) => {
+        if (!cellData) {
+          return null;
+        }
+        return getFieldTranslation(
+          `selectsOptions.attributePositioning.${cellData[locale]}.${locale}`,
+        );
+      },
     },
     {
       render: ({ dataItem }) => {

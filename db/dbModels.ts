@@ -195,6 +195,7 @@ export interface AttributeModel {
   options: OptionModel[];
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
+  capitalise?: boolean | null;
 }
 
 export interface AttributesGroupModel {
@@ -471,6 +472,8 @@ export interface ProductAttributeModel {
   selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
   textI18n?: TranslationModel | null;
+
+  // types for ui
   number?: number | null;
   readableValue?: string | null;
 }
@@ -723,18 +726,22 @@ export interface CatalogueFilterAttributeModel {
   clearSlug: string;
   slug: string;
   name: string;
+  metric?: string | null;
   isSelected: boolean;
   options: CatalogueFilterAttributeOptionModel[];
 }
 
-export interface CatalogueDataModel {
+export type CatalogueProductInterface = Omit<ProductModel, 'attributes'>;
+
+export interface CatalogueDataInterface {
   _id: ObjectIdModel;
   lastProductId: ObjectIdModel;
   hasMore: boolean;
   clearSlug: string;
   filter: string[];
-  rubric: RubricModel;
-  products: Omit<ProductModel, 'attributes'>[];
+  rubricName: string;
+  rubricSlug: string;
+  products: CatalogueProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];

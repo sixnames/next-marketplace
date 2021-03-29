@@ -1,9 +1,10 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE, ROLE_SLUG_ADMIN, ROUTE_SIGN_IN } from 'config/common';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, RoleModel, UserModel } from 'db/dbModels';
+import { CityModel, CompanyModel, RoleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
+import { getI18nLocaleValue } from 'lib/i18n';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
@@ -75,13 +76,19 @@ export async function getAppInitialData({
   const rawInitialData = await getPageInitialData(initialDataProps);
   const initialData = castDbData(rawInitialData);
 
-  const currentCity = rawInitialData.cities.find(({ slug }) => {
+  const currentCity = initialData.cities.find(({ slug }: CityModel) => {
     return slug === sessionCity;
   });
 
   return {
     props: {
       initialData,
+      currentCity: currentCity
+        ? {
+            ...currentCity,
+            name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
+          }
+        : null,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       sessionUser: castDbData(user),
@@ -132,7 +139,7 @@ export async function getSiteInitialData({
   const initialData = castDbData(rawInitialData);
   const navRubrics = castDbData(rawNavRubrics);
 
-  const currentCity = rawInitialData.cities.find(({ slug }) => {
+  const currentCity = initialData.cities.find(({ slug }: CityModel) => {
     return slug === sessionCity;
   });
 
@@ -150,6 +157,12 @@ export async function getSiteInitialData({
     props: {
       initialData,
       navRubrics,
+      currentCity: currentCity
+        ? {
+            ...currentCity,
+            name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
+          }
+        : null,
       sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
       sessionLocale,
       company,

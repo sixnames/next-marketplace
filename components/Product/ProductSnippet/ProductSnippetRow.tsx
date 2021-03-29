@@ -1,7 +1,7 @@
+import { CatalogueProductInterface } from 'db/dbModels';
 import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
-import { ProductSnippetFragment } from 'generated/apolloComponents';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 import RatingStars from '../../RatingStars/RatingStars';
 import Image from 'next/image';
@@ -14,7 +14,7 @@ import ControlButton from '../../Buttons/ControlButton';
 import { noNaN } from 'lib/numbers';
 
 interface ProductSnippetRowInterface {
-  product: ProductSnippetFragment;
+  product: CatalogueProductInterface;
   testId?: string;
   additionalSlug?: string;
   className?: string;
@@ -31,7 +31,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   const {
     name,
     originalName,
-    mainImage,
     slug,
     cardPrices,
     _id,
@@ -43,8 +42,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     isCustomersChoice,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-  const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
-  const isShopless = shopsCount < 1;
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = noNaN(shopsCount) < 1;
+  const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
 
   return (
     <LayoutCard className={`${classes.snippetCard} ${className ? className : ''}`} testId={testId}>
@@ -73,9 +73,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <div className={classes.name}>{originalName}</div>
             <div className={classes.nameTranslation}>{name}</div>
             <div className={classes.listFeatures}>
-              {listFeatures.map(({ attributeName, attributeId, readableValue }) => {
+              {(listFeatures || []).map(({ attributeName, attributeId, readableValue }) => {
                 return (
-                  <React.Fragment key={attributeId}>
+                  <React.Fragment key={`${attributeId}`}>
                     <div className={classes.listFeaturesLabel}>{attributeName}</div>
                     <div className={classes.listFeaturesValue}>{readableValue}</div>
                   </React.Fragment>
@@ -85,9 +85,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.mainContentBottom}>
               <div className={classes.outerRatingList}>
-                {ratingFeatures.map(({ attributeId, attributeName, readableValue }) => {
+                {(ratingFeatures || []).map(({ attributeId, attributeName, readableValue }) => {
                   return (
-                    <div key={attributeId} className={classes.outerRating}>
+                    <div key={`${attributeId}`} className={classes.outerRating}>
                       {`${attributeName} ${readableValue}`}
                     </div>
                   );
@@ -103,13 +103,13 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
           <div className={classes.contentColumn}>
             {isShopless ? null : (
-              <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices.min} />
+              <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
             )}
 
             <div className={classes.productConnections}>
               {connections.map(({ _id, attributeName, connectionProducts }) => {
                 return (
-                  <div key={_id} className={classes.connectionsGroup}>
+                  <div key={`${_id}`} className={classes.connectionsGroup}>
                     <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
                     {connectionProducts.map(({ option, _id }, index) => {
                       const isLast = connectionProducts.length - 1 === index;
@@ -117,7 +117,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
                       return (
                         <span
-                          key={option._id}
+                          key={`${option._id}`}
                           className={`${classes.connectionsGroupValue} ${
                             isCurrent ? classes.connectionsGroupCurrentValue : ''
                           }`}
@@ -133,7 +133,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.inputs}>
               <div className={classes.shopsCounter}>
-                {shopsCount > 0
+                {noNaN(shopsCount) > 0
                   ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
                   : 'Нет в наличии'}
               </div>

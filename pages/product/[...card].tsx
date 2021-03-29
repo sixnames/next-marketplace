@@ -12,6 +12,7 @@ import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { PRODUCT_CARD_RUBRIC_SLUG_PREFIX } from 'config/common';
 import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import {
   CardFeatureFragment,
   GetCatalogueCardQuery,
@@ -377,6 +378,7 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
 }
 
 const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, sessionCity }) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
   if (!cardData) {
     return (
       <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
@@ -385,13 +387,16 @@ const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, session
     );
   }
 
+  const prefixConfig = getSiteConfigSingleValue('cardMetaPrefix');
+  const prefix = prefixConfig ? `${prefixConfig} ` : '';
+
   return (
     <SiteLayout
       previewImage={cardData.mainImage}
       pageUrls={pageUrls}
       navRubrics={navRubrics}
-      title={`Купить ${cardData.originalName} в городе ${sessionCity}`}
-      description={`Купить ${cardData.originalName} в городе ${sessionCity}`}
+      title={`${prefix}${cardData.originalName} в городе ${sessionCity}`}
+      description={`${prefix}${cardData.originalName} в городе ${sessionCity}`}
     >
       <CardRoute cardData={cardData} />
     </SiteLayout>

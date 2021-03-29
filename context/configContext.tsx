@@ -53,7 +53,7 @@ function useConfigContext() {
     (configSlug: string) => {
       const config = getSiteConfig(configSlug);
       if (!config) {
-        return `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+        return null;
       }
 
       return `${config?.singleValue}`;
@@ -63,9 +63,10 @@ function useConfigContext() {
 
   const themeStyles = React.useMemo(() => {
     const themeColor = getSiteConfigSingleValue('siteThemeColor');
-    const themeRGB = themeColor.split(',').map((num) => noNaN(num));
+    const fallbackColor = `219, 83, 96`;
+    const themeRGB = themeColor ? themeColor.split(',').map((num) => noNaN(num)) : fallbackColor;
     const toShort = themeRGB.length < 3;
-    const finalThemeColor = toShort ? `219, 83, 96` : themeColor;
+    const finalThemeColor = toShort ? fallbackColor : themeColor;
 
     const themeR = toShort ? '219' : themeRGB[0];
     const themeG = toShort ? '83' : themeRGB[1];

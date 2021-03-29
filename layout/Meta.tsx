@@ -13,22 +13,34 @@ interface MetaInterface {
   description?: string;
   previewImage?: string;
   pageUrls: PageUrlsInterface;
+  siteName?: string;
+  foundationYear?: string;
 }
 
-const Meta: React.FC<MetaInterface> = ({ title, description, pageUrls, previewImage }) => {
+const Meta: React.FC<MetaInterface> = ({
+  title,
+  description,
+  siteName,
+  foundationYear,
+  pageUrls,
+  previewImage,
+}) => {
   const { getSiteConfigSingleValue } = useConfigContext();
 
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   const pageTitle = title || configTitle;
 
   const configDescription = getSiteConfigSingleValue('pageDefaultDescription');
-  const pageDescription = description || configDescription;
+  const pageDescription = description || `${configDescription}`;
 
   const configPreviewImage = getSiteConfigSingleValue('pageDefaultPreviewImage');
-  const pagePreviewImage = previewImage || configPreviewImage;
+  const pagePreviewImage = previewImage || `${configPreviewImage}`;
 
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const pageSiteName = siteName || `${configSiteName}`;
+
   const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
+  const pageFoundationYear = foundationYear || `${configFoundationYear}`;
 
   return (
     <Head>
@@ -39,10 +51,10 @@ const Meta: React.FC<MetaInterface> = ({ title, description, pageUrls, previewIm
       />
       <meta name={'description'} content={pageDescription} />
 
-      <meta name='author' content={configSiteName} />
+      <meta name='author' content={pageSiteName} />
       <meta
         name='copyright'
-        content={`© ${configFoundationYear} - ${new Date().getFullYear()} Site™`}
+        content={`© ${pageFoundationYear} - ${new Date().getFullYear()} ${pageSiteName}™`}
       />
       <meta name='application-name' content='Personal Website' />
 
@@ -57,20 +69,73 @@ const Meta: React.FC<MetaInterface> = ({ title, description, pageUrls, previewIm
       <meta name='twitter:image' content={pagePreviewImage} />
       <meta name='twitter:description' content={pageDescription} />
 
-      <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
-      <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />
-      <link rel='icon' type='image/png' sizes='16x16' href={'/favicon-16x16.png'} />
-      <link rel='icon' type='image/x-icon' href={`${pageUrls.siteUrl}/favicon.ico`} />
+      <link rel='icon' href={'/favicon.ico'} />
+      <link rel='icon' href={'/icon.svg'} type={'image/svg+xml'} />
+      <link rel={'apple-touch-icon'} href={'/apple-touch-icon.png'} />
+      <link rel={'manifest'} href={'/site.webmanifest'} />
 
-      <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
-      <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />
-      <link rel='icon' type='image/png' sizes='16x16' href={'/favicon-16x16.png'} />
-      <link rel='manifest' href={'/site.webmanifest'} />
-      <link rel='mask-icon' href={'/safari-pinned-tab.svg'} color='#5bbad5' />
       <meta name='msapplication-TileColor' content='#ffffff' />
       <meta name='theme-color' content='#ffffff' />
-      {/*<meta name='yandex-verification' content='579c17148b497788' />*/}
-      <meta name='yandex-verification' content='85566b0bd87ef67d' />
+
+      <meta name='yandex-verification' content='579c17148b497788' />
+
+      {/*Fonts*/}
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Regular.woff2'}
+        as='font'
+        type='font/woff2'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Bold.woff2'}
+        as='font'
+        type='font/woff2'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Medium.woff2'}
+        as='font'
+        type='font/woff2'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Light.woff2'}
+        as='font'
+        type='font/woff2'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Regular.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Bold.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Medium.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
+      <link
+        rel={'preload'}
+        href={'/fonts/Gilroy-Light.woff'}
+        as='font'
+        type='font/woff'
+        crossOrigin='anonymous'
+      />
     </Head>
   );
 };

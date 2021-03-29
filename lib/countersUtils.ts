@@ -51,7 +51,11 @@ export function updateRubricOptionsViews({
 }: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
   return options.map((option) => {
     if (selectedOptionsSlugs.includes(option.slug)) {
-      option.views[city] = noNaN(option.views[city]) + VIEWS_COUNTER_STEP;
+      if (!option.views) {
+        option.views = { [city]: VIEWS_COUNTER_STEP };
+      } else {
+        option.views[city] = noNaN(option.views[city]) + VIEWS_COUNTER_STEP;
+      }
     }
 
     return {

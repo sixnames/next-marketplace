@@ -1,9 +1,9 @@
+import { CatalogueProductInterface } from 'db/dbModels';
 import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
 import Link from '../../Link/Link';
-import { ProductSnippetFragment } from 'generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
 import ControlButton from '../../Buttons/ControlButton';
@@ -11,7 +11,7 @@ import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 
 interface ProductSnippetGridInterface {
-  product: ProductSnippetFragment;
+  product: CatalogueProductInterface;
   testId?: string;
   additionalSlug?: string;
   size?: 'small' | 'normal';
@@ -29,7 +29,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   const {
     name,
     originalName,
-    mainImage,
     slug,
     cardPrices,
     _id,
@@ -39,11 +38,11 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     isCustomersChoice,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-
-  const firstRatingFeature = ratingFeatures[0];
+  const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+  const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
   const sizeClass = classes[size];
-  const listFeaturesString = listFeatures
+  const listFeaturesString = (listFeatures || [])
     .map(({ readableValue }) => {
       return readableValue;
     })
@@ -72,7 +71,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           <div className={classes.nameTranslation}>{name}</div>
           <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
-        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices.min} />
+        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>
@@ -82,7 +81,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <div className={classes.bottomRight}>
         <div className={classes.outerRatingList}>
           {firstRatingFeature ? (
-            <div key={firstRatingFeature.attributeId} className={classes.outerRating}>
+            <div key={`${firstRatingFeature.attributeId}`} className={classes.outerRating}>
               {`${firstRatingFeature.attributeName} ${firstRatingFeature.readableValue}`}
             </div>
           ) : null}

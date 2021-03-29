@@ -1,3 +1,4 @@
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -70,6 +71,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle,
+        capitalise: attribute.capitalise,
       }
     : {
         nameI18n: {},
@@ -78,6 +80,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         metricId: null,
         optionsGroupId: null,
         positioningInTitle: {},
+        capitalise: false,
       };
 
   return (
@@ -150,8 +153,10 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <FormikTranslationsSelect
-                disabled={variant !== ATTRIBUTE_VARIANT_SELECT}
-                isRequired={variant === ATTRIBUTE_VARIANT_SELECT}
+                disabled={
+                  variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+                }
                 name={'positioningInTitle'}
                 testId={'positioningInTitle'}
                 options={getAttributePositioningOptions}
@@ -159,6 +164,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 showInlineError
                 firstOption={'Не выбрано'}
               />
+
+              <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

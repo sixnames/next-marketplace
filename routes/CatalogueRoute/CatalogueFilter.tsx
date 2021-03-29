@@ -1,6 +1,9 @@
+import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import { useLocaleContext } from 'context/localeContext';
+import { CatalogueFilterAttributeModel } from 'db/dbModels';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
-import { CatalogueFilterAttributeFragment } from 'generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
@@ -9,26 +12,32 @@ import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 
 interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueFilterAttributeFragment;
+  attribute: CatalogueFilterAttributeModel;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
+  const { currency } = useLocaleContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
-  const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
+  const maxVisibleOptions = maxVisibleOptionsString ? noNaN(maxVisibleOptionsString) : 5;
 
-  const { name, clearSlug, options, isSelected } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug } = attribute;
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
   const hiddenOptions = options.slice(+maxVisibleOptions);
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
   const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
+  const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
 
   return (
     <div className={classes.attribute}>
       <div className={classes.attributeTitle}>
-        <span className={classes.attributeTitleText}>{name}</span>
+        <span className={classes.attributeTitleText}>
+          {name}
+          {isPrice ? <span>{` ${currency}`}</span> : null}
+          {metric ? <span>{` ${metric}`}</span> : null}
+        </span>
         {isSelected ? (
           <Link href={clearSlug} className={classes.attributeTitleTrigger}>
             Очистить
@@ -77,8 +86,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  attributes: CatalogueFilterAttributeFragment[];
-  selectedAttributes: CatalogueFilterAttributeFragment[];
+  attributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
   catalogueCounterString: string;
   rubricClearSlug: string;
   isFilterVisible: boolean;
@@ -146,7 +155,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         ) : null}
 
         {attributes.map((attribute) => {
-          return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
+          return <CatalogueFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
         })}
       </div>
     </div>

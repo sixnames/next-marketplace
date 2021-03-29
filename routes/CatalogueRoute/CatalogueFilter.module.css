@@ -34,6 +34,12 @@
   font-weight: 700;
 }
 
+.attributeTitleText > span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
 .attribute {
   margin-bottom: 3rem;
 }

@@ -19,6 +19,7 @@ import {
   SORT_DIR_KEY,
 } from 'config/common';
 import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/dbModels';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
@@ -338,7 +339,13 @@ interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
   catalogueData?: CatalogueDataInterface | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, pageUrls }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({
+  catalogueData,
+  navRubrics,
+  currentCity,
+  pageUrls,
+}) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
   if (!catalogueData) {
     return (
       <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
@@ -346,13 +353,15 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics, pa
       </SiteLayout>
     );
   }
-
-  const rubricName = catalogueData.rubricName;
+  const siteName = getSiteConfigSingleValue('siteName');
+  const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
+  const prefix = prefixConfig ? `${prefixConfig} ` : '';
+  const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
 
   return (
     <SiteLayout
-      title={`Купить ${rubricName} по лучшей цене в Winepoint`}
-      description={`Купить ${rubricName} по лучшей цене в Winepoint`}
+      title={`${prefix}${catalogueData.catalogueTitle} в ${siteName}`}
+      description={`${prefix}${catalogueData.catalogueTitle} по лучшей цене в магазине ${siteName}${cityDescription}`}
       navRubrics={navRubrics}
       pageUrls={pageUrls}
     >

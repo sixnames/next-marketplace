@@ -121,6 +121,7 @@ export interface NexusGenInputs {
   AddAttributeToGroupInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    capitalise?: boolean | null; // Boolean
     metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -475,6 +476,7 @@ export interface NexusGenInputs {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    capitalise?: boolean | null; // Boolean
     metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -827,6 +829,7 @@ export interface NexusGenFieldTypes {
   Attribute: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    capitalise: boolean | null; // Boolean
     metric: NexusGenRootTypes['Metric'] | null; // Metric
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1853,6 +1856,7 @@ export interface NexusGenFieldTypeNames {
   Attribute: {
     // field return type name
     _id: 'ObjectId';
+    capitalise: 'Boolean';
     metric: 'Metric';
     name: 'String';
     nameI18n: 'JSONObject';

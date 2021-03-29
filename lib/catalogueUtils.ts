@@ -65,6 +65,7 @@ import { getRubricCatalogueAttributes, getRubricNavAttributes } from 'lib/rubric
 import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
+import capitalize from 'capitalize';
 
 export interface CastCatalogueParamToObjectPayloadInterface {
   slug: string;
@@ -104,7 +105,10 @@ export function getCatalogueTitle({
   const { gender: rubricGender, defaultTitleI18n, keywordI18n, prefixI18n } = catalogueTitle;
 
   function castArrayToTitle(arr: any[]): string {
-    return arr.filter((value) => value).join(' ');
+    const filteredArray = arr.filter((word) => word);
+    const firstWord = filteredArray[0];
+    const otherWords = filteredArray.slice(1);
+    return [capitalize(firstWord), ...otherWords].filter((value) => value).join(' ');
   }
 
   // Return default rubric title if no filters selected
@@ -159,10 +163,11 @@ export function getCatalogueTitle({
         const name = getFieldLocale(nameI18n);
         const currentVariant = variants[finalGender];
         const variantLocale = currentVariant ? getFieldLocale(currentVariant) : null;
+        let value = name;
         if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-          return variantLocale;
+          value = variantLocale;
         }
-        return name;
+        return attribute.capitalise ? capitalize(value) : value.toLocaleLowerCase();
       })
       .join(titleSeparator);
 

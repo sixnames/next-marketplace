@@ -159,6 +159,7 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.objectId('optionsGroupId');
     t.objectId('metricId');
+    t.boolean('capitalise');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
@@ -177,6 +178,7 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.objectId('optionsGroupId');
     t.objectId('metricId');
+    t.boolean('capitalise');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',

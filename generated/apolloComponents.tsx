@@ -1559,6 +1559,7 @@ export type Attribute = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   slug?: Maybe<Scalars['String']>;
+  capitalise?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   options: Array<Option>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
@@ -1599,6 +1600,7 @@ export type AddAttributeToGroupInput = {
   nameI18n: Scalars['JSONObject'];
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
+  capitalise?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -1610,6 +1612,7 @@ export type UpdateAttributeInGroupInput = {
   nameI18n: Scalars['JSONObject'];
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
+  capitalise?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -3768,7 +3771,7 @@ export type GetAllAttributesGroupsQuery = (
 
 export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId'>
+  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId' | 'capitalise'>
   & { optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
     & Pick<OptionsGroup, '_id' | 'name'>
@@ -5151,6 +5154,7 @@ export const AttributeInGroupFragmentDoc = gql`
   viewVariant
   positioningInTitle
   optionsGroupId
+  capitalise
   optionsGroup {
     _id
     name

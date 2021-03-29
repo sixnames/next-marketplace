@@ -18,6 +18,7 @@ export const attributeInGroupFragment = gql`
     viewVariant
     positioningInTitle
     optionsGroupId
+    capitalise
     optionsGroup {
       _id
       name

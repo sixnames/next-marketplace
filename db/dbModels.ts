@@ -195,6 +195,7 @@ export interface AttributeModel {
   options: OptionModel[];
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
+  capitalise?: boolean | null;
 }
 
 export interface AttributesGroupModel {
@@ -471,6 +472,8 @@ export interface ProductAttributeModel {
   selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
   textI18n?: TranslationModel | null;
+
+  // types for ui
   number?: number | null;
   readableValue?: string | null;
 }

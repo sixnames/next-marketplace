@@ -3,6 +3,7 @@
 
 input AddAttributeToGroupInput {
   attributesGroupId: ObjectId!
+  capitalise: Boolean
   metricId: ObjectId
   nameI18n: JSONObject!
   optionsGroupId: ObjectId
@@ -104,6 +105,7 @@ type Asset {
 
 type Attribute {
   _id: ObjectId!
+  capitalise: Boolean
   metric: Metric
   name: String!
   nameI18n: JSONObject!
@@ -2124,6 +2126,7 @@ input UpdateAssetConfigInput {
 input UpdateAttributeInGroupInput {
   attributeId: ObjectId!
   attributesGroupId: ObjectId!
+  capitalise: Boolean
   metricId: ObjectId
   nameI18n: JSONObject!
   optionsGroupId: ObjectId

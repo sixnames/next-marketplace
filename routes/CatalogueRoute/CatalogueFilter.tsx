@@ -1,4 +1,5 @@
 import { CatalogueFilterAttributeModel } from 'db/dbModels';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
 import FilterLink from '../../components/Link/FilterLink';
@@ -16,7 +17,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
-  const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
+  const maxVisibleOptions = maxVisibleOptionsString ? noNaN(maxVisibleOptionsString) : 5;
 
   const { name, clearSlug, options, isSelected } = attribute;
 

@@ -726,6 +726,7 @@ export interface CatalogueFilterAttributeModel {
   clearSlug: string;
   slug: string;
   name: string;
+  metric?: string | null;
   isSelected: boolean;
   options: CatalogueFilterAttributeOptionModel[];
 }

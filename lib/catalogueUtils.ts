@@ -310,6 +310,7 @@ export async function getCatalogueAttributes({
       name: getFieldLocale(attribute.nameI18n),
       options: castedOptions,
       isSelected,
+      metric: attribute.metric ? getFieldLocale(attribute.metric.nameI18n) : null,
     };
 
     castedAttributes.push(castedAttribute);

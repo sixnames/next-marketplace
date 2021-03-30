@@ -1,7 +1,7 @@
 import {
   DEFAULT_CITY,
   DEFAULT_LOCALE,
-  ONE_DAY,
+  ONE_WEEK,
   ROLE_SLUG_ADMIN,
   ROUTE_SIGN_IN,
 } from 'config/common';
@@ -157,7 +157,7 @@ export async function getSiteInitialData({
   }
 
   // Cache header
-  context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_DAY}`);
+  context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_WEEK}`);
 
   return {
     props: {

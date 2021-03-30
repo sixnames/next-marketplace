@@ -151,7 +151,7 @@ export async function getSiteInitialData({
   }
 
   // Cache header
-  context.res.setHeader('cache-control', 's-maxage=300, stale-while-revalidate');
+  context.res.setHeader('cache-control', 's-maxage=1, stale-while-revalidate=59');
 
   return {
     props: {

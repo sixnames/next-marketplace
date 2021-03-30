@@ -49,7 +49,7 @@
 
 .orderNumber {
   font-size: 1.33rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .orderCreatedAt {
@@ -64,12 +64,12 @@
 
 .orderTotalPrice span {
   font-size: 1.33rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--textColor);
 }
 
 .orderStatus {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .order .orderCartBtn {
@@ -133,7 +133,7 @@
 
 .shop {
   line-height: 1.8;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.875rem;
 }
 
@@ -164,7 +164,7 @@
 
 .productTotalsAmount {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .orderProductBtn {

@@ -21,7 +21,7 @@
   align-items: center;
   min-height: var(--linkMinHeight);
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--textColor);
 }
 

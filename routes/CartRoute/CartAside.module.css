@@ -87,7 +87,7 @@
 }
 
 .infoValue {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--textColor);
 }
 
@@ -104,7 +104,7 @@
 .warning {
   margin-top: var(--framePadding);
   color: var(--wp-error);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .backLink {

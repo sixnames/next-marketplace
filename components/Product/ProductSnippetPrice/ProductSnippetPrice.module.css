@@ -9,6 +9,6 @@
 
 .priceValue span {
   font-size: 1.75rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--textColor);
 }

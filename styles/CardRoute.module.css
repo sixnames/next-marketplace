@@ -98,7 +98,7 @@
 }
 
 .featureItem {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1.125rem;
 }
 
@@ -256,7 +256,7 @@
 
 .priceItem span {
   font-size: 2.5rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--textColor);
 }
 
@@ -316,7 +316,7 @@
 }
 
 .cardFeaturesLabel {
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 0.875rem;
 }
 

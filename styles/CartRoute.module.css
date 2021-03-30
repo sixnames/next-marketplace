@@ -126,7 +126,7 @@
 
 .shop {
   line-height: 1.8;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .shop span {
@@ -203,7 +203,7 @@
   .frame {
     grid-template-columns: 1fr;
   }
-  
+
   .frame .product {
     background-color: transparent;
     box-shadow: 0 0 transparent;
@@ -223,7 +223,7 @@
   .product .amountInput {
     background-color: var(--primaryBackground);
   }
-  
+
   .productImageHolder {
     left: 5%;
     width: 90%;

@@ -119,7 +119,9 @@ export function getCatalogueTitle({
   const titleSeparator = getFieldTranslation(`catalogueTitleSeparator.${locale}`);
   const rubricKeywordTranslation = getFieldLocale(keywordI18n);
   const rubricKeyword =
-    rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : rubricKeywordTranslation;
+    rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE
+      ? ''
+      : rubricKeywordTranslation.toLowerCase();
 
   const finalPrefixTranslation = getFieldLocale(prefixI18n);
   const finalPrefix =
@@ -155,8 +157,9 @@ export function getCatalogueTitle({
   // Collect title parts
   selectedFilters.forEach((selectedFilter) => {
     const { attribute, options } = selectedFilter;
-    const { positioningInTitle } = attribute;
+    const { positioningInTitle, metric } = attribute;
     const positionInTitleForCurrentLocale = getFieldLocale(positioningInTitle);
+    const metricValue = metric ? ` ${getFieldLocale(metric.nameI18n)}` : '';
 
     const value = options
       .map(({ variants, nameI18n }) => {
@@ -167,7 +170,8 @@ export function getCatalogueTitle({
         if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
           value = variantLocale;
         }
-        return attribute.capitalise ? capitalize(value) : value.toLocaleLowerCase();
+        const optionValue = `${value}${metricValue}`;
+        return attribute.capitalise ? capitalize(optionValue) : optionValue.toLocaleLowerCase();
       })
       .join(titleSeparator);
 
@@ -179,9 +183,9 @@ export function getCatalogueTitle({
     }
     if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
       if (finalKeyword === rubricKeyword) {
-        finalKeyword = value;
+        finalKeyword = value.toLowerCase();
       } else {
-        finalKeyword = finalKeyword + titleSeparator + value;
+        finalKeyword = finalKeyword + titleSeparator + value.toLowerCase();
       }
     }
     if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {

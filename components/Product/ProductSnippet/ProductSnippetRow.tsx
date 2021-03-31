@@ -51,6 +51,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
       <div className={`${classes.leftColumn}`}>
         <div className={`${classes.image}`}>
           <Image
+            priority={true}
             src={mainImage}
             objectFit={'contain'}
             objectPosition={'center'}

@@ -55,6 +55,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     >
       <div className={`${classes.image} ${classes.leftColumn}`}>
         <Image
+          priority={true}
           src={mainImage}
           objectFit={'contain'}
           objectPosition={'center'}

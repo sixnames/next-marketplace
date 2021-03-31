@@ -29,15 +29,12 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
   const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
   const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+  const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
   return (
     <div className={classes.attribute}>
       <div className={classes.attributeTitle}>
-        <span className={classes.attributeTitleText}>
-          {name}
-          {isPrice ? <span>{` ${currency}`}</span> : null}
-          {metric ? <span>{` ${metric}`}</span> : null}
-        </span>
+        <span className={classes.attributeTitleText}>{name}</span>
         {isSelected ? (
           <Link href={clearSlug} className={classes.attributeTitleTrigger}>
             Очистить
@@ -54,6 +51,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
               option={option}
               key={testId}
               testId={testId}
+              postfix={postfix}
             />
           );
         })}
@@ -66,6 +64,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
                   option={option}
                   key={testId}
                   testId={testId}
+                  postfix={postfix}
                 />
               );
             })

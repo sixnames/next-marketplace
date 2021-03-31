@@ -49,7 +49,6 @@ const SignInRoute: React.FC = () => {
               hideLoading();
               setIsError(true);
             });
-          hideLoading();
         }}
       >
         {() => {

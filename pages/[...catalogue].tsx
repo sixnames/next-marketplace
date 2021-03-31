@@ -43,6 +43,7 @@ interface CatalogueRouteInterface {
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
   const router = useRouter();
+  const [loading, setLoading] = React.useState<boolean>(false);
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -89,6 +90,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   // fetch more products handler
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
+      setLoading(true);
       fetch(
         `/api/catalogue${router.asPath}?locale=${router.locale}&lastProductId=${state.lastProductId}`,
       )
@@ -102,8 +104,10 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
               products: [...prevState.products, ...data.products],
             };
           });
+          setLoading(false);
         })
         .catch((e) => {
+          setLoading(false);
           console.log(e);
         });
     }
@@ -302,7 +306,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                   hasMore={state.products.length < state.totalProducts}
                   dataLength={state.products.length}
                   scrollableTarget={'#catalogue-products'}
-                  loader={<Spinner isNested />}
+                  loader={<span />}
                 >
                   {state.products.map((product) => {
                     if (isRowView && !isMobile) {
@@ -326,6 +330,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                     );
                   })}
                 </InfiniteScroll>
+                {loading ? <Spinner isNested /> : null}
               </div>
             </div>
           </div>
@@ -355,13 +360,13 @@ const Catalogue: NextPage<CatalogueInterface> = ({
   }
   const siteName = getSiteConfigSingleValue('siteName');
   const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
-  const prefix = prefixConfig ? `${prefixConfig} ` : '';
+  const prefix = prefixConfig ? prefixConfig : '';
   const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
 
   return (
     <SiteLayout
-      title={`${prefix}${catalogueData.catalogueTitle} в ${siteName}`}
-      description={`${prefix}${catalogueData.catalogueTitle} по лучшей цене в магазине ${siteName}${cityDescription}`}
+      title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}`}
+      description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       navRubrics={navRubrics}
       pageUrls={pageUrls}
     >

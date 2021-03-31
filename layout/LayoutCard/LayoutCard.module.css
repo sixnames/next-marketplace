@@ -1,5 +1,8 @@
 .layoutCard {
   border-radius: var(--borderRadius);
   background-color: var(--secondaryBackground);
+}
+
+[data-theme="dark"] .layoutCard {
   box-shadow: var(--wp-shadow-100);
 }

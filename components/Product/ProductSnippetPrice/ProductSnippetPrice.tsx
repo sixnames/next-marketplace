@@ -21,7 +21,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
 
   return (
     <div className={`${classes.price} ${className ? className : ''}`}>
-      {shopsCount === minimalShopsCount ? '' : 'от '}
+      {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
       <Currency className={classes.priceValue} value={value} />
     </div>
   );

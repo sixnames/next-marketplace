@@ -49,7 +49,19 @@ const HeaderSearchTrigger: React.FC = () => {
 
 const HeaderProfileLink: React.FC = () => {
   const signOut = useSignOut();
-  const { me } = useUserContext();
+  const { me, loadingUser } = useUserContext();
+
+  if (loadingUser) {
+    return (
+      <div className={`${classes.middleLink}`}>
+        <span
+          className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderDisabled} ${classes.middleLinkIconHolderNoLabel}`}
+        >
+          <Icon name={'user'} className={classes.middleLinkUserIcon} />
+        </span>
+      </div>
+    );
+  }
 
   if (me) {
     return (

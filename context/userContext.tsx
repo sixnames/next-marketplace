@@ -30,14 +30,12 @@ const UserContextProvider: React.FC = ({ children }) => {
   });
 
   React.useEffect(() => {
-    if (data && data.me) {
-      setState((prevState) => ({
-        ...prevState,
-        me: data.me,
-        isAuthenticated: true,
-        loadingUser: loading,
-      }));
-    }
+    setState((prevState) => ({
+      ...prevState,
+      me: data?.me,
+      isAuthenticated: true,
+      loadingUser: loading,
+    }));
   }, [data, loading]);
 
   const value = React.useMemo(() => {

@@ -4,7 +4,6 @@
   position: relative;
   display: grid;
   grid-row-gap: var(--horizontalGap);
-  box-shadow: var(--wp-shadow-200);
 }
 
 .normal {

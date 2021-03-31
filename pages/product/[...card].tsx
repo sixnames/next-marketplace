@@ -47,7 +47,7 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
         return (
           <div key={_id} className={classes.feature}>
             <div className={classes.featureTitle}>{attributeName}</div>
-            <div>{readableValue}</div>
+            <div className={classes.featureValue}>{readableValue}</div>
           </div>
         );
       })}

@@ -307,6 +307,12 @@ export function getRubricNavAttributes({
   attributes.forEach((attribute) => {
     sortedAttributes.push({
       ...attribute,
+      metric: attribute.metric
+        ? {
+            ...attribute.metric,
+            name: getI18nLocaleValue(attribute.metric.nameI18n, locale),
+          }
+        : null,
       name: getI18nLocaleValue(attribute.nameI18n, locale),
       options: getRubricNavOptions({
         options: attribute.options,

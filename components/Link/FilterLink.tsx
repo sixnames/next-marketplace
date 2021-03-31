@@ -9,6 +9,7 @@ interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   option: CatalogueFilterAttributeOptionModel;
   withCross?: boolean;
   disabled?: boolean;
+  postfix?: string | null;
 }
 
 const FilterLink: React.FC<FilterLinkInterface> = ({
@@ -17,6 +18,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   counter,
   withCross,
   disabled,
+  postfix,
   ...props
 }) => {
   const { name, nextSlug, isSelected } = option;
@@ -31,7 +33,10 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       }`}
       {...props}
     >
-      <span>{name}</span>
+      <span>
+        {name}
+        {postfix ? postfix : null}
+      </span>
       {withCross ? <Icon name={'cross'} /> : null}
       {counter ? <span>{counter}</span> : null}
     </TagLink>

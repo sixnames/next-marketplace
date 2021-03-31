@@ -97,6 +97,10 @@
   color: var(--textSecondaryColor);
 }
 
+.featureValue {
+  font-weight: 500;
+}
+
 .featureItem {
   font-weight: 500;
   font-size: 1.125rem;
@@ -338,7 +342,6 @@
   margin-bottom: 0.5rem;
   background-color: var(--outerRatingBackground);
   color: var(--outerRatingColor);
-  text-transform: uppercase;
   white-space: nowrap;
 }
 

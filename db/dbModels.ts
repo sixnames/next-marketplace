@@ -335,6 +335,9 @@ export interface MessagesGroupModel {
 export interface MetricModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+
+  // types for ui
+  name?: string;
 }
 
 export interface NavItemModel {

@@ -20,7 +20,12 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   rubricSlug,
 }) => {
   const { asPath } = useRouter();
-  const { _id, options, name } = attribute;
+  const { _id, options, name, metric } = attribute;
+  const postfix = metric ? ` ${metric.name}` : null;
+
+  if (options.length < 1) {
+    return null;
+  }
 
   return (
     <div key={`${_id}`}>
@@ -40,10 +45,22 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 }`}
               >
                 {option.name}
+                {postfix}
               </Link>
             </li>
           );
         })}
+
+        <li>
+          <Link
+            prefetch={false}
+            href={`/${rubricSlug}`}
+            onClick={hideDropdownHandler}
+            className={`${classes.dropdownAttributeOption} ${classes.dropdownAttributeOptionAll}`}
+          >
+            Показать все
+          </Link>
+        </li>
       </ul>
     </div>
   );

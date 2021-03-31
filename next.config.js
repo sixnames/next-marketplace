@@ -26,15 +26,6 @@ module.exports = {
         ],
       },*/
       {
-        source: '/image/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400000, s-maxage=86400000, stale-while-revalidate=86400000',
-          },
-        ],
-      },
-      {
         source: '/:all*(woff2|woff)',
         // source: '/fonts/(.*)',
         locale: false,

@@ -365,7 +365,13 @@ const Header: React.FC = () => {
           <HeaderMiddleLeft />
 
           <Link href={`/`} className={classes.middleLogo} aria-label={'Главная страница'}>
-            <Image src={siteLogoSrc} width={166} height={27} alt={`${configSiteName}`} />
+            <Image
+              priority={true}
+              src={siteLogoSrc}
+              width={166}
+              height={27}
+              alt={`${configSiteName}`}
+            />
           </Link>
 
           <HeaderMiddleRight />

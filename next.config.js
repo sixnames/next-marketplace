@@ -16,7 +16,7 @@ module.exports = {
   },
   async headers() {
     return [
-      {
+      /*{
         source: '/_next/image(.*)',
         headers: [
           {
@@ -24,7 +24,7 @@ module.exports = {
             value: 'public, max-age=180, s-maxage=180, stale-while-revalidate=180',
           },
         ],
-      },
+      },*/
       {
         source: '/:all*(woff2|woff)',
         // source: '/fonts/(.*)',

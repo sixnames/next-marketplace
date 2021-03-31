@@ -1,10 +1,4 @@
-import {
-  DEFAULT_CITY,
-  DEFAULT_LOCALE,
-  ONE_WEEK,
-  ROLE_SLUG_ADMIN,
-  ROUTE_SIGN_IN,
-} from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE, ROLE_SLUG_ADMIN, ROUTE_SIGN_IN } from 'config/common';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { CityModel, CompanyModel, RoleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -157,7 +151,8 @@ export async function getSiteInitialData({
   }
 
   // Cache header
-  context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_WEEK}`);
+  // context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_WEEK}`);
+  context.res.setHeader('cache-control', `s-maxage=604800000, stale-while-revalidate=86400000`);
 
   return {
     props: {

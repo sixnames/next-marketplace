@@ -12,7 +12,6 @@ import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import {
   CATALOGUE_FILTER_SORT_KEYS,
-  PRODUCT_CARD_RUBRIC_SLUG_PREFIX,
   SORT_ASC_STR,
   SORT_BY_KEY,
   SORT_DESC_STR,
@@ -315,7 +314,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                           product={product}
                           key={`${product._id}`}
                           testId={`catalogue-item-${product.slug}`}
-                          additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubricSlug}`}
                         />
                       );
                     }
@@ -325,7 +323,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                         product={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${product.slug}`}
-                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubricSlug}`}
                       />
                     );
                   })}

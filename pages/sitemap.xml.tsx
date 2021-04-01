@@ -58,7 +58,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Get initial slugs
   for await (const rubric of rubrics) {
     // rubric
-    initialSlugs.push(rubric.slug);
+    initialSlugs.push(`catalogue/${rubric.slug}`);
 
     const productOptionsAggregation = await productsCollection
       .aggregate([
@@ -86,7 +86,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       // options
       selectedOptionsSlugs.forEach((optionSlug) => {
-        const realOptionSlug = `${rubric.slug}/${optionSlug}`;
+        const realOptionSlug = `catalogue/${rubric.slug}/${optionSlug}`;
 
         if (!initialSlugs.includes(realOptionSlug)) {
           initialSlugs.push(realOptionSlug);

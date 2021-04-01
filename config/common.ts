@@ -68,10 +68,8 @@ export const ROUTE_SIGN_IN = '/sign-in';
 export const QUERY_DATA_LAYOUT_NO_RUBRIC = 'no-rubric';
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
 
-// links
-export const PRODUCT_CARD_RUBRIC_SLUG_PREFIX = 'rubric-';
-
 // profile
+export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
@@ -177,6 +175,7 @@ export const SORT_DESC_STR = 'DESC';
 export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
+export const CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES = '5';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_CUSTOMERS_CHOICE_LIMIT = 10;
 export const CATALOGUE_OPTION_SEPARATOR = '-';

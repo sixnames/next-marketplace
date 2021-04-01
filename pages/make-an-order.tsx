@@ -9,6 +9,7 @@ import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopP
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
@@ -151,7 +152,15 @@ const MakeAnOrderRoute: React.FC = () => {
             >
               на главную
             </Button>
-            <Button className={classes.emptyBtnsItem} theme={'secondary'}>
+            <Button
+              className={classes.emptyBtnsItem}
+              theme={'secondary'}
+              onClick={() => {
+                router.push(`${ROUTE_CATALOGUE}/vino`).catch(() => {
+                  showErrorNotification();
+                });
+              }}
+            >
               каталог вин
             </Button>
           </div>

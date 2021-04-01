@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { AttributeModel, RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './StickyNav.module.css';
@@ -38,7 +39,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             <li key={`${option._id}`}>
               <Link
                 prefetch={false}
-                href={`/${rubricSlug}/${option.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
                   isCurrent ? classes.currentOption : ''
@@ -54,7 +55,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         <li>
           <Link
             prefetch={false}
-            href={`/${rubricSlug}`}
+            href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
             onClick={hideDropdownHandler}
             className={`${classes.dropdownAttributeOption} ${classes.dropdownAttributeOptionAll}`}
           >
@@ -104,7 +105,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
     >
       <Link
         prefetch={false}
-        href={`/${slug}`}
+        href={`${ROUTE_CATALOGUE}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}

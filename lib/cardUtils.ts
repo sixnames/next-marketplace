@@ -6,6 +6,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROUTE_CATALOGUE,
   SECONDARY_LOCALE,
 } from 'config/common';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -27,13 +28,11 @@ import { ObjectId } from 'mongodb';
 export interface GetCardBreadcrumbsInterface {
   locale: string;
   product: ProductModel;
-  slug: string[];
 }
 
 export async function getCardBreadcrumbs({
   locale,
   product,
-  slug,
 }: GetCardBreadcrumbsInterface): Promise<ProductCardBreadcrumbModel[]> {
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
@@ -64,32 +63,10 @@ export async function getCardBreadcrumbs({
     const db = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-    // Return empty configs list if slug arg is empty
-    if (!slug || slug.length < 2) {
-      return [];
-    }
-
     // Get slugs parts
     // Each slug contain keyword and value separated by -
-    const cardSlugs = slug.slice(0, slug.length - 1);
-    const cardSlugsParts = cardSlugs.map((slug) => {
-      return slug.split('-');
-    });
-
-    // Get rubric slug
-    const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-
-    // Return empty configs list if no rubric slug
-    if (!rubricSlugArr) {
-      return [];
-    }
-    const rubricSlug = rubricSlugArr[1];
-    if (!rubricSlug) {
-      return [];
-    }
-
     const rubric = await rubricsCollection.findOne(
-      { slug: rubricSlug },
+      { _id: product.rubricId },
       {
         projection: {
           _id: 1,
@@ -135,7 +112,7 @@ export async function getCardBreadcrumbs({
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
         name: filterNameString,
-        href: `/${rubricSlug}/${firstSelectedOption.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${firstSelectedOption.slug}`,
       });
     }
 
@@ -144,7 +121,7 @@ export async function getCardBreadcrumbs({
       {
         _id: rubric._id,
         name: getFieldLocale(rubric.nameI18n),
-        href: `/${rubricSlug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}`,
       },
       ...attributesBreadcrumbs,
     ];
@@ -400,7 +377,6 @@ export async function getCardData({
     const cardBreadcrumbs: ProductCardBreadcrumbModel[] = await getCardBreadcrumbs({
       locale,
       product,
-      slug,
     });
     // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);
 

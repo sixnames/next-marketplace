@@ -9,6 +9,7 @@ import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductS
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import {
   CartProductFragment,
@@ -306,7 +307,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/vino`).catch(() => {
+                router.push(`${ROUTE_CATALOGUE}/vino`).catch(() => {
                   showErrorNotification();
                 });
               }}

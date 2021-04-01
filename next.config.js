@@ -17,15 +17,15 @@ module.exports = {
   async headers() {
     return [
       // Catalogue
-      /*{
-        source: '/:catalogue*',
+      {
+        source: '/catalogue/:catalogue*',
         headers: [
           {
             key: 'Cache-Control',
             value: 's-maxage=604800000, stale-while-revalidate=86400000',
           },
         ],
-      },*/
+      },
       {
         source: '/product/:card*',
         headers: [
@@ -42,35 +42,6 @@ module.exports = {
           {
             key: 'Cache-Control',
             value: 'public, immutable, max-age=31536000',
-          },
-        ],
-      },
-      // Api
-      {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache',
-          },
-        ],
-      },
-      // Dashboard
-      {
-        source: '/cms/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache',
-          },
-        ],
-      },
-      {
-        source: '/app/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache',
           },
         ],
       },

@@ -1,6 +1,7 @@
 import Button from 'components/Buttons/Button';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -40,7 +41,7 @@ const ThankYouRoute: React.FC = () => {
           </Button>
           <Button
             onClick={() => {
-              router.push(`/vino`).catch(() => {
+              router.push(`${ROUTE_CATALOGUE}/vino`).catch(() => {
                 showErrorNotification();
               });
             }}

@@ -26,6 +26,7 @@ import {
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,
   ROUTE_APP,
+  ROUTE_CATALOGUE,
   ROUTE_CMS,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
@@ -289,7 +290,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               <li className={classes.burgerDropdownListItem} key={rubric.slug}>
                 <Link
                   prefetch={false}
-                  href={`/${slug}`}
+                  href={`${ROUTE_CATALOGUE}/${slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`${classes.burgerDropdownListItemLink} ${
@@ -311,7 +312,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                 return (
                                   <li key={`${option._id}`}>
                                     <Link
-                                      href={`/${rubric.slug}/${option.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`${classes.burgerDropdownListItemGroupLink} ${
                                         isCurrent

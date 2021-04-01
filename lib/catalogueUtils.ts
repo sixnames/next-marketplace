@@ -49,6 +49,7 @@ import {
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
+  ROUTE_CATALOGUE,
   SECONDARY_LOCALE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
@@ -271,7 +272,7 @@ export async function getCatalogueAttributes({
             _id: option._id,
             name: getFieldLocale(option.nameI18n),
             slug: option.slug,
-            nextSlug: `/${optionNextSlug}`,
+            nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
             isSelected,
           });
         }
@@ -282,7 +283,7 @@ export async function getCatalogueAttributes({
         _id: option._id,
         name: getFieldLocale(option.nameI18n),
         slug: option.slug,
-        nextSlug: `/${optionNextSlug}`,
+        nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
         isSelected,
       });
     }
@@ -296,7 +297,7 @@ export async function getCatalogueAttributes({
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });
-    const clearSlug = `/${otherSelectedValues.join('/')}`;
+    const clearSlug = `${ROUTE_CATALOGUE}/${otherSelectedValues.join('/')}`;
 
     const isSelected = castedOptions.some(({ isSelected }) => isSelected);
     if (isSelected) {
@@ -639,7 +640,7 @@ export const getCatalogueData = async ({
                 counter: 1,
                 isSelected: true,
                 isDisabled: false,
-                nextSlug: `/${nextSlug}`,
+                nextSlug: `${ROUTE_CATALOGUE}/${nextSlug}`,
               },
             ];
           },
@@ -817,7 +818,7 @@ export const getCatalogueData = async ({
       _id: rubric._id,
       lastProductId: lastProduct?._id,
       hasMore,
-      clearSlug: `/${rubricSlug}${sortPathname}`,
+      clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
       filter,
       rubricName: getFieldLocale(rubric.nameI18n),
       rubricSlug: rubric.slug,

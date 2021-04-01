@@ -72,6 +72,7 @@ export const QUERY_DATA_LAYOUT_PAGE = 'page';
 export const PRODUCT_CARD_RUBRIC_SLUG_PREFIX = 'rubric-';
 
 // profile
+export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;

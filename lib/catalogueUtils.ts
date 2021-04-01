@@ -508,117 +508,6 @@ export const getCatalogueData = async ({
       },
     ];
 
-    // Get catalogue products
-    // const productsStartTime = new Date().getTime();
-    const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
-
-    const products = [];
-    for await (const product of initialProducts) {
-      // prices
-      const { attributes, ...restProduct } = product;
-      const minPrice = noNaN(product.minPriceCities[city]);
-      const maxPrice = noNaN(product.maxPriceCities[city]);
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: getCurrencyString({ value: minPrice, locale }),
-        max: getCurrencyString({ value: maxPrice, locale }),
-      };
-
-      // image
-      const sortedAssets = product.assets.sort((assetA, assetB) => {
-        return assetA.index - assetB.index;
-      });
-      const firstAsset = sortedAssets[0];
-      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-      if (firstAsset) {
-        mainImage = firstAsset.url;
-      }
-
-      // listFeatures
-      const listFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
-        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-        getFieldLocale,
-      });
-
-      // ratingFeatures
-      const ratingFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
-        viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-        getFieldLocale,
-      });
-
-      // connections
-      const connections: ProductConnectionModel[] = [];
-      for await (const productConnection of product.connections) {
-        const connectionProducts: ProductConnectionItemModel[] = [];
-        for await (const connectionProduct of productConnection.connectionProducts) {
-          const product = await productsCollection.findOne(
-            { _id: connectionProduct.productId },
-            {
-              projection: {
-                _id: 1,
-                slug: 1,
-                nameI18n: 1,
-              },
-            },
-          );
-          if (!product) {
-            continue;
-          }
-          connectionProducts.push({
-            ...connectionProduct,
-            option: {
-              ...connectionProduct.option,
-              name: getFieldLocale(connectionProduct.option.nameI18n),
-            },
-            product: {
-              ...product,
-              name: getFieldLocale(product.nameI18n),
-            },
-          });
-        }
-
-        connections.push({
-          ...productConnection,
-          attributeName: getFieldLocale(productConnection.attributeNameI18n),
-          connectionProducts,
-        });
-      }
-
-      products.push({
-        ...restProduct,
-        listFeatures,
-        ratingFeatures,
-        name: getFieldLocale(product.nameI18n),
-        cardPrices,
-        mainImage,
-        shopsCount: noNaN(product.shopProductsCountCities[city]),
-        connections,
-        isCustomersChoice: product.isCustomersChoiceCities[city],
-      });
-    }
-    // const productsEndTime = new Date().getTime();
-    // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
-
-    // Count catalogue products
-    // const productsCountStartTime = new Date().getTime();
-    const productsCountAggregation = await productsCollection
-      .aggregate<any>([
-        { $match: productsInitialMatch },
-        {
-          $count: 'counter',
-        },
-      ])
-      .toArray();
-    const totalProducts = productsCountAggregation[0] ? productsCountAggregation[0].counter : 0;
-    /*const productsCountEndTime = new Date().getTime();
-    console.log(
-      `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
-      productsCountEndTime - productsCountStartTime,
-    );*/
-
     // Get options for catalogue attributes
     // const productOptionsAggregationStart = new Date().getTime();
     const productOptionsAggregation = await productsCollection
@@ -771,6 +660,119 @@ export const getCatalogueData = async ({
       },
       [],
     );
+
+    // Get catalogue products
+    // const productsStartTime = new Date().getTime();
+    const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
+    const topAttributes = castedAttributes.slice(1, 6);
+    console.log(topAttributes);
+
+    const products = [];
+    for await (const product of initialProducts) {
+      // prices
+      const { attributes, ...restProduct } = product;
+      const minPrice = noNaN(product.minPriceCities[city]);
+      const maxPrice = noNaN(product.maxPriceCities[city]);
+      const cardPrices = {
+        _id: new ObjectId(),
+        min: getCurrencyString({ value: minPrice, locale }),
+        max: getCurrencyString({ value: maxPrice, locale }),
+      };
+
+      // image
+      const sortedAssets = product.assets.sort((assetA, assetB) => {
+        return assetA.index - assetB.index;
+      });
+      const firstAsset = sortedAssets[0];
+      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+
+      if (firstAsset) {
+        mainImage = firstAsset.url;
+      }
+
+      // listFeatures
+      const listFeatures = getProductCurrentViewCastedAttributes({
+        attributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+        getFieldLocale,
+      });
+
+      // ratingFeatures
+      const ratingFeatures = getProductCurrentViewCastedAttributes({
+        attributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+        getFieldLocale,
+      });
+
+      // connections
+      const connections: ProductConnectionModel[] = [];
+      for await (const productConnection of product.connections) {
+        const connectionProducts: ProductConnectionItemModel[] = [];
+        for await (const connectionProduct of productConnection.connectionProducts) {
+          const product = await productsCollection.findOne(
+            { _id: connectionProduct.productId },
+            {
+              projection: {
+                _id: 1,
+                slug: 1,
+                nameI18n: 1,
+              },
+            },
+          );
+          if (!product) {
+            continue;
+          }
+          connectionProducts.push({
+            ...connectionProduct,
+            option: {
+              ...connectionProduct.option,
+              name: getFieldLocale(connectionProduct.option.nameI18n),
+            },
+            product: {
+              ...product,
+              name: getFieldLocale(product.nameI18n),
+            },
+          });
+        }
+
+        connections.push({
+          ...productConnection,
+          attributeName: getFieldLocale(productConnection.attributeNameI18n),
+          connectionProducts,
+        });
+      }
+
+      products.push({
+        ...restProduct,
+        listFeatures,
+        ratingFeatures,
+        name: getFieldLocale(product.nameI18n),
+        cardPrices,
+        mainImage,
+        shopsCount: noNaN(product.shopProductsCountCities[city]),
+        connections,
+        isCustomersChoice: product.isCustomersChoiceCities[city],
+      });
+    }
+    // const productsEndTime = new Date().getTime();
+    // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+
+    // Count catalogue products
+    // const productsCountStartTime = new Date().getTime();
+    const productsCountAggregation = await productsCollection
+      .aggregate<any>([
+        { $match: productsInitialMatch },
+        {
+          $count: 'counter',
+        },
+      ])
+      .toArray();
+    const totalProducts = productsCountAggregation[0] ? productsCountAggregation[0].counter : 0;
+    /*const productsCountEndTime = new Date().getTime();
+    console.log(
+      `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
+      productsCountEndTime - productsCountStartTime,
+    );*/
 
     // Get catalogue title
     const catalogueTitle = getCatalogueTitle({

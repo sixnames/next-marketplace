@@ -44,6 +44,7 @@ import {
   CATALOGUE_NAV_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
+  CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -384,10 +385,16 @@ export const getCatalogueData = async ({
     const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
       slug: 'catalogueFilterVisibleOptionsCount',
     });
-
     const visibleOptionsCount =
       noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
       noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+
+    const snippetVisibleAttributesCountConfig = await configsCollection.findOne({
+      slug: 'snippetAttributesCount',
+    });
+    const snippetVisibleAttributesCount =
+      noNaN(snippetVisibleAttributesCountConfig?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+      noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES);
 
     // Get rubric
     const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
@@ -716,7 +723,7 @@ export const getCatalogueData = async ({
           return noNaN(listAttributeB.index) - noNaN(listAttributeA.index);
         },
       );
-      const listFeatures = sortedListAttributes.slice(0, 5);
+      const listFeatures = sortedListAttributes.slice(0, snippetVisibleAttributesCount);
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({

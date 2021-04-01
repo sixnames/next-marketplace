@@ -46,14 +46,14 @@ module.exports = {
           },
         ],
       },
-      /*// Api
+      // Api
       {
         source: '/api/(.*)',
         locale: false,
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 's-maxage=0, stale-while-revalidate=0',
           },
         ],
       },
@@ -63,7 +63,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 's-maxage=0, stale-while-revalidate=0',
           },
         ],
       },
@@ -72,10 +72,10 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 's-maxage=0, stale-while-revalidate=0',
           },
         ],
-      },*/
+      },
     ];
   },
 };

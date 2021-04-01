@@ -77,10 +77,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
   const [string, setString] = React.useState<string>('');
   const [value] = useDebounce(string, 1000);
   const { isMobile } = useAppContext();
-  const [
-    getSearchResult,
-    { data: searchData, loading: searchLoading, error: searchError },
-  ] = useGetCatalogueSearchResultLazyQuery({
+  const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       search: `${value}`,
@@ -94,12 +91,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
     }
   }, [getSearchResult, value]);
 
-  const isLoading = searchLoading;
-  const isError = searchError;
-
-  const searchRubrics = searchData?.getCatalogueSearchResult.rubrics;
+  const searchRubrics = data?.getCatalogueSearchResult.rubrics;
   const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
-  const initialSearchProducts = searchData?.getCatalogueSearchResult.products as unknown;
+  const initialSearchProducts = data?.getCatalogueSearchResult.products as unknown;
   const searchProducts = initialSearchProducts as CatalogueProductInterface[];
   const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
   const topProducts = initialTopProducts as CatalogueProductInterface[];
@@ -148,9 +142,25 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
               />
             )}
           </form>
+
+          {!loading &&
+          value.length > minSearchLength &&
+          data?.getCatalogueSearchResult.products &&
+          data.getCatalogueSearchResult.products.length < 1 ? (
+            <div
+              style={{
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                marginBottom: 'var(--lineGap-200)',
+              }}
+            >
+              По вашему запросу ничего не найдено
+            </div>
+          ) : null}
+
           <div className={classes.searchFrame}>
-            {isLoading ? <Spinner className={classes.spinner} /> : null}
-            {isError ? <RequestError /> : null}
+            {loading ? <Spinner className={classes.spinner} /> : null}
+            {error ? <RequestError /> : null}
             {rubrics && products ? (
               <HeaderSearchResult rubrics={rubrics} products={products} />
             ) : null}

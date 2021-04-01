@@ -100,7 +100,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
           setState((prevState) => {
             return {
               ...data,
-              products: [...prevState.products, ...data.products],
+              products: [...prevState.products, ...(data?.products || [])],
             };
           });
           setLoading(false);

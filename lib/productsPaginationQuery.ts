@@ -48,6 +48,8 @@ export async function productsPaginationQuery({
   active,
 }: ProductsPaginationQueryInterface): Promise<ProductsPaginationPayloadModel> {
   try {
+    const timeStart = new Date().getTime();
+
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const { excludedProductsIds, excludedRubricsIds, rubricId, attributesIds, ...restInputValues } =
@@ -67,19 +69,10 @@ export async function productsPaginationQuery({
     if (sortBy === 'price') {
       realSortBy = 'minPrice';
     }
-    /*if (sortBy === SORT_BY_CREATED_AT) {
-      realSortBy = '_id';
-    }*/
 
-    const sortStage = realSortBy
-      ? {
-          [realSortBy]: realSortDir,
-        }
-      : {
-          _id: SORT_DESC,
-        };
-
-    // console.log(sortStage);
+    const sortStage = {
+      [realSortBy]: realSortDir,
+    };
 
     const excludedProductsStage = excludedProductsIds
       ? [
@@ -138,7 +131,12 @@ export async function productsPaginationQuery({
 
       // Optional initial pipeline
       ...initialMatchPipeline,
-
+      {
+        $project: {
+          // _id: true,
+          attributes: false,
+        },
+      },
       // Stable sort
       { $sort: sortStage },
 
@@ -191,21 +189,22 @@ export async function productsPaginationQuery({
         },
       },
     ];
-
     /*const stats = await productsCollection
-      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })
+      .aggregate<ProductsPaginationPayloadModel>(pipeline, { allowDiskUse: true, ...options })
       .explain();
     console.log(JSON.stringify(stats, null, 2));*/
 
     const aggregated = await productsCollection
-      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })
+      .aggregate<ProductsPaginationPayloadModel>(pipeline, { allowDiskUse: true, ...options })
       .toArray();
-
     const aggregationResult = aggregated[0];
 
     if (!aggregationResult) {
       return aggregationFallback;
     }
+
+    // console.log(JSON.stringify(pipeline, null, 2));
+    console.log('Products pagination >>> ', new Date().getTime() - timeStart);
 
     return {
       ...aggregationResult,

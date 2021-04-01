@@ -369,9 +369,9 @@ export const getCatalogueData = async ({
   }
 
   try {
-    // console.log(' ');
-    // console.log('===========================================================');
-    // const timeStart = new Date().getTime();
+    console.log(' ');
+    console.log('===========================================================');
+    const timeStart = new Date().getTime();
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -398,8 +398,8 @@ export const getCatalogueData = async ({
 
     // Get rubric
     const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-    // const rubricTime = new Date().getTime();
-    // console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+    const rubricTime = new Date().getTime();
+    console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
 
     if (!rubric) {
       return null;
@@ -443,19 +443,15 @@ export const getCatalogueData = async ({
       }
     });
 
-    // Get products
+    // Product stages
     const noFiltersSelected = realFilterOptions.length < 1;
     const keyStage = lastProductId
-      ? [
-          {
-            $match: {
-              _id: {
-                $lt: new ObjectId(lastProductId),
-              },
-            },
+      ? {
+          _id: {
+            $lt: new ObjectId(lastProductId),
           },
-        ]
-      : [];
+        }
+      : {};
 
     const pricesStage =
       minPrice && maxPrice
@@ -467,22 +463,20 @@ export const getCatalogueData = async ({
           }
         : {};
 
-    const productsInitialMatch = noFiltersSelected
-      ? {
-          rubricId: rubric._id,
-          active: true,
-
-          ...pricesStage,
-        }
+    const optionsStage = noFiltersSelected
+      ? {}
       : {
-          rubricId: rubric._id,
-          active: true,
-
           selectedOptionsSlugs: {
             $all: realFilterOptions,
           },
-          ...pricesStage,
         };
+
+    const productsInitialMatch = {
+      rubricId: rubric._id,
+      active: true,
+      ...optionsStage,
+      ...pricesStage,
+    };
 
     // sort stage
     const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
@@ -502,23 +496,8 @@ export const getCatalogueData = async ({
       };
     }
 
-    const productsMainPipeline = [
-      {
-        $match: productsInitialMatch,
-      },
-      {
-        $sort: {
-          ...sortStage,
-        },
-      },
-      ...keyStage,
-      {
-        $limit: CATALOGUE_PRODUCTS_LIMIT,
-      },
-    ];
-
     // Get options for catalogue attributes
-    // const productOptionsAggregationStart = new Date().getTime();
+    const productOptionsAggregationStart = new Date().getTime();
     const productOptionsAggregation = await productsCollection
       .aggregate<ProductOptionInterface>([
         { $match: productsInitialMatch },
@@ -559,14 +538,13 @@ export const getCatalogueData = async ({
         },
       ])
       .toArray();
-    /*const productOptionsAggregationEnd = new Date().getTime();
     console.log(
       `Product options >>>>>>>>>>>>>>>> `,
-      productOptionsAggregationEnd - productOptionsAggregationStart,
-    );*/
+      new Date().getTime() - productOptionsAggregationStart,
+    );
 
     // Get prices for catalogue attributes
-    // const productPricesAggregationStart = new Date().getTime();
+    const productPricesAggregationStart = new Date().getTime();
     const productPricesAggregation = await productsCollection
       .aggregate<ProductPricesInterface>([
         { $match: productsInitialMatch },
@@ -587,14 +565,14 @@ export const getCatalogueData = async ({
         },
       ])
       .toArray();
-    /*const productPricesAggregationEnd = new Date().getTime();
+    const productPricesAggregationEnd = new Date().getTime();
     console.log(
       `Product prices >>>>>>>>>>>>>>>> `,
       productPricesAggregationEnd - productPricesAggregationStart,
-    );*/
+    );
 
     // Get filter attributes
-    // const beforeOptions = new Date().getTime();
+    const beforeOptions = new Date().getTime();
     const attributes = await getRubricCatalogueAttributes({
       config: productOptionsAggregation,
       attributes: rubric.attributes,
@@ -609,7 +587,7 @@ export const getCatalogueData = async ({
       filter,
       productsPrices: productPricesAggregation,
     });
-    // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+    console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get selected attributes
     const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
@@ -671,9 +649,39 @@ export const getCatalogueData = async ({
       [],
     );
 
+    //
+    /*const facetsStartTime = new Date().getTime();
+    const testFacets = await db
+      .collection<any>('facets')
+      .aggregate([
+        {
+          $match: { ...productsInitialMatch, ...keyStage },
+        },
+        {
+          $limit: CATALOGUE_PRODUCTS_LIMIT,
+        },
+      ])
+      .toArray();
+    console.log('Facets ============= ', new Date().getTime() - facetsStartTime);
+    console.log(testFacets.length);*/
+
     // Get catalogue products
-    // const productsStartTime = new Date().getTime();
-    const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
+    const productsStartTime = new Date().getTime();
+    const initialProducts = await productsCollection
+      .aggregate([
+        {
+          $match: { ...productsInitialMatch, ...keyStage },
+        },
+        {
+          $sort: {
+            ...sortStage,
+          },
+        },
+        {
+          $limit: CATALOGUE_PRODUCTS_LIMIT,
+        },
+      ])
+      .toArray();
     const rubricListViewAttributes = castedAttributes.filter(({ viewVariant }) => {
       return viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
     });
@@ -782,11 +790,10 @@ export const getCatalogueData = async ({
         isCustomersChoice: product.isCustomersChoiceCities[city],
       });
     }
-    // const productsEndTime = new Date().getTime();
-    // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+    console.log('Products >>>>>>>>>>>>>>>> ', new Date().getTime() - productsStartTime);
 
     // Count catalogue products
-    // const productsCountStartTime = new Date().getTime();
+    const productsCountStartTime = new Date().getTime();
     const productsCountAggregation = await productsCollection
       .aggregate<any>([
         { $match: productsInitialMatch },
@@ -796,11 +803,11 @@ export const getCatalogueData = async ({
       ])
       .toArray();
     const totalProducts = productsCountAggregation[0] ? productsCountAggregation[0].counter : 0;
-    /*const productsCountEndTime = new Date().getTime();
+    const productsCountEndTime = new Date().getTime();
     console.log(
       `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
       productsCountEndTime - productsCountStartTime,
-    );*/
+    );
 
     // Get catalogue title
     const catalogueTitle = getCatalogueTitle({
@@ -818,8 +825,7 @@ export const getCatalogueData = async ({
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
-    // const timeEnd = new Date().getTime();
-    // console.log('Total time: ', timeEnd - timeStart);
+    console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,

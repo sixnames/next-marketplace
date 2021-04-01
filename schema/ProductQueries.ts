@@ -3,7 +3,7 @@ import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
-  SORT_BY_CREATED_AT,
+  SORT_BY_ID,
   SORT_DESC,
 } from 'config/common';
 import {
@@ -49,7 +49,7 @@ export const ProductsPaginationInput = inputObjectType({
     t.int('minPrice');
     t.int('maxPrice');
     t.string('sortBy', {
-      default: SORT_BY_CREATED_AT,
+      default: SORT_BY_ID,
     });
     t.field('sortDir', {
       type: 'SortDirection',

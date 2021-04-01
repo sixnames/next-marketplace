@@ -1552,7 +1552,7 @@ input ProductsPaginationInput {
   """
   rubricId: ObjectId
   search: String
-  sortBy: String = "createdAt"
+  sortBy: String = "_id"
   sortDir: SortDirection = DESC
 }
 

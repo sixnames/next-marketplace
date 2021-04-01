@@ -15,16 +15,14 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     const { headers, query } = req;
     const anyQuery = query as unknown;
     const { locale, filter, lastProductId } = anyQuery as CatalogueQueryInterface;
-
     const host = `${headers.host}`;
     const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
     const sessionCity = subdomain || DEFAULT_CITY;
-
     const rawCatalogueData = await getCatalogueData({
       locale,
       city: sessionCity,
       input: {
-        filter,
+        filter: filter.slice(1),
         lastProductId: lastProductId ? new ObjectId(lastProductId) : null,
       },
     });

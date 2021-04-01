@@ -315,6 +315,7 @@ export async function getCatalogueAttributes({
       options: castedOptions,
       isSelected,
       metric: attribute.metric ? getFieldLocale(attribute.metric.nameI18n) : null,
+      viewVariant: attribute.viewVariant,
     };
 
     castedAttributes.push(castedAttribute);
@@ -655,6 +656,7 @@ export const getCatalogueData = async ({
             isSelected: true,
             isDisabled: false,
             options,
+            viewVariant: attribute.viewVariant,
           },
         ];
       },
@@ -664,8 +666,9 @@ export const getCatalogueData = async ({
     // Get catalogue products
     // const productsStartTime = new Date().getTime();
     const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
-    const topAttributes = castedAttributes.slice(1, 6);
-    console.log(topAttributes);
+    const rubricListViewAttributes = castedAttributes.filter(({ viewVariant }) => {
+      return viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+    });
 
     const products = [];
     for await (const product of initialProducts) {
@@ -691,11 +694,28 @@ export const getCatalogueData = async ({
       }
 
       // listFeatures
-      const listFeatures = getProductCurrentViewCastedAttributes({
+      const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         getFieldLocale,
       });
+      const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
+        const indexInRubric = rubricListViewAttributes.findIndex(
+          ({ slug }) => slug === listAttribute.attributeSlug,
+        );
+        const finalIndexInRubric = indexInRubric < 0 ? 0 : indexInRubric;
+        const index = rubricListViewAttributes.length - finalIndexInRubric;
+        return {
+          ...listAttribute,
+          index,
+        };
+      });
+      const sortedListAttributes = initialListFeaturesWithIndex.sort(
+        (listAttributeA, listAttributeB) => {
+          return noNaN(listAttributeB.index) - noNaN(listAttributeA.index);
+        },
+      );
+      const listFeatures = sortedListAttributes.slice(1, 6);
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({

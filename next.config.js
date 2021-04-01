@@ -14,10 +14,10 @@ module.exports = {
     OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
     NEXT_GOOGLE_MAPS_API_KEY: process.env.NEXT_GOOGLE_MAPS_API_KEY,
   },
-  /*async headers() {
+  async headers() {
     return [
       // Catalogue
-      {
+      /*{
         source: '/:catalogue*',
         headers: [
           {
@@ -25,7 +25,7 @@ module.exports = {
             value: 's-maxage=604800000, stale-while-revalidate=86400000',
           },
         ],
-      },
+      },*/
       {
         source: '/product/:card*',
         headers: [
@@ -37,7 +37,7 @@ module.exports = {
       },
       // Assets
       {
-        source: '/:all*(woff2|woff|svg|jpg|jpeg|png|ico)',
+        source: '/fonts/:all*(woff2|woff)',
         locale: false,
         headers: [
           {
@@ -46,7 +46,7 @@ module.exports = {
           },
         ],
       },
-      // Api
+      /*// Api
       {
         source: '/api/(.*)',
         locale: false,
@@ -75,7 +75,7 @@ module.exports = {
             value: 'no-cache',
           },
         ],
-      },
+      },*/
     ];
-  },*/
+  },
 };

@@ -24,7 +24,7 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const { me, loadingUser } = useUserContext();
+  const { state } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
     return [
@@ -91,7 +91,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
     ];
   }, []);
 
-  if (loadingUser || !me) {
+  if (state.loadingUser || !state.me) {
     return (
       <div className={classes.frame}>
         <Breadcrumbs currentPageName={'Профиль'} />
@@ -109,7 +109,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         <div className={classes.content}>
           <div className={classes.aside}>
             <Title>Личный кабинет</Title>
-            <div className={classes.greeting}>С возвращением, {me?.name}</div>
+            <div className={classes.greeting}>С возвращением, {state.me?.name}</div>
             <AsideNav className={classes.asideNav} config={navConfig} testId={'profile-nav'} />
           </div>
           <div data-cy={testId}>{children}</div>

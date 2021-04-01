@@ -21,13 +21,13 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
-  const { me } = useUserContext();
+  const { state } = useUserContext();
 
-  if (!me) {
+  if (!state.me) {
     return <Spinner />;
   }
 
-  const { appNavigation, cmsNavigation } = me.role;
+  const { appNavigation, cmsNavigation } = state.me.role;
   const navItems = pathname.includes('cms') ? cmsNavigation : appNavigation;
 
   return (

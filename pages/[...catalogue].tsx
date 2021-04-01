@@ -365,7 +365,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({
 
   return (
     <SiteLayout
-      title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}`}
+      title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       navRubrics={navRubrics}
       pageUrls={pageUrls}

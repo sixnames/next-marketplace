@@ -715,7 +715,7 @@ export const getCatalogueData = async ({
           return noNaN(listAttributeB.index) - noNaN(listAttributeA.index);
         },
       );
-      const listFeatures = sortedListAttributes.slice(1, 6);
+      const listFeatures = sortedListAttributes.slice(0, 5);
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({

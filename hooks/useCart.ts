@@ -9,17 +9,15 @@ export interface UseCartPayloadInterface {
 }
 
 const useCart = (): UseCartPayloadInterface => {
-  const { data, loading, error } = useSessionCartQuery();
+  const { data, loading, error } = useSessionCartQuery({ ssr: false });
 
-  const cart = React.useMemo(() => {
-    return data?.getSessionCart;
-  }, [data]);
-
-  return {
-    cart,
-    loadingCart: loading,
-    cartError: error,
-  };
+  return React.useMemo(() => {
+    return {
+      cart: data?.getSessionCart,
+      loadingCart: loading,
+      cartError: error,
+    };
+  }, [data, error, loading]);
 };
 
 export default useCart;

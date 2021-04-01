@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
 import classes from './HeaderSearch.module.css';
@@ -11,7 +12,6 @@ import {
   GetCatalogueSearchResultQuery,
   GetCatalogueSearchTopItemsQuery,
   useGetCatalogueSearchResultLazyQuery,
-  useGetCatalogueSearchTopItemsLazyQuery,
 } from 'generated/apolloComponents';
 import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
@@ -42,7 +42,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
             <li key={slug} data-cy={'search-rubric'}>
               <Link
                 onClick={hideSearchDropdown}
-                href={`/${slug}`}
+                href={`${ROUTE_CATALOGUE}/${slug}`}
                 testId={`search-rubric-${name}`}
                 className={`${classes.rubric}`}
               >
@@ -68,11 +68,14 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
   );
 };
 
-const HeaderSearch: React.FC = () => {
+interface HeaderSearchInterface {
+  initialData?: GetCatalogueSearchTopItemsQuery | null;
+}
+
+const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
   const { hideSearchDropdown } = useSiteContext();
   const [search, setSearch] = React.useState<string>('');
   const { isMobile } = useAppContext();
-  const [getTopResults, { data, loading, error }] = useGetCatalogueSearchTopItemsLazyQuery();
   const [
     getSearchResult,
     { data: searchData, loading: searchLoading, error: searchError },
@@ -95,22 +98,18 @@ const HeaderSearch: React.FC = () => {
     }
   }, [getSearchResult, search]);
 
-  React.useEffect(() => {
-    getTopResults();
-  }, [getTopResults]);
-
   function setSearchHandler(value: string) {
     setSearch(value);
   }
 
-  const isLoading = loading || searchLoading;
-  const isError = error || searchError;
+  const isLoading = searchLoading;
+  const isError = searchError;
 
   const searchRubrics = searchData?.getCatalogueSearchResult.rubrics;
-  const topRubrics = data?.getCatalogueSearchTopItems.rubrics;
+  const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
   const initialSearchProducts = searchData?.getCatalogueSearchResult.products as unknown;
   const searchProducts = initialSearchProducts as CatalogueProductInterface[];
-  const initialTopProducts = data?.getCatalogueSearchTopItems.products as unknown;
+  const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
   const topProducts = initialTopProducts as CatalogueProductInterface[];
 
   const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;

@@ -58,31 +58,7 @@ export const CatalogueQueries = extendType({
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-          const finalPipeline = [
-            {
-              $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priorities.${city}`]: SORT_DESC,
-                _id: SORT_BY_ID_DIRECTION,
-              },
-            },
-            { $limit: 3 },
-          ];
-
-          const products = await productsCollection
-            .aggregate([
-              {
-                $match: {
-                  active: true,
-                },
-              },
-              // filter out by shop products availability
-              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-              { $match: { shopsCount: { $gt: 0 } } },
-              ...finalPipeline,
-            ])
-            .toArray();
-
+          // const rubricsStart = new Date().getTime();
           const rubrics = await rubricsCollection
             .aggregate([
               {
@@ -90,9 +66,51 @@ export const CatalogueQueries = extendType({
                   active: true,
                 },
               },
-              ...finalPipeline,
+              {
+                $project: {
+                  _id: 1,
+                  nameI18n: 1,
+                  slug: 1,
+                },
+              },
+              {
+                $sort: {
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_BY_ID_DIRECTION,
+                },
+              },
+              { $limit: 3 },
             ])
             .toArray();
+
+          const rubricsIds = rubrics.map(({ _id }) => _id);
+          // console.log('Top rubrics ', new Date().getTime() - rubricsStart);
+
+          // const productsStart = new Date().getTime();
+          const products = await productsCollection
+            .aggregate([
+              {
+                $match: {
+                  rubricId: { $in: rubricsIds },
+                  active: true,
+                },
+              },
+              // filter out by shop products availability
+              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
+              { $match: { shopsCount: { $gt: 0 } } },
+              {
+                $sort: {
+                  [`availabilityCities.${city}`]: SORT_DESC,
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_DESC,
+                },
+              },
+              { $limit: 3 },
+            ])
+            .toArray();
+          // console.log('Top products ', new Date().getTime() - productsStart);
 
           return {
             products,

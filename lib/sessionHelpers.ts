@@ -64,7 +64,7 @@ export const getSessionLocale = (context: NexusContext): string => {
   // Get locale form context if request form server
   // Otherwise get locale from Content-Language header
   // populated with Apollo client
-  return context.locale || context.req.headers[LOCALE_HEADER] || DEFAULT_LOCALE;
+  return context?.locale || context?.req?.headers[LOCALE_HEADER] || DEFAULT_LOCALE;
 };
 
 export const getSessionCity = (context: NexusContext): string => {
@@ -75,7 +75,7 @@ export const getSessionCity = (context: NexusContext): string => {
   if (headerCity) {
     return `${headerCity}`;
   }
-  return context.city || DEFAULT_CITY;
+  return context?.city || DEFAULT_CITY;
 };
 
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {

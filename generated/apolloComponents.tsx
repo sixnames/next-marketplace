@@ -3994,15 +3994,6 @@ export type ProductSnippetFragment = (
   ) }
 );
 
-export type CatalogueRubricFragment = (
-  { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'name' | 'slug'>
-  & { variant: (
-    { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, '_id' | 'name'>
-  ) }
-);
-
 export type UpdateCatalogueCountersMutationVariables = Exact<{
   input: CatalogueDataInput;
 }>;
@@ -4647,6 +4638,11 @@ export type GetAllRubricVariantsQuery = (
   )> }
 );
 
+export type SearchRubricFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, '_id' | 'name' | 'slug'>
+);
+
 export type GetCatalogueSearchTopItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4656,7 +4652,7 @@ export type GetCatalogueSearchTopItemsQuery = (
     { __typename?: 'CatalogueSearchResult' }
     & { rubrics: Array<(
       { __typename?: 'Rubric' }
-      & CatalogueRubricFragment
+      & SearchRubricFragment
     )>, products: Array<(
       { __typename?: 'Product' }
       & ProductSnippetFragment
@@ -4675,7 +4671,7 @@ export type GetCatalogueSearchResultQuery = (
     { __typename?: 'CatalogueSearchResult' }
     & { rubrics: Array<(
       { __typename?: 'Rubric' }
-      & CatalogueRubricFragment
+      & SearchRubricFragment
     )>, products: Array<(
       { __typename?: 'Product' }
       & ProductSnippetFragment
@@ -5250,17 +5246,6 @@ export const ProductCardFragmentDoc = gql`
     ${ShopProductSnippetFragmentDoc}
 ${CardFeatureFragmentDoc}
 ${CardConnectionFragmentDoc}`;
-export const CatalogueRubricFragmentDoc = gql`
-    fragment CatalogueRubric on Rubric {
-  _id
-  name
-  slug
-  variant {
-    _id
-    name
-  }
-}
-    `;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id
@@ -5741,6 +5726,13 @@ export const RubricVariantFragmentDoc = gql`
   _id
   name
   nameI18n
+}
+    `;
+export const SearchRubricFragmentDoc = gql`
+    fragment SearchRubric on Rubric {
+  _id
+  name
+  slug
 }
     `;
 export const SelectOptionFragmentDoc = gql`
@@ -9302,14 +9294,14 @@ export const GetCatalogueSearchTopItemsDocument = gql`
     query GetCatalogueSearchTopItems {
   getCatalogueSearchTopItems {
     rubrics {
-      ...CatalogueRubric
+      ...SearchRubric
     }
     products {
       ...ProductSnippet
     }
   }
 }
-    ${CatalogueRubricFragmentDoc}
+    ${SearchRubricFragmentDoc}
 ${ProductSnippetFragmentDoc}`;
 
 /**
@@ -9342,14 +9334,14 @@ export const GetCatalogueSearchResultDocument = gql`
     query GetCatalogueSearchResult($search: String!) {
   getCatalogueSearchResult(search: $search) {
     rubrics {
-      ...CatalogueRubric
+      ...SearchRubric
     }
     products {
       ...ProductSnippet
     }
   }
 }
-    ${CatalogueRubricFragmentDoc}
+    ${SearchRubricFragmentDoc}
 ${ProductSnippetFragmentDoc}`;
 
 /**

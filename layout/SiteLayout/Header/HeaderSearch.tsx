@@ -1,6 +1,7 @@
 import { ROUTE_CATALOGUE } from 'config/common';
 import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
+import { useDebounce } from 'use-debounce';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
@@ -13,7 +14,6 @@ import {
   GetCatalogueSearchTopItemsQuery,
   useGetCatalogueSearchResultLazyQuery,
 } from 'generated/apolloComponents';
-import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
 import RequestError from '../../../components/RequestError/RequestError';
 import Link from '../../../components/Link/Link';
@@ -74,33 +74,25 @@ interface HeaderSearchInterface {
 
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
   const { hideSearchDropdown } = useSiteContext();
-  const [search, setSearch] = React.useState<string>('');
+  const [string, setString] = React.useState<string>('');
+  const [value] = useDebounce(string, 1000);
   const { isMobile } = useAppContext();
   const [
     getSearchResult,
     { data: searchData, loading: searchLoading, error: searchError },
   ] = useGetCatalogueSearchResultLazyQuery({
+    fetchPolicy: 'network-only',
     variables: {
-      search,
+      search: `${value}`,
     },
   });
   const minSearchLength = 2;
 
   React.useEffect(() => {
-    return () => {
-      setSearch('');
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (search && search.length > minSearchLength) {
-      debounce(getSearchResult, 500)();
+    if (value && value.length > minSearchLength) {
+      getSearchResult();
     }
-  }, [getSearchResult, search]);
-
-  function setSearchHandler(value: string) {
-    setSearch(value);
-  }
+  }, [getSearchResult, value]);
 
   const isLoading = searchLoading;
   const isError = searchError;
@@ -130,10 +122,10 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
 
           <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
             <Input
-              onChange={(e) => setSearchHandler(e.target.value)}
+              onChange={(e) => setString(e.target.value)}
               name={'search'}
               icon={'search'}
-              value={search}
+              value={string}
               placeholder={'Я хочу найти...'}
               testId={'search-input'}
             />

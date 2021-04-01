@@ -96,9 +96,6 @@ export const CatalogueQueries = extendType({
                   active: true,
                 },
               },
-              // filter out by shop products availability
-              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-              { $match: { shopsCount: { $gt: 0 } } },
               {
                 $sort: {
                   [`availabilityCities.${city}`]: SORT_DESC,
@@ -147,21 +144,35 @@ export const CatalogueQueries = extendType({
 
           const searchByName = languages.map(({ slug }) => {
             return {
-              [`nameI18n.${slug}`]: search,
+              [`nameI18n.${slug}`]: {
+                $regex: search,
+                $options: 'i',
+              },
             };
           });
 
-          const finalPipeline = [
-            {
-              $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priorities.${city}`]: SORT_DESC,
-                _id: SORT_BY_ID_DIRECTION,
+          // const rubricsStart = new Date().getTime();
+          const rubrics = await rubricsCollection
+            .aggregate([
+              {
+                $match: {
+                  active: true,
+                  $or: [...searchByName],
+                },
               },
-            },
-            { $limit: 3 },
-          ];
+              {
+                $sort: {
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_BY_ID_DIRECTION,
+                },
+              },
+              { $limit: 3 },
+            ])
+            .toArray();
+          // console.log('Search rubrics ', new Date().getTime() - rubricsStart);
 
+          // const productsStart = new Date().getTime();
           const products = await productsCollection
             .aggregate([
               {
@@ -171,29 +182,33 @@ export const CatalogueQueries = extendType({
                   $or: [
                     ...searchByName,
                     {
-                      originalName: search,
+                      originalName: {
+                        $regex: search,
+                        $options: 'i',
+                      },
+                    },
+                    {
+                      itemId: {
+                        $regex: search,
+                        $options: 'i',
+                      },
                     },
                   ],
                 },
               },
-              // filter out by shop products availability
-              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-              { $match: { shopsCount: { $gt: 0 } } },
-              ...finalPipeline,
-            ])
-            .toArray();
-
-          const rubrics = await rubricsCollection
-            .aggregate([
               {
-                $match: {
-                  active: true,
-                  $or: [...searchByName],
+                $sort: {
+                  [`availabilityCities.${city}`]: SORT_DESC,
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_DESC,
                 },
               },
-              ...finalPipeline,
+              { $limit: 3 },
             ])
             .toArray();
+          // console.log('Search products count ', products.length);
+          // console.log('Search products ', new Date().getTime() - productsStart);
 
           return {
             products,

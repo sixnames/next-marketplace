@@ -27,7 +27,7 @@ module.exports = {
         ],
       },
       {
-        source: '/product/:card*',
+        source: '/product/:card',
         headers: [
           {
             key: 'Cache-Control',

@@ -1,8 +1,12 @@
+import { ApolloQueryResult } from '@apollo/client';
 import * as React from 'react';
-import { SessionUserFragment, useSessionUserQuery } from 'generated/apolloComponents';
+import {
+  SessionUserFragment,
+  SessionUserQuery,
+  useSessionUserQuery,
+} from 'generated/apolloComponents';
 
 interface ContextState {
-  isAuthenticated: boolean;
   me?: SessionUserFragment | null;
   loadingUser: boolean;
 }
@@ -10,21 +14,20 @@ interface ContextState {
 interface UserContextInterface {
   state: ContextState;
   setState?: any;
+  refetch?: () => Promise<ApolloQueryResult<SessionUserQuery>>;
 }
 
 const UserContext = React.createContext<UserContextInterface>({
   state: {
-    isAuthenticated: false,
     loadingUser: true,
   },
 });
 
 const UserContextProvider: React.FC = ({ children }) => {
-  const { data, loading } = useSessionUserQuery({ fetchPolicy: 'network-only' });
+  const { data, loading, refetch } = useSessionUserQuery({ fetchPolicy: 'network-only' });
   const [state, setState] = React.useState<ContextState>(() => {
     return {
       me: null,
-      isAuthenticated: false,
       loadingUser: true,
     };
   });
@@ -33,7 +36,6 @@ const UserContextProvider: React.FC = ({ children }) => {
     setState((prevState) => ({
       ...prevState,
       me: data?.me,
-      isAuthenticated: true,
       loadingUser: loading,
     }));
   }, [data, loading]);
@@ -42,13 +44,13 @@ const UserContextProvider: React.FC = ({ children }) => {
     return {
       state,
       setState,
+      refetch,
     };
-  }, [state]);
+  }, [refetch, state]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
-// TODO add initial user for cms and app
 function useUserContext() {
   const context: UserContextInterface = React.useContext(UserContext);
 
@@ -56,18 +58,7 @@ function useUserContext() {
     throw new Error('useUserContext must be used within a UserContextProvider');
   }
 
-  const { state, setState } = context;
-
-  function updateMyContext(user: SessionUserFragment) {
-    if (user) {
-      setState((prevState: ContextState) => ({
-        ...prevState,
-        me: user,
-      }));
-    }
-  }
-
-  return { ...state, updateMyContext };
+  return context;
 }
 
 export { UserContextProvider, useUserContext };

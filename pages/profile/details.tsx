@@ -28,7 +28,7 @@ import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
 
 const ProfileDetailsRoute: React.FC = () => {
-  const { me, updateMyContext } = useUserContext();
+  const { state, refetch } = useUserContext();
   const {
     onErrorCallback,
     onCompleteCallback,
@@ -42,8 +42,10 @@ const ProfileDetailsRoute: React.FC = () => {
     onError: onErrorCallback,
     onCompleted: (data) => {
       onCompleteCallback(data.updateMyProfile);
-      if (data.updateMyProfile.payload) {
-        updateMyContext(data.updateMyProfile.payload);
+      if (data.updateMyProfile.payload && refetch) {
+        refetch().catch(() => {
+          showErrorNotification();
+        });
       } else {
         showErrorNotification();
       }
@@ -73,11 +75,11 @@ const ProfileDetailsRoute: React.FC = () => {
     });
   }
 
-  if (!me) {
+  if (!state.me) {
     return <RequestError message={'Пользователь не найден'} />;
   }
 
-  const { email, phone, name, lastName, secondName } = me;
+  const { email, phone, name, lastName, secondName } = state.me;
 
   return (
     <div className={classes.profile} data-cy={'profile-details'}>

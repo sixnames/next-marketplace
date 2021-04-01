@@ -17,13 +17,13 @@ export interface UpdateMyPasswordModalInterface {
 }
 
 const UpdateMyPasswordModal: React.FC<UpdateMyPasswordModalInterface> = ({ confirm }) => {
-  const { me } = useUserContext();
+  const { state } = useUserContext();
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: updateMyPasswordSchema,
   });
 
-  if (!me) {
+  if (!state.me) {
     return (
       <ModalFrame>
         <RequestError message={'Пользователь не найден'} />

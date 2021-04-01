@@ -48,9 +48,9 @@ const HeaderSearchTrigger: React.FC = () => {
 
 const HeaderProfileLink: React.FC = () => {
   const signOut = useSignOut();
-  const { me, loadingUser } = useUserContext();
+  const { state } = useUserContext();
 
-  if (loadingUser) {
+  if (state.loadingUser) {
     return (
       <div className={`${classes.middleLink}`}>
         <span
@@ -62,7 +62,7 @@ const HeaderProfileLink: React.FC = () => {
     );
   }
 
-  if (me) {
+  if (state.me) {
     return (
       <Menu>
         {() => {
@@ -78,7 +78,7 @@ const HeaderProfileLink: React.FC = () => {
               <MenuPopover>
                 <LayoutCard>
                   <div className={classes.userDropdownTop}>
-                    <div className={classes.userDropdownName}>{me?.shortName}</div>
+                    <div className={classes.userDropdownName}>{state.me?.shortName}</div>
                   </div>
 
                   <ul>
@@ -88,7 +88,7 @@ const HeaderProfileLink: React.FC = () => {
                       </Link>
                     </li>
 
-                    {me?.role.slug === ROLE_SLUG_ADMIN ? (
+                    {state.me?.role.slug === ROLE_SLUG_ADMIN ? (
                       <li className={classes.userDropdownListItem}>
                         <Link className={classes.userDropdownListLink} href={ROUTE_CMS}>
                           <span>CMS</span>
@@ -96,8 +96,8 @@ const HeaderProfileLink: React.FC = () => {
                       </li>
                     ) : null}
 
-                    {me?.role.slug === ROLE_SLUG_COMPANY_MANAGER ||
-                    me?.role.slug === ROLE_SLUG_COMPANY_OWNER ? (
+                    {state.me?.role.slug === ROLE_SLUG_COMPANY_MANAGER ||
+                    state.me?.role.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li className={classes.userDropdownListItem}>
                         <Link className={classes.userDropdownListLink} href={ROUTE_APP}>
                           <span>Панель управления</span>
@@ -121,8 +121,8 @@ const HeaderProfileLink: React.FC = () => {
   return (
     <Link
       ariaLabel={'Войти'}
-      testId={me ? `profile-link` : `sign-in-link`}
-      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      testId={state.me ? `profile-link` : `sign-in-link`}
+      href={state.me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
       className={`${classes.middleLink}`}
       activeClassName={`${classes.middleLinkActive}`}
     >

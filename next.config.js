@@ -38,7 +38,6 @@ module.exports = {
       // Assets
       {
         source: '/fonts/:all*(woff2|woff)',
-        locale: false,
         headers: [
           {
             key: 'Cache-Control',
@@ -49,11 +48,10 @@ module.exports = {
       // Api
       {
         source: '/api/(.*)',
-        locale: false,
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0, stale-while-revalidate=0',
+            value: 's-maxage=0',
           },
         ],
       },
@@ -63,7 +61,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0, stale-while-revalidate=0',
+            value: 's-maxage=0',
           },
         ],
       },
@@ -72,7 +70,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0, stale-while-revalidate=0',
+            value: 's-maxage=0',
           },
         ],
       },

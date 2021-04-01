@@ -16,17 +16,6 @@ module.exports = {
   },
   async headers() {
     return [
-      // Fonts
-      {
-        source: '/:all*(woff2|woff|svg|jpg|jpeg|png)',
-        locale: false,
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, immutable, max-age=31536000',
-          },
-        ],
-      },
       // Catalogue
       {
         source: '/:catalogue*',
@@ -46,33 +35,44 @@ module.exports = {
           },
         ],
       },
-      // Api
+      // Assets
       {
-        source: '/api/:all*',
+        source: '/:all*(woff2|woff|svg|jpg|jpeg|png|ico)',
         locale: false,
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, s-maxage=0, must-revalidate',
+            value: 'public, immutable, max-age=31536000',
+          },
+        ],
+      },
+      // Api
+      {
+        source: '/api/(.*)',
+        locale: false,
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
           },
         ],
       },
       // Dashboard
       {
-        source: '/cms/:all*',
+        source: '/cms/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, s-maxage=0, must-revalidate',
+            value: 'public, max-age=0, must-revalidate',
           },
         ],
       },
       {
-        source: '/app/:all*',
+        source: '/app/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, s-maxage=0, must-revalidate',
+            value: 'public, max-age=0, must-revalidate',
           },
         ],
       },

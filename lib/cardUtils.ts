@@ -133,7 +133,7 @@ export async function getCardBreadcrumbs({
 export interface GetCardDataInterface {
   locale: string;
   city: string;
-  slug: string[];
+  slug: string;
 }
 
 export async function getCardData({
@@ -171,11 +171,10 @@ export async function getCardData({
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
-    const productSlug = slug[slug.length - 1];
     const productAggregation = await productsCollection
       .aggregate([
         {
-          $match: { slug: productSlug },
+          $match: { slug },
         },
       ])
       .toArray();

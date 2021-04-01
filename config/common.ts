@@ -68,9 +68,6 @@ export const ROUTE_SIGN_IN = '/sign-in';
 export const QUERY_DATA_LAYOUT_NO_RUBRIC = 'no-rubric';
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
 
-// links
-export const PRODUCT_CARD_RUBRIC_SLUG_PREFIX = 'rubric-';
-
 // profile
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_PROFILE = `/profile`;

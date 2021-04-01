@@ -10,7 +10,6 @@ import Link from 'components/Link/Link';
 import ProductMarker from 'components/Product/ProductMarker/ProductMarker';
 import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
-import { PRODUCT_CARD_RUBRIC_SLUG_PREFIX } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import {
@@ -20,13 +19,11 @@ import {
 } from 'generated/apolloComponents';
 import useCartMutations from 'hooks/useCartMutations';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import classes from 'styles/CardRoute.module.css';
@@ -78,16 +75,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardShopProducts,
     isCustomersChoice,
   } = cardData;
-
-  const { query } = useRouter();
   const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
-
-  const additionalSlug = alwaysArray(query.card).find((slug) => {
-    return slug.includes(PRODUCT_CARD_RUBRIC_SLUG_PREFIX);
-  });
-  const additionalLinkSlug = additionalSlug ? `/${additionalSlug}` : '';
 
   const isShopsPlural = shopsCount > 1;
   const isShopless = shopsCount < 1;
@@ -202,7 +192,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                                 data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={option._id}
-                                href={`/product${additionalLinkSlug}/${product.slug}`}
+                                href={`/product/${product.slug}`}
                               >
                                 {option.name}
                               </Link>
@@ -421,7 +411,7 @@ export async function getServerSideProps(
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
-    slug: alwaysArray(query.card),
+    slug: `${query.card}`,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

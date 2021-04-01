@@ -479,6 +479,7 @@ export interface ProductAttributeModel {
   // types for ui
   number?: number | null;
   readableValue?: string | null;
+  index?: number;
 }
 
 export interface CitiesCounterModel {
@@ -732,6 +733,7 @@ export interface CatalogueFilterAttributeModel {
   metric?: string | null;
   isSelected: boolean;
   options: CatalogueFilterAttributeOptionModel[];
+  viewVariant: AttributeViewVariantModel;
 }
 
 export type CatalogueProductInterface = Omit<ProductModel, 'attributes'>;

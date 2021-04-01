@@ -72,6 +72,11 @@
   position: relative;
 }
 
+.middleLinkIconHolderDisabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .middleLinkIconHolder:not(.middleLinkIconHolderNoLabel){
   margin-right: 0.875rem;
 }

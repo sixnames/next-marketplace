@@ -16,18 +16,26 @@ module.exports = {
   },
   async headers() {
     return [
-      /*{
-        source: '/_next/image(.*)',
+      {
+        source: '/:catalogue*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=180, s-maxage=180, stale-while-revalidate=180',
+            value: 's-maxage=604800000, stale-while-revalidate=86400000',
           },
         ],
-      },*/
+      },
+      {
+        source: '/product/:card*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 's-maxage=604800000, stale-while-revalidate=86400000',
+          },
+        ],
+      },
       {
         source: '/:all*(woff2|woff)',
-        // source: '/fonts/(.*)',
         locale: false,
         headers: [
           {

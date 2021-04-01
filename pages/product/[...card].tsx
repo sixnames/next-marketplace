@@ -377,7 +377,7 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: GetCatalogueCardQuery['getProductCard'] | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, sessionCity }) => {
+const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, currentCity }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!cardData) {
     return (
@@ -389,14 +389,15 @@ const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, session
 
   const prefixConfig = getSiteConfigSingleValue('cardMetaPrefix');
   const prefix = prefixConfig ? `${prefixConfig} ` : '';
+  const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
 
   return (
     <SiteLayout
       previewImage={cardData.mainImage}
       pageUrls={pageUrls}
       navRubrics={navRubrics}
-      title={`${prefix}${cardData.originalName} в городе ${sessionCity}`}
-      description={`${prefix}${cardData.originalName} в городе ${sessionCity}`}
+      title={`${prefix}${cardData.originalName}${cityDescription}`}
+      description={`${prefix}${cardData.originalName}${cityDescription}`}
     >
       <CardRoute cardData={cardData} />
     </SiteLayout>

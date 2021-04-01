@@ -30,7 +30,6 @@ import {
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
 } from 'config/common';
-import Image from 'next/image';
 
 const HeaderSearchTrigger: React.FC = () => {
   const { isSearchOpen, showSearchDropdown } = useSiteContext();
@@ -377,13 +376,7 @@ const Header: React.FC = () => {
           <HeaderMiddleLeft />
 
           <Link href={`/`} className={classes.middleLogo} aria-label={'Главная страница'}>
-            <Image
-              priority={true}
-              src={siteLogoSrc}
-              width={166}
-              height={27}
-              alt={`${configSiteName}`}
-            />
+            <img src={siteLogoSrc} width='150' height='24' alt={`${configSiteName}`} />
           </Link>
 
           <HeaderMiddleRight />

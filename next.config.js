@@ -16,6 +16,18 @@ module.exports = {
   },
   async headers() {
     return [
+      // Fonts
+      {
+        source: '/:all*(woff2|woff|svg|jpg|jpeg|png)',
+        locale: false,
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, immutable, max-age=31536000',
+          },
+        ],
+      },
+      // Catalogue
       {
         source: '/:catalogue*',
         headers: [
@@ -34,18 +46,9 @@ module.exports = {
           },
         ],
       },
+      // Api
       {
-        source: '/:all*(woff2|woff)',
-        locale: false,
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, immutable, max-age=31536000',
-          },
-        ],
-      },
-      {
-        source: '/api/graphql',
+        source: '/api/:all*',
         locale: false,
         headers: [
           {
@@ -54,6 +57,7 @@ module.exports = {
           },
         ],
       },
+      // Dashboard
       {
         source: '/cms/:all*',
         headers: [

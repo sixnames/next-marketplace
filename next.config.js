@@ -53,7 +53,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 'public, max-age=0, s-maxage=0, must-revalidate',
           },
         ],
       },
@@ -63,7 +63,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 'public, max-age=0, s-maxage=0, must-revalidate',
           },
         ],
       },
@@ -72,7 +72,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache',
+            value: 'public, max-age=0, s-maxage=0, must-revalidate',
           },
         ],
       },

@@ -44,6 +44,34 @@ module.exports = {
           },
         ],
       },
+      {
+        source: '/api/graphql',
+        locale: false,
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache',
+          },
+        ],
+      },
+      {
+        source: '/cms/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache',
+          },
+        ],
+      },
+      {
+        source: '/app/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache',
+          },
+        ],
+      },
     ];
   },
 };

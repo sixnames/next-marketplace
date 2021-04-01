@@ -51,7 +51,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0',
+            value: 'no-cache',
           },
         ],
       },
@@ -61,7 +61,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0',
+            value: 'no-cache',
           },
         ],
       },
@@ -70,7 +70,7 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 's-maxage=0',
+            value: 'no-cache',
           },
         ],
       },

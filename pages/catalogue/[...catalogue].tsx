@@ -375,6 +375,10 @@ const Catalogue: NextPage<CatalogueInterface> = ({
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CatalogueInterface>> {
+  console.log(' ');
+  console.log('=================== Catalogue getServerSideProps =======================');
+  const timeStart = new Date().getTime();
+
   const { query } = context;
   const { props } = await getSiteInitialData({
     context,
@@ -403,6 +407,8 @@ export async function getServerSideProps(
     return notFoundResponse;
   }
   const catalogueData = castDbData(rawCatalogueData);
+
+  console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
 
   return {
     props: {

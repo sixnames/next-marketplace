@@ -544,11 +544,6 @@ export const getCatalogueData = async ({
                   $match: keyStage,
                 },
                 {
-                  $project: {
-                    _id: 1,
-                  },
-                },
-                {
                   $limit: CATALOGUE_PRODUCTS_LIMIT,
                 },
                 {
@@ -741,8 +736,9 @@ export const getCatalogueData = async ({
 
       // prices
       const { attributes, ...restProduct } = product;
-      const minPrice = noNaN(facet?.minPriceCities ? facet?.minPriceCities[city] : undefined);
-      const maxPrice = noNaN(facet?.maxPriceCities ? facet?.maxPriceCities[city] : undefined);
+      const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
+      const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
+
       const cardPrices = {
         _id: new ObjectId(),
         min: getCurrencyString({ value: minPrice, locale }),

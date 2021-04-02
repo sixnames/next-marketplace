@@ -120,6 +120,10 @@ export interface SiteInitialDataPayloadInterface {
 export async function getSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
+  // console.log(' ');
+  // console.log('=================== getSiteInitialData =======================');
+  // const timeStart = new Date().getTime();
+
   const { locale, resolvedUrl } = context;
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;
@@ -138,6 +142,7 @@ export async function getSiteInitialData({
   const rawNavRubrics = await getCatalogueNavRubrics(initialDataProps);
   const initialData = castDbData(rawInitialData);
   const navRubrics = castDbData(rawNavRubrics);
+  // console.log('After initial data ', new Date().getTime() - timeStart);
 
   const currentCity = initialData.cities.find(({ slug }: CityModel) => {
     return slug === sessionCity;
@@ -153,6 +158,8 @@ export async function getSiteInitialData({
   // Cache header
   // context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_WEEK}`);
   // context.res.setHeader('cache-control', `s-maxage=604800000, stale-while-revalidate=86400000`);
+
+  // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {
     props: {

@@ -499,13 +499,13 @@ export interface ProductModel extends BaseModel, TimestampModel {
   rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
-  isCustomersChoiceCities: CitiesBooleanModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
 
   shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
+  isCustomersChoiceCities: CitiesBooleanModel;
   connections: ProductConnectionModel[];
 
   // types for ui

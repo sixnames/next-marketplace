@@ -32,8 +32,6 @@ export const ProductsPaginationPayload = objectType({
     t.nonNull.int('page');
     t.nonNull.int('limit');
     t.nonNull.int('totalPages');
-    t.nonNull.int('maxPrice');
-    t.nonNull.int('minPrice');
     t.nonNull.boolean('hasPrevPage');
     t.nonNull.boolean('hasNextPage');
     t.nonNull.list.nonNull.field('docs', {

@@ -723,8 +723,6 @@ export interface ProductsPaginationPayloadModel {
   totalPages: number;
   hasPrevPage: boolean;
   hasNextPage: boolean;
-  minPrice: number;
-  maxPrice: number;
   docs: ProductModel[];
 }
 
@@ -784,4 +782,13 @@ export interface CatalogueProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
   docs: ProductFacetModel[];
+}
+
+export interface ProductsPaginationAggregationInterface {
+  docs: ProductFacetModel[];
+  totalDocs?: number | null;
+  totalActiveDocs?: number | null;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
 }

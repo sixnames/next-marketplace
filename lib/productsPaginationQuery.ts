@@ -1,10 +1,12 @@
 import {
-  ProductModel,
   ProductsPaginationPayloadModel,
   ProductsPaginationInputModel,
   SortDirectionModel,
+  ProductFacetModel,
+  ProductsPaginationAggregationInterface,
+  ProductModel,
 } from 'db/dbModels';
-import { COL_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
@@ -13,6 +15,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
+import { noNaN } from 'lib/numbers';
 import { CollectionAggregationOptions } from 'mongodb';
 
 export interface ProductsPaginationQueryInterface {
@@ -28,8 +31,6 @@ const aggregationFallback: ProductsPaginationPayloadModel = {
   sortBy: SORT_BY_CREATED_AT,
   sortDir: SORT_DESC as SortDirectionModel,
   docs: [],
-  minPrice: 0,
-  maxPrice: 0,
   page: 1,
   limit: 0,
   totalDocs: 0,
@@ -51,7 +52,7 @@ export async function productsPaginationQuery({
     const timeStart = new Date().getTime();
 
     const db = await getDatabase();
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const { excludedProductsIds, excludedRubricsIds, rubricId, attributesIds, ...restInputValues } =
       input || {};
     const { page, sortDir, sortBy, limit } = restInputValues || {
@@ -131,19 +132,24 @@ export async function productsPaginationQuery({
 
       // Optional initial pipeline
       ...initialMatchPipeline,
-      {
-        $project: {
-          // _id: true,
-          attributes: false,
-        },
-      },
-      // Stable sort
-      { $sort: sortStage },
 
       // facet pagination totals
       {
         $facet: {
-          docs: [{ $skip: skip }, { $limit: realLimit }],
+          docs: [
+            // Stable sort
+            { $sort: sortStage },
+            { $skip: skip },
+            { $limit: realLimit },
+            {
+              $lookup: {
+                from: COL_PRODUCTS,
+                as: 'products',
+                localField: '_id',
+                foreignField: '_id',
+              },
+            },
+          ],
           countAllDocs: [{ $count: 'totalDocs' }],
           countActiveDocs: [{ $match: { active: true } }, { $count: 'totalActiveDocs' }],
         },
@@ -194,8 +200,11 @@ export async function productsPaginationQuery({
       .explain();
     console.log(JSON.stringify(stats, null, 2));*/
 
-    const aggregated = await productsCollection
-      .aggregate<ProductsPaginationPayloadModel>(pipeline, { allowDiskUse: true, ...options })
+    const aggregated = await productFacetsCollection
+      .aggregate<ProductsPaginationAggregationInterface>(pipeline, {
+        allowDiskUse: true,
+        ...options,
+      })
       .toArray();
     const aggregationResult = aggregated[0];
 
@@ -206,17 +215,28 @@ export async function productsPaginationQuery({
     // console.log(JSON.stringify(pipeline, null, 2));
     console.log('Products pagination >>> ', new Date().getTime() - timeStart);
 
+    const finalDocs = aggregationResult.docs.reduce((acc: ProductModel[], { products }) => {
+      if (!products) {
+        return acc;
+      }
+      const product = products[0];
+      if (product) {
+        return [...acc, product];
+      }
+      return acc;
+    }, []);
+
     return {
-      ...aggregationResult,
-      minPrice: aggregationResult.minPrice || 0,
-      maxPrice: aggregationResult.maxPrice || 0,
-      totalDocs: aggregationResult.totalDocs || 0,
-      totalActiveDocs: aggregationResult.totalActiveDocs || 0,
+      docs: finalDocs,
+      totalDocs: noNaN(aggregationResult.totalDocs),
+      totalActiveDocs: noNaN(aggregationResult.totalActiveDocs),
       totalPages: aggregationResult.totalPages || PAGE_DEFAULT,
       sortBy: realSortBy,
       sortDir: realSortDir,
       page: realPage,
       limit: realLimit,
+      hasNextPage: aggregationResult.hasNextPage,
+      hasPrevPage: aggregationResult.hasPrevPage,
     };
   } catch (e) {
     console.log(e);

@@ -502,7 +502,7 @@ export const getCatalogueData = async ({
 
     const productsInitialMatch = {
       rubricId: rubric._id,
-      // active: true,
+      active: true,
       ...optionsStage,
       ...pricesStage,
     };
@@ -549,15 +549,15 @@ export const getCatalogueData = async ({
                   },
                 },
                 {
+                  $limit: CATALOGUE_PRODUCTS_LIMIT,
+                },
+                {
                   $lookup: {
                     from: COL_PRODUCTS,
                     as: 'products',
                     localField: '_id',
                     foreignField: '_id',
                   },
-                },
-                {
-                  $limit: CATALOGUE_PRODUCTS_LIMIT,
                 },
               ],
               options: [

@@ -1561,8 +1561,6 @@ type ProductsPaginationPayload {
   hasNextPage: Boolean!
   hasPrevPage: Boolean!
   limit: Int!
-  maxPrice: Int!
-  minPrice: Int!
   page: Int!
   sortBy: String!
   sortDir: SortDirection!

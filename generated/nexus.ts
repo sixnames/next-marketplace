@@ -1503,8 +1503,6 @@ export interface NexusGenFieldTypes {
     hasNextPage: boolean; // Boolean!
     hasPrevPage: boolean; // Boolean!
     limit: number; // Int!
-    maxPrice: number; // Int!
-    minPrice: number; // Int!
     page: number; // Int!
     sortBy: string; // String!
     sortDir: NexusGenEnums['SortDirection']; // SortDirection!
@@ -2530,8 +2528,6 @@ export interface NexusGenFieldTypeNames {
     hasNextPage: 'Boolean';
     hasPrevPage: 'Boolean';
     limit: 'Int';
-    maxPrice: 'Int';
-    minPrice: 'Int';
     page: 'Int';
     sortBy: 'String';
     sortDir: 'SortDirection';

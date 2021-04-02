@@ -49,7 +49,7 @@ export async function productsPaginationQuery({
   active,
 }: ProductsPaginationQueryInterface): Promise<ProductsPaginationPayloadModel> {
   try {
-    const timeStart = new Date().getTime();
+    // const timeStart = new Date().getTime();
 
     const db = await getDatabase();
     const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
@@ -212,8 +212,7 @@ export async function productsPaginationQuery({
       return aggregationFallback;
     }
 
-    // console.log(JSON.stringify(pipeline, null, 2));
-    console.log('Products pagination >>> ', new Date().getTime() - timeStart);
+    // console.log('Products pagination >>> ', new Date().getTime() - timeStart);
 
     const finalDocs = aggregationResult.docs.reduce((acc: ProductModel[], { products }) => {
       if (!products) {

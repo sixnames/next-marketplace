@@ -8,7 +8,7 @@ import {
   GenderModel,
   ObjectIdModel,
   ProductModel,
-  ProductOptionInterface,
+  CatalogueProductOptionInterface,
   RubricAttributeModel,
   RubricModel,
   RubricOptionModel,
@@ -68,7 +68,7 @@ export async function recalculateRubricProductCounters({
     }
 
     const productOptionsAggregation = await productsCollection
-      .aggregate<ProductOptionInterface>([
+      .aggregate<CatalogueProductOptionInterface>([
         {
           $match: {
             rubricId,
@@ -236,7 +236,7 @@ export interface GetRubricCatalogueAttributesInterface {
   city: string;
   attributes: RubricAttributeModel[];
   visibleOptionsCount: number;
-  config: ProductOptionInterface[];
+  config: CatalogueProductOptionInterface[];
 }
 
 export async function getRubricCatalogueAttributes({

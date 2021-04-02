@@ -533,6 +533,23 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
 }
 
+export interface ProductFacetModel {
+  _id: ObjectIdModel;
+  active: boolean;
+  rubricId: ObjectIdModel;
+  brandCollectionSlug: null;
+  brandSlug?: string;
+  manufacturerSlug?: string;
+  minPriceCities: CitiesCounterModel;
+  availabilityCities: CitiesBooleanModel;
+  selectedOptionsSlugs: string[];
+  priorities: CitiesCounterModel;
+  views: CitiesCounterModel;
+
+  // types for ui
+  products?: ProductModel[] | null;
+}
+
 export interface ProductCardPricesModel {
   _id: ObjectIdModel;
   min: string;
@@ -753,11 +770,18 @@ export interface CatalogueDataInterface {
   selectedAttributes: CatalogueFilterAttributeModel[];
 }
 
-export interface ProductOptionInterface {
+export interface CatalogueProductOptionInterface {
   _id: string;
   optionsSlugs: string[];
 }
 
-export interface ProductPricesInterface {
+export interface CatalogueProductPricesInterface {
   _id: number;
+}
+
+export interface CatalogueProductsAggregationInterface {
+  totalProducts: number;
+  prices: CatalogueProductPricesInterface[];
+  options: CatalogueProductOptionInterface[];
+  docs: ProductFacetModel[];
 }

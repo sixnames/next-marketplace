@@ -741,8 +741,8 @@ export const getCatalogueData = async ({
 
       // prices
       const { attributes, ...restProduct } = product;
-      const minPrice = noNaN(product.minPriceCities[city]);
-      const maxPrice = noNaN(product.maxPriceCities[city]);
+      const minPrice = noNaN(facet?.minPriceCities ? facet?.minPriceCities[city] : undefined);
+      const maxPrice = noNaN(facet?.maxPriceCities ? facet?.maxPriceCities[city] : undefined);
       const cardPrices = {
         _id: new ObjectId(),
         min: getCurrencyString({ value: minPrice, locale }),

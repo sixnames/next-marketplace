@@ -142,11 +142,6 @@ export const CATALOGUE_CARD_QUERY = gql`
   query GetCatalogueCard($slug: [String!]!) {
     getProductCard(slug: $slug) {
       ...ProductCard
-      cardBreadcrumbs(slug: $slug) {
-        _id
-        name
-        href
-      }
     }
   }
   ${productCardFragment}

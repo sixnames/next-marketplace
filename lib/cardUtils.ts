@@ -9,7 +9,13 @@ import {
   ROUTE_CATALOGUE,
   SECONDARY_LOCALE,
 } from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import {
   ProductCardBreadcrumbModel,
   ProductConnectionItemModel,
@@ -176,11 +182,20 @@ export async function getCardData({
         {
           $match: { slug },
         },
+        {
+          $lookup: {
+            from: COL_PRODUCT_FACETS,
+            as: 'facets',
+            foreignField: '_id',
+            localField: '_id',
+          },
+        },
       ])
       .toArray();
 
     const product = productAggregation[0];
-    if (!product) {
+    const facet = product.facets ? product.facets[0] : null;
+    if (!product || !facet) {
       return null;
     }
     // console.log(`product `, new Date().getTime() - startTime);
@@ -190,8 +205,8 @@ export async function getCardData({
     // console.log(`shopsCount `, new Date().getTime() - startTime);
 
     // prices
-    const minPrice = noNaN(product.minPriceCities[city]);
-    const maxPrice = noNaN(product.maxPriceCities[city]);
+    const minPrice = noNaN(facet?.minPriceCities ? facet?.minPriceCities[city] : undefined);
+    const maxPrice = noNaN(facet?.maxPriceCities ? facet?.maxPriceCities[city] : undefined);
     const cardPrices = {
       _id: new ObjectId(),
       min: getCurrencyString({ value: minPrice, locale }),

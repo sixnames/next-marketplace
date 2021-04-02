@@ -490,7 +490,7 @@ export interface CitiesBooleanModel {
   [key: string]: boolean;
 }
 
-export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
+export interface ProductModel extends BaseModel, TimestampModel {
   active: boolean;
   slug: string;
   originalName: string;
@@ -504,13 +504,9 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
 
-  selectedOptionsSlugs: string[];
   shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
   connections: ProductConnectionModel[];
-  minPriceCities: CitiesCounterModel;
-  maxPriceCities: CitiesCounterModel;
-  availabilityCities: CitiesBooleanModel;
 
   // types for ui
   name?: string | null;
@@ -531,23 +527,26 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
     max: string;
   };
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
+  facets?: ProductFacetModel[] | null;
+  facet?: ProductFacetModel | null;
 }
 
-export interface ProductFacetModel {
+export interface ProductFacetModel extends CountersModel {
   _id: ObjectIdModel;
+  slug: string;
   active: boolean;
   rubricId: ObjectIdModel;
-  brandCollectionSlug: null;
-  brandSlug?: string;
-  manufacturerSlug?: string;
+  brandCollectionSlug?: string | null;
+  brandSlug?: string | null;
+  manufacturerSlug?: string | null;
   minPriceCities: CitiesCounterModel;
+  maxPriceCities: CitiesCounterModel;
   availabilityCities: CitiesBooleanModel;
   selectedOptionsSlugs: string[];
-  priorities: CitiesCounterModel;
-  views: CitiesCounterModel;
 
   // types for ui
   products?: ProductModel[] | null;
+  product?: ProductModel | null;
 }
 
 export interface ProductCardPricesModel {
@@ -645,6 +644,7 @@ export interface ShopProductModel extends TimestampModel {
   formattedOldPrice?: string | null;
   discountedPercent?: number | null;
   shop?: ShopModel;
+  inCartCount?: number;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

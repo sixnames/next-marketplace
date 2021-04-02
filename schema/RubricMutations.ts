@@ -4,6 +4,7 @@ import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
+  ProductFacetModel,
   ProductModel,
   RubricModel,
   RubricPayloadModel,
@@ -13,6 +14,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -700,6 +702,7 @@ export const RubricMutations = extendType({
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { rubricId, productId } = input;
 
@@ -719,7 +722,10 @@ export const RubricMutations = extendType({
           const updatedProductResult = await productsCollection.findOneAndDelete({
             _id: productId,
           });
-          if (!updatedProductResult.ok) {
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndDelete({
+            _id: productId,
+          });
+          if (!updatedProductResult.ok || !updatedProductFacetResult.ok) {
             return {
               success: false,
               message: await getApiMessage(`rubrics.deleteProduct.error`),

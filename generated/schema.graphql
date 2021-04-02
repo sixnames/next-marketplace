@@ -1388,11 +1388,6 @@ type Product implements Base & Timestamp {
   brandSlug: String
 
   """
-  Should return product card breadcrumbs configs list for product card page
-  """
-  cardBreadcrumbs(slug: [String!]!): [ProductCardBreadcrumb!]!
-
-  """
   Should find all connected shop products and return minimal and maximal price.
   """
   cardPrices: ProductCardPrices!
@@ -1412,12 +1407,9 @@ type Product implements Base & Timestamp {
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
-  maxPrice: Int!
-  minPrice: Int!
   name: String!
   nameI18n: JSONObject!
   originalName: String!
-  priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
   rubric: Rubric!
   rubricId: ObjectId!
@@ -1426,7 +1418,6 @@ type Product implements Base & Timestamp {
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
   updatedAt: Date!
-  views: JSONObject!
 }
 
 type ProductAttribute {

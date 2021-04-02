@@ -1,11 +1,11 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('User roles', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}/cms/roles`);
+    cy.testAuth(`/cms/roles`);
   });
 
   after(() => {
@@ -47,7 +47,7 @@ describe('User roles', () => {
     cy.getByCy('isStuff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.shouldSuccess();
-    cy.visit(`/${DEFAULT_CITY}/cms/roles`);
+    cy.visit(`/cms/roles`);
     cy.getByCy(`${newRoleName}-row`).should('exist');
   });
 });

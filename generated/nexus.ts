@@ -1401,7 +1401,6 @@ export interface NexusGenFieldTypes {
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
     brandSlug: string | null; // String
-    cardBreadcrumbs: NexusGenRootTypes['ProductCardBreadcrumb'][]; // [ProductCardBreadcrumb!]!
     cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
     cardShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
@@ -1415,12 +1414,9 @@ export interface NexusGenFieldTypes {
     mainImage: string; // String!
     manufacturer: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer
     manufacturerSlug: string | null; // String
-    maxPrice: number; // Int!
-    minPrice: number; // Int!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1429,7 +1425,6 @@ export interface NexusGenFieldTypes {
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     textFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     updatedAt: NexusGenScalars['Date']; // Date!
-    views: NexusGenScalars['JSONObject']; // JSONObject!
   };
   ProductAttribute: {
     // field return type
@@ -2426,7 +2421,6 @@ export interface NexusGenFieldTypeNames {
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';
     brandSlug: 'String';
-    cardBreadcrumbs: 'ProductCardBreadcrumb';
     cardPrices: 'ProductCardPrices';
     cardShopProducts: 'ShopProduct';
     connections: 'ProductConnection';
@@ -2440,12 +2434,9 @@ export interface NexusGenFieldTypeNames {
     mainImage: 'String';
     manufacturer: 'Manufacturer';
     manufacturerSlug: 'String';
-    maxPrice: 'Int';
-    minPrice: 'Int';
     name: 'String';
     nameI18n: 'JSONObject';
     originalName: 'String';
-    priorities: 'JSONObject';
     ratingFeatures: 'ProductAttribute';
     rubric: 'Rubric';
     rubricId: 'ObjectId';
@@ -2454,7 +2445,6 @@ export interface NexusGenFieldTypeNames {
     tagFeatures: 'ProductAttribute';
     textFeatures: 'ProductAttribute';
     updatedAt: 'Date';
-    views: 'JSONObject';
   };
   ProductAttribute: {
     // field return type name
@@ -3229,12 +3219,6 @@ export interface NexusGenArgTypes {
     updateUser: {
       // args
       input: NexusGenInputs['UpdateUserInput']; // UpdateUserInput!
-    };
-  };
-  Product: {
-    cardBreadcrumbs: {
-      // args
-      slug: string[]; // [String!]!
     };
   };
   Query: {

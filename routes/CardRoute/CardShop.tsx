@@ -1,7 +1,7 @@
+import { ShopProductModel } from 'db/dbModels';
 import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './CardShop.module.css';
-import { ShopProductSnippetFragment } from 'generated/apolloComponents';
 import Image from 'next/image';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import Button from '../../components/Buttons/Button';
@@ -14,7 +14,7 @@ import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
 
 interface CardShopInterface {
-  shopProduct: ShopProductSnippetFragment;
+  shopProduct: ShopProductModel;
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
@@ -29,6 +29,11 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
     available,
     inCartCount,
   } = shopProduct;
+
+  if (!shop) {
+    return null;
+  }
+
   const {
     assets,
     name,
@@ -39,7 +44,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const mainAsset = assets[0];
   const mainImage = mainAsset ? mainAsset.url : `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
 
-  const disabled = amount + inCartCount > available;
+  const disabled = amount + noNaN(inCartCount) > available;
 
   return (
     <LayoutCard className={`${classes.cardShop}`}>
@@ -74,7 +79,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
 
           <div className={classes.contacts}>
             <div className={classes.address}>{formattedAddress}</div>
-            {formattedPhones.map((phone, index) => {
+            {(formattedPhones || []).map((phone, index) => {
               return <LinkPhone key={index} value={phone} />;
             })}
           </div>
@@ -84,13 +89,13 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           <div className={classes.column}>
             <ProductShopPrices
               className={classes.prices}
-              formattedPrice={formattedPrice}
+              formattedPrice={`${formattedPrice}`}
               discountedPercent={discountedPercent}
               formattedOldPrice={formattedOldPrice}
             />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
-            {inCartCount > 0 ? (
+            {noNaN(inCartCount) > 0 ? (
               <div className={classes.available}>В корзине {` ${inCartCount} `}шт.</div>
             ) : null}
 

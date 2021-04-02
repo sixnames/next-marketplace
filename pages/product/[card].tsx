@@ -12,11 +12,8 @@ import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import {
-  CardFeatureFragment,
-  GetCatalogueCardQuery,
-  useUpdateProductCounterMutation,
-} from 'generated/apolloComponents';
+import { ProductAttributeModel, ProductModel } from 'db/dbModels';
+import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
 import useCartMutations from 'hooks/useCartMutations';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';
@@ -30,7 +27,7 @@ import classes from 'styles/CardRoute.module.css';
 import CardShops from 'routes/CardRoute/CardShops';
 
 interface CardRouteFeaturesInterface {
-  features: CardFeatureFragment[];
+  features: ProductAttributeModel[];
 }
 
 const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
@@ -42,7 +39,7 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
         }
 
         return (
-          <div key={_id} className={classes.feature}>
+          <div key={`${_id}`} className={classes.feature}>
             <div className={classes.featureTitle}>{attributeName}</div>
             <div className={classes.featureValue}>{readableValue}</div>
           </div>
@@ -53,7 +50,7 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 };
 
 interface CardRouteInterface {
-  cardData: GetCatalogueCardQuery['getProductCard'];
+  cardData: ProductModel;
 }
 
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
@@ -79,8 +76,8 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
 
-  const isShopsPlural = shopsCount > 1;
-  const isShopless = shopsCount < 1;
+  const isShopsPlural = noNaN(shopsCount) > 1;
+  const isShopless = noNaN(shopsCount) < 1;
 
   const [updateProductCounterMutation] = useUpdateProductCounterMutation();
   React.useEffect(() => {
@@ -122,13 +119,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <Inner>
         <div className={classes.mainFrame}>
-          {isMobile ? null : <CardRouteListFeatures features={listFeatures} />}
+          {isMobile ? null : <CardRouteListFeatures features={listFeatures || []} />}
 
           <div className={classes.mainData}>
             <div className={classes.image}>
               <div className={classes.imageHolder}>
                 <Image
-                  src={mainImage}
+                  src={`${mainImage}`}
                   alt={originalName}
                   title={originalName}
                   layout='fill'
@@ -150,14 +147,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.innerRatingsFeedback}>12 отзывов</div>
               </div>
 
-              {ratingFeatures.length > 0 ? (
+              {(ratingFeatures || []).length > 0 ? (
                 <div className={classes.outerRatings}>
                   <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
                   <div className={classes.outerRatingsList}>
-                    {ratingFeatures.map(({ attributeName, _id, number }) => {
+                    {(ratingFeatures || []).map(({ attributeName, _id, number }) => {
                       return (
-                        <div key={_id} className={classes.outerRatingsItem}>
+                        <div key={`${_id}`} className={classes.outerRatingsItem}>
                           {attributeName} {number}
                         </div>
                       );
@@ -171,17 +168,21 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.connections}>
                   {connections.map(({ _id, attributeName, connectionProducts }) => {
                     return (
-                      <div key={_id} className={classes.connectionsGroup}>
+                      <div key={`${_id}`} className={classes.connectionsGroup}>
                         <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
                         <div className={classes.connectionsList}>
                           {connectionProducts.map(({ option, product }) => {
+                            if (!product) {
+                              return null;
+                            }
+
                             const isCurrent = product._id === cardData._id;
 
                             if (isCurrent) {
                               return (
                                 <span
                                   className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
-                                  key={option._id}
+                                  key={`${option._id}`}
                                 >
                                   {option.name}
                                 </span>
@@ -191,7 +192,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                               <Link
                                 data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
-                                key={option._id}
+                                key={`${option._id}`}
                                 href={`/product/${product.slug}`}
                               >
                                 {option.name}
@@ -207,13 +208,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
               <div className={classes.mainDataBottom}>
                 <div>
-                  {isShopless ? null : shopsCount > 1 ? (
+                  {isShopless ? null : noNaN(shopsCount) > 1 ? (
                     <div className={classes.price}>
                       <div className={classes.cardLabel}>Цена от</div>
                       <div className={classes.priceValue}>
-                        <Currency className={classes.priceItem} value={cardPrices.min} />
+                        <Currency className={classes.priceItem} value={cardPrices?.min} />
                         до
-                        <Currency className={classes.priceItem} value={cardPrices.max} />
+                        <Currency className={classes.priceItem} value={cardPrices?.max} />
                       </div>
                     </div>
                   ) : (
@@ -222,7 +223,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                       <div className={classes.priceValue}>
                         <Currency
                           className={`${classes.priceItem} ${classes.priceItemSingle}`}
-                          value={cardPrices.min}
+                          value={cardPrices?.min}
                         />
                       </div>
                     </div>
@@ -234,7 +235,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                         ? 'Нет в наличии'
                         : `В наличии в ${shopsCount} ${isShopsPlural ? 'винотеках' : 'винотеке'}`}
                     </div>
-                    {isShopless || shopsCount < 2 ? null : <div>Сравнить цены</div>}
+                    {isShopless || noNaN(shopsCount) < 2 ? null : <div>Сравнить цены</div>}
                   </div>
                 </div>
 
@@ -293,7 +294,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
         </div>
 
-        {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
+        {isMobile ? <CardRouteListFeatures features={listFeatures || []} /> : null}
       </Inner>
 
       {/* Tabs */}
@@ -301,14 +302,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
-            {iconFeatures.map(({ attributeName, _id, selectedOptions }) => {
+            {(iconFeatures || []).map(({ attributeName, _id, selectedOptions }) => {
               return (
-                <div className={classes.cardFeaturesGroup} key={_id}>
+                <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesCombinationsList}>
                     {selectedOptions.map(({ _id, name, icon }) => {
                       return (
-                        <div className={classes.cardFeaturesCombination} key={_id}>
+                        <div className={classes.cardFeaturesCombination} key={`${_id}`}>
                           <Icon className={classes.cardFeaturesCombinationIcon} name={`${icon}`} />
                           <div className={classes.cardFeaturesCombinationName}>{name}</div>
                         </div>
@@ -319,13 +320,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               );
             })}
 
-            {tagFeatures.map(({ attributeName, selectedOptions, _id }) => {
+            {(tagFeatures || []).map(({ attributeName, selectedOptions, _id }) => {
               return (
-                <div className={classes.cardFeaturesGroup} key={_id}>
+                <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesTagsList}>
                     {selectedOptions.map((value) => (
-                      <div className={classes.cardFeaturesTag} key={value._id}>
+                      <div className={classes.cardFeaturesTag} key={`${value._id}`}>
                         {value.name}
                       </div>
                     ))}
@@ -336,12 +337,12 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
 
           <div className={classes.cardFeaturesContent}>
-            {textFeatures.map(({ attributeName, _id, readableValue }) => {
+            {(textFeatures || []).map(({ attributeName, _id, readableValue }) => {
               if (!readableValue) {
                 return null;
               }
               return (
-                <div className={classes.cardFeaturesGroup} key={_id}>
+                <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesText}>
                     <p>{readableValue}</p>
@@ -353,7 +354,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         </div>
 
         {/* Shops */}
-        <CardShops productId={_id} initialShops={cardShopProducts} />
+        <CardShops productId={`${_id}`} initialShops={cardShopProducts || []} />
 
         <div>Отзывы</div>
 
@@ -364,7 +365,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 };
 
 interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
-  cardData?: GetCatalogueCardQuery['getProductCard'] | null;
+  cardData?: ProductModel | null;
 }
 
 const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, currentCity }) => {

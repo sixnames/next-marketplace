@@ -1981,8 +1981,6 @@ export type Product = Base & Timestamp & {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
-  views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
   available?: Maybe<Scalars['Boolean']>;
   assets: Array<Asset>;
   attributes: Array<ProductAttribute>;
@@ -1999,23 +1997,14 @@ export type Product = Base & Timestamp & {
   cardShopProducts: Array<ShopProduct>;
   /** Returns all shop products that product connected to */
   allShopProducts: Array<ShopProduct>;
-  minPrice: Scalars['Int'];
   isCustomersChoice: Scalars['Boolean'];
-  maxPrice: Scalars['Int'];
   /** Should find all connected shop products and return minimal and maximal price. */
   cardPrices: ProductCardPrices;
-  /** Should return product card breadcrumbs configs list for product card page */
-  cardBreadcrumbs: Array<ProductCardBreadcrumb>;
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
   iconFeatures: Array<ProductAttribute>;
   ratingFeatures: Array<ProductAttribute>;
-};
-
-
-export type ProductCardBreadcrumbsArgs = {
-  slug: Array<Scalars['String']>;
 };
 
 export type ProductsPaginationPayload = {
@@ -2027,8 +2016,6 @@ export type ProductsPaginationPayload = {
   page: Scalars['Int'];
   limit: Scalars['Int'];
   totalPages: Scalars['Int'];
-  maxPrice: Scalars['Int'];
-  minPrice: Scalars['Int'];
   hasPrevPage: Scalars['Boolean'];
   hasNextPage: Scalars['Boolean'];
   docs: Array<Product>;
@@ -3919,10 +3906,6 @@ export type GetCatalogueCardQuery = (
   { __typename?: 'Query' }
   & { getProductCard: (
     { __typename?: 'Product' }
-    & { cardBreadcrumbs: Array<(
-      { __typename?: 'ProductCardBreadcrumb' }
-      & Pick<ProductCardBreadcrumb, '_id' | 'name' | 'href'>
-    )> }
     & ProductCardFragment
   ) }
 );
@@ -8395,11 +8378,6 @@ export const GetCatalogueCardDocument = gql`
     query GetCatalogueCard($slug: [String!]!) {
   getProductCard(slug: $slug) {
     ...ProductCard
-    cardBreadcrumbs(slug: $slug) {
-      _id
-      name
-      href
-    }
   }
 }
     ${ProductCardFragmentDoc}`;

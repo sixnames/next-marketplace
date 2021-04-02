@@ -1,11 +1,11 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Rubric variants', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/rubric-variants`);
+    cy.testAuth(`${ROUTE_CMS}/rubric-variants`);
   });
 
   after(() => {

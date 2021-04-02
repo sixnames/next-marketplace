@@ -3,7 +3,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   GenderModel,
   ObjectIdModel,
@@ -12,6 +12,7 @@ import {
   RubricAttributeModel,
   RubricModel,
   RubricOptionModel,
+  ProductFacetModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getI18nLocaleValue } from 'lib/i18n';
@@ -60,6 +61,7 @@ export async function recalculateRubricProductCounters({
   try {
     const db = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
     const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -67,7 +69,7 @@ export async function recalculateRubricProductCounters({
       return null;
     }
 
-    const productOptionsAggregation = await productsCollection
+    const productOptionsAggregation = await productFacetsCollection
       .aggregate<CatalogueProductOptionInterface>([
         {
           $match: {

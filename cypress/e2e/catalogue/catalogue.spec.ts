@@ -1,4 +1,4 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { OptionModel, RubricModel } from 'db/dbModels';
 
@@ -6,7 +6,7 @@ describe('Catalogue filter', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit(`/${DEFAULT_CITY}/`);
+    cy.visit(`/`);
   });
 
   after(() => {

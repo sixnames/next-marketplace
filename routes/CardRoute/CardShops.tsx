@@ -1,9 +1,6 @@
+import { ShopModel, ShopProductModel } from 'db/dbModels';
 import * as React from 'react';
-import {
-  GetProductShopsInput,
-  ShopProductSnippetFragment,
-  SortDirection,
-} from 'generated/apolloComponents';
+import { GetProductShopsInput, SortDirection } from 'generated/apolloComponents';
 // import Spinner from '../../components/Spinner/Spinner';
 import CardShop from './CardShop';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
@@ -20,7 +17,7 @@ import { SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY, SORT_ASC_STR, SORT_DESC_STR } from '
 
 interface CardShopsListInterface {
   productId: string;
-  shops: ShopProductSnippetFragment[];
+  shops: ShopProductModel[];
   input: GetProductShopsInput;
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
@@ -101,7 +98,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
       )}
 
       {visibleShops.map((shop) => {
-        return <CardShop key={shop._id} shopProduct={shop} />;
+        return <CardShop key={`${shop._id}`} shopProduct={shop} />;
       })}
 
       {hiddenShops.length > 0 ? (
@@ -109,7 +106,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
           <DisclosurePanel>
             <div>
               {hiddenShops.map((shop) => {
-                return <CardShop key={shop._id} shopProduct={shop} />;
+                return <CardShop key={`${shop._id}`} shopProduct={shop} />;
               })}
             </div>
           </DisclosurePanel>
@@ -127,12 +124,18 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
 };
 
 interface CardShopsMapInterface {
-  shops: ShopProductSnippetFragment[];
+  shops: ShopProductModel[];
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
-  const shopsSnippets = shops.map(({ shop }) => shop);
+  const shopsSnippets = shops.reduce((acc: ShopModel[], { shop }) => {
+    if (!shop) {
+      return acc;
+    }
+    return [...acc, shop];
+  }, []);
+
   return (
     <div data-cy={`card-shops-map`}>
       <div className={classes.controls}>
@@ -150,32 +153,16 @@ const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
 
 interface CardShopsInterface {
   productId: string;
-  initialShops: ShopProductSnippetFragment[];
+  initialShops: ShopProductModel[];
 }
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId, initialShops }) => {
   const [isMap, setIsMap] = React.useState<boolean>(false);
-  // const [shops] = React.useState<ShopProductSnippetFragment[]>(() => initialShops);
   const [input, setInput] = React.useState<GetProductShopsInput>(() => ({
     productId,
     sortBy: SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
     sortDir: SORT_ASC_STR as SortDirection,
   }));
-  /*const { data, loading, error } = useGetCatalogueCardShopsQuery({
-    variables: {
-      input,
-    },
-  });*/
-
-  /*React.useEffect(() => {
-    if (data && !error && !loading) {
-      setShops(data.getProductShops);
-    }
-  }, [data, loading, error]);*/
-
-  /*if (error) {
-    return <RequestError message={'Ошибка загрузки магазинов'} />;
-  }*/
 
   return (
     <div className={classes.frame} data-cy={`card-shops`}>

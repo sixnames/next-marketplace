@@ -502,7 +502,7 @@ export const getCatalogueData = async ({
 
     const productsInitialMatch = {
       rubricId: rubric._id,
-      active: true,
+      // active: true,
       ...optionsStage,
       ...pricesStage,
     };

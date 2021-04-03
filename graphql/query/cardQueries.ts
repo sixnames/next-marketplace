@@ -138,15 +138,6 @@ export const productCardFragment = gql`
   ${shopProductSnippetFragment}
 `;
 
-export const CATALOGUE_CARD_QUERY = gql`
-  query GetCatalogueCard($slug: [String!]!) {
-    getProductCard(slug: $slug) {
-      ...ProductCard
-    }
-  }
-  ${productCardFragment}
-`;
-
 export const CATALOGUE_CARD_SHOPS_QUERY = gql`
   query GetCatalogueCardShops($input: GetProductShopsInput!) {
     getProductShops(input: $input) {

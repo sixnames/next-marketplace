@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import Spinner from 'components/Spinner/Spinner';
 import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
@@ -19,7 +18,6 @@ const narrowContentClass = 'wp-desktop:pl-[220px]';
 const wideContentClass = 'wp-desktop:pl-[60px]';
 
 const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
-  const { pathname } = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
@@ -29,14 +27,13 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
     return <Spinner />;
   }
 
-  const { appNavigation, cmsNavigation } = state.me.role;
-  const navItems = pathname.includes('cms') ? cmsNavigation : appNavigation;
+  const { cmsNavigation } = state.me.role;
 
   return (
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <CmsNav compact={compact} navItems={navItems} />
+      <CmsNav compact={compact} navItems={cmsNavigation} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${

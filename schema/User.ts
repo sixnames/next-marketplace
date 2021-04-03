@@ -1,7 +1,13 @@
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
+import {
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionRole,
+  getSessionUser,
+} from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
+  CompanyModel,
   FormattedPhoneModel,
   OrderModel,
   OrdersPaginationPayloadModel,
@@ -10,8 +16,8 @@ import {
   UserPayloadModel,
   UsersPaginationPayloadModel,
 } from 'db/dbModels';
-import { COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { ROLE_SLUG_GUEST } from 'config/common';
+import { COL_COMPANIES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { ROLE_SLUG_COMPANY_MANAGER, ROLE_SLUG_COMPANY_OWNER, ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { aggregatePagination } from 'db/aggregatePagination';
@@ -213,6 +219,34 @@ export const UserQuery = queryType({
           city,
         });
         return paginationResult;
+      },
+    });
+
+    // Should return user company
+    t.field('getUserCompany', {
+      type: 'Company',
+      description: 'Should return user company',
+      resolve: async (_source, _args, context): Promise<CompanyModel | null> => {
+        try {
+          const db = await getDatabase();
+          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const { user, role } = await getSessionRole(context);
+
+          if (user && role.slug === ROLE_SLUG_COMPANY_OWNER) {
+            const company = await companiesCollection.findOne({ ownerId: user._id });
+            return company;
+          }
+
+          if (user && role.slug === ROLE_SLUG_COMPANY_MANAGER) {
+            const company = await companiesCollection.findOne({ staffIds: user._id });
+            return company;
+          }
+
+          return null;
+        } catch (e) {
+          console.log(e);
+          return null;
+        }
       },
     });
   },

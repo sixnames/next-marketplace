@@ -1554,7 +1554,6 @@ export interface NexusGenFieldTypes {
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getProductAttributesAST: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     getProductBySlug: NexusGenRootTypes['Product'] | null; // Product
-    getProductCard: NexusGenRootTypes['Product']; // Product!
     getProductShops: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     getProductsList: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     getRole: NexusGenRootTypes['Role'] | null; // Role
@@ -1567,6 +1566,7 @@ export interface NexusGenFieldTypes {
     getShop: NexusGenRootTypes['Shop']; // Shop!
     getShopBySlug: NexusGenRootTypes['Shop']; // Shop!
     getUser: NexusGenRootTypes['User']; // User!
+    getUserCompany: NexusGenRootTypes['Company'] | null; // Company
     getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
     me: NexusGenRootTypes['User'] | null; // User
   };
@@ -2574,7 +2574,6 @@ export interface NexusGenFieldTypeNames {
     getProduct: 'Product';
     getProductAttributesAST: 'ProductAttribute';
     getProductBySlug: 'Product';
-    getProductCard: 'Product';
     getProductShops: 'ShopProduct';
     getProductsList: 'ProductsPaginationPayload';
     getRole: 'Role';
@@ -2587,6 +2586,7 @@ export interface NexusGenFieldTypeNames {
     getShop: 'Shop';
     getShopBySlug: 'Shop';
     getUser: 'User';
+    getUserCompany: 'Company';
     getValidationMessages: 'Message';
     me: 'User';
   };
@@ -3325,10 +3325,6 @@ export interface NexusGenArgTypes {
     getProductBySlug: {
       // args
       slug: string; // String!
-    };
-    getProductCard: {
-      // args
-      slug: string[]; // [String!]!
     };
     getProductShops: {
       // args

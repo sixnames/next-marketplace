@@ -383,6 +383,8 @@ export type Query = {
   getUser: User;
   /** Should return paginated users */
   getAllUsers: UsersPaginationPayload;
+  /** Should return user company */
+  getUserCompany?: Maybe<Company>;
   getAllCurrencies: Array<Currency>;
   /** Should all languages list */
   getAllLanguages: Array<Language>;
@@ -469,8 +471,6 @@ export type Query = {
   getProduct?: Maybe<Product>;
   /** Should return product by given slug */
   getProductBySlug?: Maybe<Product>;
-  /** Should return product for card page and increase view counter */
-  getProductCard: Product;
   /** Should return shops products list for product card */
   getProductShops: Array<ShopProduct>;
   /** Should paginated products */
@@ -612,11 +612,6 @@ export type QueryGetProductArgs = {
 
 export type QueryGetProductBySlugArgs = {
   slug: Scalars['String'];
-};
-
-
-export type QueryGetProductCardArgs = {
-  slug: Array<Scalars['String']>;
 };
 
 
@@ -3897,19 +3892,6 @@ export type ProductCardFragment = (
   )> }
 );
 
-export type GetCatalogueCardQueryVariables = Exact<{
-  slug: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-
-export type GetCatalogueCardQuery = (
-  { __typename?: 'Query' }
-  & { getProductCard: (
-    { __typename?: 'Product' }
-    & ProductCardFragment
-  ) }
-);
-
 export type GetCatalogueCardShopsQueryVariables = Exact<{
   input: GetProductShopsInput;
 }>;
@@ -4772,6 +4754,22 @@ export type UsersSerchQuery = (
       & UserInListFragment
     )> }
   ) }
+);
+
+export type UserCompanyFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, '_id' | 'name' | 'slug'>
+);
+
+export type UserComapnyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserComapnyQuery = (
+  { __typename?: 'Query' }
+  & { getUserCompany?: Maybe<(
+    { __typename?: 'Company' }
+    & UserCompanyFragment
+  )> }
 );
 
 export const CmsProductAttributeFragmentDoc = gql`
@@ -5723,6 +5721,13 @@ export const SelectOptionFragmentDoc = gql`
   _id
   name
   icon
+}
+    `;
+export const UserCompanyFragmentDoc = gql`
+    fragment UserCompany on Company {
+  _id
+  name
+  slug
 }
     `;
 export const GetProductDocument = gql`
@@ -8374,41 +8379,6 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: Apollo.La
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
-export const GetCatalogueCardDocument = gql`
-    query GetCatalogueCard($slug: [String!]!) {
-  getProductCard(slug: $slug) {
-    ...ProductCard
-  }
-}
-    ${ProductCardFragmentDoc}`;
-
-/**
- * __useGetCatalogueCardQuery__
- *
- * To run a query within a React component, call `useGetCatalogueCardQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueCardQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *   },
- * });
- */
-export function useGetCatalogueCardQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardQuery, GetCatalogueCardQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCatalogueCardQuery, GetCatalogueCardQueryVariables>(GetCatalogueCardDocument, options);
-      }
-export function useGetCatalogueCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardQuery, GetCatalogueCardQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCatalogueCardQuery, GetCatalogueCardQueryVariables>(GetCatalogueCardDocument, options);
-        }
-export type GetCatalogueCardQueryHookResult = ReturnType<typeof useGetCatalogueCardQuery>;
-export type GetCatalogueCardLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardLazyQuery>;
-export type GetCatalogueCardQueryResult = Apollo.QueryResult<GetCatalogueCardQuery, GetCatalogueCardQueryVariables>;
 export const GetCatalogueCardShopsDocument = gql`
     query GetCatalogueCardShops($input: GetProductShopsInput!) {
   getProductShops(input: $input) {
@@ -9609,3 +9579,37 @@ export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
 export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
 export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;
+export const UserComapnyDocument = gql`
+    query UserComapny {
+  getUserCompany {
+    ...UserCompany
+  }
+}
+    ${UserCompanyFragmentDoc}`;
+
+/**
+ * __useUserComapnyQuery__
+ *
+ * To run a query within a React component, call `useUserComapnyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserComapnyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserComapnyQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserComapnyQuery(baseOptions?: Apollo.QueryHookOptions<UserComapnyQuery, UserComapnyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserComapnyQuery, UserComapnyQueryVariables>(UserComapnyDocument, options);
+      }
+export function useUserComapnyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserComapnyQuery, UserComapnyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserComapnyQuery, UserComapnyQueryVariables>(UserComapnyDocument, options);
+        }
+export type UserComapnyQueryHookResult = ReturnType<typeof useUserComapnyQuery>;
+export type UserComapnyLazyQueryHookResult = ReturnType<typeof useUserComapnyLazyQuery>;
+export type UserComapnyQueryResult = Apollo.QueryResult<UserComapnyQuery, UserComapnyQueryVariables>;

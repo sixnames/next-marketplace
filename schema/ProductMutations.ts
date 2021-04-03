@@ -1258,11 +1258,11 @@ export const ProductMutations = extendType({
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
           const db = await getDatabase();
-          const sessionRole = await getSessionRole(context);
+          const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          if (!sessionRole.isStuff) {
+          if (!role.isStuff) {
             const { input } = args;
             const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
               { slug: input.productSlug },

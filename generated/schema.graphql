@@ -1781,11 +1781,6 @@ type Query {
   getProductBySlug(slug: String!): Product
 
   """
-  Should return product for card page and increase view counter
-  """
-  getProductCard(slug: [String!]!): Product!
-
-  """
   Should return shops products list for product card
   """
   getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
@@ -1844,6 +1839,11 @@ type Query {
   Should return user by _id
   """
   getUser(_id: ObjectId!): User!
+
+  """
+  Should return user company
+  """
+  getUserCompany: Company
 
   """
   Should return validation messages list

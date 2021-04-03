@@ -37,7 +37,14 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
   return user;
 };
 
-export const getSessionRole = async (context: NexusContext): Promise<RoleModel> => {
+interface GetSessionRolePayloadInterface {
+  role: RoleModel;
+  user?: UserModel | null;
+}
+
+export const getSessionRole = async (
+  context: NexusContext,
+): Promise<GetSessionRolePayloadInterface> => {
   // Get session user
   const user = await getSessionUser(context);
 
@@ -50,14 +57,20 @@ export const getSessionRole = async (context: NexusContext): Promise<RoleModel> 
     if (!guestRole) {
       throw Error('Guest role not found in getSessionRole');
     }
-    return guestRole;
+    return {
+      role: guestRole,
+      user,
+    };
   }
 
   const userRole = await rolesCollection.findOne({ _id: user.roleId });
   if (!userRole) {
     throw Error('User role not found in getSessionRole');
   }
-  return userRole;
+  return {
+    role: userRole,
+    user,
+  };
 };
 
 export const getSessionLocale = (context: NexusContext): string => {

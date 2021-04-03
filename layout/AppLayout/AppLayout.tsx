@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { CompanyContextProvider, useCompanyContext } from 'context/companyContext';
 import * as React from 'react';
 import Spinner from 'components/Spinner/Spinner';
 import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
@@ -18,39 +18,52 @@ interface AppLayoutInterface {
 const narrowContentClass = 'wp-desktop:pl-[220px]';
 const wideContentClass = 'wp-desktop:pl-[60px]';
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
-  const { pathname } = useRouter();
+const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
   const { state } = useUserContext();
+  const { company } = useCompanyContext();
 
   if (!state.me) {
     return <Spinner />;
   }
 
-  const { appNavigation, cmsNavigation } = state.me.role;
-  const navItems = pathname.includes('cms') ? cmsNavigation : appNavigation;
-
+  const { appNavigation } = state.me.role;
+  console.log(company);
   return (
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <CmsNav compact={compact} navItems={navItems} />
+      <CmsNav compact={compact} navItems={appNavigation} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${
           isCompact ? wideContentClass : narrowContentClass
         }`}
       >
-        <ErrorBoundary>
-          <div>{children}</div>
-        </ErrorBoundary>
+        <ErrorBoundary>{children}</ErrorBoundary>
       </main>
 
       {isLoading ? <Spinner /> : null}
       {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
+  );
+};
+
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
+  const { state } = useUserContext();
+
+  if (!state.me) {
+    return <Spinner />;
+  }
+
+  return (
+    <CompanyContextProvider>
+      <AppLayoutConsumer pageUrls={pageUrls} title={title}>
+        {children}
+      </AppLayoutConsumer>
+    </CompanyContextProvider>
   );
 };
 

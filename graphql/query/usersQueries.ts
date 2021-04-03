@@ -31,3 +31,20 @@ export const USERS_SEARCH_QUERY = gql`
   }
   ${userInListFragment}
 `;
+
+export const userCompanyFragment = gql`
+  fragment UserCompany on Company {
+    _id
+    name
+    slug
+  }
+`;
+
+export const USER_COMPANY_QUERY = gql`
+  query UserComapny {
+    getUserCompany {
+      ...UserCompany
+    }
+  }
+  ${userCompanyFragment}
+`;

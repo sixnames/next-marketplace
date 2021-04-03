@@ -251,7 +251,7 @@ export const CatalogueMutations = extendType({
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
           const db = await getDatabase();
-          const sessionRole = await getSessionRole(context);
+          const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
@@ -265,7 +265,7 @@ export const CatalogueMutations = extendType({
           const { filter } = input;
           const [rubricSlug] = filter;
 
-          if (!sessionRole.isStuff) {
+          if (!role.isStuff) {
             const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
             if (!rubric) {
               return false;

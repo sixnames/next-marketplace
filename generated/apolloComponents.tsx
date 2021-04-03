@@ -483,6 +483,8 @@ export type Query = {
   getShopBySlug: Shop;
   /** Should return shop by given slug */
   getAllShops: ShopsPaginationPayload;
+  /** Should return paginated company shops list */
+  getCompanyShops: ShopsPaginationPayload;
   /** Should return company by given id */
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
@@ -642,6 +644,12 @@ export type QueryGetShopBySlugArgs = {
 
 export type QueryGetAllShopsArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetCompanyShopsArgs = {
+  input?: Maybe<PaginationInput>;
+  companyId: Scalars['ObjectId'];
 };
 
 
@@ -4071,6 +4079,24 @@ export type GetAllShopsQueryVariables = Exact<{
 export type GetAllShopsQuery = (
   { __typename?: 'Query' }
   & { getAllShops: (
+    { __typename?: 'ShopsPaginationPayload' }
+    & Pick<ShopsPaginationPayload, 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Shop' }
+      & ShopInListFragment
+    )> }
+  ) }
+);
+
+export type GetAppCompanyShopsQueryVariables = Exact<{
+  input?: Maybe<PaginationInput>;
+  companyId: Scalars['ObjectId'];
+}>;
+
+
+export type GetAppCompanyShopsQuery = (
+  { __typename?: 'Query' }
+  & { getCompanyShops: (
     { __typename?: 'ShopsPaginationPayload' }
     & Pick<ShopsPaginationPayload, 'totalPages'>
     & { docs: Array<(
@@ -8631,6 +8657,45 @@ export function useGetAllShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAllShopsQueryHookResult = ReturnType<typeof useGetAllShopsQuery>;
 export type GetAllShopsLazyQueryHookResult = ReturnType<typeof useGetAllShopsLazyQuery>;
 export type GetAllShopsQueryResult = Apollo.QueryResult<GetAllShopsQuery, GetAllShopsQueryVariables>;
+export const GetAppCompanyShopsDocument = gql`
+    query GetAppCompanyShops($input: PaginationInput, $companyId: ObjectId!) {
+  getCompanyShops(input: $input, companyId: $companyId) {
+    totalPages
+    docs {
+      ...ShopInList
+    }
+  }
+}
+    ${ShopInListFragmentDoc}`;
+
+/**
+ * __useGetAppCompanyShopsQuery__
+ *
+ * To run a query within a React component, call `useGetAppCompanyShopsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAppCompanyShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAppCompanyShopsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetAppCompanyShopsQuery(baseOptions: Apollo.QueryHookOptions<GetAppCompanyShopsQuery, GetAppCompanyShopsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAppCompanyShopsQuery, GetAppCompanyShopsQueryVariables>(GetAppCompanyShopsDocument, options);
+      }
+export function useGetAppCompanyShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAppCompanyShopsQuery, GetAppCompanyShopsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAppCompanyShopsQuery, GetAppCompanyShopsQueryVariables>(GetAppCompanyShopsDocument, options);
+        }
+export type GetAppCompanyShopsQueryHookResult = ReturnType<typeof useGetAppCompanyShopsQuery>;
+export type GetAppCompanyShopsLazyQueryHookResult = ReturnType<typeof useGetAppCompanyShopsLazyQuery>;
+export type GetAppCompanyShopsQueryResult = Apollo.QueryResult<GetAppCompanyShopsQuery, GetAppCompanyShopsQueryVariables>;
 export const GetShopDocument = gql`
     query GetShop($_id: ObjectId!) {
   getShop(_id: $_id) {

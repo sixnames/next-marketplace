@@ -1716,6 +1716,11 @@ type Query {
   getCompany(_id: ObjectId!): Company
 
   """
+  Should return paginated company shops list
+  """
+  getCompanyShops(companyId: ObjectId!, input: PaginationInput): ShopsPaginationPayload!
+
+  """
   Should return gender options
   """
   getGenderOptions: [SelectOption!]!

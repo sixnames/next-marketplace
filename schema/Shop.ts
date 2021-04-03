@@ -202,6 +202,38 @@ export const ShopQueries = extendType({
         return paginationResult;
       },
     });
+
+    // Should return paginated company shops list
+    t.nonNull.field('getCompanyShops', {
+      type: 'ShopsPaginationPayload',
+      description: 'Should return paginated company shops list',
+      args: {
+        input: arg({
+          type: 'PaginationInput',
+        }),
+        companyId: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopsPaginationPayloadModel> => {
+        const { city } = await getRequestParams(context);
+        const paginationResult = await aggregatePagination<ShopModel>({
+          city,
+          input: args.input,
+          collectionName: COL_SHOPS,
+          pipeline: [
+            {
+              $match: {
+                companyId: args.companyId,
+              },
+            },
+          ],
+        });
+        return paginationResult;
+      },
+    });
   },
 });
 

@@ -1541,6 +1541,7 @@ export interface NexusGenFieldTypes {
     getCity: NexusGenRootTypes['City']; // City!
     getCityBySlug: NexusGenRootTypes['City']; // City!
     getCompany: NexusGenRootTypes['Company'] | null; // Company
+    getCompanyShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
     getGenderOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getISOLanguagesOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getIconsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -2561,6 +2562,7 @@ export interface NexusGenFieldTypeNames {
     getCity: 'City';
     getCityBySlug: 'City';
     getCompany: 'Company';
+    getCompanyShops: 'ShopsPaginationPayload';
     getGenderOptions: 'SelectOption';
     getISOLanguagesOptions: 'SelectOption';
     getIconsOptions: 'SelectOption';
@@ -3293,6 +3295,11 @@ export interface NexusGenArgTypes {
     getCompany: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    getCompanyShops: {
+      // args
+      companyId: NexusGenScalars['ObjectId']; // ObjectId!
+      input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
     getManufacturer: {
       // args

@@ -1,8 +1,8 @@
 import { AppNavParentItemFragment } from 'generated/apolloComponents';
 import useSignOut from 'hooks/useSignOut';
+import AppNavItem from 'layout/AppLayout/AppNavItem';
+import AppNavUser from 'layout/AppLayout/AppNavUser';
 import * as React from 'react';
-import CmsNavUser from 'layout/CmsLayout/CmsNavUser';
-import CmsNavItem from 'layout/CmsLayout/CmsNavItem';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
@@ -35,13 +35,13 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
 
       <div className={`${classes.nav} ${isCompact && classes.navCompact}`}>
         <div className={classes.holder}>
-          <CmsNavUser compact={isCompact} openNavHandler={openNavHandler} />
+          <AppNavUser compact={isCompact} openNavHandler={openNavHandler} />
 
           <div className={`${classes.list} ${isCompact ? classes.listClosed : ''}`}>
             <ul className={classes.listHolder}>
               {navItems.map((item) => {
                 return (
-                  <CmsNavItem
+                  <AppNavItem
                     compact={isCompact}
                     key={item._id}
                     item={item}

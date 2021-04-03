@@ -18,7 +18,7 @@ interface AppLayoutInterface {
 const narrowContentClass = 'wp-desktop:pl-[220px]';
 const wideContentClass = 'wp-desktop:pl-[60px]';
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
+const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   const { pathname } = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
@@ -54,4 +54,4 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
   );
 };
 
-export default AppLayout;
+export default CmsLayout;

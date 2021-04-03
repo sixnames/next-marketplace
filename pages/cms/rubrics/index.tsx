@@ -16,7 +16,7 @@ import {
 } from 'generated/apolloComponents';
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -173,9 +173,9 @@ const RubricsRoute: React.FC = () => {
 
 const Rubrics: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <RubricsRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

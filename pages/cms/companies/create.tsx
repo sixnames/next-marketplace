@@ -15,7 +15,7 @@ import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -126,9 +126,9 @@ const CreateCompanyRoute: React.FC = () => {
 
 const CompaniesCreate: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <CreateCompanyRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

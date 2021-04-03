@@ -17,7 +17,7 @@ import {
 import { RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useProductsListColumns from 'hooks/useProductsListColumns';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -183,9 +183,9 @@ const RubricProducts: React.FC = () => {
 
 const RubricProductsPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <RubricProducts />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

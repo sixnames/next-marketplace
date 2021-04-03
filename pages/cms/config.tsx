@@ -29,7 +29,7 @@ import { get } from 'lodash';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ConfigsContent.module.css';
@@ -361,9 +361,9 @@ const ConfigsRoute: React.FC = () => {
 
 const Config: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <ConfigsRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

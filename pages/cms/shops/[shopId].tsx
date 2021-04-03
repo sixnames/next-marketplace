@@ -8,7 +8,7 @@ import useTabsConfig from 'hooks/useTabsConfig';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import ShopAssets from 'routes/Shop/ShopAssets';
@@ -75,9 +75,9 @@ const ShopRoute: React.FC = () => {
 
 const Shop: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <ShopRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

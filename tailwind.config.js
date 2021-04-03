@@ -3,6 +3,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 module.exports = {
   purge: [
     './pages/**/*.{js,ts,jsx,tsx}',
+    './layout/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
     './routes/**/*.{js,ts,jsx,tsx}',
@@ -41,6 +42,12 @@ module.exports = {
         'secondary-background': `var(--secondaryBackground)`,
         'secondary-background-light': `var(--secondaryBackgroundLight)`,
         'secondary-button-background': `var(--secondaryButtonBackground)`,
+      },
+      minHeight: {
+        'full-height': 'var(--fullHeight, 100vh)',
+      },
+      screens: {
+        'wp-desktop': '1025px',
       },
       boxShadow: {},
       spacing: {},

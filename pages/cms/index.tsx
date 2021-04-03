@@ -2,17 +2,17 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
 const Cms: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout title={'CMS'} pageUrls={pageUrls}>
+    <CmsLayout title={'CMS'} pageUrls={pageUrls}>
       <Inner>
         <Title>Cms</Title>
       </Inner>
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

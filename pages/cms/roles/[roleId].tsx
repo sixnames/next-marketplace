@@ -19,7 +19,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { NavItemInterface } from 'types/clientTypes';
@@ -131,9 +131,9 @@ const RoleRoute: React.FC = () => {
 
 const Role: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <RoleRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

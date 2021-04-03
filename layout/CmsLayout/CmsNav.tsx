@@ -6,7 +6,7 @@ import CmsNavItem from 'layout/CmsLayout/CmsNavItem';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
-import classes from './AppNav.module.css';
+import classes from 'layout/CmsLayout/CmsNav.module.css';
 import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 import { useAppContext } from 'context/appContext';
 import Tooltip from '../../components/TTip/Tooltip';
@@ -17,7 +17,7 @@ interface AppNavInterface {
   navItems: AppNavParentItemFragment[];
 }
 
-const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
+const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
   const signOut = useSignOut();
   const { pathname } = useRouter();
   const { isMobile } = useAppContext();
@@ -113,4 +113,4 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
   );
 };
 
-export default AppNav;
+export default CmsNav;

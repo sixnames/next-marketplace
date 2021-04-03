@@ -3,20 +3,23 @@ import * as React from 'react';
 
 interface CompanyContextInterface {
   company?: UserCompanyFragment | null;
+  companyLoading: boolean;
 }
 
 const CompanyContext = React.createContext<CompanyContextInterface>({
   company: null,
+  companyLoading: true,
 });
 
 const CompanyContextProvider: React.FC = ({ children }) => {
-  const { data } = useUserComapnyQuery();
+  const { data, loading } = useUserComapnyQuery();
 
   const value = React.useMemo(() => {
     return {
       company: data?.getUserCompany,
+      companyLoading: loading,
     };
-  }, [data]);
+  }, [data, loading]);
 
   return <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>;
 };

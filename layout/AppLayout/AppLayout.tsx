@@ -1,9 +1,10 @@
 import { CompanyContextProvider, useCompanyContext } from 'context/companyContext';
+import AppNav from 'layout/AppLayout/AppNav';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Spinner from 'components/Spinner/Spinner';
 import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
 import { useUserContext } from 'context/userContext';
-import CmsNav from 'layout/CmsLayout/CmsNav';
 import { useAppContext } from 'context/appContext';
 import Meta, { PageUrlsInterface } from '../Meta';
 import Modal from 'components/Modal/Modal';
@@ -19,23 +20,30 @@ const narrowContentClass = 'wp-desktop:pl-[220px]';
 const wideContentClass = 'wp-desktop:pl-[60px]';
 
 const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
+  const router = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
   const { state } = useUserContext();
-  const { company } = useCompanyContext();
+  const { company, companyLoading } = useCompanyContext();
 
-  if (!state.me) {
+  React.useEffect(() => {
+    if (!companyLoading && !company) {
+      router.push('/').catch((e) => console.log(e));
+    }
+  }, [companyLoading, company, router]);
+
+  if (!state.me || companyLoading) {
     return <Spinner />;
   }
 
   const { appNavigation } = state.me.role;
-  console.log(company);
+
   return (
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <CmsNav compact={compact} navItems={appNavigation} />
+      <AppNav compact={compact} navItems={appNavigation} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${

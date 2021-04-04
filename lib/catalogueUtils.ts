@@ -998,9 +998,9 @@ export const getCatalogueNavRubrics = async ({
   city,
   locale,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
-  console.log(' ');
-  console.log('=================== getCatalogueNavRubrics =======================');
-  const timeStart = new Date().getTime();
+  // console.log(' ');
+  // console.log('=================== getCatalogueNavRubrics =======================');
+  // const timeStart = new Date().getTime();
 
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -1020,7 +1020,7 @@ export const getCatalogueNavRubrics = async ({
     noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
     noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
-  console.log('Before rubrics', new Date().getTime() - timeStart);
+  // console.log('Before rubrics', new Date().getTime() - timeStart);
 
   const constantProject = {
     _id: 1,
@@ -1124,11 +1124,10 @@ export const getCatalogueNavRubrics = async ({
 
     const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
     const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);
-    console.log({ rubricACounter, rubricBCounter });
     return rubricBCounter - rubricACounter;
   });
 
-  console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
+  // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
   return sortedRubrics;
 };

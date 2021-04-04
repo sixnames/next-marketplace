@@ -17,7 +17,6 @@ import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import TabsContent from 'components/TabsContent/TabsContent';
-import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL, SHOP_PRODUCT_MODAL } from 'config/modals';
 import { Form, Formik } from 'formik';
 import {
@@ -48,7 +47,6 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import RowWithGap from 'layout/RowWithGap/RowWithGap';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw } from 'lib/phoneUtils';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -219,11 +217,7 @@ const ShopProducts: React.FC<ShopProductsInterface> = ({ shop }) => {
   const columns: TableColumn<ShopProductFragment>[] = [
     {
       headTitle: 'Арт',
-      render: ({ dataItem }) => (
-        <Link href={`${ROUTE_CMS}/shops/${dataItem.product._id}`}>
-          <a>{dataItem.product.itemId}</a>
-        </Link>
-      ),
+      render: ({ dataItem }) => dataItem.product.itemId,
     },
     {
       headTitle: 'Фото',

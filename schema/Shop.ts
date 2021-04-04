@@ -64,7 +64,6 @@ export const Shop = objectType({
     t.nonNull.field('address', {
       type: 'Address',
     });
-    t.nonNull.list.nonNull.objectId('shopProductsIds');
 
     // Shop paginated shopProducts field resolver
     t.nonNull.field('shopProducts', {
@@ -83,7 +82,7 @@ export const Shop = objectType({
           pipeline: [
             {
               $match: {
-                _id: { $in: source.shopProductsIds },
+                shopId: source._id,
               },
             },
           ],
@@ -124,7 +123,10 @@ export const Shop = objectType({
     t.nonNull.field('productsCount', {
       type: 'Int',
       resolve: async (source): Promise<number> => {
-        return source.shopProductsIds.length;
+        const db = await getDatabase();
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const count = await shopProductsCollection.find({ shopId: source._id }).count();
+        return count;
       },
     });
   },
@@ -788,8 +790,7 @@ export const ShopMutations = extendType({
           // Check if product already exist in the shop
           const exist = await shopProductsCollection.findOne({
             productId,
-
-            _id: { $in: shop.shopProductsIds },
+            shopId: shop._id,
           });
           if (exist) {
             return {
@@ -802,35 +803,16 @@ export const ShopMutations = extendType({
           const createdShopProductResult = await shopProductsCollection.insertOne({
             ...values,
             productId,
-            updatedAt: new Date(),
-            createdAt: new Date(),
             shopId: shop._id,
             citySlug: shop.citySlug,
             oldPrices: [],
             rubricId: product.rubricId,
+            companyId: shop.companyId,
+            updatedAt: new Date(),
+            createdAt: new Date(),
           });
           const createdShopProduct = createdShopProductResult.ops[0];
           if (!createdShopProductResult.result.ok || !createdShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-
-          // Add created shop product to the shop
-          const updatedShopResult = await shopsCollection.findOneAndUpdate(
-            { _id: shopId },
-            {
-              $push: {
-                shopProductsIds: createdShopProduct._id,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedShop = updatedShopResult.value;
-          if (!updatedShopResult.ok || !updatedShop) {
             return {
               success: false,
               message: await getApiMessage('shops.addProduct.error'),
@@ -858,7 +840,7 @@ export const ShopMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('shops.addProduct.success'),
-            payload: updatedShop,
+            payload: shop,
           };
         } catch (e) {
           return {

@@ -1603,10 +1603,8 @@ export type Product = Base & Timestamp & {
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
   shopsCount: Scalars['Int'];
-  /** Returns shop products of session city for product card page */
-  cardShopProducts: Array<ShopProduct>;
   /** Returns all shop products that product connected to */
-  allShopProducts: Array<ShopProduct>;
+  shopProducts: Array<ShopProduct>;
   isCustomersChoice: Scalars['Boolean'];
   /** Should find all connected shop products and return minimal and maximal price. */
   cardPrices: ProductCardPrices;
@@ -2217,7 +2215,6 @@ export type Shop = Base & Timestamp & {
   assets: Array<Asset>;
   contacts: Contacts;
   address: Address;
-  shopProductsIds: Array<Scalars['ObjectId']>;
   shopProducts: ShopProductsPaginationPayload;
   city: City;
   company: Company;
@@ -3801,41 +3798,6 @@ export type GetAttributesGroupsForRubricQuery = (
   )> }
 );
 
-export type CardFeatureFragment = (
-  { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, '_id' | 'showInCard' | 'text' | 'number' | 'attributeName' | 'attributeViewVariant' | 'readableValue'>
-  & { selectedOptions: Array<(
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'slug' | 'name' | 'icon'>
-  )> }
-);
-
-export type CardConnectionProductFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'slug'>
-);
-
-export type CardConnectionItemFragment = (
-  { __typename?: 'ProductConnectionItem' }
-  & Pick<ProductConnectionItem, '_id'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ), product: (
-    { __typename?: 'Product' }
-    & CardConnectionProductFragment
-  ) }
-);
-
-export type CardConnectionFragment = (
-  { __typename?: 'ProductConnection' }
-  & Pick<ProductConnection, '_id' | 'attributeName'>
-  & { connectionProducts: Array<(
-    { __typename?: 'ProductConnectionItem' }
-    & CardConnectionItemFragment
-  )> }
-);
-
 export type ShopSnippetFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, '_id' | 'name' | 'slug' | 'productsCount'>
@@ -3868,36 +3830,6 @@ export type ShopProductSnippetFragment = (
     { __typename?: 'Shop' }
     & ShopSnippetFragment
   ) }
-);
-
-export type ProductCardFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'description' | 'shopsCount' | 'isCustomersChoice'>
-  & { cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ), cardShopProducts: Array<(
-    { __typename?: 'ShopProduct' }
-    & ShopProductSnippetFragment
-  )>, listFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CardFeatureFragment
-  )>, textFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CardFeatureFragment
-  )>, tagFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CardFeatureFragment
-  )>, iconFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CardFeatureFragment
-  )>, ratingFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CardFeatureFragment
-  )>, connections: Array<(
-    { __typename?: 'ProductConnection' }
-    & CardConnectionFragment
-  )> }
 );
 
 export type GetCatalogueCardShopsQueryVariables = Exact<{
@@ -4181,7 +4113,7 @@ export type GetShopProductsQuery = (
   { __typename?: 'Query' }
   & { getShop: (
     { __typename?: 'Shop' }
-    & Pick<Shop, '_id' | 'shopProductsIds'>
+    & Pick<Shop, '_id'>
     & { shopProducts: (
       { __typename?: 'ShopProductsPaginationPayload' }
       & Pick<ShopProductsPaginationPayload, 'totalPages'>
@@ -5110,91 +5042,6 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
-export const CardFeatureFragmentDoc = gql`
-    fragment CardFeature on ProductAttribute {
-  _id
-  showInCard
-  text
-  number
-  attributeName
-  attributeViewVariant
-  readableValue
-  selectedOptions {
-    _id
-    slug
-    name
-    icon
-  }
-}
-    `;
-export const CardConnectionProductFragmentDoc = gql`
-    fragment CardConnectionProduct on Product {
-  _id
-  slug
-}
-    `;
-export const CardConnectionItemFragmentDoc = gql`
-    fragment CardConnectionItem on ProductConnectionItem {
-  _id
-  option {
-    _id
-    name
-  }
-  product {
-    ...CardConnectionProduct
-  }
-}
-    ${CardConnectionProductFragmentDoc}`;
-export const CardConnectionFragmentDoc = gql`
-    fragment CardConnection on ProductConnection {
-  _id
-  attributeName
-  connectionProducts {
-    ...CardConnectionItem
-  }
-}
-    ${CardConnectionItemFragmentDoc}`;
-export const ProductCardFragmentDoc = gql`
-    fragment ProductCard on Product {
-  _id
-  itemId
-  name
-  originalName
-  slug
-  mainImage
-  description
-  cardPrices {
-    _id
-    min
-    max
-  }
-  shopsCount
-  isCustomersChoice
-  cardShopProducts {
-    ...ShopProductSnippet
-  }
-  listFeatures {
-    ...CardFeature
-  }
-  textFeatures {
-    ...CardFeature
-  }
-  tagFeatures {
-    ...CardFeature
-  }
-  iconFeatures {
-    ...CardFeature
-  }
-  ratingFeatures {
-    ...CardFeature
-  }
-  connections {
-    ...CardConnection
-  }
-}
-    ${ShopProductSnippetFragmentDoc}
-${CardFeatureFragmentDoc}
-${CardConnectionFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id
@@ -8651,7 +8498,6 @@ export const GetShopProductsDocument = gql`
     query GetShopProducts($shopId: ObjectId!, $input: PaginationInput) {
   getShop(_id: $shopId) {
     _id
-    shopProductsIds
     shopProducts(input: $input) {
       totalPages
       docs {

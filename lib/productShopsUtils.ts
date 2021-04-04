@@ -91,7 +91,6 @@ export async function updateProductShopsData({
     {
       $set: {
         active: shopProductsIds.length > 0,
-        shopProductsIds,
         shopProductsCountCities,
         minPriceCities,
         maxPriceCities,
@@ -143,11 +142,9 @@ export async function updateProductsShopsDataOnShopsArchive({
   const shops = await shopsCollection.find({ _id: { $in: shopsIds } }).toArray();
   const shopsProductsIds: ObjectId[] = [];
   for await (const shop of shops) {
-    const shopProducts = await shopProductsCollection
-      .find({ _id: { $in: shop.shopProductsIds } })
-      .toArray();
-    const shopProductsIds = shopProducts.map(({ _id }) => _id);
-    shopProductsIds.forEach((_id) => shopsProductsIds.push(_id));
+    const shopProducts = await shopProductsCollection.find({ shopId: shop._id }).toArray();
+    const localShopProductsIds = shopProducts.map(({ _id }) => _id);
+    localShopProductsIds.forEach((_id) => shopsProductsIds.push(_id));
   }
 
   // Update all products of shops

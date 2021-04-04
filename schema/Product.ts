@@ -218,26 +218,8 @@ export const Product = objectType({
       },
     });
 
-    // Product cardShopProducts field resolver
-    t.nonNull.list.nonNull.field('cardShopProducts', {
-      type: 'ShopProduct',
-      description: 'Returns shop products of session city for product card page',
-      resolve: async (source, _args, context): Promise<ShopProductModel[]> => {
-        const { city } = await getRequestParams(context);
-        const db = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const shopsProducts = await shopProductsCollection
-          .find({
-            _id: { $in: source.shopProductsIds },
-            citySlug: city,
-          })
-          .toArray();
-        return shopsProducts;
-      },
-    });
-
     // Product allShopProducts field resolver
-    t.nonNull.list.nonNull.field('allShopProducts', {
+    t.nonNull.list.nonNull.field('shopProducts', {
       type: 'ShopProduct',
       description: 'Returns all shop products that product connected to',
       resolve: async (source, _args): Promise<ShopProductModel[]> => {
@@ -245,7 +227,7 @@ export const Product = objectType({
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const shopsProducts = await shopProductsCollection
           .find({
-            _id: { $in: source.shopProductsIds },
+            productId: source._id,
           })
           .toArray();
         return shopsProducts;

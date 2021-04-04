@@ -1393,7 +1393,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
-    allShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     available: boolean | null; // Boolean
@@ -1402,7 +1401,6 @@ export interface NexusGenFieldTypes {
     brandCollectionSlug: string | null; // String
     brandSlug: string | null; // String
     cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
-    cardShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
@@ -1420,6 +1418,7 @@ export interface NexusGenFieldTypes {
     ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -1703,7 +1702,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     productsCount: number; // Int!
     shopProducts: NexusGenRootTypes['ShopProductsPaginationPayload']; // ShopProductsPaginationPayload!
-    shopProductsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
@@ -2414,7 +2412,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
-    allShopProducts: 'ShopProduct';
     assets: 'Asset';
     attributes: 'ProductAttribute';
     available: 'Boolean';
@@ -2423,7 +2420,6 @@ export interface NexusGenFieldTypeNames {
     brandCollectionSlug: 'String';
     brandSlug: 'String';
     cardPrices: 'ProductCardPrices';
-    cardShopProducts: 'ShopProduct';
     connections: 'ProductConnection';
     createdAt: 'Date';
     description: 'String';
@@ -2441,6 +2437,7 @@ export interface NexusGenFieldTypeNames {
     ratingFeatures: 'ProductAttribute';
     rubric: 'Rubric';
     rubricId: 'ObjectId';
+    shopProducts: 'ShopProduct';
     shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';
@@ -2724,7 +2721,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     productsCount: 'Int';
     shopProducts: 'ShopProductsPaginationPayload';
-    shopProductsIds: 'ObjectId';
     slug: 'String';
     updatedAt: 'Date';
   };

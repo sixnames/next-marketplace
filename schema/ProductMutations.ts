@@ -295,7 +295,6 @@ export const ProductMutations = extendType({
             isCustomersChoiceCities: {
               [DEFAULT_CITY]: false,
             },
-            shopProductsIds: [],
             shopProductsCountCities: {},
             connections: [],
             createdAt: new Date(),

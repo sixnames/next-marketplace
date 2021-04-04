@@ -503,7 +503,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
 
-  shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
   isCustomersChoiceCities: CitiesBooleanModel;
   connections: ProductConnectionModel[];
@@ -646,6 +645,7 @@ export interface ShopProductModel extends TimestampModel {
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
 
   // types for ui
@@ -667,7 +667,6 @@ export interface ShopModel extends BaseModel, TimestampModel {
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
-  shopProductsIds: ObjectIdModel[];
 
   // types for ui
   productsCount?: number;

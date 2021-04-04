@@ -96,7 +96,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: productA.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -111,7 +111,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: productB.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -126,7 +126,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: productD.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -141,7 +141,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: connectionProductA.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -156,7 +156,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: connectionProductB.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -171,7 +171,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: connectionProductC.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -215,14 +215,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
       url: shopALogoUrl,
     },
     assets: [{ index: 0, url: shopAAssetAUrl }],
-    shopProductsIds: [
-      shopAProductAId,
-      shopAProductBId,
-      shopAProductDId,
-      shopAConnectionProductAId,
-      shopAConnectionProductBId,
-      shopAConnectionProductCId,
-    ],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -246,7 +238,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: productA.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -261,7 +253,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: productB.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -276,7 +268,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: productD.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -291,7 +283,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: connectionProductA.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -306,7 +298,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: connectionProductB.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -321,7 +313,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
     rubricId: connectionProductC.rubricId,
-
+    companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -371,14 +363,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     assets: [
       { index: 0, url: shopBAssetAUrl },
       { index: 1, url: shopBAssetBUrl },
-    ],
-    shopProductsIds: [
-      shopBProductAId,
-      shopBProductBId,
-      shopBProductDId,
-      shopBConnectionProductAId,
-      shopBConnectionProductBId,
-      shopBConnectionProductCId,
     ],
     createdAt: new Date(),
     updatedAt: new Date(),

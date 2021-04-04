@@ -1374,11 +1374,6 @@ type PointGeoJSON {
 type Product implements Base & Timestamp {
   _id: ObjectId!
   active: Boolean!
-
-  """
-  Returns all shop products that product connected to
-  """
-  allShopProducts: [ShopProduct!]!
   assets: [Asset!]!
   attributes: [ProductAttribute!]!
   available: Boolean
@@ -1391,11 +1386,6 @@ type Product implements Base & Timestamp {
   Should find all connected shop products and return minimal and maximal price.
   """
   cardPrices: ProductCardPrices!
-
-  """
-  Returns shop products of session city for product card page
-  """
-  cardShopProducts: [ShopProduct!]!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
@@ -1413,6 +1403,11 @@ type Product implements Base & Timestamp {
   ratingFeatures: [ProductAttribute!]!
   rubric: Rubric!
   rubricId: ObjectId!
+
+  """
+  Returns all shop products that product connected to
+  """
+  shopProducts: [ShopProduct!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
@@ -2018,7 +2013,6 @@ type Shop implements Base & Timestamp {
   name: String!
   productsCount: Int!
   shopProducts(input: PaginationInput): ShopProductsPaginationPayload!
-  shopProductsIds: [ObjectId!]!
   slug: String!
   updatedAt: Date!
 }

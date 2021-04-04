@@ -204,7 +204,6 @@ export const SHOP_PRODUCTS_QUERY = gql`
   query GetShopProducts($shopId: ObjectId!, $input: PaginationInput) {
     getShop(_id: $shopId) {
       _id
-      shopProductsIds
       shopProducts(input: $input) {
         totalPages
         docs {

@@ -299,7 +299,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       },
       originalName: defaultLocaleName,
       assets: [assetA],
-      shopProductsIds: [],
       shopProductsCountCities: {},
       isCustomersChoiceCities: {
         [DEFAULT_CITY]: true,

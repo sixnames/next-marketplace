@@ -1261,7 +1261,7 @@ export const ProductMutations = extendType({
           const { city } = await getRequestParams(context);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          if (!role.isStuff) {
+          if (!role.isStaff) {
             const { input } = args;
             const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
               { slug: input.productSlug },

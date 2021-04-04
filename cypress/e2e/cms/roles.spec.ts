@@ -28,7 +28,7 @@ describe('User roles', () => {
     // Should create role
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
     cy.getByCy('description').clear().type(newRoleDescription);
-    cy.getByCy('isStuff-checkbox').check();
+    cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.getByCy('role-modal').should('not.exist');
     cy.shouldSuccess();
@@ -44,7 +44,7 @@ describe('User roles', () => {
     cy.getByCy(`${adminRoleName}-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
     cy.getByCy('description').clear().type(newRoleDescription);
-    cy.getByCy('isStuff-checkbox').check();
+    cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.shouldSuccess();
     cy.visit(`/cms/roles`);

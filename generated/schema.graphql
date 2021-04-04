@@ -479,7 +479,7 @@ input CreateProductInput {
 
 input CreateRoleInput {
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   nameI18n: JSONObject!
 }
 
@@ -1866,7 +1866,7 @@ type Role implements Timestamp {
   cmsNavigation: [NavItem!]!
   createdAt: Date!
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   name: String!
   nameI18n: JSONObject!
   slug: String!
@@ -2263,7 +2263,7 @@ input UpdateProductInput {
 
 input UpdateRoleInput {
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   nameI18n: JSONObject!
   roleId: ObjectId!
 }

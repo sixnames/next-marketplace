@@ -5,7 +5,7 @@ export const cmsRoleFragment = gql`
     _id
     name
     slug
-    isStuff
+    isStaff
     description
     nameI18n
   }

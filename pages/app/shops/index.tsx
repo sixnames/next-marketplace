@@ -83,14 +83,16 @@ const ShopsRoute: React.FC = () => {
 
   return (
     <Inner testId={'shops-list'}>
-      <Title>Магазины компании</Title>
+      <div className={'pt-11'}>
+        <Title>Магазины компании</Title>
 
-      <Table<ShopInListFragment>
-        columns={columns}
-        data={data.getCompanyShops.docs}
-        testIdKey={'name'}
-      />
-      <Pager page={page} setPage={setPage} totalPages={data.getCompanyShops.totalPages} />
+        <Table<ShopInListFragment>
+          columns={columns}
+          data={data.getCompanyShops.docs}
+          testIdKey={'name'}
+        />
+        <Pager page={page} setPage={setPage} totalPages={data.getCompanyShops.totalPages} />
+      </div>
     </Inner>
   );
 };

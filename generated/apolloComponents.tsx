@@ -521,7 +521,7 @@ export type CreateProductInput = {
 export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
   description?: Maybe<Scalars['String']>;
-  isStuff: Scalars['Boolean'];
+  isStaff: Scalars['Boolean'];
 };
 
 export type CreateRubricInput = {
@@ -2060,7 +2060,7 @@ export type Role = Timestamp & {
   updatedAt: Scalars['Date'];
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
-  isStuff: Scalars['Boolean'];
+  isStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   description?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -2474,7 +2474,7 @@ export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   description?: Maybe<Scalars['String']>;
-  isStuff: Scalars['Boolean'];
+  isStaff: Scalars['Boolean'];
 };
 
 export type UpdateRubricInput = {
@@ -4157,7 +4157,7 @@ export type AppNavParentItemFragment = (
 
 export type SessionRoleFragmentFragment = (
   { __typename?: 'Role' }
-  & Pick<Role, '_id' | 'name' | 'slug' | 'isStuff'>
+  & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff'>
   & { appNavigation: Array<(
     { __typename?: 'NavItem' }
     & AppNavParentItemFragment
@@ -4457,7 +4457,7 @@ export type GetAllMyOrdersQuery = (
 
 export type CmsRoleFragment = (
   { __typename?: 'Role' }
-  & Pick<Role, '_id' | 'name' | 'slug' | 'isStuff' | 'description' | 'nameI18n'>
+  & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff' | 'description' | 'nameI18n'>
 );
 
 export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -5205,7 +5205,7 @@ export const SessionRoleFragmentFragmentDoc = gql`
   _id
   name
   slug
-  isStuff
+  isStaff
   appNavigation {
     ...AppNavParentItem
   }
@@ -5451,7 +5451,7 @@ export const CmsRoleFragmentDoc = gql`
   _id
   name
   slug
-  isStuff
+  isStaff
   description
   nameI18n
 }

@@ -573,7 +573,7 @@ export interface RoleBase {
   nameI18n: TranslationModel;
   description?: string | null;
   slug: string;
-  isStuff: boolean;
+  isStaff: boolean;
 }
 
 export interface RoleModel extends RoleBase, TimestampModel {

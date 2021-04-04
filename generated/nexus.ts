@@ -294,7 +294,7 @@ export interface NexusGenInputs {
   CreateRoleInput: {
     // input type
     description?: string | null; // String
-    isStuff: boolean; // Boolean!
+    isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateRubricInput: {
@@ -625,7 +625,7 @@ export interface NexusGenInputs {
   UpdateRoleInput: {
     // input type
     description?: string | null; // String
-    isStuff: boolean; // Boolean!
+    isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -1577,7 +1577,7 @@ export interface NexusGenFieldTypes {
     cmsNavigation: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
-    isStuff: boolean; // Boolean!
+    isStaff: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -2596,7 +2596,7 @@ export interface NexusGenFieldTypeNames {
     cmsNavigation: 'NavItem';
     createdAt: 'Date';
     description: 'String';
-    isStuff: 'Boolean';
+    isStaff: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';
     slug: 'String';

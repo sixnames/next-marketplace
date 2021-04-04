@@ -265,7 +265,7 @@ export const CatalogueMutations = extendType({
           const { filter } = input;
           const [rubricSlug] = filter;
 
-          if (!role.isStuff) {
+          if (!role.isStaff) {
             const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
             if (!rubric) {
               return false;

@@ -24,7 +24,7 @@ export const CreateRoleInput = inputObjectType({
   definition(t) {
     t.nonNull.json('nameI18n');
     t.string('description');
-    t.nonNull.boolean('isStuff');
+    t.nonNull.boolean('isStaff');
   },
 });
 
@@ -34,7 +34,7 @@ export const UpdateRoleInput = inputObjectType({
     t.nonNull.objectId('roleId');
     t.nonNull.json('nameI18n');
     t.string('description');
-    t.nonNull.boolean('isStuff');
+    t.nonNull.boolean('isStaff');
   },
 });
 

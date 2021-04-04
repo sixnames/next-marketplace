@@ -244,7 +244,7 @@ const ShopAssetsRoute: React.FC = () => {
   );
 };
 
-const CompanyShop: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const CompanyShopAssets: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopAssetsRoute />
@@ -256,4 +256,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return getAppInitialData({ context });
 };
 
-export default CompanyShop;
+export default CompanyShopAssets;

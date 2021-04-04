@@ -71,7 +71,7 @@ const RolesContent: React.FC = () => {
     },
     {
       headTitle: 'Сотрудник сайта',
-      accessor: 'isStuff',
+      accessor: 'isStaff',
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {

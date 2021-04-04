@@ -11,7 +11,7 @@ export const Role = objectType({
     t.nonNull.objectId('_id');
     t.implements('Timestamp');
     t.nonNull.string('slug');
-    t.nonNull.boolean('isStuff');
+    t.nonNull.boolean('isStaff');
     t.nonNull.json('nameI18n');
     t.string('description');
 

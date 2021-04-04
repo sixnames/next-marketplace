@@ -100,7 +100,7 @@ export async function updateRubricViews({
       return null;
     }
 
-    if (sessionRole.isStuff) {
+    if (sessionRole.isStaff) {
       return rubric;
     }
 

@@ -25,7 +25,7 @@ export const sessionRoleFragment = gql`
     _id
     name
     slug
-    isStuff
+    isStaff
     appNavigation {
       ...AppNavParentItem
     }

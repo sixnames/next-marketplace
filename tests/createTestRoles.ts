@@ -196,7 +196,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
       },
       description: 'Роль назначается новым или не авторизованным пользователям',
       slug: ROLE_SLUG_GUEST,
-      isStuff: false,
+      isStaff: false,
     },
   });
 
@@ -211,7 +211,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
       },
       description: 'Владелец компании',
       slug: ROLE_SLUG_COMPANY_OWNER,
-      isStuff: false,
+      isStaff: false,
     },
   });
 
@@ -226,7 +226,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
       },
       description: 'Сотрудник компании',
       slug: ROLE_SLUG_COMPANY_MANAGER,
-      isStuff: false,
+      isStaff: false,
     },
   });
 
@@ -241,7 +241,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
       },
       description: 'Администратор сайта',
       slug: ROLE_SLUG_ADMIN,
-      isStuff: true,
+      isStaff: true,
     },
   });
 

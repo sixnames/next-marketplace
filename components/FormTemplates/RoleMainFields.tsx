@@ -22,7 +22,7 @@ const RoleMainFields: React.FC = () => {
         showInlineError
       />
 
-      <FormikCheckboxLine testId={'isStuff'} label={'Является персоналом'} name={'isStuff'} />
+      <FormikCheckboxLine testId={'isStaff'} label={'Является персоналом'} name={'isStaff'} />
     </React.Fragment>
   );
 };

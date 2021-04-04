@@ -15,7 +15,7 @@ import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { GetServerSidePropsContext, Redirect } from 'next';
 import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
@@ -25,10 +25,16 @@ interface GetAppInitialDataInterface {
   isCms?: boolean;
 }
 
+interface GetAppInitialDataPayloadInterface<T> {
+  props?: T;
+  redirect?: Redirect;
+  notFound?: true;
+}
+
 export async function getAppInitialData({
   context,
   isCms,
-}: GetAppInitialDataInterface): Promise<GetServerSidePropsResult<PagePropsInterface>> {
+}: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
   const { locale, resolvedUrl } = context;
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;

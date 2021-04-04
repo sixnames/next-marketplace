@@ -56,7 +56,7 @@ const RoleDetails: React.FC<RoleDetailsInterface> = ({ role }) => {
           roleId: role._id,
           nameI18n: role.nameI18n,
           description: role.description,
-          isStuff: role.isStuff,
+          isStaff: role.isStaff,
         }}
         onSubmit={(values) => {
           showLoading();

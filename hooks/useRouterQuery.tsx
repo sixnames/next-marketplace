@@ -23,14 +23,23 @@ const useRouterQuery = (): UseRouterQueryInterface => {
   const router = useRouter();
 
   const setQuery = useCallback(
-    ({ key, value }: SetQueryInterface) =>
-      router.replace({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          [key]: value,
-        },
-      }),
+    ({ key, value }: SetQueryInterface) => {
+      router
+        .replace(
+          {
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              [key]: value,
+            },
+          },
+          undefined,
+          {
+            shallow: true,
+          },
+        )
+        .catch((e) => console.log(e));
+    },
     [router],
   );
 

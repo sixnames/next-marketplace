@@ -578,6 +578,12 @@ export interface RoleBase {
 export interface RoleModel extends RoleBase, TimestampModel {
   rules: RoleRuleModel[];
   allowedAppNavigation: ObjectIdModel[];
+
+  // types for ui
+  name?: string;
+  navItems?: NavItemModel[];
+  appNavigation?: NavItemModel[];
+  cmsNavigation?: NavItemModel[];
 }
 
 export interface RubricVariantModel {
@@ -673,6 +679,11 @@ export interface UserModel extends BaseModel, TimestampModel {
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   ordersIds?: ObjectIdModel[] | null;
+
+  // types for ui
+  role?: RoleModel;
+  fullName?: string;
+  shortName?: string;
 }
 
 // Payload

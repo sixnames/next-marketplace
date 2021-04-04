@@ -563,7 +563,8 @@ const ShopRoute: React.FC = () => {
 
   return (
     <DataLayout
-      title={data.getShopBySlug.name}
+      withTabs
+      title={`Магазин ${data.getShopBySlug.name}`}
       filterResultNavConfig={navConfig}
       filterResult={() => (
         <DataLayoutContentFrame>

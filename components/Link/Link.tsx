@@ -28,6 +28,7 @@ const Link: React.FC<LinkInterface> = ({
   onClick,
   prefetch,
   ariaLabel,
+  shallow,
   ...props
 }) => {
   const { query, asPath } = useRouter() || { pathname: '', query: '' };
@@ -50,7 +51,7 @@ const Link: React.FC<LinkInterface> = ({
   }
 
   return (
-    <NextLink href={href} replace={replace} prefetch={prefetch}>
+    <NextLink href={href} replace={replace} prefetch={prefetch} shallow={shallow}>
       <a
         aria-label={ariaLabel}
         onClick={onClick}

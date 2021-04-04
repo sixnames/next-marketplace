@@ -1,15 +1,11 @@
-import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import FormikFilter from 'components/FormElements/Filter/FormikFilter';
-import FormikSearch from 'components/FormElements/Search/FormikSearch';
-import HorizontalList from 'components/HorizontalList/HorizontalList';
+import Inner from 'components/Inner/Inner';
 import Pager from 'components/Pager/Pager';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
+import Title from 'components/Title/Title';
 import { ROUTE_APP } from 'config/common';
 import { useCompanyContext } from 'context/companyContext';
 import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
@@ -22,30 +18,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const ShopsFilter: React.FC = () => {
-  const initialValues = { search: '' };
-
-  return (
-    <FormikFilter initialValues={initialValues}>
-      {({ onResetHandler }) => (
-        <React.Fragment>
-          <FormikSearch testId={'shops'} />
-
-          <HorizontalList>
-            <Button type={'submit'} size={'small'}>
-              Применить
-            </Button>
-            <Button onClick={onResetHandler} theme={'secondary'} size={'small'}>
-              Сбросить
-            </Button>
-          </HorizontalList>
-        </React.Fragment>
-      )}
-    </FormikFilter>
-  );
-};
-
-const ShopsContent: React.FC = () => {
+const ShopsRoute: React.FC = () => {
   const router = useRouter();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { company } = useCompanyContext();
@@ -109,25 +82,16 @@ const ShopsContent: React.FC = () => {
   ];
 
   return (
-    <DataLayoutContentFrame testId={'shops-list'}>
+    <Inner testId={'shops-list'}>
+      <Title>Магазины компании</Title>
+
       <Table<ShopInListFragment>
         columns={columns}
         data={data.getCompanyShops.docs}
         testIdKey={'name'}
       />
       <Pager page={page} setPage={setPage} totalPages={data.getCompanyShops.totalPages} />
-    </DataLayoutContentFrame>
-  );
-};
-
-const ShopsRoute: React.FC = () => {
-  return (
-    <DataLayout
-      isFilterVisible
-      title={'Магазины'}
-      filterContent={<ShopsFilter />}
-      filterResult={() => <ShopsContent />}
-    />
+    </Inner>
   );
 };
 

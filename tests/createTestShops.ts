@@ -95,6 +95,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: productA.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -109,6 +110,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: productB.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -123,6 +125,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productD._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: productD.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -137,6 +140,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: connectionProductA.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -151,6 +155,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: connectionProductB.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -165,6 +170,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductC._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
+    rubricId: connectionProductC.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -239,6 +245,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: productA.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -253,6 +260,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: productB.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -267,6 +275,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productD._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: productD.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -281,6 +290,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: connectionProductA.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -295,6 +305,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: connectionProductB.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -309,6 +320,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductC._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
+    rubricId: connectionProductC.rubricId,
 
     createdAt: new Date(),
     updatedAt: new Date(),

@@ -55,7 +55,7 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
             <title>{title}</title>
           </Head>
 
-          <Title light>{title}</Title>
+          <Title>{title}</Title>
         </React.Fragment>
       ) : null}
 

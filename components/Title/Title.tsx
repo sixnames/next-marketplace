@@ -1,14 +1,11 @@
 import * as React from 'react';
-import classes from './Title.module.css';
 
 interface TitlePropsInterface {
   children: any;
   subtitle?: any;
   className?: string;
-  light?: boolean;
-  low?: boolean;
+  textClassName?: string;
   tag?: keyof JSX.IntrinsicElements;
-  size?: 'small' | 'normal' | 'big';
   testId?: string;
 }
 
@@ -16,25 +13,18 @@ const Title: React.FC<TitlePropsInterface> = ({
   children,
   subtitle,
   className,
-  light,
-  low,
+  textClassName,
   tag = 'h1',
-  size = 'normal',
   testId,
 }) => {
   const TagName = tag;
-  const sizeClassName = classes[size];
-  const lightClassName = light ? classes.light : '';
-  const lowClassName = low ? classes.low : '';
-  const titleClassName = `${classes.title} ${sizeClassName} ${lightClassName} ${lowClassName} ${
-    className ? className : ''
-  }`;
+
   return (
-    <div className={titleClassName} data-cy={testId}>
-      <div className={`${classes.titleHolder} ${sizeClassName}`}>
-        <TagName className={classes.text}>{children}</TagName>
+    <div className={`flex-shrink-0 mb-[1.25rem] ${className ? className : ''}`} data-cy={testId}>
+      <div className={`flex flex-wrap items-baseline ${textClassName ? textClassName : ''}`}>
+        <TagName className={`font-bold text-2xl wp-desktop:text-4xl`}>{children}</TagName>
       </div>
-      {subtitle && <div className={classes.subtitle}>{subtitle}</div>}
+      {subtitle && <div className={`text-secondary-text mt-[0.5rem]`}>{subtitle}</div>}
     </div>
   );
 };

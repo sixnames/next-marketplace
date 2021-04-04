@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './Inner.module.css';
 
 export interface InnerInterface {
   lowTop?: boolean;
@@ -8,6 +7,13 @@ export interface InnerInterface {
   className?: string;
   testId?: string;
 }
+
+const paddingTopClass = 'pt-[var(--innerBlockVerticalPadding)]';
+const paddingTopLowClass = 'pt-0';
+const paddingBottomClass = 'pb-[var(--innerBlockVerticalPadding)]';
+const paddingBottomLowClass = 'pb-0';
+const widthClass = 'max-w-[var(--innerBlockMaxWidth)]';
+const widthWideClass = 'max-w-full';
 
 const Inner: React.FC<InnerInterface> = ({
   lowTop,
@@ -21,8 +27,10 @@ const Inner: React.FC<InnerInterface> = ({
     <React.Fragment>
       <div
         data-cy={testId}
-        className={`${classes.frame} ${wide ? classes.wide : ''} ${lowTop ? classes.lowTop : ''} ${
-          lowBottom ? classes.lowBottom : ''
+        className={`w-full ml-auto mr-auto pr-[var(--innerBlockHorizontalPadding)] pl-[var(--innerBlockHorizontalPadding)] ${
+          wide ? widthWideClass : widthClass
+        } ${lowTop ? paddingTopLowClass : paddingTopClass} ${
+          lowBottom ? paddingBottomLowClass : paddingBottomClass
         } ${className ? className : ''}`}
       >
         {children}

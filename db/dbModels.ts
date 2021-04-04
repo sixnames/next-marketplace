@@ -529,6 +529,8 @@ export interface ProductModel extends BaseModel, TimestampModel {
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
   facets?: ProductFacetModel[] | null;
   facet?: ProductFacetModel | null;
+  shopProducts?: ShopProductModel[];
+  shopProduct?: ShopProductModel;
 }
 
 export interface ProductFacetModel extends CountersModel {
@@ -644,6 +646,7 @@ export interface ShopProductModel extends TimestampModel {
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
+  rubricId: ObjectIdModel;
 
   // types for ui
   formattedPrice?: string;
@@ -651,6 +654,8 @@ export interface ShopProductModel extends TimestampModel {
   discountedPercent?: number | null;
   shop?: ShopModel;
   inCartCount?: number;
+  product?: ProductModel;
+  facet?: ProductFacetModel | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

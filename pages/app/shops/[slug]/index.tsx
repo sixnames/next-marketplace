@@ -1,59 +1,31 @@
-import AssetsManager from 'components/Assets/AssetsManager';
 import Button from 'components/Buttons/Button';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner/Inner';
-import InnerWide from 'components/Inner/InnerWide';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
-import { ShopProductModalInterface } from 'components/Modal/ShopProductModal/ShopProductModal';
-import Pager from 'components/Pager/Pager';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
-import TabsContent from 'components/TabsContent/TabsContent';
-import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL, SHOP_PRODUCT_MODAL } from 'config/modals';
+import Title from 'components/Title/Title';
+import { ROUTE_APP } from 'config/common';
 import { Form, Formik } from 'formik';
 import {
   ShopFragment,
-  ShopProductFragment,
   UpdateShopInput,
-  useAddProductToShopMutation,
-  useAddShopAssetsMutation,
-  useDeleteProductFromShopMutation,
-  useDeleteShopAssetMutation,
   useGetCompanyShopQuery,
-  useGetShopProductsQuery,
-  useUpdateShopAssetIndexMutation,
-  useUpdateShopLogoMutation,
   useUpdateShopMutation,
-  useUpdateShopProductMutation,
 } from 'generated/apolloComponents';
-import {
-  COMPANY_SHOP_QUERY,
-  SHOP_PRODUCTS_QUERY,
-  SHOP_QUERY,
-} from 'graphql/query/companiesQueries';
-import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
+import { COMPANY_SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useTabsConfig from 'hooks/useTabsConfig';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import RowWithGap from 'layout/RowWithGap/RowWithGap';
-import { noNaN } from 'lib/numbers';
+import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { phoneToRaw } from 'lib/phoneUtils';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { NavItemInterface } from 'types/clientTypes';
-import { addShopAssetsSchema, updateShopSchema } from 'validation/shopSchema';
+import { updateShopSchema } from 'validation/shopSchema';
 
 interface ShopDetailsInterface {
   shop: ShopFragment;
@@ -101,7 +73,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
   };
 
   return (
-    <Inner testId={'shop-details'}>
+    <div data-cy={'shop-details'}>
       <Formik
         enableReinitialize
         validationSchema={validationSchema}
@@ -144,11 +116,11 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
           );
         }}
       </Formik>
-    </Inner>
+    </div>
   );
 };
 
-interface ShopProductsInterface {
+/*interface ShopProductsInterface {
   shop: ShopFragment;
 }
 
@@ -522,12 +494,11 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
       </Formik>
     </InnerWide>
   );
-};
+};*/
 
 const ShopRoute: React.FC = () => {
   const { query } = useRouter();
   const { slug } = query;
-  const { generateTabsConfig } = useTabsConfig();
   const { data, loading, error } = useGetCompanyShopQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -543,39 +514,38 @@ const ShopRoute: React.FC = () => {
     return <RequestError />;
   }
 
-  // Shop nav tabs config
-  const navConfig: NavItemInterface[] = generateTabsConfig({
-    config: [
-      {
-        name: 'Детали',
-        testId: 'details',
-      },
-      {
-        name: 'Товары',
-        testId: 'products',
-      },
-      {
-        name: 'Изображения',
-        testId: 'assets',
-      },
-    ],
-  });
+  const navConfig: NavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}`,
+    },
+    {
+      name: 'Товары',
+      testId: 'products',
+      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}/products`,
+    },
+    {
+      name: 'Изображения',
+      testId: 'assets',
+      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}/assets`,
+    },
+  ];
 
   return (
-    <DataLayout
-      withTabs
-      title={`Магазин ${data.getShopBySlug.name}`}
-      filterResultNavConfig={navConfig}
-      filterResult={() => (
-        <DataLayoutContentFrame>
-          <TabsContent>
-            <ShopDetails shop={data.getShopBySlug} />
-            <ShopProducts shop={data.getShopBySlug} />
-            <ShopAssets shop={data.getShopBySlug} />
-          </TabsContent>
-        </DataLayoutContentFrame>
-      )}
-    />
+    <div className={'pt-11'}>
+      <Head>
+        <title>{`Магазин ${data.getShopBySlug.name}`}</title>
+      </Head>
+
+      <Inner lowBottom>
+        <Title>Магазин {data.getShopBySlug.name}</Title>
+      </Inner>
+      <AppSubNav navConfig={navConfig} />
+      <Inner>
+        <ShopDetails shop={data.getShopBySlug} />
+      </Inner>
+    </div>
   );
 };
 

@@ -193,7 +193,7 @@ export async function getAppInitialData({
   const currentCity = initialData.cities.find(({ slug }: CityModel) => {
     return slug === sessionCity;
   });
-  console.log('Rendered >>');
+
   return {
     props: {
       initialData,

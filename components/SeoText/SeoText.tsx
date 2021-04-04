@@ -16,9 +16,7 @@ const SeoText: React.FC<SeoTextInterface> = ({ text, title }) => {
   return (
     <Inner>
       <div className={`${classes.seoTextHolder}`}>
-        <Title size={'small'} tag={'h3'}>
-          {title}
-        </Title>
+        <Title tag={'h3'}>{title}</Title>
         <div
           className={`${classes.seoText} ${isSeoTextOpen ? classes.seoTextActive : ''}`}
           dangerouslySetInnerHTML={{ __html: text }}

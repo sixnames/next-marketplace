@@ -807,6 +807,7 @@ export const ShopMutations = extendType({
             shopId: shop._id,
             citySlug: shop.citySlug,
             oldPrices: [],
+            rubricId: product.rubricId,
           });
           const createdShopProduct = createdShopProductResult.ops[0];
           if (!createdShopProductResult.result.ok || !createdShopProduct) {

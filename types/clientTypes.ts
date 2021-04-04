@@ -27,4 +27,5 @@ export interface NavItemInterface {
   children?: NavItemChildInterface[];
   hidden?: boolean;
   testId?: string;
+  shallow?: boolean;
 }

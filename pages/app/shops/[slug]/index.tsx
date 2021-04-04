@@ -335,166 +335,7 @@ const ShopProducts: React.FC<ShopProductsInterface> = ({ shop }) => {
     </Inner>
   );
 };
-
-interface ShopAssetsInterface {
-  shop: ShopFragment;
-}
-
-const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
-  const { _id, slug, logo, name } = shop;
-  const {
-    onErrorCallback,
-    showErrorNotification,
-    onCompleteCallback,
-    showLoading,
-  } = useMutationCallbacks({});
-  const validationSchema = useValidationSchema({
-    schema: addShopAssetsSchema,
-  });
-
-  const refetchQueries = [
-    {
-      query: SHOP_QUERY,
-      variables: {
-        _id,
-      },
-    },
-  ];
-
-  const [updateShopLogoMutation] = useUpdateShopLogoMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateShopLogo),
-    refetchQueries,
-  });
-
-  const [addShopAssetsMutation] = useAddShopAssetsMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.addShopAssets),
-    refetchQueries,
-  });
-
-  const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deleteShopAsset),
-    refetchQueries,
-  });
-
-  const [updateShopAssetIndexMutation] = useUpdateShopAssetIndexMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateShopAssetIndex),
-    refetchQueries,
-  });
-
-  return (
-    <InnerWide testId={'shop-assets'}>
-      <Formik
-        enableReinitialize
-        initialValues={{ logo: [logo.url] }}
-        onSubmit={(values) => console.log(values)}
-      >
-        {({ values: { logo } }) => {
-          const isEmpty = !logo || !logo.length;
-
-          return (
-            <Form>
-              <FormikImageUpload
-                label={'Логотип магазина'}
-                name={'logo'}
-                testId={slug}
-                width={'10rem'}
-                height={'10rem'}
-                format={'image/png'}
-                setImageHandler={(files) => {
-                  if (files) {
-                    showLoading();
-                    updateShopLogoMutation({
-                      variables: {
-                        input: {
-                          shopId: _id,
-                          logo: [files[0]],
-                        },
-                      },
-                    }).catch(() => showErrorNotification());
-                  }
-                }}
-              >
-                {isEmpty ? (
-                  <div className={`text-[var(--red) mt-[1rem]] font-medium`}>
-                    Логотип обязателен к заполнению
-                  </div>
-                ) : null}
-              </FormikImageUpload>
-            </Form>
-          );
-        }}
-      </Formik>
-
-      <AssetsManager
-        initialAssets={shop.assets}
-        assetsTitle={name}
-        onRemoveHandler={(assetIndex) => {
-          deleteShopAssetMutation({
-            variables: {
-              input: {
-                shopId: _id,
-                assetIndex,
-              },
-            },
-          }).catch((e) => console.log(e));
-        }}
-        onReorderHandler={({ assetNewIndex, assetUrl }) => {
-          updateShopAssetIndexMutation({
-            variables: {
-              input: {
-                shopId: _id,
-                assetNewIndex,
-                assetUrl,
-              },
-            },
-          }).catch((e) => console.log(e));
-        }}
-      />
-
-      <Formik
-        enableReinitialize
-        validationSchema={validationSchema}
-        initialValues={{ assets: [], shopId: _id }}
-        onSubmit={(values, formikHelpers) => {
-          showLoading();
-          addShopAssetsMutation({
-            variables: {
-              input: values,
-            },
-            update: () => {
-              formikHelpers.resetForm();
-            },
-          }).catch((e) => console.log(e));
-        }}
-      >
-        {() => {
-          return (
-            <Form noValidate>
-              <FormikDropZone
-                tooltip={'Подсказка для загрузки изображения'}
-                label={'Добавить изображения'}
-                name={'assets'}
-                testId={'product-images'}
-              />
-
-              <Button testId={'submit-product'} type={'submit'}>
-                Добавить
-              </Button>
-            </Form>
-          );
-        }}
-      </Formik>
-    </InnerWide>
-  );
-};*/
+*/
 
 const ShopRoute: React.FC = () => {
   const { query } = useRouter();
@@ -549,9 +390,9 @@ const ShopRoute: React.FC = () => {
   );
 };
 
-const CompanyShops: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const CompanyShop: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout title={'Магазины компании'} pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls}>
       <ShopRoute />
     </AppLayout>
   );
@@ -561,4 +402,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return getAppInitialData({ context });
 };
 
-export default CompanyShops;
+export default CompanyShop;

@@ -61,6 +61,29 @@ export async function getAppInitialData({
       },
       {
         $lookup: {
+          from: COL_COMPANIES,
+          as: 'companies',
+          let: { userId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $or: [
+                    {
+                      $eq: ['$ownerId', '$$userId'],
+                    },
+                    {
+                      $in: ['$$userId', '$staffIds'],
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
           from: COL_ROLES,
           as: 'roles',
           let: { roleId: '$roleId' },
@@ -180,6 +203,7 @@ export async function getAppInitialData({
     fullName: getFullName(user),
     shortName: getShortName(user),
   };
+  // console.log(sessionUser);
   // console.log('Session user ', new Date().getTime() - sessionUserStart);
 
   const initialDataProps = {

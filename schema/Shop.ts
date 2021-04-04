@@ -1,6 +1,7 @@
 import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
 import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -836,7 +837,22 @@ export const ShopMutations = extendType({
           }
 
           // Update product shops data
-          await updateProductShopsData({ productId });
+          const updatedProduct = await updateProductShopsData({ productId });
+          if (!updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.addProduct.error'),
+            };
+          }
+          const updatedRubric = await recalculateRubricProductCounters({
+            rubricId: updatedProduct.rubricId,
+          });
+          if (!updatedRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.addProduct.error'),
+            };
+          }
 
           return {
             success: true,

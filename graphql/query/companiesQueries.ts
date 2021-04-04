@@ -191,6 +191,15 @@ export const SHOP_QUERY = gql`
   ${shopFragment}
 `;
 
+export const COMPANY_SHOP_QUERY = gql`
+  query GetCompanyShop($slug: String!) {
+    getShopBySlug(slug: $slug) {
+      ...Shop
+    }
+  }
+  ${shopFragment}
+`;
+
 export const SHOP_PRODUCTS_QUERY = gql`
   query GetShopProducts($shopId: ObjectId!, $input: PaginationInput) {
     getShop(_id: $shopId) {

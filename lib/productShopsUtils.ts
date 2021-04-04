@@ -1,11 +1,18 @@
 import { ObjectId } from 'mongodb';
 import { getDatabase } from 'db/mongodb';
-import { COL_CITIES, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_CITIES,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import {
   CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
   ObjectIdModel,
+  ProductFacetModel,
   ProductModel,
   ShopModel,
   ShopProductModel,
@@ -20,6 +27,7 @@ export async function updateProductShopsData({
   const db = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const cities = await citiesCollection.find({}).toArray();
 
@@ -82,6 +90,7 @@ export async function updateProductShopsData({
     { _id: productId },
     {
       $set: {
+        active: shopProductsIds.length > 0,
         shopProductsIds,
         shopProductsCountCities,
         minPriceCities,
@@ -93,7 +102,26 @@ export async function updateProductShopsData({
       returnOriginal: false,
     },
   );
-  if (!updatedProductResult.ok || !updatedProductResult.value) {
+  const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+    { _id: productId },
+    {
+      $set: {
+        active: shopProductsIds.length > 0,
+        minPriceCities,
+        maxPriceCities,
+        availabilityCities,
+      },
+    },
+    {
+      returnOriginal: false,
+    },
+  );
+  if (
+    !updatedProductResult.ok ||
+    !updatedProductResult.value ||
+    !updatedProductFacetResult.ok ||
+    !updatedProductFacetResult.value
+  ) {
     throw Error('Product shops data update error');
   }
 

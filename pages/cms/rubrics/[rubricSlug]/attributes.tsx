@@ -210,7 +210,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           <Checkbox
             testId={`${dataItem.name}-nav`}
             disabled={isDisabled}
-            checked={dataItem.showInCatalogueFilter}
+            checked={dataItem.showInCatalogueNav}
             value={cellData}
             name={'showInCatalogueNav'}
             onChange={() => {

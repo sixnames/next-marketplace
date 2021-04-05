@@ -1,0 +1,51 @@
+import Inner from 'components/Inner/Inner';
+import Title from 'components/Title/Title';
+import { ROUTE_APP } from 'config/common';
+import { ShopModel } from 'db/dbModels';
+import AppSubNav from 'layout/AppLayout/AppSubNav';
+import Head from 'next/head';
+import * as React from 'react';
+
+interface AppShopLayoutInterface {
+  shop: ShopModel;
+}
+
+const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, children }) => {
+  const navConfig = React.useMemo(() => {
+    return [
+      {
+        name: 'Детали',
+        testId: 'details',
+        path: `${ROUTE_APP}/shops/${shop._id}`,
+        exact: true,
+      },
+      {
+        name: 'Товары',
+        testId: 'products',
+        path: `${ROUTE_APP}/shops/${shop._id}/products`,
+      },
+      {
+        name: 'Изображения',
+        testId: 'assets',
+        path: `${ROUTE_APP}/shops/${shop._id}/assets`,
+        exact: true,
+      },
+    ];
+  }, [shop]);
+
+  return (
+    <div className={'pt-11'}>
+      <Head>
+        <title>{`Магазин ${shop.name}`}</title>
+      </Head>
+
+      <Inner lowBottom>
+        <Title>Магазин {shop.name}</Title>
+      </Inner>
+      <AppSubNav navConfig={navConfig} />
+      {children}
+    </div>
+  );
+};
+
+export default AppShopLayout;

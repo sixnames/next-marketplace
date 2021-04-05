@@ -3,7 +3,6 @@ import Button from 'components/Buttons/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner/Inner';
-import InnerWide from 'components/Inner/InnerWide';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
@@ -85,7 +84,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
   });
 
   return (
-    <InnerWide testId={'shop-assets'}>
+    <div data-cy={'shop-assets'}>
       <Formik
         enableReinitialize
         initialValues={{ logo: [logo.url] }}
@@ -187,7 +186,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
           );
         }}
       </Formik>
-    </InnerWide>
+    </div>
   );
 };
 

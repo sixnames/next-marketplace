@@ -4091,13 +4091,13 @@ export type GetShopQuery = (
 );
 
 export type GetCompanyShopQueryVariables = Exact<{
-  slug: Scalars['String'];
+  _id: Scalars['ObjectId'];
 }>;
 
 
 export type GetCompanyShopQuery = (
   { __typename?: 'Query' }
-  & { getShopBySlug: (
+  & { getShop: (
     { __typename?: 'Shop' }
     & ShopFragment
   ) }
@@ -8460,8 +8460,8 @@ export type GetShopQueryHookResult = ReturnType<typeof useGetShopQuery>;
 export type GetShopLazyQueryHookResult = ReturnType<typeof useGetShopLazyQuery>;
 export type GetShopQueryResult = Apollo.QueryResult<GetShopQuery, GetShopQueryVariables>;
 export const GetCompanyShopDocument = gql`
-    query GetCompanyShop($slug: String!) {
-  getShopBySlug(slug: $slug) {
+    query GetCompanyShop($_id: ObjectId!) {
+  getShop(_id: $_id) {
     ...Shop
   }
 }
@@ -8479,7 +8479,7 @@ export const GetCompanyShopDocument = gql`
  * @example
  * const { data, loading, error } = useGetCompanyShopQuery({
  *   variables: {
- *      slug: // value for 'slug'
+ *      _id: // value for '_id'
  *   },
  * });
  */

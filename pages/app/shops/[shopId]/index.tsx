@@ -1,124 +1,26 @@
 import Button from 'components/Buttons/Button';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner/Inner';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
-import { ROUTE_APP } from 'config/common';
+import { COL_SHOPS } from 'db/collectionNames';
+import { ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
-import {
-  ShopFragment,
-  UpdateShopInput,
-  useGetCompanyShopQuery,
-  useUpdateShopMutation,
-} from 'generated/apolloComponents';
+import { UpdateShopInput, useUpdateShopMutation } from 'generated/apolloComponents';
 import { COMPANY_SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useShopAppNav from 'hooks/useShopAppNav';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { phoneToRaw } from 'lib/phoneUtils';
+import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
-import { NavItemInterface } from 'types/clientTypes';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateShopSchema } from 'validation/shopSchema';
-
-interface ShopDetailsInterface {
-  shop: ShopFragment;
-}
-
-const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
-  const {
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    showErrorNotification,
-  } = useMutationCallbacks();
-  const [updateShopMutation] = useUpdateShopMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateShop),
-    refetchQueries: [
-      {
-        query: COMPANY_SHOP_QUERY,
-        variables: {
-          slug: shop.slug,
-        },
-      },
-    ],
-  });
-  const validationSchema = useValidationSchema({
-    schema: updateShopSchema,
-  });
-
-  const initialValues: UpdateShopInput = {
-    name: shop.name,
-    shopId: shop._id,
-    citySlug: shop.city.slug,
-    contacts: {
-      emails: shop.contacts.emails[0] ? shop.contacts.emails : [''],
-      phones: shop.contacts.phones[0] ? shop.contacts.phones : [''],
-    },
-    address: {
-      formattedAddress: shop.address.formattedAddress,
-      point: {
-        lat: shop.address.point.coordinates[1],
-        lng: shop.address.point.coordinates[0],
-      },
-    },
-  };
-
-  return (
-    <div data-cy={'shop-details'}>
-      <Formik
-        enableReinitialize
-        validationSchema={validationSchema}
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          const { address } = values;
-          if (!address) {
-            showErrorNotification({
-              title: 'Укажите адрес магазина',
-            });
-            return;
-          }
-
-          showLoading();
-          updateShopMutation({
-            variables: {
-              input: {
-                ...values,
-                contacts: {
-                  ...values.contacts,
-                  phones: values.contacts.phones.map((phone) => {
-                    const rawPhone = phoneToRaw(phone);
-                    return rawPhone;
-                  }),
-                },
-              },
-            },
-          }).catch((e) => console.log(e));
-        }}
-      >
-        {() => {
-          return (
-            <Form>
-              <ShopMainFields />
-
-              <Button type={'submit'} testId={'shop-submit'}>
-                Сохранить
-              </Button>
-            </Form>
-          );
-        }}
-      </Formik>
-    </div>
-  );
-};
 
 /*interface ShopProductsInterface {
   shop: ShopFragment;
@@ -337,69 +239,145 @@ const ShopProducts: React.FC<ShopProductsInterface> = ({ shop }) => {
 };
 */
 
-const ShopRoute: React.FC = () => {
-  const { query } = useRouter();
-  const { slug } = query;
-  const { data, loading, error } = useGetCompanyShopQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      slug: `${slug}`,
-    },
+interface ShopRouteInterface {
+  shop: ShopModel;
+}
+
+const ShopRoute: React.FC<ShopRouteInterface> = ({ shop }) => {
+  const navConfig = useShopAppNav({ shopId: `${shop._id}` });
+  const {
+    showLoading,
+    onCompleteCallback,
+    onErrorCallback,
+    showErrorNotification,
+  } = useMutationCallbacks();
+  const [updateShopMutation] = useUpdateShopMutation({
+    awaitRefetchQueries: true,
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.updateShop),
+    refetchQueries: [
+      {
+        query: COMPANY_SHOP_QUERY,
+        variables: {
+          slug: shop.slug,
+        },
+      },
+    ],
+  });
+  const validationSchema = useValidationSchema({
+    schema: updateShopSchema,
   });
 
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data || !data.getShopBySlug) {
-    return <RequestError />;
-  }
-
-  const navConfig: NavItemInterface[] = [
-    {
-      name: 'Детали',
-      testId: 'details',
-      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}`,
+  const initialValues: UpdateShopInput = {
+    name: shop.name,
+    shopId: shop._id,
+    citySlug: shop.citySlug,
+    contacts: {
+      emails: shop.contacts.emails[0] ? shop.contacts.emails : [''],
+      phones: shop.contacts.phones[0] ? shop.contacts.phones : [''],
     },
-    {
-      name: 'Товары',
-      testId: 'products',
-      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}/products`,
+    address: {
+      formattedAddress: shop.address.formattedAddress,
+      point: {
+        lat: shop.address.point.coordinates[1],
+        lng: shop.address.point.coordinates[0],
+      },
     },
-    {
-      name: 'Изображения',
-      testId: 'assets',
-      path: `${ROUTE_APP}/shops/${data.getShopBySlug.slug}/assets`,
-    },
-  ];
+  };
 
   return (
     <div className={'pt-11'}>
       <Head>
-        <title>{`Магазин ${data.getShopBySlug.name}`}</title>
+        <title>{`Магазин ${shop.name}`}</title>
       </Head>
 
       <Inner lowBottom>
-        <Title>Магазин {data.getShopBySlug.name}</Title>
+        <Title>Магазин {shop.name}</Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner>
-        <ShopDetails shop={data.getShopBySlug} />
+        <div data-cy={'shop-details'}>
+          <Formik
+            enableReinitialize
+            validationSchema={validationSchema}
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              const { address } = values;
+              if (!address) {
+                showErrorNotification({
+                  title: 'Укажите адрес магазина',
+                });
+                return;
+              }
+
+              showLoading();
+              updateShopMutation({
+                variables: {
+                  input: {
+                    ...values,
+                    contacts: {
+                      ...values.contacts,
+                      phones: values.contacts.phones.map((phone) => {
+                        const rawPhone = phoneToRaw(phone);
+                        return rawPhone;
+                      }),
+                    },
+                  },
+                },
+              }).catch((e) => console.log(e));
+            }}
+          >
+            {() => {
+              return (
+                <Form>
+                  <ShopMainFields />
+
+                  <Button type={'submit'} testId={'shop-submit'}>
+                    Сохранить
+                  </Button>
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
       </Inner>
     </div>
   );
 };
 
-const CompanyShop: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+interface CompanyShopInterface extends PagePropsInterface, ShopRouteInterface {}
+
+const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopRoute />
+      <ShopRoute shop={shop} />
     </AppLayout>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CompanyShopInterface>> => {
+  const db = await getDatabase();
+  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const { query } = context;
+  const { shopId } = query;
+  const initialProps = await getAppInitialData({ context });
+
+  const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
+
+  if (!initialProps.props || !shop) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      ...initialProps.props,
+      shop: castDbData(shop),
+    },
+  };
 };
 
 export default CompanyShop;

@@ -669,7 +669,8 @@ export interface ShopModel extends BaseModel, TimestampModel {
   companyId: ObjectIdModel;
 
   // types for ui
-  productsCount?: number;
+  productsCount?: number | null;
+  city?: CityModel | null;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {

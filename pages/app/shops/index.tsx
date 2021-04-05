@@ -43,7 +43,7 @@ const ShopsRoute: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_APP}/shops/${dataItem.slug}`}>
+        <Link href={`${ROUTE_APP}/shops/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),
@@ -72,7 +72,7 @@ const ShopsRoute: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router.push(`${ROUTE_APP}/shops/${dataItem.slug}`).catch((e) => console.log(e));
+              router.push(`${ROUTE_APP}/shops/${dataItem._id}`).catch((e) => console.log(e));
             }}
             testId={dataItem.name}
           />

@@ -192,8 +192,8 @@ export const SHOP_QUERY = gql`
 `;
 
 export const COMPANY_SHOP_QUERY = gql`
-  query GetCompanyShop($slug: String!) {
-    getShopBySlug(slug: $slug) {
+  query GetCompanyShop($_id: ObjectId!) {
+    getShop(_id: $_id) {
       ...Shop
     }
   }

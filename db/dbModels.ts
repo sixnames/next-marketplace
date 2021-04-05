@@ -623,7 +623,6 @@ export interface RubricCatalogueTitleModel {
 export interface RubricModel extends CountersModel, RubricCountersInterface {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  name?: string | null;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
   catalogueTitle: RubricCatalogueTitleModel;
@@ -635,6 +634,9 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   variantId: ObjectIdModel;
   activeProductsCount: number;
   productsCount: number;
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface ShopProductModel extends TimestampModel {

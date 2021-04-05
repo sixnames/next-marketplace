@@ -649,6 +649,7 @@ export interface ShopProductModel extends TimestampModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
+  selectedOptionsSlugs: string[];
 
   // types for ui
   formattedPrice?: string;

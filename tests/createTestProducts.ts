@@ -38,6 +38,14 @@ export interface CreateTestProductsPayloadInterface extends CreateTestBrandsPayl
   connectionProductB: ProductModel;
   connectionProductC: ProductModel;
   allProducts: ProductModel[];
+  facetA: ProductFacetModel;
+  facetB: ProductFacetModel;
+  facetC: ProductFacetModel;
+  facetD: ProductFacetModel;
+  facetF: ProductFacetModel;
+  connectionProductFacetA: ProductFacetModel;
+  connectionProductFacetB: ProductFacetModel;
+  connectionProductFacetC: ProductFacetModel;
   connectionA: ProductConnectionModel;
 }
 
@@ -575,7 +583,15 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connectionProductA: updatedConnectionProductA,
     connectionProductB: updatedConnectionProductB,
     connectionProductC: updatedConnectionProductC,
-    connectionA,
     allProducts,
+    facetA,
+    facetB,
+    facetC,
+    facetD,
+    facetF,
+    connectionProductFacetA,
+    connectionProductFacetB,
+    connectionProductFacetC,
+    connectionA,
   };
 };

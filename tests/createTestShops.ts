@@ -57,6 +57,12 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     connectionProductA,
     connectionProductB,
     connectionProductC,
+    facetA,
+    facetB,
+    facetD,
+    connectionProductFacetA,
+    connectionProductFacetB,
+    connectionProductFacetC,
     companyOwner,
     companyManager,
   } = productsPayload;
@@ -97,6 +103,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopAId,
     rubricId: productA.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: facetA.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -112,6 +119,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopAId,
     rubricId: productB.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: facetB.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -126,6 +134,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
     rubricId: productD.rubricId,
+    selectedOptionsSlugs: facetD.selectedOptionsSlugs,
     companyId: companyAId,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -142,6 +151,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopAId,
     rubricId: connectionProductA.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetA.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -157,6 +167,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopAId,
     rubricId: connectionProductB.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetB.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -172,6 +183,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopAId,
     rubricId: connectionProductC.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetC.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -239,6 +251,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: productA.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: facetA.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -254,6 +267,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: productB.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: facetB.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -269,6 +283,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: productD.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: facetD.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -284,6 +299,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: connectionProductA.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetA.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -299,6 +315,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: connectionProductB.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetB.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -314,6 +331,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopId: shopBId,
     rubricId: connectionProductC.rubricId,
     companyId: companyAId,
+    selectedOptionsSlugs: connectionProductFacetC.selectedOptionsSlugs,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

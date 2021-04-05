@@ -7,6 +7,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_CITIES,
   COL_COMPANIES,
+  COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -14,6 +15,7 @@ import {
 import {
   CityModel,
   CompanyModel,
+  ProductFacetModel,
   ProductModel,
   ShopModel,
   ShopPayloadModel,
@@ -773,6 +775,7 @@ export const ShopMutations = extendType({
           const db = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopId, productId, ...values } = input;
@@ -780,7 +783,8 @@ export const ShopMutations = extendType({
           // Check shop and product availability
           const shop = await shopsCollection.findOne({ _id: shopId });
           const product = await productsCollection.findOne({ _id: productId });
-          if (!shop || !product) {
+          const productFacet = await productFacetsCollection.findOne({ _id: productId });
+          if (!shop || !product || !productFacet) {
             return {
               success: false,
               message: await getApiMessage('shops.addProduct.notFound'),
@@ -808,6 +812,7 @@ export const ShopMutations = extendType({
             oldPrices: [],
             rubricId: product.rubricId,
             companyId: shop.companyId,
+            selectedOptionsSlugs: productFacet.selectedOptionsSlugs,
             updatedAt: new Date(),
             createdAt: new Date(),
           });

@@ -41,6 +41,8 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  CATALOGUE_FILTER_LIMIT,
+  CATALOGUE_FILTER_PAGE,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
   CATALOGUE_NAV_VISIBLE_OPTIONS,
@@ -51,6 +53,7 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  PAGINATION_DEFAULT_LIMIT,
   PRICE_ATTRIBUTE_SLUG,
   ROUTE_CATALOGUE,
   SECONDARY_LOCALE,
@@ -368,6 +371,9 @@ interface castCatalogueFiltersPayloadInterface {
   sortFilterOptions: string[];
   noFiltersSelected: boolean;
   castedFilters: CastCatalogueParamToObjectPayloadInterface[];
+  page: number;
+  skip: number;
+  limit: number;
 }
 
 export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPayloadInterface {
@@ -375,17 +381,35 @@ export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPay
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
+  // pagination
+  const defaultPage = 1;
+  let page = defaultPage;
+
+  const defaultLimit = PAGINATION_DEFAULT_LIMIT;
+  let limit = defaultLimit;
+
+  // sort
   const sortFilterOptions: string[] = [];
+
+  // prices
   let minPrice: number | null = null;
   let maxPrice: number | null = null;
+
   filters.forEach((filterOption) => {
     const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
     const filterOptionName = splittedOption[0];
     const filterOptionValue = splittedOption[1];
     if (filterOptionName) {
-      const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
+      if (filterOptionName === CATALOGUE_FILTER_PAGE) {
+        page = noNaN(filterOptionValue) || defaultPage;
+        return;
+      }
+      if (filterOptionName === CATALOGUE_FILTER_LIMIT) {
+        limit = noNaN(filterOptionValue) || defaultLimit;
+        return;
+      }
 
-      if (isPriceRange) {
+      if (filterOptionName === PRICE_ATTRIBUTE_SLUG) {
         const prices = filterOptionValue.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -411,6 +435,7 @@ export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPay
   const noFiltersSelected = realFilterOptions.length < 1;
   const castedFilters = filters.map((param) => castCatalogueParamToObject(param));
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+  const skip = page ? (page - 1) * limit : 0;
 
   return {
     minPrice,
@@ -421,7 +446,41 @@ export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPay
     sortFilterOptions,
     noFiltersSelected,
     castedFilters,
+    page,
+    limit,
+    skip,
   };
+}
+
+export async function getCatalogueRubric(
+  pipeline: Record<string, any>[],
+): Promise<RubricModel | null | undefined> {
+  const db = await getDatabase();
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricAggregation = await rubricsCollection
+    .aggregate([
+      ...pipeline,
+      {
+        $project: {
+          _id: 1,
+          slug: 1,
+          nameI18n: 1,
+          catalogueTitle: 1,
+          attributes: {
+            $filter: {
+              input: '$attributes',
+              as: 'attribute',
+              cond: {
+                $eq: ['$$attribute.showInCatalogueFilter', true],
+              },
+            },
+          },
+        },
+      },
+    ])
+    .toArray();
+  const rubric = rubricAggregation[0];
+  return rubric;
 }
 
 export interface GetCatalogueDataInterface {
@@ -470,7 +529,6 @@ export const getCatalogueData = async ({
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
     // Args
     const { lastProductId, filter } = input;
@@ -483,31 +541,11 @@ export const getCatalogueData = async ({
 
     // Get rubric
     // const rubricTimeStart = new Date().getTime();
-    const rubricAggregation = await rubricsCollection
-      .aggregate([
-        {
-          $match: { slug: rubricSlug },
-        },
-        {
-          $project: {
-            _id: 1,
-            slug: 1,
-            nameI18n: 1,
-            catalogueTitle: 1,
-            attributes: {
-              $filter: {
-                input: '$attributes',
-                as: 'attribute',
-                cond: {
-                  $eq: ['$$attribute.showInCatalogueFilter', true],
-                },
-              },
-            },
-          },
-        },
-      ])
-      .toArray();
-    const rubric = rubricAggregation[0];
+    const rubric = await getCatalogueRubric([
+      {
+        $match: { slug: rubricSlug },
+      },
+    ]);
     // console.log('Rubric >>>>>>>>>>>>>>>> ', new Date().getTime() - rubricTimeStart);
 
     if (!rubric) {

@@ -92,9 +92,6 @@ export async function updateProductShopsData({
       $set: {
         active: shopProductsIds.length > 0,
         shopProductsCountCities,
-        minPriceCities,
-        maxPriceCities,
-        availabilityCities,
       },
     },
     {

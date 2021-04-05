@@ -12,6 +12,7 @@ import {
   ProductModel,
   ProductPayloadModel,
   RubricModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
@@ -24,6 +25,7 @@ import {
   COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
@@ -384,6 +386,7 @@ export const ProductMutations = extendType({
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { productId, rubricId, ...values } = input;
@@ -482,13 +485,30 @@ export const ProductMutations = extendType({
             },
           );
 
+          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+            {
+              productId,
+            },
+            {
+              $set: {
+                selectedOptionsSlugs,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
           const updatedProduct = updatedProductResult.value;
           const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedShopProduct = updatedShopProductResult.value;
           if (
             !updatedProductResult.ok ||
             !updatedProduct ||
             !updatedProductFacetResult.ok ||
-            !updatedProductFacet
+            !updatedProductFacet ||
+            !updatedShopProductResult.ok ||
+            !updatedShopProduct
           ) {
             return {
               success: false,

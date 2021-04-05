@@ -8,7 +8,7 @@ interface AppSubNavInterface {
   navConfig: NavItemInterface[];
 }
 
-const activeClassName = `text-primary-text border-primary-text pointer-events-none`;
+const activeClassName = `text-primary-text border-primary-text`;
 const staticClassName = `text-secondary-text border-transparent`;
 
 const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {

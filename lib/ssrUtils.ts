@@ -8,7 +8,7 @@ import {
   ROUTE_CMS_NAV_GROUP,
   ROUTE_SIGN_IN,
 } from 'config/common';
-import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_CITIES, COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { CityModel, CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
@@ -40,7 +40,6 @@ export async function getAppInitialData({
   const host = `${context.req.headers.host}`;
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
-  const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
 
   // Check if user authenticated
@@ -54,9 +53,23 @@ export async function getAppInitialData({
     };
   }
 
+  const db = await getDatabase();
+
+  // Session city
+  let currentCity: CityModel | null | undefined;
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  if (subdomain) {
+    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+    currentCity = castDbData(initialCity);
+  }
+  if (!currentCity) {
+    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
+    currentCity = currentCity = castDbData(initialCity);
+  }
+  const sessionCity = currentCity?.slug || DEFAULT_CITY;
+
   // Session user
   // const sessionUserStart = new Date().getTime();
-  const db = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const userAggregation = await usersCollection
     .aggregate([
@@ -220,10 +233,6 @@ export async function getAppInitialData({
   const rawInitialData = await getPageInitialData(initialDataProps);
   const initialData = castDbData(rawInitialData);
 
-  const currentCity = initialData.cities.find(({ slug }: CityModel) => {
-    return slug === sessionCity;
-  });
-
   return {
     props: {
       initialData,
@@ -233,7 +242,7 @@ export async function getAppInitialData({
             name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
           }
         : null,
-      sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
+      sessionCity,
       sessionUser: castDbData(sessionUser),
       sessionLocale,
       pageUrls: {
@@ -267,14 +276,27 @@ export async function getSiteInitialData({
   // console.log(' ');
   // console.log('=================== getSiteInitialData =======================');
   // const timeStart = new Date().getTime();
-
+  const db = await getDatabase();
   const { locale, resolvedUrl } = context;
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
-  const sessionCity = subdomain || DEFAULT_CITY;
   const sessionLocale = locale || DEFAULT_LOCALE;
+
+  // Session city
+  let currentCity: CityModel | null | undefined;
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  if (subdomain) {
+    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+    currentCity = castDbData(initialCity);
+  }
+  if (!currentCity) {
+    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
+    currentCity = currentCity = castDbData(initialCity);
+  }
+  const sessionCity = currentCity?.slug || DEFAULT_CITY;
+  // console.log('After session city ', new Date().getTime() - timeStart);
 
   const initialDataProps = {
     locale: sessionLocale,
@@ -287,10 +309,6 @@ export async function getSiteInitialData({
   const initialData = castDbData(rawInitialData);
   const navRubrics = castDbData(rawNavRubrics);
   // console.log('After initial data ', new Date().getTime() - timeStart);
-
-  const currentCity = initialData.cities.find(({ slug }: CityModel) => {
-    return slug === sessionCity;
-  });
 
   let company: CompanyModel | null | undefined = null;
 
@@ -315,7 +333,7 @@ export async function getSiteInitialData({
             name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
           }
         : null,
-      sessionCity: currentCity ? sessionCity : DEFAULT_CITY,
+      sessionCity,
       sessionLocale,
       company,
       pageUrls: {

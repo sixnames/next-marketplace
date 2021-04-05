@@ -3,7 +3,6 @@ import Button from 'components/Buttons/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -16,14 +15,12 @@ import {
 } from 'generated/apolloComponents';
 import { SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useShopAppNav from 'hooks/useShopAppNav';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { addShopAssetsSchema } from 'validation/shopSchema';
@@ -33,7 +30,6 @@ interface ShopAssetsRouteInterface {
 }
 
 const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
-  const navConfig = useShopAppNav({ shopId: `${shop._id}` });
   const { _id, slug, logo, name } = shop;
   const {
     onErrorCallback,
@@ -83,15 +79,7 @@ const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
   });
 
   return (
-    <div className={'pt-11'}>
-      <Head>
-        <title>{`Магазин ${shop.name}`}</title>
-      </Head>
-
-      <Inner lowBottom>
-        <Title>Магазин {shop.name}</Title>
-      </Inner>
-      <AppSubNav navConfig={navConfig} />
+    <AppShopLayout shop={shop}>
       <Inner>
         <div data-cy={'shop-assets'}>
           <Formik
@@ -196,7 +184,7 @@ const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
           </Formik>
         </div>
       </Inner>
-    </div>
+    </AppShopLayout>
   );
 };
 

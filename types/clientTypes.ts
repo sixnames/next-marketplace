@@ -28,4 +28,5 @@ export interface NavItemInterface {
   hidden?: boolean;
   testId?: string;
   shallow?: boolean;
+  exact?: boolean;
 }

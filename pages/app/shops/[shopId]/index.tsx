@@ -1,7 +1,6 @@
 import Button from 'components/Buttons/Button';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -9,13 +8,11 @@ import { Form, Formik } from 'formik';
 import { UpdateShopInput, useUpdateShopMutation } from 'generated/apolloComponents';
 import { COMPANY_SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useShopAppNav from 'hooks/useShopAppNav';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
-import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -244,7 +241,6 @@ interface ShopRouteInterface {
 }
 
 const ShopRoute: React.FC<ShopRouteInterface> = ({ shop }) => {
-  const navConfig = useShopAppNav({ shopId: `${shop._id}` });
   const {
     showLoading,
     onCompleteCallback,
@@ -286,15 +282,7 @@ const ShopRoute: React.FC<ShopRouteInterface> = ({ shop }) => {
   };
 
   return (
-    <div className={'pt-11'}>
-      <Head>
-        <title>{`Магазин ${shop.name}`}</title>
-      </Head>
-
-      <Inner lowBottom>
-        <Title>Магазин {shop.name}</Title>
-      </Inner>
-      <AppSubNav navConfig={navConfig} />
+    <AppShopLayout shop={shop}>
       <Inner>
         <div data-cy={'shop-details'}>
           <Formik
@@ -341,7 +329,7 @@ const ShopRoute: React.FC<ShopRouteInterface> = ({ shop }) => {
           </Formik>
         </div>
       </Inner>
-    </div>
+    </AppShopLayout>
   );
 };
 

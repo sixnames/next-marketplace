@@ -1,20 +1,17 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Inner from 'components/Inner/Inner';
 import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
 import { ROUTE_APP } from 'config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import useShopAppNav from 'hooks/useShopAppNav';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -26,7 +23,6 @@ interface ShopProductsRouteInterface {
 
 const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics }) => {
   const router = useRouter();
-  const navConfig = useShopAppNav({ shopId: `${shop._id}` });
 
   const columns: TableColumn<RubricModel>[] = [
     {
@@ -60,15 +56,7 @@ const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics
   ];
 
   return (
-    <div className={'pt-11'}>
-      <Head>
-        <title>{`Магазин ${shop.name}`}</title>
-      </Head>
-
-      <Inner lowBottom>
-        <Title>Магазин {shop.name}</Title>
-      </Inner>
-      <AppSubNav navConfig={navConfig} />
+    <AppShopLayout shop={shop}>
       <Inner>
         <Table<RubricModel>
           columns={columns}
@@ -77,7 +65,7 @@ const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics
           emptyMessage={'Список пуст'}
         />
       </Inner>
-    </div>
+    </AppShopLayout>
   );
 };
 
@@ -130,6 +118,7 @@ export const getServerSideProps = async (
           pipeline: [
             {
               $match: {
+                shopId: shop._id,
                 $expr: {
                   $eq: ['$rubricId', '$$rubricId'],
                 },

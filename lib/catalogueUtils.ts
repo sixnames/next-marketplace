@@ -331,6 +331,99 @@ export async function getCatalogueAttributes({
   };
 }
 
+interface GetCatalogueConfigsPayloadInterface {
+  visibleOptionsCount: number;
+  snippetVisibleAttributesCount: number;
+}
+
+export async function getCatalogueConfigs(): Promise<GetCatalogueConfigsPayloadInterface> {
+  const db = await getDatabase();
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+    slug: 'catalogueFilterVisibleOptionsCount',
+  });
+  const visibleOptionsCount =
+    noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+
+  const snippetVisibleAttributesCountConfig = await configsCollection.findOne({
+    slug: 'snippetAttributesCount',
+  });
+  const snippetVisibleAttributesCount =
+    noNaN(snippetVisibleAttributesCountConfig?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES);
+
+  return {
+    visibleOptionsCount,
+    snippetVisibleAttributesCount,
+  };
+}
+
+interface castCatalogueFiltersPayloadInterface {
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  realFilterOptions: string[];
+  sortBy: string | null;
+  sortDir: 1 | -1;
+  sortFilterOptions: string[];
+  noFiltersSelected: boolean;
+  castedFilters: CastCatalogueParamToObjectPayloadInterface[];
+}
+
+export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPayloadInterface {
+  const realFilterOptions: string[] = [];
+  let sortBy: string | null = null;
+  let sortDir: string | null = null;
+
+  const sortFilterOptions: string[] = [];
+  let minPrice: number | null = null;
+  let maxPrice: number | null = null;
+  filters.forEach((filterOption) => {
+    const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
+    const filterOptionName = splittedOption[0];
+    const filterOptionValue = splittedOption[1];
+    if (filterOptionName) {
+      const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
+
+      if (isPriceRange) {
+        const prices = filterOptionValue.split('_');
+        minPrice = prices[0] ? noNaN(prices[0]) : null;
+        maxPrice = prices[1] ? noNaN(prices[1]) : null;
+        return;
+      }
+
+      if (filterOptionName === SORT_BY_KEY) {
+        sortFilterOptions.push(filterOption);
+        sortBy = filterOptionValue;
+        return;
+      }
+
+      if (filterOptionName === SORT_DIR_KEY) {
+        sortFilterOptions.push(filterOption);
+        sortDir = filterOptionValue;
+        return;
+      }
+
+      realFilterOptions.push(filterOption);
+    }
+  });
+
+  const noFiltersSelected = realFilterOptions.length < 1;
+  const castedFilters = filters.map((param) => castCatalogueParamToObject(param));
+  const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+
+  return {
+    minPrice,
+    maxPrice,
+    realFilterOptions,
+    sortBy,
+    sortDir: castedSortDir,
+    sortFilterOptions,
+    noFiltersSelected,
+    castedFilters,
+  };
+}
+
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
@@ -378,7 +471,6 @@ export const getCatalogueData = async ({
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
     // Args
     const { lastProductId, filter } = input;
@@ -386,19 +478,7 @@ export const getCatalogueData = async ({
 
     // Get configs
     // const configsTimeStart = new Date().getTime();
-    const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
-      slug: 'catalogueFilterVisibleOptionsCount',
-    });
-    const visibleOptionsCount =
-      noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-      noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
-
-    const snippetVisibleAttributesCountConfig = await configsCollection.findOne({
-      slug: 'snippetAttributesCount',
-    });
-    const snippetVisibleAttributesCount =
-      noNaN(snippetVisibleAttributesCountConfig?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-      noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES);
+    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs();
     // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get rubric
@@ -435,45 +515,18 @@ export const getCatalogueData = async ({
     }
 
     // Cast selected options
-    const realFilterOptions: string[] = [];
-    let sortBy: string | null = null;
-    let sortDir: string | null = null;
-
-    const sortFilterOptions: string[] = [];
-    let minPrice: number | null = null;
-    let maxPrice: number | null = null;
-    filterOptions.forEach((filterOption) => {
-      const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
-      const filterOptionName = splittedOption[0];
-      const filterOptionValue = splittedOption[1];
-      if (filterOptionName) {
-        const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
-
-        if (isPriceRange) {
-          const prices = filterOptionValue.split('_');
-          minPrice = prices[0] ? noNaN(prices[0]) : null;
-          maxPrice = prices[1] ? noNaN(prices[1]) : null;
-          return;
-        }
-
-        if (filterOptionName === SORT_BY_KEY) {
-          sortFilterOptions.push(filterOption);
-          sortBy = filterOptionValue;
-          return;
-        }
-
-        if (filterOptionName === SORT_DIR_KEY) {
-          sortFilterOptions.push(filterOption);
-          sortDir = filterOptionValue;
-          return;
-        }
-
-        realFilterOptions.push(filterOption);
-      }
-    });
+    const {
+      minPrice,
+      maxPrice,
+      realFilterOptions,
+      sortBy,
+      sortDir,
+      sortFilterOptions,
+      noFiltersSelected,
+      castedFilters,
+    } = castCatalogueFilters(filterOptions);
 
     // Product stages
-    const noFiltersSelected = realFilterOptions.length < 1;
     const keyStage = lastProductId
       ? {
           _id: {
@@ -508,7 +561,6 @@ export const getCatalogueData = async ({
     };
 
     // sort stage
-    const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
     let sortStage: any = {
       [`availabilityCities.${city}`]: SORT_DESC,
       [`priorities.${city}`]: SORT_DESC,
@@ -520,7 +572,7 @@ export const getCatalogueData = async ({
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
         [`availabilityCities.${city}`]: SORT_DESC,
-        [`minPriceCities.${city}`]: castedSortDir,
+        [`minPriceCities.${city}`]: sortDir,
         _id: SORT_DESC,
       };
     }
@@ -664,7 +716,6 @@ export const getCatalogueData = async ({
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get selected attributes
-    const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
     const selectedAttributes = rubric.attributes.reduce(
       (acc: CatalogueFilterAttributeModel[], attribute) => {
         if (

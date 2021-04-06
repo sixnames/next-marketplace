@@ -17,7 +17,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modals';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
   CatalogueFilterAttributeModel,
   CatalogueProductOptionInterface,
@@ -104,25 +104,24 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
 
   const columns: TableColumn<ShopProductModel>[] = [
     {
-      accessor: 'product',
+      accessor: 'itemId',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData.itemId,
+      render: ({ cellData }) => cellData,
     },
     {
-      accessor: 'product',
       headTitle: 'Фото',
-      render: ({ cellData }) => {
+      render: ({ dataItem }) => {
         return (
           <TableRowImage
-            src={`${cellData.mainImage}`}
-            alt={`${cellData.name}`}
-            title={`${cellData.name}`}
+            src={`${dataItem.mainImage}`}
+            alt={`${dataItem.name}`}
+            title={`${dataItem.name}`}
           />
         );
       },
     },
     {
-      accessor: 'product.originalName',
+      accessor: 'originalName',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -163,7 +162,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   testId: 'delete-shop-product-modal',
-                  message: `Вы уверенны, что хотите удалить ${dataItem.product?.name} из магазина?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.originalName} из магазина?`,
                   confirm: () => {
                     showLoading();
                     deleteProductFromShopMutation({
@@ -239,10 +238,10 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
 
                   updateManyShopProductsMutation({
                     variables: {
-                      input: updatedProducts.map(({ product, price, available, _id }) => {
+                      input: updatedProducts.map(({ productId, price, available, _id }) => {
                         return {
                           shopProductId: `${_id}`,
-                          productId: `${product?._id}`,
+                          productId: `${productId}`,
                           price: noNaN(price),
                           available: noNaN(available),
                         };
@@ -362,10 +361,10 @@ export const getServerSideProps = async (
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_APP}/shops/${shopId}/products/${rubricId}`;
-  // console.log(' ');
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
-  // console.log('CompanyShopProductsList props ');
-  // const startTime = new Date().getTime();
+  console.log(' ');
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>');
+  console.log('CompanyShopProductsList props ');
+  const startTime = new Date().getTime();
 
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
@@ -399,7 +398,8 @@ export const getServerSideProps = async (
     skip,
     limit,
   } = castCatalogueFilters(restFilter);
-  // Product stages
+
+  // Products stages
   const pricesStage =
     minPrice && maxPrice
       ? {
@@ -441,30 +441,6 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                as: 'products',
-                let: { productId: '$productId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$productId', '$_id'],
-                      },
-                    },
-                  },
-                  {
-                    $project: {
-                      attributes: false,
-                      shopProductsCountCities: false,
-                      isCustomersChoiceCities: false,
-                      connections: false,
-                    },
-                  },
-                ],
-              },
             },
           ],
           options: [
@@ -571,7 +547,7 @@ export const getServerSideProps = async (
     };
   }
   // console.log(shopProductsResult.docs[0]);
-  // console.log('After products ', new Date().getTime() - startTime);
+  console.log('After products ', new Date().getTime() - startTime);
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
@@ -593,15 +569,21 @@ export const getServerSideProps = async (
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: ShopProductsListRouteInterface = {
     shop,
+    rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
+    clearSlug: `${basePath}${sortPathname}`,
+    totalDocs: shopProductsResult.totalDocs,
+    totalPages: shopProductsResult.totalPages,
+    hasNextPage: shopProductsResult.hasNextPage,
+    hasPrevPage: shopProductsResult.hasPrevPage,
+    attributes: castedAttributes,
+    pagerUrl: `${basePath}${pagerUrl}`,
+    selectedAttributes,
+    page,
     docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
-      const { products, ...restShopProduct } = shopProduct;
-      const product = products && products.length > 0 ? products[0] : null;
-      if (!product) {
-        return acc;
-      }
+      const { assets, nameI18n, ...restShopProduct } = shopProduct;
 
       // image
-      const sortedAssets = product.assets.sort((assetA, assetB) => {
+      const sortedAssets = assets.sort((assetA, assetB) => {
         return assetA.index - assetB.index;
       });
       const firstAsset = sortedAssets[0];
@@ -614,24 +596,13 @@ export const getServerSideProps = async (
         ...acc,
         {
           ...restShopProduct,
-          product: {
-            ...product,
-            name: getFieldStringLocale(product.nameI18n, initialProps.props?.sessionLocale),
-            mainImage,
-          },
+          assets,
+          nameI18n,
+          mainImage,
+          name: getFieldStringLocale(nameI18n, initialProps.props?.sessionLocale),
         },
       ];
     }, []),
-    rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
-    clearSlug: `${basePath}${sortPathname}`,
-    totalDocs: shopProductsResult.totalDocs,
-    totalPages: shopProductsResult.totalPages,
-    hasNextPage: shopProductsResult.hasNextPage,
-    hasPrevPage: shopProductsResult.hasPrevPage,
-    attributes: castedAttributes,
-    selectedAttributes,
-    page,
-    pagerUrl: `${basePath}${pagerUrl}`,
   };
 
   const castedPayload = castDbData(payload);

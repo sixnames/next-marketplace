@@ -492,6 +492,15 @@ export const ProductMutations = extendType({
             {
               $set: {
                 selectedOptionsSlugs,
+                slug: updatedSlug,
+                rubricId,
+                nameI18n: values.nameI18n,
+                originalName: values.originalName,
+                brandCollectionSlug: values.brandCollectionSlug,
+                brandSlug: values.brandSlug,
+                manufacturerSlug: values.manufacturerSlug,
+                assets: product.assets,
+                updatedAt: new Date(),
               },
             },
             {
@@ -556,6 +565,7 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId } = input;
 
@@ -609,8 +619,33 @@ export const ProductMutations = extendType({
             },
           );
 
+          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+            {
+              productId,
+            },
+            {
+              $set: {
+                updatedAt: new Date(),
+              },
+              $push: {
+                assets: {
+                  $each: assets,
+                },
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
           const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
+          const updatedShopProduct = updatedShopProductResult.value;
+          if (
+            !updatedProductResult.ok ||
+            !updatedProduct ||
+            !updatedShopProductResult.ok ||
+            !updatedShopProduct
+          ) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),

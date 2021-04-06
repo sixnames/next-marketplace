@@ -644,6 +644,14 @@ export interface ShopProductModel extends TimestampModel {
   available: number;
   citySlug: string;
   price: number;
+  itemId: string;
+  slug: string;
+  originalName: string;
+  nameI18n: TranslationModel;
+  brandSlug?: string | null;
+  brandCollectionSlug?: string | null;
+  manufacturerSlug?: string | null;
+  assets: AssetModel[];
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
@@ -652,6 +660,8 @@ export interface ShopProductModel extends TimestampModel {
   selectedOptionsSlugs: string[];
 
   // types for ui
+  name?: string | null;
+  mainImage?: string;
   formattedPrice?: string;
   formattedOldPrice?: string | null;
   discountedPercent?: number | null;

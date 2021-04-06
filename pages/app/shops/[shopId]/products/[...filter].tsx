@@ -1,5 +1,6 @@
 import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Pager from 'components/Pager/Pager';
@@ -22,6 +23,7 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { Form, Formik } from 'formik';
 import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
@@ -34,6 +36,7 @@ import {
   getRubricCatalogueAttributes,
 } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -114,14 +117,28 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     },
     {
       headTitle: 'Наличие',
-      render: ({ dataItem }) => {
-        return <div data-cy={`${dataItem._id}-available`}>{dataItem.available}</div>;
+      render: ({ rowIndex }) => {
+        return (
+          <FormikInput
+            testId={`shop-product-available-${rowIndex}`}
+            name={`shopProducts[${rowIndex}].available`}
+            type={'number'}
+            low
+          />
+        );
       },
     },
     {
       headTitle: 'Цена',
-      render: ({ dataItem }) => {
-        return <div data-cy={`${dataItem._id}-price`}>{dataItem.price}</div>;
+      render: ({ rowIndex }) => {
+        return (
+          <FormikInput
+            testId={`shop-product-price-${rowIndex}`}
+            name={`shopProducts[${rowIndex}].price`}
+            type={'number'}
+            low
+          />
+        );
       },
     },
     {
@@ -185,7 +202,36 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
           </div>
           <div className={'wp-desktop:col-span-4 max-w-full'}>
             <div className={`overflow-x-auto`}>
-              <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
+              <Formik
+                onSubmit={(values) => {
+                  const updatedProducts: ShopProductModel[] = [];
+                  values.shopProducts.forEach((shopProduct, index) => {
+                    const initialShopProduct = docs[index];
+                    if (
+                      initialShopProduct &&
+                      (initialShopProduct.available !== noNaN(shopProduct.available) ||
+                        initialShopProduct.price !== noNaN(shopProduct.price))
+                    ) {
+                      updatedProducts.push(shopProduct);
+                    }
+                  });
+                  console.log(updatedProducts.length);
+                }}
+                initialValues={{
+                  shopProducts: docs,
+                }}
+              >
+                {() => {
+                  return (
+                    <Form>
+                      <div className={`mb-6`}>
+                        <Button type={'submit'}>Сохранить</Button>
+                      </div>
+                      <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
+                    </Form>
+                  );
+                }}
+              </Formik>
             </div>
 
             <div className={`mt-6 mb-3`}>

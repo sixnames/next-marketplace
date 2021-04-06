@@ -3,6 +3,7 @@ import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -63,6 +64,7 @@ interface ShopProductsListRouteInterface {
   clearSlug: string;
   rubricName: string;
   pagerUrl: string;
+  basePath: string;
 }
 
 const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
@@ -76,6 +78,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
   totalPages,
   rubricName,
   pagerUrl,
+  basePath,
 }) => {
   const router = useRouter();
   const {
@@ -200,6 +203,17 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
       <Inner>
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
+
+        <FormikIndividualSearch
+          withReset
+          onReset={() => {
+            router.push(basePath).catch((e) => console.log(e));
+          }}
+          onSubmit={(search) => {
+            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+          }}
+        />
+
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <Accordion
@@ -357,15 +371,14 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const { query } = context;
-  const { shopId, filter } = query;
+  const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_APP}/shops/${shopId}/products/${rubricId}`;
-  console.log(' ');
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>');
-  console.log('CompanyShopProductsList props ');
-  const startTime = new Date().getTime();
-
+  // console.log(' ');
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
+  // console.log('CompanyShopProductsList props ');
+  // const startTime = new Date().getTime();
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {
@@ -418,12 +431,42 @@ export const getServerSideProps = async (
         },
       };
 
+  const languages = initialProps.props.initialData.languages;
+  const searchByName = languages.map(({ slug }) => {
+    return {
+      [`nameI18n.${slug}`]: {
+        $regex: search,
+        $options: 'i',
+      },
+    };
+  });
+  const searchStage = search
+    ? {
+        $or: [
+          ...searchByName,
+          {
+            originalName: {
+              $regex: search,
+              $options: 'i',
+            },
+          },
+          {
+            itemId: {
+              $regex: search,
+              $options: 'i',
+            },
+          },
+        ],
+      }
+    : {};
+
   const shopProductsAggregation = await shopProductsCollection
     .aggregate<ShopProductsAggregationInterface>([
       {
         $match: {
           rubricId: rubric._id,
           shopId: shop._id,
+          ...searchStage,
           ...pricesStage,
           ...optionsStage,
         },
@@ -547,7 +590,7 @@ export const getServerSideProps = async (
     };
   }
   // console.log(shopProductsResult.docs[0]);
-  console.log('After products ', new Date().getTime() - startTime);
+  // console.log('After products ', new Date().getTime() - startTime);
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
@@ -577,6 +620,7 @@ export const getServerSideProps = async (
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
     pagerUrl: `${basePath}${pagerUrl}`,
+    basePath,
     selectedAttributes,
     page,
     docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {

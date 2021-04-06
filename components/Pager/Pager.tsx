@@ -14,22 +14,6 @@ const minimalPagesCount = 2;
 const marginPagesDisplayed = 2;
 
 const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
-  const [pageState, setPageState] = React.useState<number>(() => page);
-
-  const initialPage = React.useMemo(() => {
-    return page - pageStep;
-  }, [page]);
-
-  React.useEffect(() => {
-    if (page !== pageState) {
-      setPage(pageState);
-    }
-  }, [page, pageState, setPage]);
-
-  const onPageChange = React.useCallback((currentPage) => {
-    setPageState(currentPage.selected + pageStep);
-  }, []);
-
   if (totalPages < minimalPagesCount) {
     return null;
   }
@@ -38,7 +22,8 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
     <div className={classes.frame}>
       <ReactPaginate
         pageCount={totalPages}
-        initialPage={initialPage}
+        initialPage={page - pageStep}
+        forcePage={page - pageStep}
         pageRangeDisplayed={1}
         marginPagesDisplayed={marginPagesDisplayed}
         previousLabel={<Icon name={'chevron-left'} />}
@@ -50,7 +35,9 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         pageLinkClassName={classes.butn}
         breakLinkClassName={classes.butn}
         containerClassName={classes.container}
-        onPageChange={onPageChange}
+        onPageChange={(selectedItem) => {
+          setPage(selectedItem.selected + pageStep);
+        }}
       />
     </div>
   );

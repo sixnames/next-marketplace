@@ -22,7 +22,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, company, pageUrls }) =>
   return (
     <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
       <Inner>
-        <Title>Main page</Title>
+        <Title>Winepoint</Title>
       </Inner>
     </SiteLayout>
   );

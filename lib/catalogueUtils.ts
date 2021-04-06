@@ -303,6 +303,12 @@ export async function getCatalogueAttributes({
   const castedAttributes: CatalogueFilterAttributeModel[] = [];
   const selectedAttributes: CatalogueFilterAttributeModel[] = [];
 
+  const realFilter = filter.filter((filterItem) => {
+    const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
+    const filterName = filterItemArr[0];
+    return filterName !== CATALOGUE_FILTER_PAGE;
+  });
+
   for await (const attribute of attributes) {
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
@@ -312,7 +318,7 @@ export async function getCatalogueAttributes({
     for await (const option of options) {
       // check if selected
       const optionSlug = option.slug;
-      const isSelected = filter.includes(optionSlug);
+      const isSelected = realFilter.includes(optionSlug);
 
       // Push to the selected options list for catalogue title config
       if (isSelected) {
@@ -320,12 +326,12 @@ export async function getCatalogueAttributes({
       }
 
       const optionNextSlug = isSelected
-        ? [...filter]
+        ? [...realFilter]
             .filter((pathArg) => {
               return pathArg !== optionSlug;
             })
             .join('/')
-        : [...filter, optionSlug].join('/');
+        : [...realFilter, optionSlug].join('/');
 
       const castedOption = {
         _id: option._id,
@@ -371,7 +377,7 @@ export async function getCatalogueAttributes({
     }
 
     // attribute
-    const otherSelectedValues = filter.filter((param) => {
+    const otherSelectedValues = realFilter.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });
@@ -452,6 +458,7 @@ interface CastCatalogueFiltersPayloadInterface {
   page: number;
   skip: number;
   limit: number;
+  pagerUrl: string;
 }
 
 export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPayloadInterface {
@@ -460,6 +467,7 @@ export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPay
   let sortDir: string | null = null;
 
   // pagination
+  const pagerUrlParts: string[] = [];
   const defaultPage = 1;
   let page = defaultPage;
 
@@ -481,7 +489,10 @@ export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPay
       if (filterOptionName === CATALOGUE_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
+      } else {
+        pagerUrlParts.push(filterOption);
       }
+
       if (filterOptionName === CATALOGUE_FILTER_LIMIT) {
         limit = noNaN(filterOptionValue) || defaultLimit;
         return;
@@ -525,6 +536,7 @@ export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPay
     page,
     limit,
     skip,
+    pagerUrl: `/${pagerUrlParts.join('/')}`,
   };
 }
 

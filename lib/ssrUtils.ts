@@ -283,7 +283,11 @@ export async function getAppInitialData({
     };
   }
 
-  if (user.role.slug !== ROLE_SLUG_COMPANY_MANAGER && user.role.slug !== ROLE_SLUG_COMPANY_OWNER) {
+  if (
+    user.role.slug !== ROLE_SLUG_COMPANY_MANAGER &&
+    user.role.slug !== ROLE_SLUG_COMPANY_OWNER &&
+    !isCms
+  ) {
     return {
       redirect: {
         permanent: false,

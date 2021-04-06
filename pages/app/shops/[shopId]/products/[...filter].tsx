@@ -1,7 +1,10 @@
+import Accordion from 'components/Accordion/Accordion';
+import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner/Inner';
+import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
@@ -46,7 +49,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
 
 interface ShopProductsListRouteInterface {
   shop: ShopModel;
@@ -76,7 +78,6 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
   pagerUrl,
 }) => {
   const router = useRouter();
-  const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const {
     showModal,
     onErrorCallback,
@@ -198,19 +199,28 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
   return (
     <AppShopLayout shop={shop}>
       <Inner>
-        <div className={`text-3xl font-medium mb-6`}>{rubricName}</div>
-        <div className={`wp-desktop:grid wp-desktop:grid-cols-10 gap-4 max-w-full`}>
-          <div className={'wp-desktop:col-span-3'}>
-            <CatalogueFilter
-              attributes={attributes}
-              selectedAttributes={selectedAttributes}
-              catalogueCounterString={catalogueCounterString}
-              rubricClearSlug={clearSlug}
-              isFilterVisible={isFilterVisible}
-              hideFilterHandler={() => setIsFilterVisible(false)}
-            />
+        <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
+        <div className={`mb-6`}>{catalogueCounterString}</div>
+        <div className={`max-w-full`}>
+          <div className={'mb-8'}>
+            <Accordion
+              title={'Фильтр'}
+              titleRight={
+                selectedAttributes.length > 0 ? <Link href={clearSlug}>Очистить фильтр</Link> : null
+              }
+            >
+              <div className={`mt-8`}>
+                <AppContentFilter
+                  attributes={attributes}
+                  selectedAttributes={selectedAttributes}
+                  clearSlug={clearSlug}
+                  className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+                />
+              </div>
+            </Accordion>
           </div>
-          <div className={'wp-desktop:col-span-7 max-w-full'}>
+
+          <div className={'max-w-full'}>
             <Formik
               onSubmit={(values) => {
                 const updatedProducts: ShopProductModel[] = [];
@@ -266,12 +276,30 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                           testId={'add-shop-product'}
                           size={'small'}
                         >
-                          Добавить товар
+                          Добавить товары
                         </Button>
                       </div>
                     </div>
                     <div className={`overflow-x-auto`}>
                       <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
+                    </div>
+                    <div className={`mt-6 flex`}>
+                      <div className={`mr-6`}>
+                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                          Сохранить
+                        </Button>
+                      </div>
+                      <div className={`mr-6`}>
+                        <Button
+                          onClick={() => {
+                            console.log('Add product');
+                          }}
+                          testId={'add-shop-product'}
+                          size={'small'}
+                        >
+                          Добавить товары
+                        </Button>
+                      </div>
                     </div>
                   </Form>
                 );

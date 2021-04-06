@@ -25,7 +25,7 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
+import { getCurrencyString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getPercentage, noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -147,31 +147,6 @@ export async function getCardData({
   city,
   slug,
 }: GetCardDataInterface): Promise<ProductModel | null> {
-  function getFieldLocale(i18nField?: Record<string, string> | null): string {
-    if (!i18nField) {
-      return '';
-    }
-
-    let translation = getI18nLocaleValue<string>(i18nField, locale);
-
-    // Get fallback language if chosen not found
-    if (!translation) {
-      translation = i18nField[SECONDARY_LOCALE];
-    }
-
-    // Get default language if fallback not found
-    if (!translation) {
-      translation = i18nField[DEFAULT_LOCALE];
-    }
-
-    // Set warning massage if fallback language not found
-    if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    }
-
-    return translation;
-  }
-
   try {
     // const startTime = new Date().getTime();
     const db = await getDatabase();
@@ -230,7 +205,7 @@ export async function getCardData({
     const listFeatures = getProductCurrentViewCastedAttributes({
       attributes: product.attributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-      getFieldLocale,
+      locale,
     });
     // console.log(`listFeatures `, new Date().getTime() - startTime);
 
@@ -238,7 +213,7 @@ export async function getCardData({
     const textFeatures = getProductCurrentViewCastedAttributes({
       attributes: product.attributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
-      getFieldLocale,
+      locale,
     });
     // console.log(`textFeatures `, new Date().getTime() - startTime);
 
@@ -246,7 +221,7 @@ export async function getCardData({
     const tagFeatures = getProductCurrentViewCastedAttributes({
       attributes: product.attributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
-      getFieldLocale,
+      locale,
     });
     // console.log(`tagFeatures `, new Date().getTime() - startTime);
 
@@ -254,7 +229,7 @@ export async function getCardData({
     const iconFeatures = getProductCurrentViewCastedAttributes({
       attributes: product.attributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
-      getFieldLocale,
+      locale,
     });
     // console.log(`iconFeatures `, new Date().getTime() - startTime);
 
@@ -262,7 +237,7 @@ export async function getCardData({
     const ratingFeatures = getProductCurrentViewCastedAttributes({
       attributes: product.attributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-      getFieldLocale,
+      locale,
     });
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
@@ -369,18 +344,18 @@ export async function getCardData({
           ...connectionProduct,
           option: {
             ...connectionProduct.option,
-            name: getFieldLocale(connectionProduct.option.nameI18n),
+            name: getFieldStringLocale(connectionProduct.option.nameI18n, locale),
           },
           product: {
             ...product,
-            name: getFieldLocale(product.nameI18n),
+            name: getFieldStringLocale(product.nameI18n, locale),
           },
         });
       }
 
       connections.push({
         ...productConnection,
-        attributeName: getFieldLocale(productConnection.attributeNameI18n),
+        attributeName: getFieldStringLocale(productConnection.attributeNameI18n, locale),
         connectionProducts,
       });
     }
@@ -395,8 +370,8 @@ export async function getCardData({
 
     return {
       ...product,
-      name: getFieldLocale(product.nameI18n),
-      description: getFieldLocale(product.descriptionI18n),
+      name: getFieldStringLocale(product.nameI18n, locale),
+      description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,
       shopsCount,
       mainImage,

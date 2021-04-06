@@ -658,6 +658,7 @@ export interface ShopProductModel extends TimestampModel {
   shop?: ShopModel;
   inCartCount?: number;
   product?: ProductModel;
+  products?: ProductModel[];
   facet?: ProductFacetModel | null;
 }
 

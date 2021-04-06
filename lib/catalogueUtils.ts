@@ -362,7 +362,7 @@ export async function getCatalogueConfigs(): Promise<GetCatalogueConfigsPayloadI
   };
 }
 
-interface castCatalogueFiltersPayloadInterface {
+interface CastCatalogueFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilterOptions: string[];
@@ -376,7 +376,7 @@ interface castCatalogueFiltersPayloadInterface {
   limit: number;
 }
 
-export function castCatalogueFilters(filters: string[]): castCatalogueFiltersPayloadInterface {
+export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
@@ -536,7 +536,7 @@ export const getCatalogueData = async ({
 
     // Get configs
     // const configsTimeStart = new Date().getTime();
-    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs();
+    const { snippetVisibleAttributesCount } = await getCatalogueConfigs();
     // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get rubric
@@ -740,7 +740,6 @@ export const getCatalogueData = async ({
     const attributes = await getRubricCatalogueAttributes({
       config: productsAggregationResult.options,
       attributes: rubric.attributes,
-      visibleOptionsCount,
       city,
     });
 

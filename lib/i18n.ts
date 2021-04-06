@@ -1,4 +1,9 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+  LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  SECONDARY_LOCALE,
+} from 'config/common';
 import { noNaN } from 'lib/numbers';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
@@ -12,6 +17,34 @@ export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: stri
   // Get default language if fallback not found
   if (!translation) {
     translation = i18nField[DEFAULT_LOCALE];
+  }
+
+  return translation;
+}
+
+export function getFieldStringLocale(
+  i18nField?: Record<string, string> | null,
+  locale: string | undefined = DEFAULT_LOCALE,
+): string {
+  if (!i18nField) {
+    return '';
+  }
+
+  let translation = getI18nLocaleValue<string>(i18nField, locale);
+
+  // Get fallback language if chosen not found
+  if (!translation) {
+    translation = i18nField[SECONDARY_LOCALE];
+  }
+
+  // Get default language if fallback not found
+  if (!translation) {
+    translation = i18nField[DEFAULT_LOCALE];
+  }
+
+  // Set warning massage if fallback language not found
+  if (!translation) {
+    translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
   }
 
   return translation;

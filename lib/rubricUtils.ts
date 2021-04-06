@@ -199,14 +199,14 @@ export async function recalculateRubricProductCounters({
 
 export interface GetRubricCatalogueOptionsInterface {
   options: RubricOptionModel[];
-  maxVisibleOptions: number;
+  // maxVisibleOptions: number;
   visibleOptionsSlugs: string[];
   city: string;
 }
 
 export function getRubricCatalogueOptions({
   options,
-  maxVisibleOptions,
+  // maxVisibleOptions,
   visibleOptionsSlugs,
   city,
 }: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
@@ -226,7 +226,7 @@ export function getRubricCatalogueOptions({
       ...option,
       options: getRubricCatalogueOptions({
         options: option.options,
-        maxVisibleOptions,
+        // maxVisibleOptions,
         visibleOptionsSlugs,
         city,
       }),
@@ -237,14 +237,14 @@ export function getRubricCatalogueOptions({
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
   attributes: RubricAttributeModel[];
-  visibleOptionsCount: number;
+  // visibleOptionsCount: number;
   config: CatalogueProductOptionInterface[];
 }
 
 export async function getRubricCatalogueAttributes({
   city,
   attributes,
-  visibleOptionsCount,
+  // visibleOptionsCount,
   config,
 }: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
   const sortedAttributes: RubricAttributeModel[] = [];
@@ -265,7 +265,7 @@ export async function getRubricCatalogueAttributes({
       ...attribute,
       options: getRubricCatalogueOptions({
         options: attribute.options,
-        maxVisibleOptions: visibleOptionsCount,
+        // maxVisibleOptions: visibleOptionsCount,
         visibleOptionsSlugs: attributeInConfig.optionsSlugs,
         city,
       }),

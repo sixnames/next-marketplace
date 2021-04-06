@@ -1230,6 +1230,7 @@ export interface NexusGenFieldTypes {
     updateCurrency: NexusGenRootTypes['CurrencyPayload']; // CurrencyPayload!
     updateLanguage: NexusGenRootTypes['LanguagePayload']; // LanguagePayload!
     updateManufacturer: NexusGenRootTypes['ManufacturerPayload']; // ManufacturerPayload!
+    updateManyShopProducts: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     updateMyPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateMyProfile: NexusGenRootTypes['UserPayload']; // UserPayload!
@@ -2249,6 +2250,7 @@ export interface NexusGenFieldTypeNames {
     updateCurrency: 'CurrencyPayload';
     updateLanguage: 'LanguagePayload';
     updateManufacturer: 'ManufacturerPayload';
+    updateManyShopProducts: 'ShopProductPayload';
     updateMetric: 'MetricPayload';
     updateMyPassword: 'UserPayload';
     updateMyProfile: 'UserPayload';
@@ -3149,6 +3151,10 @@ export interface NexusGenArgTypes {
     updateManufacturer: {
       // args
       input: NexusGenInputs['UpdateManufacturerInput']; // UpdateManufacturerInput!
+    };
+    updateManyShopProducts: {
+      // args
+      input: NexusGenInputs['UpdateShopProductInput'][]; // [UpdateShopProductInput!]!
     };
     updateMetric: {
       // args

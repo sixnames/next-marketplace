@@ -1082,6 +1082,11 @@ type Mutation {
   updateManufacturer(input: UpdateManufacturerInput!): ManufacturerPayload!
 
   """
+  Should update many shop products
+  """
+  updateManyShopProducts(input: [UpdateShopProductInput!]!): ShopProductPayload!
+
+  """
   Should update metric
   """
   updateMetric(input: UpdateMetricInput!): MetricPayload!

@@ -24,7 +24,10 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
-import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
+import {
+  useDeleteProductFromShopMutation,
+  useUpdateManyShopProductsMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
@@ -82,8 +85,15 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
 
+  const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
+    onCompleted: (data) => {
+      onCompleteCallback(data.updateManyShopProducts);
+      router.reload();
+    },
+    onError: onErrorCallback,
+  });
+
   const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
-    awaitRefetchQueries: true,
     onCompleted: (data) => {
       onCompleteCallback(data.deleteProductFromShop);
       router.reload();
@@ -189,8 +199,8 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     <AppShopLayout shop={shop}>
       <Inner>
         <div className={`text-3xl font-medium mb-6`}>{rubricName}</div>
-        <div className={`wp-desktop:grid wp-desktop:grid-cols-6 gap-4 max-w-full`}>
-          <div className={'wp-desktop:col-span-2'}>
+        <div className={`wp-desktop:grid wp-desktop:grid-cols-10 gap-4 max-w-full`}>
+          <div className={'wp-desktop:col-span-3'}>
             <CatalogueFilter
               attributes={attributes}
               selectedAttributes={selectedAttributes}
@@ -200,51 +210,73 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
               hideFilterHandler={() => setIsFilterVisible(false)}
             />
           </div>
-          <div className={'wp-desktop:col-span-4 max-w-full'}>
-            <div className={`overflow-x-auto`}>
-              <Formik
-                onSubmit={(values) => {
-                  const updatedProducts: ShopProductModel[] = [];
-                  values.shopProducts.forEach((shopProduct, index) => {
-                    const initialShopProduct = docs[index];
-                    if (
-                      initialShopProduct &&
-                      (initialShopProduct.available !== noNaN(shopProduct.available) ||
-                        initialShopProduct.price !== noNaN(shopProduct.price))
-                    ) {
-                      updatedProducts.push(shopProduct);
-                    }
-                  });
-                  console.log(updatedProducts.length);
-                }}
-                initialValues={{
-                  shopProducts: docs,
-                }}
-              >
-                {() => {
-                  return (
-                    <Form>
-                      <div className={`mb-6`}>
-                        <Button type={'submit'}>Сохранить</Button>
-                      </div>
-                      <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
-                    </Form>
-                  );
-                }}
-              </Formik>
-            </div>
+          <div className={'wp-desktop:col-span-7 max-w-full'}>
+            <Formik
+              onSubmit={(values) => {
+                const updatedProducts: ShopProductModel[] = [];
+                values.shopProducts.forEach((shopProduct, index) => {
+                  const initialShopProduct = docs[index];
+                  if (
+                    initialShopProduct &&
+                    (initialShopProduct.available !== noNaN(shopProduct.available) ||
+                      initialShopProduct.price !== noNaN(shopProduct.price))
+                  ) {
+                    updatedProducts.push(shopProduct);
+                  }
+                });
+                if (updatedProducts.length > 0) {
+                  showLoading();
 
-            <div className={`mt-6 mb-3`}>
-              <Button
-                onClick={() => {
-                  console.log('Add product');
-                }}
-                testId={'add-shop-product'}
-                size={'small'}
-              >
-                Добавить товар
-              </Button>
-            </div>
+                  updateManyShopProductsMutation({
+                    variables: {
+                      input: updatedProducts.map(({ product, price, available, _id }) => {
+                        return {
+                          shopProductId: `${_id}`,
+                          productId: `${product?._id}`,
+                          price: noNaN(price),
+                          available: noNaN(available),
+                        };
+                      }),
+                    },
+                  }).catch((e) => console.log(e));
+                } else {
+                  showErrorNotification({
+                    title: 'Нет изменённых товаров',
+                  });
+                }
+              }}
+              initialValues={{
+                shopProducts: docs,
+              }}
+            >
+              {() => {
+                return (
+                  <Form>
+                    <div className={`mb-6 flex`}>
+                      <div className={`mr-6`}>
+                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                          Сохранить
+                        </Button>
+                      </div>
+                      <div className={`mr-6`}>
+                        <Button
+                          onClick={() => {
+                            console.log('Add product');
+                          }}
+                          testId={'add-shop-product'}
+                          size={'small'}
+                        >
+                          Добавить товар
+                        </Button>
+                      </div>
+                    </div>
+                    <div className={`overflow-x-auto`}>
+                      <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
 
             <Pager
               page={page}

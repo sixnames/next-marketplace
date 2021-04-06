@@ -1,7 +1,8 @@
 import Inner from 'components/Inner/Inner';
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, SORT_DESC } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_APP, SORT_DESC } from 'config/common';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
+  CatalogueFilterAttributeModel,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ShopModel,
@@ -11,21 +12,51 @@ import { getDatabase } from 'db/mongodb';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters, getCatalogueRubric } from 'lib/catalogueUtils';
+import {
+  castCatalogueFilters,
+  getCatalogueAttributes,
+  getCatalogueRubric,
+  getRubricCatalogueAttributes,
+} from 'lib/catalogueUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
 
 interface ShopProductsListRouteInterface {
   shop: ShopModel;
+  docs: ShopProductModel[];
+  totalDocs?: number | null;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  page: number;
+  attributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
+  clearSlug: string;
 }
 
-const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({ shop }) => {
+const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
+  shop,
+  attributes,
+  clearSlug,
+  selectedAttributes,
+}) => {
+  console.log(selectedAttributes);
   return (
     <AppShopLayout shop={shop}>
-      <Inner>products</Inner>
+      <Inner>
+        <CatalogueFilter
+          attributes={attributes}
+          selectedAttributes={selectedAttributes}
+          catalogueCounterString={''}
+          rubricClearSlug={clearSlug}
+          isFilterVisible={true}
+          hideFilterHandler={() => null}
+        />
+      </Inner>
     </AppShopLayout>
   );
 };
@@ -37,10 +68,11 @@ interface CompanyShopProductsListInterface
 const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
+  ...props
 }) => {
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopProductsListRoute shop={shop} />
+      <ShopProductsListRoute shop={shop} {...props} />
     </AppLayout>
   );
 };
@@ -65,11 +97,12 @@ export const getServerSideProps = async (
   const { shopId, filter } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
+  const basePath = `${ROUTE_APP}/shops/${shopId}/products/${rubricId}`;
 
-  console.log(' ');
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>');
-  console.log('CompanyShopProductsList props ');
-  const startTime = new Date().getTime();
+  // console.log(' ');
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
+  // console.log('CompanyShopProductsList props ');
+  // const startTime = new Date().getTime();
 
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
@@ -98,7 +131,7 @@ export const getServerSideProps = async (
     realFilterOptions,
     // sortBy,
     // sortDir,
-    // sortFilterOptions,
+    sortFilterOptions,
     noFiltersSelected,
     // castedFilters,
     page,
@@ -277,13 +310,60 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  console.log(shopProductsResult.docs[0]);
-  console.log('After products ', new Date().getTime() - startTime);
+  // console.log(shopProductsResult.docs[0]);
+  // console.log('After products ', new Date().getTime() - startTime);
+
+  // Get filter attributes
+  // const beforeOptions = new Date().getTime();
+  const rubricAttributes = await getRubricCatalogueAttributes({
+    config: shopProductsResult.options,
+    attributes: rubric.attributes,
+    city: initialProps.props.sessionCity,
+  });
+
+  const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
+    attributes: rubricAttributes,
+    locale: initialProps.props.sessionLocale,
+    filter: restFilter,
+    productsPrices: shopProductsResult.prices,
+    basePath,
+  });
+  // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+
+  const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
+  const payload: ShopProductsListRouteInterface = {
+    shop,
+    docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
+      const { products, ...restShopProduct } = shopProduct;
+      const product = products && products.length > 0 ? products[0] : null;
+      if (!product) {
+        return acc;
+      }
+
+      return [
+        ...acc,
+        {
+          ...restShopProduct,
+          product,
+        },
+      ];
+    }, []),
+    clearSlug: `${basePath}${sortPathname}`,
+    totalDocs: shopProductsResult.totalDocs,
+    totalPages: shopProductsResult.totalPages,
+    hasNextPage: shopProductsResult.hasNextPage,
+    hasPrevPage: shopProductsResult.hasPrevPage,
+    attributes: castedAttributes,
+    selectedAttributes,
+    page,
+  };
+
+  const castedPayload = castDbData(payload);
 
   return {
     props: {
       ...initialProps.props,
-      shop: castDbData(shop),
+      ...castedPayload,
     },
   };
 };

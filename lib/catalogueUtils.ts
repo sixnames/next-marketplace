@@ -30,6 +30,7 @@ import {
   RubricModel,
   RubricOptionModel,
   CatalogueProductsAggregationInterface,
+  CatalogueProductOptionInterface,
 } from 'db/dbModels';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
@@ -37,8 +38,6 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
@@ -72,7 +71,7 @@ import {
 } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getRubricCatalogueAttributes, getRubricNavAttributes } from 'lib/rubricUtils';
+import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
 import capitalize from 'capitalize';
@@ -214,16 +213,83 @@ export function getCatalogueTitle({
   ]);
 }
 
+export interface GetRubricCatalogueOptionsInterface {
+  options: RubricOptionModel[];
+  // maxVisibleOptions: number;
+  visibleOptionsSlugs: string[];
+  city: string;
+}
+
+export function getRubricCatalogueOptions({
+  options,
+  // maxVisibleOptions,
+  visibleOptionsSlugs,
+  city,
+}: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
+  const visibleOptions = options.filter(({ slug }) => {
+    return visibleOptionsSlugs.includes(slug);
+  });
+  // .slice(0, maxVisibleOptions);
+
+  return visibleOptions.map((option) => {
+    return {
+      ...option,
+      options: getRubricCatalogueOptions({
+        options: option.options,
+        // maxVisibleOptions,
+        visibleOptionsSlugs,
+        city,
+      }),
+    };
+  });
+}
+
+export interface GetRubricCatalogueAttributesInterface {
+  city: string;
+  attributes: RubricAttributeModel[];
+  // visibleOptionsCount: number;
+  config: CatalogueProductOptionInterface[];
+}
+
+export async function getRubricCatalogueAttributes({
+  city,
+  attributes,
+  // visibleOptionsCount,
+  config,
+}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
+  const sortedAttributes: RubricAttributeModel[] = [];
+  attributes.forEach((attribute) => {
+    const attributeInConfig = config.find(({ _id }) => _id === attribute.slug);
+    if (!attributeInConfig) {
+      return;
+    }
+
+    sortedAttributes.push({
+      ...attribute,
+      options: getRubricCatalogueOptions({
+        options: attribute.options,
+        // maxVisibleOptions: visibleOptionsCount,
+        visibleOptionsSlugs: attributeInConfig.optionsSlugs,
+        city,
+      }),
+    });
+  });
+
+  return [getPriceAttribute(), ...sortedAttributes];
+}
+
 export interface GetCatalogueAttributesInterface {
   filter: string[];
   attributes: RubricAttributeModel[];
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
+  basePath: string;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
   selectedFilters: SelectedFilterInterface[];
   castedAttributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
 }
 
 export async function getCatalogueAttributes({
@@ -231,13 +297,16 @@ export async function getCatalogueAttributes({
   locale,
   attributes,
   productsPrices,
+  basePath,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeModel[] = [];
+  const selectedAttributes: CatalogueFilterAttributeModel[] = [];
 
   for await (const attribute of attributes) {
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
+    const selectedFilterOptions: CatalogueFilterAttributeOptionModel[] = [];
     const selectedOptions: RubricOptionModel[] = [];
 
     for await (const option of options) {
@@ -258,6 +327,20 @@ export async function getCatalogueAttributes({
             .join('/')
         : [...filter, optionSlug].join('/');
 
+      const castedOption = {
+        _id: option._id,
+        name: getFieldStringLocale(option.nameI18n, locale),
+        slug: option.slug,
+        nextSlug: `${basePath}/${optionNextSlug}`,
+        isSelected,
+      };
+
+      // Push to the selected options list for catalogue title config
+      if (isSelected) {
+        selectedOptions.push(option);
+        selectedFilterOptions.push(castedOption);
+      }
+
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {
         const splittedOption = optionSlug.split(CATALOGUE_OPTION_SEPARATOR);
@@ -275,24 +358,12 @@ export async function getCatalogueAttributes({
         });
 
         if (optionProduct) {
-          castedOptions.push({
-            _id: option._id,
-            name: getFieldStringLocale(option.nameI18n, locale),
-            slug: option.slug,
-            nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
-            isSelected,
-          });
+          castedOptions.push(castedOption);
         }
         continue;
       }
 
-      castedOptions.push({
-        _id: option._id,
-        name: getFieldStringLocale(option.nameI18n, locale),
-        slug: option.slug,
-        nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
-        isSelected,
-      });
+      castedOptions.push(castedOption);
     }
 
     if (castedOptions.length < 1) {
@@ -304,16 +375,9 @@ export async function getCatalogueAttributes({
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });
-    const clearSlug = `${ROUTE_CATALOGUE}/${otherSelectedValues.join('/')}`;
+    const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
 
     const isSelected = castedOptions.some(({ isSelected }) => isSelected);
-    if (isSelected) {
-      // Add selected items to the catalogue title config
-      selectedFilters.push({
-        attribute,
-        options: selectedOptions,
-      });
-    }
 
     const castedAttribute = {
       _id: attribute._id,
@@ -326,12 +390,26 @@ export async function getCatalogueAttributes({
       viewVariant: attribute.viewVariant,
     };
 
+    if (isSelected) {
+      selectedAttributes.push({
+        ...castedAttribute,
+        options: selectedFilterOptions,
+      });
+
+      // Add selected items to the catalogue title config
+      selectedFilters.push({
+        attribute,
+        options: selectedOptions,
+      });
+    }
+
     castedAttributes.push(castedAttribute);
   }
 
   return {
     selectedFilters,
     castedAttributes,
+    selectedAttributes,
   };
 }
 
@@ -371,7 +449,6 @@ interface CastCatalogueFiltersPayloadInterface {
   sortDir: 1 | -1;
   sortFilterOptions: string[];
   noFiltersSelected: boolean;
-  castedFilters: CastCatalogueParamToObjectPayloadInterface[];
   page: number;
   skip: number;
   limit: number;
@@ -434,7 +511,6 @@ export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPay
   });
 
   const noFiltersSelected = realFilterOptions.length < 1;
-  const castedFilters = filters.map((param) => castCatalogueParamToObject(param));
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
 
@@ -446,7 +522,6 @@ export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPay
     sortDir: castedSortDir,
     sortFilterOptions,
     noFiltersSelected,
-    castedFilters,
     page,
     limit,
     skip,
@@ -537,7 +612,6 @@ export const getCatalogueData = async ({
       sortDir,
       sortFilterOptions,
       noFiltersSelected,
-      castedFilters,
     } = castCatalogueFilters(filterOptions);
 
     // Product stages
@@ -713,79 +787,20 @@ export const getCatalogueData = async ({
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
-    const attributes = await getRubricCatalogueAttributes({
+    const rubricAttributes = await getRubricCatalogueAttributes({
       config: productsAggregationResult.options,
       attributes: rubric.attributes,
       city,
     });
 
-    const finalAttributes = [getPriceAttribute(), ...attributes];
-    const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
-      attributes: finalAttributes,
+    const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
+      attributes: rubricAttributes,
       locale,
       filter,
       productsPrices: productsAggregationResult.prices,
+      basePath: ROUTE_CATALOGUE,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
-
-    // Get selected attributes
-    const selectedAttributes = rubric.attributes.reduce(
-      (acc: CatalogueFilterAttributeModel[], attribute) => {
-        if (
-          attribute.variant !== ATTRIBUTE_VARIANT_SELECT &&
-          attribute.variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
-        ) {
-          return acc;
-        }
-        const currentFilter = castedFilters.find(({ slug }) => attribute.slug === slug);
-        if (!currentFilter) {
-          return acc;
-        }
-
-        const options = attribute.options.reduce(
-          (acc: CatalogueFilterAttributeOptionModel[], option) => {
-            if (!filterOptions.includes(option.slug)) {
-              return acc;
-            }
-
-            const nextSlug = filter
-              .filter((pathArg) => {
-                return pathArg !== option.slug;
-              })
-              .join('/');
-            return [
-              ...acc,
-              {
-                _id: new ObjectId(),
-                clearSlug: '',
-                slug: option.slug,
-                name: getFieldStringLocale(option.nameI18n, locale),
-                counter: 1,
-                isSelected: true,
-                isDisabled: false,
-                nextSlug: `${ROUTE_CATALOGUE}/${nextSlug}`,
-              },
-            ];
-          },
-          [],
-        );
-
-        return [
-          ...acc,
-          {
-            _id: new ObjectId(),
-            clearSlug: '',
-            slug: attribute.slug,
-            name: getFieldStringLocale(attribute.nameI18n, locale),
-            isSelected: true,
-            isDisabled: false,
-            options,
-            viewVariant: attribute.viewVariant,
-          },
-        ];
-      },
-      [],
-    );
 
     // Get catalogue products
     const products = [];

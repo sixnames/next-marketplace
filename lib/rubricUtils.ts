@@ -1,8 +1,4 @@
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_OPTION_SEPARATOR,
-} from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR } from 'config/common';
 import { COL_PRODUCT_FACETS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   GenderModel,
@@ -16,7 +12,6 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 
 export interface RecalculateRubricOptionProductCountersInterface {
   option: RubricOptionModel;
@@ -195,84 +190,6 @@ export async function recalculateRubricProductCounters({
     console.log(e);
     return null;
   }
-}
-
-export interface GetRubricCatalogueOptionsInterface {
-  options: RubricOptionModel[];
-  // maxVisibleOptions: number;
-  visibleOptionsSlugs: string[];
-  city: string;
-}
-
-export function getRubricCatalogueOptions({
-  options,
-  // maxVisibleOptions,
-  visibleOptionsSlugs,
-  city,
-}: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
-  const visibleOptions = options.filter(({ slug }) => {
-    return visibleOptionsSlugs.includes(slug);
-  });
-
-  const sortedOptions = visibleOptions.sort((optionA, optionB) => {
-    const optionACounter = noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
-    const optionBCounter = noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
-    return optionBCounter - optionACounter;
-  });
-  // .slice(0, maxVisibleOptions);
-
-  return sortedOptions.map((option) => {
-    return {
-      ...option,
-      options: getRubricCatalogueOptions({
-        options: option.options,
-        // maxVisibleOptions,
-        visibleOptionsSlugs,
-        city,
-      }),
-    };
-  });
-}
-
-export interface GetRubricCatalogueAttributesInterface {
-  city: string;
-  attributes: RubricAttributeModel[];
-  // visibleOptionsCount: number;
-  config: CatalogueProductOptionInterface[];
-}
-
-export async function getRubricCatalogueAttributes({
-  city,
-  attributes,
-  // visibleOptionsCount,
-  config,
-}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
-  const sortedAttributes: RubricAttributeModel[] = [];
-  attributes.forEach((attribute) => {
-    const attributeInConfig = config.find(({ _id }) => _id === attribute.slug);
-    if (
-      !attributeInConfig ||
-      !attribute.showInCatalogueFilter ||
-      !(
-        attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-        attribute.variant === ATTRIBUTE_VARIANT_SELECT
-      )
-    ) {
-      return;
-    }
-
-    sortedAttributes.push({
-      ...attribute,
-      options: getRubricCatalogueOptions({
-        options: attribute.options,
-        // maxVisibleOptions: visibleOptionsCount,
-        visibleOptionsSlugs: attributeInConfig.optionsSlugs,
-        city,
-      }),
-    });
-  });
-
-  return sortedAttributes;
 }
 
 export interface GetRubricNavOptionsInterface {

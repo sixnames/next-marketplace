@@ -61,6 +61,28 @@ export function getCityFieldData<T>(cityField: Record<string, T>, city: string):
   return fieldData;
 }
 
+interface GetCityFieldLocaleStringInterface {
+  cityField: Record<string, Record<string, any>>;
+  city: string;
+  locale: string;
+}
+
+export function getCityFieldLocaleString({
+  cityField,
+  city,
+  locale,
+}: GetCityFieldLocaleStringInterface): any {
+  const cityData = getCityFieldData(cityField, city);
+  if (!cityData) {
+    throw Error('getCityLocale error');
+  }
+  const cityLocale = getI18nLocaleValue(cityData, locale);
+  if (!cityLocale) {
+    throw Error('getCityLocale error');
+  }
+  return cityLocale;
+}
+
 export interface GetCurrencyStringInterface {
   locale: string;
   value?: number | string | null;

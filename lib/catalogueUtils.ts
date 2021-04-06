@@ -56,7 +56,6 @@ import {
   PAGINATION_DEFAULT_LIMIT,
   PRICE_ATTRIBUTE_SLUG,
   ROUTE_CATALOGUE,
-  SECONDARY_LOCALE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
   SORT_BY_KEY,
@@ -65,11 +64,15 @@ import {
   SORT_DIR_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
-import { getCityFieldData, getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
+import {
+  getCityFieldLocaleString,
+  getCurrencyString,
+  getFieldStringLocale,
+  getI18nLocaleValue,
+} from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getRubricCatalogueAttributes, getRubricNavAttributes } from 'lib/rubricUtils';
-import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
 import capitalize from 'capitalize';
@@ -98,7 +101,6 @@ export interface SelectedFilterInterface {
 
 interface GetCatalogueTitleInterface {
   selectedFilters: SelectedFilterInterface[];
-  getFieldLocale: GetFieldLocaleType;
   catalogueTitle: RubricCatalogueTitleModel;
   locale: string;
 }
@@ -106,7 +108,6 @@ interface GetCatalogueTitleInterface {
 export function getCatalogueTitle({
   selectedFilters,
   catalogueTitle,
-  getFieldLocale,
   locale,
 }: GetCatalogueTitleInterface): string {
   const { gender: rubricGender, defaultTitleI18n, keywordI18n, prefixI18n } = catalogueTitle;
@@ -120,17 +121,17 @@ export function getCatalogueTitle({
 
   // Return default rubric title if no filters selected
   if (selectedFilters.length < 1) {
-    return getFieldLocale(defaultTitleI18n);
+    return getFieldStringLocale(defaultTitleI18n, locale);
   }
 
   const titleSeparator = getFieldTranslation(`catalogueTitleSeparator.${locale}`);
-  const rubricKeywordTranslation = getFieldLocale(keywordI18n);
+  const rubricKeywordTranslation = getFieldStringLocale(keywordI18n, locale);
   const rubricKeyword =
     rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE
       ? ''
       : rubricKeywordTranslation.toLowerCase();
 
-  const finalPrefixTranslation = getFieldLocale(prefixI18n);
+  const finalPrefixTranslation = getFieldStringLocale(prefixI18n, locale);
   const finalPrefix =
     finalPrefixTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : finalPrefixTranslation;
 
@@ -145,7 +146,7 @@ export function getCatalogueTitle({
   selectedFilters.forEach((selectedFilter) => {
     const { attribute, options } = selectedFilter;
     const { positioningInTitle } = attribute;
-    const positionInTitleForCurrentLocale = getFieldLocale(positioningInTitle);
+    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
     const gendersList = options.reduce((genderAcc: GenderModel[], { gender }) => {
       if (
         gender &&
@@ -165,14 +166,14 @@ export function getCatalogueTitle({
   selectedFilters.forEach((selectedFilter) => {
     const { attribute, options } = selectedFilter;
     const { positioningInTitle, metric } = attribute;
-    const positionInTitleForCurrentLocale = getFieldLocale(positioningInTitle);
-    const metricValue = metric ? ` ${getFieldLocale(metric.nameI18n)}` : '';
+    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
+    const metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
 
     const value = options
       .map(({ variants, nameI18n }) => {
-        const name = getFieldLocale(nameI18n);
+        const name = getFieldStringLocale(nameI18n, locale);
         const currentVariant = variants[finalGender];
-        const variantLocale = currentVariant ? getFieldLocale(currentVariant) : null;
+        const variantLocale = currentVariant ? getFieldStringLocale(currentVariant, locale) : null;
         let value = name;
         if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
           value = variantLocale;
@@ -216,7 +217,7 @@ export function getCatalogueTitle({
 export interface GetCatalogueAttributesInterface {
   filter: string[];
   attributes: RubricAttributeModel[];
-  getFieldLocale: GetFieldLocaleType;
+  locale: string;
   productsPrices: CatalogueProductPricesInterface[];
 }
 
@@ -227,7 +228,7 @@ export interface GetCatalogueAttributesPayloadInterface {
 
 export async function getCatalogueAttributes({
   filter,
-  getFieldLocale,
+  locale,
   attributes,
   productsPrices,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
@@ -276,7 +277,7 @@ export async function getCatalogueAttributes({
         if (optionProduct) {
           castedOptions.push({
             _id: option._id,
-            name: getFieldLocale(option.nameI18n),
+            name: getFieldStringLocale(option.nameI18n, locale),
             slug: option.slug,
             nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
             isSelected,
@@ -287,7 +288,7 @@ export async function getCatalogueAttributes({
 
       castedOptions.push({
         _id: option._id,
-        name: getFieldLocale(option.nameI18n),
+        name: getFieldStringLocale(option.nameI18n, locale),
         slug: option.slug,
         nextSlug: `${ROUTE_CATALOGUE}/${optionNextSlug}`,
         isSelected,
@@ -318,10 +319,10 @@ export async function getCatalogueAttributes({
       _id: attribute._id,
       clearSlug,
       slug: attribute.slug,
-      name: getFieldLocale(attribute.nameI18n),
+      name: getFieldStringLocale(attribute.nameI18n, locale),
       options: castedOptions,
       isSelected,
-      metric: attribute.metric ? getFieldLocale(attribute.metric.nameI18n) : null,
+      metric: attribute.metric ? getFieldStringLocale(attribute.metric.nameI18n, locale) : null,
       viewVariant: attribute.viewVariant,
     };
 
@@ -497,31 +498,6 @@ export const getCatalogueData = async ({
   city,
   input,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
-  function getFieldLocale(i18nField?: Record<string, string> | null): string {
-    if (!i18nField) {
-      return '';
-    }
-
-    let translation = getI18nLocaleValue<string>(i18nField, locale);
-
-    // Get fallback language if chosen not found
-    if (!translation) {
-      translation = i18nField[SECONDARY_LOCALE];
-    }
-
-    // Get default language if fallback not found
-    if (!translation) {
-      translation = i18nField[DEFAULT_LOCALE];
-    }
-
-    // Set warning massage if fallback language not found
-    if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    }
-
-    return translation;
-  }
-
   try {
     // console.log(' ');
     // console.log('===========================================================');
@@ -746,7 +722,7 @@ export const getCatalogueData = async ({
     const finalAttributes = [getPriceAttribute(), ...attributes];
     const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
       attributes: finalAttributes,
-      getFieldLocale,
+      locale,
       filter,
       productsPrices: productsAggregationResult.prices,
     });
@@ -783,7 +759,7 @@ export const getCatalogueData = async ({
                 _id: new ObjectId(),
                 clearSlug: '',
                 slug: option.slug,
-                name: getFieldLocale(option.nameI18n),
+                name: getFieldStringLocale(option.nameI18n, locale),
                 counter: 1,
                 isSelected: true,
                 isDisabled: false,
@@ -800,7 +776,7 @@ export const getCatalogueData = async ({
             _id: new ObjectId(),
             clearSlug: '',
             slug: attribute.slug,
-            name: getFieldLocale(attribute.nameI18n),
+            name: getFieldStringLocale(attribute.nameI18n, locale),
             isSelected: true,
             isDisabled: false,
             options,
@@ -848,7 +824,7 @@ export const getCatalogueData = async ({
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-        getFieldLocale,
+        locale,
       });
       const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
         const indexInRubric = rubricListViewAttributes.findIndex(
@@ -872,7 +848,7 @@ export const getCatalogueData = async ({
       const ratingFeatures = getProductCurrentViewCastedAttributes({
         attributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-        getFieldLocale,
+        locale,
       });
 
       // connections
@@ -897,18 +873,18 @@ export const getCatalogueData = async ({
             ...connectionProduct,
             option: {
               ...connectionProduct.option,
-              name: getFieldLocale(connectionProduct.option.nameI18n),
+              name: getFieldStringLocale(connectionProduct.option.nameI18n, locale),
             },
             product: {
               ...product,
-              name: getFieldLocale(product.nameI18n),
+              name: getFieldStringLocale(product.nameI18n, locale),
             },
           });
         }
 
         connections.push({
           ...productConnection,
-          attributeName: getFieldLocale(productConnection.attributeNameI18n),
+          attributeName: getFieldStringLocale(productConnection.attributeNameI18n, locale),
           connectionProducts,
         });
       }
@@ -917,7 +893,7 @@ export const getCatalogueData = async ({
         ...restProduct,
         listFeatures,
         ratingFeatures,
-        name: getFieldLocale(product.nameI18n),
+        name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         mainImage,
         shopsCount: noNaN(product.shopProductsCountCities[city]),
@@ -930,7 +906,6 @@ export const getCatalogueData = async ({
     const catalogueTitle = getCatalogueTitle({
       catalogueTitle: rubric.catalogueTitle,
       selectedFilters,
-      getFieldLocale,
       locale,
     });
 
@@ -950,7 +925,7 @@ export const getCatalogueData = async ({
       hasMore,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
       filter,
-      rubricName: getFieldLocale(rubric.nameI18n),
+      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricSlug: rubric.slug,
       products,
       catalogueTitle,
@@ -983,43 +958,6 @@ export const getPageInitialData = async ({
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
   // const timeStart = new Date().getTime();
-  function getFieldLocale(i18nField?: Record<string, string> | null): string {
-    if (!i18nField) {
-      return '';
-    }
-
-    let translation = getI18nLocaleValue<string>(i18nField, locale);
-
-    // Get fallback language if chosen not found
-    if (!translation) {
-      translation = i18nField[SECONDARY_LOCALE];
-    }
-
-    // Get default language if fallback not found
-    if (!translation) {
-      translation = i18nField[DEFAULT_LOCALE];
-    }
-
-    // Set warning massage if fallback language not found
-    if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    }
-
-    return translation;
-  }
-
-  function getCityLocale(cityField: Record<string, Record<string, any>>): any {
-    const cityData = getCityFieldData(cityField, city);
-    if (!cityData) {
-      throw Error('getCityLocale error');
-    }
-    const cityLocale = getFieldLocale(cityData);
-    if (!cityLocale) {
-      throw Error('getCityLocale error');
-    }
-    return cityLocale;
-  }
-
   const db = await getDatabase();
 
   // configs
@@ -1028,8 +966,8 @@ export const getPageInitialData = async ({
   const configs = initialConfigs.map((config) => {
     return {
       ...config,
-      value: getCityLocale(config.cities),
-      singleValue: getCityLocale(config.cities)[0],
+      value: getCityFieldLocaleString({ cityField: config.cities, city, locale }),
+      singleValue: getCityFieldLocaleString({ cityField: config.cities, city, locale })[0],
     };
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
@@ -1054,7 +992,7 @@ export const getPageInitialData = async ({
   const cities = initialCities.map((city) => {
     return {
       ...city,
-      name: getFieldLocale(city.nameI18n),
+      name: getFieldStringLocale(city.nameI18n, locale),
     };
   });
   // console.log('After cities ', new Date().getTime() - timeStart);

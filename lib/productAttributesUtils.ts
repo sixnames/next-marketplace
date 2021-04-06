@@ -6,6 +6,7 @@ import {
   DEFAULT_LOCALE,
 } from 'config/common';
 import { ProductAttributeModel } from 'db/dbModels';
+import { getFieldStringLocale } from 'lib/i18n';
 
 export interface GetProductCurrentViewAttributesInterface {
   attributes: ProductAttributeModel[];
@@ -46,15 +47,15 @@ export function getProductCurrentViewAttributes({
 
 export interface GetAttributeReadableValueInterface {
   attribute: ProductAttributeModel;
-  getFieldLocale(i18nField?: Record<string, string> | null | undefined): string;
+  locale: string;
 }
 
 export function getAttributeReadableValue({
   attribute,
-  getFieldLocale,
+  locale,
 }: GetAttributeReadableValueInterface): string | null {
   const metricName = attribute.attributeMetric
-    ? ` ${getFieldLocale(attribute.attributeMetric.nameI18n)}`
+    ? ` ${getFieldStringLocale(attribute.attributeMetric.nameI18n, locale)}`
     : '';
   if (
     (attribute.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
@@ -63,7 +64,7 @@ export function getAttributeReadableValue({
   ) {
     const asString = attribute.selectedOptions
       .map(({ nameI18n }) => {
-        return getFieldLocale(nameI18n);
+        return getFieldStringLocale(nameI18n);
       })
       .join(', ');
 
@@ -72,7 +73,9 @@ export function getAttributeReadableValue({
 
   // String
   if (attribute.attributeVariant === ATTRIBUTE_VARIANT_STRING) {
-    return attribute.textI18n ? `${getFieldLocale(attribute.textI18n)}${metricName}` : null;
+    return attribute.textI18n
+      ? `${getFieldStringLocale(attribute.textI18n, locale)}${metricName}`
+      : null;
   }
 
   // Number
@@ -86,13 +89,13 @@ export function getAttributeReadableValue({
 export interface GetProductCurrentViewCastedAttributes {
   attributes: ProductAttributeModel[];
   viewVariant: string;
-  getFieldLocale(i18nField?: Record<string, string> | null | undefined): string;
+  locale: string;
 }
 
 export function getProductCurrentViewCastedAttributes({
   attributes,
   viewVariant,
-  getFieldLocale,
+  locale,
 }: GetProductCurrentViewCastedAttributes): ProductAttributeModel[] {
   return getProductCurrentViewAttributes({
     attributes,
@@ -100,7 +103,7 @@ export function getProductCurrentViewCastedAttributes({
   }).reduce((acc: ProductAttributeModel[], attribute) => {
     const readableValue = getAttributeReadableValue({
       attribute,
-      getFieldLocale,
+      locale,
     });
 
     if (!readableValue) {
@@ -112,17 +115,17 @@ export function getProductCurrentViewCastedAttributes({
       {
         ...attribute,
         readableValue,
-        attributeName: getFieldLocale(attribute.attributeNameI18n),
+        attributeName: getFieldStringLocale(attribute.attributeNameI18n, locale),
         attributeMetric: attribute.attributeMetric
           ? {
               ...attribute.attributeMetric,
-              name: getFieldLocale(attribute.attributeMetric.nameI18n),
+              name: getFieldStringLocale(attribute.attributeMetric.nameI18n, locale),
             }
           : null,
         selectedOptions: attribute.selectedOptions.map((option) => {
           return {
             ...option,
-            name: getFieldLocale(option.nameI18n),
+            name: getFieldStringLocale(option.nameI18n, locale),
           };
         }),
       },

@@ -235,6 +235,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
 
           <div className={'max-w-full'}>
             <Formik
+              enableReinitialize={true}
               onSubmit={(values) => {
                 const updatedProducts: ShopProductModel[] = [];
                 values.shopProducts.forEach((shopProduct, index) => {

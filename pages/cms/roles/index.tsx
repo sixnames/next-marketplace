@@ -20,7 +20,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
@@ -71,7 +71,7 @@ const RolesContent: React.FC = () => {
     },
     {
       headTitle: 'Сотрудник сайта',
-      accessor: 'isStuff',
+      accessor: 'isStaff',
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
@@ -148,9 +148,9 @@ const RolesRoute: React.FC = () => {
 
 const Roles: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <RolesRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

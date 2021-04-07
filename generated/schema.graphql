@@ -479,7 +479,7 @@ input CreateProductInput {
 
 input CreateRoleInput {
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   nameI18n: JSONObject!
 }
 
@@ -740,6 +740,11 @@ type Mutation {
   Should add brand collection to the brand
   """
   addCollectionToBrand(input: AddCollectionToBrandInput!): BrandPayload!
+
+  """
+  Should add many products to the shop
+  """
+  addManyProductsToShop(input: [AddProductToShopInput!]!): ShopPayload!
 
   """
   Should add option to the group
@@ -1082,6 +1087,11 @@ type Mutation {
   updateManufacturer(input: UpdateManufacturerInput!): ManufacturerPayload!
 
   """
+  Should update many shop products
+  """
+  updateManyShopProducts(input: [UpdateShopProductInput!]!): ShopProductPayload!
+
+  """
   Should update metric
   """
   updateMetric(input: UpdateMetricInput!): MetricPayload!
@@ -1374,11 +1384,6 @@ type PointGeoJSON {
 type Product implements Base & Timestamp {
   _id: ObjectId!
   active: Boolean!
-
-  """
-  Returns all shop products that product connected to
-  """
-  allShopProducts: [ShopProduct!]!
   assets: [Asset!]!
   attributes: [ProductAttribute!]!
   available: Boolean
@@ -1388,19 +1393,9 @@ type Product implements Base & Timestamp {
   brandSlug: String
 
   """
-  Should return product card breadcrumbs configs list for product card page
-  """
-  cardBreadcrumbs(slug: [String!]!): [ProductCardBreadcrumb!]!
-
-  """
   Should find all connected shop products and return minimal and maximal price.
   """
   cardPrices: ProductCardPrices!
-
-  """
-  Returns shop products of session city for product card page
-  """
-  cardShopProducts: [ShopProduct!]!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
@@ -1412,21 +1407,22 @@ type Product implements Base & Timestamp {
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
-  maxPrice: Int!
-  minPrice: Int!
   name: String!
   nameI18n: JSONObject!
   originalName: String!
-  priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
   rubric: Rubric!
   rubricId: ObjectId!
+
+  """
+  Returns all shop products that product connected to
+  """
+  shopProducts: [ShopProduct!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
   updatedAt: Date!
-  views: JSONObject!
 }
 
 type ProductAttribute {
@@ -1552,7 +1548,7 @@ input ProductsPaginationInput {
   """
   rubricId: ObjectId
   search: String
-  sortBy: String = "createdAt"
+  sortBy: String = "_id"
   sortDir: SortDirection = DESC
 }
 
@@ -1561,8 +1557,6 @@ type ProductsPaginationPayload {
   hasNextPage: Boolean!
   hasPrevPage: Boolean!
   limit: Int!
-  maxPrice: Int!
-  minPrice: Int!
   page: Int!
   sortBy: String!
   sortDir: SortDirection!
@@ -1727,6 +1721,11 @@ type Query {
   getCompany(_id: ObjectId!): Company
 
   """
+  Should return paginated company shops list
+  """
+  getCompanyShops(companyId: ObjectId!, input: PaginationInput): ShopsPaginationPayload!
+
+  """
   Should return gender options
   """
   getGenderOptions: [SelectOption!]!
@@ -1792,11 +1791,6 @@ type Query {
   getProductBySlug(slug: String!): Product
 
   """
-  Should return product for card page and increase view counter
-  """
-  getProductCard(slug: [String!]!): Product!
-
-  """
   Should return shops products list for product card
   """
   getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
@@ -1857,6 +1851,11 @@ type Query {
   getUser(_id: ObjectId!): User!
 
   """
+  Should return user company
+  """
+  getUserCompany: Company
+
+  """
   Should return validation messages list
   """
   getValidationMessages: [Message!]!
@@ -1877,7 +1876,7 @@ type Role implements Timestamp {
   cmsNavigation: [NavItem!]!
   createdAt: Date!
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   name: String!
   nameI18n: JSONObject!
   slug: String!
@@ -2024,7 +2023,6 @@ type Shop implements Base & Timestamp {
   name: String!
   productsCount: Int!
   shopProducts(input: PaginationInput): ShopProductsPaginationPayload!
-  shopProductsIds: [ObjectId!]!
   slug: String!
   updatedAt: Date!
 }
@@ -2275,7 +2273,7 @@ input UpdateProductInput {
 
 input UpdateRoleInput {
   description: String
-  isStuff: Boolean!
+  isStaff: Boolean!
   nameI18n: JSONObject!
   roleId: ObjectId!
 }

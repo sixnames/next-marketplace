@@ -94,7 +94,6 @@
 .linkActive {
   color: var(--wp-white);
   background-color: var(--theme);
-  cursor: default;
 }
 
 .linkActive svg {

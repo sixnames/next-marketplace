@@ -4,10 +4,11 @@ import {
   OptionModel,
   ProductAttributeModel,
   ProductConnectionModel,
+  ProductFacetModel,
   ProductModel,
 } from 'db/dbModels';
 import { generateSlug } from 'lib/slugUtils';
-import { COL_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   ASSETS_DIST_PRODUCTS,
   DEFAULT_CITY,
@@ -37,6 +38,14 @@ export interface CreateTestProductsPayloadInterface extends CreateTestBrandsPayl
   connectionProductB: ProductModel;
   connectionProductC: ProductModel;
   allProducts: ProductModel[];
+  facetA: ProductFacetModel;
+  facetB: ProductFacetModel;
+  facetC: ProductFacetModel;
+  facetD: ProductFacetModel;
+  facetF: ProductFacetModel;
+  connectionProductFacetA: ProductFacetModel;
+  connectionProductFacetB: ProductFacetModel;
+  connectionProductFacetC: ProductFacetModel;
   connectionA: ProductConnectionModel;
 }
 
@@ -239,6 +248,11 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connections?: ProductConnectionModel[];
   }
 
+  interface CreateTestProductPayloadInterface {
+    product: ProductModel;
+    facet: ProductFacetModel;
+  }
+
   async function createTestProduct({
     _id,
     wineColorOption,
@@ -253,7 +267,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     active = true,
     connections = [],
     itemId,
-  }: CreateTestProductInterface): Promise<ProductModel> {
+  }: CreateTestProductInterface): Promise<CreateTestProductPayloadInterface> {
     const defaultDescription = 'defaultDescription';
     const secondaryDescription = 'secondaryDescription';
     const slug = generateSlug(defaultLocaleName);
@@ -276,48 +290,69 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       index: 0,
     };
 
-    return {
+    const product: ProductModel = {
       _id,
-
+      active,
       itemId,
-      updatedAt: new Date(),
-      createdAt: new Date(),
+      originalName: defaultLocaleName,
       nameI18n: {
         [DEFAULT_LOCALE]: defaultLocaleName,
         [SECONDARY_LOCALE]: secondaryLocaleName,
       },
-      ...DEFAULT_COUNTERS_OBJECT,
       descriptionI18n: {
         [DEFAULT_LOCALE]: defaultDescription,
         [SECONDARY_LOCALE]: secondaryDescription,
       },
-      originalName: defaultLocaleName,
       assets: [assetA],
-      shopProductsIds: [],
       shopProductsCountCities: {},
-      minPriceCities: {},
-      maxPriceCities: {},
-      availabilityCities: {},
       isCustomersChoiceCities: {
         [DEFAULT_CITY]: true,
       },
-      selectedOptionsSlugs,
       slug,
       connections,
       rubricId,
       brandSlug,
       brandCollectionSlug,
       manufacturerSlug,
-      active,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      ...DEFAULT_COUNTERS_OBJECT,
       ...productAttributes({
         wineColorOption,
         wineTypeOption,
         wineVintageOption,
       }),
     };
+
+    const facet: ProductFacetModel = {
+      _id,
+      itemId,
+      slug,
+      originalName: defaultLocaleName,
+      nameI18n: {
+        [DEFAULT_LOCALE]: defaultLocaleName,
+        [SECONDARY_LOCALE]: secondaryLocaleName,
+      },
+      active,
+      rubricId,
+      brandSlug,
+      brandCollectionSlug,
+      manufacturerSlug,
+      minPriceCities: {},
+      maxPriceCities: {},
+      availabilityCities: {},
+      priorities: {},
+      views: {},
+      selectedOptionsSlugs,
+    };
+
+    return {
+      product,
+      facet,
+    };
   }
 
-  const productA = await createTestProduct({
+  const { product: productA, facet: facetA } = await createTestProduct({
     _id: new ObjectId('604cad83b604c1c320c3289b'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[2],
@@ -330,7 +365,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '1',
   });
 
-  const productB = await createTestProduct({
+  const { product: productB, facet: facetB } = await createTestProduct({
     _id: new ObjectId('604cad83b604c1c320c3289c'),
     wineColorOption: attributeWineColor.options[2],
     wineTypeOption: attributeWineVariant.options[2],
@@ -344,7 +379,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '2',
   });
 
-  const productC = await createTestProduct({
+  const { product: productC, facet: facetC } = await createTestProduct({
     _id: new ObjectId('604cad83b604c1c320c3289d'),
     wineColorOption: attributeWineColor.options[0],
     wineTypeOption: attributeWineVariant.options[0],
@@ -357,7 +392,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '3',
   });
 
-  const productD = await createTestProduct({
+  const { product: productD, facet: facetD } = await createTestProduct({
     _id: new ObjectId('604cad84b604c1c320c3289e'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
@@ -370,7 +405,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '4',
   });
 
-  const productF = await createTestProduct({
+  const { product: productF, facet: facetF } = await createTestProduct({
     _id: new ObjectId('604cad84b604c1c320c3289f'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
@@ -410,7 +445,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     ],
   };
 
-  const connectionProductA = await createTestProduct({
+  const { product: connectionProductA, facet: connectionProductFacetA } = await createTestProduct({
     _id: connectionProductAId,
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
@@ -425,7 +460,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '6',
   });
 
-  const connectionProductB = await createTestProduct({
+  const { product: connectionProductB, facet: connectionProductFacetB } = await createTestProduct({
     _id: connectionProductBId,
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
@@ -440,7 +475,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '7',
   });
 
-  const connectionProductC = await createTestProduct({
+  const { product: connectionProductC, facet: connectionProductFacetC } = await createTestProduct({
     _id: connectionProductCId,
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
@@ -460,6 +495,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   // Product connections
   const db = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   await productsCollection.insertMany([
     productA,
     productB,
@@ -469,6 +505,16 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connectionProductA,
     connectionProductB,
     connectionProductC,
+  ]);
+  await productFacetsCollection.insertMany([
+    facetA,
+    facetB,
+    facetC,
+    facetD,
+    facetF,
+    connectionProductFacetA,
+    connectionProductFacetB,
+    connectionProductFacetC,
   ]);
 
   // Get updated slugs for products in connection
@@ -543,7 +589,15 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connectionProductA: updatedConnectionProductA,
     connectionProductB: updatedConnectionProductB,
     connectionProductC: updatedConnectionProductC,
-    connectionA,
     allProducts,
+    facetA,
+    facetB,
+    facetC,
+    facetD,
+    facetF,
+    connectionProductFacetA,
+    connectionProductFacetB,
+    connectionProductFacetC,
+    connectionA,
   };
 };

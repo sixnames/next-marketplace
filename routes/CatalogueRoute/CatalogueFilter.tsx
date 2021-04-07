@@ -101,6 +101,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   hideFilterHandler,
   isFilterVisible,
 }) => {
+  const { currency } = useLocaleContext();
   const { isMobile } = useAppContext();
 
   return (
@@ -136,6 +137,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
 
             <div className={classes.attributeList}>
               {selectedAttributes.map((attribute) => {
+                const { metric, slug } = attribute;
+                const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+                const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
                 return attribute.options.map((option) => {
                   const key = `${option.slug}`;
                   return (
@@ -145,6 +149,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                       option={option}
                       key={key}
                       testId={key}
+                      postfix={postfix}
                     />
                   );
                 });

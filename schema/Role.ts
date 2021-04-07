@@ -3,13 +3,7 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { NavItemModel } from 'db/dbModels';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
-import {
-  ROLE_SLUG_ADMIN,
-  ROUTE_APP_NAV_GROUP,
-  ROUTE_CMS_NAV_GROUP,
-  SORT_ASC,
-  SORT_DESC,
-} from 'config/common';
+import { ROLE_SLUG_ADMIN, ROUTE_APP_NAV_GROUP, ROUTE_CMS_NAV_GROUP, SORT_ASC } from 'config/common';
 
 export const Role = objectType({
   name: 'Role',
@@ -17,7 +11,7 @@ export const Role = objectType({
     t.nonNull.objectId('_id');
     t.implements('Timestamp');
     t.nonNull.string('slug');
-    t.nonNull.boolean('isStuff');
+    t.nonNull.boolean('isStaff');
     t.nonNull.json('nameI18n');
     t.string('description');
 
@@ -53,7 +47,7 @@ export const Role = objectType({
             },
             {
               sort: {
-                index: SORT_DESC,
+                index: SORT_ASC,
               },
             },
           )

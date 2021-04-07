@@ -29,7 +29,7 @@ const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
         initialValues={{
           nameI18n: null,
           description: '',
-          isStuff: false,
+          isStaff: false,
         }}
         onSubmit={(values) => {
           confirm(values);

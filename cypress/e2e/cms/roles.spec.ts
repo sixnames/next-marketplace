@@ -1,11 +1,11 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('User roles', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}/cms/roles`);
+    cy.testAuth(`/cms/roles`);
   });
 
   after(() => {
@@ -28,7 +28,7 @@ describe('User roles', () => {
     // Should create role
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
     cy.getByCy('description').clear().type(newRoleDescription);
-    cy.getByCy('isStuff-checkbox').check();
+    cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.getByCy('role-modal').should('not.exist');
     cy.shouldSuccess();
@@ -44,10 +44,10 @@ describe('User roles', () => {
     cy.getByCy(`${adminRoleName}-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
     cy.getByCy('description').clear().type(newRoleDescription);
-    cy.getByCy('isStuff-checkbox').check();
+    cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.shouldSuccess();
-    cy.visit(`/${DEFAULT_CITY}/cms/roles`);
+    cy.visit(`/cms/roles`);
     cy.getByCy(`${newRoleName}-row`).should('exist');
   });
 });

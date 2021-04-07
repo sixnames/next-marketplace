@@ -85,10 +85,10 @@ export const ProductAttribute = objectType({
           return source.readableValue;
         }
 
-        const { getI18nLocale } = await getRequestParams(context);
+        const { locale } = await getRequestParams(context);
         return getAttributeReadableValue({
           attribute: source,
-          getFieldLocale: getI18nLocale,
+          locale,
         });
       },
     });

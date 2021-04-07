@@ -1,3 +1,4 @@
+import { useConfigContext } from 'context/configContext';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -9,6 +10,9 @@ import { getSiteInitialData } from 'lib/ssrUtils';
 interface HomePageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
 const Home: NextPage<HomePageInterface> = ({ navRubrics, company, pageUrls }) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+
   if (company) {
     return (
       <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
@@ -22,7 +26,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, company, pageUrls }) =>
   return (
     <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
       <Inner>
-        <Title>Main page</Title>
+        <Title>{configTitle}</Title>
       </Inner>
     </SiteLayout>
   );

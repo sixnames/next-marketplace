@@ -1,6 +1,7 @@
+import { ShopModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './ShopsMap.module.css';
-import { Coordinates, ShopSnippetFragment } from 'generated/apolloComponents';
+import { Coordinates } from 'generated/apolloComponents';
 import { useConfigContext } from 'context/configContext';
 import { useLoadScript, Marker, GoogleMap, InfoWindow } from '@react-google-maps/api';
 import RequestError from '../RequestError/RequestError';
@@ -11,7 +12,7 @@ import RatingStars from '../RatingStars/RatingStars';
 import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
 
 interface ShopsMapInterface {
-  shops: ShopSnippetFragment[];
+  shops: ShopModel[];
 }
 
 const mapContainerStyle = {
@@ -25,7 +26,7 @@ const center = {
 };
 
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
-  const [selected, setSelected] = React.useState<ShopSnippetFragment | null>(null);
+  const [selected, setSelected] = React.useState<ShopModel | null>(null);
   const { isDark } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoaded, loadError } = useLoadScript({
@@ -48,7 +49,10 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
     [shops],
   );
 
-  const panTo = React.useCallback((coords: Coordinates) => {
+  const panTo = React.useCallback((coords?: Coordinates) => {
+    if (!coords) {
+      return;
+    }
     mapRef.current.panTo(coords);
     mapRef.current.setZoom(12);
   }, []);
@@ -75,7 +79,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
             const mainImage = assets[0].url;
             return (
               <div
-                key={_id}
+                key={`${_id}`}
                 className={classes.listItem}
                 onClick={() => panTo(address.formattedCoordinates)}
               >
@@ -108,7 +112,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           onLoad={onLoad}
           mapContainerStyle={mapContainerStyle}
           mapContainerClassName={classes.mapContainer}
-          zoom={11}
+          zoom={12}
           center={center}
           options={options}
         >
@@ -119,7 +123,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
             } = shop;
             return (
               <Marker
-                key={_id}
+                key={`${_id}`}
                 position={formattedCoordinates}
                 icon={{
                   url: siteIconSrc,

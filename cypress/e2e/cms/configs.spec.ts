@@ -5,7 +5,7 @@ describe('Site configs', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}/cms/config`);
+    cy.testAuth(`/cms/config`);
   });
 
   after(() => {

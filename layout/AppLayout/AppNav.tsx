@@ -1,8 +1,8 @@
 import { AppNavParentItemFragment } from 'generated/apolloComponents';
 import useSignOut from 'hooks/useSignOut';
+import AppNavItem from 'layout/AppLayout/AppNavItem';
+import AppNavUser from 'layout/AppLayout/AppNavUser';
 import * as React from 'react';
-import AppNavUser from './AppNavUser';
-import AppNavItem from './AppNavItem';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';

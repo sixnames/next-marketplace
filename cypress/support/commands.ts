@@ -183,7 +183,7 @@ Cypress.Commands.add(
     const productA = mockData.productA;
     const connectionProductA = mockData.connectionProductA;
 
-    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
+    cy.visit(`/${rubricA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${productA.slug}`).click();
 
@@ -196,7 +196,7 @@ Cypress.Commands.add(
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
+    cy.visit(`/${rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
     cy.getByCy(`card-${connectionProductA.slug}`).should('exist');

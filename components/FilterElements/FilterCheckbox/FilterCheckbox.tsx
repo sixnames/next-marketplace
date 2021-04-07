@@ -8,13 +8,14 @@ export interface FilterCheckboxInterface {
   option: CatalogueFilterAttributeOptionModel;
   testId?: string;
   className?: string;
-  excludedQueries?: string[];
+  postfix?: string | null;
 }
 
 const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   option,
   testId,
   className,
+  postfix,
   // counter = 0,
 }) => {
   const { name, nextSlug, isSelected } = option;
@@ -27,7 +28,10 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
         </span>
 
         <span className={classes.label}>
-          <span>{name}</span>
+          <span>
+            {name}
+            {postfix ? ` ${postfix}` : ''}
+          </span>
           {/*<span className={classes.counter}>{counter}</span>*/}
         </span>
       </a>

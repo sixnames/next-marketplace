@@ -8,9 +8,11 @@ import {
   ManufacturerModel,
   OptionModel,
   ProductConnectionModel,
+  ProductFacetModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
@@ -20,8 +22,10 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
+  COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
@@ -199,6 +203,7 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
@@ -277,8 +282,11 @@ export const ProductMutations = extendType({
             };
           });
 
+          const productId = new ObjectId();
+
           const createdProductResult = await productsCollection.insertOne({
             ...values,
+            _id: productId,
             itemId,
             assets,
             slug,
@@ -289,23 +297,51 @@ export const ProductMutations = extendType({
             isCustomersChoiceCities: {
               [DEFAULT_CITY]: false,
             },
-            priorities: {},
-            views: {},
-            shopProductsIds: [],
             shopProductsCountCities: {},
-            availabilityCities: {},
-            minPriceCities: {},
-            maxPriceCities: {},
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
             rubricId,
-            selectedOptionsSlugs,
             attributes,
           });
 
+          const createdProductFacetResult = await productFacetsCollection.insertOne({
+            _id: productId,
+            itemId,
+            slug,
+            nameI18n: values.nameI18n,
+            originalName: values.originalName,
+            active: false,
+            rubricId,
+            brandCollectionSlug,
+            brandSlug,
+            manufacturerSlug,
+            minPriceCities: {
+              [DEFAULT_CITY]: 0,
+            },
+            maxPriceCities: {
+              [DEFAULT_CITY]: 0,
+            },
+            availabilityCities: {
+              [DEFAULT_CITY]: false,
+            },
+            selectedOptionsSlugs,
+            priorities: {
+              [DEFAULT_CITY]: 0,
+            },
+            views: {
+              [DEFAULT_CITY]: 0,
+            },
+          });
+
           const createdProduct = createdProductResult.ops[0];
-          if (!createdProductResult.result.ok || !createdProduct) {
+          const createdProductFacet = createdProductFacetResult.ops[0];
+          if (
+            !createdProductResult.result.ok ||
+            !createdProduct ||
+            !createdProductFacetResult.result.ok ||
+            !createdProductFacet
+          ) {
             return {
               success: false,
               message: await getApiMessage(`products.create.error`),
@@ -352,6 +388,8 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { productId, rubricId, ...values } = input;
@@ -422,7 +460,6 @@ export const ProductMutations = extendType({
                 slug: updatedSlug,
                 updatedAt: new Date(),
                 rubricId,
-                selectedOptionsSlugs,
                 attributes,
               },
             },
@@ -431,8 +468,62 @@ export const ProductMutations = extendType({
             },
           );
 
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                slug: updatedSlug,
+                active: values.active,
+                nameI18n: values.nameI18n,
+                originalName: values.originalName,
+                rubricId,
+                brandCollectionSlug: values.brandCollectionSlug,
+                brandSlug: values.brandSlug,
+                manufacturerSlug: values.manufacturerSlug,
+                selectedOptionsSlugs,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
+          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+            {
+              productId,
+            },
+            {
+              $set: {
+                selectedOptionsSlugs,
+                slug: updatedSlug,
+                rubricId,
+                nameI18n: values.nameI18n,
+                originalName: values.originalName,
+                brandCollectionSlug: values.brandCollectionSlug,
+                brandSlug: values.brandSlug,
+                manufacturerSlug: values.manufacturerSlug,
+                assets: product.assets,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
           const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedShopProduct = updatedShopProductResult.value;
+          if (
+            !updatedProductResult.ok ||
+            !updatedProduct ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet ||
+            !updatedShopProductResult.ok ||
+            !updatedShopProduct
+          ) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
@@ -479,6 +570,7 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId } = input;
 
@@ -532,8 +624,33 @@ export const ProductMutations = extendType({
             },
           );
 
+          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+            {
+              productId,
+            },
+            {
+              $set: {
+                updatedAt: new Date(),
+              },
+              $push: {
+                assets: {
+                  $each: assets,
+                },
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
           const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
+          const updatedShopProduct = updatedShopProductResult.value;
+          if (
+            !updatedProductResult.ok ||
+            !updatedProduct ||
+            !updatedShopProductResult.ok ||
+            !updatedShopProduct
+          ) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
@@ -1200,13 +1317,13 @@ export const ProductMutations = extendType({
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
           const db = await getDatabase();
-          const sessionRole = await getSessionRole(context);
+          const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          if (!sessionRole.isStuff) {
-            // Args
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          if (!role.isStaff) {
             const { input } = args;
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
               { slug: input.productSlug },
               {
                 $inc: {
@@ -1256,8 +1373,8 @@ export const ProductMutations = extendType({
                 },
                 {
                   $sort: {
-                    [`views.${city}`]: SORT_DESC,
                     [`priorities.${city}`]: SORT_DESC,
+                    [`views.${city}`]: SORT_DESC,
                     _id: SORT_DESC,
                   },
                 },

@@ -1,11 +1,11 @@
+import { LanguageModel } from 'db/dbModels';
 import * as React from 'react';
 import { createContext } from 'react';
-import { InitialQueryLanguageFragment } from 'generated/apolloComponents';
 import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from 'config/common';
 import { useRouter } from 'next/router';
 
 interface LocaleContextInterface {
-  languagesList: InitialQueryLanguageFragment[];
+  languagesList: LanguageModel[];
   currency: string;
 }
 
@@ -34,9 +34,9 @@ interface UseLocaleContextInterface {
   dbLocales: string[];
   currency: string;
   defaultLocale: string;
-  currentLocaleItem?: InitialQueryLanguageFragment;
-  defaultLocaleItem?: InitialQueryLanguageFragment;
-  languagesList: InitialQueryLanguageFragment[];
+  currentLocaleItem?: LanguageModel;
+  defaultLocaleItem?: LanguageModel;
+  languagesList: LanguageModel[];
 }
 
 function useLocaleContext(): UseLocaleContextInterface {

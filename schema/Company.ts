@@ -676,8 +676,6 @@ export const CompanyMutations = extendType({
             logo,
             assets,
             companyId: companyId,
-
-            shopProductsIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
             address: {
@@ -785,7 +783,7 @@ export const CompanyMutations = extendType({
 
           // Set shop products as archived
           const removedShopProducts = await shopProductsCollection.deleteMany({
-            _id: { $in: shop.shopProductsIds },
+            shopId: shop._id,
           });
           if (!removedShopProducts.result.ok) {
             return {

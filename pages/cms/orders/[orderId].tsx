@@ -4,7 +4,7 @@ import Inner from 'components/Inner/Inner';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import { useGetCmsOrderQuery } from 'generated/apolloComponents';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -47,9 +47,9 @@ const CmsOrderRoute: React.FC = () => {
 
 const Order: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <CmsOrderRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

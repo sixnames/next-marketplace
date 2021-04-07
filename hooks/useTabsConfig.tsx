@@ -18,7 +18,9 @@ const useTabsConfig = (): UseTabsConfigReturnInterface => {
   const { asPath, query, pathname } = useRouter();
   const asPathArray = asPath.split('?');
   const cleanAasPath = asPathArray[0];
-  const parsedQuery = asPathArray[1] ? qs.parse(`${asPathArray[1]}`) : {};
+  const parsedQuery = React.useMemo(() => {
+    return asPathArray[1] ? qs.parse(`${asPathArray[1]}`) : {};
+  }, [asPathArray]);
 
   const generateTabsConfig = React.useCallback(
     ({ config }: UseTabsConfigInterface): NavItemInterface[] => {
@@ -34,7 +36,7 @@ const useTabsConfig = (): UseTabsConfigReturnInterface => {
         };
       });
     },
-    [asPath],
+    [cleanAasPath, parsedQuery],
   );
 
   return {

@@ -1,9 +1,9 @@
-import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
-  SORT_BY_CREATED_AT,
+  SORT_BY_ID,
   SORT_DESC,
 } from 'config/common';
 import {
@@ -16,8 +16,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import { updateModelViews } from 'lib/countersUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const ProductsPaginationPayload = objectType({
@@ -32,8 +31,6 @@ export const ProductsPaginationPayload = objectType({
     t.nonNull.int('page');
     t.nonNull.int('limit');
     t.nonNull.int('totalPages');
-    t.nonNull.int('maxPrice');
-    t.nonNull.int('minPrice');
     t.nonNull.boolean('hasPrevPage');
     t.nonNull.boolean('hasNextPage');
     t.nonNull.list.nonNull.field('docs', {
@@ -49,7 +46,7 @@ export const ProductsPaginationInput = inputObjectType({
     t.int('minPrice');
     t.int('maxPrice');
     t.string('sortBy', {
-      default: SORT_BY_CREATED_AT,
+      default: SORT_BY_ID,
     });
     t.field('sortDir', {
       type: 'SortDirection',
@@ -135,37 +132,6 @@ export const ProductQueries = extendType({
         const db = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ slug: args.slug });
-        return product;
-      },
-    });
-
-    // Should return product for card page and increase view counter
-    t.nonNull.field('getProductCard', {
-      type: 'Product',
-      description: 'Should return product for card page and increase view counter',
-      args: {
-        slug: nonNull(list(nonNull(stringArg()))),
-      },
-      resolve: async (_root, args, context): Promise<ProductModel> => {
-        const { city } = await getRequestParams(context);
-        const sessionRole = await getSessionRole(context);
-        const db = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productSlug = args.slug[args.slug.length - 1];
-        const product = await productsCollection.findOne({ slug: productSlug });
-        if (!product) {
-          throw new Error('Product not found');
-        }
-
-        // Increase product views counter
-        if (!sessionRole.isStuff) {
-          await updateModelViews({
-            city,
-            queryFilter: { _id: product._id },
-            collectionName: COL_PRODUCTS,
-          });
-        }
-
         return product;
       },
     });

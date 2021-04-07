@@ -490,7 +490,7 @@ export interface CitiesBooleanModel {
   [key: string]: boolean;
 }
 
-export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
+export interface ProductModel extends BaseModel, TimestampModel {
   active: boolean;
   slug: string;
   originalName: string;
@@ -499,18 +499,13 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
-  isCustomersChoiceCities: CitiesBooleanModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
 
-  selectedOptionsSlugs: string[];
-  shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
+  isCustomersChoiceCities: CitiesBooleanModel;
   connections: ProductConnectionModel[];
-  minPriceCities: CitiesCounterModel;
-  maxPriceCities: CitiesCounterModel;
-  availabilityCities: CitiesBooleanModel;
 
   // types for ui
   name?: string | null;
@@ -531,6 +526,31 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
     max: string;
   };
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
+  facets?: ProductFacetModel[] | null;
+  facet?: ProductFacetModel | null;
+  shopProducts?: ShopProductModel[];
+  shopProduct?: ShopProductModel;
+}
+
+export interface ProductFacetModel extends CountersModel {
+  _id: ObjectIdModel;
+  slug: string;
+  itemId: string;
+  originalName: string;
+  nameI18n: TranslationModel;
+  active: boolean;
+  rubricId: ObjectIdModel;
+  brandCollectionSlug?: string | null;
+  brandSlug?: string | null;
+  manufacturerSlug?: string | null;
+  minPriceCities: CitiesCounterModel;
+  maxPriceCities: CitiesCounterModel;
+  availabilityCities: CitiesBooleanModel;
+  selectedOptionsSlugs: string[];
+
+  // types for ui
+  products?: ProductModel[] | null;
+  product?: ProductModel | null;
 }
 
 export interface ProductCardPricesModel {
@@ -556,12 +576,18 @@ export interface RoleBase {
   nameI18n: TranslationModel;
   description?: string | null;
   slug: string;
-  isStuff: boolean;
+  isStaff: boolean;
 }
 
 export interface RoleModel extends RoleBase, TimestampModel {
   rules: RoleRuleModel[];
   allowedAppNavigation: ObjectIdModel[];
+
+  // types for ui
+  name?: string;
+  navItems?: NavItemModel[];
+  appNavigation?: NavItemModel[];
+  cmsNavigation?: NavItemModel[];
 }
 
 export interface RubricVariantModel {
@@ -600,7 +626,6 @@ export interface RubricCatalogueTitleModel {
 export interface RubricModel extends CountersModel, RubricCountersInterface {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  name?: string | null;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
   catalogueTitle: RubricCatalogueTitleModel;
@@ -612,6 +637,9 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   variantId: ObjectIdModel;
   activeProductsCount: number;
   productsCount: number;
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface ShopProductModel extends TimestampModel {
@@ -619,15 +647,32 @@ export interface ShopProductModel extends TimestampModel {
   available: number;
   citySlug: string;
   price: number;
+  itemId: string;
+  slug: string;
+  originalName: string;
+  nameI18n: TranslationModel;
+  brandSlug?: string | null;
+  brandCollectionSlug?: string | null;
+  manufacturerSlug?: string | null;
+  assets: AssetModel[];
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
+  rubricId: ObjectIdModel;
+  selectedOptionsSlugs: string[];
 
   // types for ui
+  name?: string | null;
+  mainImage?: string;
   formattedPrice?: string;
   formattedOldPrice?: string | null;
   discountedPercent?: number | null;
   shop?: ShopModel;
+  inCartCount?: number;
+  product?: ProductModel;
+  products?: ProductModel[];
+  facet?: ProductFacetModel | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -639,10 +684,10 @@ export interface ShopModel extends BaseModel, TimestampModel {
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
-  shopProductsIds: ObjectIdModel[];
 
   // types for ui
-  productsCount?: number;
+  productsCount?: number | null;
+  city?: CityModel | null;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {
@@ -656,6 +701,11 @@ export interface UserModel extends BaseModel, TimestampModel {
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   ordersIds?: ObjectIdModel[] | null;
+
+  // types for ui
+  role?: RoleModel;
+  fullName?: string;
+  shortName?: string;
 }
 
 // Payload
@@ -706,8 +756,6 @@ export interface ProductsPaginationPayloadModel {
   totalPages: number;
   hasPrevPage: boolean;
   hasNextPage: boolean;
-  minPrice: number;
-  maxPrice: number;
   docs: ProductModel[];
 }
 
@@ -753,11 +801,27 @@ export interface CatalogueDataInterface {
   selectedAttributes: CatalogueFilterAttributeModel[];
 }
 
-export interface ProductOptionInterface {
+export interface CatalogueProductOptionInterface {
   _id: string;
   optionsSlugs: string[];
 }
 
-export interface ProductPricesInterface {
+export interface CatalogueProductPricesInterface {
   _id: number;
+}
+
+export interface CatalogueProductsAggregationInterface {
+  totalProducts: number;
+  prices: CatalogueProductPricesInterface[];
+  options: CatalogueProductOptionInterface[];
+  docs: ProductFacetModel[];
+}
+
+export interface ProductsPaginationAggregationInterface {
+  docs: ProductFacetModel[];
+  totalDocs?: number | null;
+  totalActiveDocs?: number | null;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
 }

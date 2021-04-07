@@ -26,7 +26,7 @@ import {
 } from 'generated/apolloComponents';
 import { RUBRIC_ATTRIBUTES_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -210,7 +210,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           <Checkbox
             testId={`${dataItem.name}-nav`}
             disabled={isDisabled}
-            checked={dataItem.showInCatalogueFilter}
+            checked={dataItem.showInCatalogueNav}
             value={cellData}
             name={'showInCatalogueNav'}
             onChange={() => {
@@ -295,7 +295,7 @@ const RubricAttributesPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   }
 
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <DataLayout
         title={data.getRubricBySlug.name}
         filterResult={() => {
@@ -306,7 +306,7 @@ const RubricAttributesPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
           );
         }}
       />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

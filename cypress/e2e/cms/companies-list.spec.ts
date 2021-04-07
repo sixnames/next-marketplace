@@ -4,7 +4,7 @@ import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { MOCK_ADDRESS_A } from 'tests/mockData';
 
 describe('Companies list', () => {
-  const companiesPath = `/${DEFAULT_CITY}${ROUTE_CMS}/companies`;
+  const companiesPath = `${ROUTE_CMS}/companies`;
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));

@@ -1,5 +1,5 @@
-import { COL_LANGUAGES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { LanguageModel, ProductModel, RubricModel } from 'db/dbModels';
+import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_RUBRICS } from 'db/collectionNames';
+import { LanguageModel, ProductFacetModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
@@ -37,7 +37,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const db = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 
   const rubrics = await rubricsCollection
     .aggregate([
@@ -60,7 +60,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // rubric
     initialSlugs.push(`catalogue/${rubric.slug}`);
 
-    const productOptionsAggregation = await productsCollection
+    const productOptionsAggregation = await productFacetsCollection
       .aggregate([
         {
           $match: {

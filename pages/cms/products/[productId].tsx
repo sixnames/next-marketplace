@@ -8,7 +8,7 @@ import useRouterQuery from 'hooks/useRouterQuery';
 import useTabsConfig from 'hooks/useTabsConfig';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import ProductAssets from 'routes/Product/ProductAssets';
@@ -77,9 +77,9 @@ const ProductRoute: React.FC = () => {
 
 const Product: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <ProductRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

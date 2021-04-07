@@ -1,11 +1,12 @@
-import { DEFAULT_CITY } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Cart', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit(`/${DEFAULT_CITY}/`);
+    cy.visit(`/`);
+    window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
   });
 
   after(() => {
@@ -13,7 +14,7 @@ describe('Cart', () => {
   });
 
   it('Should CRUD cart items', () => {
-    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
+    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
 
@@ -33,7 +34,7 @@ describe('Cart', () => {
 
     // Add second product
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
+    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
     cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
@@ -45,7 +46,7 @@ describe('Cart', () => {
 
     // Add shopless product from catalogue
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
+    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
@@ -79,7 +80,7 @@ describe('Cart', () => {
     cy.getByCy(`${mockData.productA.slug}-amount`).should('have.value', '5');
 
     // Should have cart dropdown
-    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
+    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`cart-dropdown-trigger`).click();
     cy.getByCy(`cart-dropdown`).should('exist');

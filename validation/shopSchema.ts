@@ -36,10 +36,11 @@ export const shopProductIdSchema = (args: ValidationSchemaArgsInterface) => {
 export const shopProductCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
     productId: productIdSchema(args),
-    price: requiredNumberSchema({ ...args, slug: 'validation.shopProducts.price' }),
+    price: requiredNumberSchema({ ...args, slug: 'validation.shopProducts.price', min: 1 }),
     available: requiredNumberSchema({
       ...args,
       slug: 'validation.shopProducts.available',
+      min: 1,
     }),
   };
 };
@@ -51,10 +52,32 @@ export const addProductToShopSchema = (args: ValidationSchemaArgsInterface) => {
   });
 };
 
+export const addManyProductsToShopSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    input: Yup.array().of(
+      Yup.object({
+        shopId: shopIdSchema(args),
+        ...shopProductCommonFieldsSchema(args),
+      }),
+    ),
+  });
+};
+
 export const updateShopProductSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     shopProductId: shopProductIdSchema(args),
     ...shopProductCommonFieldsSchema(args),
+  });
+};
+
+export const updateManyShopProductsSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    input: Yup.array().of(
+      Yup.object({
+        shopProductId: shopProductIdSchema(args),
+        ...shopProductCommonFieldsSchema(args),
+      }),
+    ),
   });
 };
 

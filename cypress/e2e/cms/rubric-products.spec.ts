@@ -1,11 +1,11 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Rubric products', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/rubrics`);
+    cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });
 
   after(() => {
@@ -24,7 +24,7 @@ describe('Rubric products', () => {
     cy.getByCy('delete-product-from-rubric-modal').should('exist');
     cy.getByCy(`confirm`).click();
     cy.getByCy('rubric-products').should('not.contain', mockProductForDeleteName);
-    cy.visit(`/${DEFAULT_CITY}${ROUTE_CMS}/rubrics`);
+    cy.visit(`${ROUTE_CMS}/rubrics`);
     cy.getByCy(`${rubricBName}-productsCount`).should('contain', '0');
   });
 
@@ -158,7 +158,7 @@ describe('Rubric products', () => {
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 
-    cy.visit(`/${DEFAULT_CITY}${ROUTE_CMS}/rubrics`);
+    cy.visit(`${ROUTE_CMS}/rubrics`);
     cy.getByCy(`${rubricBName}-update`).click();
     cy.visitMoreNavLink('products');
     cy.getByCy(`${mockProductNewName}-row`).should('exist');

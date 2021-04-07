@@ -56,15 +56,15 @@ export const NavItem = objectType({
     t.nonNull.list.nonNull.field('appNavigationChildren', {
       type: 'NavItem',
       resolve: async (source, _args, context): Promise<NavItemModel[]> => {
-        const sessionRole = await getSessionRole(context);
+        const { role } = await getSessionRole(context);
         const db = await getDatabase();
         const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
 
         const roleNavQuery =
-          sessionRole.slug === ROLE_SLUG_ADMIN
+          role.slug === ROLE_SLUG_ADMIN
             ? {}
             : {
-                _id: { $in: sessionRole.allowedAppNavigation },
+                _id: { $in: role.allowedAppNavigation },
               };
 
         const children = await navItemsCollection

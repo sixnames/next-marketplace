@@ -1,11 +1,10 @@
-import { DEFAULT_CITY } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Admin orders', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit(`/${DEFAULT_CITY}/`);
+    cy.visit(`/`);
   });
 
   after(() => {
@@ -24,7 +23,7 @@ describe('Admin orders', () => {
       orderFields,
       callback: ({ orderItemId }) => {
         // Should display all orders list
-        cy.testAuth(`/${DEFAULT_CITY}/cms/orders`);
+        cy.testAuth(`/cms/orders`);
         cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerName);
         cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerEmail);
 

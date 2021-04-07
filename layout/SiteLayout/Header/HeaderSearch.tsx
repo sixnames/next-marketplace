@@ -1,5 +1,7 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
+import { useDebounce } from 'use-debounce';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
@@ -11,9 +13,7 @@ import {
   GetCatalogueSearchResultQuery,
   GetCatalogueSearchTopItemsQuery,
   useGetCatalogueSearchResultLazyQuery,
-  useGetCatalogueSearchTopItemsLazyQuery,
 } from 'generated/apolloComponents';
-import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
 import RequestError from '../../../components/RequestError/RequestError';
 import Link from '../../../components/Link/Link';
@@ -42,7 +42,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
             <li key={slug} data-cy={'search-rubric'}>
               <Link
                 onClick={hideSearchDropdown}
-                href={`/${slug}`}
+                href={`${ROUTE_CATALOGUE}/${slug}`}
                 testId={`search-rubric-${name}`}
                 className={`${classes.rubric}`}
               >
@@ -68,49 +68,34 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
   );
 };
 
-const HeaderSearch: React.FC = () => {
+interface HeaderSearchInterface {
+  initialData?: GetCatalogueSearchTopItemsQuery | null;
+}
+
+const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
   const { hideSearchDropdown } = useSiteContext();
-  const [search, setSearch] = React.useState<string>('');
+  const [string, setString] = React.useState<string>('');
+  const [value] = useDebounce(string, 1000);
   const { isMobile } = useAppContext();
-  const [getTopResults, { data, loading, error }] = useGetCatalogueSearchTopItemsLazyQuery();
-  const [
-    getSearchResult,
-    { data: searchData, loading: searchLoading, error: searchError },
-  ] = useGetCatalogueSearchResultLazyQuery({
+  const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
+    fetchPolicy: 'network-only',
     variables: {
-      search,
+      search: `${value}`,
     },
   });
   const minSearchLength = 2;
 
   React.useEffect(() => {
-    return () => {
-      setSearch('');
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (search && search.length > minSearchLength) {
-      debounce(getSearchResult, 500)();
+    if (value && value.length > minSearchLength) {
+      getSearchResult();
     }
-  }, [getSearchResult, search]);
+  }, [getSearchResult, value]);
 
-  React.useEffect(() => {
-    getTopResults();
-  }, [getTopResults]);
-
-  function setSearchHandler(value: string) {
-    setSearch(value);
-  }
-
-  const isLoading = loading || searchLoading;
-  const isError = error || searchError;
-
-  const searchRubrics = searchData?.getCatalogueSearchResult.rubrics;
-  const topRubrics = data?.getCatalogueSearchTopItems.rubrics;
-  const initialSearchProducts = searchData?.getCatalogueSearchResult.products as unknown;
+  const searchRubrics = data?.getCatalogueSearchResult.rubrics;
+  const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
+  const initialSearchProducts = data?.getCatalogueSearchResult.products as unknown;
   const searchProducts = initialSearchProducts as CatalogueProductInterface[];
-  const initialTopProducts = data?.getCatalogueSearchTopItems.products as unknown;
+  const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
   const topProducts = initialTopProducts as CatalogueProductInterface[];
 
   const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
@@ -131,10 +116,10 @@ const HeaderSearch: React.FC = () => {
 
           <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
             <Input
-              onChange={(e) => setSearchHandler(e.target.value)}
+              onChange={(e) => setString(e.target.value)}
               name={'search'}
               icon={'search'}
-              value={search}
+              value={string}
               placeholder={'Я хочу найти...'}
               testId={'search-input'}
             />
@@ -157,9 +142,25 @@ const HeaderSearch: React.FC = () => {
               />
             )}
           </form>
+
+          {!loading &&
+          value.length > minSearchLength &&
+          data?.getCatalogueSearchResult.products &&
+          data.getCatalogueSearchResult.products.length < 1 ? (
+            <div
+              style={{
+                fontSize: '1.125rem',
+                fontWeight: 700,
+                marginBottom: 'var(--lineGap-200)',
+              }}
+            >
+              По вашему запросу ничего не найдено
+            </div>
+          ) : null}
+
           <div className={classes.searchFrame}>
-            {isLoading ? <Spinner className={classes.spinner} /> : null}
-            {isError ? <RequestError /> : null}
+            {loading ? <Spinner className={classes.spinner} /> : null}
+            {error ? <RequestError /> : null}
             {rubrics && products ? (
               <HeaderSearchResult rubrics={rubrics} products={products} />
             ) : null}

@@ -1,5 +1,4 @@
 import {
-  DEFAULT_CITY,
   DEFAULT_LOCALE,
   GENDER_HE,
   GENDER_IT,
@@ -15,7 +14,7 @@ describe('Options Groups', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/options-groups`);
+    cy.testAuth(`${ROUTE_CMS}/options-groups`);
   });
 
   after(() => {

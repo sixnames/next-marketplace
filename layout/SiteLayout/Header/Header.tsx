@@ -20,7 +20,7 @@ import { useUserContext } from 'context/userContext';
 import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from './CartDropdown';
-import { CartFragment } from 'generated/apolloComponents';
+import { CartFragment, useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_COMPANY_MANAGER,
@@ -352,6 +352,9 @@ const Header: React.FC = () => {
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
+  const { data } = useGetCatalogueSearchTopItemsQuery({
+    ssr: false,
+  });
 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
@@ -383,7 +386,7 @@ const Header: React.FC = () => {
           <HeaderMiddleRight />
         </Inner>
 
-        {isSearchOpen ? <HeaderSearch /> : null}
+        {isSearchOpen ? <HeaderSearch initialData={data} /> : null}
       </header>
 
       <StickyNav />

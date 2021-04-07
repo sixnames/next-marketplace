@@ -131,7 +131,6 @@ export const Rubric = objectType({
             ...args.input,
             rubricId: source._id,
           },
-          active: true,
           city,
         });
         return paginationResult;

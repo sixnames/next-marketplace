@@ -24,7 +24,10 @@ const UserContext = React.createContext<UserContextInterface>({
 });
 
 const UserContextProvider: React.FC = ({ children }) => {
-  const { data, loading, refetch } = useSessionUserQuery({ fetchPolicy: 'network-only' });
+  const { data, loading, refetch } = useSessionUserQuery({
+    fetchPolicy: 'network-only',
+    ssr: false,
+  });
   const [state, setState] = React.useState<ContextState>(() => {
     return {
       me: null,

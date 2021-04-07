@@ -37,7 +37,14 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
   return user;
 };
 
-export const getSessionRole = async (context: NexusContext): Promise<RoleModel> => {
+interface GetSessionRolePayloadInterface {
+  role: RoleModel;
+  user?: UserModel | null;
+}
+
+export const getSessionRole = async (
+  context: NexusContext,
+): Promise<GetSessionRolePayloadInterface> => {
   // Get session user
   const user = await getSessionUser(context);
 
@@ -50,21 +57,27 @@ export const getSessionRole = async (context: NexusContext): Promise<RoleModel> 
     if (!guestRole) {
       throw Error('Guest role not found in getSessionRole');
     }
-    return guestRole;
+    return {
+      role: guestRole,
+      user,
+    };
   }
 
   const userRole = await rolesCollection.findOne({ _id: user.roleId });
   if (!userRole) {
     throw Error('User role not found in getSessionRole');
   }
-  return userRole;
+  return {
+    role: userRole,
+    user,
+  };
 };
 
 export const getSessionLocale = (context: NexusContext): string => {
   // Get locale form context if request form server
   // Otherwise get locale from Content-Language header
   // populated with Apollo client
-  return context.locale || context.req.headers[LOCALE_HEADER] || DEFAULT_LOCALE;
+  return context?.locale || context?.req?.headers[LOCALE_HEADER] || DEFAULT_LOCALE;
 };
 
 export const getSessionCity = (context: NexusContext): string => {
@@ -75,7 +88,7 @@ export const getSessionCity = (context: NexusContext): string => {
   if (headerCity) {
     return `${headerCity}`;
   }
-  return context.city || DEFAULT_CITY;
+  return context?.city || DEFAULT_CITY;
 };
 
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {

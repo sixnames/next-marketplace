@@ -18,7 +18,7 @@ import {
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -173,9 +173,9 @@ const RubricDetails: React.FC = () => {
 
 const Rubric: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <RubricDetails />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

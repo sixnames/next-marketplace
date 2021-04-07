@@ -12,7 +12,7 @@ describe('Rubrics', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`${DEFAULT_CITY}${ROUTE_CMS}/rubrics`);
+    cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });
 
   after(() => {

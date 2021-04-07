@@ -58,31 +58,7 @@ export const CatalogueQueries = extendType({
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-          const finalPipeline = [
-            {
-              $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priorities.${city}`]: SORT_DESC,
-                _id: SORT_BY_ID_DIRECTION,
-              },
-            },
-            { $limit: 3 },
-          ];
-
-          const products = await productsCollection
-            .aggregate([
-              {
-                $match: {
-                  active: true,
-                },
-              },
-              // filter out by shop products availability
-              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-              { $match: { shopsCount: { $gt: 0 } } },
-              ...finalPipeline,
-            ])
-            .toArray();
-
+          // const rubricsStart = new Date().getTime();
           const rubrics = await rubricsCollection
             .aggregate([
               {
@@ -90,9 +66,48 @@ export const CatalogueQueries = extendType({
                   active: true,
                 },
               },
-              ...finalPipeline,
+              {
+                $project: {
+                  _id: 1,
+                  nameI18n: 1,
+                  slug: 1,
+                },
+              },
+              {
+                $sort: {
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_BY_ID_DIRECTION,
+                },
+              },
+              { $limit: 3 },
             ])
             .toArray();
+
+          const rubricsIds = rubrics.map(({ _id }) => _id);
+          // console.log('Top rubrics ', new Date().getTime() - rubricsStart);
+
+          // const productsStart = new Date().getTime();
+          const products = await productsCollection
+            .aggregate([
+              {
+                $match: {
+                  rubricId: { $in: rubricsIds },
+                  active: true,
+                },
+              },
+              {
+                $sort: {
+                  [`availabilityCities.${city}`]: SORT_DESC,
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_DESC,
+                },
+              },
+              { $limit: 3 },
+            ])
+            .toArray();
+          // console.log('Top products ', new Date().getTime() - productsStart);
 
           return {
             products,
@@ -129,21 +144,35 @@ export const CatalogueQueries = extendType({
 
           const searchByName = languages.map(({ slug }) => {
             return {
-              [`nameI18n.${slug}`]: search,
+              [`nameI18n.${slug}`]: {
+                $regex: search,
+                $options: 'i',
+              },
             };
           });
 
-          const finalPipeline = [
-            {
-              $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priorities.${city}`]: SORT_DESC,
-                _id: SORT_BY_ID_DIRECTION,
+          // const rubricsStart = new Date().getTime();
+          const rubrics = await rubricsCollection
+            .aggregate([
+              {
+                $match: {
+                  active: true,
+                  $or: [...searchByName],
+                },
               },
-            },
-            { $limit: 3 },
-          ];
+              {
+                $sort: {
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_BY_ID_DIRECTION,
+                },
+              },
+              { $limit: 3 },
+            ])
+            .toArray();
+          // console.log('Search rubrics ', new Date().getTime() - rubricsStart);
 
+          // const productsStart = new Date().getTime();
           const products = await productsCollection
             .aggregate([
               {
@@ -153,29 +182,33 @@ export const CatalogueQueries = extendType({
                   $or: [
                     ...searchByName,
                     {
-                      originalName: search,
+                      originalName: {
+                        $regex: search,
+                        $options: 'i',
+                      },
+                    },
+                    {
+                      itemId: {
+                        $regex: search,
+                        $options: 'i',
+                      },
                     },
                   ],
                 },
               },
-              // filter out by shop products availability
-              { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-              { $match: { shopsCount: { $gt: 0 } } },
-              ...finalPipeline,
-            ])
-            .toArray();
-
-          const rubrics = await rubricsCollection
-            .aggregate([
               {
-                $match: {
-                  active: true,
-                  $or: [...searchByName],
+                $sort: {
+                  [`availabilityCities.${city}`]: SORT_DESC,
+                  [`priorities.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
+                  _id: SORT_DESC,
                 },
               },
-              ...finalPipeline,
+              { $limit: 3 },
             ])
             .toArray();
+          // console.log('Search products count ', products.length);
+          // console.log('Search products ', new Date().getTime() - productsStart);
 
           return {
             products,
@@ -218,7 +251,7 @@ export const CatalogueMutations = extendType({
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
           const db = await getDatabase();
-          const sessionRole = await getSessionRole(context);
+          const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
@@ -232,7 +265,7 @@ export const CatalogueMutations = extendType({
           const { filter } = input;
           const [rubricSlug] = filter;
 
-          if (!sessionRole.isStuff) {
+          if (!role.isStaff) {
             const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
             if (!rubric) {
               return false;

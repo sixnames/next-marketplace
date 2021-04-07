@@ -29,7 +29,7 @@ import {
 import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from 'graphql/query/attributesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useRouterQuery from 'hooks/useRouterQuery';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { ParsedUrlQuery } from 'querystring';
 import * as React from 'react';
@@ -370,9 +370,9 @@ const AttributesGroupsRoute: React.FC = () => {
 
 const AttributesGroups: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <AttributesGroupsRoute />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 

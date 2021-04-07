@@ -64,18 +64,6 @@ export const productSnippedFragment = gql`
   ${SnippetConnectionFragment}
 `;
 
-export const catalogueRubricFragment = gql`
-  fragment CatalogueRubric on Rubric {
-    _id
-    name
-    slug
-    variant {
-      _id
-      name
-    }
-  }
-`;
-
 export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`
   mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
     updateCatalogueCounters(input: $input)

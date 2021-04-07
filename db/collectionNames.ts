@@ -19,6 +19,7 @@ export const COL_OPTIONS_GROUPS = 'optionsGroups';
 export const COL_ORDERS = 'orders';
 export const COL_ORDER_STATUSES = 'orderStatuses';
 export const COL_PRODUCTS = 'products';
+export const COL_PRODUCT_FACETS = 'productFacets';
 export const COL_ROLES = 'roles';
 export const COL_RUBRICS = 'rubrics';
 export const COL_RUBRIC_VARIANTS = 'rubricVariants';

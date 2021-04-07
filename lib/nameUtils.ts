@@ -13,7 +13,7 @@ export const getFullName = (props: NameUtilInterface): string => {
 export const getShortName = (props: NameUtilInterface): string => {
   const { name, lastName } = props;
   if (lastName && lastName.length > 0 && name) {
-    return `${name.charAt(0)}.${lastName}`;
+    return `${name.charAt(0)}. ${lastName}`;
   }
 
   if (!name) {

@@ -116,6 +116,18 @@ export const SHOPS_QUERY = gql`
   ${shopInListFragment}
 `;
 
+export const COMPANY_APP_SHOPS_QUERY = gql`
+  query GetAppCompanyShops($input: PaginationInput, $companyId: ObjectId!) {
+    getCompanyShops(input: $input, companyId: $companyId) {
+      totalPages
+      docs {
+        ...ShopInList
+      }
+    }
+  }
+  ${shopInListFragment}
+`;
+
 export const shopProductNodeFragment = gql`
   fragment ShopProductNode on Product {
     _id
@@ -179,11 +191,19 @@ export const SHOP_QUERY = gql`
   ${shopFragment}
 `;
 
+export const COMPANY_SHOP_QUERY = gql`
+  query GetCompanyShop($_id: ObjectId!) {
+    getShop(_id: $_id) {
+      ...Shop
+    }
+  }
+  ${shopFragment}
+`;
+
 export const SHOP_PRODUCTS_QUERY = gql`
   query GetShopProducts($shopId: ObjectId!, $input: PaginationInput) {
     getShop(_id: $shopId) {
       _id
-      shopProductsIds
       shopProducts(input: $input) {
         totalPages
         docs {

@@ -1,4 +1,5 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
+import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
@@ -7,7 +8,7 @@ import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'l
 import { getPercentage } from 'lib/numbers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateProductShopsData } from 'lib/productShopsUtils';
-import { updateShopProductSchema } from 'validation/shopSchema';
+import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',
@@ -200,10 +201,127 @@ export const ShopProductMutations = extendType({
           // Update product shops data
           await updateProductShopsData({ productId });
 
+          // Update product shops data
+          const updatedProduct = await updateProductShopsData({ productId });
+          if (!updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('shopProducts.update.error'),
+            };
+          }
+          const updatedRubric = await recalculateRubricProductCounters({
+            rubricId: updatedProduct.rubricId,
+          });
+          if (!updatedRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('shopProducts.update.error'),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('shopProducts.update.success'),
             payload: updatedShopProduct,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update many shop products
+    t.nonNull.field('updateManyShopProducts', {
+      type: 'ShopProductPayload',
+      description: 'Should update many shop products',
+      args: {
+        input: nonNull(
+          list(
+            nonNull(
+              arg({
+                type: 'UpdateShopProductInput',
+              }),
+            ),
+          ),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        try {
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updateManyShopProductsSchema,
+          });
+          await validationSchema.validate(args);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const { input } = args;
+
+          let doneCount = 0;
+          for await (const shopProductValues of input) {
+            const { shopProductId, productId, ...values } = shopProductValues;
+
+            // Check shop product availability
+            const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
+            if (!shopProduct) {
+              break;
+            }
+
+            // Update shop product
+            const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+              { _id: shopProductId },
+              {
+                $set: {
+                  ...values,
+                  updatedAt: new Date(),
+                },
+                $push: {
+                  oldPrices: {
+                    price: shopProduct.price,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  },
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedShopProduct = updatedShopProductResult.value;
+            if (!updatedShopProductResult.ok || !updatedShopProduct) {
+              break;
+            }
+
+            // Update product shops data
+            const updatedProduct = await updateProductShopsData({ productId });
+            if (!updatedProduct) {
+              break;
+            }
+            const updatedRubric = await recalculateRubricProductCounters({
+              rubricId: updatedProduct.rubricId,
+            });
+            if (!updatedRubric) {
+              break;
+            }
+
+            doneCount = doneCount + 1;
+          }
+
+          if (doneCount !== input.length) {
+            return {
+              success: false,
+              message: await getApiMessage('shopProducts.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('shopProducts.update.success'),
           };
         } catch (e) {
           return {

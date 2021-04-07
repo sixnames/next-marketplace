@@ -5,9 +5,10 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from 'config/common';
+import { getCurrencyString } from 'lib/i18n';
 import { getProductCurrentViewAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
-import { list, nonNull, objectType, stringArg } from 'nexus';
+import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributeModel,
@@ -15,8 +16,8 @@ import {
   BrandModel,
   ManufacturerModel,
   ProductAttributeModel,
-  ProductCardBreadcrumbModel,
   ProductCardPricesModel,
+  ProductFacetModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -26,10 +27,10 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 
 export const ProductCardPrices = objectType({
@@ -98,8 +99,6 @@ export const Product = objectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
-    t.nonNull.json('views');
-    t.nonNull.json('priorities');
     t.boolean('available');
     t.nonNull.list.nonNull.field('assets', {
       type: 'Asset',
@@ -219,26 +218,8 @@ export const Product = objectType({
       },
     });
 
-    // Product cardShopProducts field resolver
-    t.nonNull.list.nonNull.field('cardShopProducts', {
-      type: 'ShopProduct',
-      description: 'Returns shop products of session city for product card page',
-      resolve: async (source, _args, context): Promise<ShopProductModel[]> => {
-        const { city } = await getRequestParams(context);
-        const db = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const shopsProducts = await shopProductsCollection
-          .find({
-            _id: { $in: source.shopProductsIds },
-            citySlug: city,
-          })
-          .toArray();
-        return shopsProducts;
-      },
-    });
-
     // Product allShopProducts field resolver
-    t.nonNull.list.nonNull.field('allShopProducts', {
+    t.nonNull.list.nonNull.field('shopProducts', {
       type: 'ShopProduct',
       description: 'Returns all shop products that product connected to',
       resolve: async (source, _args): Promise<ShopProductModel[]> => {
@@ -246,19 +227,10 @@ export const Product = objectType({
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const shopsProducts = await shopProductsCollection
           .find({
-            _id: { $in: source.shopProductsIds },
+            productId: source._id,
           })
           .toArray();
         return shopsProducts;
-      },
-    });
-
-    // Product minPrice field resolver
-    t.nonNull.field('minPrice', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { city } = await getRequestParams(context);
-        return noNaN(source.minPriceCities[city]);
       },
     });
 
@@ -274,15 +246,6 @@ export const Product = objectType({
       },
     });
 
-    // Product maxPrice field resolver
-    t.nonNull.field('maxPrice', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { city } = await getRequestParams(context);
-        return noNaN(source.maxPriceCities[city]);
-      },
-    });
-
     // Product cardPrices field resolver
     t.nonNull.field('cardPrices', {
       type: 'ProductCardPrices',
@@ -290,8 +253,11 @@ export const Product = objectType({
       resolve: async (source, _args, context): Promise<ProductCardPricesModel> => {
         try {
           const { city, locale } = await getRequestParams(context);
-          const minPrice = noNaN(source.minPriceCities[city]);
-          const maxPrice = noNaN(source.maxPriceCities[city]);
+          const db = await getDatabase();
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const facet = await productFacetsCollection.findOne({ _id: source._id });
+          const minPrice = noNaN(facet ? facet.minPriceCities[city] : undefined);
+          const maxPrice = noNaN(facet ? facet.maxPriceCities[city] : undefined);
           return {
             _id: new ObjectId(),
             min: getCurrencyString({ value: minPrice, locale }),
@@ -303,111 +269,6 @@ export const Product = objectType({
             min: '0',
             max: '0',
           };
-        }
-      },
-    });
-
-    // Product cardBreadcrumbs field resolver
-    t.nonNull.list.nonNull.field('cardBreadcrumbs', {
-      type: 'ProductCardBreadcrumb',
-      description: 'Should return product card breadcrumbs configs list for product card page',
-      args: {
-        slug: nonNull(list(nonNull(stringArg()))),
-      },
-      resolve: async (source, args, context): Promise<ProductCardBreadcrumbModel[]> => {
-        try {
-          const { getFieldLocale } = await getRequestParams(context);
-          const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { slug } = args;
-
-          // Return empty configs list if slug arg is empty
-          if (!slug || slug.length < 2) {
-            return [];
-          }
-
-          // Get slugs parts
-          // Each slug contain keyword and value separated by -
-          const cardSlugs = slug.slice(0, slug.length - 1);
-          const cardSlugsParts = cardSlugs.map((slug) => {
-            return slug.split('-');
-          });
-
-          // Get rubric slug
-          const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-
-          // Return empty configs list if no rubric slug
-          if (!rubricSlugArr) {
-            return [];
-          }
-          const rubricSlug = rubricSlugArr[1];
-          if (!rubricSlug) {
-            return [];
-          }
-
-          const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-
-          // Return empty configs list if no rubric
-          if (!rubric) {
-            return [];
-          }
-
-          const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-
-          // Collect breadcrumbs configs for all product attributes
-          // that have showAsBreadcrumb option enabled
-          for await (const productAttribute of source.attributes) {
-            if (!productAttribute.showAsBreadcrumb) {
-              continue;
-            }
-
-            const attribute = rubric.attributes.find(({ _id }) => {
-              return productAttribute.attributeId.equals(_id);
-            });
-
-            // Continue if no attribute or no selectedOptionsSlugs
-            if (!attribute) {
-              continue;
-            }
-            if (
-              !productAttribute.selectedOptionsSlugs ||
-              productAttribute.selectedOptionsSlugs.length < 1
-            ) {
-              continue;
-            }
-
-            // Get all selected options
-            const options = await attribute.options.filter(({ slug }) => {
-              return productAttribute.selectedOptionsSlugs.includes(slug);
-            });
-            // Get first selected option
-            const firstSelectedOption = options[0];
-            if (!firstSelectedOption) {
-              continue;
-            }
-
-            // Get option name
-            const filterNameString = getFieldLocale(firstSelectedOption.nameI18n);
-
-            // Push breadcrumb config to the list
-            attributesBreadcrumbs.push({
-              _id: attribute._id,
-              name: filterNameString,
-              href: `/${rubricSlug}/${firstSelectedOption.slug}`,
-            });
-          }
-
-          // Returns all config [rubric, ...attributes]
-          return [
-            {
-              _id: rubric._id,
-              name: getFieldLocale(rubric.nameI18n),
-              href: `/${rubricSlug}`,
-            },
-            ...attributesBreadcrumbs,
-          ];
-        } catch {
-          return [];
         }
       },
     });

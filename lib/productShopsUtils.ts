@@ -1,11 +1,18 @@
 import { ObjectId } from 'mongodb';
 import { getDatabase } from 'db/mongodb';
-import { COL_CITIES, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_CITIES,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import {
   CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
   ObjectIdModel,
+  ProductFacetModel,
   ProductModel,
   ShopModel,
   ShopProductModel,
@@ -20,6 +27,7 @@ export async function updateProductShopsData({
   const db = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const cities = await citiesCollection.find({}).toArray();
 
@@ -82,8 +90,19 @@ export async function updateProductShopsData({
     { _id: productId },
     {
       $set: {
-        shopProductsIds,
+        active: shopProductsIds.length > 0,
         shopProductsCountCities,
+      },
+    },
+    {
+      returnOriginal: false,
+    },
+  );
+  const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+    { _id: productId },
+    {
+      $set: {
+        active: shopProductsIds.length > 0,
         minPriceCities,
         maxPriceCities,
         availabilityCities,
@@ -93,7 +112,12 @@ export async function updateProductShopsData({
       returnOriginal: false,
     },
   );
-  if (!updatedProductResult.ok || !updatedProductResult.value) {
+  if (
+    !updatedProductResult.ok ||
+    !updatedProductResult.value ||
+    !updatedProductFacetResult.ok ||
+    !updatedProductFacetResult.value
+  ) {
     throw Error('Product shops data update error');
   }
 
@@ -115,11 +139,9 @@ export async function updateProductsShopsDataOnShopsArchive({
   const shops = await shopsCollection.find({ _id: { $in: shopsIds } }).toArray();
   const shopsProductsIds: ObjectId[] = [];
   for await (const shop of shops) {
-    const shopProducts = await shopProductsCollection
-      .find({ _id: { $in: shop.shopProductsIds } })
-      .toArray();
-    const shopProductsIds = shopProducts.map(({ _id }) => _id);
-    shopProductsIds.forEach((_id) => shopsProductsIds.push(_id));
+    const shopProducts = await shopProductsCollection.find({ shopId: shop._id }).toArray();
+    const localShopProductsIds = shopProducts.map(({ _id }) => _id);
+    localShopProductsIds.forEach((_id) => shopsProductsIds.push(_id));
   }
 
   // Update all products of shops

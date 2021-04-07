@@ -1,7 +1,9 @@
+import { ProductModel, ShopProductModel } from 'db/dbModels';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
-import { ShopProductFragment, UpdateShopProductInput } from 'generated/apolloComponents';
+import { UpdateShopProductInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import FormikInput from '../../FormElements/Input/FormikInput';
@@ -10,23 +12,26 @@ import classes from './ShopProductModal.module.css';
 import Image from 'next/image';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
+interface ShopProductInterface extends Partial<Omit<ShopProductModel, 'product'>> {
+  product?: Partial<ProductModel> | null;
+}
+
 export interface ShopProductModalInterface {
-  shopProduct: Pick<ShopProductFragment, 'product' | 'available' | 'price'>;
+  shopProduct: ShopProductInterface;
   confirm: (values: Omit<UpdateShopProductInput, 'productId' | 'shopProductId'>) => void;
   title: string;
 }
 
 const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, title, confirm }) => {
   const { available, price, product } = shopProduct;
-  const { mainImage, name } = product;
   const validationSchema = useValidationSchema({
     schema: shopProductInModalSchema,
   });
 
   const initialValues = {
-    productId: product._id,
-    available,
-    price,
+    productId: `${product?._id}`,
+    available: noNaN(available),
+    price: noNaN(price),
   };
 
   return (
@@ -34,9 +39,15 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
       <ModalTitle>{title}</ModalTitle>
       <div className={classes.product}>
         <div className={classes.image}>
-          <Image src={mainImage} alt={name} title={name} width={100} height={100} />
+          <Image
+            src={`${product?.mainImage}`}
+            alt={`${product?.name}`}
+            title={`${product?.name}`}
+            width={100}
+            height={100}
+          />
         </div>
-        <div className={classes.name}>{name}</div>
+        <div className={classes.name}>{product?.name}</div>
       </div>
       <Formik
         validationSchema={validationSchema}

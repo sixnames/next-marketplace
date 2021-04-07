@@ -8,9 +8,9 @@ import { getAppInitialData } from 'lib/ssrUtils';
 
 const App: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
-    <AppLayout title={'App'} pageUrls={pageUrls}>
+    <AppLayout title={'Панель управления'} pageUrls={pageUrls}>
       <Inner>
-        <Title>App</Title>
+        <Title>Панель управления</Title>
       </Inner>
     </AppLayout>
   );

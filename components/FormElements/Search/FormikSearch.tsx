@@ -33,7 +33,7 @@ const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) =>
         </Button>
       </div>
 
-      {resetForm && (
+      {resetForm ? (
         <Button
           circle
           type={'reset'}
@@ -44,7 +44,7 @@ const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) =>
         >
           <Icon name={'arrow-clockwise'} />
         </Button>
-      )}
+      ) : null}
     </div>
   );
 };

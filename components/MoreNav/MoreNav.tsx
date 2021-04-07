@@ -47,6 +47,7 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className, isTab }) =>
                       className={classes.link}
                       onClick={hideDropdownHandler}
                       testId={`more-nav-item-${testId}`}
+                      shallow={isTab}
                     >
                       {(isCurrent: boolean) => (
                         <React.Fragment>

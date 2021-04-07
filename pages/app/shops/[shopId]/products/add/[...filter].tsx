@@ -51,7 +51,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface ShopProductsListRouteInterface {
+interface ShopAddProductsListRouteInterface {
   shop: ShopModel;
   docs: ShopProductModel[];
   totalDocs: number;
@@ -63,12 +63,11 @@ interface ShopProductsListRouteInterface {
   selectedAttributes: CatalogueFilterAttributeModel[];
   clearSlug: string;
   rubricName: string;
-  rubricId: string;
   pagerUrl: string;
   basePath: string;
 }
 
-const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
+const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
   shop,
   attributes,
   clearSlug,
@@ -80,7 +79,6 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
   rubricName,
   pagerUrl,
   basePath,
-  rubricId,
 }) => {
   const router = useRouter();
   const {
@@ -90,7 +88,6 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     showLoading,
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
-  const addProductsPath = `${ROUTE_APP}/shops/${shop._id}/products/add/${rubricId}`;
 
   const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
     onCompleted: (data) => {
@@ -198,13 +195,13 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
       'наименования',
       'наименований',
     ]);
-    return `Найдено ${noNaN(totalDocs)} ${catalogueCounterPostfix}`;
+    return `Найдено ${totalDocs} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
   return (
     <AppShopLayout shop={shop}>
       <Inner>
-        <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
+        <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
         <FormikIndividualSearch
@@ -288,7 +285,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                       <div className={`mr-6`}>
                         <Button
                           onClick={() => {
-                            router.push(addProductsPath).catch((e) => console.log(e));
+                            console.log('Add product');
                           }}
                           testId={'add-shop-product'}
                           size={'small'}
@@ -309,7 +306,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                       <div className={`mr-6`}>
                         <Button
                           onClick={() => {
-                            router.push(addProductsPath).catch((e) => console.log(e));
+                            console.log('Add product');
                           }}
                           testId={'add-shop-product'}
                           size={'small'}
@@ -329,6 +326,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                 const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
                 const prevUrlArray = pagerUrl.split('/').filter((param) => param);
                 const nextUrl = [...prevUrlArray, pageParam].join('/');
+                console.log(nextUrl);
                 router.push(`/${nextUrl}`).catch((e) => {
                   console.log(e);
                 });
@@ -344,16 +342,16 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
 
 interface CompanyShopProductsListInterface
   extends PagePropsInterface,
-    ShopProductsListRouteInterface {}
+    ShopAddProductsListRouteInterface {}
 
-const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
+const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
   ...props
 }) => {
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopProductsListRoute shop={shop} {...props} />
+      <ShopAddProductsListRoute shop={shop} {...props} />
     </AppLayout>
   );
 };
@@ -378,7 +376,7 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_APP}/shops/${shopId}/products/${rubricId}`;
+  const basePath = `${ROUTE_APP}/shops/${shopId}/products/add/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -615,9 +613,8 @@ export const getServerSideProps = async (
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-  const payload: ShopProductsListRouteInterface = {
+  const payload: ShopAddProductsListRouteInterface = {
     shop,
-    rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
     clearSlug: `${basePath}${sortPathname}`,
     totalDocs: shopProductsResult.totalDocs,
@@ -665,4 +662,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default CompanyShopProductsList;
+export default CompanyShopAddProductsList;

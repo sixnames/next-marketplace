@@ -535,6 +535,9 @@ export interface ProductModel extends BaseModel, TimestampModel {
 export interface ProductFacetModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
+  itemId: string;
+  originalName: string;
+  nameI18n: TranslationModel;
   active: boolean;
   rubricId: ObjectIdModel;
   brandCollectionSlug?: string | null;

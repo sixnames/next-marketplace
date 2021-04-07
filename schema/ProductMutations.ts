@@ -307,7 +307,10 @@ export const ProductMutations = extendType({
 
           const createdProductFacetResult = await productFacetsCollection.insertOne({
             _id: productId,
+            itemId,
             slug,
+            nameI18n: values.nameI18n,
+            originalName: values.originalName,
             active: false,
             rubricId,
             brandCollectionSlug,
@@ -473,6 +476,8 @@ export const ProductMutations = extendType({
               $set: {
                 slug: updatedSlug,
                 active: values.active,
+                nameI18n: values.nameI18n,
+                originalName: values.originalName,
                 rubricId,
                 brandCollectionSlug: values.brandCollectionSlug,
                 brandSlug: values.brandSlug,

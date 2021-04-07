@@ -294,18 +294,15 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       _id,
       active,
       itemId,
-      updatedAt: new Date(),
-      createdAt: new Date(),
+      originalName: defaultLocaleName,
       nameI18n: {
         [DEFAULT_LOCALE]: defaultLocaleName,
         [SECONDARY_LOCALE]: secondaryLocaleName,
       },
-      ...DEFAULT_COUNTERS_OBJECT,
       descriptionI18n: {
         [DEFAULT_LOCALE]: defaultDescription,
         [SECONDARY_LOCALE]: secondaryDescription,
       },
-      originalName: defaultLocaleName,
       assets: [assetA],
       shopProductsCountCities: {},
       isCustomersChoiceCities: {
@@ -317,6 +314,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       brandSlug,
       brandCollectionSlug,
       manufacturerSlug,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      ...DEFAULT_COUNTERS_OBJECT,
       ...productAttributes({
         wineColorOption,
         wineTypeOption,
@@ -326,8 +326,14 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
     const facet: ProductFacetModel = {
       _id,
-      active,
+      itemId,
       slug,
+      originalName: defaultLocaleName,
+      nameI18n: {
+        [DEFAULT_LOCALE]: defaultLocaleName,
+        [SECONDARY_LOCALE]: secondaryLocaleName,
+      },
+      active,
       rubricId,
       brandSlug,
       brandCollectionSlug,

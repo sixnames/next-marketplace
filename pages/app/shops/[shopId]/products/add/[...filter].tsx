@@ -1,12 +1,9 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
@@ -17,22 +14,16 @@ import {
   ROUTE_APP,
   SORT_DESC,
 } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
   CatalogueFilterAttributeModel,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
+  ProductFacetModel,
   ShopModel,
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { Form, Formik } from 'formik';
-import {
-  useDeleteProductFromShopMutation,
-  useUpdateManyShopProductsMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -42,7 +33,7 @@ import {
   getCatalogueRubric,
   getRubricCatalogueAttributes,
 } from 'lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -53,7 +44,7 @@ import * as React from 'react';
 
 interface ShopAddProductsListRouteInterface {
   shop: ShopModel;
-  docs: ShopProductModel[];
+  docs: ProductFacetModel[];
   totalDocs: number;
   totalPages: number;
   hasPrevPage: boolean;
@@ -81,111 +72,44 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
   basePath,
 }) => {
   const router = useRouter();
-  const {
-    showModal,
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({ withModal: true });
-
-  const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.updateManyShopProducts);
-      router.reload();
-    },
-    onError: onErrorCallback,
-  });
-
-  const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.deleteProductFromShop);
-      router.reload();
-    },
-    onError: onErrorCallback,
-  });
-
-  const columns: TableColumn<ShopProductModel>[] = [
+  const columns: TableColumn<ProductFacetModel>[] = [
     {
-      accessor: 'itemId',
+      accessor: 'product',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => cellData.itemId,
     },
     {
+      accessor: 'product',
       headTitle: 'Фото',
-      render: ({ dataItem }) => {
+      render: ({ cellData }) => {
         return (
           <TableRowImage
-            src={`${dataItem.mainImage}`}
-            alt={`${dataItem.name}`}
-            title={`${dataItem.name}`}
+            src={`${cellData.mainImage}`}
+            alt={`${cellData.originalName}`}
+            title={`${cellData.originalName}`}
           />
         );
       },
     },
     {
-      accessor: 'originalName',
+      accessor: 'product.originalName',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      headTitle: 'Наличие',
-      render: ({ rowIndex }) => {
-        return (
-          <FormikInput
-            testId={`shop-product-available-${rowIndex}`}
-            name={`shopProducts[${rowIndex}].available`}
-            type={'number'}
-            low
-          />
-        );
-      },
+      accessor: 'product.shopsCount',
+      headTitle: 'В магазинах',
+      render: ({ cellData }) => cellData,
     },
     {
-      headTitle: 'Цена',
-      render: ({ rowIndex }) => {
-        return (
-          <FormikInput
-            testId={`shop-product-price-${rowIndex}`}
-            name={`shopProducts[${rowIndex}].price`}
-            type={'number'}
-            low
-          />
-        );
-      },
+      accessor: 'product.cardPrices.min',
+      headTitle: 'Мин. цена',
+      render: ({ cellData }) => cellData,
     },
     {
-      render: ({ dataItem }) => {
-        return (
-          <ContentItemControls
-            justifyContent={'flex-end'}
-            deleteTitle={'Удалить товар из магазина'}
-            deleteHandler={() => {
-              showModal<ConfirmModalInterface>({
-                variant: CONFIRM_MODAL,
-                props: {
-                  testId: 'delete-shop-product-modal',
-                  message: `Вы уверенны, что хотите удалить ${dataItem.originalName} из магазина?`,
-                  confirm: () => {
-                    showLoading();
-                    deleteProductFromShopMutation({
-                      variables: {
-                        input: {
-                          shopProductId: dataItem._id,
-                          shopId: `${shop._id}`,
-                        },
-                      },
-                    }).catch(() => {
-                      showErrorNotification();
-                    });
-                  },
-                },
-              });
-            }}
-            testId={`${dataItem._id}`}
-          />
-        );
-      },
+      accessor: 'product.cardPrices.max',
+      headTitle: 'Макс. цена',
+      render: ({ cellData }) => cellData,
     },
   ];
 
@@ -234,91 +158,23 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
           </div>
 
           <div className={'max-w-full'}>
-            <Formik
-              enableReinitialize={true}
-              onSubmit={(values) => {
-                const updatedProducts: ShopProductModel[] = [];
-                values.shopProducts.forEach((shopProduct, index) => {
-                  const initialShopProduct = docs[index];
-                  if (
-                    initialShopProduct &&
-                    (initialShopProduct.available !== noNaN(shopProduct.available) ||
-                      initialShopProduct.price !== noNaN(shopProduct.price))
-                  ) {
-                    updatedProducts.push(shopProduct);
-                  }
-                });
-                if (updatedProducts.length > 0) {
-                  showLoading();
-
-                  updateManyShopProductsMutation({
-                    variables: {
-                      input: updatedProducts.map(({ productId, price, available, _id }) => {
-                        return {
-                          shopProductId: `${_id}`,
-                          productId: `${productId}`,
-                          price: noNaN(price),
-                          available: noNaN(available),
-                        };
-                      }),
-                    },
-                  }).catch((e) => console.log(e));
-                } else {
-                  showErrorNotification({
-                    title: 'Нет изменённых товаров',
-                  });
-                }
-              }}
-              initialValues={{
-                shopProducts: docs,
-              }}
-            >
-              {() => {
-                return (
-                  <Form>
-                    <div className={`mb-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => {
-                            console.log('Add product');
-                          }}
-                          testId={'add-shop-product'}
-                          size={'small'}
-                        >
-                          Добавить товары
-                        </Button>
-                      </div>
-                    </div>
-                    <div className={`overflow-x-auto`}>
-                      <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
-                    </div>
-                    <div className={`mt-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => {
-                            console.log('Add product');
-                          }}
-                          testId={'add-shop-product'}
-                          size={'small'}
-                        >
-                          Добавить товары
-                        </Button>
-                      </div>
-                    </div>
-                  </Form>
-                );
-              }}
-            </Formik>
+            <div className={`mb-6 flex`}>
+              <div className={`mr-6`}>
+                <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                  Далее
+                </Button>
+              </div>
+            </div>
+            <div className={`overflow-x-auto`}>
+              <Table<ProductFacetModel> columns={columns} data={docs} testIdKey={'_id'} />
+            </div>
+            <div className={`mt-6 flex`}>
+              <div className={`mr-6`}>
+                <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                  Далее
+                </Button>
+              </div>
+            </div>
 
             <Pager
               page={page}
@@ -356,8 +212,8 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   );
 };
 
-interface ShopProductsAggregationInterface {
-  docs: ShopProductModel[];
+interface ProductsAggregationInterface {
+  docs: ProductFacetModel[];
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
@@ -372,6 +228,7 @@ export const getServerSideProps = async (
   const db = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -389,6 +246,8 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+  const locale = initialProps.props.sessionLocale;
+  const city = shop.citySlug;
 
   // Get rubric
   const rubric = await getCatalogueRubric([
@@ -419,7 +278,7 @@ export const getServerSideProps = async (
   const pricesStage =
     minPrice && maxPrice
       ? {
-          price: {
+          [`minPriceCities.${shop.citySlug}`]: {
             $gte: minPrice,
             $lte: maxPrice,
           },
@@ -463,12 +322,24 @@ export const getServerSideProps = async (
       }
     : {};
 
-  const shopProductsAggregation = await shopProductsCollection
-    .aggregate<ShopProductsAggregationInterface>([
+  const shopProductsIdsAggregation = await shopProductsCollection
+    .aggregate([
       {
         $match: {
           rubricId: rubric._id,
           shopId: shop._id,
+        },
+      },
+    ])
+    .toArray();
+  const shopProductsIds = shopProductsIdsAggregation.map(({ _id }) => _id);
+
+  const productsAggregation = await productFacetsCollection
+    .aggregate<ProductsAggregationInterface>([
+      {
+        $match: {
+          rubricId: rubric._id,
+          _id: { $nin: shopProductsIds },
           ...searchStage,
           ...pricesStage,
           ...optionsStage,
@@ -487,6 +358,27 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
+            },
+            {
+              $lookup: {
+                from: COL_PRODUCTS,
+                as: 'products',
+                let: { facetId: '$_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$facetId', '$_id'],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      attributes: false,
+                    },
+                  },
+                ],
+              },
             },
           ],
           options: [
@@ -523,18 +415,6 @@ export const getServerSideProps = async (
                 optionsSlugs: {
                   $addToSet: '$_id',
                 },
-              },
-            },
-          ],
-          prices: [
-            {
-              $project: {
-                price: 1,
-              },
-            },
-            {
-              $group: {
-                _id: '$price',
               },
             },
           ],
@@ -586,19 +466,19 @@ export const getServerSideProps = async (
       },
     ])
     .toArray();
-  const shopProductsResult = shopProductsAggregation[0];
-  if (!shopProductsResult) {
+  const productsResult = productsAggregation[0];
+  if (!productsResult) {
     return {
       notFound: true,
     };
   }
-  // console.log(shopProductsResult.docs[0]);
+  // console.log(productsResult);
   // console.log('After products ', new Date().getTime() - startTime);
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
   const rubricAttributes = await getRubricCatalogueAttributes({
-    config: shopProductsResult.options,
+    config: productsResult.options,
     attributes: rubric.attributes,
     city: initialProps.props.sessionCity,
   });
@@ -607,49 +487,66 @@ export const getServerSideProps = async (
     attributes: rubricAttributes,
     locale: initialProps.props.sessionLocale,
     filter: restFilter,
-    productsPrices: shopProductsResult.prices,
+    productsPrices: [],
     basePath,
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+
+  const docs: ProductFacetModel[] = [];
+  for await (const facet of productsResult.docs) {
+    const { products, ...restFacet } = facet;
+    const product = products ? products[0] : null;
+    if (!product) {
+      continue;
+    }
+
+    const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
+    const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
+    const cardPrices = {
+      _id: new ObjectId(),
+      min: getCurrencyString({ value: minPrice, locale }),
+      max: getCurrencyString({ value: maxPrice, locale }),
+    };
+
+    // image
+    const sortedAssets = product.assets.sort((assetA, assetB) => {
+      return assetA.index - assetB.index;
+    });
+    const firstAsset = sortedAssets[0];
+    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+
+    if (firstAsset) {
+      mainImage = firstAsset.url;
+    }
+
+    docs.push({
+      ...restFacet,
+      product: {
+        ...product,
+        name: getFieldStringLocale(product.nameI18n, locale),
+        cardPrices,
+        mainImage,
+        shopsCount: noNaN(product.shopProductsCountCities[city]),
+        isCustomersChoice: product.isCustomersChoiceCities[city],
+      },
+    });
+  }
 
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: ShopAddProductsListRouteInterface = {
     shop,
     rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
     clearSlug: `${basePath}${sortPathname}`,
-    totalDocs: shopProductsResult.totalDocs,
-    totalPages: shopProductsResult.totalPages,
-    hasNextPage: shopProductsResult.hasNextPage,
-    hasPrevPage: shopProductsResult.hasPrevPage,
+    totalDocs: productsResult.totalDocs,
+    totalPages: productsResult.totalPages,
+    hasNextPage: productsResult.hasNextPage,
+    hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
     pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
     selectedAttributes,
     page,
-    docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
-      const { assets, nameI18n, ...restShopProduct } = shopProduct;
-
-      // image
-      const sortedAssets = assets.sort((assetA, assetB) => {
-        return assetA.index - assetB.index;
-      });
-      const firstAsset = sortedAssets[0];
-      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-      if (firstAsset) {
-        mainImage = firstAsset.url;
-      }
-
-      return [
-        ...acc,
-        {
-          ...restShopProduct,
-          assets,
-          nameI18n,
-          mainImage,
-          name: getFieldStringLocale(nameI18n, initialProps.props?.sessionLocale),
-        },
-      ];
-    }, []),
+    docs,
   };
 
   const castedPayload = castDbData(payload);

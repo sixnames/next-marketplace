@@ -1162,6 +1162,7 @@ export interface NexusGenFieldTypes {
     addAttributesGroupToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addCityToCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     addCollectionToBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
+    addManyProductsToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addOptionToGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     addProductAssets: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -2182,6 +2183,7 @@ export interface NexusGenFieldTypeNames {
     addAttributesGroupToRubric: 'RubricPayload';
     addCityToCountry: 'CountryPayload';
     addCollectionToBrand: 'BrandPayload';
+    addManyProductsToShop: 'ShopPayload';
     addOptionToGroup: 'OptionsGroupPayload';
     addProductAssets: 'ProductPayload';
     addProductToCart: 'CartPayload';
@@ -2883,6 +2885,10 @@ export interface NexusGenArgTypes {
     addCollectionToBrand: {
       // args
       input: NexusGenInputs['AddCollectionToBrandInput']; // AddCollectionToBrandInput!
+    };
+    addManyProductsToShop: {
+      // args
+      input: NexusGenInputs['AddProductToShopInput'][]; // [AddProductToShopInput!]!
     };
     addOptionToGroup: {
       // args

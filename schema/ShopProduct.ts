@@ -1,3 +1,4 @@
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -7,7 +8,7 @@ import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'l
 import { getPercentage } from 'lib/numbers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateProductShopsData } from 'lib/productShopsUtils';
-import { updateShopProductSchema } from 'validation/shopSchema';
+import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',
@@ -200,6 +201,24 @@ export const ShopProductMutations = extendType({
           // Update product shops data
           await updateProductShopsData({ productId });
 
+          // Update product shops data
+          const updatedProduct = await updateProductShopsData({ productId });
+          if (!updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('shopProducts.update.error'),
+            };
+          }
+          const updatedRubric = await recalculateRubricProductCounters({
+            rubricId: updatedProduct.rubricId,
+          });
+          if (!updatedRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('shopProducts.update.error'),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('shopProducts.update.success'),
@@ -234,8 +253,9 @@ export const ShopProductMutations = extendType({
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
-            schema: updateShopProductSchema,
+            schema: updateManyShopProductsSchema,
           });
+          await validationSchema.validate(args);
 
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
@@ -244,16 +264,12 @@ export const ShopProductMutations = extendType({
 
           let doneCount = 0;
           for await (const shopProductValues of input) {
-            await validationSchema.validate(shopProductValues);
             const { shopProductId, productId, ...values } = shopProductValues;
 
             // Check shop product availability
             const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
             if (!shopProduct) {
-              return {
-                success: false,
-                message: await getApiMessage('shopProducts.update.notFound'),
-              };
+              break;
             }
 
             // Update shop product
@@ -282,7 +298,17 @@ export const ShopProductMutations = extendType({
             }
 
             // Update product shops data
-            await updateProductShopsData({ productId });
+            const updatedProduct = await updateProductShopsData({ productId });
+            if (!updatedProduct) {
+              break;
+            }
+            const updatedRubric = await recalculateRubricProductCounters({
+              rubricId: updatedProduct.rubricId,
+            });
+            if (!updatedRubric) {
+              break;
+            }
+
             doneCount = doneCount + 1;
           }
 

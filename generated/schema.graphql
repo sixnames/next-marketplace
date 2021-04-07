@@ -742,6 +742,11 @@ type Mutation {
   addCollectionToBrand(input: AddCollectionToBrandInput!): BrandPayload!
 
   """
+  Should add many products to the shop
+  """
+  addManyProductsToShop(input: [AddProductToShopInput!]!): ShopPayload!
+
+  """
   Should add option to the group
   """
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayload!

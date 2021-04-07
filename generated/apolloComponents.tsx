@@ -907,6 +907,8 @@ export type Mutation = {
   updateShopLogo: ShopPayload;
   /** Should add product to the shop */
   addProductToShop: ShopPayload;
+  /** Should add many products to the shop */
+  addManyProductsToShop: ShopPayload;
   /** Should delete product from shop */
   deleteProductFromShop: ShopPayload;
   /** Should create company */
@@ -1312,6 +1314,11 @@ export type MutationUpdateShopLogoArgs = {
 
 export type MutationAddProductToShopArgs = {
   input: AddProductToShopInput;
+};
+
+
+export type MutationAddManyProductsToShopArgs = {
+  input: Array<AddProductToShopInput>;
 };
 
 
@@ -3715,6 +3722,19 @@ export type UpdateManyShopProductsMutation = (
   & { updateManyShopProducts: (
     { __typename?: 'ShopProductPayload' }
     & Pick<ShopProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type AddManyProductsToShopMutationVariables = Exact<{
+  input: Array<AddProductToShopInput> | AddProductToShopInput;
+}>;
+
+
+export type AddManyProductsToShopMutation = (
+  { __typename?: 'Mutation' }
+  & { addManyProductsToShop: (
+    { __typename?: 'ShopPayload' }
+    & Pick<ShopPayload, 'success' | 'message'>
   ) }
 );
 
@@ -7968,6 +7988,40 @@ export function useUpdateManyShopProductsMutation(baseOptions?: Apollo.MutationH
 export type UpdateManyShopProductsMutationHookResult = ReturnType<typeof useUpdateManyShopProductsMutation>;
 export type UpdateManyShopProductsMutationResult = Apollo.MutationResult<UpdateManyShopProductsMutation>;
 export type UpdateManyShopProductsMutationOptions = Apollo.BaseMutationOptions<UpdateManyShopProductsMutation, UpdateManyShopProductsMutationVariables>;
+export const AddManyProductsToShopDocument = gql`
+    mutation AddManyProductsToShop($input: [AddProductToShopInput!]!) {
+  addManyProductsToShop(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddManyProductsToShopMutationFn = Apollo.MutationFunction<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>;
+
+/**
+ * __useAddManyProductsToShopMutation__
+ *
+ * To run a mutation, you first call `useAddManyProductsToShopMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddManyProductsToShopMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addManyProductsToShopMutation, { data, loading, error }] = useAddManyProductsToShopMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddManyProductsToShopMutation(baseOptions?: Apollo.MutationHookOptions<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>(AddManyProductsToShopDocument, options);
+      }
+export type AddManyProductsToShopMutationHookResult = ReturnType<typeof useAddManyProductsToShopMutation>;
+export type AddManyProductsToShopMutationResult = Apollo.MutationResult<AddManyProductsToShopMutation>;
+export type AddManyProductsToShopMutationOptions = Apollo.BaseMutationOptions<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>;
 export const DeleteProductFromShopDocument = gql`
     mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
   deleteProductFromShop(input: $input) {

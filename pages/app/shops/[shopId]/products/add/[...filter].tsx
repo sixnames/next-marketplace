@@ -1,6 +1,8 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
+import Checkbox from 'components/FormElements/Checkbox/Checkbox';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
@@ -24,6 +26,13 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { Form, Formik } from 'formik';
+import {
+  AddProductToShopInput,
+  useAddManyProductsToShopMutation,
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -41,10 +50,20 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import { addManyProductsToShopSchema } from 'validation/shopSchema';
+
+type StepType = 1 | 2;
+type CreateChosenProduct = (product: ProductFacetModel) => void;
+type DeleteChosenProduct = (product: ProductFacetModel) => void;
+type SetStepHandler = (step: StepType) => void;
 
 interface ShopAddProductsListRouteInterface {
   shop: ShopModel;
   docs: ProductFacetModel[];
+  chosen: ProductFacetModel[];
+  createChosenProduct: CreateChosenProduct;
+  deleteChosenProduct: DeleteChosenProduct;
+  setStepHandler: SetStepHandler;
   totalDocs: number;
   totalPages: number;
   hasPrevPage: boolean;
@@ -54,6 +73,7 @@ interface ShopAddProductsListRouteInterface {
   selectedAttributes: CatalogueFilterAttributeModel[];
   clearSlug: string;
   rubricName: string;
+  rubricId: string;
   pagerUrl: string;
   basePath: string;
 }
@@ -70,9 +90,35 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
   rubricName,
   pagerUrl,
   basePath,
+  chosen,
+  createChosenProduct,
+  deleteChosenProduct,
+  setStepHandler,
 }) => {
   const router = useRouter();
   const columns: TableColumn<ProductFacetModel>[] = [
+    {
+      render: ({ dataItem }) => {
+        const isSelected = chosen.find(({ _id }) => {
+          return _id === dataItem._id;
+        });
+
+        return (
+          <Checkbox
+            name={'chosen'}
+            value={isSelected ? 'true' : ''}
+            checked={Boolean(isSelected)}
+            onChange={() => {
+              if (isSelected) {
+                deleteChosenProduct(dataItem);
+              } else {
+                createChosenProduct(dataItem);
+              }
+            }}
+          />
+        );
+      },
+    },
     {
       accessor: 'product',
       headTitle: 'Арт',
@@ -160,7 +206,12 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
           <div className={'max-w-full'}>
             <div className={`mb-6 flex`}>
               <div className={`mr-6`}>
-                <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                <Button
+                  disabled={chosen.length < 1}
+                  onClick={() => setStepHandler(2)}
+                  testId={'next-step-top'}
+                  size={'small'}
+                >
                   Далее
                 </Button>
               </div>
@@ -170,7 +221,12 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
             </div>
             <div className={`mt-6 flex`}>
               <div className={`mr-6`}>
-                <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                <Button
+                  disabled={chosen.length < 1}
+                  onClick={() => setStepHandler(2)}
+                  testId={'next-step-bottom'}
+                  size={'small'}
+                >
                   Далее
                 </Button>
               </div>
@@ -182,7 +238,6 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
                 const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
                 const prevUrlArray = pagerUrl.split('/').filter((param) => param);
                 const nextUrl = [...prevUrlArray, pageParam].join('/');
-                console.log(nextUrl);
                 router.push(`/${nextUrl}`).catch((e) => {
                   console.log(e);
                 });
@@ -196,18 +251,280 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
   );
 };
 
+const ShopAddProductsFinalStepRoute: React.FC<ShopAddProductsListRouteInterface> = ({
+  shop,
+  chosen,
+  createChosenProduct,
+  deleteChosenProduct,
+  setStepHandler,
+  rubricId,
+}) => {
+  const router = useRouter();
+  const {
+    onErrorCallback,
+    onCompleteCallback,
+    showLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({ withModal: true });
+  const [addManyProductsToShopMutation] = useAddManyProductsToShopMutation({
+    onCompleted: (data) => {
+      onCompleteCallback(data.addManyProductsToShop);
+      if (data.addManyProductsToShop.success) {
+        router
+          .push(`${ROUTE_APP}/shops/${shop._id}/products/${rubricId}`)
+          .catch((e) => console.log(e));
+      }
+    },
+    onError: onErrorCallback,
+  });
+  const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
+
+  const columns: TableColumn<ProductFacetModel>[] = [
+    {
+      render: ({ dataItem }) => {
+        const isSelected = chosen.find(({ _id }) => {
+          return _id === dataItem._id;
+        });
+
+        return (
+          <Checkbox
+            name={'chosen'}
+            value={isSelected ? 'true' : ''}
+            checked={Boolean(isSelected)}
+            onChange={() => {
+              if (isSelected) {
+                deleteChosenProduct(dataItem);
+              } else {
+                createChosenProduct(dataItem);
+              }
+            }}
+          />
+        );
+      },
+    },
+    {
+      accessor: 'product',
+      headTitle: 'Арт',
+      render: ({ cellData }) => cellData.itemId,
+    },
+    {
+      accessor: 'product',
+      headTitle: 'Фото',
+      render: ({ cellData }) => {
+        return (
+          <TableRowImage
+            src={`${cellData.mainImage}`}
+            alt={`${cellData.originalName}`}
+            title={`${cellData.originalName}`}
+          />
+        );
+      },
+    },
+    {
+      accessor: 'product.originalName',
+      headTitle: 'Название',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Наличие',
+      render: ({ rowIndex }) => {
+        return (
+          <FormikInput
+            testId={`shop-product-available-${rowIndex}`}
+            name={`input[${rowIndex}].available`}
+            type={'number'}
+            low
+          />
+        );
+      },
+    },
+    {
+      headTitle: 'Цена',
+      render: ({ rowIndex }) => {
+        return (
+          <FormikInput
+            testId={`shop-product-price-${rowIndex}`}
+            name={`input[${rowIndex}].price`}
+            type={'number'}
+            low
+          />
+        );
+      },
+    },
+  ];
+
+  const catalogueCounterString = React.useMemo(() => {
+    const catalogueCounterPostfix = getNumWord(chosen.length, [
+      'наименование',
+      'наименования',
+      'наименований',
+    ]);
+    return `Выбрано ${chosen.length} ${catalogueCounterPostfix}`;
+  }, [chosen]);
+
+  const initialValues = {
+    input: chosen.map((facet) => {
+      return {
+        ...facet,
+        productId: facet._id,
+        shopId: shop._id,
+        available: 0,
+        price: 0,
+      };
+    }),
+  };
+
+  return (
+    <AppShopLayout shop={shop}>
+      <Inner>
+        <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
+        <div className={`mb-6`}>{catalogueCounterString}</div>
+
+        <div className={`max-w-full`}>
+          <div className={'max-w-full'}>
+            <Formik
+              validationSchema={validationSchema}
+              enableReinitialize={true}
+              onSubmit={(values) => {
+                showLoading();
+                const input: AddProductToShopInput[] = values.input.map(
+                  ({ available, price, shopId, productId }) => ({
+                    available,
+                    price,
+                    shopId,
+                    productId,
+                  }),
+                );
+                addManyProductsToShopMutation({
+                  variables: {
+                    input,
+                  },
+                }).catch(() => {
+                  showErrorNotification();
+                });
+              }}
+              initialValues={initialValues}
+            >
+              {() => {
+                return (
+                  <Form>
+                    <div className={`mb-6 flex`}>
+                      <div className={`mr-6`}>
+                        <Button
+                          disabled={chosen.length < 1}
+                          testId={'save-shop-products-top'}
+                          type={'submit'}
+                          size={'small'}
+                        >
+                          Сохранить
+                        </Button>
+                      </div>
+                      <div className={`mr-6`}>
+                        <Button
+                          onClick={() => setStepHandler(1)}
+                          testId={'back-top'}
+                          size={'small'}
+                          theme={'secondary'}
+                        >
+                          Назад
+                        </Button>
+                      </div>
+                    </div>
+                    <div className={`overflow-x-auto`}>
+                      <Table<ProductFacetModel> columns={columns} data={chosen} testIdKey={'_id'} />
+                    </div>
+                    <div className={`mt-6 flex`}>
+                      <div className={`mr-6`}>
+                        <Button
+                          disabled={chosen.length < 1}
+                          testId={'save-shop-products-bottom'}
+                          type={'submit'}
+                          size={'small'}
+                        >
+                          Сохранить
+                        </Button>
+                      </div>
+                      <div className={`mr-6`}>
+                        <Button
+                          onClick={() => setStepHandler(1)}
+                          testId={'back-bottom'}
+                          size={'small'}
+                          theme={'secondary'}
+                        >
+                          Назад
+                        </Button>
+                      </div>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
+        </div>
+      </Inner>
+    </AppShopLayout>
+  );
+};
+
+type ShopAddProductsListRouteReduced = Omit<
+  ShopAddProductsListRouteInterface,
+  'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler'
+>;
+
 interface CompanyShopProductsListInterface
   extends PagePropsInterface,
-    ShopAddProductsListRouteInterface {}
+    ShopAddProductsListRouteReduced {}
 
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
   ...props
 }) => {
+  const [chosen, setChosen] = React.useState<ProductFacetModel[]>([]);
+  const [step, setStep] = React.useState<StepType>(1);
+
+  const createChosenProduct: CreateChosenProduct = (product) => {
+    setChosen((prevState) => {
+      return [...prevState, product];
+    });
+  };
+
+  const deleteChosenProduct: DeleteChosenProduct = (product) => {
+    setChosen((prevState) => {
+      const filteredProducts = prevState.filter(({ _id }) => _id !== product._id);
+      return filteredProducts;
+    });
+  };
+
+  const setStepHandler: SetStepHandler = (step) => {
+    setStep(step);
+  };
+
+  if (step === 2) {
+    return (
+      <AppLayout pageUrls={pageUrls}>
+        <ShopAddProductsFinalStepRoute
+          createChosenProduct={createChosenProduct}
+          deleteChosenProduct={deleteChosenProduct}
+          setStepHandler={setStepHandler}
+          chosen={chosen}
+          shop={shop}
+          {...props}
+        />
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopAddProductsListRoute shop={shop} {...props} />
+      <ShopAddProductsListRoute
+        createChosenProduct={createChosenProduct}
+        deleteChosenProduct={deleteChosenProduct}
+        setStepHandler={setStepHandler}
+        chosen={chosen}
+        shop={shop}
+        {...props}
+      />
     </AppLayout>
   );
 };
@@ -533,8 +850,9 @@ export const getServerSideProps = async (
   }
 
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-  const payload: ShopAddProductsListRouteInterface = {
+  const payload: ShopAddProductsListRouteReduced = {
     shop,
+    rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
     clearSlug: `${basePath}${sortPathname}`,
     totalDocs: productsResult.totalDocs,

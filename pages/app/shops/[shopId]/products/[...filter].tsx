@@ -33,6 +33,7 @@ import {
   useUpdateManyShopProductsMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -50,6 +51,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import { updateManyShopProductsSchema } from 'validation/shopSchema';
 
 interface ShopProductsListRouteInterface {
   shop: ShopModel;
@@ -91,11 +93,13 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
   const addProductsPath = `${ROUTE_APP}/shops/${shop._id}/products/add/${rubricId}`;
-
+  const validationSchema = useValidationSchema({ schema: updateManyShopProductsSchema });
   const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
     onCompleted: (data) => {
       onCompleteCallback(data.updateManyShopProducts);
-      router.reload();
+      if (data.updateManyShopProducts.success) {
+        router.reload();
+      }
     },
     onError: onErrorCallback,
   });
@@ -137,7 +141,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
         return (
           <FormikInput
             testId={`shop-product-available-${rowIndex}`}
-            name={`shopProducts[${rowIndex}].available`}
+            name={`input[${rowIndex}].available`}
             type={'number'}
             low
           />
@@ -150,7 +154,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
         return (
           <FormikInput
             testId={`shop-product-price-${rowIndex}`}
-            name={`shopProducts[${rowIndex}].price`}
+            name={`input[${rowIndex}].price`}
             type={'number'}
             low
           />
@@ -201,6 +205,15 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     return `Найдено ${noNaN(totalDocs)} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
+  const initialValues = {
+    input: docs.map((shopProduct) => {
+      return {
+        ...shopProduct,
+        shopProductId: shopProduct._id,
+      };
+    }),
+  };
+
   return (
     <AppShopLayout shop={shop}>
       <Inner>
@@ -238,10 +251,12 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
 
           <div className={'max-w-full'}>
             <Formik
+              initialValues={initialValues}
               enableReinitialize={true}
+              validationSchema={validationSchema}
               onSubmit={(values) => {
                 const updatedProducts: ShopProductModel[] = [];
-                values.shopProducts.forEach((shopProduct, index) => {
+                values.input.forEach((shopProduct, index) => {
                   const initialShopProduct = docs[index];
                   if (
                     initialShopProduct &&
@@ -272,9 +287,6 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                   });
                 }
               }}
-              initialValues={{
-                shopProducts: docs,
-              }}
             >
               {() => {
                 return (
@@ -290,7 +302,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                           onClick={() => {
                             router.push(addProductsPath).catch((e) => console.log(e));
                           }}
-                          testId={'add-shop-product'}
+                          testId={'add-shop-product-top'}
                           size={'small'}
                         >
                           Добавить товары
@@ -311,7 +323,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                           onClick={() => {
                             router.push(addProductsPath).catch((e) => console.log(e));
                           }}
-                          testId={'add-shop-product'}
+                          testId={'add-shop-product-bottom'}
                           size={'small'}
                         >
                           Добавить товары

@@ -2,7 +2,7 @@ import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'c
 import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
 import { recalculateRubricProductCounters } from 'lib/rubricUtils';
-import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_CITIES,
@@ -28,6 +28,7 @@ import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelper
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateProductShopsData } from 'lib/productShopsUtils';
 import {
+  addManyProductsToShopSchema,
   addProductToShopSchema,
   addShopAssetsSchema,
   deleteProductFromShopSchema,
@@ -864,6 +865,119 @@ export const ShopMutations = extendType({
       },
     });
 
+    // Should add many products to the shop
+    t.nonNull.field('addManyProductsToShop', {
+      type: 'ShopPayload',
+      description: 'Should add many products to the shop',
+      args: {
+        input: nonNull(
+          list(
+            nonNull(
+              arg({
+                type: 'AddProductToShopInput',
+              }),
+            ),
+          ),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        try {
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: addManyProductsToShopSchema,
+          });
+          await validationSchema.validate(args);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+          let doneCount = 0;
+          for await (const shopProductInput of args.input) {
+            const { shopId, productId, ...values } = shopProductInput;
+
+            // Check shop and product availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            const product = await productsCollection.findOne({ _id: productId });
+            const productFacet = await productFacetsCollection.findOne({ _id: productId });
+            if (!shop || !product || !productFacet) {
+              break;
+            }
+
+            // Check if product already exist in the shop
+            const exist = await shopProductsCollection.findOne({
+              productId,
+              shopId: shop._id,
+            });
+            if (exist) {
+              break;
+            }
+
+            // Create shop product
+            const createdShopProductResult = await shopProductsCollection.insertOne({
+              ...values,
+              productId,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: product.rubricId,
+              companyId: shop.companyId,
+              itemId: product.itemId,
+              slug: product.slug,
+              originalName: product.originalName,
+              nameI18n: product.nameI18n,
+              brandSlug: product.brandSlug,
+              brandCollectionSlug: product.brandCollectionSlug,
+              manufacturerSlug: product.manufacturerSlug,
+              assets: product.assets,
+              selectedOptionsSlugs: productFacet.selectedOptionsSlugs,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+            });
+            const createdShopProduct = createdShopProductResult.ops[0];
+            if (!createdShopProductResult.result.ok || !createdShopProduct) {
+              break;
+            }
+
+            // Update product shops data
+            const updatedProduct = await updateProductShopsData({ productId });
+            if (!updatedProduct) {
+              break;
+            }
+            const updatedRubric = await recalculateRubricProductCounters({
+              rubricId: updatedProduct.rubricId,
+            });
+            if (!updatedRubric) {
+              break;
+            }
+
+            doneCount = doneCount + 1;
+          }
+
+          if (doneCount !== args.input.length) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.addProduct.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('shops.addProduct.success'),
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
     // Should delete product from shop
     t.nonNull.field('deleteProductFromShop', {
       type: 'ShopPayload',
@@ -914,6 +1028,24 @@ export const ShopMutations = extendType({
 
           // Update product shops data
           await updateProductShopsData({ productId: shopProduct.productId });
+
+          // Update product shops data
+          const updatedProduct = await updateProductShopsData({ productId: shopProduct.productId });
+          if (!updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.deleteProduct.error'),
+            };
+          }
+          const updatedRubric = await recalculateRubricProductCounters({
+            rubricId: updatedProduct.rubricId,
+          });
+          if (!updatedRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.deleteProduct.error'),
+            };
+          }
 
           return {
             success: true,

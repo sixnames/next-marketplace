@@ -72,6 +72,15 @@ export const UPDATE_MANY_SHOP_PRODUCTS_MUTATION = gql`
   }
 `;
 
+export const ADD_MANY_SHOP_PRODUCTS_MUTATION = gql`
+  mutation AddManyProductsToShop($input: [AddProductToShopInput!]!) {
+    addManyProductsToShop(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const DELETE_PRODUCT_FROM_SHOP_MUTATION = gql`
   mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
     deleteProductFromShop(input: $input) {

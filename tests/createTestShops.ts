@@ -1,4 +1,5 @@
 import { getDatabase } from 'db/mongodb';
+import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { createTestProducts, CreateTestProductsPayloadInterface } from './createTestProducts';
 import {
@@ -8,9 +9,9 @@ import {
   DEFAULT_CITY,
 } from 'config/common';
 import { generateSlug } from 'lib/slugUtils';
-import { CompanyModel, ShopModel, ShopProductModel } from 'db/dbModels';
+import { CompanyModel, ConfigModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mockData';
-import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_CONFIGS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { setCollectionItemId } from 'lib/itemIdUtils';
 import { updateProductShopsData } from 'lib/productShopsUtils';
 import { ObjectId } from 'mongodb';
@@ -41,6 +42,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const db = await getDatabase();
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
   const productsPayload = await createTestProducts();
@@ -498,6 +500,8 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     fileName: companyItemId,
   });
 
+  const companyEmails = [`companyA@mail.com`, 'companyAB@mail.com'];
+  const companyPhones = ['+78889990099', '+78889990199'];
   const companyA: CompanyModel = {
     _id: companyAId,
 
@@ -505,8 +509,8 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     name: companyName,
     slug: companySlug,
     contacts: {
-      emails: [`companyA@mail.com`, 'companyAB@mail.com'],
-      phones: ['+78889990099', '+78889990199'],
+      emails: companyEmails,
+      phones: companyPhones,
     },
     ownerId: companyOwner._id,
     logo: {
@@ -518,6 +522,14 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     createdAt: new Date(),
     updatedAt: new Date(),
   };
+  const configTemplates = getConfigTemplates({
+    assetsPath: `/${ASSETS_DIST_COMPANIES}/${companyItemId}`,
+    email: companyEmails,
+    phone: companyPhones,
+    siteName: companyName,
+    companySlug,
+  });
+  await configsCollection.insertMany(configTemplates);
 
   // Insert all
   const createdMockShops = await shopsCollection.insertMany([shopA, shopB]);

@@ -11,7 +11,6 @@ export interface UploadModel {
   createReadStream: () => ReadStream;
 }
 
-export type StoreFileFormat = 'jpg' | 'png' | 'svg' | 'webp';
 export type DateModel = Date;
 export type JSONObjectModel = Record<string, any>;
 export type ObjectIdModel = ObjectId;
@@ -278,6 +277,8 @@ export interface ConfigModel {
   acceptedFormats: string[];
 
   slug: string;
+  companySlug: string;
+  group: string;
   name: string;
   description?: string | null;
   value?: string[];

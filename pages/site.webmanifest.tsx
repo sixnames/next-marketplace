@@ -57,9 +57,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   });
 
-  const siteName = configs.find(({ slug }) => slug === 'siteName');
-  const android192 = configs.find(({ slug }) => slug === 'android-chrome-192x192');
-  const android512 = configs.find(({ slug }) => slug === 'android-chrome-512x512');
+  const siteName = configs.find(({ slug }) => slug === 'siteName')?.singleValue;
+  const android192 = configs.find(({ slug }) => slug === 'android-chrome-192x192')?.singleValue;
+  const android512 = configs.find(({ slug }) => slug === 'android-chrome-512x512')?.singleValue;
 
   res.setHeader('Content-Type', 'application/manifest+json');
   res.write(

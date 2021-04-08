@@ -321,11 +321,6 @@ export async function getCatalogueAttributes({
       const optionSlug = option.slug;
       const isSelected = realFilter.includes(optionSlug);
 
-      // Push to the selected options list for catalogue title config
-      if (isSelected) {
-        selectedOptions.push(option);
-      }
-
       const optionNextSlug = isSelected
         ? [...realFilter]
             .filter((pathArg) => {
@@ -342,7 +337,7 @@ export async function getCatalogueAttributes({
         isSelected,
       };
 
-      // Push to the selected options list for catalogue title config
+      // Push to the selected options list for catalogue title config and selected attributes view
       if (isSelected) {
         selectedOptions.push(option);
         selectedFilterOptions.push(castedOption);
@@ -405,7 +400,10 @@ export async function getCatalogueAttributes({
 
       // Add selected items to the catalogue title config
       selectedFilters.push({
-        attribute,
+        attribute: {
+          ...attribute,
+          options: [],
+        },
         options: selectedOptions,
       });
     }

@@ -219,7 +219,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     configCollection,
     configTemplate: {
       _id: new ObjectId('604cad82b604c1c320c3268a'),
-      slug: 'contactPhone',
+      slug: 'phone',
       name: 'Контактный телефон',
       description: 'Контактный телефон. Можно добавить несколько.',
       variant: SITE_CONFIGS_VARIANT_TEL,

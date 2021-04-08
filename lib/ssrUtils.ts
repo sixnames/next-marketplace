@@ -42,6 +42,7 @@ interface GetPageInitialStatePayloadInterface {
   sessionCity: string;
   sessionLocale: string;
   pageUrls: PageUrlsInterface;
+  company: CompanyModel | null | undefined;
   initialDataProps: {
     locale: string;
     city: string;
@@ -80,8 +81,18 @@ async function getPageInitialState({
     city: sessionCity,
   };
 
+  // Session company
+  let company: CompanyModel | null | undefined = null;
+  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
+    const db = await getDatabase();
+    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+  }
+
   // Page initial data
-  const rawInitialData = await getPageInitialData(initialDataProps);
+  const rawInitialData = await getPageInitialData({
+    ...initialDataProps,
+    companySlug: company?.slug,
+  });
   const initialData = castDbData(rawInitialData);
 
   return {
@@ -91,6 +102,7 @@ async function getPageInitialState({
     domain,
     session,
     initialData,
+    company,
     currentCity: currentCity
       ? {
           ...currentCity,
@@ -343,22 +355,15 @@ export async function getSiteInitialData({
     currentCity,
     sessionCity,
     sessionLocale,
-    domain,
     initialData,
     initialDataProps,
+    company,
   } = await getPageInitialState({ context });
 
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics(initialDataProps);
   const navRubrics = castDbData(rawNavRubrics);
-  // console.log('After initial data ', new Date().getTime() - timeStart);
 
-  // Session company
-  let company: CompanyModel | null | undefined = null;
-  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const db = await getDatabase();
-    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
-  }
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {

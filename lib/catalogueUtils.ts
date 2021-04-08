@@ -48,6 +48,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
+  CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -969,6 +970,7 @@ export const getCatalogueData = async ({
 export interface GetPageInitialDataInterface {
   locale: string;
   city: string;
+  companySlug?: string;
 }
 
 export interface PageInitialDataPayload {
@@ -981,6 +983,7 @@ export interface PageInitialDataPayload {
 export const getPageInitialData = async ({
   locale,
   city,
+  companySlug,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
@@ -989,7 +992,16 @@ export const getPageInitialData = async ({
 
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection.find({}, { sort: { _id: SORT_ASC } }).toArray();
+  const initialConfigs = await configsCollection
+    .find(
+      {
+        companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+      },
+      {
+        sort: { _id: SORT_ASC },
+      },
+    )
+    .toArray();
   const configs = initialConfigs.map((config) => {
     return {
       ...config,

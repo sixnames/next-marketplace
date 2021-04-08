@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
 import { useConfigContext } from 'context/configContext';
+import parse from 'html-react-parser';
 
 export interface PageUrlsInterface {
   canonicalUrl: string;
@@ -42,6 +43,16 @@ const Meta: React.FC<MetaInterface> = ({
   const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
   const pageFoundationYear = foundationYear || `${configFoundationYear}`;
 
+  // Icons
+  const appleTouchIcon = getSiteConfigSingleValue('apple-touch-icon');
+  const faviconIco = getSiteConfigSingleValue('favicon.ico');
+  const iconSvg = getSiteConfigSingleValue('icon.svg');
+
+  // Metrics
+  const yaVerification = getSiteConfigSingleValue('yaVerification');
+  const yaMetrica = getSiteConfigSingleValue('yaMetrica');
+  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics');
+
   return (
     <Head>
       <title>{pageTitle}</title>
@@ -69,15 +80,17 @@ const Meta: React.FC<MetaInterface> = ({
       <meta name='twitter:image' content={pagePreviewImage} />
       <meta name='twitter:description' content={pageDescription} />
 
-      <link rel='icon' href={'/favicon.ico'} />
-      <link rel='icon' href={'/icon.svg'} type={'image/svg+xml'} />
-      <link rel={'apple-touch-icon'} href={'/apple-touch-icon.png'} />
+      <link rel='icon' href={`${faviconIco}`} />
+      <link rel='icon' href={`${iconSvg}`} type={'image/svg+xml'} />
+      <link rel={'apple-touch-icon'} href={`${appleTouchIcon}`} />
       <link rel={'manifest'} href={'/site.webmanifest'} />
 
-      <meta name='msapplication-TileColor' content='#ffffff' />
       <meta name='theme-color' content='#ffffff' />
 
-      <meta name='yandex-verification' content='579c17148b497788' />
+      {/*Metrics <meta name='yandex-verification' content='579c17148b497788' />*/}
+      {yaVerification ? parse(yaVerification) : null}
+      {yaMetrica ? parse(yaMetrica) : null}
+      {googleAnalytics ? parse(googleAnalytics) : null}
 
       {/*Fonts*/}
       <link

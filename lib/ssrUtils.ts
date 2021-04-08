@@ -353,17 +353,12 @@ export async function getSiteInitialData({
   const navRubrics = castDbData(rawNavRubrics);
   // console.log('After initial data ', new Date().getTime() - timeStart);
 
+  // Session company
   let company: CompanyModel | null | undefined = null;
-
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
     const db = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
-
-  // Cache header
-  // context.res.setHeader('cache-control', `s-maxage=1, stale-while-revalidate=${ONE_WEEK}`);
-  // context.res.setHeader('cache-control', `s-maxage=604800000, stale-while-revalidate=86400000`);
-
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {

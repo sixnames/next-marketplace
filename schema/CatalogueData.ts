@@ -27,6 +27,8 @@ import {
   CATALOGUE_BRAND_KEY,
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
+  DEFAULT_COUNTER_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -230,6 +232,7 @@ export const CatalogueDataInput = inputObjectType({
   name: 'CatalogueDataInput',
   definition(t) {
     t.objectId('lastProductId');
+    t.string('companySlug', { default: DEFAULT_COUNTER_SLUG });
     t.nonNull.list.nonNull.string('filter');
   },
 });
@@ -262,7 +265,7 @@ export const CatalogueMutations = extendType({
 
           // Args
           const { input } = args;
-          const { filter } = input;
+          const { filter, companySlug } = input;
           const [rubricSlug] = filter;
 
           if (!role.isStaff) {
@@ -329,13 +332,15 @@ export const CatalogueMutations = extendType({
             rubric.attributes.forEach((attribute: RubricAttributeModel) => {
               if (attributesSlugs.includes(attribute.slug)) {
                 if (!attribute.views) {
-                  attribute.views = { [city]: VIEWS_COUNTER_STEP };
+                  attribute.views = DEFAULT_COUNTERS_OBJECT.views;
                 } else {
-                  attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                  attribute.views[`${companySlug}`][city] =
+                    noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
                 }
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,
                   options: attribute.options,
+                  companySlug: `${companySlug}`,
                   city,
                 }).sort((optionA, optionB) => {
                   const optionACounter =

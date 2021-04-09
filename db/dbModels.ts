@@ -175,7 +175,9 @@ export interface AttributePositioningInTitleModel {
 export type TranslationModel = JSONObjectModel;
 
 export interface CountersItemModel {
-  [key: string]: number;
+  [key: string]: {
+    [key: string]: number;
+  };
 }
 
 export interface CountersModel {

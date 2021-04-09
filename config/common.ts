@@ -153,12 +153,17 @@ export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
 // COUNTERS
 export const DEFAULT_PRIORITY = 1;
 export const VIEWS_COUNTER_STEP = 1;
+export const DEFAULT_COUNTER_SLUG = 'default';
 export const DEFAULT_COUNTERS_OBJECT = {
   priorities: {
-    [DEFAULT_CITY]: DEFAULT_PRIORITY,
+    [DEFAULT_COUNTER_SLUG]: {
+      [DEFAULT_CITY]: DEFAULT_PRIORITY,
+    },
   },
   views: {
-    [DEFAULT_CITY]: DEFAULT_PRIORITY,
+    [DEFAULT_COUNTER_SLUG]: {
+      [DEFAULT_CITY]: DEFAULT_PRIORITY,
+    },
   },
 };
 

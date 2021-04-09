@@ -211,6 +211,7 @@ export interface NexusGenInputs {
   };
   CatalogueDataInput: {
     // input type
+    companySlug: string | null; // String
     filter: string[]; // [String!]!
     lastProductId?: NexusGenScalars['ObjectId'] | null; // ObjectId
   };

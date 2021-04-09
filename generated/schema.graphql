@@ -258,6 +258,7 @@ type CartProduct implements Base {
 }
 
 input CatalogueDataInput {
+  companySlug: String = "default"
   filter: [String!]!
   lastProductId: ObjectId
 }

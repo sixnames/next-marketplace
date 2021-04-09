@@ -1,6 +1,5 @@
 import { getDatabase } from 'db/mongodb';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { createTestProducts, CreateTestProductsPayloadInterface } from './createTestProducts';
 import {
   ASSETS_DIST_COMPANIES,
@@ -47,10 +46,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
 
   const productsPayload = await createTestProducts();
   const {
-    rubricA,
-    rubricB,
-    rubricC,
-    rubricD,
     productA,
     productB,
     productC,
@@ -570,12 +565,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const updatedConnectionProductC = await updateProductShopsData({
     productId: connectionProductC._id,
   });
-
-  // Recalculate rubrics counters
-  const rubricsIds = [rubricA._id, rubricB._id, rubricC._id, rubricD._id];
-  for await (const rubricId of rubricsIds) {
-    await recalculateRubricProductCounters({ rubricId });
-  }
 
   return {
     ...productsPayload,

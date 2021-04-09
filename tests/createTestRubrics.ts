@@ -18,7 +18,6 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   GENDER_IT,
-  RUBRIC_DEFAULT_COUNTERS,
   SECONDARY_LOCALE,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -136,9 +135,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
-    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
-    ...RUBRIC_DEFAULT_COUNTERS,
   };
 
   const rubricBDefaultName = 'Шампанское и игристое';
@@ -177,9 +174,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
-    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
-    ...RUBRIC_DEFAULT_COUNTERS,
   };
 
   const rubricCDefaultName = 'Виски';
@@ -212,9 +207,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
-    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
-    ...RUBRIC_DEFAULT_COUNTERS,
   };
 
   const rubricDDefaultName = 'Коньяк';
@@ -247,9 +240,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
-    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
-    ...RUBRIC_DEFAULT_COUNTERS,
   };
 
   await rubricsCollection.insertMany([rubricA, rubricB, rubricC, rubricD]);

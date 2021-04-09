@@ -596,13 +596,8 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricCountersInterface {
-  productsCount: number;
-}
-
 export interface RubricOptionModel extends OptionModel, CountersModel {
   options: RubricOptionModel[];
-  isSelected: boolean;
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
@@ -624,7 +619,7 @@ export interface RubricCatalogueTitleModel {
   gender: GenderModel;
 }
 
-export interface RubricModel extends CountersModel, RubricCountersInterface {
+export interface RubricModel extends CountersModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
@@ -635,12 +630,11 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
-  activeProductsCount: number;
-  productsCount: number;
 
   // types for ui
   name?: string | null;
   navItems?: RubricAttributeModel[];
+  productsCount?: number | null;
 }
 
 export interface ShopProductModel extends TimestampModel {

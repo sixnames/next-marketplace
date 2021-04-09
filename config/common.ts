@@ -161,9 +161,6 @@ export const DEFAULT_COUNTERS_OBJECT = {
     [DEFAULT_CITY]: DEFAULT_PRIORITY,
   },
 };
-export const RUBRIC_DEFAULT_COUNTERS = {
-  productsCount: 0,
-};
 
 // SORT
 export const SORT_ASC = 1;

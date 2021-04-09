@@ -1,6 +1,5 @@
 import { noNaN } from 'lib/numbers';
 import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -348,9 +347,6 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Recalculate rubric
-          await recalculateRubricProductCounters({ rubricId });
-
           return {
             success: true,
             message: await getApiMessage('products.create.success'),
@@ -529,9 +525,6 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
-
-          // Recalculate rubric
-          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,

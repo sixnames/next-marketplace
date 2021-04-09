@@ -1,5 +1,4 @@
 import { castOptionsForRubric } from 'lib/optionsUtils';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -24,7 +23,6 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
-  RUBRIC_DEFAULT_COUNTERS,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
@@ -167,9 +165,7 @@ export const RubricMutations = extendType({
             active: true,
             attributes: [],
             attributesGroupsIds: [],
-            activeProductsCount: 0,
             ...DEFAULT_COUNTERS_OBJECT,
-            ...RUBRIC_DEFAULT_COUNTERS,
           });
           const createdRubric = createdRubricResult.ops[0];
           if (!createdRubricResult.result.ok || !createdRubric) {
@@ -719,22 +715,13 @@ export const RubricMutations = extendType({
           }
 
           // Set product as archived
-          const updatedProductResult = await productsCollection.findOneAndDelete({
+          const removedProductResult = await productsCollection.findOneAndDelete({
             _id: productId,
           });
-          const updatedProductFacetResult = await productFacetsCollection.findOneAndDelete({
+          const removedProductFacetResult = await productFacetsCollection.findOneAndDelete({
             _id: productId,
           });
-          if (!updatedProductResult.ok || !updatedProductFacetResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.deleteProduct.error`),
-            };
-          }
-
-          // Recalculate rubric
-          const updatedRubric = await recalculateRubricProductCounters({ rubricId });
-          if (!updatedRubric) {
+          if (!removedProductResult.ok || !removedProductFacetResult.ok) {
             return {
               success: false,
               message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -744,7 +731,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.deleteProduct.success'),
-            payload: updatedRubric,
+            payload: rubric,
           };
         } catch (e) {
           return {

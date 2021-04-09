@@ -1,7 +1,6 @@
 import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
 import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -841,15 +840,6 @@ export const ShopMutations = extendType({
               message: await getApiMessage('shops.addProduct.error'),
             };
           }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
 
           return {
             success: true,
@@ -948,12 +938,6 @@ export const ShopMutations = extendType({
             if (!updatedProduct) {
               break;
             }
-            const updatedRubric = await recalculateRubricProductCounters({
-              rubricId: updatedProduct.rubricId,
-            });
-            if (!updatedRubric) {
-              break;
-            }
 
             doneCount = doneCount + 1;
           }
@@ -1032,15 +1016,6 @@ export const ShopMutations = extendType({
           // Update product shops data
           const updatedProduct = await updateProductShopsData({ productId: shopProduct.productId });
           if (!updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.deleteProduct.error'),
-            };
-          }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('shops.deleteProduct.error'),

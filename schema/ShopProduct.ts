@@ -1,4 +1,3 @@
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -209,15 +208,6 @@ export const ShopProductMutations = extendType({
               message: await getApiMessage('shopProducts.update.error'),
             };
           }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
 
           return {
             success: true,
@@ -300,12 +290,6 @@ export const ShopProductMutations = extendType({
             // Update product shops data
             const updatedProduct = await updateProductShopsData({ productId });
             if (!updatedProduct) {
-              break;
-            }
-            const updatedRubric = await recalculateRubricProductCounters({
-              rubricId: updatedProduct.rubricId,
-            });
-            if (!updatedRubric) {
               break;
             }
 

@@ -14,7 +14,6 @@ export const RubricOption = objectType({
     t.string('icon');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
-    t.nonNull.boolean('isSelected');
     t.nonNull.json('variants');
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricOption',

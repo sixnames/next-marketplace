@@ -43,17 +43,16 @@ interface GetPageInitialStatePayloadInterface {
   sessionLocale: string;
   pageUrls: PageUrlsInterface;
   company: CompanyModel | null | undefined;
-  initialDataProps: {
-    locale: string;
-    city: string;
-  };
 }
 
 async function getPageInitialState({
   context,
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
-  const db = await getDatabase();
   const { locale, resolvedUrl } = context;
+  const db = await getDatabase();
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
@@ -65,7 +64,6 @@ async function getPageInitialState({
 
   // Session city
   let currentCity: CityModel | null | undefined;
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
   if (subdomain) {
     const initialCity = await citiesCollection.findOne({ slug: subdomain });
     currentCity = castDbData(initialCity);
@@ -76,21 +74,18 @@ async function getPageInitialState({
   }
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
-  const initialDataProps = {
-    locale: sessionLocale,
-    city: sessionCity,
-  };
-
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const db = await getDatabase();
-    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+    company = await companiesCollection.findOne({ domain });
   }
+  // For development
+  // company = await companiesCollection.findOne({ slug: 'alkoliner' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
-    ...initialDataProps,
+    locale: sessionLocale,
+    city: sessionCity,
     companySlug: company?.slug,
   });
   const initialData = castDbData(rawInitialData);
@@ -102,7 +97,7 @@ async function getPageInitialState({
     domain,
     session,
     initialData,
-    company,
+    company: castDbData(company),
     currentCity: currentCity
       ? {
           ...currentCity,
@@ -111,7 +106,6 @@ async function getPageInitialState({
       : null,
     sessionCity,
     sessionLocale,
-    initialDataProps,
     pageUrls: {
       canonicalUrl: `https://${host}${path}`,
       siteUrl: `https://${host}`,
@@ -356,12 +350,15 @@ export async function getSiteInitialData({
     sessionCity,
     sessionLocale,
     initialData,
-    initialDataProps,
     company,
   } = await getPageInitialState({ context });
 
   // initial data
-  const rawNavRubrics = await getCatalogueNavRubrics(initialDataProps);
+  const rawNavRubrics = await getCatalogueNavRubrics({
+    locale: sessionLocale,
+    city: sessionCity,
+    company,
+  });
   const navRubrics = castDbData(rawNavRubrics);
 
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);

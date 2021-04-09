@@ -633,7 +633,6 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   slug: string;
   active: boolean;
   attributes: RubricAttributeModel[];
-  navItems?: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   activeProductsCount: number;
@@ -641,6 +640,7 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
 
   // types for ui
   name?: string | null;
+  navItems?: RubricAttributeModel[];
 }
 
 export interface ShopProductModel extends TimestampModel {

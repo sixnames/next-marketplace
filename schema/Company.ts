@@ -15,7 +15,6 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { generateSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { updateProductsShopsDataOnShopsArchive } from 'lib/productShopsUtils';
 import {
   addShopToCompanySchema,
   createCompanySchema,
@@ -568,9 +567,6 @@ export const CompanyMutations = extendType({
             };
           }
 
-          // Update products shops data
-          await updateProductsShopsDataOnShopsArchive({ shopsIds: company.shopsIds });
-
           return {
             success: true,
             message: await getApiMessage('companies.delete.success'),
@@ -800,9 +796,6 @@ export const CompanyMutations = extendType({
               message: await getApiMessage('companies.shopsDelete.error'),
             };
           }
-
-          // Update products shops data
-          await updateProductsShopsDataOnShopsArchive({ shopsIds: company.shopsIds });
 
           return {
             success: true,

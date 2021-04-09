@@ -5,9 +5,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from 'config/common';
-import { getCurrencyString } from 'lib/i18n';
 import { getProductCurrentViewAttributes } from 'lib/productAttributesUtils';
-import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -16,8 +14,6 @@ import {
   BrandModel,
   ManufacturerModel,
   ProductAttributeModel,
-  ProductCardPricesModel,
-  ProductFacetModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -27,11 +23,9 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { noNaN } from 'lib/numbers';
 
 export const ProductCardPrices = objectType({
   name: 'ProductCardPrices',
@@ -209,15 +203,6 @@ export const Product = objectType({
       },
     });
 
-    // Product shopsCount field resolver
-    t.nonNull.field('shopsCount', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { city } = await getRequestParams(context);
-        return noNaN(source.shopProductsCountCities[city]);
-      },
-    });
-
     // Product allShopProducts field resolver
     t.nonNull.list.nonNull.field('shopProducts', {
       type: 'ShopProduct',
@@ -231,45 +216,6 @@ export const Product = objectType({
           })
           .toArray();
         return shopsProducts;
-      },
-    });
-
-    // Product isCustomersChoice field resolver
-    t.nonNull.field('isCustomersChoice', {
-      type: 'Boolean',
-      resolve: async (source, _args, context): Promise<boolean> => {
-        const { city } = await getRequestParams(context);
-        if (source.shopProductsCountCities[city]) {
-          return true;
-        }
-        return false;
-      },
-    });
-
-    // Product cardPrices field resolver
-    t.nonNull.field('cardPrices', {
-      type: 'ProductCardPrices',
-      description: 'Should find all connected shop products and return minimal and maximal price.',
-      resolve: async (source, _args, context): Promise<ProductCardPricesModel> => {
-        try {
-          const { city, locale } = await getRequestParams(context);
-          const db = await getDatabase();
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          const facet = await productFacetsCollection.findOne({ _id: source._id });
-          const minPrice = noNaN(facet ? facet.minPriceCities[city] : undefined);
-          const maxPrice = noNaN(facet ? facet.maxPriceCities[city] : undefined);
-          return {
-            _id: new ObjectId(),
-            min: getCurrencyString({ value: minPrice, locale }),
-            max: getCurrencyString({ value: maxPrice, locale }),
-          };
-        } catch {
-          return {
-            _id: new ObjectId(),
-            min: '0',
-            max: '0',
-          };
-        }
       },
     });
 

@@ -43,7 +43,6 @@ import {
   getRubricCatalogueAttributes,
 } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -564,7 +563,7 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-  const city = shop.citySlug;
+  // const city = shop.citySlug;
 
   // Get rubric
   const rubric = await getCatalogueRubric([
@@ -817,10 +816,10 @@ export const getServerSideProps = async (
       continue;
     }
 
-    const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
-    const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
+    // TODO
+    const minPrice = 0;
+    const maxPrice = 0;
     const cardPrices = {
-      _id: new ObjectId(),
       min: getCurrencyString({ value: minPrice, locale }),
       max: getCurrencyString({ value: maxPrice, locale }),
     };
@@ -843,8 +842,7 @@ export const getServerSideProps = async (
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         mainImage,
-        shopsCount: noNaN(product.shopProductsCountCities[city]),
-        isCustomersChoice: product.isCustomersChoiceCities[city],
+        isCustomersChoice: false,
       },
     });
   }

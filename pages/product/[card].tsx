@@ -67,7 +67,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     textFeatures,
     iconFeatures,
     tagFeatures,
-    shopsCount,
     cardBreadcrumbs,
     cardShopProducts,
     isCustomersChoice,
@@ -75,9 +74,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
-
-  const isShopsPlural = noNaN(shopsCount) > 1;
-  const isShopless = noNaN(shopsCount) < 1;
 
   const [updateProductCounterMutation] = useUpdateProductCounterMutation();
   React.useEffect(() => {
@@ -96,11 +92,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       testId: 'features',
     },
     {
-      head: (
-        <React.Fragment>
-          Где купить <span>{`(${shopsCount})`}</span>
-        </React.Fragment>
-      ),
+      head: <React.Fragment>Где купить</React.Fragment>,
       testId: 'shops',
     },
     {
@@ -207,7 +199,17 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               ) : null}
 
               <div className={classes.mainDataBottom}>
-                <div>
+                {/* TODO shopsCount isShopless*/}
+                <div className={classes.price}>
+                  <div className={classes.cardLabel}>Цена</div>
+                  <div className={classes.priceValue}>
+                    <Currency
+                      className={`${classes.priceItem} ${classes.priceItemSingle}`}
+                      value={cardPrices?.min}
+                    />
+                  </div>
+                </div>
+                {/*<div>
                   {isShopless ? null : noNaN(shopsCount) > 1 ? (
                     <div className={classes.price}>
                       <div className={classes.cardLabel}>Цена от</div>
@@ -237,7 +239,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                     </div>
                     {isShopless || noNaN(shopsCount) < 2 ? null : <div>Сравнить цены</div>}
                   </div>
-                </div>
+                </div>*/}
 
                 <div className={classes.btns}>
                   <ControlButton

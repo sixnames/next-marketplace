@@ -1402,13 +1402,11 @@ export interface NexusGenFieldTypes {
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
     brandSlug: string | null; // String
-    cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     iconFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
-    isCustomersChoice: boolean; // Boolean!
     itemId: string; // String!
     listFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     mainImage: string; // String!
@@ -1421,7 +1419,6 @@ export interface NexusGenFieldTypes {
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
-    shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     textFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -1653,7 +1650,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string | null; // String
     icon: string | null; // String
-    isSelected: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
@@ -2421,13 +2417,11 @@ export interface NexusGenFieldTypeNames {
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';
     brandSlug: 'String';
-    cardPrices: 'ProductCardPrices';
     connections: 'ProductConnection';
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
     iconFeatures: 'ProductAttribute';
-    isCustomersChoice: 'Boolean';
     itemId: 'String';
     listFeatures: 'ProductAttribute';
     mainImage: 'String';
@@ -2440,7 +2434,6 @@ export interface NexusGenFieldTypeNames {
     rubric: 'Rubric';
     rubricId: 'ObjectId';
     shopProducts: 'ShopProduct';
-    shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';
     textFeatures: 'ProductAttribute';
@@ -2672,7 +2665,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     color: 'String';
     icon: 'String';
-    isSelected: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';
     options: 'RubricOption';

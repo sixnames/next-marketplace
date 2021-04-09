@@ -14,7 +14,7 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
@@ -31,10 +31,6 @@ import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
-  DEFAULT_CITY,
-  SORT_DESC,
-  VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
@@ -293,10 +289,6 @@ export const ProductMutations = extendType({
             brandSlug: brandEntity ? brandEntity.slug : undefined,
             brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
             active: true,
-            isCustomersChoiceCities: {
-              [DEFAULT_CITY]: false,
-            },
-            shopProductsCountCities: {},
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -315,22 +307,7 @@ export const ProductMutations = extendType({
             brandCollectionSlug,
             brandSlug,
             manufacturerSlug,
-            minPriceCities: {
-              [DEFAULT_CITY]: 0,
-            },
-            maxPriceCities: {
-              [DEFAULT_CITY]: 0,
-            },
-            availabilityCities: {
-              [DEFAULT_CITY]: false,
-            },
             selectedOptionsSlugs,
-            priorities: {
-              [DEFAULT_CITY]: 0,
-            },
-            views: {
-              [DEFAULT_CITY]: 0,
-            },
           });
 
           const createdProduct = createdProductResult.ops[0];
@@ -1307,97 +1284,17 @@ export const ProductMutations = extendType({
           }),
         ),
       },
-      resolve: async (_root, args, context): Promise<boolean> => {
+      resolve: async (_root): Promise<boolean> => {
         try {
-          const db = await getDatabase();
-          const { role } = await getSessionRole(context);
-          const { city } = await getRequestParams(context);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          if (!role.isStaff) {
+          // TODO
+          // const db = await getDatabase();
+          // const { role } = await getSessionRole(context);
+          // const { city } = await getRequestParams(context);
+          /*if (!role.isStaff) {
             const { input } = args;
-            const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
-              { slug: input.productSlug },
-              {
-                $inc: {
-                  [`views.${city}`]: VIEWS_COUNTER_STEP,
-                },
-              },
-              {
-                projection: {
-                  rubricId: true,
-                },
-                returnOriginal: false,
-              },
-            );
-            const updatedProduct = updatedProductResult.value;
-
-            if (!updatedProductResult.ok || !updatedProduct) {
-              return false;
-            }
-
-            await productsCollection.updateMany(
-              {
-                rubricId: updatedProduct.rubricId,
-                active: true,
-              },
-              {
-                $set: {
-                  isCustomersChoiceCities: {
-                    [city]: false,
-                  },
-                },
-              },
-            );
-            const topProducts = await productsCollection
-              .aggregate([
-                {
-                  $match: {
-                    rubricId: updatedProduct.rubricId,
-                    active: true,
-                  },
-                },
-                {
-                  $project: {
-                    _id: 1,
-                    views: 1,
-                    priorities: 1,
-                  },
-                },
-                {
-                  $sort: {
-                    [`priorities.${city}`]: SORT_DESC,
-                    [`views.${city}`]: SORT_DESC,
-                    _id: SORT_DESC,
-                  },
-                },
-                {
-                  $limit: CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
-                },
-              ])
-              .toArray();
-            const topProductsIds = topProducts.map(({ _id }) => _id);
-
-            const updatedTopProductsResult = await productsCollection.updateMany(
-              {
-                _id: {
-                  $in: topProductsIds,
-                },
-              },
-              {
-                $set: {
-                  isCustomersChoiceCities: {
-                    [city]: true,
-                  },
-                },
-              },
-            );
-
-            if (updatedTopProductsResult.result.ok) {
-              return true;
-            }
+            
             return false;
-          }
+          }*/
           return true;
         } catch (e) {
           console.log(e);

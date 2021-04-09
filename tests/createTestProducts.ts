@@ -11,7 +11,6 @@ import { generateSlug } from 'lib/slugUtils';
 import { COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   ASSETS_DIST_PRODUCTS,
-  DEFAULT_CITY,
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
@@ -304,10 +303,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         [SECONDARY_LOCALE]: secondaryDescription,
       },
       assets: [assetA],
-      shopProductsCountCities: {},
-      isCustomersChoiceCities: {
-        [DEFAULT_CITY]: true,
-      },
       slug,
       connections,
       rubricId,
@@ -338,11 +333,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       brandSlug,
       brandCollectionSlug,
       manufacturerSlug,
-      minPriceCities: {},
-      maxPriceCities: {},
-      availabilityCities: {},
-      priorities: {},
-      views: {},
       selectedOptionsSlugs,
     };
 

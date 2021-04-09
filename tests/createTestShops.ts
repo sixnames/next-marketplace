@@ -12,7 +12,6 @@ import { CompanyModel, ConfigModel, ShopModel, ShopProductModel } from 'db/dbMod
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mockData';
 import { COL_COMPANIES, COL_CONFIGS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { setCollectionItemId } from 'lib/itemIdUtils';
-import { updateProductShopsData } from 'lib/productShopsUtils';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { findOrCreateTestAsset } from 'lib/s3';
@@ -48,9 +47,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const {
     productA,
     productB,
-    productC,
     productD,
-    productF,
     connectionProductA,
     connectionProductB,
     connectionProductC,
@@ -550,22 +547,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const mockCompanies = createdMockCompanies.ops;
   await setCollectionItemId(COL_COMPANIES, 1);
 
-  // Update products shops data
-  const updatedProductA = await updateProductShopsData({ productId: productA._id });
-  const updatedProductB = await updateProductShopsData({ productId: productB._id });
-  const updatedProductC = await updateProductShopsData({ productId: productC._id });
-  const updatedProductD = await updateProductShopsData({ productId: productD._id });
-  const updatedProductF = await updateProductShopsData({ productId: productF._id });
-  const updatedConnectionProductA = await updateProductShopsData({
-    productId: connectionProductA._id,
-  });
-  const updatedConnectionProductB = await updateProductShopsData({
-    productId: connectionProductB._id,
-  });
-  const updatedConnectionProductC = await updateProductShopsData({
-    productId: connectionProductC._id,
-  });
-
   return {
     ...productsPayload,
     mockShops,
@@ -585,13 +566,5 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopBConnectionProductC,
     companyA,
     mockCompanies,
-    productA: updatedProductA,
-    productB: updatedProductB,
-    productC: updatedProductC,
-    productD: updatedProductD,
-    productF: updatedProductF,
-    connectionProductA: updatedConnectionProductA,
-    connectionProductB: updatedConnectionProductB,
-    connectionProductC: updatedConnectionProductC,
   };
 };

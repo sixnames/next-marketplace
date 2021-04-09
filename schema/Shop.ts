@@ -25,7 +25,6 @@ import {
 import { aggregatePagination } from 'db/aggregatePagination';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateProductShopsData } from 'lib/productShopsUtils';
 import {
   addManyProductsToShopSchema,
   addProductToShopSchema,
@@ -832,15 +831,6 @@ export const ShopMutations = extendType({
             };
           }
 
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId });
-          if (!updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-
           return {
             success: true,
             message: await getApiMessage('shops.addProduct.success'),
@@ -933,12 +923,6 @@ export const ShopMutations = extendType({
               break;
             }
 
-            // Update product shops data
-            const updatedProduct = await updateProductShopsData({ productId });
-            if (!updatedProduct) {
-              break;
-            }
-
             doneCount = doneCount + 1;
           }
 
@@ -1004,18 +988,6 @@ export const ShopMutations = extendType({
             _id: shopProductId,
           });
           if (!removedShopProductResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.deleteProduct.error'),
-            };
-          }
-
-          // Update product shops data
-          await updateProductShopsData({ productId: shopProduct.productId });
-
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId: shopProduct.productId });
-          if (!updatedProduct) {
             return {
               success: false,
               message: await getApiMessage('shops.deleteProduct.error'),

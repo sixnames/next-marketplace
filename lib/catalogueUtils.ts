@@ -829,11 +829,10 @@ export const getCatalogueData = async ({
 
       // prices
       const { attributes, ...restProduct } = product;
-      const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
-      const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
-
+      // TODO
+      const minPrice = 0;
+      const maxPrice = 0;
       const cardPrices = {
-        _id: new ObjectId(),
         min: getCurrencyString({ value: minPrice, locale }),
         max: getCurrencyString({ value: maxPrice, locale }),
       };
@@ -925,9 +924,7 @@ export const getCatalogueData = async ({
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         mainImage,
-        shopsCount: noNaN(product.shopProductsCountCities[city]),
         connections,
-        isCustomersChoice: product.isCustomersChoiceCities[city],
       });
     }
 

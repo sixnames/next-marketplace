@@ -1391,17 +1391,11 @@ type Product implements Base & Timestamp {
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
-
-  """
-  Should find all connected shop products and return minimal and maximal price.
-  """
-  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
   descriptionI18n: JSONObject!
   iconFeatures: [ProductAttribute!]!
-  isCustomersChoice: Boolean!
   itemId: String!
   listFeatures: [ProductAttribute!]!
   mainImage: String!
@@ -1418,7 +1412,6 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
-  shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
@@ -1957,7 +1950,6 @@ type RubricOption {
   _id: ObjectId!
   color: String
   icon: String
-  isSelected: Boolean!
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!

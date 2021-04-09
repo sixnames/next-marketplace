@@ -503,9 +503,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-
-  shopProductsCountCities: CitiesCounterModel;
-  isCustomersChoiceCities: CitiesBooleanModel;
   connections: ProductConnectionModel[];
 
   // types for ui
@@ -522,7 +519,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   ratingFeatures?: ProductAttributeModel[];
   cardShopProducts?: ShopProductModel[];
   cardPrices?: {
-    _id: ObjectIdModel;
     min: string;
     max: string;
   };
@@ -533,7 +529,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   shopProduct?: ShopProductModel;
 }
 
-export interface ProductFacetModel extends CountersModel {
+export interface ProductFacetModel {
   _id: ObjectIdModel;
   slug: string;
   itemId: string;
@@ -544,9 +540,6 @@ export interface ProductFacetModel extends CountersModel {
   brandCollectionSlug?: string | null;
   brandSlug?: string | null;
   manufacturerSlug?: string | null;
-  minPriceCities: CitiesCounterModel;
-  maxPriceCities: CitiesCounterModel;
-  availabilityCities: CitiesBooleanModel;
   selectedOptionsSlugs: string[];
 
   // types for ui

@@ -26,10 +26,9 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getCurrencyString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
-import { getPercentage, noNaN } from 'lib/numbers';
+import { getPercentage } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { ObjectId } from 'mongodb';
 
 export interface GetCardBreadcrumbsInterface {
   locale: string;
@@ -176,14 +175,14 @@ export async function getCardData({
     // console.log(`product `, new Date().getTime() - startTime);
 
     // shopsCount
-    const shopsCount = noNaN(product.shopProductsCountCities[city]);
+    // const shopsCount = noNaN(product.shopProductsCountCities[city]);
     // console.log(`shopsCount `, new Date().getTime() - startTime);
 
     // prices
-    const minPrice = noNaN(facet?.minPriceCities ? facet?.minPriceCities[city] : undefined);
-    const maxPrice = noNaN(facet?.maxPriceCities ? facet?.maxPriceCities[city] : undefined);
+    // TODO
+    const minPrice = 0;
+    const maxPrice = 0;
     const cardPrices = {
-      _id: new ObjectId(),
       min: getCurrencyString({ value: minPrice, locale }),
       max: getCurrencyString({ value: maxPrice, locale }),
     };
@@ -373,7 +372,7 @@ export async function getCardData({
       name: getFieldStringLocale(product.nameI18n, locale),
       description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,
-      shopsCount,
+      // shopsCount,
       mainImage,
       listFeatures,
       textFeatures,
@@ -383,7 +382,6 @@ export async function getCardData({
       cardShopProducts,
       connections,
       cardBreadcrumbs,
-      isCustomersChoice: product.isCustomersChoiceCities[city],
     };
   } catch (e) {
     console.log(e);

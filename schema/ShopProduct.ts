@@ -6,7 +6,6 @@ import { getCurrencyString } from 'lib/i18n';
 import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
 import { getPercentage } from 'lib/numbers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateProductShopsData } from 'lib/productShopsUtils';
 import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
@@ -158,7 +157,7 @@ export const ShopProductMutations = extendType({
           const db = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
-          const { shopProductId, productId, ...values } = input;
+          const { shopProductId, ...values } = input;
 
           // Check shop product availability
           const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
@@ -191,18 +190,6 @@ export const ShopProductMutations = extendType({
           );
           const updatedShopProduct = updatedShopProductResult.value;
           if (!updatedShopProductResult.ok || !updatedShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
-
-          // Update product shops data
-          await updateProductShopsData({ productId });
-
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId });
-          if (!updatedProduct) {
             return {
               success: false,
               message: await getApiMessage('shopProducts.update.error'),
@@ -284,12 +271,6 @@ export const ShopProductMutations = extendType({
             );
             const updatedShopProduct = updatedShopProductResult.value;
             if (!updatedShopProductResult.ok || !updatedShopProduct) {
-              break;
-            }
-
-            // Update product shops data
-            const updatedProduct = await updateProductShopsData({ productId });
-            if (!updatedProduct) {
               break;
             }
 

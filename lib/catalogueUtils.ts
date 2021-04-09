@@ -53,6 +53,7 @@ import {
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
+  DEFAULT_COUNTER_SLUG,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
@@ -1218,12 +1219,16 @@ export const getCatalogueNavRubrics = async ({
       }),
     });
   });
-
-  const sortedRubrics = [...rubrics].sort((rubricA, rubricB) => {
-    const rubricAViews = rubricA.views || { [city]: 0 };
-    const rubricAPriorities = rubricA.priorities || { [city]: 0 };
-    const rubricBViews = rubricB.views || { [city]: 0 };
-    const rubricBPriorities = rubricB.priorities || { [city]: 0 };
+  const companySlug = company?.slug || DEFAULT_COUNTER_SLUG;
+  const sortedRubrics = rubrics.sort((rubricA, rubricB) => {
+    const rubricAViews = rubricA.views[companySlug] || { [city]: rubricA._id.getTimestamp() };
+    const rubricAPriorities = rubricA.priorities[companySlug] || {
+      [city]: rubricA._id.getTimestamp(),
+    };
+    const rubricBViews = rubricB.views[companySlug] || { [city]: rubricB._id.getTimestamp() };
+    const rubricBPriorities = rubricB.priorities[companySlug] || {
+      [city]: rubricB._id.getTimestamp(),
+    };
 
     const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
     const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);

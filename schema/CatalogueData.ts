@@ -295,7 +295,7 @@ export const CatalogueMutations = extendType({
 
             const counterUpdater = {
               $inc: {
-                [`views.${city}`]: VIEWS_COUNTER_STEP,
+                [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
               },
             };
 

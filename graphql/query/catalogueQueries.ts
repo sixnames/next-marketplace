@@ -30,8 +30,6 @@ export const productSnippedFragment = gql`
     originalName
     slug
     mainImage
-    shopsCount
-    isCustomersChoice
     listFeatures {
       _id
       attributeId
@@ -54,11 +52,6 @@ export const productSnippedFragment = gql`
     }
     connections {
       ...SnippetConnection
-    }
-    cardPrices {
-      _id
-      min
-      max
     }
   }
   ${SnippetConnectionFragment}

@@ -148,7 +148,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
     return null;
   }
 
-  const { cardPrices, connections } = product;
+  const { connections } = product;
 
   return (
     <CartProductFrame product={productData} cartProductId={_id} isShopsVisible={isShopsVisible}>
@@ -158,7 +158,8 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
         </div>
 
         <div className={classes.productGridRight}>
-          <ProductSnippetPrice shopsCount={productData.shopsCount} value={cardPrices.min} />
+          {/*TODO*/}
+          <ProductSnippetPrice shopsCount={1} value={'1'} />
           <CartProductConnections connections={connections} productId={product._id} />
         </div>
       </div>

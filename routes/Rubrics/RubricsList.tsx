@@ -2,7 +2,6 @@ import { GetAllRubricsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 import Accordion from '../../components/Accordion/Accordion';
 import classes from './RubricsTree.module.css';
-import RubricsTreeCounters from './RubricsTreeCounters';
 import RequestError from 'components/RequestError/RequestError';
 
 interface RubricsTreeRenderInterface {
@@ -45,19 +44,20 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
   return (
     <div className={`${classes.frame} ${low ? classes.frameLow : ''}`} data-cy={'rubrics-tree'}>
       {rubrics.map((item) => {
-        const { _id, activeProductsCount, productsCount, name, slug } = item;
-
+        const { _id, name, slug } = item;
+        // TODO activeProductsCount, productsCount,
         return (
           <Accordion
             titleLeft={titleLeftContent(_id, name)}
-            disabled={productsCount === 0 || isAccordionDisabled}
-            titleRight={
+            disabled={isAccordionDisabled}
+            // disabled={productsCount === 0 || isAccordionDisabled}
+            /*titleRight={
               <RubricsTreeCounters
                 activeProductsCount={activeProductsCount}
                 totalProductsCount={productsCount}
                 testId={name}
               />
-            }
+            }*/
             title={name}
             key={_id}
             testId={`tree-${name}`}

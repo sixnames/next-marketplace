@@ -1616,12 +1616,8 @@ export type Product = Base & Timestamp & {
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
-  shopsCount: Scalars['Int'];
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
-  isCustomersChoice: Scalars['Boolean'];
-  /** Should find all connected shop products and return minimal and maximal price. */
-  cardPrices: ProductCardPrices;
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
@@ -2100,8 +2096,6 @@ export type Rubric = {
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  productsCount: Scalars['Int'];
-  activeProductsCount: Scalars['Int'];
   attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
   attributesGroups: Array<RubricAttributesGroup>;
@@ -2173,7 +2167,6 @@ export type RubricOption = {
   icon?: Maybe<Scalars['String']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  isSelected: Scalars['Boolean'];
   variants: Scalars['JSONObject'];
   options: Array<RubricOption>;
   name: Scalars['String'];
@@ -2835,7 +2828,7 @@ export type DeleteProductFromConnectionMutation = (
 
 export type RubricInListFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name' | 'productsCount' | 'activeProductsCount'>
+  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -3915,7 +3908,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount' | 'isCustomersChoice'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -3933,10 +3926,7 @@ export type ProductSnippetFragment = (
   )>, connections: Array<(
     { __typename?: 'ProductConnection' }
     & SnippetConnectionFragment
-  )>, cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ) }
+  )> }
 );
 
 export type UpdateCatalogueCountersMutationVariables = Exact<{
@@ -4846,8 +4836,6 @@ export const RubricInListFragmentDoc = gql`
   nameI18n
   slug
   name
-  productsCount
-  activeProductsCount
   variant {
     _id
     name
@@ -4931,8 +4919,6 @@ export const ProductSnippetFragmentDoc = gql`
   originalName
   slug
   mainImage
-  shopsCount
-  isCustomersChoice
   listFeatures {
     _id
     attributeId
@@ -4955,11 +4941,6 @@ export const ProductSnippetFragmentDoc = gql`
   }
   connections {
     ...SnippetConnection
-  }
-  cardPrices {
-    _id
-    min
-    max
   }
 }
     ${SnippetConnectionFragmentDoc}`;

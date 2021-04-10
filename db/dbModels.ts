@@ -520,6 +520,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   iconFeatures?: ProductAttributeModel[];
   ratingFeatures?: ProductAttributeModel[];
   cardShopProducts?: ShopProductModel[];
+  price?: number;
   cardPrices?: {
     min: string;
     max: string;
@@ -800,11 +801,18 @@ export interface CatalogueProductPricesInterface {
   _id: number;
 }
 
-export interface CatalogueProductsAggregationInterface {
+export interface ProductFacetsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
   docs: ProductFacetModel[];
+}
+
+export interface CatalogueProductsAggregationInterface {
+  totalProducts: number;
+  prices: CatalogueProductPricesInterface[];
+  options: CatalogueProductOptionInterface[];
+  docs: ProductModel[];
 }
 
 export interface ProductsPaginationAggregationInterface {

@@ -481,8 +481,8 @@ export const getServerSideProps = async (
     .aggregate<ShopProductsAggregationInterface>([
       {
         $match: {
-          rubricId: rubric._id,
           shopId: shop._id,
+          rubricId: rubric._id,
           ...searchStage,
           ...pricesStage,
           ...optionsStage,

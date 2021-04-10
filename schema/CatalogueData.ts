@@ -27,7 +27,7 @@ import {
   CATALOGUE_BRAND_KEY,
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
-  DEFAULT_COUNTER_SLUG,
+  CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
@@ -232,7 +232,7 @@ export const CatalogueDataInput = inputObjectType({
   name: 'CatalogueDataInput',
   definition(t) {
     t.objectId('lastProductId');
-    t.string('companySlug', { default: DEFAULT_COUNTER_SLUG });
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
     t.nonNull.list.nonNull.string('filter');
   },
 });

@@ -86,7 +86,6 @@ export const CONFIG_VARIANT_NUMBER = 'number';
 export const CONFIG_VARIANT_PHONE = 'tel';
 export const CONFIG_VARIANT_EMAIL = 'email';
 export const CONFIG_VARIANT_ASSET = 'asset';
-export const CONFIG_DEFAULT_COMPANY_SLUG = 'default';
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -153,15 +152,15 @@ export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
 // COUNTERS
 export const DEFAULT_PRIORITY = 1;
 export const VIEWS_COUNTER_STEP = 1;
-export const DEFAULT_COUNTER_SLUG = 'default';
+export const CONFIG_DEFAULT_COMPANY_SLUG = 'default';
 export const DEFAULT_COUNTERS_OBJECT = {
   priorities: {
-    [DEFAULT_COUNTER_SLUG]: {
+    [CONFIG_DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,
     },
   },
   views: {
-    [DEFAULT_COUNTER_SLUG]: {
+    [CONFIG_DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,
     },
   },

@@ -399,6 +399,8 @@ export async function getServerSideProps(
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
+    companySlug: props.company?.slug,
+    companyId: props.company?._id,
     input: {
       filter: alwaysArray(catalogue),
     },

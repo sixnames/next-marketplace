@@ -39,10 +39,11 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     ratingFeatures,
     connections,
     isCustomersChoice,
+    shopsCount,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-  // const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
-  // const isShopless = noNaN(shopsCount) < 1;
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = noNaN(shopsCount) < 1;
   const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
 
   return (
@@ -102,11 +103,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
 
           <div className={classes.contentColumn}>
-            {/*{isShopless ? null : (
+            {isShopless ? null : (
               <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
-            )}*/}
-            {/*TODO*/}
-            <ProductSnippetPrice shopsCount={1} value={cardPrices?.min} />
+            )}
 
             <div className={classes.productConnections}>
               {connections.map(({ _id, attributeName, connectionProducts }) => {
@@ -135,9 +134,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.inputs}>
               <div className={classes.shopsCounter}>
-                {/*{noNaN(shopsCount) > 0
+                {noNaN(shopsCount) > 0
                   ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
-                  : 'Нет в наличии'}*/}
+                  : 'Нет в наличии'}
               </div>
 
               <SpinnerInput

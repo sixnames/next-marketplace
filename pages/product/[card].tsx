@@ -71,7 +71,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardBreadcrumbs,
     cardShopProducts,
     isCustomersChoice,
+    shopsCount,
   } = cardData;
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = noNaN(shopsCount) < 1;
   const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
@@ -200,17 +203,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               ) : null}
 
               <div className={classes.mainDataBottom}>
-                {/* TODO shopsCount isShopless*/}
-                <div className={classes.price}>
-                  <div className={classes.cardLabel}>Цена</div>
-                  <div className={classes.priceValue}>
-                    <Currency
-                      className={`${classes.priceItem} ${classes.priceItemSingle}`}
-                      value={cardPrices?.min}
-                    />
-                  </div>
-                </div>
-                {/*<div>
+                <div>
                   {isShopless ? null : noNaN(shopsCount) > 1 ? (
                     <div className={classes.price}>
                       <div className={classes.cardLabel}>Цена от</div>
@@ -236,11 +229,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                     <div className={classes.cardLabel}>
                       {isShopless
                         ? 'Нет в наличии'
-                        : `В наличии в ${shopsCount} ${isShopsPlural ? 'винотеках' : 'винотеке'}`}
+                        : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
                     </div>
                     {isShopless || noNaN(shopsCount) < 2 ? null : <div>Сравнить цены</div>}
                   </div>
-                </div>*/}
+                </div>
 
                 <div className={classes.btns}>
                   <ControlButton

@@ -1,4 +1,4 @@
-import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import { NavItemModel } from 'db/dbModels';
 import useSignOut from 'hooks/useSignOut';
 import AppNavItem from 'layout/AppLayout/AppNavItem';
 import AppNavUser from 'layout/AppLayout/AppNavUser';
@@ -14,7 +14,7 @@ import { UseCompactReturnInterface } from 'hooks/useCompact';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
-  navItems: AppNavParentItemFragment[];
+  navItems: NavItemModel[];
 }
 
 const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
@@ -43,7 +43,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                 return (
                   <AppNavItem
                     compact={isCompact}
-                    key={item._id}
+                    key={`${item._id}`}
                     item={item}
                     pathname={pathname}
                     openNavHandler={openNavHandler}

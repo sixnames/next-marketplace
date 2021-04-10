@@ -24,7 +24,7 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
-  const { state } = useUserContext();
+  const { me } = useUserContext();
   const { company, companyLoading } = useCompanyContext();
 
   React.useEffect(() => {
@@ -33,17 +33,15 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
     }
   }, [companyLoading, company, router]);
 
-  if (!state.me || companyLoading) {
+  if (!me || companyLoading) {
     return <Spinner />;
   }
-
-  const { appNavigation } = state.me.role;
 
   return (
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <AppNav compact={compact} navItems={appNavigation} />
+      <AppNav compact={compact} navItems={me.role?.appNavigation || []} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${
@@ -60,12 +58,6 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
 };
 
 const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
-  const { state } = useUserContext();
-
-  if (!state.me) {
-    return <Spinner />;
-  }
-
   return (
     <CompanyContextProvider>
       <AppLayoutConsumer pageUrls={pageUrls} title={title}>

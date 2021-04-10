@@ -57,7 +57,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
                   languagesList={initialData?.languages || []}
                   currency={initialData?.currency || ''}
                 >
-                  <UserContextProvider>
+                  <UserContextProvider sessionUser={pageProps.sessionUser}>
                     <Component {...pageProps} />
                   </UserContextProvider>
                 </LocaleContextProvider>

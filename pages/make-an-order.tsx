@@ -102,7 +102,7 @@ const MakeAnOrderRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const { loadingCart, cart } = useCart();
   const { makeAnOrder } = useCartMutations();
-  const { state } = useUserContext();
+  const { me } = useUserContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
@@ -182,9 +182,9 @@ const MakeAnOrderRoute: React.FC = () => {
           enableReinitialize={true}
           validationSchema={validationSchema}
           initialValues={{
-            name: state.me ? state.me.name : '',
-            email: state.me ? state.me.email : '',
-            phone: state.me ? state.me.phone : '',
+            name: me ? me.name : '',
+            email: me ? me.email : '',
+            phone: me ? me.phone : '',
             comment: '',
           }}
           onSubmit={(values) => {

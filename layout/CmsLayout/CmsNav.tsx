@@ -1,4 +1,4 @@
-import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import { NavItemModel } from 'db/dbModels';
 import useSignOut from 'hooks/useSignOut';
 import * as React from 'react';
 import CmsNavUser from 'layout/CmsLayout/CmsNavUser';
@@ -14,7 +14,7 @@ import { UseCompactReturnInterface } from 'hooks/useCompact';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
-  navItems: AppNavParentItemFragment[];
+  navItems: NavItemModel[];
 }
 
 const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
@@ -43,7 +43,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                 return (
                   <CmsNavItem
                     compact={isCompact}
-                    key={item._id}
+                    key={`${item._id}`}
                     item={item}
                     pathname={pathname}
                     openNavHandler={openNavHandler}

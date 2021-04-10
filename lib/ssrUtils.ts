@@ -11,13 +11,8 @@ import {
 import { COL_CITIES, COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { CityModel, CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { PageUrlsInterface } from 'layout/Meta';
 import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import {
-  getCatalogueNavRubrics,
-  getPageInitialData,
-  PageInitialDataPayload,
-} from 'lib/catalogueUtils';
+import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { Db } from 'mongodb';
@@ -27,136 +22,26 @@ import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
 
-interface GetPageInitialStateInterface {
-  context: GetServerSidePropsContext;
+export interface GetPageSessionUserInterface {
+  email?: string | null;
+  locale: string;
 }
 
-interface GetPageInitialStatePayloadInterface {
-  db: Db;
-  path: string;
-  host: string;
-  domain: string | null;
-  session: Session | null;
-  initialData: PageInitialDataPayload;
-  currentCity: CityModel | null | undefined;
-  sessionCity: string;
-  sessionLocale: string;
-  pageUrls: PageUrlsInterface;
-  company: CompanyModel | null | undefined;
-}
+export async function getPageSessionUser({
+  email,
+  locale,
+}: GetPageSessionUserInterface): Promise<UserModel | null | undefined> {
+  if (!email) {
+    return null;
+  }
 
-async function getPageInitialState({
-  context,
-}: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
-  const { locale, resolvedUrl } = context;
   const db = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
-
-  const path = `${resolvedUrl}`;
-  const host = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
-  const domain = getDomain(host, { validHosts: ['localhost'] });
-  const sessionLocale = locale || DEFAULT_LOCALE;
-
-  // Check if user authenticated
-  const session = await getSession(context);
-
-  // Session city
-  let currentCity: CityModel | null | undefined;
-  if (subdomain) {
-    const initialCity = await citiesCollection.findOne({ slug: subdomain });
-    currentCity = castDbData(initialCity);
-  }
-  if (!currentCity) {
-    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
-    currentCity = currentCity = castDbData(initialCity);
-  }
-  const sessionCity = currentCity?.slug || DEFAULT_CITY;
-
-  // Session company
-  let company: CompanyModel | null | undefined = null;
-  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    company = await companiesCollection.findOne({ domain });
-  }
-  // For development
-  // company = await companiesCollection.findOne({ slug: 'alkoliner' });
-
-  // Page initial data
-  const rawInitialData = await getPageInitialData({
-    locale: sessionLocale,
-    city: sessionCity,
-    companySlug: company?.slug,
-  });
-  const initialData = castDbData(rawInitialData);
-
-  return {
-    db,
-    path,
-    host,
-    domain,
-    session,
-    initialData,
-    company: castDbData(company),
-    currentCity: currentCity
-      ? {
-          ...currentCity,
-          name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
-        }
-      : null,
-    sessionCity,
-    sessionLocale,
-    pageUrls: {
-      canonicalUrl: `https://${host}${path}`,
-      siteUrl: `https://${host}`,
-      domain: `${domain}`,
-    },
-  };
-}
-
-interface GetAppInitialDataInterface {
-  context: GetServerSidePropsContext;
-  isCms?: boolean;
-}
-
-interface GetAppInitialDataPayloadInterface<T> {
-  props?: T;
-  redirect?: Redirect;
-  notFound?: true;
-}
-
-export async function getAppInitialData({
-  context,
-  isCms,
-}: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
-  const {
-    db,
-    pageUrls,
-    currentCity,
-    sessionCity,
-    sessionLocale,
-    initialData,
-    session,
-  } = await getPageInitialState({ context });
-
-  // Check if user authenticated
-  if (!session?.user) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: ROUTE_SIGN_IN,
-      },
-    };
-  }
-
-  // Session user
-  // const sessionUserStart = new Date().getTime();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const userAggregation = await usersCollection
     .aggregate([
       {
         $match: {
-          email: `${session.user.email}`,
+          email,
         },
       },
       {
@@ -213,7 +98,7 @@ export async function getAppInitialData({
             },
             {
               $addFields: {
-                name: `$nameI18n.${sessionLocale}`,
+                name: `$nameI18n.${locale}`,
                 appNavigation: {
                   $filter: {
                     input: '$navItems',
@@ -261,8 +146,133 @@ export async function getAppInitialData({
     ])
     .toArray();
   const user = userAggregation[0];
+  const sessionUser: UserModel | null = user
+    ? {
+        ...user,
+        fullName: getFullName(user),
+        shortName: getShortName(user),
+      }
+    : null;
+  return sessionUser;
+}
 
-  if (!user) {
+interface GetPageInitialStateInterface {
+  context: GetServerSidePropsContext;
+}
+
+interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
+  db: Db;
+  path: string;
+  host: string;
+  domain: string | null;
+  session: Session | null;
+}
+
+async function getPageInitialState({
+  context,
+}: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
+  const { locale, resolvedUrl } = context;
+  const db = await getDatabase();
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+  const path = `${resolvedUrl}`;
+  const host = `${context.req.headers.host}`;
+  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
+  const domain = getDomain(host, { validHosts: ['localhost'] });
+  const sessionLocale = locale || DEFAULT_LOCALE;
+
+  // Get session
+  const session = await getSession(context);
+  // Session user
+  // const sessionUserStart = new Date().getTime();
+  const sessionUser = await getPageSessionUser({
+    email: session?.user?.email,
+    locale: sessionLocale,
+  });
+  // console.log(sessionUser);
+  // console.log('Session user ', new Date().getTime() - sessionUserStart);
+
+  // Session city
+  let currentCity: CityModel | null | undefined;
+  if (subdomain) {
+    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+    currentCity = castDbData(initialCity);
+  }
+  if (!currentCity) {
+    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
+    currentCity = currentCity = castDbData(initialCity);
+  }
+  const sessionCity = currentCity?.slug || DEFAULT_CITY;
+
+  // Session company
+  let company: CompanyModel | null | undefined = null;
+  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
+    company = await companiesCollection.findOne({ domain });
+  }
+  // For development
+  // company = await companiesCollection.findOne({ slug: 'alkoliner' });
+
+  // Page initial data
+  const rawInitialData = await getPageInitialData({
+    locale: sessionLocale,
+    city: sessionCity,
+    companySlug: company?.slug,
+  });
+  const initialData = castDbData(rawInitialData);
+
+  return {
+    db,
+    path,
+    host,
+    domain,
+    session,
+    initialData,
+    company: castDbData(company),
+    sessionCity,
+    sessionLocale,
+    sessionUser,
+    currentCity: currentCity
+      ? {
+          ...currentCity,
+          name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
+        }
+      : null,
+    pageUrls: {
+      canonicalUrl: `https://${host}${path}`,
+      siteUrl: `https://${host}`,
+      domain: `${domain}`,
+    },
+  };
+}
+
+interface GetAppInitialDataInterface {
+  context: GetServerSidePropsContext;
+  isCms?: boolean;
+}
+
+interface GetAppInitialDataPayloadInterface<T> {
+  props?: T;
+  redirect?: Redirect;
+  notFound?: true;
+}
+
+export async function getAppInitialData({
+  context,
+  isCms,
+}: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
+  const {
+    sessionUser,
+    pageUrls,
+    currentCity,
+    sessionCity,
+    sessionLocale,
+    initialData,
+    session,
+  } = await getPageInitialState({ context });
+
+  // Check if user authenticated
+  if (!session?.user) {
     return {
       redirect: {
         permanent: false,
@@ -271,7 +281,16 @@ export async function getAppInitialData({
     };
   }
 
-  if (!user.role) {
+  if (!sessionUser) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  if (!sessionUser.role) {
     return {
       redirect: {
         permanent: false,
@@ -280,7 +299,7 @@ export async function getAppInitialData({
     };
   }
 
-  if (user.role.slug !== ROLE_SLUG_ADMIN && isCms) {
+  if (sessionUser.role.slug !== ROLE_SLUG_ADMIN && isCms) {
     return {
       redirect: {
         permanent: false,
@@ -290,8 +309,8 @@ export async function getAppInitialData({
   }
 
   if (
-    user.role.slug !== ROLE_SLUG_COMPANY_MANAGER &&
-    user.role.slug !== ROLE_SLUG_COMPANY_OWNER &&
+    sessionUser.role.slug !== ROLE_SLUG_COMPANY_MANAGER &&
+    sessionUser.role.slug !== ROLE_SLUG_COMPANY_OWNER &&
     !isCms
   ) {
     return {
@@ -301,14 +320,6 @@ export async function getAppInitialData({
       },
     };
   }
-
-  const sessionUser: UserModel = {
-    ...user,
-    fullName: getFullName(user),
-    shortName: getShortName(user),
-  };
-  // console.log(sessionUser);
-  // console.log('Session user ', new Date().getTime() - sessionUserStart);
 
   return {
     props: {
@@ -351,6 +362,7 @@ export async function getSiteInitialData({
     sessionLocale,
     initialData,
     company,
+    sessionUser,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -372,6 +384,7 @@ export async function getSiteInitialData({
       sessionLocale,
       company,
       pageUrls,
+      sessionUser: castDbData(sessionUser),
     },
   };
 }

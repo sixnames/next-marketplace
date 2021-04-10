@@ -1,4 +1,4 @@
-import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import { NavItemModel } from 'db/dbModels';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from '../../components/Icon/Icon';
@@ -9,7 +9,7 @@ import Tooltip from '../../components/TTip/Tooltip';
 import { IconType } from 'types/iconTypes';
 
 interface AppNavItemInterface {
-  item: AppNavParentItemFragment;
+  item: NavItemModel;
   compact?: boolean;
   pathname: string;
   openNavHandler: () => void;
@@ -20,16 +20,14 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
   const { asPath } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
-  const { name, icon, path, appNavigationChildren, _id } = item;
+  const { name, icon, path, children, _id } = item;
   const iconType = icon as IconType;
 
   React.useEffect(() => {
-    if (appNavigationChildren) {
+    if (children) {
       const pathnameArr = pathname.split('/[');
       const realPathname = pathnameArr[0];
-      const paths = appNavigationChildren
-        .map(({ path }) => path)
-        .map((path) => `${path}`.split('?')[0]);
+      const paths = children.map(({ path }) => path).map((path) => `${path}`.split('?')[0]);
       const current = paths.includes(realPathname);
       if (current) {
         setIsDropdownActive(true);
@@ -39,7 +37,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
     return () => {
       setIsDropdownActive(false);
     };
-  }, [appNavigationChildren, pathname]);
+  }, [children, pathname]);
 
   const checkIsCurrent = React.useCallback(
     (path: string) => {
@@ -58,7 +56,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
     }
   }
 
-  if (appNavigationChildren && appNavigationChildren.length) {
+  if (children && children.length) {
     return (
       <li className={classes.item} data-cy={`app-nav-item-${_id}`}>
         <Tooltip title={compact ? name : null}>
@@ -84,7 +82,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             compact ? classes.dropdownCompact : ''
           }`}
         >
-          {appNavigationChildren.map((dropdownItem) => {
+          {children.map((dropdownItem) => {
             const { name, path, _id } = dropdownItem;
             const isCurrent = checkIsCurrent(`${path}`);
             return (

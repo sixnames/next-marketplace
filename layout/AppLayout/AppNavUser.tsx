@@ -9,13 +9,13 @@ interface AppNavUserInterface {
 }
 
 const AppNavUser: React.FC<AppNavUserInterface> = ({ compact, openNavHandler }) => {
-  const { state } = useUserContext();
+  const { me } = useUserContext();
 
-  if (!state.me) {
+  if (!me) {
     return null;
   }
 
-  const { shortName } = state.me;
+  const { shortName } = me;
 
   return (
     <div

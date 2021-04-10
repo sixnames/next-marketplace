@@ -352,6 +352,10 @@ export interface NavItemModel {
   index: number;
   icon?: IconType | null;
   parentId?: ObjectIdModel | null;
+
+  // types for ui
+  name?: string;
+  children?: NavItemModel[];
 }
 
 export interface OptionVariantsModel {

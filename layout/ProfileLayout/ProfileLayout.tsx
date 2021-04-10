@@ -17,14 +17,13 @@ import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
 import { useUserContext } from 'context/userContext';
 import AsideNav, { AsideNavConfigType } from '../../components/AsideNav/AsideNav';
-import Spinner from '../../components/Spinner/Spinner';
 
 interface ProfileLayoutInterface {
   testId?: string;
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const { state } = useUserContext();
+  const { me } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
     return [
@@ -91,17 +90,6 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
     ];
   }, []);
 
-  if (state.loadingUser || !state.me) {
-    return (
-      <div className={classes.frame}>
-        <Breadcrumbs currentPageName={'Профиль'} />
-        <Inner lowTop>
-          <Spinner isNested />
-        </Inner>
-      </div>
-    );
-  }
-
   return (
     <div className={classes.frame}>
       <Breadcrumbs currentPageName={'Профиль'} />
@@ -109,7 +97,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         <div className={classes.content}>
           <div className={classes.aside}>
             <Title>Личный кабинет</Title>
-            <div className={classes.greeting}>С возвращением, {state.me?.name}</div>
+            <div className={classes.greeting}>С возвращением, {me?.name}</div>
             <AsideNav className={classes.asideNav} config={navConfig} testId={'profile-nav'} />
           </div>
           <div data-cy={testId}>{children}</div>

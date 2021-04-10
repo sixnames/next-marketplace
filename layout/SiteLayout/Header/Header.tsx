@@ -49,21 +49,9 @@ const HeaderSearchTrigger: React.FC = () => {
 
 const HeaderProfileLink: React.FC = () => {
   const signOut = useSignOut();
-  const { state } = useUserContext();
+  const { me } = useUserContext();
 
-  if (state.loadingUser) {
-    return (
-      <div className={`${classes.middleLink}`}>
-        <span
-          className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderDisabled} ${classes.middleLinkIconHolderNoLabel}`}
-        >
-          <Icon name={'user'} className={classes.middleLinkUserIcon} />
-        </span>
-      </div>
-    );
-  }
-
-  if (state.me) {
+  if (me) {
     return (
       <Menu>
         {() => {
@@ -79,7 +67,7 @@ const HeaderProfileLink: React.FC = () => {
               <MenuPopover>
                 <LayoutCard>
                   <div className={classes.userDropdownTop}>
-                    <div className={classes.userDropdownName}>{state.me?.shortName}</div>
+                    <div className={classes.userDropdownName}>{me?.shortName}</div>
                   </div>
 
                   <ul>
@@ -89,7 +77,7 @@ const HeaderProfileLink: React.FC = () => {
                       </Link>
                     </li>
 
-                    {state.me?.role.slug === ROLE_SLUG_ADMIN ? (
+                    {me?.role?.slug === ROLE_SLUG_ADMIN ? (
                       <li className={classes.userDropdownListItem}>
                         <Link className={classes.userDropdownListLink} href={ROUTE_CMS}>
                           <span>CMS</span>
@@ -97,8 +85,8 @@ const HeaderProfileLink: React.FC = () => {
                       </li>
                     ) : null}
 
-                    {state.me?.role.slug === ROLE_SLUG_COMPANY_MANAGER ||
-                    state.me?.role.slug === ROLE_SLUG_COMPANY_OWNER ? (
+                    {me?.role?.slug === ROLE_SLUG_COMPANY_MANAGER ||
+                    me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li className={classes.userDropdownListItem}>
                         <Link className={classes.userDropdownListLink} href={ROUTE_APP}>
                           <span>Панель управления</span>
@@ -122,8 +110,8 @@ const HeaderProfileLink: React.FC = () => {
   return (
     <Link
       ariaLabel={'Войти'}
-      testId={state.me ? `profile-link` : `sign-in-link`}
-      href={state.me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      testId={me ? `profile-link` : `sign-in-link`}
+      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
       className={`${classes.middleLink}`}
       activeClassName={`${classes.middleLinkActive}`}
     >

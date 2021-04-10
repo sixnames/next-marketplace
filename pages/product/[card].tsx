@@ -415,6 +415,7 @@ export async function getServerSideProps(
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${query.card}`,
+    companyId: props.company?._id,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

@@ -781,8 +781,6 @@ export type CatalogueProductInterface = Omit<ProductModel, 'attributes'>;
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
-  lastProductId: ObjectIdModel;
-  hasMore: boolean;
   clearSlug: string;
   filter: string[];
   rubricName: string;
@@ -792,6 +790,7 @@ export interface CatalogueDataInterface {
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];
   selectedAttributes: CatalogueFilterAttributeModel[];
+  page: number;
 }
 
 export interface CatalogueProductOptionInterface {

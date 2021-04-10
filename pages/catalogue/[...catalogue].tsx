@@ -46,7 +46,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
-  const [isRowView, setIsRowView] = React.useState<boolean>(false);
+  const [isRowView, setIsRowView] = React.useState<boolean>(true);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
@@ -90,9 +90,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
       setLoading(true);
-      fetch(
-        `/api/catalogue${router.asPath}?locale=${router.locale}&lastProductId=${state.lastProductId}`,
-      )
+      fetch(`/api/catalogue${router.asPath}?locale=${router.locale}&page=${state.page + 1}`)
         .then((res) => {
           return res.json();
         })
@@ -110,13 +108,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
           console.log(e);
         });
     }
-  }, [
-    router.asPath,
-    router.locale,
-    state.lastProductId,
-    state.products.length,
-    state.totalProducts,
-  ]);
+  }, [router.asPath, router.locale, state.page, state.products.length, state.totalProducts]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -403,6 +395,7 @@ export async function getServerSideProps(
     companyId: props.company?._id,
     input: {
       filter: alwaysArray(catalogue),
+      page: 1,
     },
   });
   if (!rawCatalogueData) {

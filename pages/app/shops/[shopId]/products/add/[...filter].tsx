@@ -588,7 +588,9 @@ export const getServerSideProps = async (
     page,
     skip,
     limit,
-  } = castCatalogueFilters(restFilter);
+  } = castCatalogueFilters({
+    filters: restFilter,
+  });
 
   // Products stages
   const pricesStage =

@@ -471,17 +471,27 @@ interface CastCatalogueFiltersPayloadInterface {
   pagerUrl: string;
 }
 
-export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPayloadInterface {
+interface CastCatalogueFiltersInterface {
+  filters: string[];
+  initialLimit?: number;
+  initialPage?: number;
+}
+
+export function castCatalogueFilters({
+  filters,
+  initialPage,
+  initialLimit,
+}: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
   // pagination
   const pagerUrlParts: string[] = [];
-  const defaultPage = 1;
+  const defaultPage = initialPage || 1;
   let page = defaultPage;
 
-  const defaultLimit = PAGINATION_DEFAULT_LIMIT;
+  const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;
   let limit = defaultLimit;
 
   // sort
@@ -588,7 +598,7 @@ export interface GetCatalogueDataInterface {
   companyId?: string | ObjectIdModel | null;
   input: {
     filter: string[];
-    lastProductId?: ObjectIdModel | null | undefined;
+    page: number;
   };
 }
 
@@ -596,38 +606,38 @@ export const getCatalogueData = async ({
   locale,
   city,
   input,
-  companySlug,
+  companySlug = CONFIG_DEFAULT_COMPANY_SLUG,
   companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    // console.log(' ');
-    // console.log('===========================================================');
-    // const timeStart = new Date().getTime();
+    console.log(' ');
+    console.log('===========================================================');
+    const timeStart = new Date().getTime();
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args
-    const { lastProductId, filter } = input;
+    const { filter, page } = input;
     const [rubricSlug, ...filterOptions] = filter;
     const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
 
     // Get configs
-    // const configsTimeStart = new Date().getTime();
+    const configsTimeStart = new Date().getTime();
     const { snippetVisibleAttributesCount } = await getCatalogueConfigs({
       companySlug: realCompanySlug,
       city,
     });
-    // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
+    console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get rubric
-    // const rubricTimeStart = new Date().getTime();
+    const rubricTimeStart = new Date().getTime();
     const rubric = await getCatalogueRubric([
       {
         $match: { slug: rubricSlug },
       },
     ]);
-    // console.log('Rubric >>>>>>>>>>>>>>>> ', new Date().getTime() - rubricTimeStart);
+    console.log('Rubric >>>>>>>>>>>>>>>> ', new Date().getTime() - rubricTimeStart);
 
     if (!rubric) {
       return null;
@@ -642,20 +652,14 @@ export const getCatalogueData = async ({
       sortDir,
       sortFilterOptions,
       noFiltersSelected,
-    } = castCatalogueFilters(filterOptions);
-
-    // Product stages
-    const keyStage = lastProductId
-      ? [
-          {
-            $match: {
-              _id: {
-                $lt: new ObjectId(lastProductId),
-              },
-            },
-          },
-        ]
-      : [];
+      skip,
+      limit,
+      page: payloadPage,
+    } = castCatalogueFilters({
+      filters: filterOptions,
+      initialPage: page,
+      initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+    });
 
     const pricesStage =
       minPrice && maxPrice
@@ -696,13 +700,15 @@ export const getCatalogueData = async ({
     // sort by price
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
-        available: SORT_DESC,
         price: sortDir,
+        priorities: SORT_DESC,
+        views: SORT_DESC,
+        available: SORT_DESC,
         _id: SORT_DESC,
       };
     }
 
-    // const shopProductsStart = new Date().getTime();
+    const shopProductsStart = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>(
         [
@@ -739,9 +745,11 @@ export const getCatalogueData = async ({
                     ...sortStage,
                   },
                 },
-                ...keyStage,
                 {
-                  $limit: CATALOGUE_PRODUCTS_LIMIT,
+                  $skip: skip,
+                },
+                {
+                  $limit: limit,
                 },
                 {
                   $lookup: {
@@ -876,16 +884,16 @@ export const getCatalogueData = async ({
         { allowDiskUse: true },
       )
       .toArray();
-
     const shopProductsAggregationResult = shopProductsAggregation[0];
-    // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
+    // console.log(shopProductsAggregationResult);
+    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
       return null;
     }
 
     // Get filter attributes
-    // const beforeOptions = new Date().getTime();
+    const beforeOptions = new Date().getTime();
     const rubricAttributes = await getRubricCatalogueAttributes({
       config: shopProductsAggregationResult.options,
       attributes: rubric.attributes,
@@ -899,7 +907,7 @@ export const getCatalogueData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: ROUTE_CATALOGUE,
     });
-    // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+    console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products
     const products = [];
@@ -1014,20 +1022,11 @@ export const getCatalogueData = async ({
       locale,
     });
 
-    // Get keySet pagination
-    const lastProduct = products[products.length - 1];
-    const hasMore = Boolean(
-      lastProduct && lastProductId && !new ObjectId(lastProductId).equals(lastProduct?._id),
-    );
-
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-
-    // console.log('Total time: ', new Date().getTime() - timeStart);
+    console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,
-      lastProductId: lastProduct?._id,
-      hasMore,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
       filter,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
@@ -1037,6 +1036,7 @@ export const getCatalogueData = async ({
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
       attributes: castedAttributes,
       selectedAttributes,
+      page: payloadPage,
     };
   } catch (e) {
     console.log(e);

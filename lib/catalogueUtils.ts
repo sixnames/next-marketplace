@@ -610,9 +610,9 @@ export const getCatalogueData = async ({
   companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    console.log(' ');
-    console.log('===========================================================');
-    const timeStart = new Date().getTime();
+    // console.log(' ');
+    // console.log('===========================================================');
+    // const timeStart = new Date().getTime();
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -623,21 +623,21 @@ export const getCatalogueData = async ({
     const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
 
     // Get configs
-    const configsTimeStart = new Date().getTime();
+    // const configsTimeStart = new Date().getTime();
     const { snippetVisibleAttributesCount } = await getCatalogueConfigs({
       companySlug: realCompanySlug,
       city,
     });
-    console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
+    // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get rubric
-    const rubricTimeStart = new Date().getTime();
+    // const rubricTimeStart = new Date().getTime();
     const rubric = await getCatalogueRubric([
       {
         $match: { slug: rubricSlug },
       },
     ]);
-    console.log('Rubric >>>>>>>>>>>>>>>> ', new Date().getTime() - rubricTimeStart);
+    // console.log('Rubric >>>>>>>>>>>>>>>> ', new Date().getTime() - rubricTimeStart);
 
     if (!rubric) {
       return null;
@@ -708,7 +708,7 @@ export const getCatalogueData = async ({
       };
     }
 
-    const shopProductsStart = new Date().getTime();
+    // const shopProductsStart = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>(
         [
@@ -886,14 +886,14 @@ export const getCatalogueData = async ({
       .toArray();
     const shopProductsAggregationResult = shopProductsAggregation[0];
     // console.log(shopProductsAggregationResult);
-    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
+    // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
       return null;
     }
 
     // Get filter attributes
-    const beforeOptions = new Date().getTime();
+    // const beforeOptions = new Date().getTime();
     const rubricAttributes = await getRubricCatalogueAttributes({
       config: shopProductsAggregationResult.options,
       attributes: rubric.attributes,
@@ -907,7 +907,7 @@ export const getCatalogueData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: ROUTE_CATALOGUE,
     });
-    console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+    // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products
     const products = [];
@@ -1023,7 +1023,7 @@ export const getCatalogueData = async ({
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-    console.log('Total time: ', new Date().getTime() - timeStart);
+    // console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,

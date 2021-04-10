@@ -603,7 +603,8 @@ export interface NexusGenInputs {
   };
   UpdateProductCounterInput: {
     // input type
-    productSlug: string; // String!
+    companySlug: string | null; // String
+    shopProductIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
   };
   UpdateProductInCartInput: {
     // input type

@@ -2241,7 +2241,8 @@ input UpdateProductAssetIndexInput {
 }
 
 input UpdateProductCounterInput {
-  productSlug: String!
+  companySlug: String = "default"
+  shopProductIds: [ObjectId!]!
 }
 
 input UpdateProductInCartInput {

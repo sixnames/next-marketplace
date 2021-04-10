@@ -529,6 +529,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   facets?: ProductFacetModel[] | null;
   facet?: ProductFacetModel | null;
   shopProducts?: ShopProductModel[];
+  shopProductIds?: ObjectIdModel[];
   shopProduct?: ShopProductModel;
   rubric?: RubricModel;
 }

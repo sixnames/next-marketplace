@@ -14,7 +14,7 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
@@ -31,6 +31,8 @@ import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
   ATTRIBUTE_VARIANT_SELECT,
+  CONFIG_DEFAULT_COMPANY_SLUG,
+  VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
@@ -167,7 +169,8 @@ export const DeleteProductFromConnectionInput = inputObjectType({
 export const UpdateProductCounterInput = inputObjectType({
   name: 'UpdateProductCounterInput',
   definition(t) {
-    t.nonNull.string('productSlug');
+    t.nonNull.list.nonNull.objectId('shopProductIds');
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
   },
 });
 
@@ -1284,17 +1287,29 @@ export const ProductMutations = extendType({
           }),
         ),
       },
-      resolve: async (_root): Promise<boolean> => {
+      resolve: async (_root, args, context): Promise<boolean> => {
         try {
-          // TODO
-          // const db = await getDatabase();
-          // const { role } = await getSessionRole(context);
-          // const { city } = await getRequestParams(context);
-          /*if (!role.isStaff) {
-            const { input } = args;
-            
-            return false;
-          }*/
+          const db = await getDatabase();
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const { role } = await getSessionRole(context);
+          const { city } = await getRequestParams(context);
+          if (!role.isStaff) {
+            const { shopProductIds, companySlug } = args.input;
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                _id: { $in: shopProductIds },
+              },
+              {
+                $inc: {
+                  [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
+                },
+              },
+            );
+            if (!updatedShopProductsResult.result.ok) {
+              return false;
+            }
+            return true;
+          }
           return true;
         } catch (e) {
           console.log(e);

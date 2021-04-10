@@ -298,6 +298,7 @@ export type CartProduct = Base & {
 
 export type CatalogueDataInput = {
   lastProductId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
   filter: Array<Scalars['String']>;
 };
 
@@ -2456,7 +2457,8 @@ export type UpdateProductAssetIndexInput = {
 };
 
 export type UpdateProductCounterInput = {
-  productSlug: Scalars['String'];
+  shopProductIds: Array<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
 };
 
 export type UpdateProductInCartInput = {

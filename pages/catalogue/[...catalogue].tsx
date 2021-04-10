@@ -46,7 +46,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
-  const [isRowView, setIsRowView] = React.useState<boolean>(true);
+  const [isRowView, setIsRowView] = React.useState<boolean>(false);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });

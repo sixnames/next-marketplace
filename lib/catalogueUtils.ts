@@ -646,12 +646,16 @@ export const getCatalogueData = async ({
 
     // Product stages
     const keyStage = lastProductId
-      ? {
-          _id: {
-            $lt: new ObjectId(lastProductId),
+      ? [
+          {
+            $match: {
+              _id: {
+                $lt: new ObjectId(lastProductId),
+              },
+            },
           },
-        }
-      : {};
+        ]
+      : [];
 
     const pricesStage =
       minPrice && maxPrice
@@ -683,9 +687,9 @@ export const getCatalogueData = async ({
 
     // sort stage
     let sortStage: any = {
-      available: SORT_DESC,
       priorities: SORT_DESC,
       views: SORT_DESC,
+      available: SORT_DESC,
       _id: SORT_DESC,
     };
 
@@ -735,9 +739,7 @@ export const getCatalogueData = async ({
                     ...sortStage,
                   },
                 },
-                {
-                  $match: keyStage,
-                },
+                ...keyStage,
                 {
                   $limit: CATALOGUE_PRODUCTS_LIMIT,
                 },

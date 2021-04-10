@@ -82,6 +82,9 @@ export async function getCardData({
             maxPrice: {
               $max: '$price',
             },
+            shopProductIds: {
+              $addToSet: '$_id',
+            },
             shopProducts: {
               $push: {
                 _id: '$_id',
@@ -102,6 +105,7 @@ export async function getCardData({
             let: {
               productId: '$_id',
               shopProducts: '$shopProducts',
+              shopProductIds: '$shopProductIds',
               minPrice: '$minPrice',
               maxPrice: '$maxPrice',
             },
@@ -146,6 +150,7 @@ export async function getCardData({
                   },
                   shopsCount: { $size: '$$shopProducts' },
                   shopProducts: '$$shopProducts',
+                  shopProductIds: '$$shopProductIds',
                   rubric: { $arrayElemAt: ['$rubrics', 0] },
                 },
               },

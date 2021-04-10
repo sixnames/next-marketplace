@@ -16,6 +16,7 @@ import { ProductAttributeModel, ProductModel } from 'db/dbModels';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
 import useCartMutations from 'hooks/useCartMutations';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -80,11 +81,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     updateProductCounterMutation({
       variables: {
         input: {
-          productSlug: cardData.slug,
+          shopProductIds: alwaysArray(cardData.shopProductIds),
         },
       },
     }).catch((e) => console.log(e));
-  }, [cardData.slug, updateProductCounterMutation]);
+  }, [cardData.shopProductIds, updateProductCounterMutation]);
 
   const tabsConfig = [
     {

@@ -36,24 +36,31 @@ const ProfileDetailsRoute: React.FC = () => {
     showModal,
     showLoading,
     showErrorNotification,
+    hideLoading,
+    hideModal,
   } = useMutationCallbacks({
     withModal: true,
   });
   const [updateMyProfileMutation] = useUpdateMyProfileMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
-      onCompleteCallback(data.updateMyProfile);
-      if (data.updateMyProfile.payload) {
+      if (data.updateMyProfile.success) {
         fetch(`/api/session-user?locale=${router.locale}`)
           .then((res) => res.json())
           .then((data) => {
+            hideLoading();
+            hideModal();
             setUser(data.sessionUser);
           })
           .catch((e) => {
+            hideLoading();
+            hideModal();
             showErrorNotification();
             console.log(e);
           });
       } else {
+        hideLoading();
+        hideModal();
         showErrorNotification();
       }
     },
@@ -183,9 +190,9 @@ const ProfileDetailsRoute: React.FC = () => {
 
 interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, pageUrls }) => {
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'Профиль'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics} {...props}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>

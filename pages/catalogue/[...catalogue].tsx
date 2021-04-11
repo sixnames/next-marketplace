@@ -337,12 +337,12 @@ const Catalogue: NextPage<CatalogueInterface> = ({
   catalogueData,
   navRubrics,
   currentCity,
-  pageUrls,
+  ...props
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
+      <SiteLayout navRubrics={navRubrics} {...props}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -357,7 +357,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({
       title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       navRubrics={navRubrics}
-      pageUrls={pageUrls}
+      {...props}
     >
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>

@@ -1,10 +1,11 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
-import useCart from 'hooks/useCart';
+import { CartModel } from 'db/dbModels';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import { alwaysArray } from 'lib/arrayUtils';
+import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './Header.module.css';
@@ -20,7 +21,7 @@ import { useUserContext } from 'context/userContext';
 import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from './CartDropdown';
-import { CartFragment, useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
+import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_COMPANY_MANAGER,
@@ -32,12 +33,19 @@ import {
   ROUTE_SIGN_IN,
 } from 'config/common';
 
-const HeaderSearchTrigger: React.FC = () => {
-  const { isSearchOpen, showSearchDropdown } = useSiteContext();
+interface HeaderSearchTriggerInterface {
+  isSearchOpen: boolean;
+  setIsSearchOpen: (value: boolean) => void;
+}
+
+const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
+  isSearchOpen,
+  setIsSearchOpen,
+}) => {
   return (
     <div
       data-cy={'search-trigger'}
-      onClick={showSearchDropdown}
+      onClick={() => setIsSearchOpen(true)}
       className={`${classes.middleLink} ${isSearchOpen ? classes.middleLinkActive : ''}`}
     >
       <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
@@ -123,7 +131,7 @@ const HeaderProfileLink: React.FC = () => {
 };
 
 interface HeaderCartDropdownButtonInterface {
-  cart: CartFragment;
+  cart: CartModel;
 }
 
 const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {
@@ -149,9 +157,9 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
 };
 
 const HeaderCartLink: React.FC = () => {
-  const { cart } = useCart();
+  const { cart } = useSiteContext();
 
-  if (cart && cart.productsCount > 0) {
+  if (cart && noNaN(cart.productsCount) > 0) {
     return (
       <Menu>
         {() => {
@@ -187,10 +195,15 @@ const HeaderMiddleLeft: React.FC = () => {
   );
 };
 
-const HeaderMiddleRight: React.FC = () => {
+type HeaderMiddleRightInterface = HeaderSearchTriggerInterface;
+
+const HeaderMiddleRight: React.FC<HeaderMiddleRightInterface> = ({
+  isSearchOpen,
+  setIsSearchOpen,
+}) => {
   return (
     <div className={classes.middleSide}>
-      <HeaderSearchTrigger />
+      <HeaderSearchTrigger isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
       <HeaderProfileLink />
 
       <div className={`${classes.middleLink}`}>
@@ -336,7 +349,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
-  const { isSearchOpen } = useSiteContext();
+  const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -371,10 +384,12 @@ const Header: React.FC = () => {
             <img src={siteLogoSrc} width='150' height='24' alt={`${configSiteName}`} />
           </Link>
 
-          <HeaderMiddleRight />
+          <HeaderMiddleRight isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
         </Inner>
 
-        {isSearchOpen ? <HeaderSearch initialData={data} /> : null}
+        {isSearchOpen ? (
+          <HeaderSearch setIsSearchOpen={setIsSearchOpen} initialData={data} />
+        ) : null}
       </header>
 
       <StickyNav />
@@ -387,7 +402,7 @@ const Header: React.FC = () => {
           />
 
           <div className={classes.mobileNavRight}>
-            <HeaderSearchTrigger />
+            <HeaderSearchTrigger isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
             <HeaderProfileLink />
             <HeaderCartLink />
           </div>

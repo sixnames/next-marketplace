@@ -92,9 +92,9 @@ const SignInRoute: React.FC = () => {
 
 export interface SignInPageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const SignIn: NextPage<SignInPageInterface> = ({ navRubrics, pageUrls }) => {
+const SignIn: NextPage<SignInPageInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'Авторизация'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'Авторизация'} navRubrics={navRubrics} {...props}>
       <SignInRoute />
     </SiteLayout>
   );

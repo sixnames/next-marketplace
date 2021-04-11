@@ -1,5 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
 import { CatalogueProductInterface } from 'db/dbModels';
-import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
@@ -27,7 +27,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   className,
 }) => {
   const [amount, setAmount] = React.useState<number>(1);
-  const { addShoplessProductToCart } = useCartMutations();
+  const { addShoplessProductToCart } = useSiteContext();
   const {
     name,
     originalName,

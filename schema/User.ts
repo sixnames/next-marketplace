@@ -138,15 +138,6 @@ export const UsersPaginationPayload = objectType({
 // User Queries
 export const UserQuery = queryType({
   definition(t) {
-    // Should return session user if authenticated
-    t.nullable.field('me', {
-      type: 'User',
-      description: 'Should return session user if authenticated',
-      resolve: async (_source, _args, context): Promise<UserModel | null> => {
-        return getSessionUser(context);
-      },
-    });
-
     // Should return user by _id
     t.nonNull.field('getUser', {
       type: 'User',

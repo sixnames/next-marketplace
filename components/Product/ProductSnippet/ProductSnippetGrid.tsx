@@ -1,5 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
 import { CatalogueProductInterface } from 'db/dbModels';
-import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
@@ -25,7 +25,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   size = 'normal',
   className,
 }) => {
-  const { addShoplessProductToCart } = useCartMutations();
+  const { addShoplessProductToCart } = useSiteContext();
   const {
     name,
     originalName,

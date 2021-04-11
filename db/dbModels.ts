@@ -224,11 +224,22 @@ export interface CartProductModel {
   shopProductId?: ObjectIdModel | null;
   productId?: ObjectIdModel | null;
   amount: number;
+
+  // types for ui
+  product?: ProductModel;
+  shopProduct?: ShopProductModel;
+  isShopless?: boolean;
+  formattedTotalPrice?: string;
 }
 
-export interface CartModel {
+export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
   cartProducts: CartProductModel[];
+
+  // types for ui
+  productsCount?: number;
+  formattedTotalPrice?: string;
+  isWithShopless?: boolean;
 }
 
 export interface CityModel {
@@ -708,7 +719,6 @@ export interface UserModel extends BaseModel, TimestampModel {
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;
-export type CartPayloadModel = PayloadType<CartModel>;
 export type CompanyPayloadModel = PayloadType<CompanyModel>;
 export type ConfigPayloadModel = PayloadType<ConfigModel>;
 export type CountryPayloadModel = PayloadType<CountryModel>;
@@ -728,8 +738,12 @@ export type RolePayloadModel = PayloadType<RoleModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;
-  cart?: CartModel;
   order?: OrderModel;
+}
+
+export interface CartPayloadModel {
+  success: boolean;
+  message: string;
 }
 
 // Pagination payload

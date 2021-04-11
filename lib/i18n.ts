@@ -92,7 +92,11 @@ export const getCurrencyString = ({ locale, value }: GetCurrencyStringInterface)
   return new Intl.NumberFormat(locale).format(noNaN(value)).replace(',', ' ');
 };
 
-export function getNumWord(value: number, words: string[]) {
+export function getNumWord(value: number | undefined, words: string[]): string {
+  if (!value) {
+    return '';
+  }
+
   value = Math.abs(value) % 100;
   const num = value % 10;
   if (value > 10 && value < 20) {

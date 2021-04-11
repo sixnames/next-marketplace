@@ -1,13 +1,6 @@
-import useCartMutations from 'hooks/useCartMutations';
+import { useSiteContext } from 'context/siteContext';
+import { ShopProductModel } from 'db/dbModels';
 import * as React from 'react';
-import {
-  GetProductShopsInput,
-  ShopProductSnippetFragment,
-  SortDirection,
-  useGetCatalogueCardShopsQuery,
-} from 'generated/apolloComponents';
-import RequestError from '../../components/RequestError/RequestError';
-import Spinner from '../../components/Spinner/Spinner';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
 import classes from './CartShopsList.module.css';
@@ -15,16 +8,19 @@ import Image from 'next/image';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
-import { SORT_ASC_STR } from 'config/common';
 
 interface CartShopInterface {
-  shopProduct: ShopProductSnippetFragment;
+  shopProduct: ShopProductModel;
   cartProductId: string;
 }
 
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) => {
-  const { addShopToCartProduct } = useCartMutations();
+  const { addShopToCartProduct } = useSiteContext();
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
+  if (!shop) {
+    return null;
+  }
+
   const {
     assets,
     name,
@@ -69,7 +65,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
 
           <div className={classes.contacts}>
             <div className={classes.address}>{formattedAddress}</div>
-            {formattedPhones.map((phone, index) => {
+            {(formattedPhones || []).map((phone, index) => {
               return <LinkPhone key={index} value={phone} />;
             })}
           </div>
@@ -78,7 +74,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
         <div className={`${classes.column}`}>
           <ProductShopPrices
             className={classes.prices}
-            formattedPrice={formattedPrice}
+            formattedPrice={`${formattedPrice}`}
             discountedPercent={discountedPercent}
             formattedOldPrice={formattedOldPrice}
           />
@@ -108,55 +104,41 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
 };
 
 interface CartShopsInterface {
-  productId: string;
   cartProductId: string;
+  shopProducts: ShopProductModel[];
 }
 
-const CartShopsList: React.FC<CartShopsInterface> = ({ productId, cartProductId }) => {
+const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProducts }) => {
   const [isShopsOpen, setIsShopsOpen] = React.useState<boolean>(false);
-  const [shops, setShops] = React.useState<ShopProductSnippetFragment[] | null>(null);
-  const [input] = React.useState<GetProductShopsInput>(() => ({
-    productId,
-    sortBy: 'price',
-    sortDir: SORT_ASC_STR as SortDirection,
-  }));
-
-  const { data, loading, error } = useGetCatalogueCardShopsQuery({
-    variables: {
-      input,
-    },
-  });
-
-  React.useEffect(() => {
-    if (data && !error && !loading) {
-      setShops(data.getProductShops);
-    }
-  }, [data, loading, error]);
-
-  if (error) {
-    return <RequestError message={'Ошибка загрузки магазинов'} />;
-  }
-
-  if (!shops) {
-    return <Spinner isNested />;
-  }
 
   const visibleShopsLimit = 4;
-  const visibleShops = shops.slice(0, visibleShopsLimit);
-  const hiddenShops = shops.slice(visibleShopsLimit);
+  const visibleShops = shopProducts.slice(0, visibleShopsLimit);
+  const hiddenShops = shopProducts.slice(visibleShopsLimit);
 
   return (
     <div data-cy={`cart-shops-list`}>
-      {visibleShops.map((shop) => {
-        return <CartShop key={shop._id} shopProduct={shop} cartProductId={cartProductId} />;
+      {visibleShops.map((shopProduct) => {
+        return (
+          <CartShop
+            key={`${shopProduct._id}`}
+            shopProduct={shopProduct}
+            cartProductId={cartProductId}
+          />
+        );
       })}
 
       {hiddenShops.length > 0 ? (
         <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
           <DisclosurePanel>
             <div>
-              {hiddenShops.map((shop) => {
-                return <CartShop key={shop._id} shopProduct={shop} cartProductId={cartProductId} />;
+              {hiddenShops.map((shopProduct) => {
+                return (
+                  <CartShop
+                    key={`${shopProduct._id}`}
+                    shopProduct={shopProduct}
+                    cartProductId={cartProductId}
+                  />
+                );
               })}
             </div>
           </DisclosurePanel>

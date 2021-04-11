@@ -1,5 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
 import { ShopProductModel } from 'db/dbModels';
-import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './CardShop.module.css';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
-  const { addProductToCart } = useCartMutations();
+  const { addProductToCart } = useSiteContext();
   const [amount, setAmount] = React.useState<number>(1);
   const {
     shop,

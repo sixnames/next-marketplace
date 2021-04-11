@@ -232,29 +232,19 @@ type BrandsPaginationPayload implements PaginationPayload {
 type Cart {
   _id: ObjectId!
   cartProducts: [CartProduct!]!
-  formattedTotalPrice: String!
-  isWithShopless: Boolean!
-  productsCount: Int!
-  totalPrice: Int!
 }
 
-type CartPayload implements Payload {
+type CartPayload {
   message: String!
-  payload: Cart
   success: Boolean!
 }
 
 type CartProduct implements Base {
   _id: ObjectId!
   amount: Int!
-  formattedTotalPrice: String!
-  isShopless: Boolean!
   itemId: String!
-  product: Product
   productId: ObjectId
-  shopProduct: ShopProduct
   shopProductId: ObjectId
-  totalPrice: Int!
 }
 
 input CatalogueDataInput {
@@ -1815,11 +1805,6 @@ type Query {
   getRubricVariant(_id: ObjectId!): RubricVariant!
 
   """
-  Should return session user cart
-  """
-  getSessionCart: Cart!
-
-  """
   Should return cities list
   """
   getSessionCities: [City!]!
@@ -1853,11 +1838,6 @@ type Query {
   Should return validation messages list
   """
   getValidationMessages: [Message!]!
-
-  """
-  Should return session user if authenticated
-  """
-  me: User
 }
 
 input RepeatOrderInput {

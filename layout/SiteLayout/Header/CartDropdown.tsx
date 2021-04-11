@@ -1,7 +1,7 @@
-import useCartMutations from 'hooks/useCartMutations';
+import { useSiteContext } from 'context/siteContext';
+import { CartModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './CartDropdown.module.css';
-import { CartFragment } from 'generated/apolloComponents';
 import Image from 'next/image';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
@@ -15,13 +15,13 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { noNaN } from 'lib/numbers';
 
 interface CartDropdownInterface {
-  cart: CartFragment;
+  cart: CartModel;
 }
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart, clearCart } = useCartMutations();
+  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
 
   return (
@@ -43,38 +43,31 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             return null;
           }
 
-          const { mainImage, name, listFeatures } = productData;
-          const listFeaturesString = listFeatures
-            .map(({ readableValue }) => {
-              return readableValue;
-            })
-            .join(', ');
+          const { mainImage, originalName, shopsCount, cardPrices } = productData;
 
           return (
-            <div key={_id} className={classes.product} data-cy={`cart-dropdown-product`}>
+            <div key={`${_id}`} className={classes.product} data-cy={`cart-dropdown-product`}>
               <div className={classes.productImage}>
                 <div className={classes.productImageHolder}>
                   <Image
-                    src={mainImage}
+                    src={`${mainImage}`}
                     objectFit='contain'
-                    alt={name}
-                    title={name}
+                    alt={originalName}
+                    title={originalName}
                     width={70}
                     height={185}
                   />
                 </div>
               </div>
               <div className={classes.productContent}>
-                <div className={classes.productName}>{name}</div>
-                <div className={classes.productFeatures}>{listFeaturesString}</div>
+                <div className={classes.productName}>{originalName}</div>
 
                 {isShopless && !shopProduct ? (
                   <React.Fragment>
-                    {/*TODO*/}
                     <ProductSnippetPrice
-                      shopsCount={1}
+                      shopsCount={shopsCount}
                       className={classes.productPrice}
-                      value={'0'}
+                      value={cardPrices?.min}
                     />
                     <div className={classes.shopless}>Винотека не выбрана</div>
                   </React.Fragment>
@@ -88,7 +81,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     />
                     <div className={classes.shop}>
                       <span>винотека: </span>
-                      {shopProduct?.shop.name}
+                      {shopProduct?.shop?.name}
                     </div>
                   </React.Fragment>
                 )}

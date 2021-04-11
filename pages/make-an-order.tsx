@@ -11,11 +11,10 @@ import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
+import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
+import { CartProductModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
-import { CartProductFragment } from 'generated/apolloComponents';
-import useCart from 'hooks/useCart';
-import useCartMutations from 'hooks/useCartMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
@@ -30,7 +29,7 @@ import classes from 'styles/MakeAnOrderRoute.module.css';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OrderRouteProductInterface {
-  cartProduct: CartProductFragment;
+  cartProduct: CartProductModel;
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
@@ -40,11 +39,13 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
   }
 
   const {
-    product: { mainImage, name, itemId },
     shop,
     formattedOldPrice,
     discountedPercent,
     formattedPrice,
+    originalName,
+    itemId,
+    mainImage,
   } = shopProduct;
 
   return (
@@ -53,21 +54,27 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
         <div className={classes.productMainGrid}>
           <div className={classes.productImage}>
             <div className={classes.productImageHolder}>
-              <Image src={mainImage} alt={name} title={name} layout='fill' objectFit='contain' />
+              <Image
+                src={`${mainImage}`}
+                alt={originalName}
+                title={originalName}
+                layout='fill'
+                objectFit='contain'
+              />
             </div>
           </div>
           <div>
             <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
             <div className={classes.productContent}>
               <div>
-                <div className={classes.productName}>{name}</div>
+                <div className={classes.productName}>{originalName}</div>
               </div>
 
               <div>
                 <div className={classes.productTotals}>
                   <ProductShopPrices
                     className={classes.productTotalsPrice}
-                    formattedPrice={formattedPrice}
+                    formattedPrice={`${formattedPrice}`}
                     formattedOldPrice={formattedOldPrice}
                     discountedPercent={discountedPercent}
                     size={'small'}
@@ -84,9 +91,9 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                 <div className={classes.shop}>
                   <div>
                     <span>винотека: </span>
-                    {shop.name}
+                    {shop?.name}
                   </div>
-                  <div>{shop.address.formattedAddress}</div>
+                  <div>{shop?.address.formattedAddress}</div>
                 </div>
               </div>
             </div>
@@ -100,8 +107,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 const MakeAnOrderRoute: React.FC = () => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { loadingCart, cart } = useCart();
-  const { makeAnOrder } = useCartMutations();
+  const { loadingCart, cart, makeAnOrder } = useSiteContext();
   const { me } = useUserContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
@@ -237,7 +243,10 @@ const MakeAnOrderRoute: React.FC = () => {
                         <div className={classes.products} data-cy={'order-products'}>
                           {cartProducts.map((cartProduct) => {
                             return (
-                              <OrderRouteProduct cartProduct={cartProduct} key={cartProduct._id} />
+                              <OrderRouteProduct
+                                cartProduct={cartProduct}
+                                key={`${cartProduct._id}`}
+                              />
                             );
                           })}
                         </div>
@@ -271,9 +280,9 @@ const MakeAnOrderRoute: React.FC = () => {
 
 interface MakeAnOrderInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, pageUrls }) => {
+const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} {...props}>
       <MakeAnOrderRoute />
     </SiteLayout>
   );

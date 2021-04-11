@@ -19,8 +19,16 @@ import {
   updateProductInCartSchema,
 } from 'validation/cartSchema';
 import { ObjectId } from 'mongodb';
-import { noNaN } from 'lib/numbers';
-import { getCurrencyString } from 'lib/i18n';
+
+export const CartProduct = objectType({
+  name: 'CartProduct',
+  definition(t) {
+    t.implements('Base');
+    t.nonNull.int('amount');
+    t.objectId('shopProductId');
+    t.objectId('productId');
+  },
+});
 
 export const Cart = objectType({
   name: 'Cart',
@@ -29,115 +37,14 @@ export const Cart = objectType({
     t.nonNull.list.nonNull.field('cartProducts', {
       type: 'CartProduct',
     });
-
-    // Cart totalPrice field resolver
-    t.nonNull.field('totalPrice', {
-      type: 'Int',
-      resolve: async (source): Promise<number> => {
-        const db = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const shopProductsIds = source.cartProducts.reduce((acc: ObjectId[], { shopProductId }) => {
-          if (shopProductId) {
-            return [...acc, shopProductId];
-          }
-          return acc;
-        }, []);
-
-        const shopProducts = await shopProductsCollection
-          .find({ _id: { $in: shopProductsIds } })
-          .toArray();
-
-        const totalPrice = shopProducts.reduce((acc: number, { price, _id }) => {
-          const cartProduct = source.cartProducts.find(({ shopProductId }) => {
-            return shopProductId && shopProductId.equals(_id);
-          });
-
-          if (!cartProduct) {
-            return acc;
-          }
-
-          return acc + noNaN(price) * noNaN(cartProduct.amount);
-        }, 0);
-
-        return totalPrice;
-      },
-    });
-
-    // Cart formattedTotalPrice field resolver
-    t.nonNull.field('formattedTotalPrice', {
-      type: 'String',
-      resolve: async (source, _args, context): Promise<string> => {
-        const { locale } = await getRequestParams(context);
-        const db = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const shopProductsIds = source.cartProducts.reduce((acc: ObjectId[], { shopProductId }) => {
-          if (shopProductId) {
-            return [...acc, shopProductId];
-          }
-          return acc;
-        }, []);
-
-        const shopProducts = await shopProductsCollection
-          .find({ _id: { $in: shopProductsIds } })
-          .toArray();
-
-        const totalPrice = shopProducts.reduce((acc: number, { price, _id }) => {
-          const cartProduct = source.cartProducts.find(({ shopProductId }) => {
-            return shopProductId && shopProductId.equals(_id);
-          });
-
-          if (!cartProduct) {
-            return acc;
-          }
-
-          return acc + noNaN(price) * noNaN(cartProduct.amount);
-        }, 0);
-
-        return getCurrencyString({ value: totalPrice, locale });
-      },
-    });
-
-    // Cart productsCount field resolver
-    t.nonNull.field('productsCount', {
-      type: 'Int',
-      resolve: async (source): Promise<number> => {
-        return noNaN(source.cartProducts.length);
-      },
-    });
-
-    // Cart isWithShopless field resolver
-    t.nonNull.field('isWithShopless', {
-      type: 'Boolean',
-      resolve: async (source): Promise<boolean> => {
-        return source.cartProducts.some(({ productId }) => !!productId);
-      },
-    });
-  },
-});
-
-// Cart Queries
-export const CartQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return session user cart
-    t.nonNull.field('getSessionCart', {
-      type: 'Cart',
-      description: 'Should return session user cart',
-      resolve: async (_root, _args, context): Promise<CartModel> => {
-        const sessionCart = await getSessionCart(context);
-        return sessionCart;
-      },
-    });
   },
 });
 
 export const CartPayload = objectType({
   name: 'CartPayload',
   definition(t) {
-    t.implements('Payload');
-    t.field('payload', {
-      type: 'Cart',
-    });
+    t.nonNull.boolean('success');
+    t.nonNull.string('message');
   },
 });
 
@@ -251,7 +158,6 @@ export const CartMutations = extendType({
             return {
               success: true,
               message: await getApiMessage('carts.addProduct.success'),
-              payload: updatedCart,
             };
           }
 
@@ -286,7 +192,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.addProduct.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -357,7 +262,6 @@ export const CartMutations = extendType({
             return {
               success: true,
               message: await getApiMessage('carts.addProduct.success'),
-              payload: updatedCart,
             };
           }
 
@@ -392,7 +296,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.addProduct.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -456,7 +359,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.updateProduct.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -519,7 +421,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.updateProduct.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -585,7 +486,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.deleteProduct.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -631,7 +531,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.clear.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {
@@ -714,6 +613,9 @@ export const CartMutations = extendType({
                   $each: cartNewProducts,
                 },
               },
+              $set: {
+                updatedAt: new Date(),
+              },
             },
             {
               returnOriginal: false,
@@ -731,7 +633,6 @@ export const CartMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('carts.repeatOrder.success'),
-            payload: updatedCart,
           };
         } catch (e) {
           return {

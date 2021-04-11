@@ -542,7 +542,6 @@ export const OrderMutations = extendType({
             success: true,
             message: await getApiMessage('orders.makeAnOrder.success'),
             order: createdOrder,
-            cart: updatedCart,
           };
         } catch (e) {
           return {

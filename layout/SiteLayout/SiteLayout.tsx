@@ -1,4 +1,5 @@
 import { RubricModel } from 'db/dbModels';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import Footer from './Footer/Footer';
@@ -46,12 +47,11 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   );
 };
 
-export interface SiteLayoutInterface {
+export interface SiteLayoutInterface extends PagePropsInterface {
   title?: string;
   description?: string;
   navRubrics: RubricModel[];
   previewImage?: string;
-  pageUrls: PageUrlsInterface;
 }
 
 const SiteLayout: React.FC<SiteLayoutInterface> = ({
@@ -60,9 +60,11 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
   title,
   description,
   pageUrls,
+  sessionCity,
+  company,
 }) => {
   return (
-    <SiteContextProvider navRubrics={navRubrics}>
+    <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
       <SiteLayoutConsumer title={title} description={description} pageUrls={pageUrls}>
         {children}
       </SiteLayoutConsumer>

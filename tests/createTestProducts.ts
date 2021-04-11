@@ -303,6 +303,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         [SECONDARY_LOCALE]: secondaryDescription,
       },
       assets: [assetA],
+      mainImage: assetA.url,
       slug,
       connections,
       rubricId,
@@ -323,6 +324,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       _id,
       itemId,
       slug,
+      mainImage: assetA.url,
       originalName: defaultLocaleName,
       nameI18n: {
         [DEFAULT_LOCALE]: defaultLocaleName,

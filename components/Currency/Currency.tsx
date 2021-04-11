@@ -11,14 +11,8 @@ interface CurrencyInterface {
 }
 
 const Currency: React.FC<CurrencyInterface> = ({ value, className, valueClassName, testId }) => {
-  const { currency, locale } = useLocaleContext();
-  const finalValue =
-    typeof value === 'number'
-      ? getCurrencyString({
-          locale,
-          value,
-        })
-      : value;
+  const { currency } = useLocaleContext();
+  const finalValue = typeof value === 'number' ? getCurrencyString(value) : value;
 
   return (
     <span className={`${classes.frame} ${className ? className : ''}`}>

@@ -22,7 +22,7 @@ import {
   updateCompanyLogoSchema,
   updateCompanySchema,
 } from 'validation/companySchema';
-import { deleteUpload, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, storeUploads } from 'lib/assets';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_SHOPS,
@@ -665,12 +665,14 @@ export const CompanyMutations = extendType({
 
           // Create shop
           const slug = generateSlug(values.name);
+          const mainImage = getMainImage(assets);
           const createdShopResult = await shopsCollection.insertOne({
             ...values,
             slug,
             itemId,
             logo,
             assets,
+            mainImage,
             companyId: companyId,
             createdAt: new Date(),
             updatedAt: new Date(),

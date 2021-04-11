@@ -37,13 +37,96 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
       <div className={classes.frameMiddle}>
         {cartProducts.map((cartProduct) => {
           const { product, shopProduct, _id, isShopless, amount } = cartProduct;
-          const productData = product || shopProduct?.product;
 
-          if (!productData) {
+          if (shopProduct) {
+            const { mainImage, originalName, price, slug } = shopProduct;
+            console.log(shopProduct);
+            return (
+              <div key={`${_id}`} className={classes.product} data-cy={`cart-dropdown-product`}>
+                <div className={classes.productImage}>
+                  <div className={classes.productImageHolder}>
+                    <Image
+                      src={`${mainImage}`}
+                      objectFit='contain'
+                      alt={originalName}
+                      title={originalName}
+                      width={70}
+                      height={185}
+                    />
+                  </div>
+                </div>
+                <div className={classes.productContent}>
+                  <div className={classes.productName}>{originalName}</div>
+
+                  {isShopless && !shopProduct ? (
+                    <React.Fragment>
+                      <ProductSnippetPrice
+                        shopsCount={1}
+                        className={classes.productPrice}
+                        value={`${price}`}
+                      />
+                      <div className={classes.shopless}>Винотека не выбрана</div>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <ProductShopPrices
+                        className={classes.productPrice}
+                        formattedPrice={`${shopProduct?.formattedPrice}`}
+                        formattedOldPrice={shopProduct?.formattedOldPrice}
+                        discountedPercent={shopProduct?.discountedPercent}
+                      />
+                      <div className={classes.shop}>
+                        <span>винотека: </span>
+                        {shopProduct?.shop?.name}
+                      </div>
+                    </React.Fragment>
+                  )}
+
+                  <div className={classes.controls}>
+                    <SpinnerInput
+                      name={'amount'}
+                      value={amount}
+                      min={1}
+                      testId={`cart-dropdown-${slug}-amount`}
+                      plusTestId={`cart-dropdown-${slug}-plus`}
+                      minusTestId={`cart-dropdown-${slug}-minus`}
+                      size={'small'}
+                      className={`${classes.amountInput}`}
+                      onChange={(e) => {
+                        updateProductInCart({
+                          amount: noNaN(e.target.value),
+                          cartProductId: _id,
+                        });
+                      }}
+                    />
+
+                    <div className={classes.productButns}>
+                      <ButtonCross
+                        testId={`cart-dropdown-${slug}-remove-from-cart`}
+                        iconSize={'smaller'}
+                        size={'small'}
+                        className={classes.productRemove}
+                        onClick={() => {
+                          deleteProductFromCart({
+                            cartProductId: _id,
+                          });
+                        }}
+                      />
+
+                      <ControlButton iconSize={'small'} size={'small'} icon={'compare'} />
+                      <ControlButton iconSize={'small'} size={'small'} icon={'heart'} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          if (!product) {
             return null;
           }
 
-          const { mainImage, originalName, shopsCount, cardPrices } = productData;
+          const { mainImage, originalName, shopsCount, cardPrices } = product;
 
           return (
             <div key={`${_id}`} className={classes.product} data-cy={`cart-dropdown-product`}>
@@ -75,13 +158,13 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   <React.Fragment>
                     <ProductShopPrices
                       className={classes.productPrice}
-                      formattedPrice={`${shopProduct?.formattedPrice}`}
-                      formattedOldPrice={shopProduct?.formattedOldPrice}
-                      discountedPercent={shopProduct?.discountedPercent}
+                      formattedPrice={`${product.shopProduct?.formattedPrice}`}
+                      formattedOldPrice={product.shopProduct?.formattedOldPrice}
+                      discountedPercent={product.shopProduct?.discountedPercent}
                     />
                     <div className={classes.shop}>
                       <span>винотека: </span>
-                      {shopProduct?.shop?.name}
+                      {product.shopProduct?.shop?.name}
                     </div>
                   </React.Fragment>
                 )}
@@ -91,9 +174,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     name={'amount'}
                     value={amount}
                     min={1}
-                    testId={`cart-dropdown-${productData.slug}-amount`}
-                    plusTestId={`cart-dropdown-${productData.slug}-plus`}
-                    minusTestId={`cart-dropdown-${productData.slug}-minus`}
+                    testId={`cart-dropdown-${product.slug}-amount`}
+                    plusTestId={`cart-dropdown-${product.slug}-plus`}
+                    minusTestId={`cart-dropdown-${product.slug}-minus`}
                     size={'small'}
                     className={`${classes.amountInput}`}
                     onChange={(e) => {
@@ -106,7 +189,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                   <div className={classes.productButns}>
                     <ButtonCross
-                      testId={`cart-dropdown-${productData.slug}-remove-from-cart`}
+                      testId={`cart-dropdown-${product.slug}-remove-from-cart`}
                       iconSize={'smaller'}
                       size={'small'}
                       className={classes.productRemove}

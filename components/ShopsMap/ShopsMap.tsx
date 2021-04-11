@@ -75,8 +75,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
     <div className={classes.frame}>
       <div className={classes.scroller}>
         <div className={classes.list}>
-          {shops.map(({ _id, assets, name, address, productsCount }) => {
-            const mainImage = assets[0].url;
+          {shops.map(({ _id, name, address, productsCount, mainImage }) => {
             return (
               <div
                 key={`${_id}`}

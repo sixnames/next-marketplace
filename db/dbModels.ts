@@ -517,6 +517,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
+  mainImage: string;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -526,7 +527,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   name?: string | null;
   description?: string | null;
   shopsCount?: number;
-  mainImage?: string;
   available?: boolean;
   isCustomersChoice?: boolean;
   listFeatures?: ProductAttributeModel[];
@@ -561,6 +561,7 @@ export interface ProductFacetModel {
   brandSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
+  mainImage: string;
 
   // types for ui
   products?: ProductModel[] | null;
@@ -655,6 +656,9 @@ export interface ShopProductModel extends TimestampModel {
   available: number;
   citySlug: string;
   price: number;
+  formattedPrice: string;
+  formattedOldPrice: string;
+  discountedPercent: number;
   itemId: string;
   slug: string;
   originalName: string;
@@ -662,20 +666,16 @@ export interface ShopProductModel extends TimestampModel {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-  assets: AssetModel[];
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
   selectedOptionsSlugs: string[];
+  mainImage: string;
 
   // types for ui
   name?: string | null;
-  mainImage?: string;
-  formattedPrice?: string;
-  formattedOldPrice?: string | null;
-  discountedPercent?: number | null;
   shop?: ShopModel;
   inCartCount?: number;
   product?: ProductModel;
@@ -692,6 +692,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
+  mainImage: string;
 
   // types for ui
   productsCount?: number | null;

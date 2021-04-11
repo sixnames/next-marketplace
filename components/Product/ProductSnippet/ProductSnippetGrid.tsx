@@ -36,9 +36,9 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     ratingFeatures,
     shopsCount,
     isCustomersChoice,
+    mainImage,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-  const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
   const sizeClass = classes[size];

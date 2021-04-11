@@ -66,67 +66,76 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   company,
 }) => {
   const router = useRouter();
-  const { showModal } = useAppContext();
+  const { showModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
   const [state, setState] = React.useState<SiteContextStateInterface>({
-    loadingCart: true,
+    loadingCart: false,
     cart: null,
   });
 
-  const refetchCartHandler = React.useCallback(() => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        loadingCart: true,
-      };
-    });
-    fetch(
-      `/api/session-cart?locale=${router.locale}&city=${sessionCity}${
-        company ? `&companyId=${company._id}` : ''
-      }`,
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setState((prevState) => {
-          return {
-            ...prevState,
-            loadingCart: false,
-            cart: data.sessionCart,
-          };
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-        setState((prevState) => {
-          return {
-            ...prevState,
-            loadingCart: false,
-            cart: null,
-          };
-        });
+  const refetchCartHandler = React.useCallback(
+    (callback?: () => void) => {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          loadingCart: true,
+        };
       });
-  }, [router]);
+      fetch(
+        `/api/session-cart?locale=${router.locale}&city=${sessionCity}${
+          company ? `&companyId=${company._id}` : ''
+        }`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setState((prevState) => {
+            return {
+              ...prevState,
+              loadingCart: false,
+              cart: data.sessionCart,
+            };
+          });
+          hideLoading();
+          if (callback) {
+            callback();
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          setState((prevState) => {
+            return {
+              ...prevState,
+              loadingCart: false,
+              cart: null,
+            };
+          });
+        });
+    },
+    [company, router.locale, sessionCity, hideLoading],
+  );
 
   React.useEffect(() => {
-    if (!state.cart) {
+    if (!state.cart && !state.loadingCart) {
       refetchCartHandler();
     }
-  }, [refetchCartHandler, state.cart]);
+  }, [refetchCartHandler, state]);
 
   const [addProductToCartMutation] = useAddProductToCartMutation({
     onCompleted: () => {
-      refetchCartHandler();
-      showModal<CartModalInterface>({
-        variant: CART_MODAL,
+      refetchCartHandler(() => {
+        showModal<CartModalInterface>({
+          variant: CART_MODAL,
+        });
       });
     },
   });
 
   const [addShoplessProductToCartMutation] = useAddShoplessProductToCartMutation({
     onCompleted: () => {
-      refetchCartHandler();
-      showModal<CartModalInterface>({
-        variant: CART_MODAL,
+      refetchCartHandler(() => {
+        showModal<CartModalInterface>({
+          variant: CART_MODAL,
+        });
       });
     },
   });
@@ -151,34 +160,38 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const [clearCartMutation] = useClearCartMutation({
     onCompleted: ({ clearCart }) => {
-      refetchCartHandler();
-      showSuccessNotification(clearCart);
+      refetchCartHandler(() => {
+        showSuccessNotification(clearCart);
+      });
     },
   });
 
   const [makeAnOrderMutation] = useMakeAnOrderMutation({
     onCompleted: ({ makeAnOrder }) => {
-      refetchCartHandler();
-      router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
-        showErrorNotification();
+      refetchCartHandler(() => {
+        router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
+          showErrorNotification();
+        });
       });
     },
   });
 
   const [repeatAnOrderMutation] = useRepeatAnOrderMutation({
     onCompleted: () => {
-      refetchCartHandler();
-      showModal<CartModalInterface>({
-        variant: CART_MODAL,
-        props: {
-          title: `Товары из заказа добавлены в корзину`,
-        },
+      refetchCartHandler(() => {
+        showModal<CartModalInterface>({
+          variant: CART_MODAL,
+          props: {
+            title: `Товары из заказа добавлены в корзину`,
+          },
+        });
       });
     },
   });
 
   const addProductToCart = React.useCallback(
     (input: AddProductToCartInput) => {
+      showLoading();
       addProductToCartMutation({
         variables: {
           input,
@@ -187,11 +200,12 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [addProductToCartMutation, showErrorNotification],
+    [addProductToCartMutation, showErrorNotification, showLoading],
   );
 
   const addShoplessProductToCart = React.useCallback(
     (input: AddShoplessProductToCartInput) => {
+      showLoading();
       addShoplessProductToCartMutation({
         variables: {
           input,
@@ -200,11 +214,12 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [addShoplessProductToCartMutation, showErrorNotification],
+    [addShoplessProductToCartMutation, showErrorNotification, showLoading],
   );
 
   const addShopToCartProduct = React.useCallback(
     (input: AddShopToCartProductInput) => {
+      showLoading();
       addShopToCartProductMutation({
         variables: {
           input,
@@ -213,7 +228,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [addShopToCartProductMutation, showErrorNotification],
+    [addShopToCartProductMutation, showErrorNotification, showLoading],
   );
 
   const updateProductInCart = React.useCallback(
@@ -231,6 +246,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const deleteProductFromCart = React.useCallback(
     (input: DeleteProductFromCartInput) => {
+      showLoading();
       deleteProductFromCartMutation({
         variables: {
           input,
@@ -239,14 +255,15 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [deleteProductFromCartMutation, showErrorNotification],
+    [deleteProductFromCartMutation, showErrorNotification, showLoading],
   );
 
   const clearCart = React.useCallback(() => {
+    showLoading();
     clearCartMutation().catch(() => {
       showErrorNotification();
     });
-  }, [clearCartMutation, showErrorNotification]);
+  }, [clearCartMutation, showErrorNotification, showLoading]);
 
   const makeAnOrder = React.useCallback(
     (input: MakeAnOrderInput) => {

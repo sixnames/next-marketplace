@@ -2,7 +2,7 @@ import { CART_COOKIE_KEY, DEFAULT_LOCALE } from 'config/common';
 import Cookies from 'cookies';
 import {
   COL_CARTS,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
@@ -69,6 +69,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           },
           {
             $project: {
+              assets: false,
               selectedOptionsSlugs: false,
               priorities: false,
               views: false,
@@ -86,6 +87,11 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                     $expr: {
                       $eq: ['$$shopId', '$_id'],
                     },
+                  },
+                },
+                {
+                  $project: {
+                    assets: false,
                   },
                 },
               ],
@@ -128,7 +134,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             }),
             {
               $lookup: {
-                from: COL_PRODUCT_FACETS,
+                from: COL_PRODUCTS,
                 as: 'cartProducts.products',
                 let: { productId: '$cartProducts.productId' },
                 pipeline: [
@@ -142,16 +148,14 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                   {
                     $project: {
                       selectedOptionsSlugs: false,
-                      priorities: false,
-                      views: false,
                       name: false,
                     },
                   },
-                  shopProductPipeline({
+                  /*shopProductPipeline({
                     letStage: { productId: '$_id' },
                     as: 'shopProducts',
                     expr: ['$$productId', '$productId'],
-                  }),
+                  }),*/
                 ],
               },
             },
@@ -176,6 +180,22 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                 _id: '$_id',
                 cartProducts: {
                   $push: '$cartProducts',
+                },
+                totalPrice: {
+                  $sum: '$cartProducts.shopProduct.price',
+                },
+              },
+            },
+            {
+              $addFields: {
+                cartProducts: {
+                  $filter: {
+                    input: '$cartProducts',
+                    as: 'cartProduct',
+                    cond: {
+                      $ifNull: ['$$cartProduct._id', false],
+                    },
+                  },
                 },
               },
             },
@@ -274,7 +294,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       ...cart,
       productsCount: cart.cartProducts.length,
       isWithShopless: cart.cartProducts.some(({ productId }) => !!productId),
-      formattedTotalPrice: getCurrencyString({ value: totalPrice, locale: `${query.locale}` }),
+      formattedTotalPrice: getCurrencyString(totalPrice),
     };
 
     res.statusCode = 200;

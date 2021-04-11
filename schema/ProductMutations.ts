@@ -43,7 +43,7 @@ import {
   addProductAssetsSchema,
   updateProductSchema,
 } from 'validation/productSchema';
-import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, reorderAssets, storeUploads } from 'lib/assets';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -281,12 +281,13 @@ export const ProductMutations = extendType({
           });
 
           const productId = new ObjectId();
-
+          const mainImage = getMainImage(assets);
           const createdProductResult = await productsCollection.insertOne({
             ...values,
             _id: productId,
             itemId,
             assets,
+            mainImage,
             slug,
             manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
             brandSlug: brandEntity ? brandEntity.slug : undefined,
@@ -306,6 +307,7 @@ export const ProductMutations = extendType({
             nameI18n: values.nameI18n,
             originalName: values.originalName,
             active: false,
+            mainImage,
             rubricId,
             brandCollectionSlug,
             brandSlug,
@@ -544,6 +546,7 @@ export const ProductMutations = extendType({
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId } = input;
 
@@ -597,18 +600,36 @@ export const ProductMutations = extendType({
             },
           );
 
-          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
             {
-              productId,
+              _id: productId,
             },
             {
               $set: {
+                mainImage,
                 updatedAt: new Date(),
               },
-              $push: {
-                assets: {
-                  $each: assets,
-                },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
               },
             },
             {
@@ -616,14 +637,31 @@ export const ProductMutations = extendType({
             },
           );
 
-          const updatedProduct = updatedProductResult.value;
-          const updatedShopProduct = updatedShopProductResult.value;
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
           if (
-            !updatedProductResult.ok ||
-            !updatedProduct ||
-            !updatedShopProductResult.ok ||
-            !updatedShopProduct
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
           ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
@@ -633,7 +671,7 @@ export const ProductMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {
@@ -660,6 +698,8 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId, assetIndex } = input;
 
@@ -709,11 +749,71 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
+          if (
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
+          ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {
@@ -740,6 +840,8 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId, assetNewIndex, assetUrl } = input;
 
@@ -788,11 +890,71 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
+          if (
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
+          ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {

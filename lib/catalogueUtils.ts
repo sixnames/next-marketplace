@@ -920,20 +920,9 @@ export const getCatalogueData = async ({
       const minPrice = noNaN(price);
       const maxPrice = noNaN(price);
       const cardPrices = {
-        min: getCurrencyString({ value: minPrice, locale }),
-        max: getCurrencyString({ value: maxPrice, locale }),
+        min: getCurrencyString(minPrice),
+        max: getCurrencyString(maxPrice),
       };
-
-      // image
-      const sortedAssets = product.assets.sort((assetA, assetB) => {
-        return assetA.index - assetB.index;
-      });
-      const firstAsset = sortedAssets[0];
-      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-      if (firstAsset) {
-        mainImage = firstAsset.url;
-      }
 
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
@@ -1010,7 +999,6 @@ export const getCatalogueData = async ({
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        mainImage,
         connections,
       });
     }

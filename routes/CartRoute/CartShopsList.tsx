@@ -22,14 +22,13 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
   }
 
   const {
-    assets,
+    mainImage,
     name,
     productsCount,
     slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
   } = shop;
-  const mainImage = assets[0].url;
 
   return (
     <div className={`${classes.frame}`}>

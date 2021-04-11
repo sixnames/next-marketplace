@@ -90,20 +90,18 @@ export const OrderProduct = objectType({
     // OrderProduct formattedPrice field resolver
     t.nonNull.field('formattedPrice', {
       type: 'String',
-      resolve: async (source, _args, context): Promise<string> => {
-        const { locale } = await getRequestParams(context);
-        return getCurrencyString({ value: source.price, locale });
+      resolve: async (source, _args): Promise<string> => {
+        return getCurrencyString(source.price);
       },
     });
 
     // OrderProduct formattedTotalPrice field resolver
     t.nonNull.field('formattedTotalPrice', {
       type: 'String',
-      resolve: async (source, _args, context): Promise<string> => {
-        const { locale } = await getRequestParams(context);
+      resolve: async (source, _args): Promise<string> => {
         const { price, amount } = source;
         const totalPrice = noNaN(price) * noNaN(amount);
-        return getCurrencyString({ value: totalPrice, locale });
+        return getCurrencyString(totalPrice);
       },
     });
 
@@ -120,10 +118,9 @@ export const OrderProduct = objectType({
     // OrderProduct formattedOldPrice field resolver
     t.field('formattedOldPrice', {
       type: 'String',
-      resolve: async (source, _args, context): Promise<string | null> => {
-        const { locale } = await getRequestParams(context);
+      resolve: async (source, _args): Promise<string | null> => {
         const lastOldPrice = source.oldPrices[source.oldPrices.length - 1];
-        return lastOldPrice ? getCurrencyString({ value: lastOldPrice.price, locale }) : null;
+        return lastOldPrice ? getCurrencyString(lastOldPrice.price) : null;
       },
     });
 

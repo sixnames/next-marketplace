@@ -10,7 +10,6 @@ import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/coll
 import { ProductCardBreadcrumbModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
-import { getPercentage } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
@@ -185,8 +184,8 @@ export async function getCardData({
 
     // prices
     const cardPrices = {
-      min: getCurrencyString({ value: product.cardPrices?.min, locale }),
-      max: getCurrencyString({ value: product.cardPrices?.max, locale }),
+      min: getCurrencyString(product.cardPrices?.min),
+      max: getCurrencyString(product.cardPrices?.max),
     };
 
     // image
@@ -249,24 +248,8 @@ export async function getCardData({
         return;
       }
 
-      const lastOldPrice = shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
-      const formattedOldPrice = lastOldPrice
-        ? getCurrencyString({ value: lastOldPrice.price, locale })
-        : null;
-
-      const discountedPercent =
-        lastOldPrice && lastOldPrice.price > shopProduct.price
-          ? getPercentage({
-              fullValue: lastOldPrice.price,
-              partialValue: shopProduct.price,
-            })
-          : null;
-
       cardShopProducts.push({
         ...shopProduct,
-        formattedPrice: getCurrencyString({ value: shopProduct.price, locale }),
-        formattedOldPrice,
-        discountedPercent,
         shop: {
           ...shop,
           address: {

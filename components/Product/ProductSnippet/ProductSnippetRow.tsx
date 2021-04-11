@@ -40,11 +40,11 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     connections,
     isCustomersChoice,
     shopsCount,
+    mainImage,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
-  const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
 
   return (
     <LayoutCard className={`${classes.snippetCard} ${className ? className : ''}`} testId={testId}>

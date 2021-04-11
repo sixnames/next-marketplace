@@ -822,8 +822,8 @@ export const getServerSideProps = async (
     const minPrice = 0;
     const maxPrice = 0;
     const cardPrices = {
-      min: getCurrencyString({ value: minPrice, locale }),
-      max: getCurrencyString({ value: maxPrice, locale }),
+      min: getCurrencyString(minPrice),
+      max: getCurrencyString(maxPrice),
     };
 
     // image

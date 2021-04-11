@@ -35,14 +35,12 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   }
 
   const {
-    assets,
     name,
     slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
+    mainImage,
   } = shop;
-  const mainAsset = assets[0];
-  const mainImage = mainAsset ? mainAsset.url : `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
 
   const disabled = amount + noNaN(inCartCount) > available;
 

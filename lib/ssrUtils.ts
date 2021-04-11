@@ -84,13 +84,21 @@ export async function getPageSessionUser({
               $lookup: {
                 from: COL_NAV_ITEMS,
                 as: 'navItems',
-                let: { allowedAppNavigation: '$allowedAppNavigation' },
+                let: { allowedAppNavigation: '$allowedAppNavigation', slug: '$slug' },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $in: ['$_id', '$$allowedAppNavigation'],
+                        $or: [
+                          { $in: ['$_id', '$$allowedAppNavigation'] },
+                          { $eq: ['$$slug', ROLE_SLUG_ADMIN] },
+                        ],
                       },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      name: `$nameI18n.${locale}`,
                     },
                   },
                 ],

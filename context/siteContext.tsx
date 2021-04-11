@@ -168,12 +168,16 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const [makeAnOrderMutation] = useMakeAnOrderMutation({
     onCompleted: ({ makeAnOrder }) => {
-      showLoading();
-      refetchCartHandler(() => {
-        router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
-          showErrorNotification();
+      if (makeAnOrder.success) {
+        showLoading();
+        refetchCartHandler(() => {
+          router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
+            showErrorNotification();
+          });
         });
-      });
+        return;
+      }
+      showErrorNotification({ title: makeAnOrder.message });
     },
   });
 

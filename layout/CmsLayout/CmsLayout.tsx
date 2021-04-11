@@ -21,19 +21,17 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
-  const { state } = useUserContext();
+  const { me } = useUserContext();
 
-  if (!state.me) {
+  if (!me) {
     return <Spinner />;
   }
-
-  const { cmsNavigation } = state.me.role;
 
   return (
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <CmsNav compact={compact} navItems={cmsNavigation} />
+      <CmsNav compact={compact} navItems={me.role?.cmsNavigation || []} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${

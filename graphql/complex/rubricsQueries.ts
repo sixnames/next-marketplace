@@ -6,8 +6,6 @@ export const rubricInListFragment = gql`
     nameI18n
     slug
     name
-    productsCount
-    activeProductsCount
     variant {
       _id
       name

@@ -110,6 +110,8 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
   if (!cartId || !cart) {
     const newCartResult = await cartsCollection.insertOne({
       cartProducts: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     const newCart = newCartResult.ops[0];

@@ -42,8 +42,7 @@ import {
   getCatalogueRubric,
   getRubricCatalogueAttributes,
 } from 'lib/catalogueUtils';
-import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
+import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -145,16 +144,6 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
     {
       accessor: 'product.shopsCount',
       headTitle: 'В магазинах',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.cardPrices.min',
-      headTitle: 'Мин. цена',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.cardPrices.max',
-      headTitle: 'Макс. цена',
       render: ({ cellData }) => cellData,
     },
   ];
@@ -564,7 +553,7 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-  const city = shop.citySlug;
+  // const city = shop.citySlug;
 
   // Get rubric
   const rubric = await getCatalogueRubric([
@@ -589,7 +578,9 @@ export const getServerSideProps = async (
     page,
     skip,
     limit,
-  } = castCatalogueFilters(restFilter);
+  } = castCatalogueFilters({
+    filters: restFilter,
+  });
 
   // Products stages
   const pricesStage =
@@ -817,14 +808,6 @@ export const getServerSideProps = async (
       continue;
     }
 
-    const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
-    const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: getCurrencyString({ value: minPrice, locale }),
-      max: getCurrencyString({ value: maxPrice, locale }),
-    };
-
     // image
     const sortedAssets = product.assets.sort((assetA, assetB) => {
       return assetA.index - assetB.index;
@@ -841,10 +824,8 @@ export const getServerSideProps = async (
       product: {
         ...product,
         name: getFieldStringLocale(product.nameI18n, locale),
-        cardPrices,
         mainImage,
-        shopsCount: noNaN(product.shopProductsCountCities[city]),
-        isCustomersChoice: product.isCustomersChoiceCities[city],
+        isCustomersChoice: false,
       },
     });
   }

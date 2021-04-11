@@ -427,7 +427,9 @@ export const getServerSideProps = async (
     page,
     skip,
     limit,
-  } = castCatalogueFilters(restFilter);
+  } = castCatalogueFilters({
+    filters: restFilter,
+  });
 
   // Products stages
   const pricesStage =
@@ -481,8 +483,8 @@ export const getServerSideProps = async (
     .aggregate<ShopProductsAggregationInterface>([
       {
         $match: {
-          rubricId: rubric._id,
           shopId: shop._id,
+          rubricId: rubric._id,
           ...searchStage,
           ...pricesStage,
           ...optionsStage,
@@ -642,25 +644,13 @@ export const getServerSideProps = async (
     selectedAttributes,
     page,
     docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
-      const { assets, nameI18n, ...restShopProduct } = shopProduct;
-
-      // image
-      const sortedAssets = assets.sort((assetA, assetB) => {
-        return assetA.index - assetB.index;
-      });
-      const firstAsset = sortedAssets[0];
-      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-      if (firstAsset) {
-        mainImage = firstAsset.url;
-      }
+      const { nameI18n, ...restShopProduct } = shopProduct;
 
       return [
         ...acc,
         {
           ...restShopProduct,
-          assets,
           nameI18n,
-          mainImage,
           name: getFieldStringLocale(nameI18n, initialProps.props?.sessionLocale),
         },
       ];

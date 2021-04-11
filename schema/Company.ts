@@ -15,7 +15,6 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { generateSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { updateProductsShopsDataOnShopsArchive } from 'lib/productShopsUtils';
 import {
   addShopToCompanySchema,
   createCompanySchema,
@@ -23,7 +22,7 @@ import {
   updateCompanyLogoSchema,
   updateCompanySchema,
 } from 'validation/companySchema';
-import { deleteUpload, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, storeUploads } from 'lib/assets';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_SHOPS,
@@ -568,9 +567,6 @@ export const CompanyMutations = extendType({
             };
           }
 
-          // Update products shops data
-          await updateProductsShopsDataOnShopsArchive({ shopsIds: company.shopsIds });
-
           return {
             success: true,
             message: await getApiMessage('companies.delete.success'),
@@ -669,12 +665,14 @@ export const CompanyMutations = extendType({
 
           // Create shop
           const slug = generateSlug(values.name);
+          const mainImage = getMainImage(assets);
           const createdShopResult = await shopsCollection.insertOne({
             ...values,
             slug,
             itemId,
             logo,
             assets,
+            mainImage,
             companyId: companyId,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -800,9 +798,6 @@ export const CompanyMutations = extendType({
               message: await getApiMessage('companies.shopsDelete.error'),
             };
           }
-
-          // Update products shops data
-          await updateProductsShopsDataOnShopsArchive({ shopsIds: company.shopsIds });
 
           return {
             success: true,

@@ -1,7 +1,7 @@
 import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
-import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, reorderAssets, storeUploads } from 'lib/assets';
+import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -26,7 +26,6 @@ import {
 import { aggregatePagination } from 'db/aggregatePagination';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateProductShopsData } from 'lib/productShopsUtils';
 import {
   addManyProductsToShopSchema,
   addProductToShopSchema,
@@ -490,10 +489,31 @@ export const ShopMutations = extendType({
             };
           }
 
+          const mainImage = getMainImage(updatedShop.assets);
+          const updatedShopMainImageResult = await shopsCollection.findOneAndUpdate(
+            { _id: shopId },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedShopMainImage = updatedShopMainImageResult.value;
+          if (!updatedShopMainImageResult.ok || !updatedShopMainImage) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.update.error'),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('shops.update.success'),
-            payload: updatedShop,
+            payload: updatedShopMainImage,
           };
         } catch (e) {
           return {
@@ -567,10 +587,31 @@ export const ShopMutations = extendType({
             };
           }
 
+          const mainImage = getMainImage(updatedShop.assets);
+          const updatedShopMainImageResult = await shopsCollection.findOneAndUpdate(
+            { _id: shopId },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedShopMainImage = updatedShopMainImageResult.value;
+          if (!updatedShopMainImageResult.ok || !updatedShopMainImage) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.update.error'),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('shops.update.success'),
-            payload: updatedShop,
+            payload: updatedShopMainImage,
           };
         } catch (e) {
           return {
@@ -623,12 +664,14 @@ export const ShopMutations = extendType({
           }
 
           // Update shop
+          const mainImage = getMainImage(reorderedAssetsWithUpdatedIndexes);
           const updatedShopResult = await shopsCollection.findOneAndUpdate(
             { _id: shopId },
             {
               $set: {
                 updatedAt: new Date(),
                 assets: reorderedAssetsWithUpdatedIndexes,
+                mainImage,
               },
             },
             {
@@ -805,8 +848,12 @@ export const ShopMutations = extendType({
           }
 
           // Create shop product
+          const mainImage = getMainImage(product.assets);
           const createdShopProductResult = await shopProductsCollection.insertOne({
             ...values,
+            formattedPrice: getCurrencyString(values.price),
+            formattedOldPrice: '',
+            discountedPercent: 0,
             productId,
             shopId: shop._id,
             citySlug: shop.citySlug,
@@ -820,31 +867,13 @@ export const ShopMutations = extendType({
             brandSlug: product.brandSlug,
             brandCollectionSlug: product.brandCollectionSlug,
             manufacturerSlug: product.manufacturerSlug,
-            assets: product.assets,
+            mainImage,
             selectedOptionsSlugs: productFacet.selectedOptionsSlugs,
             updatedAt: new Date(),
             createdAt: new Date(),
           });
           const createdShopProduct = createdShopProductResult.ops[0];
           if (!createdShopProductResult.result.ok || !createdShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId });
-          if (!updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('shops.addProduct.error'),
@@ -918,8 +947,12 @@ export const ShopMutations = extendType({
             }
 
             // Create shop product
+            const mainImage = getMainImage(product.assets);
             const createdShopProductResult = await shopProductsCollection.insertOne({
               ...values,
+              formattedPrice: getCurrencyString(values.price),
+              formattedOldPrice: '',
+              discountedPercent: 0,
               productId,
               shopId: shop._id,
               citySlug: shop.citySlug,
@@ -933,25 +966,13 @@ export const ShopMutations = extendType({
               brandSlug: product.brandSlug,
               brandCollectionSlug: product.brandCollectionSlug,
               manufacturerSlug: product.manufacturerSlug,
-              assets: product.assets,
+              mainImage,
               selectedOptionsSlugs: productFacet.selectedOptionsSlugs,
               updatedAt: new Date(),
               createdAt: new Date(),
             });
             const createdShopProduct = createdShopProductResult.ops[0];
             if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              break;
-            }
-
-            // Update product shops data
-            const updatedProduct = await updateProductShopsData({ productId });
-            if (!updatedProduct) {
-              break;
-            }
-            const updatedRubric = await recalculateRubricProductCounters({
-              rubricId: updatedProduct.rubricId,
-            });
-            if (!updatedRubric) {
               break;
             }
 
@@ -1020,27 +1041,6 @@ export const ShopMutations = extendType({
             _id: shopProductId,
           });
           if (!removedShopProductResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.deleteProduct.error'),
-            };
-          }
-
-          // Update product shops data
-          await updateProductShopsData({ productId: shopProduct.productId });
-
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId: shopProduct.productId });
-          if (!updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.deleteProduct.error'),
-            };
-          }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('shops.deleteProduct.error'),

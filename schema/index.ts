@@ -36,7 +36,6 @@ export * from './ProductConnection';
 export * from './ShopProduct';
 export * from './Shop';
 export * from './Company';
-export * from './CartProduct';
 export * from './Cart';
 export * from './OrderStatus';
 export * from './OrderProduct';

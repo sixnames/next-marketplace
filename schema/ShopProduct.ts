@@ -1,13 +1,11 @@
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
+import { getCurrencyString } from 'lib/i18n';
+import { getPercentage } from 'lib/numbers';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
-import { getCurrencyString } from 'lib/i18n';
 import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
-import { getPercentage } from 'lib/numbers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateProductShopsData } from 'lib/productShopsUtils';
 import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
@@ -30,6 +28,15 @@ export const ShopProduct = objectType({
     t.nonNull.objectId('shopId');
     t.nonNull.list.nonNull.field('oldPrices', {
       type: 'ShopProductOldPrice',
+    });
+    t.nonNull.field('formattedPrice', {
+      type: 'String',
+    });
+    t.field('formattedOldPrice', {
+      type: 'String',
+    });
+    t.field('discountedPercent', {
+      type: 'Int',
     });
 
     // ShopProduct product field resolver
@@ -57,39 +64,6 @@ export const ShopProduct = objectType({
           throw Error('Shop not found in ShopProduct');
         }
         return shop;
-      },
-    });
-
-    // ShopProduct formattedPrice field resolver
-    t.nonNull.field('formattedPrice', {
-      type: 'String',
-      resolve: async (source, _args, context): Promise<string> => {
-        const { locale } = await getRequestParams(context);
-        return getCurrencyString({ value: source.price, locale });
-      },
-    });
-
-    // ShopProduct formattedOldPrice field resolver
-    t.field('formattedOldPrice', {
-      type: 'String',
-      resolve: async (source, _args, context): Promise<string | null> => {
-        const { locale } = await getRequestParams(context);
-        const lastOldPrice = source.oldPrices[source.oldPrices.length - 1];
-        return lastOldPrice ? getCurrencyString({ value: lastOldPrice.price, locale }) : null;
-      },
-    });
-
-    // ShopProduct discountedPercent field resolver
-    t.field('discountedPercent', {
-      type: 'Int',
-      resolve: async (source): Promise<number | null> => {
-        const lastOldPrice = source.oldPrices[source.oldPrices.length - 1];
-        return lastOldPrice && lastOldPrice.price > source.price
-          ? getPercentage({
-              fullValue: lastOldPrice.price,
-              partialValue: source.price,
-            })
-          : null;
       },
     });
 
@@ -159,7 +133,7 @@ export const ShopProductMutations = extendType({
           const db = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
-          const { shopProductId, productId, ...values } = input;
+          const { shopProductId, ...values } = input;
 
           // Check shop product availability
           const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
@@ -170,21 +144,47 @@ export const ShopProductMutations = extendType({
             };
           }
 
+          const priceChanged = shopProduct.price !== values.price;
+          const oldPriceUpdater = priceChanged
+            ? {
+                $push: {
+                  oldPrices: {
+                    price: shopProduct.price,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  },
+                },
+              }
+            : {};
+
+          const formattedOldPrice = priceChanged
+            ? getCurrencyString(shopProduct.price)
+            : shopProduct.formattedOldPrice;
+
+          const lastOldPrice = priceChanged
+            ? { price: shopProduct.price }
+            : shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
+          const currentPrice = priceChanged ? values.price : shopProduct.price;
+          const discountedPercent =
+            lastOldPrice && lastOldPrice.price > shopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: currentPrice,
+                })
+              : 0;
+
           // Update shop product
           const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
             { _id: shopProductId },
             {
               $set: {
                 ...values,
+                formattedPrice: getCurrencyString(values.price),
+                formattedOldPrice,
+                discountedPercent,
                 updatedAt: new Date(),
               },
-              $push: {
-                oldPrices: {
-                  price: shopProduct.price,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                },
-              },
+              ...oldPriceUpdater,
             },
             {
               returnOriginal: false,
@@ -192,27 +192,6 @@ export const ShopProductMutations = extendType({
           );
           const updatedShopProduct = updatedShopProductResult.value;
           if (!updatedShopProductResult.ok || !updatedShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
-
-          // Update product shops data
-          await updateProductShopsData({ productId });
-
-          // Update product shops data
-          const updatedProduct = await updateProductShopsData({ productId });
-          if (!updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
-          const updatedRubric = await recalculateRubricProductCounters({
-            rubricId: updatedProduct.rubricId,
-          });
-          if (!updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('shopProducts.update.error'),
@@ -264,7 +243,7 @@ export const ShopProductMutations = extendType({
 
           let doneCount = 0;
           for await (const shopProductValues of input) {
-            const { shopProductId, productId, ...values } = shopProductValues;
+            const { shopProductId, ...values } = shopProductValues;
 
             // Check shop product availability
             const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
@@ -294,18 +273,6 @@ export const ShopProductMutations = extendType({
             );
             const updatedShopProduct = updatedShopProductResult.value;
             if (!updatedShopProductResult.ok || !updatedShopProduct) {
-              break;
-            }
-
-            // Update product shops data
-            const updatedProduct = await updateProductShopsData({ productId });
-            if (!updatedProduct) {
-              break;
-            }
-            const updatedRubric = await recalculateRubricProductCounters({
-              rubricId: updatedProduct.rubricId,
-            });
-            if (!updatedRubric) {
               break;
             }
 

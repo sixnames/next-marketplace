@@ -107,12 +107,11 @@ export const Order = objectType({
     // Order formattedTotalPrice field resolver
     t.nonNull.field('formattedTotalPrice', {
       type: 'String',
-      resolve: async (source, _args, context): Promise<string> => {
-        const { locale } = await getRequestParams(context);
+      resolve: async (source, _args): Promise<string> => {
         const totalPrice = source.products.reduce((acc = 0, { price, amount }) => {
           return acc + noNaN(price) * noNaN(amount);
         }, 0);
-        return getCurrencyString({ value: totalPrice, locale });
+        return getCurrencyString(totalPrice);
       },
     });
 
@@ -542,7 +541,6 @@ export const OrderMutations = extendType({
             success: true,
             message: await getApiMessage('orders.makeAnOrder.success'),
             order: createdOrder,
-            cart: updatedCart,
           };
         } catch (e) {
           return {

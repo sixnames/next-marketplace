@@ -9,12 +9,12 @@ import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Tooltip from 'components/TTip/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
+import { useSiteContext } from 'context/siteContext';
 import {
   MyOrderFragment,
   MyOrderProductFragment,
   useGetAllMyOrdersQuery,
 } from 'generated/apolloComponents';
-import useCartMutations from 'hooks/useCartMutations';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import { noNaN } from 'lib/numbers';
 import { getSession } from 'next-auth/client';
@@ -31,7 +31,7 @@ interface ProfileOrderProductInterface {
 }
 
 const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct }) => {
-  const { addProductToCart } = useCartMutations();
+  const { addProductToCart } = useSiteContext();
   const {
     name,
     shopProduct,
@@ -128,7 +128,7 @@ interface ProfileOrderInterface {
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const { itemId, createdAt, formattedTotalPrice, status, products } = order;
-  const { repeatAnOrder } = useCartMutations();
+  const { repeatAnOrder } = useSiteContext();
 
   return (
     <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>
@@ -221,9 +221,9 @@ const ProfileOrdersRoute: React.FC = () => {
 
 interface ProfileInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Profile: NextPage<ProfileInterface> = ({ navRubrics, pageUrls }) => {
+const Profile: NextPage<ProfileInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'История заказов'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'История заказов'} navRubrics={navRubrics} {...props}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>

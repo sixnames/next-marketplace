@@ -1,55 +1,28 @@
-import { ApolloQueryResult } from '@apollo/client';
+import { UserModel } from 'db/dbModels';
 import * as React from 'react';
-import {
-  SessionUserFragment,
-  SessionUserQuery,
-  useSessionUserQuery,
-} from 'generated/apolloComponents';
-
-interface ContextState {
-  me?: SessionUserFragment | null;
-  loadingUser: boolean;
-}
 
 interface UserContextInterface {
-  state: ContextState;
-  setState?: any;
-  refetch?: () => Promise<ApolloQueryResult<SessionUserQuery>>;
+  me?: UserModel | null;
+  setUser: (user: UserModel) => void;
 }
 
 const UserContext = React.createContext<UserContextInterface>({
-  state: {
-    loadingUser: true,
-  },
+  me: null,
+  setUser: () => undefined,
 });
 
-const UserContextProvider: React.FC = ({ children }) => {
-  const { data, loading, refetch } = useSessionUserQuery({
-    fetchPolicy: 'network-only',
-    ssr: false,
-  });
-  const [state, setState] = React.useState<ContextState>(() => {
-    return {
-      me: null,
-      loadingUser: true,
-    };
-  });
+interface UserContextProviderInterface {
+  sessionUser?: UserModel | null;
+}
 
-  React.useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      me: data?.me,
-      loadingUser: loading,
-    }));
-  }, [data, loading]);
-
+const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, sessionUser }) => {
+  const [user, setUser] = React.useState<UserModel | null | undefined>(() => sessionUser);
   const value = React.useMemo(() => {
     return {
-      state,
-      setState,
-      refetch,
+      me: user,
+      setUser,
     };
-  }, [refetch, state]);
+  }, [user]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

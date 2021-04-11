@@ -9,13 +9,13 @@ import { getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomePageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Home: NextPage<HomePageInterface> = ({ navRubrics, company, pageUrls }) => {
+const Home: NextPage<HomePageInterface> = ({ navRubrics, company, ...props }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
 
   if (company) {
     return (
-      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
+      <SiteLayout navRubrics={navRubrics} {...props}>
         <Inner>
           <Title>{company.name}</Title>
         </Inner>
@@ -24,7 +24,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, company, pageUrls }) =>
   }
 
   return (
-    <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout navRubrics={navRubrics} {...props}>
       <Inner>
         <Title>{configTitle}</Title>
       </Inner>

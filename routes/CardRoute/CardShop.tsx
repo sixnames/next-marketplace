@@ -1,5 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
 import { ShopProductModel } from 'db/dbModels';
-import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './CardShop.module.css';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
-  const { addProductToCart } = useCartMutations();
+  const { addProductToCart } = useSiteContext();
   const [amount, setAmount] = React.useState<number>(1);
   const {
     shop,
@@ -35,14 +35,12 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   }
 
   const {
-    assets,
     name,
     slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
+    mainImage,
   } = shop;
-  const mainAsset = assets[0];
-  const mainImage = mainAsset ? mainAsset.url : `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
 
   const disabled = amount + noNaN(inCartCount) > available;
 

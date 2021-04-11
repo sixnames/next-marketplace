@@ -4,190 +4,192 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
-  DEFAULT_LOCALE,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROUTE_CATALOGUE,
-  SECONDARY_LOCALE,
 } from 'config/common';
-import {
-  COL_PRODUCT_FACETS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from 'db/collectionNames';
-import {
-  ProductCardBreadcrumbModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
-  ProductModel,
-  RubricModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { ProductCardBreadcrumbModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getCurrencyString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
-import { getPercentage, noNaN } from 'lib/numbers';
+import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
-
-export interface GetCardBreadcrumbsInterface {
-  locale: string;
-  product: ProductModel;
-}
-
-export async function getCardBreadcrumbs({
-  locale,
-  product,
-}: GetCardBreadcrumbsInterface): Promise<ProductCardBreadcrumbModel[]> {
-  function getFieldLocale(i18nField?: Record<string, string> | null): string {
-    if (!i18nField) {
-      return '';
-    }
-
-    let translation = getI18nLocaleValue<string>(i18nField, locale);
-
-    // Get fallback language if chosen not found
-    if (!translation) {
-      translation = i18nField[SECONDARY_LOCALE];
-    }
-
-    // Get default language if fallback not found
-    if (!translation) {
-      translation = i18nField[DEFAULT_LOCALE];
-    }
-
-    // Set warning massage if fallback language not found
-    if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    }
-
-    return translation;
-  }
-
-  try {
-    const db = await getDatabase();
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-
-    // Get slugs parts
-    // Each slug contain keyword and value separated by -
-    const rubric = await rubricsCollection.findOne(
-      { _id: product.rubricId },
-      {
-        projection: {
-          _id: 1,
-          slug: 1,
-          nameI18n: 1,
-        },
-      },
-    );
-
-    // Return empty configs list if no rubric
-    if (!rubric) {
-      return [];
-    }
-
-    const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-    // Collect breadcrumbs configs for all product attributes
-    // that have showAsBreadcrumb option enabled
-    for await (const productAttribute of product.attributes) {
-      if (!productAttribute.showAsBreadcrumb) {
-        continue;
-      }
-
-      if (
-        !productAttribute.selectedOptionsSlugs ||
-        productAttribute.selectedOptionsSlugs.length < 1
-      ) {
-        continue;
-      }
-
-      // Get all selected options
-      const options = productAttribute.selectedOptions;
-
-      // Get first selected option
-      const firstSelectedOption = options[0];
-      if (!firstSelectedOption) {
-        continue;
-      }
-
-      // Get option name
-      const filterNameString = getFieldLocale(firstSelectedOption.nameI18n);
-
-      // Push breadcrumb config to the list
-      attributesBreadcrumbs.push({
-        _id: productAttribute.attributeId,
-        name: filterNameString,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${firstSelectedOption.slug}`,
-      });
-    }
-
-    // Returns all config [rubric, ...attributes]
-    return [
-      {
-        _id: rubric._id,
-        name: getFieldLocale(rubric.nameI18n),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}`,
-      },
-      ...attributesBreadcrumbs,
-    ];
-  } catch {
-    return [];
-  }
-}
 
 export interface GetCardDataInterface {
   locale: string;
   city: string;
   slug: string;
+  companyId?: string | ObjectId | null;
 }
 
 export async function getCardData({
   locale,
   city,
   slug,
+  companyId,
 }: GetCardDataInterface): Promise<ProductModel | null> {
   try {
     // const startTime = new Date().getTime();
     const db = await getDatabase();
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
-    const productAggregation = await productsCollection
-      .aggregate([
+    // const shopProductsStartTime = new Date().getTime();
+    const shopProductsAggregation = await shopProductsCollection
+      .aggregate<ProductModel>([
         {
-          $match: { slug },
-        },
-        {
-          $lookup: {
-            from: COL_PRODUCT_FACETS,
-            as: 'facets',
-            foreignField: '_id',
-            localField: '_id',
+          $match: {
+            slug,
+            citySlug: city,
+            ...companyRubricsMatch,
           },
         },
+        // Get shops
+        {
+          $lookup: {
+            from: COL_SHOPS,
+            as: 'shops',
+            let: {
+              shopId: '$shopId',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$shopId', '$_id'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            shop: { $arrayElemAt: ['$shops', 0] },
+          },
+        },
+        {
+          $project: {
+            shops: false,
+          },
+        },
+        {
+          $group: {
+            _id: '$productId',
+            minPrice: {
+              $min: '$price',
+            },
+            maxPrice: {
+              $max: '$price',
+            },
+            shopProductIds: {
+              $addToSet: '$_id',
+            },
+            shopProducts: {
+              $push: {
+                _id: '$_id',
+                price: '$price',
+                available: '$available',
+                shopId: '$shopId',
+                oldPrices: '$oldPrices',
+                shop: '$shop',
+                formattedPrice: '$formattedPrice',
+                formattedOldPrice: '$formattedOldPrice',
+                discountedPercent: '$discountedPercent',
+              },
+            },
+          },
+        },
+        // Get product rubric
+        {
+          $lookup: {
+            from: COL_PRODUCTS,
+            as: 'products',
+            let: {
+              productId: '$_id',
+              shopProducts: '$shopProducts',
+              shopProductIds: '$shopProductIds',
+              minPrice: '$minPrice',
+              maxPrice: '$maxPrice',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$_id'],
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubrics',
+                  let: {
+                    rubricId: '$rubricId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$rubricId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  cardPrices: {
+                    min: '$$minPrice',
+                    max: '$$maxPrice',
+                  },
+                  shopsCount: { $size: '$$shopProducts' },
+                  shopProducts: '$$shopProducts',
+                  shopProductIds: '$$shopProductIds',
+                  rubric: { $arrayElemAt: ['$rubrics', 0] },
+                },
+              },
+              {
+                $project: {
+                  rubrics: false,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            product: { $arrayElemAt: ['$products', 0] },
+          },
+        },
+        {
+          $project: {
+            products: false,
+          },
+        },
+        { $replaceRoot: { newRoot: '$product' } },
       ])
       .toArray();
-
-    const product = productAggregation[0];
-    const facet = product.facets ? product.facets[0] : null;
-    if (!product || !facet) {
+    const product = shopProductsAggregation[0];
+    if (!product || !product.rubric) {
       return null;
     }
-    // console.log(`product `, new Date().getTime() - startTime);
-
-    // shopsCount
-    const shopsCount = noNaN(product.shopProductsCountCities[city]);
-    // console.log(`shopsCount `, new Date().getTime() - startTime);
+    // console.log(shopProductsAggregationResult);
+    // console.log(JSON.stringify(product, null, 2));
+    // console.log(`Shop products `, new Date().getTime() - shopProductsStartTime);
 
     // prices
-    const minPrice = noNaN(facet?.minPriceCities ? facet?.minPriceCities[city] : undefined);
-    const maxPrice = noNaN(facet?.maxPriceCities ? facet?.maxPriceCities[city] : undefined);
     const cardPrices = {
-      _id: new ObjectId(),
-      min: getCurrencyString({ value: minPrice, locale }),
-      max: getCurrencyString({ value: maxPrice, locale }),
+      min: getCurrencyString(product.cardPrices?.min),
+      max: getCurrencyString(product.cardPrices?.max),
     };
-    // console.log(`prices `, new Date().getTime() - startTime);
 
     // image
     const sortedAssets = product.assets.sort((assetA, assetB) => {
@@ -242,63 +244,15 @@ export async function getCardData({
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const initialCardShopProducts = await shopProductsCollection
-      .aggregate([
-        {
-          $match: {
-            productId: product._id,
-            citySlug: city,
-          },
-        },
-        {
-          $lookup: {
-            from: COL_SHOPS,
-            foreignField: '_id',
-            localField: 'shopId',
-            as: 'shops',
-          },
-        },
-        {
-          $addFields: {
-            shop: {
-              $arrayElemAt: ['$shops', 0],
-            },
-          },
-        },
-        {
-          $project: {
-            shops: 0,
-          },
-        },
-      ])
-      .toArray();
-
     const cardShopProducts: ShopProductModel[] = [];
-    initialCardShopProducts.forEach((shopProduct) => {
+    (product.shopProducts || []).forEach((shopProduct) => {
       const { shop } = shopProduct;
       if (!shop) {
         return;
       }
-
-      const lastOldPrice = shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
-      const formattedOldPrice = lastOldPrice
-        ? getCurrencyString({ value: lastOldPrice.price, locale })
-        : null;
-
-      const discountedPercent =
-        lastOldPrice && lastOldPrice.price > shopProduct.price
-          ? getPercentage({
-              fullValue: lastOldPrice.price,
-              partialValue: shopProduct.price,
-            })
-          : null;
-
+      console.log(shopProduct);
       cardShopProducts.push({
         ...shopProduct,
-        formattedPrice: getCurrencyString({ value: shopProduct.price, locale }),
-        formattedOldPrice,
-        discountedPercent,
         shop: {
           ...shop,
           address: {
@@ -322,58 +276,59 @@ export async function getCardData({
     });
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
-    // connections
-    const connections: ProductConnectionModel[] = [];
-    for await (const productConnection of product.connections) {
-      const connectionProducts: ProductConnectionItemModel[] = [];
-      for await (const connectionProduct of productConnection.connectionProducts) {
-        const product = await productsCollection.findOne(
-          { _id: connectionProduct.productId },
-          {
-            projection: {
-              _id: 1,
-              slug: 1,
-              nameI18n: 1,
-            },
-          },
-        );
-        if (!product) {
-          continue;
-        }
-        connectionProducts.push({
-          ...connectionProduct,
-          option: {
-            ...connectionProduct.option,
-            name: getFieldStringLocale(connectionProduct.option.nameI18n, locale),
-          },
-          product: {
-            ...product,
-            name: getFieldStringLocale(product.nameI18n, locale),
-          },
-        });
+    // cardBreadcrumbs
+    const { rubric, ...restProduct } = product;
+    const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
+    // Collect breadcrumbs configs for all product attributes
+    // that have showAsBreadcrumb option enabled
+    for await (const productAttribute of product.attributes) {
+      if (!productAttribute.showAsBreadcrumb) {
+        continue;
       }
 
-      connections.push({
-        ...productConnection,
-        attributeName: getFieldStringLocale(productConnection.attributeNameI18n, locale),
-        connectionProducts,
+      if (
+        !productAttribute.selectedOptionsSlugs ||
+        productAttribute.selectedOptionsSlugs.length < 1
+      ) {
+        continue;
+      }
+
+      // Get all selected options
+      const options = productAttribute.selectedOptions;
+
+      // Get first selected option
+      const firstSelectedOption = options[0];
+      if (!firstSelectedOption) {
+        continue;
+      }
+
+      // Get option name
+      const filterNameString = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
+
+      // Push breadcrumb config to the list
+      attributesBreadcrumbs.push({
+        _id: productAttribute.attributeId,
+        name: filterNameString,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${firstSelectedOption.slug}`,
       });
     }
-    // console.log(`connections `, new Date().getTime() - startTime);
 
-    // cardBreadcrumbs
-    const cardBreadcrumbs: ProductCardBreadcrumbModel[] = await getCardBreadcrumbs({
-      locale,
-      product,
-    });
+    // Returns all config [rubric, ...attributes]
+    const cardBreadcrumbs: ProductCardBreadcrumbModel[] = [
+      {
+        _id: rubric._id,
+        name: getFieldStringLocale(rubric.nameI18n, locale),
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}`,
+      },
+      ...attributesBreadcrumbs,
+    ];
     // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);
 
     return {
-      ...product,
+      ...restProduct,
       name: getFieldStringLocale(product.nameI18n, locale),
       description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,
-      shopsCount,
       mainImage,
       listFeatures,
       textFeatures,
@@ -381,9 +336,7 @@ export async function getCardData({
       iconFeatures,
       ratingFeatures,
       cardShopProducts,
-      connections,
       cardBreadcrumbs,
-      isCustomersChoice: product.isCustomersChoiceCities[city],
     };
   } catch (e) {
     console.log(e);

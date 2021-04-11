@@ -11,13 +11,8 @@ import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
-import {
-  CartProductFragment,
-  ProductSnippetFragment,
-  SnippetConnectionFragment,
-} from 'generated/apolloComponents';
-import useCart from 'hooks/useCart';
-import useCartMutations from 'hooks/useCartMutations';
+import { useSiteContext } from 'context/siteContext';
+import { CartProductModel, ShopProductModel } from 'db/dbModels';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -32,19 +27,24 @@ import classes from 'styles/CartRoute.module.css';
 import CartShopsList from 'routes/CartRoute/CartShopsList';
 
 interface CartProductFrameInterface {
-  product: ProductSnippetFragment;
   cartProductId: string;
   isShopsVisible?: boolean;
+  mainImage: string;
+  originalName: string;
+  shopProducts?: ShopProductModel[];
+  slug: string;
 }
 
 const CartProductFrame: React.FC<CartProductFrameInterface> = ({
-  product,
   cartProductId,
   children,
   isShopsVisible,
+  mainImage,
+  originalName,
+  shopProducts,
+  slug,
 }) => {
-  const { deleteProductFromCart } = useCartMutations();
-  const { mainImage, name, _id } = product;
+  const { deleteProductFromCart } = useSiteContext();
 
   return (
     <div className={classes.productHolder}>
@@ -53,14 +53,20 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           <div>
             <div className={classes.productImage}>
               <div className={classes.productImageHolder}>
-                <Image src={mainImage} alt={name} title={name} layout='fill' objectFit='contain' />
+                <Image
+                  src={`${mainImage}`}
+                  alt={originalName}
+                  title={originalName}
+                  layout='fill'
+                  objectFit='contain'
+                />
               </div>
             </div>
           </div>
           <div className={classes.productContent}>
             {children}
             <ButtonCross
-              testId={`${product.slug}-remove-from-cart`}
+              testId={`${slug}-remove-from-cart`}
               iconSize={'small'}
               className={classes.productRemove}
               onClick={() => {
@@ -77,89 +83,59 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
         </div>
       </LayoutCard>
 
-      {isShopsVisible ? <CartShopsList productId={_id} cartProductId={cartProductId} /> : null}
+      {isShopsVisible ? (
+        <CartShopsList shopProducts={shopProducts || []} cartProductId={cartProductId} />
+      ) : null}
     </div>
   );
 };
 
 interface CartProductMainDataInterface {
-  product: ProductSnippetFragment;
+  itemId: string;
+  originalName: string;
 }
 
-const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ product }) => {
-  const { itemId, name, listFeatures } = product;
-
-  const listFeaturesString = listFeatures
-    .map(({ readableValue }) => {
-      return readableValue;
-    })
-    .join(', ');
-
+const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ itemId, originalName }) => {
   return (
     <React.Fragment>
       <div>
         <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
       </div>
-      <div className={classes.productName}>{name}</div>
-      <div className={classes.productMeta}>{listFeaturesString}</div>
+      <div className={classes.productName}>{originalName}</div>
     </React.Fragment>
   );
 };
 
-interface CartProductConnectionsInterface {
-  connections: SnippetConnectionFragment[];
-  productId: string;
-}
-
-const CartProductConnections: React.FC<CartProductConnectionsInterface> = ({
-  connections,
-  productId,
-}) => {
-  return (
-    <div className={classes.productConnections}>
-      {connections.map(({ _id, attributeName, connectionProducts }) => {
-        return (
-          <div key={_id} className={classes.connectionsGroup}>
-            <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
-            {connectionProducts.map(({ option, _id }) => {
-              const isCurrent = _id === productId;
-              if (isCurrent) {
-                return <span key={option._id}>{option.name}</span>;
-              }
-              return null;
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 interface CartProductInterface {
-  cartProduct: CartProductFragment;
+  cartProduct: CartProductModel;
 }
 
 const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
   const [isShopsVisible, setIsShopsVisible] = React.useState<boolean>(false);
-  const { updateProductInCart } = useCartMutations();
-  const { product, shopProduct, _id, amount } = cartProduct;
-  const productData = product || shopProduct?.product;
-  if (!productData || !product) {
+  const { updateProductInCart } = useSiteContext();
+  const { product, _id, amount } = cartProduct;
+  if (!product) {
     return null;
   }
 
-  const { cardPrices, connections } = product;
+  const { itemId, originalName, slug, shopProducts, cardPrices, shopsCount, mainImage } = product;
 
   return (
-    <CartProductFrame product={productData} cartProductId={_id} isShopsVisible={isShopsVisible}>
+    <CartProductFrame
+      cartProductId={`${_id}`}
+      slug={slug}
+      mainImage={mainImage}
+      originalName={originalName}
+      shopProducts={shopProducts}
+      isShopsVisible={isShopsVisible}
+    >
       <div className={classes.productGrid}>
         <div>
-          <CartProductMainData product={productData} />
+          <CartProductMainData itemId={itemId} originalName={originalName} />
         </div>
 
         <div className={classes.productGridRight}>
-          <ProductSnippetPrice shopsCount={productData.shopsCount} value={cardPrices.min} />
-          <CartProductConnections connections={connections} productId={product._id} />
+          <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>
 
@@ -194,30 +170,41 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
 };
 
 const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
-  const { updateProductInCart } = useCartMutations();
-  const { product, shopProduct, amount, _id } = cartProduct;
-  const productData = product || shopProduct?.product;
-  if (!productData || !shopProduct) {
+  const { updateProductInCart } = useSiteContext();
+  const { shopProduct, amount, _id } = cartProduct;
+  if (!shopProduct) {
     return null;
   }
 
-  const { formattedPrice, formattedOldPrice, discountedPercent, available, shop } = shopProduct;
-  const { connections } = productData;
-  const { address, name } = shop;
-
+  const {
+    formattedPrice,
+    formattedOldPrice,
+    discountedPercent,
+    available,
+    shop,
+    itemId,
+    originalName,
+    slug,
+    mainImage,
+  } = shopProduct;
   return (
-    <CartProductFrame product={productData} cartProductId={_id}>
+    <CartProductFrame
+      slug={slug}
+      cartProductId={`${_id}`}
+      mainImage={mainImage}
+      originalName={originalName}
+    >
       <div className={classes.productGrid}>
         <div>
-          <CartProductMainData product={productData} />
+          <CartProductMainData itemId={itemId} originalName={originalName} />
           <SpinnerInput
             name={'amount'}
             value={amount}
             min={1}
             max={available}
-            testId={`${productData.slug}-amount`}
-            plusTestId={`${productData.slug}-plus`}
-            minusTestId={`${productData.slug}-minus`}
+            testId={`${slug}-amount`}
+            plusTestId={`${slug}-plus`}
+            minusTestId={`${slug}-minus`}
             className={classes.amountInput}
             onChange={(e) => {
               updateProductInCart({
@@ -230,21 +217,20 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 
         <div className={classes.productGridRight}>
           <ProductShopPrices
-            formattedPrice={formattedPrice}
+            formattedPrice={`${formattedPrice}`}
             formattedOldPrice={formattedOldPrice}
             discountedPercent={discountedPercent}
           />
           <div className={classes.productConnections}>
-            <CartProductConnections connections={connections} productId={productData._id} />
             <div className={classes.connectionsGroup}>{`В наличии ${available} шт`}</div>
           </div>
 
           <div className={classes.shop}>
             <div>
               <span>винотека: </span>
-              {name}
+              {shop?.name}
             </div>
-            <div>{address.formattedAddress}</div>
+            <div>{shop?.address.formattedAddress}</div>
             <div className={classes.shopMap}>Смотреть на карте</div>
           </div>
         </div>
@@ -256,7 +242,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 const CartRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
-  const { cart, loadingCart } = useCart();
+  const { cart, loadingCart } = useSiteContext();
 
   if (loadingCart && !cart) {
     return (
@@ -332,13 +318,13 @@ const CartRoute: React.FC = () => {
         <div className={classes.frame}>
           <div data-cy={'cart-products'}>
             {cartProducts.map((cartProduct) => {
-              const { _id, isShopless } = cartProduct;
+              const { _id, shopProduct } = cartProduct;
 
-              if (isShopless) {
-                return <CartShoplessProduct cartProduct={cartProduct} key={_id} />;
+              if (!shopProduct) {
+                return <CartShoplessProduct cartProduct={cartProduct} key={`${_id}`} />;
               }
 
-              return <CartProduct cartProduct={cartProduct} key={_id} />;
+              return <CartProduct cartProduct={cartProduct} key={`${_id}`} />;
             })}
           </div>
 
@@ -361,9 +347,9 @@ const CartRoute: React.FC = () => {
 
 interface CartInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const Cart: NextPage<CartInterface> = ({ navRubrics, pageUrls }) => {
+const Cart: NextPage<CartInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics} {...props}>
       <CartRoute />
     </SiteLayout>
   );

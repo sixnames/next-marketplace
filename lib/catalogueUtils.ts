@@ -4,9 +4,9 @@ import {
   COL_CONFIGS,
   COL_COUNTRIES,
   COL_LANGUAGES,
-  COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
   AttributeModel,
@@ -22,7 +22,6 @@ import {
   OptionModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductFacetModel,
   ProductModel,
   CatalogueProductPricesInterface,
   RubricAttributeModel,
@@ -31,6 +30,8 @@ import {
   RubricOptionModel,
   CatalogueProductsAggregationInterface,
   CatalogueProductOptionInterface,
+  CompanyModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
@@ -48,6 +49,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
+  CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -320,11 +322,6 @@ export async function getCatalogueAttributes({
       const optionSlug = option.slug;
       const isSelected = realFilter.includes(optionSlug);
 
-      // Push to the selected options list for catalogue title config
-      if (isSelected) {
-        selectedOptions.push(option);
-      }
-
       const optionNextSlug = isSelected
         ? [...realFilter]
             .filter((pathArg) => {
@@ -341,7 +338,7 @@ export async function getCatalogueAttributes({
         isSelected,
       };
 
-      // Push to the selected options list for catalogue title config
+      // Push to the selected options list for catalogue title config and selected attributes view
       if (isSelected) {
         selectedOptions.push(option);
         selectedFilterOptions.push(castedOption);
@@ -404,7 +401,10 @@ export async function getCatalogueAttributes({
 
       // Add selected items to the catalogue title config
       selectedFilters.push({
-        attribute,
+        attribute: {
+          ...attribute,
+          options: [],
+        },
         options: selectedOptions,
       });
     }
@@ -419,26 +419,36 @@ export async function getCatalogueAttributes({
   };
 }
 
+interface GetCatalogueConfigsInterface {
+  companySlug: string;
+  city: string;
+}
+
 interface GetCatalogueConfigsPayloadInterface {
   visibleOptionsCount: number;
   snippetVisibleAttributesCount: number;
 }
 
-export async function getCatalogueConfigs(): Promise<GetCatalogueConfigsPayloadInterface> {
+export async function getCatalogueConfigs({
+  companySlug,
+  city,
+}: GetCatalogueConfigsInterface): Promise<GetCatalogueConfigsPayloadInterface> {
   const db = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
     slug: 'catalogueFilterVisibleOptionsCount',
+    companySlug,
   });
   const visibleOptionsCount =
-    noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(catalogueFilterVisibleOptionsCount?.cities[city][DEFAULT_LOCALE][0]) ||
     noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
 
   const snippetVisibleAttributesCountConfig = await configsCollection.findOne({
     slug: 'snippetAttributesCount',
+    companySlug,
   });
   const snippetVisibleAttributesCount =
-    noNaN(snippetVisibleAttributesCountConfig?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(snippetVisibleAttributesCountConfig?.cities[city][DEFAULT_LOCALE][0]) ||
     noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES);
 
   return {
@@ -461,17 +471,27 @@ interface CastCatalogueFiltersPayloadInterface {
   pagerUrl: string;
 }
 
-export function castCatalogueFilters(filters: string[]): CastCatalogueFiltersPayloadInterface {
+interface CastCatalogueFiltersInterface {
+  filters: string[];
+  initialLimit?: number;
+  initialPage?: number;
+}
+
+export function castCatalogueFilters({
+  filters,
+  initialPage,
+  initialLimit,
+}: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
   // pagination
   const pagerUrlParts: string[] = [];
-  const defaultPage = 1;
+  const defaultPage = initialPage || 1;
   let page = defaultPage;
 
-  const defaultLimit = PAGINATION_DEFAULT_LIMIT;
+  const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;
   let limit = defaultLimit;
 
   // sort
@@ -574,9 +594,11 @@ export async function getCatalogueRubric(
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
+  companySlug?: string;
+  companyId?: string | ObjectIdModel | null;
   input: {
     filter: string[];
-    lastProductId?: ObjectIdModel | null | undefined;
+    page: number;
   };
 }
 
@@ -584,6 +606,8 @@ export const getCatalogueData = async ({
   locale,
   city,
   input,
+  companySlug = CONFIG_DEFAULT_COMPANY_SLUG,
+  companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
     // console.log(' ');
@@ -591,15 +615,19 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args
-    const { lastProductId, filter } = input;
+    const { filter, page } = input;
     const [rubricSlug, ...filterOptions] = filter;
+    const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
 
     // Get configs
     // const configsTimeStart = new Date().getTime();
-    const { snippetVisibleAttributesCount } = await getCatalogueConfigs();
+    const { snippetVisibleAttributesCount } = await getCatalogueConfigs({
+      companySlug: realCompanySlug,
+      city,
+    });
     // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get rubric
@@ -624,21 +652,19 @@ export const getCatalogueData = async ({
       sortDir,
       sortFilterOptions,
       noFiltersSelected,
-    } = castCatalogueFilters(filterOptions);
-
-    // Product stages
-    const keyStage = lastProductId
-      ? {
-          _id: {
-            $lt: new ObjectId(lastProductId),
-          },
-        }
-      : {};
+      skip,
+      limit,
+      page: payloadPage,
+    } = castCatalogueFilters({
+      filters: filterOptions,
+      initialPage: page,
+      initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+    });
 
     const pricesStage =
       minPrice && maxPrice
         ? {
-            [`minPriceCities.${city}`]: {
+            price: {
               $gte: minPrice,
               $lte: maxPrice,
             },
@@ -653,36 +679,63 @@ export const getCatalogueData = async ({
           },
         };
 
+    const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+
     const productsInitialMatch = {
+      ...companyRubricsMatch,
       rubricId: rubric._id,
-      active: true,
+      citySlug: city,
       ...optionsStage,
       ...pricesStage,
     };
 
     // sort stage
     let sortStage: any = {
-      [`availabilityCities.${city}`]: SORT_DESC,
-      [`priorities.${city}`]: SORT_DESC,
-      [`views.${city}`]: SORT_DESC,
+      priorities: SORT_DESC,
+      views: SORT_DESC,
+      available: SORT_DESC,
       _id: SORT_DESC,
     };
 
     // sort by price
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
-        [`availabilityCities.${city}`]: SORT_DESC,
-        [`minPriceCities.${city}`]: sortDir,
+        price: sortDir,
+        priorities: SORT_DESC,
+        views: SORT_DESC,
+        available: SORT_DESC,
         _id: SORT_DESC,
       };
     }
 
-    // const productsStart = new Date().getTime();
-    const productsAggregation = await productFacetsCollection
+    // const shopProductsStart = new Date().getTime();
+    const shopProductsAggregation = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>(
         [
           {
             $match: { ...productsInitialMatch },
+          },
+          {
+            $unwind: '$selectedOptionsSlugs',
+          },
+          {
+            $group: {
+              _id: '$productId',
+              views: { $max: `$views.${realCompanySlug}.${city}` },
+              priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
+              price: {
+                $min: '$price',
+              },
+              available: {
+                $max: '$available',
+              },
+              selectedOptionsSlugs: {
+                $addToSet: '$selectedOptionsSlugs',
+              },
+              shopProductsIds: {
+                $addToSet: '$_id',
+              },
+            },
           },
           {
             $facet: {
@@ -693,19 +746,70 @@ export const getCatalogueData = async ({
                   },
                 },
                 {
-                  $match: keyStage,
+                  $skip: skip,
                 },
                 {
-                  $limit: CATALOGUE_PRODUCTS_LIMIT,
+                  $limit: limit,
                 },
                 {
                   $lookup: {
                     from: COL_PRODUCTS,
                     as: 'products',
-                    localField: '_id',
-                    foreignField: '_id',
+                    let: {
+                      productId: '$_id',
+                      shopProductsIds: '$shopProductsIds',
+                      price: '$price',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$$productId', '$_id'],
+                          },
+                        },
+                      },
+                      {
+                        $addFields: {
+                          shopsCount: { $size: '$$shopProductsIds' },
+                          price: '$$price',
+                          attributes: {
+                            $filter: {
+                              input: '$attributes',
+                              as: 'attribute',
+                              cond: {
+                                $or: [
+                                  {
+                                    $eq: [
+                                      '$$attribute.attributeViewVariant',
+                                      ATTRIBUTE_VIEW_VARIANT_LIST,
+                                    ],
+                                  },
+                                  {
+                                    $eq: [
+                                      '$$attribute.attributeViewVariant',
+                                      ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+                                    ],
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        },
+                      },
+                    ],
                   },
                 },
+                {
+                  $addFields: {
+                    product: { $arrayElemAt: ['$products', 0] },
+                  },
+                },
+                {
+                  $project: {
+                    products: false,
+                  },
+                },
+                { $replaceRoot: { newRoot: '$product' } },
               ],
               options: [
                 {
@@ -746,18 +850,8 @@ export const getCatalogueData = async ({
               ],
               prices: [
                 {
-                  $project: {
-                    minPriceCities: 1,
-                  },
-                },
-                {
-                  $addFields: {
-                    minPrice: `$minPriceCities.${city}`,
-                  },
-                },
-                {
                   $group: {
-                    _id: '$minPrice',
+                    _id: '$price',
                   },
                 },
               ],
@@ -790,17 +884,18 @@ export const getCatalogueData = async ({
         { allowDiskUse: true },
       )
       .toArray();
-    const productsAggregationResult = productsAggregation[0];
-    // console.log(`Products >>>>>>>>>>>>>>>> `, new Date().getTime() - productsStart);
+    const shopProductsAggregationResult = shopProductsAggregation[0];
+    // console.log(shopProductsAggregationResult);
+    // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
-    if (!productsAggregationResult) {
+    if (!shopProductsAggregationResult) {
       return null;
     }
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
     const rubricAttributes = await getRubricCatalogueAttributes({
-      config: productsAggregationResult.options,
+      config: shopProductsAggregationResult.options,
       attributes: rubric.attributes,
       city,
     });
@@ -809,7 +904,7 @@ export const getCatalogueData = async ({
       attributes: rubricAttributes,
       locale,
       filter,
-      productsPrices: productsAggregationResult.prices,
+      productsPrices: shopProductsAggregationResult.prices,
       basePath: ROUTE_CATALOGUE,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
@@ -819,33 +914,15 @@ export const getCatalogueData = async ({
     const rubricListViewAttributes = castedAttributes.filter(({ viewVariant }) => {
       return viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
     });
-    for await (const facet of productsAggregationResult.docs) {
-      const product = facet.products ? facet.products[0] : null;
-      if (!product) {
-        continue;
-      }
-
+    for await (const product of shopProductsAggregationResult.docs) {
       // prices
-      const { attributes, ...restProduct } = product;
-      const minPrice = noNaN(facet.minPriceCities ? facet.minPriceCities[city] : undefined);
-      const maxPrice = noNaN(facet.maxPriceCities ? facet.maxPriceCities[city] : undefined);
-
+      const { attributes, price, ...restProduct } = product;
+      const minPrice = noNaN(price);
+      const maxPrice = noNaN(price);
       const cardPrices = {
-        _id: new ObjectId(),
-        min: getCurrencyString({ value: minPrice, locale }),
-        max: getCurrencyString({ value: maxPrice, locale }),
+        min: getCurrencyString(minPrice),
+        max: getCurrencyString(maxPrice),
       };
-
-      // image
-      const sortedAssets = product.assets.sort((assetA, assetB) => {
-        return assetA.index - assetB.index;
-      });
-      const firstAsset = sortedAssets[0];
-      let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-      if (firstAsset) {
-        mainImage = firstAsset.url;
-      }
 
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
@@ -922,10 +999,7 @@ export const getCatalogueData = async ({
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        mainImage,
-        shopsCount: noNaN(product.shopProductsCountCities[city]),
         connections,
-        isCustomersChoice: product.isCustomersChoiceCities[city],
       });
     }
 
@@ -936,29 +1010,21 @@ export const getCatalogueData = async ({
       locale,
     });
 
-    // Get keySet pagination
-    const lastProduct = products[products.length - 1];
-    const hasMore = Boolean(
-      lastProduct && lastProductId && !new ObjectId(lastProductId).equals(lastProduct?._id),
-    );
-
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-
     // console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,
-      lastProductId: lastProduct?._id,
-      hasMore,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
       filter,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricSlug: rubric.slug,
       products,
       catalogueTitle,
-      totalProducts: noNaN(productsAggregationResult.totalProducts),
+      totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
       attributes: castedAttributes,
       selectedAttributes,
+      page: payloadPage,
     };
   } catch (e) {
     console.log(e);
@@ -969,6 +1035,7 @@ export const getCatalogueData = async ({
 export interface GetPageInitialDataInterface {
   locale: string;
   city: string;
+  companySlug?: string;
 }
 
 export interface PageInitialDataPayload {
@@ -981,6 +1048,7 @@ export interface PageInitialDataPayload {
 export const getPageInitialData = async ({
   locale,
   city,
+  companySlug,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
@@ -989,7 +1057,16 @@ export const getPageInitialData = async ({
 
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection.find({}, { sort: { _id: SORT_ASC } }).toArray();
+  const initialConfigs = await configsCollection
+    .find(
+      {
+        companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+      },
+      {
+        sort: { _id: SORT_ASC },
+      },
+    )
+    .toArray();
   const configs = initialConfigs.map((config) => {
     return {
       ...config,
@@ -1045,26 +1122,29 @@ export const getPageInitialData = async ({
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
   city: string;
+  company?: CompanyModel | null;
 }
 
 export const getCatalogueNavRubrics = async ({
   city,
   locale,
+  company,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-
   const db = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
   // Get configs
   const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
     slug: 'stickyNavVisibleAttributesCount',
+    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
   });
   const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
     slug: 'stickyNavVisibleOptionsCount',
+    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
   });
   const visibleAttributesCount =
     noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
@@ -1075,90 +1155,127 @@ export const getCatalogueNavRubrics = async ({
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
 
-  const constantProject = {
-    _id: 1,
-    slug: 1,
-    nameI18n: 1,
-    priorities: 1,
-    views: 1,
-  };
-
-  const initialRubrics = await rubricsCollection
-    .aggregate([
+  const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
+  const shopRubricsAggregation = await shopProductsCollection
+    .aggregate<RubricModel>([
       {
         $match: {
-          activeProductsCount: { $gt: 0 },
+          ...companyRubricsMatch,
+          citySlug: city,
+        },
+      },
+      {
+        $unwind: '$selectedOptionsSlugs',
+      },
+      {
+        $group: {
+          _id: '$rubricId',
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubrics',
+          let: { rubricId: '$_id', selectedOptionsSlugs: '$selectedOptionsSlugs' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$rubricId'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                slug: 1,
+                nameI18n: 1,
+                priorities: 1,
+                views: 1,
+                attributes: {
+                  $filter: {
+                    input: '$attributes',
+                    as: 'attribute',
+                    cond: {
+                      $eq: ['$$attribute.showInCatalogueNav', true],
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $addFields: {
+                attributes: {
+                  $slice: ['$attributes', visibleAttributesCount],
+                },
+              },
+            },
+            {
+              $unwind: {
+                path: '$attributes',
+              },
+            },
+            {
+              $addFields: {
+                'attributes.options.options': [],
+              },
+            },
+            {
+              $addFields: {
+                'attributes.options': {
+                  $filter: {
+                    input: '$attributes.options',
+                    as: 'option',
+                    cond: {
+                      $in: ['$$option.slug', '$$selectedOptionsSlugs'],
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $addFields: {
+                'attributes.options': {
+                  $slice: ['$attributes.options', visibleOptionsCount],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: '$_id',
+                slug: { $first: '$slug' },
+                nameI18n: { $first: '$nameI18n' },
+                priorities: { $first: '$priorities' },
+                views: { $first: '$views' },
+                attributes: {
+                  $push: '$attributes',
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: { $arrayElemAt: ['$rubrics', 0] },
         },
       },
       {
         $project: {
-          ...constantProject,
-          attributes: {
-            $filter: {
-              input: '$attributes',
-              as: 'attribute',
-              cond: {
-                $eq: ['$$attribute.showInCatalogueNav', true],
-              },
-            },
-          },
+          rubrics: false,
         },
       },
-      {
-        $addFields: {
-          attributes: {
-            $slice: ['$attributes', visibleAttributesCount],
-          },
-        },
-      },
-      {
-        $unwind: {
-          path: '$attributes',
-        },
-      },
-      {
-        $addFields: {
-          'attributes.options.options': [],
-        },
-      },
-      {
-        $addFields: {
-          'attributes.options': {
-            $filter: {
-              input: '$attributes.options',
-              as: 'option',
-              cond: {
-                $eq: ['$$option.isSelected', true],
-              },
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          'attributes.options': {
-            $slice: ['$attributes.options', visibleOptionsCount],
-          },
-        },
-      },
-      {
-        $group: {
-          _id: '$_id',
-          slug: { $first: '$slug' },
-          nameI18n: { $first: '$nameI18n' },
-          priorities: { $first: '$priorities' },
-          views: { $first: '$views' },
-          attributes: {
-            $push: '$attributes',
-          },
-        },
-      },
+      { $replaceRoot: { newRoot: '$rubric' } },
     ])
     .toArray();
-  // console.log('After rubrics', new Date().getTime() - timeStart);
+  // console.log(shopRubricsAggregation);
+  // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricModel[] = [];
-  initialRubrics.forEach((rubric) => {
+  shopRubricsAggregation.forEach((rubric) => {
     rubrics.push({
       ...rubric,
       name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
@@ -1168,12 +1285,16 @@ export const getCatalogueNavRubrics = async ({
       }),
     });
   });
-
-  const sortedRubrics = [...rubrics].sort((rubricA, rubricB) => {
-    const rubricAViews = rubricA.views || { [city]: 0 };
-    const rubricAPriorities = rubricA.priorities || { [city]: 0 };
-    const rubricBViews = rubricB.views || { [city]: 0 };
-    const rubricBPriorities = rubricB.priorities || { [city]: 0 };
+  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
+  const sortedRubrics = rubrics.sort((rubricA, rubricB) => {
+    const rubricAViews = rubricA.views[companySlug] || { [city]: rubricA._id.getTimestamp() };
+    const rubricAPriorities = rubricA.priorities[companySlug] || {
+      [city]: rubricA._id.getTimestamp(),
+    };
+    const rubricBViews = rubricB.views[companySlug] || { [city]: rubricB._id.getTimestamp() };
+    const rubricBPriorities = rubricB.priorities[companySlug] || {
+      [city]: rubricB._id.getTimestamp(),
+    };
 
     const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
     const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);

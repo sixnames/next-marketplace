@@ -35,8 +35,6 @@ export const uploadFileToS3 = async ({
     if (upload) {
       return upload.Location;
     }
-
-    // TODO
     return `https://${process.env.OBJECT_STORAGE_DOMAIN}/${filePath}`;
   } catch (e) {
     console.log('Error in uploadFileToS3 ', e);

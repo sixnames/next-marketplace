@@ -269,17 +269,12 @@ export type Cart = {
   __typename?: 'Cart';
   _id: Scalars['ObjectId'];
   cartProducts: Array<CartProduct>;
-  totalPrice: Scalars['Int'];
-  formattedTotalPrice: Scalars['String'];
-  productsCount: Scalars['Int'];
-  isWithShopless: Scalars['Boolean'];
 };
 
-export type CartPayload = Payload & {
+export type CartPayload = {
   __typename?: 'CartPayload';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  payload?: Maybe<Cart>;
 };
 
 export type CartProduct = Base & {
@@ -289,15 +284,11 @@ export type CartProduct = Base & {
   amount: Scalars['Int'];
   shopProductId?: Maybe<Scalars['ObjectId']>;
   productId?: Maybe<Scalars['ObjectId']>;
-  shopProduct?: Maybe<ShopProduct>;
-  product?: Maybe<Product>;
-  isShopless: Scalars['Boolean'];
-  formattedTotalPrice: Scalars['String'];
-  totalPrice: Scalars['Int'];
 };
 
 export type CatalogueDataInput = {
   lastProductId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
   filter: Array<Scalars['String']>;
 };
 
@@ -1616,12 +1607,8 @@ export type Product = Base & Timestamp & {
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
-  shopsCount: Scalars['Int'];
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
-  isCustomersChoice: Scalars['Boolean'];
-  /** Should find all connected shop products and return minimal and maximal price. */
-  cardPrices: ProductCardPrices;
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
@@ -1759,8 +1746,6 @@ export type ProductsPaginationPayload = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Should return session user if authenticated */
-  me?: Maybe<User>;
   /** Should return user by _id */
   getUser: User;
   /** Should return paginated users */
@@ -1871,8 +1856,6 @@ export type Query = {
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
   getAllCompanies?: Maybe<CompaniesPaginationPayload>;
-  /** Should return session user cart */
-  getSessionCart: Cart;
   /** Should return order by given id */
   getOrder: Order;
   /** Should return session user order by given id */
@@ -2100,8 +2083,6 @@ export type Rubric = {
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  productsCount: Scalars['Int'];
-  activeProductsCount: Scalars['Int'];
   attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
   attributesGroups: Array<RubricAttributesGroup>;
@@ -2173,7 +2154,6 @@ export type RubricOption = {
   icon?: Maybe<Scalars['String']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  isSelected: Scalars['Boolean'];
   variants: Scalars['JSONObject'];
   options: Array<RubricOption>;
   name: Scalars['String'];
@@ -2463,7 +2443,8 @@ export type UpdateProductAssetIndexInput = {
 };
 
 export type UpdateProductCounterInput = {
-  productSlug: Scalars['String'];
+  shopProductIds: Array<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
 };
 
 export type UpdateProductInCartInput = {
@@ -2835,7 +2816,7 @@ export type DeleteProductFromConnectionMutation = (
 
 export type RubricInListFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name' | 'productsCount' | 'activeProductsCount'>
+  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -3169,31 +3150,6 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
-export type CartProductFragment = (
-  { __typename?: 'CartProduct' }
-  & Pick<CartProduct, '_id' | 'amount' | 'formattedTotalPrice' | 'isShopless'>
-  & { product?: Maybe<(
-    { __typename?: 'Product' }
-    & ProductSnippetFragment
-  )>, shopProduct?: Maybe<(
-    { __typename?: 'ShopProduct' }
-    & { product: (
-      { __typename?: 'Product' }
-      & ProductSnippetFragment
-    ) }
-    & ShopProductSnippetFragment
-  )> }
-);
-
-export type CartFragment = (
-  { __typename?: 'Cart' }
-  & Pick<Cart, '_id' | 'formattedTotalPrice' | 'productsCount' | 'isWithShopless'>
-  & { cartProducts: Array<(
-    { __typename?: 'CartProduct' }
-    & CartProductFragment
-  )> }
-);
-
 export type OrderInCartFragment = (
   { __typename?: 'Order' }
   & Pick<Order, '_id' | 'itemId'>
@@ -3202,19 +3158,12 @@ export type OrderInCartFragment = (
 export type CartPayloadFragment = (
   { __typename?: 'CartPayload' }
   & Pick<CartPayload, 'success' | 'message'>
-  & { payload?: Maybe<(
-    { __typename?: 'Cart' }
-    & CartFragment
-  )> }
 );
 
 export type MakeAnOrderPayloadFragment = (
   { __typename?: 'MakeAnOrderPayload' }
   & Pick<MakeAnOrderPayload, 'success' | 'message'>
-  & { cart?: Maybe<(
-    { __typename?: 'Cart' }
-    & CartFragment
-  )>, order?: Maybe<(
+  & { order?: Maybe<(
     { __typename?: 'Order' }
     & OrderInCartFragment
   )> }
@@ -3424,6 +3373,26 @@ export type UpdateAssetConfigMutation = (
     { __typename?: 'ConfigPayload' }
     & Pick<ConfigPayload, 'success' | 'message'>
   ) }
+);
+
+export type UpdateCatalogueCountersMutationVariables = Exact<{
+  input: CatalogueDataInput;
+}>;
+
+
+export type UpdateCatalogueCountersMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateCatalogueCounters'>
+);
+
+export type UpdateProductCounterMutationVariables = Exact<{
+  input: UpdateProductCounterInput;
+}>;
+
+
+export type UpdateProductCounterMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateProductCounter'>
 );
 
 export type CreateLanguageMutationVariables = Exact<{
@@ -3761,10 +3730,6 @@ export type UpdateMyProfileMutation = (
   & { updateMyProfile: (
     { __typename?: 'UserPayload' }
     & Pick<UserPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'User' }
-      & SessionUserFragment
-    )> }
   ) }
 );
 
@@ -3778,10 +3743,6 @@ export type UpdateMyPasswordMutation = (
   & { updateMyPassword: (
     { __typename?: 'UserPayload' }
     & Pick<UserPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'User' }
-      & SessionUserFragment
-    )> }
   ) }
 );
 
@@ -3836,117 +3797,6 @@ export type GetAttributesGroupsForRubricQuery = (
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, '_id' | 'name'>
   )> }
-);
-
-export type ShopSnippetFragment = (
-  { __typename?: 'Shop' }
-  & Pick<Shop, '_id' | 'name' | 'slug' | 'productsCount'>
-  & { address: (
-    { __typename?: 'Address' }
-    & Pick<Address, 'formattedAddress'>
-    & { formattedCoordinates: (
-      { __typename?: 'Coordinates' }
-      & Pick<Coordinates, 'lat' | 'lng'>
-    ) }
-  ), contacts: (
-    { __typename?: 'Contacts' }
-    & { formattedPhones: Array<(
-      { __typename?: 'FormattedPhone' }
-      & Pick<FormattedPhone, 'raw' | 'readable'>
-    )> }
-  ), assets: Array<(
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'index' | 'url'>
-  )>, logo: (
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'index' | 'url'>
-  ) }
-);
-
-export type ShopProductSnippetFragment = (
-  { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '_id' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent' | 'inCartCount'>
-  & { shop: (
-    { __typename?: 'Shop' }
-    & ShopSnippetFragment
-  ) }
-);
-
-export type GetCatalogueCardShopsQueryVariables = Exact<{
-  input: GetProductShopsInput;
-}>;
-
-
-export type GetCatalogueCardShopsQuery = (
-  { __typename?: 'Query' }
-  & { getProductShops: Array<(
-    { __typename?: 'ShopProduct' }
-    & ShopProductSnippetFragment
-  )> }
-);
-
-export type UpdateProductCounterMutationVariables = Exact<{
-  input: UpdateProductCounterInput;
-}>;
-
-
-export type UpdateProductCounterMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateProductCounter'>
-);
-
-export type SnippetConnectionItemFragment = (
-  { __typename?: 'ProductConnectionItem' }
-  & Pick<ProductConnectionItem, '_id' | 'productId'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ) }
-);
-
-export type SnippetConnectionFragment = (
-  { __typename?: 'ProductConnection' }
-  & Pick<ProductConnection, '_id' | 'attributeName'>
-  & { connectionProducts: Array<(
-    { __typename?: 'ProductConnectionItem' }
-    & SnippetConnectionItemFragment
-  )> }
-);
-
-export type ProductSnippetFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount' | 'isCustomersChoice'>
-  & { listFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, ratingFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, connections: Array<(
-    { __typename?: 'ProductConnection' }
-    & SnippetConnectionFragment
-  )>, cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ) }
-);
-
-export type UpdateCatalogueCountersMutationVariables = Exact<{
-  input: CatalogueDataInput;
-}>;
-
-
-export type UpdateCatalogueCountersMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateCatalogueCounters'>
 );
 
 export type CompanyInListFragment = (
@@ -4179,63 +4029,6 @@ export type GetAllConfigsQuery = (
     { __typename?: 'Config' }
     & SiteConfigFragment
   )> }
-);
-
-export type AppNavItemFragment = (
-  { __typename?: 'NavItem' }
-  & Pick<NavItem, '_id' | 'name' | 'icon' | 'path'>
-);
-
-export type AppNavParentItemFragment = (
-  { __typename?: 'NavItem' }
-  & { appNavigationChildren: Array<(
-    { __typename?: 'NavItem' }
-    & AppNavItemFragment
-  )> }
-  & AppNavItemFragment
-);
-
-export type SessionRoleFragmentFragment = (
-  { __typename?: 'Role' }
-  & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff'>
-  & { appNavigation: Array<(
-    { __typename?: 'NavItem' }
-    & AppNavParentItemFragment
-  )>, cmsNavigation: Array<(
-    { __typename?: 'NavItem' }
-    & AppNavParentItemFragment
-  )> }
-);
-
-export type SessionUserFragment = (
-  { __typename?: 'User' }
-  & Pick<User, '_id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone'>
-  & { role: (
-    { __typename?: 'Role' }
-    & SessionRoleFragmentFragment
-  ) }
-);
-
-export type SessionUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SessionUserQuery = (
-  { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & SessionUserFragment
-  )> }
-);
-
-export type SessionCartQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SessionCartQuery = (
-  { __typename?: 'Query' }
-  & { getSessionCart: (
-    { __typename?: 'Cart' }
-    & CartFragment
-  ) }
 );
 
 export type LanguageFragment = (
@@ -4543,6 +4336,47 @@ export type GetAllRubricVariantsQuery = (
   )> }
 );
 
+export type SnippetConnectionItemFragment = (
+  { __typename?: 'ProductConnectionItem' }
+  & Pick<ProductConnectionItem, '_id' | 'productId'>
+  & { option: (
+    { __typename?: 'Option' }
+    & Pick<Option, '_id' | 'name'>
+  ) }
+);
+
+export type SnippetConnectionFragment = (
+  { __typename?: 'ProductConnection' }
+  & Pick<ProductConnection, '_id' | 'attributeName'>
+  & { connectionProducts: Array<(
+    { __typename?: 'ProductConnectionItem' }
+    & SnippetConnectionItemFragment
+  )> }
+);
+
+export type ProductSnippetFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
+  & { listFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
+    & { attributeMetric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, '_id' | 'name'>
+    )> }
+  )>, ratingFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
+    & { attributeMetric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, '_id' | 'name'>
+    )> }
+  )>, connections: Array<(
+    { __typename?: 'ProductConnection' }
+    & SnippetConnectionFragment
+  )> }
+);
+
 export type SearchRubricFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, '_id' | 'name' | 'slug'>
@@ -4846,8 +4680,6 @@ export const RubricInListFragmentDoc = gql`
   nameI18n
   slug
   name
-  productsCount
-  activeProductsCount
   variant {
     _id
     name
@@ -4904,145 +4736,12 @@ export const RubricAttributesGroupFragmentDoc = gql`
   }
 }
     ${RubricAttributeFragmentDoc}`;
-export const SnippetConnectionItemFragmentDoc = gql`
-    fragment SnippetConnectionItem on ProductConnectionItem {
-  _id
-  productId
-  option {
-    _id
-    name
-  }
-}
-    `;
-export const SnippetConnectionFragmentDoc = gql`
-    fragment SnippetConnection on ProductConnection {
-  _id
-  attributeName
-  connectionProducts {
-    ...SnippetConnectionItem
-  }
-}
-    ${SnippetConnectionItemFragmentDoc}`;
-export const ProductSnippetFragmentDoc = gql`
-    fragment ProductSnippet on Product {
-  _id
-  itemId
-  name
-  originalName
-  slug
-  mainImage
-  shopsCount
-  isCustomersChoice
-  listFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
-  ratingFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
-  connections {
-    ...SnippetConnection
-  }
-  cardPrices {
-    _id
-    min
-    max
-  }
-}
-    ${SnippetConnectionFragmentDoc}`;
-export const ShopSnippetFragmentDoc = gql`
-    fragment ShopSnippet on Shop {
-  _id
-  name
-  slug
-  productsCount
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-  contacts {
-    formattedPhones {
-      raw
-      readable
-    }
-  }
-  assets {
-    index
-    url
-  }
-  logo {
-    index
-    url
-  }
-}
-    `;
-export const ShopProductSnippetFragmentDoc = gql`
-    fragment ShopProductSnippet on ShopProduct {
-  _id
-  available
-  formattedPrice
-  formattedOldPrice
-  discountedPercent
-  inCartCount
-  shop {
-    ...ShopSnippet
-  }
-}
-    ${ShopSnippetFragmentDoc}`;
-export const CartProductFragmentDoc = gql`
-    fragment CartProduct on CartProduct {
-  _id
-  amount
-  formattedTotalPrice
-  isShopless
-  product {
-    ...ProductSnippet
-  }
-  shopProduct {
-    ...ShopProductSnippet
-    product {
-      ...ProductSnippet
-    }
-  }
-}
-    ${ProductSnippetFragmentDoc}
-${ShopProductSnippetFragmentDoc}`;
-export const CartFragmentDoc = gql`
-    fragment Cart on Cart {
-  _id
-  formattedTotalPrice
-  productsCount
-  isWithShopless
-  cartProducts {
-    ...CartProduct
-  }
-}
-    ${CartProductFragmentDoc}`;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayload {
   success
   message
-  payload {
-    ...Cart
-  }
 }
-    ${CartFragmentDoc}`;
+    `;
 export const OrderInCartFragmentDoc = gql`
     fragment OrderInCart on Order {
   _id
@@ -5053,15 +4752,11 @@ export const MakeAnOrderPayloadFragmentDoc = gql`
     fragment MakeAnOrderPayload on MakeAnOrderPayload {
   success
   message
-  cart {
-    ...Cart
-  }
   order {
     ...OrderInCart
   }
 }
-    ${CartFragmentDoc}
-${OrderInCartFragmentDoc}`;
+    ${OrderInCartFragmentDoc}`;
 export const AttributeInGroupFragmentDoc = gql`
     fragment AttributeInGroup on Attribute {
   _id
@@ -5224,51 +4919,6 @@ export const SiteConfigFragmentDoc = gql`
   cities
 }
     `;
-export const AppNavItemFragmentDoc = gql`
-    fragment AppNavItem on NavItem {
-  _id
-  name
-  icon
-  path
-}
-    `;
-export const AppNavParentItemFragmentDoc = gql`
-    fragment AppNavParentItem on NavItem {
-  ...AppNavItem
-  appNavigationChildren {
-    ...AppNavItem
-  }
-}
-    ${AppNavItemFragmentDoc}`;
-export const SessionRoleFragmentFragmentDoc = gql`
-    fragment SessionRoleFragment on Role {
-  _id
-  name
-  slug
-  isStaff
-  appNavigation {
-    ...AppNavParentItem
-  }
-  cmsNavigation {
-    ...AppNavParentItem
-  }
-}
-    ${AppNavParentItemFragmentDoc}`;
-export const SessionUserFragmentDoc = gql`
-    fragment SessionUser on User {
-  _id
-  email
-  name
-  secondName
-  lastName
-  fullName
-  shortName
-  phone
-  role {
-    ...SessionRoleFragment
-  }
-}
-    ${SessionRoleFragmentFragmentDoc}`;
 export const LanguageFragmentDoc = gql`
     fragment Language on Language {
   _id
@@ -5503,6 +5153,58 @@ export const RubricVariantFragmentDoc = gql`
   nameI18n
 }
     `;
+export const SnippetConnectionItemFragmentDoc = gql`
+    fragment SnippetConnectionItem on ProductConnectionItem {
+  _id
+  productId
+  option {
+    _id
+    name
+  }
+}
+    `;
+export const SnippetConnectionFragmentDoc = gql`
+    fragment SnippetConnection on ProductConnection {
+  _id
+  attributeName
+  connectionProducts {
+    ...SnippetConnectionItem
+  }
+}
+    ${SnippetConnectionItemFragmentDoc}`;
+export const ProductSnippetFragmentDoc = gql`
+    fragment ProductSnippet on Product {
+  _id
+  itemId
+  name
+  originalName
+  slug
+  mainImage
+  listFeatures {
+    _id
+    attributeId
+    attributeName
+    readableValue
+    attributeMetric {
+      _id
+      name
+    }
+  }
+  ratingFeatures {
+    _id
+    attributeId
+    attributeName
+    readableValue
+    attributeMetric {
+      _id
+      name
+    }
+  }
+  connections {
+    ...SnippetConnection
+  }
+}
+    ${SnippetConnectionFragmentDoc}`;
 export const SearchRubricFragmentDoc = gql`
     fragment SearchRubric on Rubric {
   _id
@@ -7206,6 +6908,68 @@ export function useUpdateAssetConfigMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateAssetConfigMutationHookResult = ReturnType<typeof useUpdateAssetConfigMutation>;
 export type UpdateAssetConfigMutationResult = Apollo.MutationResult<UpdateAssetConfigMutation>;
 export type UpdateAssetConfigMutationOptions = Apollo.BaseMutationOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
+export const UpdateCatalogueCountersDocument = gql`
+    mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
+  updateCatalogueCounters(input: $input)
+}
+    `;
+export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
+
+/**
+ * __useUpdateCatalogueCountersMutation__
+ *
+ * To run a mutation, you first call `useUpdateCatalogueCountersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCatalogueCountersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCatalogueCountersMutation, { data, loading, error }] = useUpdateCatalogueCountersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCatalogueCountersMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>(UpdateCatalogueCountersDocument, options);
+      }
+export type UpdateCatalogueCountersMutationHookResult = ReturnType<typeof useUpdateCatalogueCountersMutation>;
+export type UpdateCatalogueCountersMutationResult = Apollo.MutationResult<UpdateCatalogueCountersMutation>;
+export type UpdateCatalogueCountersMutationOptions = Apollo.BaseMutationOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
+export const UpdateProductCounterDocument = gql`
+    mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
+  updateProductCounter(input: $input)
+}
+    `;
+export type UpdateProductCounterMutationFn = Apollo.MutationFunction<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
+
+/**
+ * __useUpdateProductCounterMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCounterMutation, { data, loading, error }] = useUpdateProductCounterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCounterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>(UpdateProductCounterDocument, options);
+      }
+export type UpdateProductCounterMutationHookResult = ReturnType<typeof useUpdateProductCounterMutation>;
+export type UpdateProductCounterMutationResult = Apollo.MutationResult<UpdateProductCounterMutation>;
+export type UpdateProductCounterMutationOptions = Apollo.BaseMutationOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
 export const CreateLanguageDocument = gql`
     mutation CreateLanguage($input: CreateLanguageInput!) {
   createLanguage(input: $input) {
@@ -8061,12 +7825,9 @@ export const UpdateMyProfileDocument = gql`
   updateMyProfile(input: $input) {
     success
     message
-    payload {
-      ...SessionUser
-    }
   }
 }
-    ${SessionUserFragmentDoc}`;
+    `;
 export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
 
 /**
@@ -8098,12 +7859,9 @@ export const UpdateMyPasswordDocument = gql`
   updateMyPassword(input: $input) {
     success
     message
-    payload {
-      ...SessionUser
-    }
   }
 }
-    ${SessionUserFragmentDoc}`;
+    `;
 export type UpdateMyPasswordMutationFn = Apollo.MutationFunction<UpdateMyPasswordMutation, UpdateMyPasswordMutationVariables>;
 
 /**
@@ -8241,103 +7999,6 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: Apollo.La
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
-export const GetCatalogueCardShopsDocument = gql`
-    query GetCatalogueCardShops($input: GetProductShopsInput!) {
-  getProductShops(input: $input) {
-    ...ShopProductSnippet
-  }
-}
-    ${ShopProductSnippetFragmentDoc}`;
-
-/**
- * __useGetCatalogueCardShopsQuery__
- *
- * To run a query within a React component, call `useGetCatalogueCardShopsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueCardShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueCardShopsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetCatalogueCardShopsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, options);
-      }
-export function useGetCatalogueCardShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, options);
-        }
-export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsQuery>;
-export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
-export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
-export const UpdateProductCounterDocument = gql`
-    mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
-  updateProductCounter(input: $input)
-}
-    `;
-export type UpdateProductCounterMutationFn = Apollo.MutationFunction<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
-
-/**
- * __useUpdateProductCounterMutation__
- *
- * To run a mutation, you first call `useUpdateProductCounterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProductCounterMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProductCounterMutation, { data, loading, error }] = useUpdateProductCounterMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProductCounterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>(UpdateProductCounterDocument, options);
-      }
-export type UpdateProductCounterMutationHookResult = ReturnType<typeof useUpdateProductCounterMutation>;
-export type UpdateProductCounterMutationResult = Apollo.MutationResult<UpdateProductCounterMutation>;
-export type UpdateProductCounterMutationOptions = Apollo.BaseMutationOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
-export const UpdateCatalogueCountersDocument = gql`
-    mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
-  updateCatalogueCounters(input: $input)
-}
-    `;
-export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
-
-/**
- * __useUpdateCatalogueCountersMutation__
- *
- * To run a mutation, you first call `useUpdateCatalogueCountersMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCatalogueCountersMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCatalogueCountersMutation, { data, loading, error }] = useUpdateCatalogueCountersMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateCatalogueCountersMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>(UpdateCatalogueCountersDocument, options);
-      }
-export type UpdateCatalogueCountersMutationHookResult = ReturnType<typeof useUpdateCatalogueCountersMutation>;
-export type UpdateCatalogueCountersMutationResult = Apollo.MutationResult<UpdateCatalogueCountersMutation>;
-export type UpdateCatalogueCountersMutationOptions = Apollo.BaseMutationOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
 export const GetAllCompaniesDocument = gql`
     query GetAllCompanies($input: PaginationInput) {
   getAllCompanies(input: $input) {
@@ -8678,74 +8339,6 @@ export function useGetAllConfigsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetAllConfigsQueryHookResult = ReturnType<typeof useGetAllConfigsQuery>;
 export type GetAllConfigsLazyQueryHookResult = ReturnType<typeof useGetAllConfigsLazyQuery>;
 export type GetAllConfigsQueryResult = Apollo.QueryResult<GetAllConfigsQuery, GetAllConfigsQueryVariables>;
-export const SessionUserDocument = gql`
-    query SessionUser {
-  me {
-    ...SessionUser
-  }
-}
-    ${SessionUserFragmentDoc}`;
-
-/**
- * __useSessionUserQuery__
- *
- * To run a query within a React component, call `useSessionUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useSessionUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSessionUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSessionUserQuery(baseOptions?: Apollo.QueryHookOptions<SessionUserQuery, SessionUserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SessionUserQuery, SessionUserQueryVariables>(SessionUserDocument, options);
-      }
-export function useSessionUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionUserQuery, SessionUserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SessionUserQuery, SessionUserQueryVariables>(SessionUserDocument, options);
-        }
-export type SessionUserQueryHookResult = ReturnType<typeof useSessionUserQuery>;
-export type SessionUserLazyQueryHookResult = ReturnType<typeof useSessionUserLazyQuery>;
-export type SessionUserQueryResult = Apollo.QueryResult<SessionUserQuery, SessionUserQueryVariables>;
-export const SessionCartDocument = gql`
-    query SessionCart {
-  getSessionCart {
-    ...Cart
-  }
-}
-    ${CartFragmentDoc}`;
-
-/**
- * __useSessionCartQuery__
- *
- * To run a query within a React component, call `useSessionCartQuery` and pass it any options that fit your needs.
- * When your component renders, `useSessionCartQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSessionCartQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSessionCartQuery(baseOptions?: Apollo.QueryHookOptions<SessionCartQuery, SessionCartQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SessionCartQuery, SessionCartQueryVariables>(SessionCartDocument, options);
-      }
-export function useSessionCartLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionCartQuery, SessionCartQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SessionCartQuery, SessionCartQueryVariables>(SessionCartDocument, options);
-        }
-export type SessionCartQueryHookResult = ReturnType<typeof useSessionCartQuery>;
-export type SessionCartLazyQueryHookResult = ReturnType<typeof useSessionCartLazyQuery>;
-export type SessionCartQueryResult = Apollo.QueryResult<SessionCartQuery, SessionCartQueryVariables>;
 export const GetAllLanguagesDocument = gql`
     query GetAllLanguages {
   getAllLanguages {

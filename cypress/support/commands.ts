@@ -1,7 +1,6 @@
 import 'cypress-file-upload';
 // noinspection ES6PreferShortImport
 import {
-  DEFAULT_CITY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   SECONDARY_LOCALE,

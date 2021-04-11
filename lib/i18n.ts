@@ -83,16 +83,15 @@ export function getCityFieldLocaleString({
   return cityLocale;
 }
 
-export interface GetCurrencyStringInterface {
-  locale: string;
-  value?: number | string | null;
-}
-
-export const getCurrencyString = ({ locale, value }: GetCurrencyStringInterface): string => {
-  return new Intl.NumberFormat(locale).format(noNaN(value)).replace(',', ' ');
+export const getCurrencyString = (value?: number | string | null): string => {
+  return new Intl.NumberFormat(DEFAULT_LOCALE).format(noNaN(value)).replace(',', ' ');
 };
 
-export function getNumWord(value: number, words: string[]) {
+export function getNumWord(value: number | undefined, words: string[]): string {
+  if (!value) {
+    return '';
+  }
+
   value = Math.abs(value) % 100;
   const num = value % 10;
   if (value > 10 && value < 20) {

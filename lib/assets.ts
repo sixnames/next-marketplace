@@ -198,3 +198,16 @@ export const reorderAssets = ({
 
   return reorderedAssetsWithUpdatedIndexes;
 };
+
+export function getMainImage(assets: AssetModel[]): string {
+  const sortedAssets = assets.sort((assetA, assetB) => {
+    return assetA.index - assetB.index;
+  });
+  const firstAsset = sortedAssets[0];
+  let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+
+  if (firstAsset) {
+    mainImage = firstAsset.url;
+  }
+  return mainImage;
+}

@@ -90,9 +90,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
       setLoading(true);
-      fetch(
-        `/api/catalogue${router.asPath}?locale=${router.locale}&lastProductId=${state.lastProductId}`,
-      )
+      fetch(`/api/catalogue${router.asPath}?locale=${router.locale}&page=${state.page + 1}`)
         .then((res) => {
           return res.json();
         })
@@ -110,13 +108,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
           console.log(e);
         });
     }
-  }, [
-    router.asPath,
-    router.locale,
-    state.lastProductId,
-    state.products.length,
-    state.totalProducts,
-  ]);
+  }, [router.asPath, router.locale, state.page, state.products.length, state.totalProducts]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -345,12 +337,12 @@ const Catalogue: NextPage<CatalogueInterface> = ({
   catalogueData,
   navRubrics,
   currentCity,
-  pageUrls,
+  ...props
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
+      <SiteLayout navRubrics={navRubrics} {...props}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -365,7 +357,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({
       title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       navRubrics={navRubrics}
-      pageUrls={pageUrls}
+      {...props}
     >
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>
@@ -399,8 +391,11 @@ export async function getServerSideProps(
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
+    companySlug: props.company?.slug,
+    companyId: props.company?._id,
     input: {
       filter: alwaysArray(catalogue),
+      page: 1,
     },
   });
   if (!rawCatalogueData) {

@@ -18,7 +18,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import RowWithGap from 'layout/RowWithGap/RowWithGap';
 import { phoneToRaw } from 'lib/phoneUtils';
-import { getSession } from 'next-auth/client';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -28,25 +28,39 @@ import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
 
 const ProfileDetailsRoute: React.FC = () => {
-  const { state, refetch } = useUserContext();
+  const router = useRouter();
+  const { me, setUser } = useUserContext();
   const {
     onErrorCallback,
     onCompleteCallback,
     showModal,
     showLoading,
     showErrorNotification,
+    hideLoading,
+    hideModal,
   } = useMutationCallbacks({
     withModal: true,
   });
   const [updateMyProfileMutation] = useUpdateMyProfileMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
-      onCompleteCallback(data.updateMyProfile);
-      if (data.updateMyProfile.payload && refetch) {
-        refetch().catch(() => {
-          showErrorNotification();
-        });
+      if (data.updateMyProfile.success) {
+        fetch(`/api/session-user?locale=${router.locale}`)
+          .then((res) => res.json())
+          .then((data) => {
+            hideLoading();
+            hideModal();
+            setUser(data.sessionUser);
+          })
+          .catch((e) => {
+            hideLoading();
+            hideModal();
+            showErrorNotification();
+            console.log(e);
+          });
       } else {
+        hideLoading();
+        hideModal();
         showErrorNotification();
       }
     },
@@ -75,11 +89,11 @@ const ProfileDetailsRoute: React.FC = () => {
     });
   }
 
-  if (!state.me) {
+  if (!me) {
     return <RequestError message={'Пользователь не найден'} />;
   }
 
-  const { email, phone, name, lastName, secondName } = state.me;
+  const { email, phone, name, lastName, secondName } = me;
 
   return (
     <div className={classes.profile} data-cy={'profile-details'}>
@@ -176,9 +190,9 @@ const ProfileDetailsRoute: React.FC = () => {
 
 interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
 
-const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, pageUrls }) => {
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, ...props }) => {
   return (
-    <SiteLayout title={'Профиль'} navRubrics={navRubrics} pageUrls={pageUrls}>
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics} {...props}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>
@@ -192,9 +206,7 @@ export async function getServerSideProps(
   const { props } = await getSiteInitialData({
     context,
   });
-
-  const session = await getSession(context);
-  if (!session?.user) {
+  if (!props.sessionUser) {
     return {
       redirect: {
         permanent: false,

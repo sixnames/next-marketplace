@@ -12,10 +12,11 @@ import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
 import { ProductAttributeModel, ProductModel } from 'db/dbModels';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
-import useCartMutations from 'hooks/useCartMutations';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -67,28 +68,27 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     textFeatures,
     iconFeatures,
     tagFeatures,
-    shopsCount,
     cardBreadcrumbs,
     cardShopProducts,
     isCustomersChoice,
+    shopsCount,
   } = cardData;
-  const { addShoplessProductToCart } = useCartMutations();
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = noNaN(shopsCount) < 1;
+  const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
-
-  const isShopsPlural = noNaN(shopsCount) > 1;
-  const isShopless = noNaN(shopsCount) < 1;
 
   const [updateProductCounterMutation] = useUpdateProductCounterMutation();
   React.useEffect(() => {
     updateProductCounterMutation({
       variables: {
         input: {
-          productSlug: cardData.slug,
+          shopProductIds: alwaysArray(cardData.shopProductIds),
         },
       },
     }).catch((e) => console.log(e));
-  }, [cardData.slug, updateProductCounterMutation]);
+  }, [cardData.shopProductIds, updateProductCounterMutation]);
 
   const tabsConfig = [
     {
@@ -96,11 +96,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       testId: 'features',
     },
     {
-      head: (
-        <React.Fragment>
-          Где купить <span>{`(${shopsCount})`}</span>
-        </React.Fragment>
-      ),
+      head: <React.Fragment>Где купить</React.Fragment>,
       testId: 'shops',
     },
     {
@@ -233,7 +229,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                     <div className={classes.cardLabel}>
                       {isShopless
                         ? 'Нет в наличии'
-                        : `В наличии в ${shopsCount} ${isShopsPlural ? 'винотеках' : 'винотеке'}`}
+                        : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
                     </div>
                     {isShopless || noNaN(shopsCount) < 2 ? null : <div>Сравнить цены</div>}
                   </div>
@@ -368,11 +364,12 @@ interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: ProductModel | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, currentCity }) => {
+const Card: NextPage<CardInterface> = ({ cardData, navRubrics, ...props }) => {
+  const { currentCity } = props;
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!cardData) {
     return (
-      <SiteLayout navRubrics={navRubrics} pageUrls={pageUrls}>
+      <SiteLayout navRubrics={navRubrics} {...props}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -385,10 +382,10 @@ const Card: NextPage<CardInterface> = ({ cardData, pageUrls, navRubrics, current
   return (
     <SiteLayout
       previewImage={cardData.mainImage}
-      pageUrls={pageUrls}
       navRubrics={navRubrics}
       title={`${prefix}${cardData.originalName}${cityDescription}`}
       description={`${prefix}${cardData.originalName}${cityDescription}`}
+      {...props}
     >
       <CardRoute cardData={cardData} />
     </SiteLayout>
@@ -413,6 +410,7 @@ export async function getServerSideProps(
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${query.card}`,
+    companyId: props.company?._id,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

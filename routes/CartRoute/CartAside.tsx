@@ -1,6 +1,7 @@
+import { CartModel } from 'db/dbModels';
+import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
 import classes from './CartAside.module.css';
-import { CartFragment } from 'generated/apolloComponents';
 import Currency from '../../components/Currency/Currency';
 import Button from '../../components/Buttons/Button';
 import Link from '../../components/Link/Link';
@@ -8,7 +9,7 @@ import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 import { ButtonType } from 'types/clientTypes';
 
 interface CartAsideInterface {
-  cart: CartFragment;
+  cart: CartModel;
   buttonText: string;
   onConfirmHandler?: () => void;
   backLinkHref?: string;
@@ -23,11 +24,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
   buttonType,
 }) => {
   const { formattedTotalPrice, productsCount, isWithShopless } = cart;
-
-  let productsCountPostfix = productsCount > 1 ? 'товара' : 'товар';
-  if (productsCount > 4) {
-    productsCountPostfix = 'товаров';
-  }
+  const productsCountPostfix = getNumWord(productsCount, ['товар', 'товара', 'товаров']);
 
   return (
     <LayoutCard className={classes.cartAside} testId={'cart-aside'}>

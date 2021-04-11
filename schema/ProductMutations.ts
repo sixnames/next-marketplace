@@ -1,6 +1,5 @@
 import { noNaN } from 'lib/numbers';
 import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
-import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -32,9 +31,7 @@ import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
-  DEFAULT_CITY,
-  SORT_DESC,
+  CONFIG_DEFAULT_COMPANY_SLUG,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -46,7 +43,7 @@ import {
   addProductAssetsSchema,
   updateProductSchema,
 } from 'validation/productSchema';
-import { deleteUpload, reorderAssets, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, reorderAssets, storeUploads } from 'lib/assets';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -172,7 +169,8 @@ export const DeleteProductFromConnectionInput = inputObjectType({
 export const UpdateProductCounterInput = inputObjectType({
   name: 'UpdateProductCounterInput',
   definition(t) {
-    t.nonNull.string('productSlug');
+    t.nonNull.list.nonNull.objectId('shopProductIds');
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
   },
 });
 
@@ -283,21 +281,18 @@ export const ProductMutations = extendType({
           });
 
           const productId = new ObjectId();
-
+          const mainImage = getMainImage(assets);
           const createdProductResult = await productsCollection.insertOne({
             ...values,
             _id: productId,
             itemId,
             assets,
+            mainImage,
             slug,
             manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
             brandSlug: brandEntity ? brandEntity.slug : undefined,
             brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
             active: true,
-            isCustomersChoiceCities: {
-              [DEFAULT_CITY]: false,
-            },
-            shopProductsCountCities: {},
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -312,26 +307,12 @@ export const ProductMutations = extendType({
             nameI18n: values.nameI18n,
             originalName: values.originalName,
             active: false,
+            mainImage,
             rubricId,
             brandCollectionSlug,
             brandSlug,
             manufacturerSlug,
-            minPriceCities: {
-              [DEFAULT_CITY]: 0,
-            },
-            maxPriceCities: {
-              [DEFAULT_CITY]: 0,
-            },
-            availabilityCities: {
-              [DEFAULT_CITY]: false,
-            },
             selectedOptionsSlugs,
-            priorities: {
-              [DEFAULT_CITY]: 0,
-            },
-            views: {
-              [DEFAULT_CITY]: 0,
-            },
           });
 
           const createdProduct = createdProductResult.ops[0];
@@ -347,9 +328,6 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.create.error`),
             };
           }
-
-          // Recalculate rubric
-          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,
@@ -530,9 +508,6 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Recalculate rubric
-          await recalculateRubricProductCounters({ rubricId });
-
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
@@ -571,6 +546,7 @@ export const ProductMutations = extendType({
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId } = input;
 
@@ -624,18 +600,36 @@ export const ProductMutations = extendType({
             },
           );
 
-          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
             {
-              productId,
+              _id: productId,
             },
             {
               $set: {
+                mainImage,
                 updatedAt: new Date(),
               },
-              $push: {
-                assets: {
-                  $each: assets,
-                },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
               },
             },
             {
@@ -643,14 +637,31 @@ export const ProductMutations = extendType({
             },
           );
 
-          const updatedProduct = updatedProductResult.value;
-          const updatedShopProduct = updatedShopProductResult.value;
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
           if (
-            !updatedProductResult.ok ||
-            !updatedProduct ||
-            !updatedShopProductResult.ok ||
-            !updatedShopProduct
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
           ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
@@ -660,7 +671,7 @@ export const ProductMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {
@@ -687,6 +698,8 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId, assetIndex } = input;
 
@@ -736,11 +749,71 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
+          if (
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
+          ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {
@@ -767,6 +840,8 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId, assetNewIndex, assetUrl } = input;
 
@@ -815,11 +890,71 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+          const newAssets = updatedProduct.assets;
+          const mainImage = getMainImage(newAssets);
+          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProductFacetResult = await productFacetsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                mainImage,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+
+          const updatedProductFacet = updatedProductFacetResult.value;
+          const updatedProductMainImage = updatedProductMainImageResult.value;
+          if (
+            !updatedProductMainImageResult.ok ||
+            !updatedProductMainImage ||
+            !updatedProductFacetResult.ok ||
+            !updatedProductFacet
+          ) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                mainImage,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
+            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {
@@ -1317,93 +1452,25 @@ export const ProductMutations = extendType({
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
           const db = await getDatabase();
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           if (!role.isStaff) {
-            const { input } = args;
-            const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
-              { slug: input.productSlug },
+            const { shopProductIds, companySlug } = args.input;
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                _id: { $in: shopProductIds },
+              },
               {
                 $inc: {
-                  [`views.${city}`]: VIEWS_COUNTER_STEP,
+                  [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
                 },
-              },
-              {
-                projection: {
-                  rubricId: true,
-                },
-                returnOriginal: false,
               },
             );
-            const updatedProduct = updatedProductResult.value;
-
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedShopProductsResult.result.ok) {
               return false;
             }
-
-            await productsCollection.updateMany(
-              {
-                rubricId: updatedProduct.rubricId,
-                active: true,
-              },
-              {
-                $set: {
-                  isCustomersChoiceCities: {
-                    [city]: false,
-                  },
-                },
-              },
-            );
-            const topProducts = await productsCollection
-              .aggregate([
-                {
-                  $match: {
-                    rubricId: updatedProduct.rubricId,
-                    active: true,
-                  },
-                },
-                {
-                  $project: {
-                    _id: 1,
-                    views: 1,
-                    priorities: 1,
-                  },
-                },
-                {
-                  $sort: {
-                    [`priorities.${city}`]: SORT_DESC,
-                    [`views.${city}`]: SORT_DESC,
-                    _id: SORT_DESC,
-                  },
-                },
-                {
-                  $limit: CATALOGUE_CUSTOMERS_CHOICE_LIMIT,
-                },
-              ])
-              .toArray();
-            const topProductsIds = topProducts.map(({ _id }) => _id);
-
-            const updatedTopProductsResult = await productsCollection.updateMany(
-              {
-                _id: {
-                  $in: topProductsIds,
-                },
-              },
-              {
-                $set: {
-                  isCustomersChoiceCities: {
-                    [city]: true,
-                  },
-                },
-              },
-            );
-
-            if (updatedTopProductsResult.result.ok) {
-              return true;
-            }
-            return false;
+            return true;
           }
           return true;
         } catch (e) {

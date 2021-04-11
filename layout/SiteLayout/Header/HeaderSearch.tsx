@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useDebounce } from 'use-debounce';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
-import { useSiteContext } from 'context/siteContext';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '../../../components/Buttons/Button';
 import Icon from '../../../components/Icon/Icon';
@@ -29,10 +28,14 @@ type ResultProducts = CatalogueProductInterface[];
 interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
   products: ResultProducts;
+  setIsSearchOpen: (value: boolean) => void;
 }
 
-const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, products }) => {
-  const { hideSearchDropdown } = useSiteContext();
+const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
+  rubrics,
+  setIsSearchOpen,
+  products,
+}) => {
   return (
     <div className={classes.result}>
       <ul>
@@ -41,7 +44,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
           return (
             <li key={slug} data-cy={'search-rubric'}>
               <Link
-                onClick={hideSearchDropdown}
+                onClick={() => setIsSearchOpen(false)}
                 href={`${ROUTE_CATALOGUE}/${slug}`}
                 testId={`search-rubric-${name}`}
                 className={`${classes.rubric}`}
@@ -70,10 +73,10 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
 
 interface HeaderSearchInterface {
   initialData?: GetCatalogueSearchTopItemsQuery | null;
+  setIsSearchOpen: (value: boolean) => void;
 }
 
-const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
-  const { hideSearchDropdown } = useSiteContext();
+const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
   const [string, setString] = React.useState<string>('');
   const [value] = useDebounce(string, 1000);
   const { isMobile } = useAppContext();
@@ -103,12 +106,12 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
 
   return (
     <div className={classes.frame} data-cy={'search-dropdown'}>
-      <OutsideClickHandler onOutsideClick={hideSearchDropdown}>
+      <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
         <Inner className={classes.searchInner}>
           {isMobile ? (
             <div className={classes.frameTitle}>
               <div className={classes.frameTitleName}>Поиск</div>
-              <div className={classes.frameTitleClose} onClick={hideSearchDropdown}>
+              <div className={classes.frameTitleClose} onClick={() => setIsSearchOpen(false)}>
                 <Icon name={'cross'} />
               </div>
             </div>
@@ -136,7 +139,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
               <Button
                 icon={'cross'}
                 theme={'secondary'}
-                onClick={hideSearchDropdown}
+                onClick={() => setIsSearchOpen(false)}
                 testId={'search-close'}
                 short
               />
@@ -162,7 +165,11 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData }) => {
             {loading ? <Spinner className={classes.spinner} /> : null}
             {error ? <RequestError /> : null}
             {rubrics && products ? (
-              <HeaderSearchResult rubrics={rubrics} products={products} />
+              <HeaderSearchResult
+                setIsSearchOpen={setIsSearchOpen}
+                rubrics={rubrics}
+                products={products}
+              />
             ) : null}
           </div>
         </Inner>

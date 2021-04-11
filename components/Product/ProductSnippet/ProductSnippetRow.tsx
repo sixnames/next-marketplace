@@ -1,5 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
 import { CatalogueProductInterface } from 'db/dbModels';
-import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
@@ -27,7 +27,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   className,
 }) => {
   const [amount, setAmount] = React.useState<number>(1);
-  const { addShoplessProductToCart } = useCartMutations();
+  const { addShoplessProductToCart } = useSiteContext();
   const {
     name,
     originalName,
@@ -38,13 +38,13 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     listFeatures,
     ratingFeatures,
     connections,
-    shopsCount,
     isCustomersChoice,
+    shopsCount,
+    mainImage,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
-  const mainImage = product.mainImage || `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
 
   return (
     <LayoutCard className={`${classes.snippetCard} ${className ? className : ''}`} testId={testId}>
@@ -150,12 +150,12 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 min={1}
                 name={'amount'}
                 value={amount}
-                disabled={isShopless}
+                // disabled={isShopless}
               />
             </div>
 
             <Button
-              disabled={isShopless}
+              // disabled={isShopless}
               theme={'gray'}
               testId={`card-shops-${slug}-add-to-cart`}
               ariaLabel={'Добавить в корзину'}

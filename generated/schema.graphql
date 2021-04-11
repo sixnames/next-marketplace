@@ -232,32 +232,23 @@ type BrandsPaginationPayload implements PaginationPayload {
 type Cart {
   _id: ObjectId!
   cartProducts: [CartProduct!]!
-  formattedTotalPrice: String!
-  isWithShopless: Boolean!
-  productsCount: Int!
-  totalPrice: Int!
 }
 
-type CartPayload implements Payload {
+type CartPayload {
   message: String!
-  payload: Cart
   success: Boolean!
 }
 
 type CartProduct implements Base {
   _id: ObjectId!
   amount: Int!
-  formattedTotalPrice: String!
-  isShopless: Boolean!
   itemId: String!
-  product: Product
   productId: ObjectId
-  shopProduct: ShopProduct
   shopProductId: ObjectId
-  totalPrice: Int!
 }
 
 input CatalogueDataInput {
+  companySlug: String = "default"
   filter: [String!]!
   lastProductId: ObjectId
 }
@@ -1391,17 +1382,11 @@ type Product implements Base & Timestamp {
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
-
-  """
-  Should find all connected shop products and return minimal and maximal price.
-  """
-  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
   descriptionI18n: JSONObject!
   iconFeatures: [ProductAttribute!]!
-  isCustomersChoice: Boolean!
   itemId: String!
   listFeatures: [ProductAttribute!]!
   mainImage: String!
@@ -1418,7 +1403,6 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
-  shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
@@ -1821,11 +1805,6 @@ type Query {
   getRubricVariant(_id: ObjectId!): RubricVariant!
 
   """
-  Should return session user cart
-  """
-  getSessionCart: Cart!
-
-  """
   Should return cities list
   """
   getSessionCities: [City!]!
@@ -1859,11 +1838,6 @@ type Query {
   Should return validation messages list
   """
   getValidationMessages: [Message!]!
-
-  """
-  Should return session user if authenticated
-  """
-  me: User
 }
 
 input RepeatOrderInput {
@@ -1892,7 +1866,6 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
-  activeProductsCount: Int!
   attributes: [RubricAttribute!]!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
@@ -1903,7 +1876,6 @@ type Rubric {
   navItems: [RubricAttribute!]!
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
-  productsCount: Int!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
@@ -1959,7 +1931,6 @@ type RubricOption {
   _id: ObjectId!
   color: String
   icon: String
-  isSelected: Boolean!
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
@@ -2250,7 +2221,8 @@ input UpdateProductAssetIndexInput {
 }
 
 input UpdateProductCounterInput {
-  productSlug: String!
+  companySlug: String = "default"
+  shopProductIds: [ObjectId!]!
 }
 
 input UpdateProductInCartInput {

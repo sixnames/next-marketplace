@@ -1,6 +1,6 @@
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
-import useCart from 'hooks/useCart';
+import { useSiteContext } from 'context/siteContext';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -19,7 +19,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
   const router = useRouter();
   const { hideModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { cart, loadingCart } = useCart();
+  const { cart, loadingCart } = useSiteContext();
 
   if (loadingCart && !cart) {
     return (

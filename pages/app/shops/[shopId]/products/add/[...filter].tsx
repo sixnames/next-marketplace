@@ -42,7 +42,7 @@ import {
   getCatalogueRubric,
   getRubricCatalogueAttributes,
 } from 'lib/catalogueUtils';
-import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -144,16 +144,6 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
     {
       accessor: 'product.shopsCount',
       headTitle: 'В магазинах',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.cardPrices.min',
-      headTitle: 'Мин. цена',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.cardPrices.max',
-      headTitle: 'Макс. цена',
       render: ({ cellData }) => cellData,
     },
   ];
@@ -818,14 +808,6 @@ export const getServerSideProps = async (
       continue;
     }
 
-    // TODO
-    const minPrice = 0;
-    const maxPrice = 0;
-    const cardPrices = {
-      min: getCurrencyString(minPrice),
-      max: getCurrencyString(maxPrice),
-    };
-
     // image
     const sortedAssets = product.assets.sort((assetA, assetB) => {
       return assetA.index - assetB.index;
@@ -842,7 +824,6 @@ export const getServerSideProps = async (
       product: {
         ...product,
         name: getFieldStringLocale(product.nameI18n, locale),
-        cardPrices,
         mainImage,
         isCustomersChoice: false,
       },

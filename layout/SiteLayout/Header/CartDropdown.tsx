@@ -36,11 +36,10 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
       </div>
       <div className={classes.frameMiddle}>
         {cartProducts.map((cartProduct) => {
-          const { product, shopProduct, _id, isShopless, amount } = cartProduct;
+          const { product, shopProduct, _id, amount } = cartProduct;
 
           if (shopProduct) {
-            const { mainImage, originalName, price, slug } = shopProduct;
-            console.log(shopProduct);
+            const { mainImage, originalName, slug } = shopProduct;
             return (
               <div key={`${_id}`} className={classes.product} data-cy={`cart-dropdown-product`}>
                 <div className={classes.productImage}>
@@ -58,29 +57,16 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 <div className={classes.productContent}>
                   <div className={classes.productName}>{originalName}</div>
 
-                  {isShopless && !shopProduct ? (
-                    <React.Fragment>
-                      <ProductSnippetPrice
-                        shopsCount={1}
-                        className={classes.productPrice}
-                        value={`${price}`}
-                      />
-                      <div className={classes.shopless}>Винотека не выбрана</div>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <ProductShopPrices
-                        className={classes.productPrice}
-                        formattedPrice={`${shopProduct?.formattedPrice}`}
-                        formattedOldPrice={shopProduct?.formattedOldPrice}
-                        discountedPercent={shopProduct?.discountedPercent}
-                      />
-                      <div className={classes.shop}>
-                        <span>винотека: </span>
-                        {shopProduct?.shop?.name}
-                      </div>
-                    </React.Fragment>
-                  )}
+                  <ProductShopPrices
+                    className={classes.productPrice}
+                    formattedPrice={shopProduct.formattedPrice}
+                    formattedOldPrice={shopProduct.formattedOldPrice}
+                    discountedPercent={shopProduct.discountedPercent}
+                  />
+                  <div className={classes.shop}>
+                    <span>винотека: </span>
+                    {shopProduct?.shop?.name}
+                  </div>
 
                   <div className={classes.controls}>
                     <SpinnerInput
@@ -145,29 +131,12 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               <div className={classes.productContent}>
                 <div className={classes.productName}>{originalName}</div>
 
-                {isShopless && !shopProduct ? (
-                  <React.Fragment>
-                    <ProductSnippetPrice
-                      shopsCount={shopsCount}
-                      className={classes.productPrice}
-                      value={cardPrices?.min}
-                    />
-                    <div className={classes.shopless}>Винотека не выбрана</div>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <ProductShopPrices
-                      className={classes.productPrice}
-                      formattedPrice={`${product.shopProduct?.formattedPrice}`}
-                      formattedOldPrice={product.shopProduct?.formattedOldPrice}
-                      discountedPercent={product.shopProduct?.discountedPercent}
-                    />
-                    <div className={classes.shop}>
-                      <span>винотека: </span>
-                      {product.shopProduct?.shop?.name}
-                    </div>
-                  </React.Fragment>
-                )}
+                <ProductSnippetPrice
+                  shopsCount={shopsCount}
+                  className={classes.productPrice}
+                  value={cardPrices?.min}
+                />
+                <div className={classes.shopless}>Винотека не выбрана</div>
 
                 <div className={classes.controls}>
                   <SpinnerInput

@@ -2,15 +2,14 @@ import { CART_COOKIE_KEY, DEFAULT_LOCALE } from 'config/common';
 import Cookies from 'cookies';
 import {
   COL_CARTS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import { CartModel, ShopProductModel, UserModel } from 'db/dbModels';
+import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getCurrencyString } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -33,7 +32,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const db = await getDatabase();
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const { query } = req;
     const anyQuery = query as unknown;
     const { locale, city, companyId } = anyQuery as CartQueryInterface;
@@ -134,7 +132,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             }),
             {
               $lookup: {
-                from: COL_PRODUCTS,
+                from: COL_PRODUCT_FACETS,
                 as: 'cartProducts.products',
                 let: { productId: '$cartProducts.productId' },
                 pipeline: [
@@ -151,11 +149,24 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                       name: false,
                     },
                   },
-                  /*shopProductPipeline({
+                  shopProductPipeline({
                     letStage: { productId: '$_id' },
                     as: 'shopProducts',
                     expr: ['$$productId', '$productId'],
-                  }),*/
+                  }),
+                  {
+                    $addFields: {
+                      cardPrices: {
+                        min: {
+                          $min: '$shopProducts.price',
+                        },
+                        max: {
+                          $max: '$shopProducts.price',
+                        },
+                      },
+                      shopsCount: { $size: '$shopProducts' },
+                    },
+                  },
                 ],
               },
             },
@@ -265,36 +276,15 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Shop products
-    const shopProductsIds = cart.cartProducts.reduce((acc: ObjectId[], { shopProductId }) => {
-      if (shopProductId) {
-        return [...acc, shopProductId];
-      }
-      return acc;
-    }, []);
-    const shopProducts = await shopProductsCollection
-      .find({ _id: { $in: shopProductsIds } })
-      .toArray();
 
     // Products
 
     // Total price
-    const totalPrice = shopProducts.reduce((acc: number, { price, _id }) => {
-      const cartProduct = cart?.cartProducts.find(({ shopProductId }) => {
-        return shopProductId && shopProductId.equals(_id);
-      });
-
-      if (!cartProduct) {
-        return acc;
-      }
-
-      return acc + noNaN(price) * noNaN(cartProduct.amount);
-    }, 0);
-
     const sessionCart: CartModel = {
       ...cart,
       productsCount: cart.cartProducts.length,
       isWithShopless: cart.cartProducts.some(({ productId }) => !!productId),
-      formattedTotalPrice: getCurrencyString(totalPrice),
+      formattedTotalPrice: getCurrencyString(cart.totalPrice),
     };
 
     res.statusCode = 200;

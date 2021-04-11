@@ -237,6 +237,7 @@ export interface CartModel extends TimestampModel {
   cartProducts: CartProductModel[];
 
   // types for ui
+  totalPrice?: number;
   productsCount?: number;
   formattedTotalPrice?: string;
   isWithShopless?: boolean;

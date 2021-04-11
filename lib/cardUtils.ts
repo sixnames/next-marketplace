@@ -92,6 +92,9 @@ export async function getCardData({
                 shopId: '$shopId',
                 oldPrices: '$oldPrices',
                 shop: '$shop',
+                formattedPrice: '$formattedPrice',
+                formattedOldPrice: '$formattedOldPrice',
+                discountedPercent: '$discountedPercent',
               },
             },
           },
@@ -247,7 +250,7 @@ export async function getCardData({
       if (!shop) {
         return;
       }
-
+      console.log(shopProduct);
       cardShopProducts.push({
         ...shopProduct,
         shop: {

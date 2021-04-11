@@ -3,7 +3,7 @@ import classes from './ProductSnippetPrice.module.css';
 import Currency from '../../Currency/Currency';
 
 interface ProductSnippetPriceInterface {
-  value?: string | null;
+  value?: string | number | null;
   className?: string;
   shopsCount?: number;
 }

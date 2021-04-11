@@ -181,6 +181,15 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               },
             },
             {
+              $addFields: {
+                'cartProducts.totalPrice': {
+                  $sum: {
+                    $multiply: ['$cartProducts.shopProduct.price', '$cartProducts.amount'],
+                  },
+                },
+              },
+            },
+            {
               $project: {
                 'cartProducts.shopProducts': false,
                 'cartProducts.products': false,
@@ -193,7 +202,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                   $push: '$cartProducts',
                 },
                 totalPrice: {
-                  $sum: '$cartProducts.shopProduct.price',
+                  $sum: '$cartProducts.totalPrice',
                 },
               },
             },
@@ -220,7 +229,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           ])
           .toArray()
       : [];
-    console.log(JSON.stringify(cartAggregation, null, 2));
     let cart = cartAggregation[0];
 
     // console.log(cart);

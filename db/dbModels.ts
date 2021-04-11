@@ -229,7 +229,7 @@ export interface CartProductModel {
   product?: ProductModel;
   shopProduct?: ShopProductModel;
   isShopless?: boolean;
-  formattedTotalPrice?: string;
+  totalPrice?: string;
 }
 
 export interface CartModel extends TimestampModel {

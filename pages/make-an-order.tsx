@@ -33,7 +33,7 @@ interface OrderRouteProductInterface {
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
-  const { shopProduct, amount, formattedTotalPrice } = cartProduct;
+  const { shopProduct, amount, totalPrice } = cartProduct;
   if (!shopProduct) {
     return null;
   }
@@ -83,7 +83,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                   <div className={classes.productTotalsAmount}>{amount}</div>
                 </div>
                 <div className={classes.productTotalPrice}>
-                  Итого <Currency value={formattedTotalPrice} />
+                  Итого <Currency value={totalPrice} />
                 </div>
               </div>
 

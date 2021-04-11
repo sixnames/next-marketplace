@@ -168,6 +168,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const [makeAnOrderMutation] = useMakeAnOrderMutation({
     onCompleted: ({ makeAnOrder }) => {
+      showLoading();
       refetchCartHandler(() => {
         router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
           showErrorNotification();
@@ -233,6 +234,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const updateProductInCart = React.useCallback(
     (input: UpdateProductInCartInput) => {
+      showLoading();
       updateProductInCartMutation({
         variables: {
           input,
@@ -241,7 +243,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [showErrorNotification, updateProductInCartMutation],
+    [showErrorNotification, showLoading, updateProductInCartMutation],
   );
 
   const deleteProductFromCart = React.useCallback(

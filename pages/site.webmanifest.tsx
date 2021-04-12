@@ -66,6 +66,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     `{
     "name": "${siteName}",
     "short_name": "${siteName}",
+    "start_url": "https://${host}"
     "icons": [
         {
             "src": "${android192}",

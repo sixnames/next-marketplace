@@ -18,6 +18,7 @@ export const configCitiesSchema = (args: ValidationSchemaArgsInterface) => {
         requiredStringSchema({
           ...args,
           slug: 'validation.configs.value',
+          max: 9999999,
         }),
       ),
     }),

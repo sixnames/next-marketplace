@@ -6,7 +6,7 @@ import { DEFAULT_LOCALE } from 'config/common';
 import {
   getFieldValidationMessage,
   GetFieldValidationMessageInterface,
-} from '../lib/getFieldValidationMessage';
+} from 'lib/getFieldValidationMessage';
 
 export const minDescriptionLength = 15;
 export const maxDescriptionLength = 300;

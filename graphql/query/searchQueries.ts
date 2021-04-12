@@ -87,8 +87,8 @@ export const CATALOGUE_SEARCH_TOP_ITEMS_QUERY = gql`
 `;
 
 export const CATALOGUE_SEARCH_RESULT_QUERY = gql`
-  query GetCatalogueSearchResult($search: String!) {
-    getCatalogueSearchResult(search: $search) {
+  query GetCatalogueSearchResult($input: CatalogueSearchInput!) {
+    getCatalogueSearchResult(input: $input) {
       rubrics {
         ...SearchRubric
       }

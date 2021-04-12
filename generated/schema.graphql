@@ -253,6 +253,12 @@ input CatalogueDataInput {
   lastProductId: ObjectId
 }
 
+input CatalogueSearchInput {
+  companyId: ObjectId
+  companySlug: String = "default"
+  search: String!
+}
+
 type CatalogueSearchResult {
   products: [Product!]!
   rubrics: [Rubric!]!
@@ -1697,7 +1703,7 @@ type Query {
   """
   Should return top search items
   """
-  getCatalogueSearchResult(search: String!): CatalogueSearchResult!
+  getCatalogueSearchResult(input: CatalogueSearchInput!): CatalogueSearchResult!
 
   """
   Should return top search items

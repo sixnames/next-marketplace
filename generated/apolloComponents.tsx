@@ -292,6 +292,12 @@ export type CatalogueDataInput = {
   filter: Array<Scalars['String']>;
 };
 
+export type CatalogueSearchInput = {
+  search: Scalars['String'];
+  companyId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
+};
+
 export type CatalogueSearchResult = {
   __typename?: 'CatalogueSearchResult';
   rubrics: Array<Rubric>;
@@ -1615,7 +1621,7 @@ export type Product = Base & Timestamp & {
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
   /** Returns all count number of the shop products */
-  shopsCount: Array<Scalars['Int']>;
+  shopsCount: Scalars['Int'];
   /** Should find all connected shop products and return minimal and maximal price. */
   cardPrices: ProductCardPrices;
   listFeatures: Array<ProductAttribute>;
@@ -1892,7 +1898,7 @@ export type QueryGetCatalogueSearchTopItemsArgs = {
 
 
 export type QueryGetCatalogueSearchResultArgs = {
-  search: Scalars['String'];
+  input: CatalogueSearchInput;
 };
 
 
@@ -4419,7 +4425,7 @@ export type GetCatalogueSearchTopItemsQuery = (
 );
 
 export type GetCatalogueSearchResultQueryVariables = Exact<{
-  search: Scalars['String'];
+  input: CatalogueSearchInput;
 }>;
 
 
@@ -8765,8 +8771,8 @@ export type GetCatalogueSearchTopItemsQueryHookResult = ReturnType<typeof useGet
 export type GetCatalogueSearchTopItemsLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsLazyQuery>;
 export type GetCatalogueSearchTopItemsQueryResult = Apollo.QueryResult<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>;
 export const GetCatalogueSearchResultDocument = gql`
-    query GetCatalogueSearchResult($search: String!) {
-  getCatalogueSearchResult(search: $search) {
+    query GetCatalogueSearchResult($input: CatalogueSearchInput!) {
+  getCatalogueSearchResult(input: $input) {
     rubrics {
       ...SearchRubric
     }
@@ -8790,7 +8796,7 @@ ${ProductSnippetFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetCatalogueSearchResultQuery({
  *   variables: {
- *      search: // value for 'search'
+ *      input: // value for 'input'
  *   },
  * });
  */

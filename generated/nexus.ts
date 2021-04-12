@@ -215,6 +215,12 @@ export interface NexusGenInputs {
     filter: string[]; // [String!]!
     lastProductId?: NexusGenScalars['ObjectId'] | null; // ObjectId
   };
+  CatalogueSearchInput: {
+    // input type
+    companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    companySlug: string | null; // String
+    search: string; // String!
+  };
   CatalogueSearchTopItemsInput: {
     // input type
     companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -3265,7 +3271,7 @@ export interface NexusGenArgTypes {
     };
     getCatalogueSearchResult: {
       // args
-      search: string; // String!
+      input: NexusGenInputs['CatalogueSearchInput']; // CatalogueSearchInput!
     };
     getCatalogueSearchTopItems: {
       // args

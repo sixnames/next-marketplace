@@ -1,7 +1,7 @@
 import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
-import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   BrandCollectionModel,
   BrandModel,
@@ -58,6 +58,15 @@ export const CatalogueSearchTopItemsInput = inputObjectType({
   },
 });
 
+export const CatalogueSearchInput = inputObjectType({
+  name: 'CatalogueSearchInput',
+  definition(t) {
+    t.nonNull.string('search');
+    t.objectId('companyId');
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+  },
+});
+
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
@@ -97,8 +106,8 @@ export const CatalogueQueries = extendType({
               },
               {
                 $sort: {
-                  [`priorities.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
+                  [`priorities.${companySlug}.${city}`]: SORT_DESC,
+                  [`views.${companySlug}.${city}`]: SORT_DESC,
                   _id: SORT_BY_ID_DIRECTION,
                 },
               },
@@ -111,7 +120,6 @@ export const CatalogueQueries = extendType({
 
           // const productsStart = new Date().getTime();
           const companyRubricsMatch = companyId ? { companyId } : {};
-
           const products = await shopProductsCollection
             .aggregate<ProductModel>([
               {
@@ -238,16 +246,20 @@ export const CatalogueQueries = extendType({
       type: 'CatalogueSearchResult',
       description: 'Should return top search items',
       args: {
-        search: nonNull(stringArg()),
+        input: nonNull(
+          arg({
+            type: 'CatalogueSearchInput',
+          }),
+        ),
       },
       resolve: async (_root, args, context): Promise<CatalogueSearchResultModel> => {
         try {
           const { city } = await getRequestParams(context);
           const db = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-          const { search } = args;
+          const { search, companyId, companySlug } = args.input;
 
           // Get all languages
           const languages = await languagesCollection.find({}).toArray();
@@ -272,8 +284,8 @@ export const CatalogueQueries = extendType({
               },
               {
                 $sort: {
-                  [`priorities.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
+                  [`priorities.${companySlug}.${city}`]: SORT_DESC,
+                  [`views.${companySlug}.${city}`]: SORT_DESC,
                   _id: SORT_BY_ID_DIRECTION,
                 },
               },
@@ -283,12 +295,13 @@ export const CatalogueQueries = extendType({
           // console.log('Search rubrics ', new Date().getTime() - rubricsStart);
 
           // const productsStart = new Date().getTime();
-          const products = await productsCollection
-            .aggregate([
+          const companyRubricsMatch = companyId ? { companyId } : {};
+          const products = await shopProductsCollection
+            .aggregate<ProductModel>([
               {
                 $match: {
-                  active: true,
-
+                  ...companyRubricsMatch,
+                  citySlug: city,
                   $or: [
                     ...searchByName,
                     {
@@ -307,14 +320,99 @@ export const CatalogueQueries = extendType({
                 },
               },
               {
+                $group: {
+                  _id: '$productId',
+                  views: { $max: `$views.${companySlug}.${city}` },
+                  priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  minPrice: {
+                    $min: '$price',
+                  },
+                  maxPrice: {
+                    $max: '$price',
+                  },
+                  available: {
+                    $max: '$available',
+                  },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                  shopProductsIds: {
+                    $addToSet: '$_id',
+                  },
+                },
+              },
+              {
                 $sort: {
-                  [`availabilityCities.${city}`]: SORT_DESC,
-                  [`priorities.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
+                  priorities: SORT_DESC,
+                  views: SORT_DESC,
+                  available: SORT_DESC,
                   _id: SORT_DESC,
                 },
               },
               { $limit: 3 },
+              {
+                $lookup: {
+                  from: COL_PRODUCTS,
+                  as: 'products',
+                  let: {
+                    productId: '$_id',
+                    shopProductsIds: '$shopProductsIds',
+                    minPrice: '$minPrice',
+                    maxPrice: '$maxPrice',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $addFields: {
+                        shopsCount: { $size: '$$shopProductsIds' },
+                        cardPrices: {
+                          min: '$$minPrice',
+                          max: '$$maxPrice',
+                        },
+                        attributes: {
+                          $filter: {
+                            input: '$attributes',
+                            as: 'attribute',
+                            cond: {
+                              $or: [
+                                {
+                                  $eq: [
+                                    '$$attribute.attributeViewVariant',
+                                    ATTRIBUTE_VIEW_VARIANT_LIST,
+                                  ],
+                                },
+                                {
+                                  $eq: [
+                                    '$$attribute.attributeViewVariant',
+                                    ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+                                  ],
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  product: { $arrayElemAt: ['$products', 0] },
+                },
+              },
+              {
+                $project: {
+                  products: false,
+                },
+              },
+              { $replaceRoot: { newRoot: '$product' } },
             ])
             .toArray();
           // console.log('Search products count ', products.length);

@@ -4,7 +4,7 @@ import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
 import { CityModel, CompanyModel, UserModel } from 'db/dbModels';
 import { PageUrlsInterface } from 'layout/Meta';
-import { PageInitialDataPayload } from 'lib/catalogueUtils';
+import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
 import 'styles/globals.css';
 import type { AppProps } from 'next/app';

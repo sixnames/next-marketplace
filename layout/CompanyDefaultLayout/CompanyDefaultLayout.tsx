@@ -7,7 +7,6 @@ import { RubricModel } from 'db/dbModels';
 import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
 import Footer from 'layout/SiteLayout/Footer/Footer';
-import Header from 'layout/SiteLayout/Header/Header';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -29,8 +28,6 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   return (
     <div className='flex flex-col text-primary-text bg-primary-background min-h-full-height'>
       <Meta title={title} description={description} pageUrls={pageUrls} />
-
-      <Header />
       <CompanyDefaultLayoutHeader />
 
       <div className='flex flex-col flex-grow'>

@@ -8,7 +8,6 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import classes from './Header.module.css';
 import StickyNav from './StickyNav';
 import Link from '../../../components/Link/Link';
 import { useThemeContext } from 'context/themeContext';
@@ -34,22 +33,21 @@ import {
 } from 'config/common';
 
 interface HeaderSearchTriggerInterface {
-  isSearchOpen: boolean;
   setIsSearchOpen: (value: boolean) => void;
 }
 
-const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
-  isSearchOpen,
-  setIsSearchOpen,
-}) => {
+const middleLinkClassName =
+  'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';
+
+const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({ setIsSearchOpen }) => {
   return (
     <div
       data-cy={'search-trigger'}
       onClick={() => setIsSearchOpen(true)}
-      className={`${classes.middleLink} ${isSearchOpen ? classes.middleLinkActive : ''}`}
+      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
-      <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-        <Icon name={'search'} className={classes.middleLinkSearchIcon} />
+      <div className={`relative`}>
+        <Icon name={'search'} className='w-5 h-5' />
       </div>
     </div>
   );
@@ -65,29 +63,36 @@ const HeaderProfileLink: React.FC = () => {
         {() => {
           return (
             <React.Fragment>
-              <MenuButton className={`${classes.middleLink}`} data-cy={'user-dropdown-trigger'}>
-                <span
-                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-                >
-                  <Icon name={'user'} className={classes.middleLinkUserIcon} />
+              <MenuButton
+                className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+                data-cy={'user-dropdown-trigger'}
+              >
+                <span className={`relative`}>
+                  <Icon name={'user'} className='w-5 h-5' />
                 </span>
               </MenuButton>
               <MenuPopover>
                 <LayoutCard>
-                  <div className={classes.userDropdownTop}>
-                    <div className={classes.userDropdownName}>{me?.shortName}</div>
+                  <div className='pt-6 pb-6 pl-[var(--reachMenuItemHorizontalPadding)] pr-[var(--reachMenuItemHorizontalPadding)]'>
+                    <div className='font-medium text-sm'>{me?.shortName}</div>
                   </div>
 
-                  <ul>
-                    <li className={classes.userDropdownListItem}>
-                      <Link className={classes.userDropdownListLink} href={ROUTE_PROFILE}>
+                  <ul className='divide-y divide-gray-300 dark:divide-gray-600'>
+                    <li>
+                      <Link
+                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                        href={ROUTE_PROFILE}
+                      >
                         <span>Личный кабинет</span>
                       </Link>
                     </li>
 
                     {me?.role?.slug === ROLE_SLUG_ADMIN ? (
-                      <li className={classes.userDropdownListItem}>
-                        <Link className={classes.userDropdownListLink} href={ROUTE_CMS}>
+                      <li>
+                        <Link
+                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          href={ROUTE_CMS}
+                        >
                           <span>CMS</span>
                         </Link>
                       </li>
@@ -95,15 +100,20 @@ const HeaderProfileLink: React.FC = () => {
 
                     {me?.role?.slug === ROLE_SLUG_COMPANY_MANAGER ||
                     me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
-                      <li className={classes.userDropdownListItem}>
-                        <Link className={classes.userDropdownListLink} href={ROUTE_APP}>
+                      <li>
+                        <Link
+                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          href={ROUTE_APP}
+                        >
                           <span>Панель управления</span>
                         </Link>
                       </li>
                     ) : null}
 
-                    <li className={classes.userDropdownListItem} onClick={signOut}>
-                      <span className={classes.userDropdownListLink}>Выйти из аккаунта</span>
+                    <li onClick={signOut}>
+                      <span className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'>
+                        Выйти из аккаунта
+                      </span>
                     </li>
                   </ul>
                 </LayoutCard>
@@ -120,11 +130,10 @@ const HeaderProfileLink: React.FC = () => {
       ariaLabel={'Войти'}
       testId={me ? `profile-link` : `sign-in-link`}
       href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
-      className={`${classes.middleLink}`}
-      activeClassName={`${classes.middleLinkActive}`}
+      className={`${middleLinkClassName}`}
     >
-      <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-        <Icon name={'user'} className={classes.middleLinkUserIcon} />
+      <span className={`relative`}>
+        <Icon name={'user'} className='w-5 h-5' />
       </span>
     </Link>
   );
@@ -138,12 +147,9 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
   return (
     <React.Fragment>
       <MenuButton>
-        <span
-          data-cy={'cart-dropdown-trigger'}
-          className={`${classes.middleLink} ${classes.middleLinkCart}`}
-        >
-          <span className={`${classes.middleLinkIconHolder}`}>
-            <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+        <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+          <span className={`relative mr-3`}>
+            <Icon name={'cart'} className='w-5 h-5' />
             <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
           </span>
           <span>Корзина</span>
@@ -170,77 +176,30 @@ const HeaderCartLink: React.FC = () => {
   }
 
   return (
-    <span
-      data-cy={'cart-dropdown-trigger'}
-      className={`${classes.middleLink} ${classes.middleLinkCart}`}
-    >
-      <span className={`${classes.middleLinkIconHolder}`}>
-        <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+    <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+      <span className={`relative mr-3`}>
+        <Icon name={'cart'} className='w-5 h-5' />
       </span>
       <span>Корзина</span>
     </span>
   );
 };
 
-const HeaderMiddleLeft: React.FC = () => {
-  return (
-    <div className={classes.middleSide}>
-      <div className={`${classes.middleLink}`}>
-        <div className={`${classes.middleLinkIconHolder}`}>
-          <Icon name={'marker'} className={classes.middleLinkShopsIcon} />
-        </div>
-        <span>Винотеки</span>
-      </div>
-    </div>
-  );
-};
-
-type HeaderMiddleRightInterface = HeaderSearchTriggerInterface;
-
-const HeaderMiddleRight: React.FC<HeaderMiddleRightInterface> = ({
-  isSearchOpen,
-  setIsSearchOpen,
-}) => {
-  return (
-    <div className={classes.middleSide}>
-      <HeaderSearchTrigger isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
-      <HeaderProfileLink />
-
-      <div className={`${classes.middleLink}`}>
-        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-          <Icon name={'compare'} className={classes.middleLinkCompareIcon} />
-        </div>
-      </div>
-      <div className={`${classes.middleLink}`}>
-        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-          <Icon name={'heart'} className={classes.middleLinkHeartIcon} />
-        </div>
-      </div>
-
-      <HeaderCartLink />
-    </div>
-  );
-};
-
 interface HeaderBurgerDropdownTriggerInterface {
-  isBurgerDropdownOpen: boolean;
   toggleBurgerDropdown: () => void;
 }
 
 const HeaderBurgerDropdownTrigger: React.FC<HeaderBurgerDropdownTriggerInterface> = ({
-  isBurgerDropdownOpen,
   toggleBurgerDropdown,
 }) => {
   return (
     <div
       data-cy={`burger-trigger`}
       onClick={toggleBurgerDropdown}
-      className={`${classes.middleLink} ${classes.middleLinkBurger} ${
-        isBurgerDropdownOpen ? classes.middleLinkActive : ''
-      }`}
+      className={`${middleLinkClassName}`}
     >
-      <div className={`${classes.middleLinkIconHolder}`}>
-        <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
+      <div className={`relative mr-3`}>
+        <Icon name={'burger'} className={'w-5 h-5'} />
       </div>
       <span>меню</span>
     </div>
@@ -264,9 +223,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   }
 
   return (
-    <div className={classes.burgerDropdown}>
-      <Inner className={classes.burgerDropdownInner}>
-        <div className={classes.burgerDropdownTop}>
+    <div className='fixed inset-0 bg-secondary-background z-[1] w-full pt-4 pb-8 overflow-y-auto'>
+      <Inner className='pb-24'>
+        <div className='flex items-center justify-between mb-8'>
           <ThemeTrigger />
           <LanguageTrigger />
         </div>
@@ -288,14 +247,14 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
 
             return (
-              <li className={classes.burgerDropdownListItem} key={rubric.slug}>
+              <li className='relative' key={rubric.slug}>
                 <Link
                   prefetch={false}
                   href={`${ROUTE_CATALOGUE}/${slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
-                  className={`${classes.burgerDropdownListItemLink} ${
-                    isCurrent ? classes.burgerDropdownListItemLinkCurrent : ''
+                  className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
+                    isCurrent ? 'text-theme' : 'text-primary-text'
                   }`}
                 >
                   {name}
@@ -305,8 +264,8 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     <div>
                       {(navItems || []).map(({ _id, options, name }) => {
                         return (
-                          <div className={classes.burgerDropdownListItemGroup} key={`${_id}`}>
-                            <div className={classes.burgerDropdownListItemGroupTitle}>{name}</div>
+                          <div className='mt-4 mb-4' key={`${_id}`}>
+                            <div className='mb-2 text-secondary-text'>{name}</div>
                             <ul>
                               {options.map((option) => {
                                 const isCurrent = asPath === option.slug;
@@ -315,10 +274,8 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                     <Link
                                       href={`${ROUTE_CATALOGUE}/${rubric.slug}/${option.slug}`}
                                       onClick={hideBurgerDropdown}
-                                      className={`${classes.burgerDropdownListItemGroupLink} ${
-                                        isCurrent
-                                          ? classes.burgerDropdownListItemGroupLinkCurrent
-                                          : ''
+                                      className={`flex items-center h-10 ${
+                                        isCurrent ? 'text-theme' : 'text-primary-text'
                                       }`}
                                     >
                                       <span>{option.name}</span>
@@ -333,8 +290,8 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     </div>
                   </DisclosurePanel>
                   <DisclosureButton as={'div'}>
-                    <button className={classes.burgerDropdownListItemTrigger}>
-                      <Icon name={'chevron-down'} />
+                    <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text'>
+                      <Icon name={'chevron-down'} className='w-5 h-5' />
                     </button>
                   </DisclosureButton>
                 </Disclosure>
@@ -347,6 +304,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
+const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex';
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
@@ -390,14 +348,51 @@ const Header: React.FC = () => {
           <LanguageTrigger />
         </Inner>
 
-        <Inner className={classes.middle} lowTop>
-          <HeaderMiddleLeft />
+        <Inner
+          className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'
+          lowTop
+        >
+          <div className={`${middleSideClassName} justify-start`}>
+            <div className={`${middleLinkClassName}`}>
+              <div className={`relative mr-3`}>
+                <Icon name={'marker'} className='w-5 h-5' />
+              </div>
+              <span>Винотеки</span>
+            </div>
+          </div>
 
-          <Link href={`/`} className={classes.middleLogo} aria-label={'Главная страница'}>
-            <img src={siteLogoSrc} width='150' height='24' alt={`${configSiteName}`} />
+          <Link
+            href={`/`}
+            className='flex-shrink-0 w-[var(--logo-width)]'
+            aria-label={'Главная страница'}
+          >
+            <img
+              className='w-full h-auto'
+              src={siteLogoSrc}
+              width='150'
+              height='24'
+              alt={`${configSiteName}`}
+            />
           </Link>
 
-          <HeaderMiddleRight isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
+          <div className={`${middleSideClassName} justify-end`}>
+            <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
+            <HeaderProfileLink />
+
+            <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`relative`}>
+                <Icon name={'compare'} className='w-5 h-5' />
+              </div>
+            </div>
+
+            <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`relative`}>
+                <Icon name={'heart'} className='w-5 h-5' />
+              </div>
+            </div>
+
+            <HeaderCartLink />
+          </div>
         </Inner>
 
         {isSearchOpen ? (
@@ -407,15 +402,15 @@ const Header: React.FC = () => {
 
       <StickyNav />
 
-      <div className={classes.mobileNav}>
-        <Inner className={classes.mobileNavInner}>
-          <HeaderBurgerDropdownTrigger
-            isBurgerDropdownOpen={isBurgerDropdownOpen}
-            toggleBurgerDropdown={toggleBurgerDropdown}
-          />
+      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-desktop:hidden'>
+        <Inner
+          className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary-background'
+          lowTop
+        >
+          <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
 
-          <div className={classes.mobileNavRight}>
-            <HeaderSearchTrigger isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
+          <div className='flex items-center'>
+            <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
             <HeaderProfileLink />
             <HeaderCartLink />
           </div>

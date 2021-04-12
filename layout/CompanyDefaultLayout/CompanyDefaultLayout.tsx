@@ -4,6 +4,7 @@ import Spinner from 'components/Spinner/Spinner';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { RubricModel } from 'db/dbModels';
+import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
 import Footer from 'layout/SiteLayout/Footer/Footer';
 import Header from 'layout/SiteLayout/Header/Header';
@@ -30,6 +31,7 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
       <Meta title={title} description={description} pageUrls={pageUrls} />
 
       <Header />
+      <CompanyDefaultLayoutHeader />
 
       <div className='flex flex-col flex-grow'>
         <main className='flex-grow'>

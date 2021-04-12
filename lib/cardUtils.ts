@@ -250,7 +250,7 @@ export async function getCardData({
       if (!shop) {
         return;
       }
-      console.log(shopProduct);
+
       cardShopProducts.push({
         ...shopProduct,
         shop: {

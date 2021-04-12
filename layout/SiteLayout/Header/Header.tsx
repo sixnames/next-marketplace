@@ -372,10 +372,20 @@ const Header: React.FC = () => {
     setIsBurgerDropdownOpen(false);
   }, []);
 
+  const headerVars = { '--logo-width': '10rem' } as React.CSSProperties;
+
   return (
     <React.Fragment>
-      <header className={classes.header} ref={headerRef}>
-        <Inner className={classes.headerTop} lowBottom lowTop>
+      <header
+        className='relative z-[130] bg-primary-background shadow-md wp-desktop:shadow-none'
+        style={headerVars}
+        ref={headerRef}
+      >
+        <Inner
+          className='hidden relative z-[10] h-[30px] items-center justify-between wp-desktop:flex'
+          lowBottom
+          lowTop
+        >
           <ThemeTrigger />
           <LanguageTrigger />
         </Inner>

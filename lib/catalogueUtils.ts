@@ -1,23 +1,12 @@
 import { getPriceAttribute } from 'config/constantAttributes';
-import {
-  COL_CITIES,
-  COL_CONFIGS,
-  COL_COUNTRIES,
-  COL_LANGUAGES,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   AttributeModel,
   CatalogueDataInterface,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
-  CityModel,
   ConfigModel,
-  CountryModel,
   GenderModel,
-  LanguageModel,
   ObjectIdModel,
   OptionModel,
   ProductConnectionItemModel,
@@ -30,7 +19,6 @@ import {
   RubricOptionModel,
   CatalogueProductsAggregationInterface,
   CatalogueProductOptionInterface,
-  CompanyModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -44,14 +32,10 @@ import {
   CATALOGUE_FILTER_LIMIT,
   CATALOGUE_FILTER_PAGE,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
-  CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
-  CATALOGUE_NAV_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   CONFIG_DEFAULT_COMPANY_SLUG,
-  DEFAULT_CITY,
-  DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGINATION_DEFAULT_LIMIT,
@@ -65,15 +49,9 @@ import {
   SORT_DIR_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
-import {
-  getCityFieldLocaleString,
-  getCurrencyString,
-  getFieldStringLocale,
-  getI18nLocaleValue,
-} from 'lib/i18n';
+import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
 import capitalize from 'capitalize';
@@ -1030,287 +1008,4 @@ export const getCatalogueData = async ({
     console.log(e);
     return null;
   }
-};
-
-export interface GetPageInitialDataInterface {
-  locale: string;
-  city: string;
-  companySlug?: string;
-}
-
-export interface PageInitialDataPayload {
-  configs: ConfigModel[];
-  cities: CityModel[];
-  languages: LanguageModel[];
-  currency: string;
-}
-
-export const getPageInitialData = async ({
-  locale,
-  city,
-  companySlug,
-}: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
-  // console.log(' ');
-  // console.log('=================== getPageInitialData =======================');
-  // const timeStart = new Date().getTime();
-  const db = await getDatabase();
-
-  // configs
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection
-    .aggregate([
-      {
-        $match: {
-          companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
-        },
-      },
-      {
-        $project: {
-          _id: true,
-          cities: true,
-          slug: true,
-        },
-      },
-      {
-        $sort: { _id: SORT_ASC },
-      },
-    ])
-    .toArray();
-  const configs = initialConfigs.map((config) => {
-    return {
-      ...config,
-      value: getCityFieldLocaleString({ cityField: config.cities, city, locale }),
-      singleValue: getCityFieldLocaleString({ cityField: config.cities, city, locale })[0],
-    };
-  });
-  // console.log('After configs ', new Date().getTime() - timeStart);
-
-  // languages
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const languages = await languagesCollection
-    .find(
-      {},
-      {
-        sort: {
-          _id: SORT_ASC,
-        },
-      },
-    )
-    .toArray();
-  // console.log('After languages ', new Date().getTime() - timeStart);
-
-  // cities
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  const initialCities = await citiesCollection.find({}, { sort: { _id: SORT_DESC } }).toArray();
-  const cities = initialCities.map((city) => {
-    return {
-      ...city,
-      name: getFieldStringLocale(city.nameI18n, locale),
-    };
-  });
-  // console.log('After cities ', new Date().getTime() - timeStart);
-
-  // currency
-  const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-  let currency = DEFAULT_CURRENCY;
-  const sessionCity = initialCities.find(({ slug }) => slug === city);
-  const country = await countriesCollection.findOne({ citiesIds: sessionCity?._id });
-  if (country) {
-    currency = country.currency;
-  }
-  // console.log('After currency ', new Date().getTime() - timeStart);
-
-  return {
-    configs,
-    languages,
-    cities,
-    currency,
-  };
-};
-
-export interface GetCatalogueNavRubricsInterface {
-  locale: string;
-  city: string;
-  company?: CompanyModel | null;
-}
-
-export const getCatalogueNavRubrics = async ({
-  city,
-  locale,
-  company,
-}: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
-  // console.log(' ');
-  // console.log('=================== getCatalogueNavRubrics =======================');
-  // const timeStart = new Date().getTime();
-  const db = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-
-  // Get configs
-  const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
-    slug: 'stickyNavVisibleAttributesCount',
-    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
-  });
-  const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
-    slug: 'stickyNavVisibleOptionsCount',
-    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
-  });
-  const visibleAttributesCount =
-    noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_NAV_VISIBLE_ATTRIBUTES);
-  const visibleOptionsCount =
-    noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
-
-  // console.log('Before rubrics', new Date().getTime() - timeStart);
-
-  const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
-  const shopRubricsAggregation = await shopProductsCollection
-    .aggregate<RubricModel>([
-      {
-        $match: {
-          ...companyRubricsMatch,
-          citySlug: city,
-        },
-      },
-      {
-        $unwind: '$selectedOptionsSlugs',
-      },
-      {
-        $group: {
-          _id: '$rubricId',
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubrics',
-          let: { rubricId: '$_id', selectedOptionsSlugs: '$selectedOptionsSlugs' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$rubricId'],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                slug: 1,
-                nameI18n: 1,
-                priorities: 1,
-                views: 1,
-                attributes: {
-                  $filter: {
-                    input: '$attributes',
-                    as: 'attribute',
-                    cond: {
-                      $eq: ['$$attribute.showInCatalogueNav', true],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $addFields: {
-                attributes: {
-                  $slice: ['$attributes', visibleAttributesCount],
-                },
-              },
-            },
-            {
-              $unwind: {
-                path: '$attributes',
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options.options': [],
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options': {
-                  $filter: {
-                    input: '$attributes.options',
-                    as: 'option',
-                    cond: {
-                      $in: ['$$option.slug', '$$selectedOptionsSlugs'],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options': {
-                  $slice: ['$attributes.options', visibleOptionsCount],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: '$_id',
-                slug: { $first: '$slug' },
-                nameI18n: { $first: '$nameI18n' },
-                priorities: { $first: '$priorities' },
-                views: { $first: '$views' },
-                attributes: {
-                  $push: '$attributes',
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          rubric: { $arrayElemAt: ['$rubrics', 0] },
-        },
-      },
-      {
-        $project: {
-          rubrics: false,
-        },
-      },
-      { $replaceRoot: { newRoot: '$rubric' } },
-    ])
-    .toArray();
-  // console.log(shopRubricsAggregation);
-  // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
-
-  const rubrics: RubricModel[] = [];
-  shopRubricsAggregation.forEach((rubric) => {
-    rubrics.push({
-      ...rubric,
-      name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
-      navItems: getRubricNavAttributes({
-        attributes: rubric.attributes,
-        locale,
-      }),
-    });
-  });
-  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
-  const sortedRubrics = rubrics.sort((rubricA, rubricB) => {
-    const rubricAViews = rubricA.views[companySlug] || { [city]: rubricA._id.getTimestamp() };
-    const rubricAPriorities = rubricA.priorities[companySlug] || {
-      [city]: rubricA._id.getTimestamp(),
-    };
-    const rubricBViews = rubricB.views[companySlug] || { [city]: rubricB._id.getTimestamp() };
-    const rubricBPriorities = rubricB.priorities[companySlug] || {
-      [city]: rubricB._id.getTimestamp(),
-    };
-
-    const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
-    const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);
-    return rubricBCounter - rubricACounter;
-  });
-
-  // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
-
-  return sortedRubrics;
 };

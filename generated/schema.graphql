@@ -1696,11 +1696,6 @@ type Query {
   getBrandsOptions: [Brand!]!
 
   """
-  Should return catalogue nav rubrics
-  """
-  getCatalogueNavRubrics: [Rubric!]!
-
-  """
   Should return top search items
   """
   getCatalogueSearchResult(input: CatalogueSearchInput!): CatalogueSearchResult!

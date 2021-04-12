@@ -1538,7 +1538,6 @@ export interface NexusGenFieldTypes {
     getBrand: NexusGenRootTypes['Brand']; // Brand!
     getBrandBySlug: NexusGenRootTypes['Brand'] | null; // Brand
     getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
-    getCatalogueNavRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCatalogueSearchTopItems: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCity: NexusGenRootTypes['City']; // City!
@@ -2543,7 +2542,6 @@ export interface NexusGenFieldTypeNames {
     getBrand: 'Brand';
     getBrandBySlug: 'Brand';
     getBrandsOptions: 'Brand';
-    getCatalogueNavRubrics: 'Rubric';
     getCatalogueSearchResult: 'CatalogueSearchResult';
     getCatalogueSearchTopItems: 'CatalogueSearchResult';
     getCity: 'City';

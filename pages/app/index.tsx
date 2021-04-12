@@ -17,8 +17,6 @@ const App: NextPage<PagePropsInterface> = ({ pageUrls }) => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const test = await getAppInitialData({ context });
-  console.log(JSON.stringify(test, null, 2));
   return getAppInitialData({ context });
 };
 

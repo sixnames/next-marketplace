@@ -1,4 +1,4 @@
-import { UserCompanyFragment, useUserComapnyQuery } from 'generated/apolloComponents';
+import { UserCompanyFragment, useUserCompanyQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 
 interface CompanyContextInterface {
@@ -12,7 +12,7 @@ const CompanyContext = React.createContext<CompanyContextInterface>({
 });
 
 const CompanyContextProvider: React.FC = ({ children }) => {
-  const { data, loading } = useUserComapnyQuery();
+  const { data, loading } = useUserCompanyQuery();
 
   const value = React.useMemo(() => {
     return {

@@ -298,6 +298,11 @@ export type CatalogueSearchResult = {
   products: Array<Product>;
 };
 
+export type CatalogueSearchTopItemsInput = {
+  companyId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
+};
+
 export type CitiesPaginationPayload = PaginationPayload & {
   __typename?: 'CitiesPaginationPayload';
   sortBy: Scalars['String'];
@@ -1609,6 +1614,10 @@ export type Product = Base & Timestamp & {
   manufacturer?: Maybe<Manufacturer>;
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
+  /** Returns all count number of the shop products */
+  shopsCount: Array<Scalars['Int']>;
+  /** Should find all connected shop products and return minimal and maximal price. */
+  cardPrices: ProductCardPrices;
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
@@ -1874,6 +1883,11 @@ export type QueryGetUserArgs = {
 
 export type QueryGetAllUsersArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetCatalogueSearchTopItemsArgs = {
+  input: CatalogueSearchTopItemsInput;
 };
 
 
@@ -2238,11 +2252,11 @@ export type ShopProduct = Timestamp & {
   productId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   oldPrices: Array<ShopProductOldPrice>;
-  product: Product;
-  shop: Shop;
   formattedPrice: Scalars['String'];
   formattedOldPrice?: Maybe<Scalars['String']>;
   discountedPercent?: Maybe<Scalars['Int']>;
+  product: Product;
+  shop: Shop;
   inCartCount: Scalars['Int'];
 };
 
@@ -4356,7 +4370,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -4364,7 +4378,10 @@ export type ProductSnippetFragment = (
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
     )> }
-  )>, ratingFeatures: Array<(
+  )>, cardPrices: (
+    { __typename?: 'ProductCardPrices' }
+    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
+  ), ratingFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
     & { attributeMetric?: Maybe<(
@@ -4382,7 +4399,9 @@ export type SearchRubricFragment = (
   & Pick<Rubric, '_id' | 'name' | 'slug'>
 );
 
-export type GetCatalogueSearchTopItemsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetCatalogueSearchTopItemsQueryVariables = Exact<{
+  input: CatalogueSearchTopItemsInput;
+}>;
 
 
 export type GetCatalogueSearchTopItemsQuery = (
@@ -5189,6 +5208,12 @@ export const ProductSnippetFragmentDoc = gql`
       _id
       name
     }
+  }
+  shopsCount
+  cardPrices {
+    _id
+    min
+    max
   }
   ratingFeatures {
     _id
@@ -8699,8 +8724,8 @@ export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRub
 export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
 export type GetAllRubricVariantsQueryResult = Apollo.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
 export const GetCatalogueSearchTopItemsDocument = gql`
-    query GetCatalogueSearchTopItems {
-  getCatalogueSearchTopItems {
+    query GetCatalogueSearchTopItems($input: CatalogueSearchTopItemsInput!) {
+  getCatalogueSearchTopItems(input: $input) {
     rubrics {
       ...SearchRubric
     }
@@ -8724,10 +8749,11 @@ ${ProductSnippetFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetCatalogueSearchTopItemsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetCatalogueSearchTopItemsQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
+export function useGetCatalogueSearchTopItemsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, options);
       }

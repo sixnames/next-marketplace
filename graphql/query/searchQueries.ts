@@ -40,6 +40,12 @@ export const productSnippedFragment = gql`
         name
       }
     }
+    shopsCount
+    cardPrices {
+      _id
+      min
+      max
+    }
     ratingFeatures {
       _id
       attributeId
@@ -66,8 +72,8 @@ export const searchRubricFragment = gql`
 `;
 
 export const CATALOGUE_SEARCH_TOP_ITEMS_QUERY = gql`
-  query GetCatalogueSearchTopItems {
-    getCatalogueSearchTopItems {
+  query GetCatalogueSearchTopItems($input: CatalogueSearchTopItemsInput!) {
+    getCatalogueSearchTopItems(input: $input) {
       rubrics {
         ...SearchRubric
       }

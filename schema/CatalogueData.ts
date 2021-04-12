@@ -11,6 +11,7 @@ import {
   ProductModel,
   RubricAttributeModel,
   RubricModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
@@ -21,8 +22,11 @@ import {
   COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_MANUFACTURER_KEY,
@@ -46,6 +50,14 @@ export const CatalogueSearchResult = objectType({
   },
 });
 
+export const CatalogueSearchTopItemsInput = inputObjectType({
+  name: 'CatalogueSearchTopItemsInput',
+  definition(t) {
+    t.objectId('companyId');
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+  },
+});
+
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
@@ -53,12 +65,20 @@ export const CatalogueQueries = extendType({
     t.nonNull.field('getCatalogueSearchTopItems', {
       type: 'CatalogueSearchResult',
       description: 'Should return top search items',
-      resolve: async (_root, _args, context): Promise<CatalogueSearchResultModel> => {
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueSearchTopItemsInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<CatalogueSearchResultModel> => {
         try {
           const { city } = await getRequestParams(context);
           const db = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const { companyId, companySlug } = args.input;
 
           // const rubricsStart = new Date().getTime();
           const rubrics = await rubricsCollection
@@ -90,23 +110,111 @@ export const CatalogueQueries = extendType({
           // console.log('Top rubrics ', new Date().getTime() - rubricsStart);
 
           // const productsStart = new Date().getTime();
-          const products = await productsCollection
-            .aggregate([
+          const companyRubricsMatch = companyId ? { companyId } : {};
+
+          const products = await shopProductsCollection
+            .aggregate<ProductModel>([
               {
                 $match: {
+                  ...companyRubricsMatch,
                   rubricId: { $in: rubricsIds },
-                  active: true,
+                  citySlug: city,
+                },
+              },
+              {
+                $group: {
+                  _id: '$productId',
+                  views: { $max: `$views.${companySlug}.${city}` },
+                  priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  minPrice: {
+                    $min: '$price',
+                  },
+                  maxPrice: {
+                    $max: '$price',
+                  },
+                  available: {
+                    $max: '$available',
+                  },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                  shopProductsIds: {
+                    $addToSet: '$_id',
+                  },
                 },
               },
               {
                 $sort: {
-                  [`availabilityCities.${city}`]: SORT_DESC,
-                  [`priorities.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
+                  priorities: SORT_DESC,
+                  views: SORT_DESC,
+                  available: SORT_DESC,
                   _id: SORT_DESC,
                 },
               },
               { $limit: 3 },
+              {
+                $lookup: {
+                  from: COL_PRODUCTS,
+                  as: 'products',
+                  let: {
+                    productId: '$_id',
+                    shopProductsIds: '$shopProductsIds',
+                    minPrice: '$minPrice',
+                    maxPrice: '$maxPrice',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $addFields: {
+                        shopsCount: { $size: '$$shopProductsIds' },
+                        cardPrices: {
+                          min: '$$minPrice',
+                          max: '$$maxPrice',
+                        },
+                        attributes: {
+                          $filter: {
+                            input: '$attributes',
+                            as: 'attribute',
+                            cond: {
+                              $or: [
+                                {
+                                  $eq: [
+                                    '$$attribute.attributeViewVariant',
+                                    ATTRIBUTE_VIEW_VARIANT_LIST,
+                                  ],
+                                },
+                                {
+                                  $eq: [
+                                    '$$attribute.attributeViewVariant',
+                                    ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+                                  ],
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  product: { $arrayElemAt: ['$products', 0] },
+                },
+              },
+              {
+                $project: {
+                  products: false,
+                },
+              },
+              { $replaceRoot: { newRoot: '$product' } },
             ])
             .toArray();
           // console.log('Top products ', new Date().getTime() - productsStart);

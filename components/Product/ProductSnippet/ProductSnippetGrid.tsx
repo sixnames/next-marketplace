@@ -47,7 +47,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       return readableValue;
     })
     .join(', ');
-  console.log(product);
+
   return (
     <LayoutCard
       className={`${classes.snippetCard} ${sizeClass} ${className ? className : ''}`}

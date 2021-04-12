@@ -258,6 +258,11 @@ type CatalogueSearchResult {
   rubrics: [Rubric!]!
 }
 
+input CatalogueSearchTopItemsInput {
+  companyId: ObjectId
+  companySlug: String = "default"
+}
+
 type CitiesPaginationPayload implements PaginationPayload {
   docs: [City!]!
   hasNextPage: Boolean!
@@ -1382,6 +1387,11 @@ type Product implements Base & Timestamp {
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
+
+  """
+  Should find all connected shop products and return minimal and maximal price.
+  """
+  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
@@ -1403,6 +1413,11 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
+
+  """
+  Returns all count number of the shop products
+  """
+  shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
@@ -1687,7 +1702,7 @@ type Query {
   """
   Should return top search items
   """
-  getCatalogueSearchTopItems: CatalogueSearchResult!
+  getCatalogueSearchTopItems(input: CatalogueSearchTopItemsInput!): CatalogueSearchResult!
 
   """
   Should return city by given id

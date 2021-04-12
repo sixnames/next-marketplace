@@ -349,12 +349,16 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
-  const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
+  // const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(true);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { data } = useGetCatalogueSearchTopItemsQuery({
     ssr: false,
+    variables: {
+      input: {},
+    },
   });
 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);

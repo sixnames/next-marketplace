@@ -5,7 +5,10 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from 'config/common';
+import { getCurrencyString } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewAttributes } from 'lib/productAttributesUtils';
+import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -14,6 +17,7 @@ import {
   BrandModel,
   ManufacturerModel,
   ProductAttributeModel,
+  ProductCardPricesModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -216,6 +220,39 @@ export const Product = objectType({
           })
           .toArray();
         return shopsProducts;
+      },
+    });
+
+    // Product shopsCount field resolver
+    t.nonNull.field('shopsCount', {
+      type: 'Int',
+      description: 'Returns all count number of the shop products',
+      resolve: async (source, _args): Promise<number> => {
+        return noNaN(source.shopsCount);
+      },
+    });
+
+    // Product cardPrices field resolver
+    t.nonNull.field('cardPrices', {
+      type: 'ProductCardPrices',
+      description: 'Should find all connected shop products and return minimal and maximal price.',
+      resolve: async (source, _args): Promise<ProductCardPricesModel> => {
+        try {
+          const minPrice = noNaN(source.cardPrices?.min);
+          const maxPrice = noNaN(source.cardPrices?.max);
+
+          return {
+            _id: new ObjectId(),
+            min: getCurrencyString(minPrice),
+            max: getCurrencyString(maxPrice),
+          };
+        } catch {
+          return {
+            _id: new ObjectId(),
+            min: '0',
+            max: '0',
+          };
+        }
       },
     });
 

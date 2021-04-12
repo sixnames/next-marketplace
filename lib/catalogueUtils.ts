@@ -1058,14 +1058,23 @@ export const getPageInitialData = async ({
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const initialConfigs = await configsCollection
-    .find(
+    .aggregate([
       {
-        companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+        $match: {
+          companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+        },
       },
       {
-        sort: { _id: SORT_ASC },
+        $project: {
+          _id: true,
+          cities: true,
+          slug: true,
+        },
       },
-    )
+      {
+        $sort: { _id: SORT_ASC },
+      },
+    ])
     .toArray();
   const configs = initialConfigs.map((config) => {
     return {

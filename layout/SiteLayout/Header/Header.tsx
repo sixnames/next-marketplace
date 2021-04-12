@@ -349,8 +349,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
-  // const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
-  const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(true);
+  const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();

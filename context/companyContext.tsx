@@ -1,6 +1,8 @@
 import { UserCompanyFragment, useUserCompanyQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 
+// TODO TypeError: Cannot destructure property 'ctx' of '(intermediate value)(intermediate value)(intermediate value)' as it is null.
+
 interface CompanyContextInterface {
   company?: UserCompanyFragment | null;
   companyLoading: boolean;

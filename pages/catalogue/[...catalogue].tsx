@@ -34,6 +34,7 @@ import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
+import { cityIn } from 'lvovich';
 import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
@@ -350,7 +351,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({
   const siteName = getSiteConfigSingleValue('siteName');
   const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
   const prefix = prefixConfig ? prefixConfig : '';
-  const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
+  const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
     <SiteLayout

@@ -6221,6 +6221,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lvovich@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/lvovich/-/lvovich-1.0.16.tgz#6921c578d54c1094c9a2fd8716287b35badd7d42"
+  integrity sha512-F3/4I7ob6fDtpE9ZCffDTWfjIqVcZ9NdZDSgC9u9Er0KKqFBjSGXEULV66w8sJVTjJtHbm/NngPFWgOMr5BBrw==
+
 make-dir@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"

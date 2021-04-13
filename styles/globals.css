@@ -10,6 +10,10 @@
   .burger-dropdown {
     height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
   }
+
+  .footer {
+    box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
+  }
 }
 
 /*noinspection ALL*/
@@ -167,6 +171,7 @@
   --burger-dropdown-width: 345px;
   --burger-dropdown-side-gap: 2.5rem;
   --mobileNavHeight: 85px;
+  --mobileFooterPaddingBottom: calc(var(--mobileNavHeight) + 2rem);
 
   /*Catalogue*/
   --catalogue-filter-width: 325px;

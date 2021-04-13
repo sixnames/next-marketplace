@@ -4,9 +4,9 @@ import Spinner from 'components/Spinner/Spinner';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { CompanyModel, RubricModel } from 'db/dbModels';
+import CompanyDefaultLayoutFooter from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutFooter';
 import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
-import Footer from 'layout/SiteLayout/Footer/Footer';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -37,7 +37,7 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
-        <Footer />
+        <CompanyDefaultLayoutFooter />
       </div>
 
       {isLoading ? <Spinner wide /> : null}

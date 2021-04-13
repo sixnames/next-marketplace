@@ -340,10 +340,12 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
         >
           <ThemeTrigger />
           <div className='flex items-center'>
-            <a className='text-secondary-text mr-4' href={`tel:${callbackPhone}`}>
+            <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
               {phoneToReadable(callbackPhone)}
             </a>
-            <LanguageTrigger />
+            <div className='ml-4'>
+              <LanguageTrigger />
+            </div>
           </div>
         </Inner>
 

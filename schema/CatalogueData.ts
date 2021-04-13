@@ -33,6 +33,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_PRIORITY,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -437,7 +438,6 @@ export const CatalogueQueries = extendType({
 export const CatalogueDataInput = inputObjectType({
   name: 'CatalogueDataInput',
   definition(t) {
-    t.objectId('lastProductId');
     t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
     t.nonNull.list.nonNull.string('filter');
   },
@@ -540,8 +540,13 @@ export const CatalogueMutations = extendType({
                 if (!attribute.views) {
                   attribute.views = DEFAULT_COUNTERS_OBJECT.views;
                 } else {
+                  if (!attribute.views[`${companySlug}`]) {
+                    attribute.views[`${companySlug}`] = {
+                      [city]: DEFAULT_PRIORITY,
+                    };
+                  }
                   attribute.views[`${companySlug}`][city] =
-                    noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                    noNaN(attribute.views[`${companySlug}`][city]) + VIEWS_COUNTER_STEP;
                 }
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,

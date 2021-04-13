@@ -38,9 +38,10 @@ import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;
+  companySlug?: string;
 }
 
-const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
+const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, companySlug }) => {
   const router = useRouter();
   const [loading, setLoading] = React.useState<boolean>(false);
   const { isMobile } = useAppContext();
@@ -79,12 +80,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
       variables: {
         input: {
           filter: catalogueData.filter,
+          companySlug,
         },
       },
     }).catch((e) => {
       console.log(e);
     });
-  }, [catalogueData, updateCatalogueCountersMutation]);
+  }, [catalogueData, companySlug, updateCatalogueCountersMutation]);
 
   // fetch more products handler
   const fetchMoreHandler = React.useCallback(() => {
@@ -333,7 +335,12 @@ interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, currentCity, ...props }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({
+  catalogueData,
+  currentCity,
+  company,
+  ...props
+}) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!catalogueData) {
     return (
@@ -349,11 +356,13 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, currentCity, .
 
   return (
     <SiteLayoutProvider
+      currentCity={currentCity}
+      company={company}
       title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       {...props}
     >
-      <CatalogueRoute catalogueData={catalogueData} />
+      <CatalogueRoute catalogueData={catalogueData} companySlug={company?.slug} />
     </SiteLayoutProvider>
   );
 };

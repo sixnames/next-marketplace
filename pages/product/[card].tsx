@@ -51,9 +51,10 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 
 interface CardRouteInterface {
   cardData: ProductModel;
+  companySlug?: string;
 }
 
-const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
+const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   const {
     _id,
     mainImage,
@@ -84,10 +85,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       variables: {
         input: {
           shopProductIds: alwaysArray(cardData.shopProductIds),
+          companySlug,
         },
       },
     }).catch((e) => console.log(e));
-  }, [cardData.shopProductIds, updateProductCounterMutation]);
+  }, [cardData.shopProductIds, companySlug, updateProductCounterMutation]);
 
   const tabsConfig = [
     {
@@ -363,7 +365,7 @@ interface CardInterface extends SiteLayoutProviderInterface {
   cardData?: ProductModel | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, ...props }) => {
+const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   const { currentCity } = props;
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!cardData) {
@@ -383,9 +385,10 @@ const Card: NextPage<CardInterface> = ({ cardData, ...props }) => {
       previewImage={cardData.mainImage}
       title={`${prefix}${cardData.originalName}${cityDescription}`}
       description={`${prefix}${cardData.originalName}${cityDescription}`}
+      company={company}
       {...props}
     >
-      <CardRoute cardData={cardData} />
+      <CardRoute cardData={cardData} companySlug={company?.slug} />
     </SiteLayoutProvider>
   );
 };

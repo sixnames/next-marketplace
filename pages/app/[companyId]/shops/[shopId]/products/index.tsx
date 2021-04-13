@@ -46,7 +46,9 @@ const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics
             updateTitle={'Просмотреть товары рубрики'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_APP}/shops/${shop._id}/products/${dataItem._id}`)
+                .push(
+                  `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
+                )
                 .catch((e) => console.log(e));
             }}
           />
@@ -63,6 +65,13 @@ const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics
           data={rubrics}
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
+          onRowDoubleClick={(dataItem) => {
+            router
+              .push(
+                `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
+              )
+              .catch((e) => console.log(e));
+          }}
         />
       </Inner>
     </AppShopLayout>

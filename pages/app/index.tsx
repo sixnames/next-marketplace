@@ -1,23 +1,67 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { ROUTE_APP } from 'config/common';
+import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const App: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
+  const router = useRouter();
+
   return (
-    <AppLayout title={'Панель управления'} pageUrls={pageUrls}>
-      <Inner>
-        <Title>Панель управления</Title>
-      </Inner>
-    </AppLayout>
+    <Inner>
+      <Title>Панель управления</Title>
+      <div className='mb-8 text-lg'>Ваши компании</div>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {(sessionUser?.companies || []).map((company) => {
+          return (
+            <div
+              className='bg-secondary-background rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
+              key={`${company._id}`}
+              onClick={() => {
+                router.push(`${ROUTE_APP}/${company._id}/shops`).catch((e) => console.log(e));
+              }}
+            >
+              <div className='rounded-full overflow-hidden col-span-1'>
+                <img
+                  className='w-full h-full object-contain'
+                  src={company.logo.url}
+                  width='100'
+                  height='100'
+                  alt=''
+                />
+              </div>
+              <div className='col-span-3'>
+                <div className='text-xl'>{company.name}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Inner>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<any>> => {
+  const { props } = await getAppInitialData({ context });
+  if (props?.sessionUser?.companies && noNaN(props.sessionUser.companies.length) === 1) {
+    const company = props?.sessionUser?.companies[0];
+    return {
+      redirect: {
+        destination: `${ROUTE_APP}/${company?._id}/shops`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props,
+  };
 };
 
 export default App;

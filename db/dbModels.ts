@@ -716,6 +716,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   role?: RoleModel;
   fullName?: string;
   shortName?: string;
+  companies?: CompanyModel[];
 }
 
 // Payload

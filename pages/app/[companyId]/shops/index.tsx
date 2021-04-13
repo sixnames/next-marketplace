@@ -7,7 +7,6 @@ import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import Title from 'components/Title/Title';
 import { ROUTE_APP } from 'config/common';
-import { useCompanyContext } from 'context/companyContext';
 import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import AppLayout from 'layout/AppLayout/AppLayout';
@@ -20,13 +19,14 @@ import { getAppInitialData } from 'lib/ssrUtils';
 
 const ShopsRoute: React.FC = () => {
   const router = useRouter();
-  const { setPage, page, contentFilters } = useDataLayoutMethods();
-  const { company } = useCompanyContext();
+  const { setPage, page } = useDataLayoutMethods();
   const { data, loading, error } = useGetAppCompanyShopsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      input: contentFilters,
-      companyId: `${company?._id}`,
+      input: {
+        page,
+      },
+      companyId: `${router.query.companyId}`,
     },
   });
 
@@ -43,7 +43,7 @@ const ShopsRoute: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_APP}/shops/${dataItem._id}`}>
+        <Link href={`${ROUTE_APP}/${router.query.companyId}/shops/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),
@@ -72,7 +72,9 @@ const ShopsRoute: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router.push(`${ROUTE_APP}/shops/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`${ROUTE_APP}/${router.query.companyId}/shops/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
             testId={dataItem.name}
           />

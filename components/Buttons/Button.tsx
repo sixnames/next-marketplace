@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Icon from '../Icon/Icon';
-import classes from './Button.module.css';
 import Tooltip from '../TTip/Tooltip';
 import { ButtonTheme, ButtonType, SizeType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
@@ -9,7 +8,6 @@ export interface ButtonPropsInterface {
   theme?: ButtonTheme;
   size?: SizeType;
   className?: string;
-  iconClass?: string;
   children?: any;
   type?: ButtonType;
   disabled?: boolean;
@@ -30,7 +28,6 @@ const Button: React.FC<ButtonPropsInterface> = ({
   children,
   disabled = false,
   icon,
-  iconClass,
   circle = false,
   className,
   testId,
@@ -38,14 +35,25 @@ const Button: React.FC<ButtonPropsInterface> = ({
   ariaLabel,
   ...props
 }) => {
+  const themeClass =
+    theme === 'primary'
+      ? 'text-wp-white bg-theme'
+      : theme === 'secondary'
+      ? 'text-theme bg-secondary-button-background'
+      : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100';
+
+  const isSmall = size === 'small';
   const noChildren = !children;
-  const sizeClass = classes[size];
-  const themeClass = classes[theme];
-  const childrenClass = noChildren ? classes.noChildren : '';
-  const widthClass = short ? classes.short : '';
-  const circleClass = circle ? classes.circle : '';
+  const sizeClass = isSmall ? 'h-[var(--smallButtonHeight)]' : 'h-[var(--formInputHeight)]';
+  const widthClass = short ? '' : 'min-w-[var(--buttonMinWidth)]';
+  const childrenClass = noChildren
+    ? `rounded-md ${widthClass}`
+    : `pl-4 pr-4 rounded-md ${widthClass}`;
+  const circleClass = circle
+    ? `rounded-full ${isSmall ? 'w-[var(--smallButtonHeight)]' : 'w-[var(--formInputHeight)]'}`
+    : childrenClass;
   const additionalClass = className ? className : '';
-  const buttonClass = `${classes.butn} ${sizeClass} ${widthClass} ${themeClass} ${childrenClass} ${circleClass} ${additionalClass}`;
+  const buttonClass = `relative z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
 
   return (
     <React.Fragment>
@@ -61,9 +69,9 @@ const Button: React.FC<ButtonPropsInterface> = ({
           {icon && (
             <Icon
               name={icon}
-              className={`${classes.icon} ${iconClass ? iconClass : ''} ${
-                noChildren ? classes.iconNoGap : ''
-              }`}
+              className={`relative flex-shrink-0 ${
+                isSmall ? 'w-[0.875rem] h-[0.875rem]' : 'w-[1.25rem] h-[1.25rem] top-[1px]'
+              } ${noChildren ? '' : 'mr-[5px]'}`}
             />
           )}
 

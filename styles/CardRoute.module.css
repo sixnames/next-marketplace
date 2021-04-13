@@ -1,8 +1,3 @@
-.card {
-  overflow: hidden;
-  padding-bottom: 5rem;
-}
-
 .mainFrame {
   --mainColumnsGap: 1.5rem;
   --secondaryColumnsWidth: 180px;
@@ -385,9 +380,6 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .card {
-    padding-top: 2rem;
-  }
 
   .mainFrame:not(.mainFrameNoBackground):after {
     background: var(--secondaryBackground);

@@ -260,7 +260,7 @@ const ShopAddProductsFinalStepRoute: React.FC<ShopAddProductsListRouteInterface>
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
         router
-          .push(`${ROUTE_APP}/shops/${shop._id}/products/${rubricId}`)
+          .push(`${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${rubricId}`)
           .catch((e) => console.log(e));
       }
     },
@@ -539,7 +539,7 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_APP}/shops/${shopId}/products/add/${rubricId}`;
+  const basePath = `${ROUTE_APP}/${query.companyId}/shops/${shopId}/products/add/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');

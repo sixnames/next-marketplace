@@ -1,5 +1,5 @@
-import { CompanyContextProvider, useCompanyContext } from 'context/companyContext';
 import AppNav from 'layout/AppLayout/AppNav';
+import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Spinner from 'components/Spinner/Spinner';
@@ -25,15 +25,14 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
   const { me } = useUserContext();
-  const { company, companyLoading } = useCompanyContext();
 
   React.useEffect(() => {
-    if (!companyLoading && !company) {
+    if (noNaN(me?.companies?.length) < 1) {
       router.push('/').catch((e) => console.log(e));
     }
-  }, [companyLoading, company, router]);
+  }, [me, router]);
 
-  if (!me || companyLoading) {
+  if (!me) {
     return <Spinner />;
   }
 
@@ -59,11 +58,9 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
 
 const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   return (
-    <CompanyContextProvider>
-      <AppLayoutConsumer pageUrls={pageUrls} title={title}>
-        {children}
-      </AppLayoutConsumer>
-    </CompanyContextProvider>
+    <AppLayoutConsumer pageUrls={pageUrls} title={title}>
+      {children}
+    </AppLayoutConsumer>
   );
 };
 

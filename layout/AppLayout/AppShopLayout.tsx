@@ -4,6 +4,7 @@ import { ROUTE_APP } from 'config/common';
 import { ShopModel } from 'db/dbModels';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface AppShopLayoutInterface {
@@ -11,23 +12,24 @@ interface AppShopLayoutInterface {
 }
 
 const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, children }) => {
+  const router = useRouter();
   const navConfig = React.useMemo(() => {
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${ROUTE_APP}/shops/${shop._id}`,
+        path: `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}`,
         exact: true,
       },
       {
         name: 'Товары',
         testId: 'products',
-        path: `${ROUTE_APP}/shops/${shop._id}/products`,
+        path: `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products`,
       },
       {
         name: 'Изображения',
         testId: 'assets',
-        path: `${ROUTE_APP}/shops/${shop._id}/assets`,
+        path: `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/assets`,
         exact: true,
       },
     ];

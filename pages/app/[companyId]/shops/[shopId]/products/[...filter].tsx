@@ -92,7 +92,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     showLoading,
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
-  const addProductsPath = `${ROUTE_APP}/shops/${shop._id}/products/add/${rubricId}`;
+  const addProductsPath = `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/add/${rubricId}`;
   const validationSchema = useValidationSchema({ schema: updateManyShopProductsSchema });
   const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
     onCompleted: (data) => {
@@ -390,7 +390,7 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_APP}/shops/${shopId}/products/${rubricId}`;
+  const basePath = `${ROUTE_APP}/${query.companyId}/shops/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');

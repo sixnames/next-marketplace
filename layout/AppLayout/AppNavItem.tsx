@@ -1,3 +1,4 @@
+import { ROUTE_APP } from 'config/common';
 import { NavItemModel } from 'db/dbModels';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -17,7 +18,7 @@ interface AppNavItemInterface {
 }
 
 const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
-  const { asPath } = useRouter();
+  const { asPath, query } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, path, children, _id } = item;
@@ -88,7 +89,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             return (
               <li className={classes.item} key={name} data-cy={`app-nav-item-${_id}`}>
                 <Link
-                  href={`${path}`}
+                  href={`${ROUTE_APP}/${query.companyId}${path}`}
                   className={`${classes.complexLink} ${isCurrent ? classes.linkActive : ''}`}
                 >
                   <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
@@ -109,7 +110,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
       <Tooltip title={compact ? name : ''}>
         <div>
           <Link
-            href={`${path}`}
+            href={`${ROUTE_APP}/${query.companyId}${path}`}
             className={`${classes.link} ${compact ? classes.linkCompact : ''} ${
               isCurrent ? classes.linkActive : ''
             }`}

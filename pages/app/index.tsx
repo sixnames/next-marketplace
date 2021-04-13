@@ -1,6 +1,6 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_APP, ROUTE_SIGN_IN } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -49,6 +49,25 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> => {
   const { props } = await getAppInitialData({ context });
+
+  if (!props?.sessionUser) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  if (!props?.sessionUser?.role || noNaN(props?.sessionUser?.companies?.length) < 1) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
+      },
+    };
+  }
+
   if (props?.sessionUser?.companies && noNaN(props.sessionUser.companies.length) === 1) {
     const company = props?.sessionUser?.companies[0];
     return {

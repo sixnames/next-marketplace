@@ -41,7 +41,7 @@ export const userCompanyFragment = gql`
 `;
 
 export const USER_COMPANY_QUERY = gql`
-  query UserComapny {
+  query UserCompany {
     getUserCompany {
       ...UserCompany
     }

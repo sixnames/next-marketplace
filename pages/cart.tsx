@@ -14,14 +14,13 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductModel, ShopProductModel } from 'db/dbModels';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CartAside from 'routes/CartRoute/CartAside';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/CartRoute.module.css';
 import CartShopsList from 'routes/CartRoute/CartShopsList';
@@ -345,13 +344,13 @@ const CartRoute: React.FC = () => {
   );
 };
 
-interface CartInterface extends PagePropsInterface, SiteLayoutInterface {}
+type CartInterface = SiteLayoutProviderInterface;
 
-const Cart: NextPage<CartInterface> = ({ navRubrics, ...props }) => {
+const Cart: NextPage<CartInterface> = (props) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'Корзина'} {...props}>
       <CartRoute />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

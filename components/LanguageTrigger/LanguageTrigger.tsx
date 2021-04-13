@@ -19,7 +19,7 @@ const LanguageTrigger: React.FC = () => {
         },
       };
     });
-  }, [languagesList]);
+  }, [languagesList, router]);
 
   return (
     <div className={classes.frame}>

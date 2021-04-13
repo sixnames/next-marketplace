@@ -4,11 +4,10 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSession, signIn } from 'next-auth/client';
 import classes from 'styles/SignInRoute.module.css';
 import { signInSchema } from 'validation/userSchema';
@@ -90,13 +89,13 @@ const SignInRoute: React.FC = () => {
   );
 };
 
-export interface SignInPageInterface extends PagePropsInterface, SiteLayoutInterface {}
+export type SignInPageInterface = SiteLayoutProviderInterface;
 
-const SignIn: NextPage<SignInPageInterface> = ({ navRubrics, ...props }) => {
+const SignIn: NextPage<SignInPageInterface> = (props) => {
   return (
-    <SiteLayout title={'Авторизация'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'Авторизация'} {...props}>
       <SignInRoute />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

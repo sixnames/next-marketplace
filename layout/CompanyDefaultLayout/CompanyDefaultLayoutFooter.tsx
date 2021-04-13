@@ -1,8 +1,8 @@
+import Inner from 'components/Inner/Inner';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
-import Inner from '../../../components/Inner/Inner';
 
-const Footer: React.FC = () => {
+const CompanyDefaultLayoutFooter: React.FC = () => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configSiteName = getSiteConfigSingleValue('siteName');
 
@@ -17,4 +17,4 @@ const Footer: React.FC = () => {
   );
 };
 
-export default Footer;
+export default CompanyDefaultLayoutFooter;

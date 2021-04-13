@@ -1,5 +1,4 @@
-import { RubricModel } from 'db/dbModels';
-import { PagePropsInterface } from 'pages/_app';
+import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import Footer from './Footer/Footer';
@@ -8,7 +7,6 @@ import Spinner from '../../components/Spinner/Spinner';
 import Meta, { PageUrlsInterface } from '../Meta';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
-import classes from './SiteLayout.module.css';
 import Modal from 'components/Modal/Modal';
 
 interface SiteLayoutConsumerInterface {
@@ -25,16 +23,15 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   pageUrls,
 }) => {
   const { isLoading, isModal } = useAppContext();
-  const contentRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <div className={classes.frame}>
+    <div className='flex flex-col text-primary-text bg-primary-background min-h-full-height'>
       <Meta title={title} description={description} pageUrls={pageUrls} />
 
       <Header />
 
-      <div ref={contentRef} className={classes.content}>
-        <main className={classes.main}>
+      <div className='flex flex-col flex-grow'>
+        <main className='flex-grow'>
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
@@ -47,14 +44,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   );
 };
 
-export interface SiteLayoutInterface extends PagePropsInterface {
-  title?: string;
-  description?: string;
-  navRubrics: RubricModel[];
-  previewImage?: string;
-}
-
-const SiteLayout: React.FC<SiteLayoutInterface> = ({
+const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
   navRubrics,
   title,

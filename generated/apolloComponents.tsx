@@ -292,10 +292,21 @@ export type CatalogueDataInput = {
   filter: Array<Scalars['String']>;
 };
 
+export type CatalogueSearchInput = {
+  search: Scalars['String'];
+  companyId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
+};
+
 export type CatalogueSearchResult = {
   __typename?: 'CatalogueSearchResult';
   rubrics: Array<Rubric>;
   products: Array<Product>;
+};
+
+export type CatalogueSearchTopItemsInput = {
+  companyId?: Maybe<Scalars['ObjectId']>;
+  companySlug?: Maybe<Scalars['String']>;
 };
 
 export type CitiesPaginationPayload = PaginationPayload & {
@@ -1609,6 +1620,10 @@ export type Product = Base & Timestamp & {
   manufacturer?: Maybe<Manufacturer>;
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
+  /** Returns all count number of the shop products */
+  shopsCount: Scalars['Int'];
+  /** Should find all connected shop products and return minimal and maximal price. */
+  cardPrices: ProductCardPrices;
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
@@ -1818,8 +1833,6 @@ export type Query = {
   getRubricBySlug: Rubric;
   /** Should return rubrics tree */
   getAllRubrics: Array<Rubric>;
-  /** Should return catalogue nav rubrics */
-  getCatalogueNavRubrics: Array<Rubric>;
   /** Should return gender options */
   getGenderOptions: Array<SelectOption>;
   /** Should return attribute variants options */
@@ -1877,8 +1890,13 @@ export type QueryGetAllUsersArgs = {
 };
 
 
+export type QueryGetCatalogueSearchTopItemsArgs = {
+  input: CatalogueSearchTopItemsInput;
+};
+
+
 export type QueryGetCatalogueSearchResultArgs = {
-  search: Scalars['String'];
+  input: CatalogueSearchInput;
 };
 
 
@@ -2238,11 +2256,11 @@ export type ShopProduct = Timestamp & {
   productId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   oldPrices: Array<ShopProductOldPrice>;
-  product: Product;
-  shop: Shop;
   formattedPrice: Scalars['String'];
   formattedOldPrice?: Maybe<Scalars['String']>;
   discountedPercent?: Maybe<Scalars['Int']>;
+  product: Product;
+  shop: Shop;
   inCartCount: Scalars['Int'];
 };
 
@@ -4356,7 +4374,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -4364,7 +4382,10 @@ export type ProductSnippetFragment = (
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
     )> }
-  )>, ratingFeatures: Array<(
+  )>, cardPrices: (
+    { __typename?: 'ProductCardPrices' }
+    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
+  ), ratingFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
     & { attributeMetric?: Maybe<(
@@ -4382,7 +4403,9 @@ export type SearchRubricFragment = (
   & Pick<Rubric, '_id' | 'name' | 'slug'>
 );
 
-export type GetCatalogueSearchTopItemsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetCatalogueSearchTopItemsQueryVariables = Exact<{
+  input: CatalogueSearchTopItemsInput;
+}>;
 
 
 export type GetCatalogueSearchTopItemsQuery = (
@@ -4400,7 +4423,7 @@ export type GetCatalogueSearchTopItemsQuery = (
 );
 
 export type GetCatalogueSearchResultQueryVariables = Exact<{
-  search: Scalars['String'];
+  input: CatalogueSearchInput;
 }>;
 
 
@@ -4535,10 +4558,10 @@ export type UserCompanyFragment = (
   & Pick<Company, '_id' | 'name' | 'slug'>
 );
 
-export type UserComapnyQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserCompanyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserComapnyQuery = (
+export type UserCompanyQuery = (
   { __typename?: 'Query' }
   & { getUserCompany?: Maybe<(
     { __typename?: 'Company' }
@@ -5189,6 +5212,12 @@ export const ProductSnippetFragmentDoc = gql`
       _id
       name
     }
+  }
+  shopsCount
+  cardPrices {
+    _id
+    min
+    max
   }
   ratingFeatures {
     _id
@@ -8699,8 +8728,8 @@ export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRub
 export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
 export type GetAllRubricVariantsQueryResult = Apollo.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
 export const GetCatalogueSearchTopItemsDocument = gql`
-    query GetCatalogueSearchTopItems {
-  getCatalogueSearchTopItems {
+    query GetCatalogueSearchTopItems($input: CatalogueSearchTopItemsInput!) {
+  getCatalogueSearchTopItems(input: $input) {
     rubrics {
       ...SearchRubric
     }
@@ -8724,10 +8753,11 @@ ${ProductSnippetFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetCatalogueSearchTopItemsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetCatalogueSearchTopItemsQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
+export function useGetCatalogueSearchTopItemsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, options);
       }
@@ -8739,8 +8769,8 @@ export type GetCatalogueSearchTopItemsQueryHookResult = ReturnType<typeof useGet
 export type GetCatalogueSearchTopItemsLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsLazyQuery>;
 export type GetCatalogueSearchTopItemsQueryResult = Apollo.QueryResult<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>;
 export const GetCatalogueSearchResultDocument = gql`
-    query GetCatalogueSearchResult($search: String!) {
-  getCatalogueSearchResult(search: $search) {
+    query GetCatalogueSearchResult($input: CatalogueSearchInput!) {
+  getCatalogueSearchResult(input: $input) {
     rubrics {
       ...SearchRubric
     }
@@ -8764,7 +8794,7 @@ ${ProductSnippetFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetCatalogueSearchResultQuery({
  *   variables: {
- *      search: // value for 'search'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -9039,8 +9069,8 @@ export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
 export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
 export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;
-export const UserComapnyDocument = gql`
-    query UserComapny {
+export const UserCompanyDocument = gql`
+    query UserCompany {
   getUserCompany {
     ...UserCompany
   }
@@ -9048,28 +9078,28 @@ export const UserComapnyDocument = gql`
     ${UserCompanyFragmentDoc}`;
 
 /**
- * __useUserComapnyQuery__
+ * __useUserCompanyQuery__
  *
- * To run a query within a React component, call `useUserComapnyQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserComapnyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserComapnyQuery({
+ * const { data, loading, error } = useUserCompanyQuery({
  *   variables: {
  *   },
  * });
  */
-export function useUserComapnyQuery(baseOptions?: Apollo.QueryHookOptions<UserComapnyQuery, UserComapnyQueryVariables>) {
+export function useUserCompanyQuery(baseOptions?: Apollo.QueryHookOptions<UserCompanyQuery, UserCompanyQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserComapnyQuery, UserComapnyQueryVariables>(UserComapnyDocument, options);
+        return Apollo.useQuery<UserCompanyQuery, UserCompanyQueryVariables>(UserCompanyDocument, options);
       }
-export function useUserComapnyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserComapnyQuery, UserComapnyQueryVariables>) {
+export function useUserCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserCompanyQuery, UserCompanyQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserComapnyQuery, UserComapnyQueryVariables>(UserComapnyDocument, options);
+          return Apollo.useLazyQuery<UserCompanyQuery, UserCompanyQueryVariables>(UserCompanyDocument, options);
         }
-export type UserComapnyQueryHookResult = ReturnType<typeof useUserComapnyQuery>;
-export type UserComapnyLazyQueryHookResult = ReturnType<typeof useUserComapnyLazyQuery>;
-export type UserComapnyQueryResult = Apollo.QueryResult<UserComapnyQuery, UserComapnyQueryVariables>;
+export type UserCompanyQueryHookResult = ReturnType<typeof useUserCompanyQuery>;
+export type UserCompanyLazyQueryHookResult = ReturnType<typeof useUserCompanyLazyQuery>;
+export type UserCompanyQueryResult = Apollo.QueryResult<UserCompanyQuery, UserCompanyQueryVariables>;

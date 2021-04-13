@@ -213,7 +213,17 @@ export interface NexusGenInputs {
     // input type
     companySlug: string | null; // String
     filter: string[]; // [String!]!
-    lastProductId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+  };
+  CatalogueSearchInput: {
+    // input type
+    companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    companySlug: string | null; // String
+    search: string; // String!
+  };
+  CatalogueSearchTopItemsInput: {
+    // input type
+    companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    companySlug: string | null; // String
   };
   ContactsInput: {
     // input type
@@ -1394,6 +1404,7 @@ export interface NexusGenFieldTypes {
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
     brandSlug: string | null; // String
+    cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
@@ -1411,6 +1422,7 @@ export interface NexusGenFieldTypes {
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
+    shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     textFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -1525,7 +1537,6 @@ export interface NexusGenFieldTypes {
     getBrand: NexusGenRootTypes['Brand']; // Brand!
     getBrandBySlug: NexusGenRootTypes['Brand'] | null; // Brand
     getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
-    getCatalogueNavRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCatalogueSearchTopItems: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCity: NexusGenRootTypes['City']; // City!
@@ -2397,6 +2408,7 @@ export interface NexusGenFieldTypeNames {
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';
     brandSlug: 'String';
+    cardPrices: 'ProductCardPrices';
     connections: 'ProductConnection';
     createdAt: 'Date';
     description: 'String';
@@ -2414,6 +2426,7 @@ export interface NexusGenFieldTypeNames {
     rubric: 'Rubric';
     rubricId: 'ObjectId';
     shopProducts: 'ShopProduct';
+    shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';
     textFeatures: 'ProductAttribute';
@@ -2528,7 +2541,6 @@ export interface NexusGenFieldTypeNames {
     getBrand: 'Brand';
     getBrandBySlug: 'Brand';
     getBrandsOptions: 'Brand';
-    getCatalogueNavRubrics: 'Rubric';
     getCatalogueSearchResult: 'CatalogueSearchResult';
     getCatalogueSearchTopItems: 'CatalogueSearchResult';
     getCity: 'City';
@@ -3256,7 +3268,11 @@ export interface NexusGenArgTypes {
     };
     getCatalogueSearchResult: {
       // args
-      search: string; // String!
+      input: NexusGenInputs['CatalogueSearchInput']; // CatalogueSearchInput!
+    };
+    getCatalogueSearchTopItems: {
+      // args
+      input: NexusGenInputs['CatalogueSearchTopItemsInput']; // CatalogueSearchTopItemsInput!
     };
     getCity: {
       // args

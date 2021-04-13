@@ -2,8 +2,7 @@ import { arg, extendType, inputObjectType, nonNull, stringArg } from 'nexus';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_RUBRICS } from 'db/collectionNames';
-import { SORT_ASC, SORT_DESC } from 'config/common';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { SORT_ASC } from 'config/common';
 
 export const GetAllRubricsInput = inputObjectType({
   name: 'GetAllRubricsInput',
@@ -96,40 +95,6 @@ export const RubricQueries = extendType({
           .toArray();
 
         return rubrics;
-      },
-    });
-
-    // Should return catalogue nav rubrics
-    t.nonNull.list.nonNull.field('getCatalogueNavRubrics', {
-      type: 'Rubric',
-      description: 'Should return catalogue nav rubrics',
-      resolve: async (_root, _args, context): Promise<RubricModel[]> => {
-        try {
-          const { city } = await getRequestParams(context);
-          const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-
-          const rubrics = await rubricsCollection
-            .aggregate([
-              {
-                $match: {
-                  activeProductsCount: { $gt: 0 },
-                },
-              },
-              {
-                $sort: {
-                  [`views.${city}`]: SORT_DESC,
-                  [`priorities.${city}`]: SORT_DESC,
-                },
-              },
-            ])
-            .toArray();
-
-          return rubrics;
-        } catch (e) {
-          console.log(e);
-          return [];
-        }
       },
     });
   },

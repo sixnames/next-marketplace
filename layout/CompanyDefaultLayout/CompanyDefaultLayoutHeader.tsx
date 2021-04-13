@@ -1,36 +1,35 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
-import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
-import { CartModel } from 'db/dbModels';
-import useSignOut from 'hooks/useSignOut';
-import LayoutCard from 'layout/LayoutCard/LayoutCard';
-import { alwaysArray } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import StickyNav from './StickyNav';
-import Link from '../../../components/Link/Link';
-import { useThemeContext } from 'context/themeContext';
-import { useConfigContext } from 'context/configContext';
-import Icon from '../../../components/Icon/Icon';
-import Inner from '../../../components/Inner/Inner';
-import { useSiteContext } from 'context/siteContext';
-import HeaderSearch from './HeaderSearch';
-import { useUserContext } from 'context/userContext';
-import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
-import CartDropdown from './CartDropdown';
-import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
+import CounterSticker from 'components/CounterSticker/CounterSticker';
+import Icon from 'components/Icon/Icon';
+import Inner from 'components/Inner/Inner';
+import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
+import Link from 'components/Link/Link';
+import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import {
-  ROLE_SLUG_ADMIN,
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,
   ROUTE_APP,
   ROUTE_CATALOGUE,
-  ROUTE_CMS,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
 } from 'config/common';
+import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
+import { useThemeContext } from 'context/themeContext';
+import { useUserContext } from 'context/userContext';
+import { CartModel, CompanyModel } from 'db/dbModels';
+import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
+import useSignOut from 'hooks/useSignOut';
+import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import CartDropdown from 'layout/SiteLayout/Header/CartDropdown';
+import HeaderSearch from 'layout/SiteLayout/Header/HeaderSearch';
+import StickyNav from 'layout/SiteLayout/Header/StickyNav';
+import { alwaysArray } from 'lib/arrayUtils';
+import { noNaN } from 'lib/numbers';
+import { phoneToReadable } from 'lib/phoneUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface HeaderSearchTriggerInterface {
   setIsSearchOpen: (value: boolean) => void;
@@ -87,26 +86,17 @@ const HeaderProfileLink: React.FC = () => {
                       </Link>
                     </li>
 
-                    {me?.role?.slug === ROLE_SLUG_ADMIN ? (
-                      <li>
-                        <Link
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_CMS}
-                        >
-                          <span>CMS</span>
-                        </Link>
-                      </li>
-                    ) : null}
-
                     {me?.role?.slug === ROLE_SLUG_COMPANY_MANAGER ||
                     me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li>
-                        <Link
+                        <a
+                          target={'_blank'}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_APP}
+                          href={`https://${process.env.DEFAULT_DOMAIN}${ROUTE_APP}`}
+                          rel='noreferrer'
                         >
                           <span>Панель управления</span>
-                        </Link>
+                        </a>
                       </li>
                     ) : null}
 
@@ -304,8 +294,11 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex';
-const Header: React.FC = () => {
+interface CompanyDefaultLayoutHeaderInterface {
+  company?: CompanyModel | null;
+}
+
+const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> = ({ company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -321,6 +314,7 @@ const Header: React.FC = () => {
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const callbackPhone = company?.contacts.phones[0];
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -330,7 +324,7 @@ const Header: React.FC = () => {
     setIsBurgerDropdownOpen(false);
   }, []);
 
-  const headerVars = { '--logo-width': '10rem' } as React.CSSProperties;
+  const headerVars = { '--logo-width': '7rem' } as React.CSSProperties;
 
   return (
     <React.Fragment>
@@ -345,14 +339,23 @@ const Header: React.FC = () => {
           lowTop
         >
           <ThemeTrigger />
-          <LanguageTrigger />
+          <div className='flex items-center'>
+            <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
+              {phoneToReadable(callbackPhone)}
+            </a>
+            <div className='ml-4'>
+              <LanguageTrigger />
+            </div>
+          </div>
         </Inner>
 
         <Inner
           className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'
           lowTop
         >
-          <div className={`${middleSideClassName} justify-start`}>
+          <div
+            className={`hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex justify-start`}
+          >
             <div className={`${middleLinkClassName}`}>
               <div className={`relative mr-3`}>
                 <Icon name={'marker'} className='w-5 h-5' />
@@ -363,11 +366,11 @@ const Header: React.FC = () => {
 
           <Link
             href={`/`}
-            className='flex-shrink-0 w-[var(--logo-width)]'
+            className='flex-shrink-0 w-[var(--logo-width)] h-[var(--logo-width)]'
             aria-label={'Главная страница'}
           >
             <img
-              className='w-full h-auto'
+              className='w-full h-full object-contain'
               src={siteLogoSrc}
               width='150'
               height='24'
@@ -375,7 +378,9 @@ const Header: React.FC = () => {
             />
           </Link>
 
-          <div className={`${middleSideClassName} justify-end`}>
+          <div
+            className={`hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex justify-end`}
+          >
             <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
             <HeaderProfileLink />
 
@@ -424,4 +429,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default CompanyDefaultLayoutHeader;

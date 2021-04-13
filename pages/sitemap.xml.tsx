@@ -1,8 +1,9 @@
-import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_RUBRICS } from 'db/collectionNames';
-import { LanguageModel, ProductFacetModel, RubricModel } from 'db/dbModels';
+import { COL_COMPANIES, COL_LANGUAGES, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
+import { getDomain } from 'tldts';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -30,70 +31,105 @@ const createSitemap = ({
     </urlset>
     `;
 
+interface SlugsAggregationInterface {
+  productSlugs: string[];
+  selectedOptionsSlugs: string[];
+  rubric: {
+    slug: string;
+  };
+}
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res, req, defaultLocale } = context;
   const slugsWithLocales: string[] = [];
   const initialSlugs: string[] = [];
   const db = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const host = `${context.req.headers.host}`;
+  const domain = getDomain(host, { validHosts: ['localhost'] });
 
-  const rubrics = await rubricsCollection
-    .aggregate([
+  // Session company
+  let company: CompanyModel | null | undefined = null;
+  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
+    const db = await getDatabase();
+    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+  }
+
+  const companyRubricsMatch = company ? { companyId: company._id } : {};
+  const productOptionsAggregation = await shopProductsCollection
+    .aggregate<SlugsAggregationInterface>([
       {
         $match: {
-          activeProductsCount: { $gt: 0 },
+          ...companyRubricsMatch,
+        },
+      },
+      {
+        $unwind: '$selectedOptionsSlugs',
+      },
+      {
+        $group: {
+          _id: '$rubricId',
+          productSlugs: {
+            $addToSet: '$slug',
+          },
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubrics',
+          let: { rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$_id'],
+                },
+              },
+            },
+            {
+              $project: {
+                slug: true,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: {
+            $arrayElemAt: ['$rubrics', 0],
+          },
         },
       },
       {
         $project: {
-          slug: 1,
-          attributes: 1,
+          rubrics: false,
         },
       },
     ])
     .toArray();
 
-  // Get initial slugs
-  for await (const rubric of rubrics) {
+  productOptionsAggregation.forEach((template) => {
+    const { rubric, productSlugs, selectedOptionsSlugs } = template;
+
     // rubric
     initialSlugs.push(`catalogue/${rubric.slug}`);
 
-    const productOptionsAggregation = await productFacetsCollection
-      .aggregate([
-        {
-          $match: {
-            rubricId: rubric._id,
-            active: true,
-          },
-        },
-        {
-          $project: {
-            slug: 1,
-            selectedOptionsSlugs: 1,
-          },
-        },
-      ])
-      .toArray();
-
-    // product
-    productOptionsAggregation.forEach(({ selectedOptionsSlugs, slug }) => {
-      const productSlug = `product/rubric-${rubric.slug}/${slug}`;
-      if (!initialSlugs.includes(productSlug)) {
-        initialSlugs.push(productSlug);
-      }
-
-      // options
-      selectedOptionsSlugs.forEach((optionSlug) => {
-        const realOptionSlug = `catalogue/${rubric.slug}/${optionSlug}`;
-
-        if (!initialSlugs.includes(realOptionSlug)) {
-          initialSlugs.push(realOptionSlug);
-        }
-      });
+    // catalogue filters
+    selectedOptionsSlugs.forEach((slug) => {
+      initialSlugs.push(`catalogue/${rubric.slug}/${slug}`);
     });
-  }
+
+    // products
+    productSlugs.forEach((slug) => {
+      initialSlugs.push(`product/${slug}`);
+    });
+  });
 
   // Get site languages
   const languages = await languagesCollection.find({}).toArray();

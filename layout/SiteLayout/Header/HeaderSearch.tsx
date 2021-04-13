@@ -83,7 +83,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
-      search: `${value}`,
+      input: {
+        search: `${value}`,
+      },
     },
   });
   const minSearchLength = 2;

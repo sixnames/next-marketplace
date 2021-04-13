@@ -130,7 +130,7 @@ const HeaderProfileLink: React.FC = () => {
       ariaLabel={'Войти'}
       testId={me ? `profile-link` : `sign-in-link`}
       href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
-      className={`${middleLinkClassName}`}
+      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
       <span className={`relative`}>
         <Icon name={'user'} className='w-5 h-5' />
@@ -348,50 +348,49 @@ const Header: React.FC = () => {
           <LanguageTrigger />
         </Inner>
 
-        <Inner
-          className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'
-          lowTop
-        >
-          <div className={`${middleSideClassName} justify-start`}>
-            <div className={`${middleLinkClassName}`}>
-              <div className={`relative mr-3`}>
-                <Icon name={'marker'} className='w-5 h-5' />
-              </div>
-              <span>Винотеки</span>
-            </div>
-          </div>
-
-          <Link
-            href={`/`}
-            className='flex-shrink-0 w-[var(--logo-width)]'
-            aria-label={'Главная страница'}
-          >
-            <img
-              className='w-full h-auto'
-              src={siteLogoSrc}
-              width='150'
-              height='24'
-              alt={`${configSiteName}`}
-            />
-          </Link>
-
-          <div className={`${middleSideClassName} justify-end`}>
-            <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
-            <HeaderProfileLink />
-
-            <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
-              <div className={`relative`}>
-                <Icon name={'compare'} className='w-5 h-5' />
+        <Inner lowTop lowBottom>
+          <div className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'>
+            <div className={`${middleSideClassName} justify-start`}>
+              <div className={`${middleLinkClassName}`}>
+                <div className={`relative mr-3`}>
+                  <Icon name={'marker'} className='w-5 h-5' />
+                </div>
+                <span>Винотеки</span>
               </div>
             </div>
 
-            <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
-              <div className={`relative`}>
-                <Icon name={'heart'} className='w-5 h-5' />
-              </div>
-            </div>
+            <Link
+              href={`/`}
+              className='flex items-center flex-shrink-0 w-[var(--logo-width)]'
+              aria-label={'Главная страница'}
+            >
+              <img
+                className='w-full h-auto'
+                src={siteLogoSrc}
+                width='150'
+                height='24'
+                alt={`${configSiteName}`}
+              />
+            </Link>
 
-            <HeaderCartLink />
+            <div className={`${middleSideClassName} justify-end`}>
+              <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
+              <HeaderProfileLink />
+
+              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+                <div className={`relative`}>
+                  <Icon name={'compare'} className='w-5 h-5' />
+                </div>
+              </div>
+
+              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+                <div className={`relative`}>
+                  <Icon name={'heart'} className='w-5 h-5' />
+                </div>
+              </div>
+
+              <HeaderCartLink />
+            </div>
           </div>
         </Inner>
 

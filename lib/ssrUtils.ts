@@ -529,7 +529,7 @@ async function getPageInitialState({
     company = await companiesCollection.findOne({ domain });
   }
   // For development
-  company = await companiesCollection.findOne({ slug: 'alkoliner' });
+  // company = await companiesCollection.findOne({ slug: 'alkoliner' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

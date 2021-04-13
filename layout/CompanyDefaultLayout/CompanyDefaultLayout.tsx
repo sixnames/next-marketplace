@@ -3,11 +3,11 @@ import Modal from 'components/Modal/Modal';
 import Spinner from 'components/Spinner/Spinner';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
-import { CompanyModel, RubricModel } from 'db/dbModels';
+import { CompanyModel } from 'db/dbModels';
 import CompanyDefaultLayoutFooter from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutFooter';
 import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
-import { PagePropsInterface } from 'pages/_app';
+import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 
 interface CompanyDefaultLayoutConsumerInterface {
@@ -46,14 +46,7 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   );
 };
 
-export interface CompanyDefaultLayoutInterface extends PagePropsInterface {
-  title?: string;
-  description?: string;
-  navRubrics: RubricModel[];
-  previewImage?: string;
-}
-
-const CompanyDefaultLayout: React.FC<CompanyDefaultLayoutInterface> = ({
+const CompanyDefaultLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
   navRubrics,
   title,

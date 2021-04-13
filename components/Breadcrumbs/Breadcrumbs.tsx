@@ -1,9 +1,7 @@
 import { getFieldTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import classes from './Breadcrumbs.module.css';
 import Inner from '../Inner/Inner';
-import { useAppContext } from 'context/appContext';
 import Link, { LinkInterface } from '../Link/Link';
 
 export interface BreadcrumbsItemInterface extends LinkInterface {
@@ -17,35 +15,36 @@ interface BreadcrumbsInterface {
 
 const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config = [] }) => {
   const { locale } = useRouter();
-  const { isMobile } = useAppContext();
 
   const mainPageName = React.useMemo(() => {
     return getFieldTranslation(`breadcrumbs.main.${locale}`);
   }, [locale]);
 
-  if (isMobile) {
-    return null;
-  }
-
   return (
-    <div className={classes.frame}>
+    <div className='mb-10'>
       <Inner>
-        <ul className={classes.list}>
-          <li className={classes.listItem}>
-            <Link className={classes.link} href={`/`}>
-              <span>{mainPageName}</span> —
+        <ul className='overflow-hidden whitespace-nowrap overflow-ellipsis'>
+          <li className='inline mr-1'>
+            <Link
+              className='text-primary-text hover:text-primary-text hover:no-underline'
+              href={`/`}
+            >
+              <span className='hover:text-theme'>{mainPageName}</span> —
             </Link>
           </li>
           {config.map((configItem, index) => {
             return (
-              <li className={classes.listItem} key={index}>
-                <Link className={classes.link} href={configItem.href}>
-                  <span>{configItem.name}</span> —
+              <li className='inline mr-1' key={index}>
+                <Link
+                  className='text-primary-text hover:text-primary-text hover:no-underline'
+                  href={configItem.href}
+                >
+                  <span className='hover:text-theme'>{configItem.name}</span> —
                 </Link>
               </li>
             );
           })}
-          <li className={`${classes.listItem} ${classes.listItemCurrent}`}>{currentPageName}</li>
+          <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
         </ul>
       </Inner>
     </div>

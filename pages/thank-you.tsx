@@ -3,11 +3,10 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ThankYouRoute.module.css';
 
@@ -56,13 +55,13 @@ const ThankYouRoute: React.FC = () => {
   );
 };
 
-interface ThankYouInterface extends PagePropsInterface, SiteLayoutInterface {}
+type ThankYouInterface = SiteLayoutProviderInterface;
 
-const ThankYou: NextPage<ThankYouInterface> = ({ navRubrics, ...props }) => {
+const ThankYou: NextPage<ThankYouInterface> = (props) => {
   return (
-    <SiteLayout title={'Спасибо за заказ!'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'Спасибо за заказ!'} {...props}>
       <ThankYouRoute />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

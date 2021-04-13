@@ -15,14 +15,13 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductAttributeModel, ProductModel } from 'db/dbModels';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Image from 'next/image';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import classes from 'styles/CardRoute.module.css';
 import CardShops from 'routes/CardRoute/CardShops';
@@ -360,18 +359,18 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   );
 };
 
-interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
+interface CardInterface extends SiteLayoutProviderInterface {
   cardData?: ProductModel | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, navRubrics, ...props }) => {
+const Card: NextPage<CardInterface> = ({ cardData, ...props }) => {
   const { currentCity } = props;
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!cardData) {
     return (
-      <SiteLayout navRubrics={navRubrics} {...props}>
+      <SiteLayoutProvider {...props}>
         <ErrorBoundaryFallback />
-      </SiteLayout>
+      </SiteLayoutProvider>
     );
   }
 
@@ -380,15 +379,14 @@ const Card: NextPage<CardInterface> = ({ cardData, navRubrics, ...props }) => {
   const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
 
   return (
-    <SiteLayout
+    <SiteLayoutProvider
       previewImage={cardData.mainImage}
-      navRubrics={navRubrics}
       title={`${prefix}${cardData.originalName}${cityDescription}`}
       description={`${prefix}${cardData.originalName}${cityDescription}`}
       {...props}
     >
       <CardRoute cardData={cardData} />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

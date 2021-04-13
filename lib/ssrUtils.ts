@@ -37,7 +37,7 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
@@ -661,7 +661,7 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    Omit<SiteLayoutInterface, 'description' | 'title'> {}
+    Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;

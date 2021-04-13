@@ -21,7 +21,7 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/dbModels';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getCatalogueData } from 'lib/catalogueUtils';
@@ -31,7 +31,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
-import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
 import { cityIn } from 'lvovich';
@@ -330,22 +329,17 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   );
 };
 
-interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
+interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({
-  catalogueData,
-  navRubrics,
-  currentCity,
-  ...props
-}) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, currentCity, ...props }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout navRubrics={navRubrics} {...props}>
+      <SiteLayoutProvider {...props}>
         <ErrorBoundaryFallback />
-      </SiteLayout>
+      </SiteLayoutProvider>
     );
   }
   const siteName = getSiteConfigSingleValue('siteName');
@@ -354,14 +348,13 @@ const Catalogue: NextPage<CatalogueInterface> = ({
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
-    <SiteLayout
+    <SiteLayoutProvider
       title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
-      navRubrics={navRubrics}
       {...props}
     >
       <CatalogueRoute catalogueData={catalogueData} />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

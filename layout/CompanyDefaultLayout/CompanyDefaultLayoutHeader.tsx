@@ -366,11 +366,11 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
 
           <Link
             href={`/`}
-            className='flex-shrink-0 w-[var(--logo-width)]'
+            className='flex-shrink-0 w-[var(--logo-width)] h-[var(--logo-width)]'
             aria-label={'Главная страница'}
           >
             <img
-              className='w-full h-auto'
+              className='w-full h-full object-contain'
               src={siteLogoSrc}
               width='150'
               height='24'

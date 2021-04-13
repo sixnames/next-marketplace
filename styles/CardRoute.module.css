@@ -386,7 +386,7 @@
 
 @media only screen and (max-width: 1024px) {
   .card {
-    padding-top: 4rem;
+    padding-top: 2rem;
   }
 
   .mainFrame:not(.mainFrameNoBackground):after {
@@ -430,10 +430,6 @@
 }
 
 @media only screen and (max-width: 680px) {
-  .card {
-    padding-top: 2rem;
-  }
-
   .mainData {
     grid-template-columns: 120px 1fr;
   }

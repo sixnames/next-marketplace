@@ -17,12 +17,11 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import RowWithGap from 'layout/RowWithGap/RowWithGap';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
@@ -188,15 +187,15 @@ const ProfileDetailsRoute: React.FC = () => {
   );
 };
 
-interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
+type ProfileDetailsInterface = SiteLayoutProviderInterface;
 
-const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics, ...props }) => {
+const ProfileDetails: NextPage<ProfileDetailsInterface> = (props) => {
   return (
-    <SiteLayout title={'Профиль'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'Профиль'} {...props}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

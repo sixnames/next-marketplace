@@ -16,13 +16,12 @@ import {
   useGetAllMyOrdersQuery,
 } from 'generated/apolloComponents';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
 import { getSession } from 'next-auth/client';
 import Image from 'next/image';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ProfileOrdersRoute.module.css';
 
@@ -219,15 +218,15 @@ const ProfileOrdersRoute: React.FC = () => {
   );
 };
 
-interface ProfileInterface extends PagePropsInterface, SiteLayoutInterface {}
+type ProfileInterface = SiteLayoutProviderInterface;
 
-const Profile: NextPage<ProfileInterface> = ({ navRubrics, ...props }) => {
+const Profile: NextPage<ProfileInterface> = (props) => {
   return (
-    <SiteLayout title={'История заказов'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'История заказов'} {...props}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

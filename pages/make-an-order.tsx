@@ -16,13 +16,12 @@ import { useUserContext } from 'context/userContext';
 import { CartProductModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import CartAside from 'routes/CartRoute/CartAside';
 import classes from 'styles/MakeAnOrderRoute.module.css';
@@ -278,13 +277,13 @@ const MakeAnOrderRoute: React.FC = () => {
   );
 };
 
-interface MakeAnOrderInterface extends PagePropsInterface, SiteLayoutInterface {}
+type MakeAnOrderInterface = SiteLayoutProviderInterface;
 
-const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics, ...props }) => {
+const MakeAnOrder: NextPage<MakeAnOrderInterface> = (props) => {
   return (
-    <SiteLayout title={'Корзина'} navRubrics={navRubrics} {...props}>
+    <SiteLayoutProvider title={'Корзина'} {...props}>
       <MakeAnOrderRoute />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

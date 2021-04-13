@@ -1,7 +1,7 @@
 import { ReadStream } from 'fs';
 import { AssetModel, UploadModel } from 'db/dbModels';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
-import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
+// import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
 
 export const getBufferFromFileStream = (stream: ReadStream) => {
   return new Promise<Buffer>((resolve, reject) => {
@@ -30,7 +30,7 @@ export const getBufferFromFileStream = (stream: ReadStream) => {
   });
 };
 
-interface GetSharpBufferInterface {
+/*interface GetSharpBufferInterface {
   file: UploadModel;
   format?: keyof FormatEnum | AvailableFormatInfo;
   width?: number;
@@ -71,10 +71,10 @@ export async function getSharpBuffer({
     console.log('getSharpImage ERROR==== ', e);
     return null;
   }
-}
+}*/
 
-// export interface StoreUploadsInterface {
-export interface StoreUploadsInterface extends Omit<GetSharpBufferInterface, 'file'> {
+// export interface StoreUploadsInterface extends Omit<GetSharpBufferInterface, 'file'> {
+export interface StoreUploadsInterface {
   files: UploadModel[];
   itemId: number | string;
   dist: string;
@@ -91,12 +91,12 @@ export const storeUploads = async ({
   itemId,
   dist,
   startIndex = 0,
-  asImage,
-  width,
-  height,
-  format,
-  quality,
-}: StoreUploadsInterface): Promise<AssetModel[] | null> => {
+}: // asImage,
+// width,
+// height,
+// format,
+// quality,
+StoreUploadsInterface): Promise<AssetModel[] | null> => {
   try {
     const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
@@ -118,7 +118,7 @@ export const storeUploads = async ({
       buffer = await getBufferFromFileStream(fileStream);
       fileName = `${itemId}-${finalIndex}-${ext}`;
 
-      if (!asImage) {
+      /*if (!asImage) {
         buffer = await getBufferFromFileStream(fileStream);
         fileName = `${itemId}-${finalIndex}-${ext}`;
       } else {
@@ -131,7 +131,7 @@ export const storeUploads = async ({
           quality,
         });
         fileName = `${itemId}-${finalIndex}-${extension}`;
-      }
+      }*/
 
       if (!buffer) {
         return null;

@@ -269,13 +269,6 @@ export const getPageInitialData = async ({
         },
       },
       {
-        $project: {
-          _id: true,
-          cities: true,
-          slug: true,
-        },
-      },
-      {
         $sort: { _id: SORT_ASC },
       },
     ])

@@ -7,6 +7,10 @@
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
   }
 
+  .header-hidden-dropdown {
+    clip: rect(0 0 0 0);
+  }
+
   .burger-dropdown {
     height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
   }

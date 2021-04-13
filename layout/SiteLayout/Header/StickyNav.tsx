@@ -1,12 +1,10 @@
 import { ROUTE_CATALOGUE } from 'config/common';
 import { AttributeModel, RubricModel } from 'db/dbModels';
 import * as React from 'react';
-import classes from './StickyNav.module.css';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
-import OutsideClickHandler from 'react-outside-click-handler';
 import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
@@ -20,7 +18,6 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdownHandler,
   rubricSlug,
 }) => {
-  const { asPath } = useRouter();
   const { _id, options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
 
@@ -30,20 +27,18 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
   return (
     <div key={`${_id}`}>
-      <div className={`${classes.dropdownAttributeName}`}>{name}</div>
+      <div className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'>
+        {name}
+      </div>
       <ul>
         {options.map((option) => {
-          const isCurrent = asPath === option.slug;
-
           return (
             <li key={`${option._id}`}>
               <Link
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
-                className={`${classes.dropdownAttributeOption} ${
-                  isCurrent ? classes.currentOption : ''
-                }`}
+                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text hover:no-underline hover:text-theme'
               >
                 {option.name}
                 {postfix}
@@ -57,7 +52,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             prefetch={false}
             href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
             onClick={hideDropdownHandler}
-            className={`${classes.dropdownAttributeOption} ${classes.dropdownAttributeOptionAll}`}
+            className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
           >
             Показать все
           </Link>
@@ -98,7 +93,6 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 
   return (
     <li
-      className={classes.navItem}
       onMouseEnter={showDropdownHandler}
       onMouseLeave={hideDropdownHandler}
       data-cy={`main-rubric-list-item-${rubric.slug}`}
@@ -108,14 +102,22 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         href={`${ROUTE_CATALOGUE}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
-        className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}
+        className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
       >
         {name}
+        {isCurrent ? (
+          <span className='absolute bottom-0 inset-x-0 w-full h-[2px] bg-theme' />
+        ) : null}
       </Link>
-      <OutsideClickHandler disabled={!isDropdownOpen} onOutsideClick={hideDropdownHandler}>
-        <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
-          <Inner className={classes.dropdownInner}>
-            <div className={classes.dropdownList}>
+
+      <div
+        className={`absolute top-full w-full inset-x-0 bg-primary-background shadow-lg ${
+          isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
+        }`}
+      >
+        <Inner>
+          <div className='grid gap-4 pb-10 grid-cols-8'>
+            <div className='grid gap-4 grid-cols-4 col-span-5'>
               {(navItems || []).map((attribute) => {
                 return (
                   <StickyNavAttribute
@@ -127,10 +129,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
                 );
               })}
             </div>
-            <div />
-          </Inner>
-        </div>
-      </OutsideClickHandler>
+            <div className='col-span-3' />
+          </div>
+        </Inner>
+      </div>
     </li>
   );
 };
@@ -139,9 +141,9 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
 
   return (
-    <nav className={classes.nav}>
+    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary-background wp-desktop:block'>
       <Inner lowBottom lowTop>
-        <ul className={classes.navList}>
+        <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {
             return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;
           })}

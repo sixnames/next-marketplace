@@ -601,7 +601,7 @@ export async function getAppInitialData({
     };
   }
 
-  if (!sessionUser.role) {
+  if (!sessionUser.role || noNaN(sessionUser.companies?.length) < 1) {
     return {
       redirect: {
         permanent: false,

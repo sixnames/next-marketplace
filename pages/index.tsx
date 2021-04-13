@@ -21,7 +21,7 @@ const Home: NextPage<HomePageInterface> = ({ navRubrics, company, ...props }) =>
 
   if (company) {
     return (
-      <CompanyDefaultLayout navRubrics={navRubrics} {...props}>
+      <CompanyDefaultLayout navRubrics={navRubrics} company={company} {...props}>
         <Inner>
           <Title>{company.name}</Title>
         </Inner>

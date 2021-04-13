@@ -359,6 +359,8 @@ table {
 /* Reach UI */
 html [data-reach-menu-button] {
   outline: none;
+  display: flex;
+  align-items: center;
 }
 
 html [data-reach-menu-list],

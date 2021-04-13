@@ -7,12 +7,10 @@ import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
 import Link from 'components/Link/Link';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import {
-  ROLE_SLUG_ADMIN,
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,
   ROUTE_APP,
   ROUTE_CATALOGUE,
-  ROUTE_CMS,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
 } from 'config/common';
@@ -20,7 +18,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useThemeContext } from 'context/themeContext';
 import { useUserContext } from 'context/userContext';
-import { CartModel } from 'db/dbModels';
+import { CartModel, CompanyModel } from 'db/dbModels';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
@@ -29,6 +27,7 @@ import HeaderSearch from 'layout/SiteLayout/Header/HeaderSearch';
 import StickyNav from 'layout/SiteLayout/Header/StickyNav';
 import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
+import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -87,26 +86,17 @@ const HeaderProfileLink: React.FC = () => {
                       </Link>
                     </li>
 
-                    {me?.role?.slug === ROLE_SLUG_ADMIN ? (
-                      <li>
-                        <Link
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_CMS}
-                        >
-                          <span>CMS</span>
-                        </Link>
-                      </li>
-                    ) : null}
-
                     {me?.role?.slug === ROLE_SLUG_COMPANY_MANAGER ||
                     me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li>
-                        <Link
+                        <a
+                          target={'_blank'}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_APP}
+                          href={`https://${process.env.DEFAULT_DOMAIN}${ROUTE_APP}`}
+                          rel='noreferrer'
                         >
                           <span>Панель управления</span>
-                        </Link>
+                        </a>
                       </li>
                     ) : null}
 
@@ -304,7 +294,11 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-const CompanyDefaultLayoutHeader: React.FC = () => {
+interface CompanyDefaultLayoutHeaderInterface {
+  company?: CompanyModel | null;
+}
+
+const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> = ({ company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -320,6 +314,7 @@ const CompanyDefaultLayoutHeader: React.FC = () => {
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const callbackPhone = company?.contacts.phones[0];
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -344,7 +339,12 @@ const CompanyDefaultLayoutHeader: React.FC = () => {
           lowTop
         >
           <ThemeTrigger />
-          <LanguageTrigger />
+          <div className='flex items-center'>
+            <a className='text-secondary-text mr-4' href={`tel:${callbackPhone}`}>
+              {phoneToReadable(callbackPhone)}
+            </a>
+            <LanguageTrigger />
+          </div>
         </Inner>
 
         <Inner

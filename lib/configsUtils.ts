@@ -205,7 +205,7 @@ export function getConfigTemplates({
       slug: 'facebook',
       name: 'Ссылка на Facebook',
       description: '',
-      multi: true,
+      multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
@@ -221,7 +221,7 @@ export function getConfigTemplates({
       slug: 'instagram',
       name: 'Ссылка на Instagram',
       description: '',
-      multi: true,
+      multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
@@ -237,7 +237,7 @@ export function getConfigTemplates({
       slug: 'vkontakte',
       name: 'Ссылка на VKontakte',
       description: '',
-      multi: true,
+      multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
@@ -253,7 +253,7 @@ export function getConfigTemplates({
       slug: 'odnoklassniki',
       name: 'Ссылка на Odnoklassniki',
       description: '',
-      multi: true,
+      multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
@@ -269,7 +269,7 @@ export function getConfigTemplates({
       slug: 'youtube',
       name: 'Ссылка на Youtube',
       description: '',
-      multi: true,
+      multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {

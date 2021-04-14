@@ -28,17 +28,19 @@ const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
         );
       })}
 
-      <div className='mb-8 max-w-[980px]'>
-        <Notification
-          variant={'warning'}
-          title={'Внимание!'}
-          message={`Каждая настройка содержит города и языки созданные в базе данных.
+      {normalConfigs.length > 0 ? (
+        <div className='mb-8 max-w-[980px]'>
+          <Notification
+            variant={'warning'}
+            title={'Внимание!'}
+            message={`Каждая настройка содержит города и языки созданные в базе данных.
               Обязательны к заполнению только основной город и основной язык.
               Если пользователь войдёт на сайт не основного города или будет использовать
               не основной язык и настройка не будет заполнена по этим параметрам,
               то значение настройки будет взято из основных полей.`}
-        />
-      </div>
+          />
+        </div>
+      ) : null}
 
       {normalConfigs.map((config) => {
         return <FormikConfigInput key={`${config._id}`} config={config} />;

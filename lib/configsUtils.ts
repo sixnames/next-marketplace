@@ -1,4 +1,9 @@
-import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import {
+  CONFIG_DEFAULT_COMPANY_SLUG,
+  CONFIG_VARIANT_ASSET,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+} from 'config/common';
 import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { CompanyModel, ConfigModel, ConfigVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -593,20 +598,25 @@ export async function getConfigPageData({
   const db = await getDatabase();
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const isDefault = companyId === CONFIG_DEFAULT_COMPANY_SLUG;
 
   if (!companyId || companyId === 'undefined') {
     return null;
   }
 
-  const company = await companiesCollection.findOne({ _id: new ObjectId(companyId) });
-  if (!company) {
+  let company: CompanyModel | null | undefined = null;
+  if (!isDefault) {
+    company = await companiesCollection.findOne({ _id: new ObjectId(companyId) });
+  }
+
+  if (!company && !isDefault) {
     return null;
   }
 
-  const companySlug = company.slug;
+  const companySlug = isDefault ? CONFIG_DEFAULT_COMPANY_SLUG : company?.slug;
   const companyConfigs = await configsCollection.find({ companySlug, group }).toArray();
   const initialConfigTemplates = getConfigTemplates({
-    companySlug,
+    companySlug: `${companySlug}`,
   });
   const initialConfigsGroup = initialConfigTemplates.filter((config) => {
     return config.group === group;

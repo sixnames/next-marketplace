@@ -38,6 +38,13 @@ export const configsMessages: MessageType[] = [
     },
   },
   {
+    slug: 'configs.delete.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка удаления настроек`,
+      [SECONDARY_LOCALE]: `Configs delete error`,
+    },
+  },
+  {
     slug: 'validation.configs.id',
     messageI18n: {
       [DEFAULT_LOCALE]: `ID настройки обязательно к заполнению`,

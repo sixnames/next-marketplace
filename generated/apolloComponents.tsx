@@ -287,7 +287,6 @@ export type CartProduct = Base & {
 };
 
 export type CatalogueDataInput = {
-  lastProductId?: Maybe<Scalars['ObjectId']>;
   companySlug?: Maybe<Scalars['String']>;
   filter: Array<Scalars['String']>;
 };
@@ -384,6 +383,8 @@ export type Config = {
   /** Accepted formats for asset config */
   acceptedFormats: Array<Scalars['String']>;
   slug: Scalars['String'];
+  group: Scalars['String'];
+  companySlug: Scalars['String'];
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /**
@@ -2328,7 +2329,15 @@ export type Timestamp = {
 
 
 export type UpdateAssetConfigInput = {
-  configId: Scalars['ObjectId'];
+  _id: Scalars['ObjectId'];
+  multi: Scalars['Boolean'];
+  acceptedFormats: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  companySlug: Scalars['String'];
+  group: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  variant: ConfigVariant;
   assets: Array<Scalars['Upload']>;
 };
 
@@ -2390,8 +2399,16 @@ export type UpdateCompanyLogoInput = {
 };
 
 export type UpdateConfigInput = {
-  configId: Scalars['ObjectId'];
+  _id: Scalars['ObjectId'];
+  multi: Scalars['Boolean'];
+  acceptedFormats: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  companySlug: Scalars['String'];
+  group: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   cities: Scalars['JSONObject'];
+  variant: ConfigVariant;
 };
 
 export type UpdateCountryInput = {

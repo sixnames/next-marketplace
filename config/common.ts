@@ -95,6 +95,13 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_ASSET,
 ];
 
+export const CONFIG_GROUP_GLOBALS = 'globals';
+export const CONFIG_GROUP_ANALYTICS = 'analytics';
+export const CONFIG_GROUP_UI = 'ui';
+export const CONFIG_GROUP_CONTACTS = 'contacts';
+export const CONFIG_GROUP_SEO = 'seo';
+export const CONFIG_GROUP_CATALOGUE = 'catalogue';
+
 // OPTIONS GROUP VARIANTS
 export const OPTIONS_GROUP_VARIANT_TEXT = 'text';
 export const OPTIONS_GROUP_VARIANT_ICON = 'icon';

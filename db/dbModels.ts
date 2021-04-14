@@ -295,10 +295,12 @@ export interface ConfigModel {
   group: string;
   name: string;
   description?: string | null;
-  value?: string[];
-  singleValue?: string;
   variant: ConfigVariantModel;
   cities: ConfigCitiesModel;
+
+  // types for ui
+  value?: string[];
+  singleValue?: string;
 }
 
 export interface CountryModel {

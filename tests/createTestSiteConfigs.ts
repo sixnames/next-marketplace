@@ -7,7 +7,7 @@ import {
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getConfigTemplates } from 'lib/getConfigTemplates';
+import { getConfigTemplates } from 'lib/configsUtils';
 import { Collection } from 'mongodb';
 import path from 'path';
 import { findOrCreateTestAsset } from 'lib/s3';

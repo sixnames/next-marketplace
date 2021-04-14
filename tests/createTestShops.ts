@@ -1,5 +1,5 @@
 import { getDatabase } from 'db/mongodb';
-import { getConfigTemplates } from 'lib/getConfigTemplates';
+import { getConfigTemplates } from 'lib/configsUtils';
 import { getCurrencyString } from 'lib/i18n';
 import { getPercentage } from 'lib/numbers';
 import { createTestProducts, CreateTestProductsPayloadInterface } from './createTestProducts';

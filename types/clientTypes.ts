@@ -9,6 +9,7 @@ export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';
 export type OnOffType = 'on' | 'off';
 export type NotificationVariant = 'success' | 'warning' | 'error';
+export type ConfigGroupType = 'globals' | 'analytics' | 'ui' | 'contacts' | 'seo' | 'catalogue';
 
 export type ObjectType = Record<string, any>;
 

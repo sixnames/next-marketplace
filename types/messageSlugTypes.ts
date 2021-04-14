@@ -23,6 +23,7 @@ export type MessageSlug =
   | 'configs.updateAsset.notFound'
   | 'configs.updateAsset.error'
   | 'configs.updateAsset.success'
+  | 'configs.delete.error'
   // Configs validation
   | 'validation.configs.id'
   | 'validation.configs.value'

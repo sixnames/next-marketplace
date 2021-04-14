@@ -480,8 +480,16 @@ export interface NexusGenInputs {
   };
   UpdateAssetConfigInput: {
     // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
     assets: NexusGenScalars['Upload'][]; // [Upload!]!
-    configId: NexusGenScalars['ObjectId']; // ObjectId!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
   };
   UpdateAttributeInGroupInput: {
     // input type
@@ -542,8 +550,16 @@ export interface NexusGenInputs {
   };
   UpdateConfigInput: {
     // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
     cities: NexusGenScalars['JSONObject']; // JSONObject!
-    configId: NexusGenScalars['ObjectId']; // ObjectId!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
   };
   UpdateCountryInput: {
     // input type
@@ -1012,7 +1028,9 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     acceptedFormats: string[]; // [String!]!
     cities: NexusGenScalars['JSONObject']; // JSONObject!
+    companySlug: string; // String!
     description: string | null; // String
+    group: string; // String!
     multi: boolean; // Boolean!
     name: string; // String!
     singleValue: string; // String!
@@ -2016,7 +2034,9 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     acceptedFormats: 'String';
     cities: 'JSONObject';
+    companySlug: 'String';
     description: 'String';
+    group: 'String';
     multi: 'Boolean';
     name: 'String';
     singleValue: 'String';

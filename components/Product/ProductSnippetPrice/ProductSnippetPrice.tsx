@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ProductSnippetPrice.module.css';
 import Currency from '../../Currency/Currency';
 
 interface ProductSnippetPriceInterface {
@@ -16,13 +15,19 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
   const minimalShopsCount = 1;
 
   if (!shopsCount || shopsCount < minimalShopsCount) {
-    return <div className={`${classes.price} ${className ? className : ''}`}>Нет в наличии</div>;
+    return (
+      <div className={`text-secondary-text text-sm ${className ? className : ''}`}>
+        Нет в наличии
+      </div>
+    );
   }
 
   return (
-    <div className={`${classes.price} ${className ? className : ''}`}>
-      {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
-      <Currency className={classes.priceValue} value={value} />
+    <div className={`flex items-baseline text-3xl ${className ? className : ''}`}>
+      <span className='text-secondary-text text-[0.5em] mr-[0.35rem]'>
+        {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
+      </span>
+      <Currency value={value} />
     </div>
   );
 };

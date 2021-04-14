@@ -43,7 +43,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [''],
         },
       },
     },
@@ -60,6 +60,22 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: [foundationYear],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'globals',
+      variant: 'string' as ConfigVariantModel,
+      slug: 'siteLicense',
+      name: 'Сведения о лицензии',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },
@@ -122,9 +138,9 @@ export function getConfigTemplates({
       variant: 'asset' as ConfigVariantModel,
       slug: 'siteLogo',
       name: 'Логотип сайта для тёмной темы',
-      description: 'Полное изображение логотипа в формате SVG',
+      description: 'Полное изображение логотипа в формате SVG или PNG',
       multi: false,
-      acceptedFormats: ['image/svg+xml'],
+      acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
@@ -140,9 +156,9 @@ export function getConfigTemplates({
       variant: 'asset' as ConfigVariantModel,
       slug: 'siteLogoDark',
       name: 'Логотип сайта для светлой темы',
-      description: 'Полное изображение логотипа в формате SVG',
+      description: 'Полное изображение логотипа в формате SVG или PNG',
       multi: false,
-      acceptedFormats: ['image/svg+xml'],
+      acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
@@ -182,7 +198,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: email || [],
+          [DEFAULT_LOCALE]: email || [''],
         },
       },
     },
@@ -198,7 +214,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: phone || [],
+          [DEFAULT_LOCALE]: phone || [''],
         },
       },
     },
@@ -372,7 +388,7 @@ export function getConfigTemplates({
       name: 'Favicon в формате ico 48x48',
       description: '',
       multi: false,
-      acceptedFormats: ['image/x-icon'],
+      acceptedFormats: ['image/x-icon', 'image/vnd.microsoft.icon'],
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
@@ -411,7 +427,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [''],
         },
       },
     },
@@ -444,7 +460,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [''],
         },
       },
     },
@@ -558,7 +574,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['Купить'],
+          [DEFAULT_LOCALE]: ['купить'],
         },
       },
     },
@@ -574,7 +590,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['Купить'],
+          [DEFAULT_LOCALE]: ['купить'],
         },
       },
     },
@@ -625,7 +641,14 @@ export async function getConfigPageData({
   const configTemplates = initialConfigsGroup.reduce((acc: ConfigModel[], template) => {
     const companyConfig = companyConfigs.find(({ slug }) => slug === template.slug);
     if (companyConfig) {
-      return [...acc, companyConfig];
+      return [
+        ...acc,
+        {
+          ...template,
+          _id: companyConfig._id,
+          cities: companyConfig.cities,
+        },
+      ];
     }
     return [...acc, template];
   }, []);

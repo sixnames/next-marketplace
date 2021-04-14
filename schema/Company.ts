@@ -1,4 +1,4 @@
-import { getConfigTemplates } from 'lib/getConfigTemplates';
+import { getConfigTemplates } from 'lib/configsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CompaniesPaginationPayloadModel,

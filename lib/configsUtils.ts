@@ -1,5 +1,8 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
-import { ConfigModel, ConfigVariantModel } from 'db/dbModels';
+import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
+import { CompanyModel, ConfigModel, ConfigVariantModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetConfigTemplatesInterface {
@@ -571,4 +574,57 @@ export function getConfigTemplates({
       },
     },
   ];
+}
+
+interface GetConfigPageDataInterface {
+  group: string;
+  companyId?: string;
+}
+
+interface GetConfigPageDataPayloadInterface {
+  assetConfigs: ConfigModel[];
+  normalConfigs: ConfigModel[];
+}
+
+export async function getConfigPageData({
+  companyId,
+  group,
+}: GetConfigPageDataInterface): Promise<GetConfigPageDataPayloadInterface | null> {
+  const db = await getDatabase();
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+  if (!companyId || companyId === 'undefined') {
+    return null;
+  }
+
+  const company = await companiesCollection.findOne({ _id: new ObjectId(companyId) });
+  if (!company) {
+    return null;
+  }
+
+  const companySlug = company.slug;
+  const companyConfigs = await configsCollection.find({ companySlug, group }).toArray();
+  const initialConfigTemplates = getConfigTemplates({
+    companySlug,
+  });
+  const initialConfigsGroup = initialConfigTemplates.filter((config) => {
+    return config.group === group;
+  });
+
+  const configTemplates = initialConfigsGroup.reduce((acc: ConfigModel[], template) => {
+    const companyConfig = companyConfigs.find(({ slug }) => slug === template.slug);
+    if (companyConfig) {
+      return [...acc, companyConfig];
+    }
+    return [...acc, template];
+  }, []);
+
+  const assetConfigs = configTemplates.filter(({ variant }) => variant === CONFIG_VARIANT_ASSET);
+  const notAssetConfigs = configTemplates.filter(({ variant }) => variant !== CONFIG_VARIANT_ASSET);
+
+  return {
+    assetConfigs: castDbData(assetConfigs),
+    normalConfigs: castDbData(notAssetConfigs),
+  };
 }

@@ -9,7 +9,8 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 export interface ConfigPageInterface extends PagePropsInterface {
-  configTemplates: ConfigModel[];
+  assetConfigs: ConfigModel[];
+  normalConfigs: ConfigModel[];
 }
 
 const AppConfigsLayout: React.FC = ({ children }) => {

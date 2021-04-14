@@ -1,8 +1,8 @@
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
-import Footer from './Footer/Footer';
-import Header from './Header/Header';
+import Footer from 'layout/SiteLayout/Footer';
+import Header from 'layout/SiteLayout/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import Meta, { PageUrlsInterface } from '../Meta';
 import { useAppContext } from 'context/appContext';

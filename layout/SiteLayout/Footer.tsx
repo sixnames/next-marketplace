@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
-import Inner from '../../../components/Inner/Inner';
+import Inner from 'components/Inner/Inner';
 
 const Footer: React.FC = () => {
   const { getSiteConfigSingleValue } = useConfigContext();

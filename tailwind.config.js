@@ -42,8 +42,12 @@ module.exports = {
         'secondary-background': `var(--secondaryBackground)`,
         'secondary-background-light': `var(--secondaryBackgroundLight)`,
         'secondary-button-background': `var(--secondaryButtonBackground)`,
+        backdrop: `rgba(50, 50, 50, 0.3)`,
       },
       minHeight: {
+        'full-height': 'var(--fullHeight, 100vh)',
+      },
+      height: {
         'full-height': 'var(--fullHeight, 100vh)',
       },
       screens: {

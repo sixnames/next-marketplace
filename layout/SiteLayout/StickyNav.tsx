@@ -1,10 +1,10 @@
 import { ROUTE_CATALOGUE } from 'config/common';
 import { AttributeModel, RubricModel } from 'db/dbModels';
 import * as React from 'react';
-import Inner from '../../../components/Inner/Inner';
+import Inner from 'components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
-import Link from '../../../components/Link/Link';
+import Link from 'components/Link/Link';
 import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {

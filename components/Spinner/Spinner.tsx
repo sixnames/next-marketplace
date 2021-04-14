@@ -1,32 +1,34 @@
 import * as React from 'react';
-import classes from './Spinner.module.css';
 
 interface SpinnerInterface {
   className?: string;
   isNested?: boolean;
   isNestedAbsolute?: boolean;
   isTransparent?: boolean;
-  wide?: boolean;
 }
 
 const Spinner: React.FC<SpinnerInterface> = ({
   className,
   isNested,
   isNestedAbsolute,
-  wide = false,
   isTransparent,
 }) => {
   return (
     <div
-      className={`${classes.frame} ${isTransparent ? classes.transparent : ''} ${
-        className ? className : ''
-      } ${isNested ? classes.nested : ''} ${isNestedAbsolute ? classes.absolute : ''} ${
-        wide ? classes.wide : ''
-      }`}
+      className={`z-[9999] w-full flex items-center justify-center ${
+        isTransparent && !isNested ? '' : 'bg-gray-700 bg-opacity-30'
+      } ${
+        isNested
+          ? 'relative h-[100px]'
+          : isNestedAbsolute
+          ? 'absolute inset-0 h-full w-full'
+          : 'fixed inset-0 h-full-height'
+      }
+      } ${className ? className : ''}`}
     >
-      <svg className={classes.circular}>
+      <svg className='spinner-circular'>
         <circle
-          className={classes.path}
+          className='spinner-path'
           cx='50'
           cy='50'
           r='20'

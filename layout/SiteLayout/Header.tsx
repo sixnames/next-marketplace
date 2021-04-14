@@ -3,7 +3,7 @@ import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import { CartModel } from 'db/dbModels';
 import useSignOut from 'hooks/useSignOut';
-import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';

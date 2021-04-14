@@ -10,7 +10,7 @@ import LinkPhone from '../../components/Link/LinkPhone';
 import { useAppContext } from 'context/appContext';
 import Icon from '../../components/Icon/Icon';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
-import LayoutCard from '../../layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 
 interface CardShopInterface {

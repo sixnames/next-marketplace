@@ -38,7 +38,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         <Footer />
       </div>
 
-      {isLoading ? <Spinner wide /> : null}
+      {isLoading ? <Spinner /> : null}
       {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
   );

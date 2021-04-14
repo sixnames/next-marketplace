@@ -21,7 +21,7 @@ import { useUserContext } from 'context/userContext';
 import { CartModel, CompanyModel } from 'db/dbModels';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import useSignOut from 'hooks/useSignOut';
-import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import HeaderSearch from 'layout/SiteLayout/HeaderSearch';
 import StickyNav from 'layout/SiteLayout/StickyNav';

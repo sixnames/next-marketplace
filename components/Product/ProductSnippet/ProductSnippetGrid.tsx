@@ -8,7 +8,7 @@ import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
-import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 
 interface ProductSnippetGridInterface {
   product: CatalogueProductInterface;

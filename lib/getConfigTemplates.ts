@@ -3,10 +3,10 @@ import { ConfigModel, ConfigVariantModel } from 'db/dbModels';
 import { ObjectId } from 'mongodb';
 
 interface GetConfigTemplatesInterface {
-  assetsPath: string;
-  siteName: string;
-  phone: string[];
-  email: string[];
+  assetsPath?: string;
+  siteName?: string;
+  phone?: string[];
+  email?: string[];
   companySlug: string;
   foundationYear?: string;
 }
@@ -35,7 +35,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [siteName],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
         },
       },
     },
@@ -119,7 +119,9 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [`https://${objectStorageDomain}${assetsPath}/siteLogo/siteLogo.svg`],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`https://${objectStorageDomain}${assetsPath}/siteLogo/siteLogo.svg`]
+            : [],
         },
       },
     },
@@ -135,9 +137,9 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [
-            `https://${objectStorageDomain}${assetsPath}/siteLogoDark/siteLogoDark.svg`,
-          ],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`https://${objectStorageDomain}${assetsPath}/siteLogoDark/siteLogoDark.svg`]
+            : [],
         },
       },
     },
@@ -172,7 +174,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: email,
+          [DEFAULT_LOCALE]: email || [],
         },
       },
     },
@@ -188,7 +190,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: phone,
+          [DEFAULT_LOCALE]: phone || [],
         },
       },
     },
@@ -287,9 +289,11 @@ export function getConfigTemplates({
       acceptedFormats: ['image/jpeg'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [
-            `https://${objectStorageDomain}${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`,
-          ],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [
+                `https://${objectStorageDomain}${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`,
+              ]
+            : [],
         },
       },
     },
@@ -305,9 +309,11 @@ export function getConfigTemplates({
       acceptedFormats: ['image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [
-            `https://${objectStorageDomain}${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`,
-          ],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [
+                `https://${objectStorageDomain}${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`,
+              ]
+            : [],
         },
       },
     },
@@ -323,9 +329,11 @@ export function getConfigTemplates({
       acceptedFormats: ['image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [
-            `https://${objectStorageDomain}${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`,
-          ],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [
+                `https://${objectStorageDomain}${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`,
+              ]
+            : [],
         },
       },
     },
@@ -341,9 +349,9 @@ export function getConfigTemplates({
       acceptedFormats: ['image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [
-            `https://${objectStorageDomain}${assetsPath}/apple-touch-icon/apple-touch-icon.png`,
-          ],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`https://${objectStorageDomain}${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
+            : [],
         },
       },
     },
@@ -359,7 +367,9 @@ export function getConfigTemplates({
       acceptedFormats: ['image/x-icon'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [`https://${objectStorageDomain}${assetsPath}/favicon/favicon.ico`],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`https://${objectStorageDomain}${assetsPath}/favicon/favicon.ico`]
+            : [],
         },
       },
     },
@@ -375,7 +385,9 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [`https://${objectStorageDomain}${assetsPath}/icon/icon.svg`],
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`https://${objectStorageDomain}${assetsPath}/icon/icon.svg`]
+            : [],
         },
       },
     },
@@ -391,7 +403,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [siteName],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
         },
       },
     },
@@ -424,7 +436,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [siteName],
+          [DEFAULT_LOCALE]: siteName ? [siteName] : [],
         },
       },
     },

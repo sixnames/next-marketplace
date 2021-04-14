@@ -3,7 +3,6 @@ import { getFieldTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Portal from '@reach/portal';
-import classes from './NotificationsProvider.module.css';
 import Notification, { NotificationInterface } from 'components/Notification/Notification';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
@@ -52,12 +51,12 @@ const NotificationsProvider: React.FC = ({ children }) => {
     <NotificationsContext.Provider value={value}>
       {children}
       <Portal>
-        <div className={classes.frame}>
+        <div className='fixed bottom-8 right-8 z-[9999]'>
           {notifications.map((notification, index) => {
             return (
               <Notification
                 {...notification}
-                className={classes.notification}
+                className='mb-4'
                 key={`${notification.title}-${notification.message}-${index}`}
                 closeHandler={() => closeNotificationHandler(index)}
               />

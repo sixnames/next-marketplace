@@ -1,4 +1,3 @@
-import { get } from 'lodash';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   ASSETS_DIST_CONFIGS,
@@ -7,13 +6,12 @@ import {
   DEFAULT_LOCALE,
   SORT_ASC,
 } from 'config/common';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
 import { COL_CONFIGS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateAssetConfigSchema, updateConfigSchema } from 'validation/configSchema';
-import { deleteUpload, storeUploads } from 'lib/assets';
+import { storeUploads } from 'lib/assets';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',
@@ -32,6 +30,8 @@ export const Config = objectType({
       description: 'Accepted formats for asset config',
     });
     t.nonNull.string('slug');
+    t.nonNull.string('group');
+    t.nonNull.string('companySlug');
     t.nonNull.string('name');
     t.string('description');
     t.nonNull.json('cities', {
@@ -95,15 +95,35 @@ export const ConfigPayload = objectType({
 export const UpdateConfigInput = inputObjectType({
   name: 'UpdateConfigInput',
   definition(t) {
-    t.nonNull.objectId('configId');
+    t.nonNull.objectId('_id');
+    t.nonNull.boolean('multi');
+    t.nonNull.list.nonNull.string('acceptedFormats');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
+    t.nonNull.string('group');
+    t.nonNull.string('name');
+    t.string('description');
     t.nonNull.json('cities');
+    t.nonNull.field('variant', {
+      type: 'ConfigVariant',
+    });
   },
 });
 
 export const UpdateAssetConfigInput = inputObjectType({
   name: 'UpdateAssetConfigInput',
   definition(t) {
-    t.nonNull.objectId('configId');
+    t.nonNull.objectId('_id');
+    t.nonNull.boolean('multi');
+    t.nonNull.list.nonNull.string('acceptedFormats');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
+    t.nonNull.string('group');
+    t.nonNull.string('name');
+    t.string('description');
+    t.nonNull.field('variant', {
+      type: 'ConfigVariant',
+    });
     t.nonNull.list.nonNull.upload('assets');
   },
 });
@@ -126,37 +146,21 @@ export const ConfigMutations = extendType({
       resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
         try {
           // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateConfigSchema,
-          });
-          await validationSchema.validate(args.input);
-
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
-          const { configId, cities } = input;
-
-          // Check config availability
-          const config = await configsCollection.findOne({ _id: configId });
-          if (!config) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.update.error'),
-            };
-          }
+          const { _id } = input;
 
           // Update config
           const updatedConfigResult = await configsCollection.findOneAndUpdate(
-            { _id: configId },
+            { _id },
             {
-              $set: {
-                cities,
-              },
+              $set: input,
             },
             {
               returnOriginal: false,
+              upsert: true,
             },
           );
           const updatedConfig = updatedConfigResult.value;
@@ -195,42 +199,17 @@ export const ConfigMutations = extendType({
       resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
         try {
           // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAssetConfigSchema,
-          });
-          await validationSchema.validate(args.input);
-
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
-          const { configId } = input;
-
-          // Check config availability
-          const config = await configsCollection.findOne({ _id: configId });
-          if (!config) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.updateAsset.notFound'),
-            };
-          }
-
-          // Remove old asset
-          const filePath = get(config.cities, `${DEFAULT_CITY}.${DEFAULT_LOCALE}`);
-          const removed = await deleteUpload({ filePath: `${filePath}` });
-          if (!removed) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.updateAsset.error'),
-            };
-          }
+          const { _id, companySlug } = input;
 
           // Update config
           const assets = await storeUploads({
             files: input.assets,
-            dist: ASSETS_DIST_CONFIGS,
-            itemId: config.slug,
+            dist: `${ASSETS_DIST_CONFIGS}/${companySlug}`,
+            itemId: input.slug,
           });
           if (!assets) {
             return {
@@ -247,9 +226,10 @@ export const ConfigMutations = extendType({
           }
 
           const updatedConfigResult = await configsCollection.findOneAndUpdate(
-            { _id: configId },
+            { _id },
             {
               $set: {
+                ...input,
                 cities: {
                   [DEFAULT_CITY]: {
                     [DEFAULT_LOCALE]: [currentAsset.url],
@@ -258,6 +238,7 @@ export const ConfigMutations = extendType({
               },
             },
             {
+              upsert: true,
               returnOriginal: false,
             },
           );

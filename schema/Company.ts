@@ -1,15 +1,23 @@
+import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CompaniesPaginationPayloadModel,
   CompanyModel,
   CompanyPayloadModel,
+  ConfigModel,
   ShopModel,
   ShopProductModel,
   ShopsPaginationPayloadModel,
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS, COL_USERS } from 'db/collectionNames';
+import {
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+  COL_USERS,
+} from 'db/collectionNames';
 import { aggregatePagination } from 'db/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
@@ -252,6 +260,7 @@ export const CompanyMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
 
           // Check if company already exist
@@ -302,6 +311,21 @@ export const CompanyMutations = extendType({
 
           const createdCompany = createdCompanyResult.ops[0];
           if (!createdCompanyResult.result.ok || !createdCompany) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.create.error'),
+            };
+          }
+
+          // Create company configs
+          const configTemplates = getConfigTemplates({
+            companySlug: slug,
+            phone: input.contacts.phones,
+            email: input.contacts.emails,
+            siteName: input.name,
+          });
+          const createdCompanyConfigsResult = await configsCollection.insertMany(configTemplates);
+          if (!createdCompanyConfigsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('companies.create.error'),
@@ -526,6 +550,7 @@ export const CompanyMutations = extendType({
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { _id } = args;
 
           // Check company availability
@@ -537,8 +562,18 @@ export const CompanyMutations = extendType({
             };
           }
 
-          // Set all shops and shops products as archived
-          // set shops products as archived
+          // Delete company configs
+          const removedConfigs = await configsCollection.deleteMany({
+            companySlug: company.slug,
+          });
+          if (!removedConfigs.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.delete.error'),
+            };
+          }
+
+          // Delete shop products
           const removedShopsProducts = await shopProductsCollection.deleteMany({
             shopsId: { $in: company.shopsIds },
           });
@@ -549,7 +584,7 @@ export const CompanyMutations = extendType({
             };
           }
 
-          // set shops as archived
+          // Delete shops
           const removedShops = await shopsCollection.deleteMany({ _id: { $in: company.shopsIds } });
           if (!removedShops.result.ok) {
             return {

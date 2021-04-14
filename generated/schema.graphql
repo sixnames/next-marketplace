@@ -338,7 +338,9 @@ type Config {
   Each city contains object with key as locale and value for current locale
   """
   cities: JSONObject!
+  companySlug: String!
   description: String
+  group: String!
 
   """
   Set to true if config is able to hold multiple values.
@@ -2103,8 +2105,16 @@ A field whose value conforms to the standard URL format as specified in RFC3986:
 scalar URL
 
 input UpdateAssetConfigInput {
+  _id: ObjectId!
+  acceptedFormats: [String!]!
   assets: [Upload!]!
-  configId: ObjectId!
+  companySlug: String!
+  description: String
+  group: String!
+  multi: Boolean!
+  name: String!
+  slug: String!
+  variant: ConfigVariant!
 }
 
 input UpdateAttributeInGroupInput {
@@ -2165,8 +2175,16 @@ input UpdateCompanyLogoInput {
 }
 
 input UpdateConfigInput {
+  _id: ObjectId!
+  acceptedFormats: [String!]!
   cities: JSONObject!
-  configId: ObjectId!
+  companySlug: String!
+  description: String
+  group: String!
+  multi: Boolean!
+  name: String!
+  slug: String!
+  variant: ConfigVariant!
 }
 
 input UpdateCountryInput {

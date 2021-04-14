@@ -1,10 +1,16 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_APP } from 'config/common';
+import { ConfigModel } from 'db/dbModels';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+
+export interface ConfigPageInterface extends PagePropsInterface {
+  configTemplates: ConfigModel[];
+}
 
 const AppConfigsLayout: React.FC = ({ children }) => {
   const router = useRouter();

@@ -1,18 +1,16 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner/Inner';
-import { CONFIG_GROUP_SEO } from 'config/common';
+import { CONFIG_DEFAULT_COMPANY_SLUG, CONFIG_GROUP_CATALOGUE } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
-  const router = useRouter();
   return (
-    <AppConfigsLayout companyId={`${router.query.companyId}`}>
+    <AppConfigsLayout isCms={true}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
@@ -32,8 +30,7 @@ const Config: NextPage<ConfigPageInterface> = (props) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
-  const { query } = context;
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getAppInitialData({ context, isCms: true });
   if (!props) {
     return {
       notFound: true,
@@ -41,8 +38,8 @@ export const getServerSideProps = async (
   }
 
   const configsPayload = await getConfigPageData({
-    companyId: `${query.companyId}`,
-    group: CONFIG_GROUP_SEO,
+    companyId: CONFIG_DEFAULT_COMPANY_SLUG,
+    group: CONFIG_GROUP_CATALOGUE,
   });
 
   if (!configsPayload) {

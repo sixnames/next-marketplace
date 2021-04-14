@@ -6,11 +6,13 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
+  const router = useRouter();
   return (
-    <AppConfigsLayout>
+    <AppConfigsLayout companyId={`${router.query.companyId}`}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>

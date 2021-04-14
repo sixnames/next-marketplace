@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './Currency.module.css';
 import { useLocaleContext } from 'context/localeContext';
 import { getCurrencyString } from 'lib/i18n';
 
@@ -15,15 +14,15 @@ const Currency: React.FC<CurrencyInterface> = ({ value, className, valueClassNam
   const finalValue = typeof value === 'number' ? getCurrencyString(value) : value;
 
   return (
-    <span className={`${classes.frame} ${className ? className : ''}`}>
+    <span className={`inline-flex whitespace-nowrap items-baseline ${className ? className : ''}`}>
       <span
         data-cy={testId}
         data-price-value={value}
-        className={`${valueClassName ? valueClassName : ''}`}
+        className={`mr-[0.35rem] ${valueClassName ? valueClassName : ''}`}
       >
         {finalValue || 0}
       </span>
-      {currency}
+      <span className={'font-normal text-secondary-text text-[0.5em]'}>{currency}</span>
     </span>
   );
 };

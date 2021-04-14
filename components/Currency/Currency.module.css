@@ -1,9 +1,0 @@
-.frame {
-  display: inline-flex;
-  align-items: baseline;
-  white-space: nowrap;
-}
-
-.frame span {
-  margin-right: 0.35rem;
-}

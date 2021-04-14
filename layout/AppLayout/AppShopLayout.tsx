@@ -33,7 +33,7 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, children }) => 
         exact: true,
       },
     ];
-  }, [shop]);
+  }, [router.query.companyId, shop._id]);
 
   return (
     <div className={'pt-11'}>

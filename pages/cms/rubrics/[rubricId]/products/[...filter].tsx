@@ -53,6 +53,7 @@ interface RubricProductsInterface {
   clearSlug: string;
   pagerUrl: string;
   basePath: string;
+  productPath: string;
 }
 
 const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
@@ -66,13 +67,14 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalPages,
   pagerUrl,
   basePath,
+  productPath,
 }) => {
   const router = useRouter();
   const columns: TableColumn<ProductFacetModel>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return <Link href={`${basePath}/product/${dataItem._id}`}>{dataItem.itemId}</Link>;
+        return <Link href={`${productPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
       },
     },
     {
@@ -162,7 +164,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             <div className={`overflow-x-auto`}>
               <Table<ProductFacetModel>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${basePath}/product/${dataItem._id}`).catch((e) => console.log(e));
+                  router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));
                 }}
                 columns={columns}
                 data={docs}
@@ -219,6 +221,7 @@ export const getServerSideProps = async (
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context, isCms: true });
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
+  const productPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -501,6 +504,7 @@ export const getServerSideProps = async (
     attributes: castedAttributes,
     pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
+    productPath,
     selectedAttributes,
     page,
     docs,

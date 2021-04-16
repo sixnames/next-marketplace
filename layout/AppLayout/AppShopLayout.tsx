@@ -2,6 +2,7 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_APP } from 'config/common';
 import { ShopModel } from 'db/dbModels';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -36,7 +37,7 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, children }) => 
   }, [router.query.companyId, shop._id]);
 
   return (
-    <div className={'pt-11'}>
+    <AppContentWrapper>
       <Head>
         <title>{`Магазин ${shop.name}`}</title>
       </Head>
@@ -46,7 +47,7 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, children }) => 
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}
-    </div>
+    </AppContentWrapper>
   );
 };
 

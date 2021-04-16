@@ -1,33 +1,38 @@
+import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import DataLayoutTitle from 'components/DataLayout/DataLayoutTitle';
+import Inner from 'components/Inner/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal/CreateRubricModal';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
+import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modals';
 import {
-  RubricInListFragment,
-  useCreateRubricMutation,
-  useDeleteRubricMutation,
-  useGetAllRubricsQuery,
-} from 'generated/apolloComponents';
+  COL_PRODUCT_FACETS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const RubricsRoute: React.FC = () => {
+interface RubricsRouteInterface {
+  rubrics: RubricModel[];
+}
+
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
   const router = useRouter();
-  const { data, loading, error } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
-  });
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
   });
@@ -54,7 +59,7 @@ const RubricsRoute: React.FC = () => {
     ],
   });
 
-  const columns: TableColumn<RubricInListFragment>[] = [
+  const columns: TableColumn<RubricModel>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -75,19 +80,19 @@ const RubricsRoute: React.FC = () => {
       },
     },
     {
-      accessor: 'variant',
+      accessor: 'variant.name',
       headTitle: 'Тип',
-      render: ({ cellData }) => cellData.name,
+      render: ({ cellData }) => cellData,
     },
     {
       render: ({ dataItem }) => {
         return (
           <ContentItemControls
-            testId={dataItem.name}
+            testId={`${dataItem.name}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/rubrics/${dataItem.slug}`).catch((e) => console.log(e));
+              router.push(`${ROUTE_CMS}/rubrics/${dataItem._id}`).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -113,74 +118,202 @@ const RubricsRoute: React.FC = () => {
     },
   ];
 
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error) {
-    return <RequestError />;
-  }
-
-  if (!data || !data.getAllRubrics) {
-    return <RequestError />;
-  }
-
   return (
-    <DataLayout
-      title={'Рубрикатор'}
-      filterResult={() => {
-        return (
-          <React.Fragment>
-            <DataLayoutTitle
-              titleRight={
-                <ContentItemControls
-                  justifyContent={'flex-end'}
-                  createTitle={'Создать рубрику'}
-                  createHandler={() => {
-                    showModal<CreateRubricModalInterface>({
-                      variant: CREATE_RUBRIC_MODAL,
-                      props: {
-                        confirm: (values) => {
-                          showLoading();
-                          return createRubricMutation({ variables: { input: values } });
-                        },
-                      },
-                    });
-                  }}
-                  testId={'rubrics'}
-                />
-              }
-            />
-            <DataLayoutContentFrame>
-              <Table<RubricInListFragment>
-                columns={columns}
-                data={data.getAllRubrics}
-                testIdKey={'name'}
-                emptyMessage={'Список пуст'}
-                onRowDoubleClick={(rubric) => {
-                  router
-                    .push(`${ROUTE_CMS}/rubrics/${rubric.slug}/products/1`)
-                    .catch((e) => console.log(e));
-                }}
-              />
-            </DataLayoutContentFrame>
-          </React.Fragment>
-        );
-      }}
-    />
+    <AppContentWrapper>
+      <Head>
+        <title>{`Рубрикатор`}</title>
+      </Head>
+      <Inner>
+        <div className='sm:flex sm:items-end sm:justify-between mb-8'>
+          <Title low>Рубрикатор</Title>
+          <Button
+            theme={'secondary'}
+            size={'small'}
+            className={'mt-6 sm:mt-0'}
+            onClick={() => {
+              showModal<CreateRubricModalInterface>({
+                variant: CREATE_RUBRIC_MODAL,
+                props: {
+                  confirm: (values) => {
+                    showLoading();
+                    return createRubricMutation({ variables: { input: values } });
+                  },
+                },
+              });
+            }}
+          >
+            Создать рубрику
+          </Button>
+        </div>
+        <div className='overflow-x-auto'>
+          <Table<RubricModel>
+            columns={columns}
+            data={rubrics}
+            testIdKey={'name'}
+            emptyMessage={'Список пуст'}
+            onRowDoubleClick={(rubric) => {
+              router.push(`${ROUTE_CMS}/rubrics/${rubric._id}`).catch((e) => console.log(e));
+            }}
+          />
+        </div>
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
-const Rubrics: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
+
+const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, rubrics }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricsRoute />
+      <RubricsRoute rubrics={rubrics} />
     </CmsLayout>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context, isCms: true });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<RubricsInterface>> => {
+  const db = await getDatabase();
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+
+  const { props } = await getAppInitialData({ context, isCms: true });
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const initialRubrics = await rubricsCollection
+    .aggregate([
+      {
+        $project: {
+          attributes: false,
+          catalogueTitle: false,
+          descriptionI18n: false,
+          shortDescriptionI18n: false,
+          priorities: false,
+          views: false,
+          attributesGroupsIds: false,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRIC_VARIANTS,
+          as: 'variants',
+          localField: 'variantId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $addFields: {
+          variant: { $arrayElemAt: ['$variants', 0] },
+        },
+      },
+      {
+        $lookup: {
+          from: COL_SHOP_PRODUCTS,
+          as: 'shopProducts',
+          let: { rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: true,
+              },
+            },
+            {
+              $count: 'totalDocs',
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          totalShopProductsObject: { $arrayElemAt: ['$shopProducts', 0] },
+        },
+      },
+      {
+        $addFields: {
+          activeProductsCount: '$totalShopProductsObject.totalDocs',
+        },
+      },
+      {
+        $project: {
+          variants: false,
+          shopProducts: false,
+          totalShopProductsObject: false,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_PRODUCT_FACETS,
+          as: 'products',
+          let: { rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: true,
+              },
+            },
+            {
+              $count: 'totalDocs',
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          totalProductsObject: { $arrayElemAt: ['$products', 0] },
+        },
+      },
+      {
+        $addFields: {
+          productsCount: '$totalProductsObject.totalDocs',
+        },
+      },
+      {
+        $project: {
+          products: false,
+          totalProductsObject: false,
+        },
+      },
+    ])
+    .toArray();
+
+  const { sessionLocale } = props;
+  const rawRubrics = initialRubrics.map(({ nameI18n, ...rubric }) => {
+    return {
+      ...rubric,
+      name: getFieldStringLocale(nameI18n, sessionLocale),
+      variant: rubric.variant
+        ? {
+            ...rubric.variant,
+            name: getFieldStringLocale(rubric.variant.nameI18n, sessionLocale),
+          }
+        : null,
+    };
+  });
+
+  return {
+    props: {
+      ...props,
+      rubrics: castDbData(rawRubrics),
+    },
+  };
 };
 
 export default Rubrics;

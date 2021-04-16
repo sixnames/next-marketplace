@@ -7,6 +7,7 @@ interface TitlePropsInterface {
   textClassName?: string;
   tag?: keyof JSX.IntrinsicElements;
   testId?: string;
+  low?: boolean;
 }
 
 const Title: React.FC<TitlePropsInterface> = ({
@@ -16,11 +17,15 @@ const Title: React.FC<TitlePropsInterface> = ({
   textClassName,
   tag = 'h1',
   testId,
+  low,
 }) => {
   const TagName = tag;
 
   return (
-    <div className={`flex-shrink-0 mb-[1.25rem] ${className ? className : ''}`} data-cy={testId}>
+    <div
+      className={`flex-shrink-0 ${low ? '' : 'mb-[1.25rem]'} ${className ? className : ''}`}
+      data-cy={testId}
+    >
       <div className={`flex flex-wrap items-baseline ${textClassName ? textClassName : ''}`}>
         <TagName className={`font-bold text-2xl wp-desktop:text-4xl`}>{children}</TagName>
       </div>

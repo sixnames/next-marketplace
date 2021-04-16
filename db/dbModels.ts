@@ -651,7 +651,9 @@ export interface RubricModel extends CountersModel {
   // types for ui
   name?: string | null;
   navItems?: RubricAttributeModel[];
+  activeProductsCount?: number | null;
   productsCount?: number | null;
+  variant?: RubricVariantModel | null;
 }
 
 export interface ShopProductModel extends TimestampModel {

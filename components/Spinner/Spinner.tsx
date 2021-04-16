@@ -16,10 +16,10 @@ const Spinner: React.FC<SpinnerInterface> = ({
   return (
     <div
       className={`z-[9999] w-full flex items-center justify-center ${
-        isTransparent && !isNested ? '' : 'bg-gray-700 bg-opacity-30'
+        isTransparent ? '' : 'bg-gray-700 bg-opacity-30'
       } ${
         isNested
-          ? 'relative h-[100px]'
+          ? 'relative h-[200px]'
           : isNestedAbsolute
           ? 'absolute inset-0 h-full w-full'
           : 'fixed inset-0 h-full-height'

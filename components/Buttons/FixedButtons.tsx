@@ -1,13 +1,11 @@
 import * as React from 'react';
-import classes from './FixedButtons.module.css';
 
 interface FixedButtonsInterface {
   children: any;
   visible?: boolean;
-  absolute?: boolean;
 }
 
-const FixedButtons: React.FC<FixedButtonsInterface> = ({ children, visible = true, absolute }) => {
+const FixedButtons: React.FC<FixedButtonsInterface> = ({ children, visible = true }) => {
   if (!visible) {
     return null;
   }
@@ -15,7 +13,7 @@ const FixedButtons: React.FC<FixedButtonsInterface> = ({ children, visible = tru
   return (
     <div
       data-cy={'fixed-buttons'}
-      className={`${classes.frame} ${absolute ? classes.frameAbsolute : classes.frameFixed}`}
+      className='sticky inset-x-0 bottom-0 z-10 pt-6 pb-6 bg-primary-background'
     >
       {children}
     </div>

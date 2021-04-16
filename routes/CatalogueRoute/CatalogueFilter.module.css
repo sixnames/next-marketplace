@@ -114,13 +114,13 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
-  width: calc(100% - (var(--burger-dropdown-side-gap) * 2));
+  width: calc(100% - (var(--formInputHeightSmall) * 2));
 }
 
 .filterTitleClose {
   display: flex;
   justify-content: flex-end;
-  width: var(--burger-dropdown-side-gap);
+  width: var(--formInputHeightSmall);
   cursor: pointer;
 }
 

@@ -13,7 +13,7 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductModel, ShopProductModel } from 'db/dbModels';
-import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';

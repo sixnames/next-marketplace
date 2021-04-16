@@ -2,7 +2,7 @@ import { useSiteContext } from 'context/siteContext';
 import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
-import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import RatingStars from '../../RatingStars/RatingStars';
 import Image from 'next/image';
 import ProductMarker from '../ProductMarker/ProductMarker';

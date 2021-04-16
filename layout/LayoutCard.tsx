@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './LayoutCard.module.css';
 
 interface LayoutCardInterface {
   className?: string;
@@ -8,7 +7,10 @@ interface LayoutCardInterface {
 
 const LayoutCard: React.FC<LayoutCardInterface> = ({ testId, className, children }) => {
   return (
-    <div className={`${classes.layoutCard} ${className ? className : ''}`} data-cy={testId}>
+    <div
+      className={`rounded-md bg-secondary-background dark:shadow-md ${className ? className : ''}`}
+      data-cy={testId}
+    >
       {children}
     </div>
   );

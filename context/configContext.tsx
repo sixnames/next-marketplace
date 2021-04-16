@@ -52,11 +52,11 @@ function useConfigContext() {
   const getSiteConfigSingleValue = React.useCallback(
     (configSlug: string) => {
       const config = getSiteConfig(configSlug);
-      if (!config) {
+      if (!config || !config.singleValue) {
         return null;
       }
 
-      return `${config?.singleValue}`;
+      return `${config.singleValue}`;
     },
     [getSiteConfig],
   );

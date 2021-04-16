@@ -49,9 +49,10 @@ const Meta: React.FC<MetaInterface> = ({
   const iconSvg = getSiteConfigSingleValue('icon.svg');
 
   // Metrics
-  const yaVerification = getSiteConfigSingleValue('yaVerification');
-  const yaMetrica = getSiteConfigSingleValue('yaMetrica');
-  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics');
+  const yaVerification = getSiteConfigSingleValue('yaVerification') || '';
+  const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
+  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
+  const metricsCodeAsString = `${yaVerification}${yaMetrica}${googleAnalytics}`;
 
   return (
     <Head>
@@ -86,11 +87,6 @@ const Meta: React.FC<MetaInterface> = ({
       <link rel={'manifest'} href={'/site.webmanifest'} />
 
       <meta name='theme-color' content='#ffffff' />
-
-      {/*Metrics <meta name='yandex-verification' content='579c17148b497788' />*/}
-      {yaVerification ? parse(yaVerification) : null}
-      {yaMetrica ? parse(yaMetrica) : null}
-      {googleAnalytics ? parse(googleAnalytics) : null}
 
       {/*Fonts*/}
       <link
@@ -149,6 +145,9 @@ const Meta: React.FC<MetaInterface> = ({
         type='font/woff'
         crossOrigin='anonymous'
       />
+
+      {/* Metrics */}
+      {metricsCodeAsString ? parse(metricsCodeAsString, { trim: true }) : null}
     </Head>
   );
 };

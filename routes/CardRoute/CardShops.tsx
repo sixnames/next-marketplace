@@ -117,8 +117,6 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
           </DisclosureButton>
         </Disclosure>
       ) : null}
-
-      {/*{loading ? <Spinner isNestedAbsolute /> : null}*/}
     </div>
   );
 };

@@ -2,22 +2,19 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import { CatalogueProductInterface } from 'db/dbModels';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
-import classes from './HeaderSearch.module.css';
-import Inner from '../../../components/Inner/Inner';
+import Inner from 'components/Inner/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
-import Button from '../../../components/Buttons/Button';
-import Icon from '../../../components/Icon/Icon';
-import Input from '../../../components/FormElements/Input/Input';
+import Icon from 'components/Icon/Icon';
+import Input from 'components/FormElements/Input/Input';
 import {
   GetCatalogueSearchResultQuery,
   GetCatalogueSearchTopItemsQuery,
   useGetCatalogueSearchResultLazyQuery,
 } from 'generated/apolloComponents';
-import Spinner from '../../../components/Spinner/Spinner';
-import RequestError from '../../../components/RequestError/RequestError';
-import Link from '../../../components/Link/Link';
-import ProductSnippetGrid from '../../../components/Product/ProductSnippet/ProductSnippetGrid';
-import { useAppContext } from 'context/appContext';
+import Spinner from 'components/Spinner/Spinner';
+import RequestError from 'components/RequestError/RequestError';
+import Link from 'components/Link/Link';
+import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -37,8 +34,8 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
   products,
 }) => {
   return (
-    <div className={classes.result}>
-      <ul>
+    <div className='grid gap-10 grid-cols-1 md:grid-cols-12'>
+      <ul className='md:col-span-2'>
         {rubrics.map((rubric) => {
           const { name, slug } = rubric;
           return (
@@ -47,15 +44,15 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
                 onClick={() => setIsSearchOpen(false)}
                 href={`${ROUTE_CATALOGUE}/${slug}`}
                 testId={`search-rubric-${name}`}
-                className={`${classes.rubric}`}
+                className='flex items-center min-h-[var(--minLinkHeightSmall)] text-secondary-text hover:no-underline hover:text-theme'
               >
-                <span>{name}</span>
+                <span className='overflow-ellipsis whitespace-nowrap'>{name}</span>
               </Link>
             </li>
           );
         })}
       </ul>
-      <div className={classes.resultList}>
+      <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-3'>
         {products.map((product) => {
           return (
             <ProductSnippetGrid
@@ -79,7 +76,6 @@ interface HeaderSearchInterface {
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
   const [string, setString] = React.useState<string>('');
   const [value] = useDebounce(string, 1000);
-  const { isMobile } = useAppContext();
   const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -107,19 +103,25 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const products = searchProducts && searchProducts.length ? searchProducts : topProducts;
 
   return (
-    <div className={classes.frame} data-cy={'search-dropdown'}>
+    <div
+      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary-background shadow-lg wp-desktop:inset-y-auto wp-desktop:top-full wp-desktop:w-full wp-desktop:absolute'
+      data-cy={'search-dropdown'}
+    >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
-        <Inner className={classes.searchInner}>
-          {isMobile ? (
-            <div className={classes.frameTitle}>
-              <div className={classes.frameTitleName}>Поиск</div>
-              <div className={classes.frameTitleClose} onClick={() => setIsSearchOpen(false)}>
-                <Icon name={'cross'} />
-              </div>
+        <Inner>
+          <div className='flex items-center justify-end pt-8 min-h-8 mb-8 text-xl font-medium wp-desktop:hidden'>
+            <div className='search-mobile-title overflow-ellipsis overflow-hidden whitespace-nowrap text-center'>
+              Поиск
             </div>
-          ) : null}
+            <div
+              className='flex items-center justify-end h-[var(--formInputHeightSmall)] w-[var(--formInputHeightSmall)] text-secondary-text'
+              onClick={() => setIsSearchOpen(false)}
+            >
+              <Icon className='w-5 h-5' name={'cross'} />
+            </div>
+          </div>
 
-          <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <Input
               onChange={(e) => setString(e.target.value)}
               name={'search'}
@@ -128,24 +130,6 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
               placeholder={'Я хочу найти...'}
               testId={'search-input'}
             />
-            <Button
-              type={'submit'}
-              icon={isMobile ? 'arrow-right' : undefined}
-              theme={isMobile ? 'secondary' : 'primary'}
-              short={isMobile}
-            >
-              {isMobile ? null : 'Искать'}
-            </Button>
-            {isMobile ? <Button icon={'scan'} theme={'secondary'} short /> : null}
-            {isMobile ? null : (
-              <Button
-                icon={'cross'}
-                theme={'secondary'}
-                onClick={() => setIsSearchOpen(false)}
-                testId={'search-close'}
-                short
-              />
-            )}
           </form>
 
           {!loading &&
@@ -163,8 +147,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
             </div>
           ) : null}
 
-          <div className={classes.searchFrame}>
-            {loading ? <Spinner className={classes.spinner} /> : null}
+          <div className='relative overflow-hidden'>
+            {loading ? <Spinner isNestedAbsolute isTransparent /> : null}
+
             {error ? <RequestError /> : null}
             {rubrics && products ? (
               <HeaderSearchResult

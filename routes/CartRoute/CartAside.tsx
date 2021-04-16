@@ -5,7 +5,7 @@ import classes from './CartAside.module.css';
 import Currency from '../../components/Currency/Currency';
 import Button from '../../components/Buttons/Button';
 import Link from '../../components/Link/Link';
-import LayoutCard from '../../layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard';
 import { ButtonType } from 'types/clientTypes';
 
 interface CartAsideInterface {

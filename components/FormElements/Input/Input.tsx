@@ -82,7 +82,7 @@ const Input: React.FC<InputPropsInterface> = ({
           value={currentValue}
           name={name}
           {...props}
-          mask='+9 999 999-99-99'
+          mask='9 999 999-99-99'
           data-cy={testId}
           data-error={notValid ? name : ''}
         />

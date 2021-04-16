@@ -40,7 +40,7 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
         <CompanyDefaultLayoutFooter />
       </div>
 
-      {isLoading ? <Spinner wide /> : null}
+      {isLoading ? <Spinner /> : null}
       {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
   );

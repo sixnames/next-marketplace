@@ -24,9 +24,11 @@ import {
   CART_MODAL,
   CREATE_ROLE_MODAL,
   ADULT_MODAL,
+  OPTIONS_MODAL,
 } from 'config/modals';
 
 const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
+const OptionsModal = dynamic(() => import('./OptionsModal'));
 const ConfirmModal = dynamic(() => import('./ConfirmModal/ConfirmModal'));
 const LanguageModal = dynamic(() => import('./LanguageModal/LanguageModal'));
 const OptionsGroupModal = dynamic(() => import('./OptionsGroupModal/OptionsGroupModal'));
@@ -108,6 +110,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CART_MODAL && <CartModal {...modalProps} />}
 
           {modalType === CREATE_ROLE_MODAL && <CreateRoleModal {...modalProps} />}
+
+          {modalType === OPTIONS_MODAL && <OptionsModal {...modalProps} />}
         </React.Suspense>
       </div>
 

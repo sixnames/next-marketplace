@@ -570,8 +570,14 @@ export interface ProductFacetModel {
   mainImage: string;
 
   // types for ui
+  name?: string | null;
   products?: ProductModel[] | null;
   product?: ProductModel | null;
+  shopsCount?: number;
+  cardPrices?: {
+    min: string;
+    max: string;
+  };
 }
 
 export interface ProductCardPricesModel {

@@ -23,7 +23,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, children 
       {
         name: 'Товары',
         testId: 'products',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}/products`,
+        path: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
       {
         name: 'Атрибуты',

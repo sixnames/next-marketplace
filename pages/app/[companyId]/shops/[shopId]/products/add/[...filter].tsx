@@ -16,7 +16,7 @@ import {
   ROUTE_APP,
   SORT_DESC,
 } from 'config/common';
-import { COL_PRODUCT_FACETS, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
   CatalogueFilterAttributeModel,
   CatalogueProductOptionInterface,
@@ -119,31 +119,25 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
       },
     },
     {
-      accessor: 'product',
+      accessor: 'itemId',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData.itemId,
+      render: ({ cellData }) => cellData,
     },
     {
-      accessor: 'product',
       headTitle: 'Фото',
-      render: ({ cellData }) => {
+      render: ({ dataItem }) => {
         return (
           <TableRowImage
-            src={`${cellData.mainImage}`}
-            alt={`${cellData.originalName}`}
-            title={`${cellData.originalName}`}
+            src={`${dataItem.mainImage}`}
+            alt={`${dataItem.originalName}`}
+            title={`${dataItem.originalName}`}
           />
         );
       },
     },
     {
-      accessor: 'product.originalName',
+      accessor: 'originalName',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.shopsCount',
-      headTitle: 'В магазинах',
       render: ({ cellData }) => cellData,
     },
   ];
@@ -569,8 +563,6 @@ export const getServerSideProps = async (
 
   // Cast filters
   const {
-    minPrice,
-    maxPrice,
     realFilterOptions,
     sortFilterOptions,
     noFiltersSelected,
@@ -583,16 +575,6 @@ export const getServerSideProps = async (
   });
 
   // Products stages
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          [`minPriceCities.${shop.citySlug}`]: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
-
   const optionsStage = noFiltersSelected
     ? {}
     : {
@@ -649,7 +631,6 @@ export const getServerSideProps = async (
           rubricId: rubric._id,
           _id: { $nin: shopProductsIds },
           ...searchStage,
-          ...pricesStage,
           ...optionsStage,
         },
       },
@@ -666,27 +647,6 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                as: 'products',
-                let: { facetId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$facetId', '$_id'],
-                      },
-                    },
-                  },
-                  {
-                    $project: {
-                      attributes: false,
-                    },
-                  },
-                ],
-              },
             },
           ],
           options: [
@@ -802,31 +762,9 @@ export const getServerSideProps = async (
 
   const docs: ProductFacetModel[] = [];
   for await (const facet of productsResult.docs) {
-    const { products, ...restFacet } = facet;
-    const product = products ? products[0] : null;
-    if (!product) {
-      continue;
-    }
-
-    // image
-    const sortedAssets = product.assets.sort((assetA, assetB) => {
-      return assetA.index - assetB.index;
-    });
-    const firstAsset = sortedAssets[0];
-    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-    if (firstAsset) {
-      mainImage = firstAsset.url;
-    }
-
     docs.push({
-      ...restFacet,
-      product: {
-        ...product,
-        name: getFieldStringLocale(product.nameI18n, locale),
-        mainImage,
-        isCustomersChoice: false,
-      },
+      ...facet,
+      name: getFieldStringLocale(facet.nameI18n, locale),
     });
   }
 

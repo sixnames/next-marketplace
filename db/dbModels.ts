@@ -203,6 +203,9 @@ export interface AttributesGroupModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   attributesIds: ObjectIdModel[];
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
@@ -654,6 +657,7 @@ export interface RubricModel extends CountersModel {
   activeProductsCount?: number | null;
   productsCount?: number | null;
   variant?: RubricVariantModel | null;
+  attributesGroups?: RubricAttributesGroupModel[] | null;
 }
 
 export interface ShopProductModel extends TimestampModel {

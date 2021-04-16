@@ -16,7 +16,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
@@ -110,7 +110,9 @@ const Rubric: NextPage<RubricInterface> = ({ pageUrls, rubric }) => {
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<RubricInterface>> => {
   const { query } = context;
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);

@@ -224,8 +224,8 @@ export const getServerSideProps = async (
               },
             },
             {
-              $project: {
-                _id: true,
+              $group: {
+                _id: '$productId',
               },
             },
             {

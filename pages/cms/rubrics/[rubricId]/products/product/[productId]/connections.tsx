@@ -17,7 +17,6 @@ import {
   useCreateProductConnectionMutation,
   useDeleteProductFromConnectionMutation,
 } from 'generated/apolloComponents';
-import { PRODUCT_QUERY } from 'graphql/complex/productsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
@@ -38,14 +37,28 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   connection,
   product,
 }) => {
-  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+  const router = useRouter();
+  const {
+    showModal,
+    showLoading,
+    onCompleteCallback,
+    onErrorCallback,
+    hideLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({
     withModal: true,
   });
   const [addProductToConnectionMutation] = useAddProductToConnectionMutation({
-    onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: product._id } }],
+    onCompleted: (data) => {
+      if (data.addProductToConnection.success) {
+        onCompleteCallback(data.addProductToConnection);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: data.addProductToConnection.message });
+      }
+    },
   });
 
   const excludedProductsIds = connection.connectionProducts.map(({ productId }) => `${productId}`);
@@ -91,14 +104,28 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   product,
 }) => {
-  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+  const router = useRouter();
+  const {
+    showModal,
+    showLoading,
+    onCompleteCallback,
+    onErrorCallback,
+    hideLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({
     withModal: true,
   });
   const [deleteProductFromConnectionMutation] = useDeleteProductFromConnectionMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: product._id } }],
+    onCompleted: (data) => {
+      if (data.deleteProductFromConnection.success) {
+        onCompleteCallback(data.deleteProductFromConnection);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: data.deleteProductFromConnection.message });
+      }
+    },
   });
 
   const { connectionProducts } = connection;

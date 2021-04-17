@@ -289,6 +289,19 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       index: 0,
     };
 
+    const { attributes } = productAttributes({
+      wineColorOption,
+      wineTypeOption,
+      wineVintageOption,
+    });
+
+    const selectedAttributesIds: ObjectIdModel[] = [];
+    attributes.forEach(({ _id, selectedOptions }) => {
+      if (selectedOptions.length > 0) {
+        selectedAttributesIds.push(_id);
+      }
+    });
+
     const product: ProductModel = {
       _id,
       active,
@@ -312,12 +325,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       manufacturerSlug,
       updatedAt: new Date(),
       createdAt: new Date(),
+      attributes,
       ...DEFAULT_COUNTERS_OBJECT,
-      ...productAttributes({
-        wineColorOption,
-        wineTypeOption,
-        wineVintageOption,
-      }),
     };
 
     const facet: ProductFacetModel = {
@@ -336,6 +345,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       brandCollectionSlug,
       manufacturerSlug,
       selectedOptionsSlugs,
+      selectedAttributesIds,
     };
 
     return {

@@ -5,8 +5,9 @@ import {
   ProductFacetModel,
   ProductsPaginationAggregationInterface,
   ProductModel,
+  LanguageModel,
 } from 'db/dbModels';
-import { COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
@@ -53,8 +54,15 @@ export async function productsPaginationQuery({
 
     const db = await getDatabase();
     const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const { excludedProductsIds, excludedRubricsIds, rubricId, attributesIds, ...restInputValues } =
-      input || {};
+    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+    const {
+      excludedProductsIds,
+      excludedRubricsIds,
+      rubricId,
+      attributesIds,
+      search,
+      ...restInputValues
+    } = input || {};
     const { page, sortDir, sortBy, limit } = restInputValues || {
       page: PAGE_DEFAULT,
       sortDir: SORT_DESC,
@@ -113,19 +121,53 @@ export async function productsPaginationQuery({
       ? [
           {
             $match: {
-              'attributes.attributeId': { $in: attributesIds },
+              selectedAttributesIds: { $in: attributesIds },
             },
           },
         ]
       : [];
 
-    // TODO search pipeline
+    // Search stage
+    let searchStage: Record<string, any>[] = [];
+    if (search) {
+      const languages = await languagesCollection.find({}).toArray();
+      const searchByName = languages.map(({ slug }) => {
+        return {
+          [`nameI18n.${slug}`]: {
+            $regex: search,
+            $options: 'i',
+          },
+        };
+      });
+      searchStage = [
+        {
+          $match: {
+            $or: [
+              ...searchByName,
+              {
+                originalName: {
+                  $regex: search,
+                  $options: 'i',
+                },
+              },
+              {
+                itemId: {
+                  $regex: search,
+                  $options: 'i',
+                },
+              },
+            ],
+          },
+        },
+      ];
+    }
 
     const pipeline = [
       ...rubricsStage,
       ...excludedProductsStage,
       ...excludedRubricsStage,
       ...attributesStage,
+      ...searchStage,
 
       // filter shop products data
       ...shopsMatchPipeline,

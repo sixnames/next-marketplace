@@ -567,6 +567,7 @@ export interface ProductFacetModel {
   brandSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
+  selectedAttributesIds: ObjectId[];
   mainImage: string;
 
   // types for ui

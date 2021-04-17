@@ -305,6 +305,7 @@ export const ProductMutations = extendType({
             mainImage,
             rubricId,
             selectedOptionsSlugs: [],
+            selectedAttributesIds: [],
             // brandCollectionSlug,
             // brandSlug,
             // manufacturerSlug,
@@ -1164,6 +1165,7 @@ export const ProductMutations = extendType({
             },
             [],
           );
+
           const includes = connectionValues.includes(
             addProductConnectionAttribute.selectedOptionsSlugs[0],
           );

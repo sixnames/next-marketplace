@@ -135,6 +135,15 @@ export interface PaginationPayloadModel {
   type?: any;
 }
 
+export interface AlphabetListModel {
+  letter: string;
+  type?: any;
+}
+
+export interface AlphabetListModelType<TModel> extends AlphabetListModel {
+  docs: TModel[];
+}
+
 export interface PaginationPayloadType<TModel> extends PaginationPayloadModel {
   docs: TModel[];
 }
@@ -773,6 +782,9 @@ export interface CartPayloadModel {
   message: string;
 }
 
+// Lists payload
+export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
+
 // Pagination payload
 export type BrandsPaginationPayloadModel = PaginationPayloadType<BrandModel>;
 export type BrandCollectionsPaginationPayloadModel = PaginationPayloadType<BrandCollectionModel>;
@@ -845,13 +857,6 @@ export interface CatalogueProductOptionInterface {
 
 export interface CatalogueProductPricesInterface {
   _id: number;
-}
-
-export interface ProductFacetsAggregationInterface {
-  totalProducts: number;
-  prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
-  docs: ProductFacetModel[];
 }
 
 export interface CatalogueProductsAggregationInterface {

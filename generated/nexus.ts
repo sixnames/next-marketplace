@@ -761,6 +761,7 @@ export interface NexusGenObjects {
   MakeAnOrderPayload: dbModels.MakeAnOrderPayloadModel;
   Manufacturer: dbModels.ManufacturerModel;
   ManufacturerPayload: dbModels.ManufacturerPayloadModel;
+  ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;
   ManufacturersPaginationPayload: dbModels.ManufacturersPaginationPayloadModel;
   Message: dbModels.MessageModel;
   MessagesGroup: dbModels.MessagesGroupModel;
@@ -821,6 +822,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
+  AlphabetList: dbModels.AlphabetListModel;
   Base: dbModels.BaseModel;
   PaginationPayload: dbModels.PaginationPayloadModel;
   Payload: dbModels.PayloadModel;
@@ -1114,6 +1116,11 @@ export interface NexusGenFieldTypes {
     message: string; // String!
     payload: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer
     success: boolean; // Boolean!
+  };
+  ManufacturersAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
+    letter: string; // String!
   };
   ManufacturersPaginationPayload: {
     // field return type
@@ -1557,6 +1564,7 @@ export interface NexusGenFieldTypes {
     getIconsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getManufacturer: NexusGenRootTypes['Manufacturer']; // Manufacturer!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
+    getManufacturerOptionsLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturersOptions: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
     getMyOrder: NexusGenRootTypes['Order'] | null; // Order
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
@@ -1809,6 +1817,10 @@ export interface NexusGenFieldTypes {
     totalActiveDocs: number; // Int!
     totalDocs: number; // Int!
     totalPages: number; // Int!
+  };
+  AlphabetList: {
+    // field return type
+    letter: string; // String!
   };
   Base: {
     // field return type
@@ -2120,6 +2132,11 @@ export interface NexusGenFieldTypeNames {
     message: 'String';
     payload: 'Manufacturer';
     success: 'Boolean';
+  };
+  ManufacturersAlphabetList: {
+    // field return type name
+    docs: 'Manufacturer';
+    letter: 'String';
   };
   ManufacturersPaginationPayload: {
     // field return type name
@@ -2563,6 +2580,7 @@ export interface NexusGenFieldTypeNames {
     getIconsOptions: 'SelectOption';
     getManufacturer: 'Manufacturer';
     getManufacturerBySlug: 'Manufacturer';
+    getManufacturerOptionsLists: 'ManufacturersAlphabetList';
     getManufacturersOptions: 'Manufacturer';
     getMyOrder: 'Order';
     getOptionsGroup: 'OptionsGroup';
@@ -2815,6 +2833,10 @@ export interface NexusGenFieldTypeNames {
     totalActiveDocs: 'Int';
     totalDocs: 'Int';
     totalPages: 'Int';
+  };
+  AlphabetList: {
+    // field return type name
+    letter: 'String';
   };
   Base: {
     // field return type name
@@ -3392,6 +3414,7 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  AlphabetList: 'ManufacturersAlphabetList';
   Base:
     | 'Brand'
     | 'BrandCollection'
@@ -3469,6 +3492,7 @@ export interface NexusGenTypeInterfaces {
   MakeAnOrderPayload: 'Payload';
   Manufacturer: 'Base' | 'Timestamp';
   ManufacturerPayload: 'Payload';
+  ManufacturersAlphabetList: 'AlphabetList';
   ManufacturersPaginationPayload: 'PaginationPayload';
   MetricPayload: 'Payload';
   MetricsPaginationPayload: 'PaginationPayload';
@@ -3512,6 +3536,7 @@ export type NexusGenUnionNames = never;
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
 export type NexusGenAbstractsUsingStrategyResolveType =
+  | 'AlphabetList'
   | 'Base'
   | 'PaginationPayload'
   | 'Payload'

@@ -98,6 +98,10 @@ input AddressInput {
   point: CoordinatesInput!
 }
 
+interface AlphabetList {
+  letter: String!
+}
+
 type Asset {
   index: Int!
   url: String!
@@ -657,6 +661,11 @@ type ManufacturerPayload implements Payload {
   message: String!
   payload: Manufacturer
   success: Boolean!
+}
+
+type ManufacturersAlphabetList implements AlphabetList {
+  docs: [Manufacturer!]!
+  letter: String!
 }
 
 type ManufacturersPaginationPayload implements PaginationPayload {
@@ -1746,6 +1755,11 @@ type Query {
   Should return manufacturer by given slug
   """
   getManufacturerBySlug(slug: String!): Manufacturer!
+
+  """
+  Should manufacturers grouped by alphabet
+  """
+  getManufacturerOptionsLists: [ManufacturersAlphabetList!]!
 
   """
   Should return manufacturers list

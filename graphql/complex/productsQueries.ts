@@ -232,6 +232,9 @@ export const CREATE_PRODUCT_MUTATION = gql`
     createProduct(input: $input) {
       success
       message
+      payload {
+        _id
+      }
     }
   }
 `;

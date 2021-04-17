@@ -10,13 +10,12 @@ import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
-import { PRODUCT_ATTRIBUTES_AST_QUERY, PRODUCT_QUERY } from 'graphql/complex/productsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
-import { omit } from 'lodash';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -29,56 +28,37 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
 
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
+  const {
+    onErrorCallback,
+    onCompleteCallback,
+    showLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({});
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProduct),
-    refetchQueries: [
-      {
-        query: PRODUCT_QUERY,
-        variables: {
-          _id: product._id,
-        },
-      },
-      {
-        query: PRODUCT_ATTRIBUTES_AST_QUERY,
-        variables: {
-          input: {
-            productId: product._id,
-            rubricId: product.rubricId,
-          },
-        },
-      },
-    ],
+    onCompleted: (data) => {
+      if (data.updateProduct.success) {
+        onCompleteCallback(data.updateProduct);
+        router.reload();
+      } else {
+        showErrorNotification({ title: data.updateProduct.message });
+      }
+    },
   });
 
-  const {
-    nameI18n,
-    originalName,
-    descriptionI18n,
-    rubricId,
-    active,
-    brandCollectionSlug,
-    brandSlug,
-    manufacturerSlug,
-    mainImage,
-  } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage } = product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
     nameI18n,
     originalName,
     descriptionI18n,
-    rubricId,
     active,
-    brandSlug,
-    brandCollectionSlug,
-    manufacturerSlug,
-    attributes: [],
   };
 
   return (
@@ -95,9 +75,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 input: {
                   productId: product._id,
                   ...values,
-                  attributes: values.attributes.map((productAttribute) => {
-                    return omit(productAttribute, ['attribute', '__typename', 'attributeName']);
-                  }),
                 },
               },
             });
@@ -118,7 +95,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
                 <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
-                <ProductMainFields productId={`${product._id}`} />
+                <ProductMainFields />
 
                 <FixedButtons>
                   <Button testId={'submit-product'} type={'submit'}>

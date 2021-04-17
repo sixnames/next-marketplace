@@ -4,8 +4,6 @@ import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
-  ManufacturerModel,
-  OptionModel,
   ProductConnectionModel,
   ProductFacetModel,
   ProductModel,
@@ -18,9 +16,6 @@ import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'l
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_MANUFACTURERS,
   COL_PRODUCT_FACETS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -88,12 +83,30 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.list.nonNull.upload('assets');
     t.nonNull.objectId('rubricId');
-    t.string('brandSlug');
-    t.string('brandCollectionSlug');
-    t.string('manufacturerSlug');
-    t.nonNull.list.nonNull.field('attributes', {
+    // t.string('brandSlug');
+    // t.string('brandCollectionSlug');
+    // t.string('manufacturerSlug');
+    /*t.nonNull.list.nonNull.field('attributes', {
       type: 'ProductAttributeInput',
-    });
+    });*/
+  },
+});
+
+export const UpdateProductInput = inputObjectType({
+  name: 'UpdateProductInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.boolean('active');
+    t.nonNull.string('originalName');
+    t.nonNull.json('nameI18n');
+    t.nonNull.json('descriptionI18n');
+    // t.nonNull.objectId('rubricId');
+    // t.string('brandSlug');
+    // t.string('brandCollectionSlug');
+    // t.string('manufacturerSlug');
+    /*t.nonNull.list.nonNull.field('attributes', {
+      type: 'ProductAttributeInput',
+    });*/
   },
 });
 
@@ -119,24 +132,6 @@ export const UpdateProductAssetIndexInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.nonNull.string('assetUrl');
     t.nonNull.int('assetNewIndex');
-  },
-});
-
-export const UpdateProductInput = inputObjectType({
-  name: 'UpdateProductInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.boolean('active');
-    t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
-    t.nonNull.objectId('rubricId');
-    t.string('brandSlug');
-    t.string('brandCollectionSlug');
-    t.string('manufacturerSlug');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'ProductAttributeInput',
-    });
   },
 });
 
@@ -202,12 +197,12 @@ export const ProductMutations = extendType({
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-          const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
-          const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
+          // const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+          // const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
+          // const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricId, ...values } = input;
+          const { rubricId, ...values } = input;
 
           // Get selected rubric
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -218,7 +213,7 @@ export const ProductMutations = extendType({
             };
           }
 
-          const manufacturerEntity = manufacturerSlug
+          /*const manufacturerEntity = manufacturerSlug
             ? await manufacturersCollection.findOne({ slug: manufacturerSlug })
             : null;
           const brandEntity = brandSlug
@@ -228,7 +223,7 @@ export const ProductMutations = extendType({
             ? await brandCollectionsCollection.findOne({
                 slug: brandCollectionSlug,
               })
-            : null;
+            : null;*/
 
           // Store product assets
           const itemId = await getNextItemId(COL_PRODUCTS);
@@ -247,20 +242,20 @@ export const ProductMutations = extendType({
           }
 
           // Get selected options
-          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
+          /*const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
             const { selectedOptionsSlugs } = attributeInput;
             return [...acc, ...selectedOptionsSlugs];
           }, []);
 
           const options = rubric.attributes.reduce((acc: OptionModel[], optionsGroup) => {
             return [...acc, ...optionsGroup.options];
-          }, []);
+          }, []);*/
 
           // Create product
           const slug = generateDefaultLangSlug(values.nameI18n);
 
           // Get product attributes
-          const attributes = values.attributes.map((attributeInput) => {
+          /*const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
 
@@ -278,7 +273,7 @@ export const ProductMutations = extendType({
               attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
-          });
+          });*/
 
           const productId = new ObjectId();
           const mainImage = getMainImage(assets);
@@ -289,15 +284,15 @@ export const ProductMutations = extendType({
             assets,
             mainImage,
             slug,
-            manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
-            brandSlug: brandEntity ? brandEntity.slug : undefined,
-            brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
-            active: true,
+            // manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
+            // brandSlug: brandEntity ? brandEntity.slug : undefined,
+            // brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
+            active: false,
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
             rubricId,
-            attributes,
+            attributes: [],
           });
 
           const createdProductFacetResult = await productFacetsCollection.insertOne({
@@ -309,10 +304,10 @@ export const ProductMutations = extendType({
             active: false,
             mainImage,
             rubricId,
-            brandCollectionSlug,
-            brandSlug,
-            manufacturerSlug,
-            selectedOptionsSlugs,
+            selectedOptionsSlugs: [],
+            // brandCollectionSlug,
+            // brandSlug,
+            // manufacturerSlug,
           });
 
           const createdProduct = createdProductResult.ops[0];
@@ -368,18 +363,18 @@ export const ProductMutations = extendType({
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          // const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { productId, rubricId, ...values } = input;
+          const { productId, ...values } = input;
 
           // Get selected rubric
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
+          /*const rubric = await rubricsCollection.findOne({ _id: rubricId });
           if (!rubric) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
             };
-          }
+          }*/
 
           // Check product availability
           const product = await productsCollection.findOne({ _id: productId });
@@ -391,14 +386,14 @@ export const ProductMutations = extendType({
           }
 
           // Get selected options
-          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
+          /*const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
             const { selectedOptionsSlugs } = attributeInput;
             return [...acc, ...selectedOptionsSlugs];
           }, []);
 
           const options = rubric.attributes.reduce((acc: OptionModel[], optionsGroup) => {
             return [...acc, ...optionsGroup.options];
-          }, []);
+          }, []);*/
 
           // Create new slug for product
           const { updatedSlug } = createProductSlugWithConnections({
@@ -407,7 +402,7 @@ export const ProductMutations = extendType({
           });
 
           // Get product attributes
-          const attributes = values.attributes.map((attributeInput) => {
+          /*const attributes = values.attributes.map((attributeInput) => {
             let selectedOptions: OptionModel[] = [];
             const { selectedOptionsSlugs } = attributeInput;
 
@@ -425,7 +420,7 @@ export const ProductMutations = extendType({
               attributeMetric: attribute?.metric || null,
               selectedOptions,
             };
-          });
+          });*/
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -437,8 +432,6 @@ export const ProductMutations = extendType({
                 ...values,
                 slug: updatedSlug,
                 updatedAt: new Date(),
-                rubricId,
-                attributes,
               },
             },
             {
@@ -456,11 +449,6 @@ export const ProductMutations = extendType({
                 active: values.active,
                 nameI18n: values.nameI18n,
                 originalName: values.originalName,
-                rubricId,
-                brandCollectionSlug: values.brandCollectionSlug,
-                brandSlug: values.brandSlug,
-                manufacturerSlug: values.manufacturerSlug,
-                selectedOptionsSlugs,
               },
             },
             {
@@ -474,15 +462,9 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                selectedOptionsSlugs,
                 slug: updatedSlug,
-                rubricId,
                 nameI18n: values.nameI18n,
                 originalName: values.originalName,
-                brandCollectionSlug: values.brandCollectionSlug,
-                brandSlug: values.brandSlug,
-                manufacturerSlug: values.manufacturerSlug,
-                assets: product.assets,
                 updatedAt: new Date(),
               },
             },
@@ -493,14 +475,12 @@ export const ProductMutations = extendType({
 
           const updatedProduct = updatedProductResult.value;
           const updatedProductFacet = updatedProductFacetResult.value;
-          const updatedShopProduct = updatedShopProductResult.value;
           if (
             !updatedProductResult.ok ||
             !updatedProduct ||
             !updatedProductFacetResult.ok ||
             !updatedProductFacet ||
-            !updatedShopProductResult.ok ||
-            !updatedShopProduct
+            !updatedShopProductResult.ok
           ) {
             return {
               success: false,

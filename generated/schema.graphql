@@ -470,11 +470,7 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   active: Boolean!
   assets: [Upload!]!
-  attributes: [ProductAttributeInput!]!
-  brandCollectionSlug: String
-  brandSlug: String
   descriptionI18n: JSONObject!
-  manufacturerSlug: String
   nameI18n: JSONObject!
   originalName: String!
   rubricId: ObjectId!
@@ -2265,15 +2261,10 @@ input UpdateProductInCartInput {
 
 input UpdateProductInput {
   active: Boolean!
-  attributes: [ProductAttributeInput!]!
-  brandCollectionSlug: String
-  brandSlug: String
   descriptionI18n: JSONObject!
-  manufacturerSlug: String
   nameI18n: JSONObject!
   originalName: String!
   productId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input UpdateRoleInput {

@@ -1,9 +1,14 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
+import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Currency from 'components/Currency/Currency';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
+import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal/CreateNewProductModal';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
@@ -14,6 +19,7 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   CatalogueFilterAttributeModel,
@@ -23,6 +29,8 @@ import {
   RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -70,6 +78,27 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   productPath,
 }) => {
   const router = useRouter();
+  const {
+    onErrorCallback,
+    onCompleteCallback,
+    showLoading,
+    hideLoading,
+    showModal,
+    showErrorNotification,
+  } = useMutationCallbacks({ withModal: true });
+  const [deleteProductFromRubricMutation] = useDeleteProductFromRubricMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ deleteProductFromRubric }) => {
+      if (deleteProductFromRubric.success) {
+        hideLoading();
+        onCompleteCallback(deleteProductFromRubric);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: deleteProductFromRubric.message });
+      }
+    },
+  });
   const columns: TableColumn<ProductFacetModel>[] = [
     {
       headTitle: 'Арт',
@@ -113,6 +142,36 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       headTitle: 'Макс. цена',
       render: ({ cellData }) => {
         return <Currency value={cellData} noZeroValue />;
+      },
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <ContentItemControls
+            deleteTitle={'Удалить товар из рубрики'}
+            justifyContent={'flex-end'}
+            deleteHandler={() => {
+              showModal<ConfirmModalInterface>({
+                variant: CONFIRM_MODAL,
+                props: {
+                  testId: 'delete-product-modal',
+                  message: `Вы уверенны, что хотите удалить товар ${dataItem.originalName}?`,
+                  confirm: () => {
+                    showLoading();
+                    deleteProductFromRubricMutation({
+                      variables: {
+                        input: {
+                          rubricId: rubric._id,
+                          productId: dataItem._id,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  },
+                },
+              });
+            }}
+          />
+        );
       },
     },
   ];
@@ -174,6 +233,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
 
             <Pager
               page={page}
+              totalPages={totalPages}
               setPage={(page) => {
                 const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
                 const prevUrlArray = pagerUrl.split('/').filter((param) => param);
@@ -182,8 +242,22 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
                   console.log(e);
                 });
               }}
-              totalPages={totalPages}
             />
+
+            <FixedButtons>
+              <Button
+                onClick={() => {
+                  showModal<CreateNewProductModalInterface>({
+                    variant: CREATE_NEW_PRODUCT_MODAL,
+                    props: {
+                      rubricId: `${rubric._id}`,
+                    },
+                  });
+                }}
+              >
+                Создать товар
+              </Button>
+            </FixedButtons>
           </div>
         </div>
       </Inner>

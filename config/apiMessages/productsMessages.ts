@@ -201,8 +201,8 @@ export const productsMessages: MessageType[] = [
   {
     slug: 'validation.products.rubrics',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Рубрики товара обязательны.`,
-      [SECONDARY_LOCALE]: `Product rubrics is required.`,
+      [DEFAULT_LOCALE]: `Рубрика товара обязательна.`,
+      [SECONDARY_LOCALE]: `Product rubric is required.`,
     },
   },
   {

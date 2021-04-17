@@ -293,11 +293,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     assets: NexusGenScalars['Upload'][]; // [Upload!]!
-    attributes: NexusGenInputs['ProductAttributeInput'][]; // [ProductAttributeInput!]!
-    brandCollectionSlug?: string | null; // String
-    brandSlug?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    manufacturerSlug?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -640,15 +636,10 @@ export interface NexusGenInputs {
   UpdateProductInput: {
     // input type
     active: boolean; // Boolean!
-    attributes: NexusGenInputs['ProductAttributeInput'][]; // [ProductAttributeInput!]!
-    brandCollectionSlug?: string | null; // String
-    brandSlug?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    manufacturerSlug?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRoleInput: {
     // input type

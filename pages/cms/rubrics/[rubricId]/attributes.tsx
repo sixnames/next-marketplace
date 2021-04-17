@@ -220,12 +220,14 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   />
                 }
               >
-                <Table<RubricAttributeModel>
-                  data={attributes}
-                  columns={columns}
-                  emptyMessage={'Список атрибутов пуст'}
-                  testIdKey={'nameString'}
-                />
+                <div className={`overflow-x-auto`}>
+                  <Table<RubricAttributeModel>
+                    data={attributes}
+                    columns={columns}
+                    emptyMessage={'Список атрибутов пуст'}
+                    testIdKey={'nameString'}
+                  />
+                </div>
               </Accordion>
             </div>
           );

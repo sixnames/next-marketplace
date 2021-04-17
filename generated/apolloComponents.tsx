@@ -515,10 +515,6 @@ export type CreateProductInput = {
   descriptionI18n: Scalars['JSONObject'];
   assets: Array<Scalars['Upload']>;
   rubricId: Scalars['ObjectId'];
-  brandSlug?: Maybe<Scalars['String']>;
-  brandCollectionSlug?: Maybe<Scalars['String']>;
-  manufacturerSlug?: Maybe<Scalars['String']>;
-  attributes: Array<ProductAttributeInput>;
 };
 
 export type CreateRoleInput = {
@@ -2493,11 +2489,6 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricId: Scalars['ObjectId'];
-  brandSlug?: Maybe<Scalars['String']>;
-  brandCollectionSlug?: Maybe<Scalars['String']>;
-  manufacturerSlug?: Maybe<Scalars['String']>;
-  attributes: Array<ProductAttributeInput>;
 };
 
 export type UpdateRoleInput = {
@@ -2807,6 +2798,10 @@ export type CreateProductMutation = (
   & { createProduct: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, '_id'>
+    )> }
   ) }
 );
 
@@ -5539,6 +5534,9 @@ export const CreateProductDocument = gql`
   createProduct(input: $input) {
     success
     message
+    payload {
+      _id
+    }
   }
 }
     `;

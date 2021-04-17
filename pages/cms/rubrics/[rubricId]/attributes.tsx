@@ -1,5 +1,6 @@
 import Accordion from 'components/Accordion/Accordion';
 import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner/Inner';
@@ -200,10 +201,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   return (
     <CmsRubricLayout rubric={rubric}>
       <Inner testId={'rubric-attributes'}>
-        <div className='mb-12'>
-          <Button onClick={addAttributesGroupToRubricHandler}>Добавить группу атрибутов</Button>
-        </div>
-
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
           return (
@@ -233,9 +230,9 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           );
         })}
 
-        <div className='mt-6'>
+        <FixedButtons>
           <Button onClick={addAttributesGroupToRubricHandler}>Добавить группу атрибутов</Button>
-        </div>
+        </FixedButtons>
       </Inner>
     </CmsRubricLayout>
   );

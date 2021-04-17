@@ -113,7 +113,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   /*
   * <DataLayoutContentFrame>
       <ProductConnections product={product} />
-      <ProductAssets product={product} />
     </DataLayoutContentFrame>
   * */
 };
@@ -147,6 +146,11 @@ export const getServerSideProps = async (
       {
         $match: {
           _id: new ObjectId(`${productId}`),
+        },
+      },
+      {
+        $project: {
+          attributes: false,
         },
       },
     ])

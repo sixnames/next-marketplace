@@ -214,12 +214,28 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
   collectionsIds: ObjectIdModel[];
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
+
+  // types for ui
+  name?: string | null;
+}
+
+export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
+  nameI18n: TranslationModel;
+  slug: string;
+  url?: URLModel[] | null;
+  descriptionI18n?: TranslationModel | null;
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface CartProductModel {
@@ -323,13 +339,6 @@ export interface LanguageModel {
   slug: string;
   name: string;
   nativeName: string;
-}
-
-export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
-  nameI18n: TranslationModel;
-  slug: string;
-  url?: URLModel[] | null;
-  descriptionI18n?: TranslationModel | null;
 }
 
 export interface MessageType {

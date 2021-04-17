@@ -1,7 +1,6 @@
 import * as React from 'react';
 import ButtonCross from '../Buttons/ButtonCross';
 import { useAppContext } from 'context/appContext';
-import classes from './ModalFrame.module.css';
 import { ModalSizeType } from 'types/clientTypes';
 
 interface ModalFrameInterface {
@@ -11,6 +10,8 @@ interface ModalFrameInterface {
   warning?: boolean;
   testId?: string;
 }
+
+const backdropClassName = 'absolute top-0 w-[50vw] h-full';
 
 const ModalFrame: React.FC<ModalFrameInterface> = ({
   children,
@@ -22,27 +23,24 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
 }) => {
   const { hideModal } = useAppContext();
 
-  const sizeClass = `${size === 'small' ? classes.small : ''} ${
-    size === 'midWide' ? classes.midWide : ''
-  } ${size === 'wide' ? classes.wide : ''}`;
+  const sizeClass = `${size === 'small' ? 'max-w-[526px]' : ''} ${
+    size === 'midWide' ? 'max-w-[1320px]' : ''
+  } ${size === 'wide' ? 'max-w-[980px]' : ''} ${!size ? 'max-w-[600px]' : ''}`;
 
   return (
     <div
       data-cy={testId}
-      className={`${classes.frame} ${sizeClass} ${warning ? classes.warning : ''} ${
-        className ? className : ''
-      } ${withInner ? classes.withInner : ''}`}
+      className={`relative z-[2] w-full py-14 mx-auto my-4 shadow-xl rounded-lg ${sizeClass} ${
+        warning ? 'bg-red-400' : 'bg-primary-background'
+      } ${className ? className : ''} ${withInner ? '' : 'px-inner-block-horizontal-padding'}`}
     >
       <div>{children}</div>
-      <ButtonCross
-        ariaLabel={'Закрыть окно'}
-        onClick={hideModal}
-        className={classes.close}
-        testId={'close-modal'}
-      />
+      <div className='absolute top-0 right-0 text-secondary-text z-10'>
+        <ButtonCross ariaLabel={'Закрыть окно'} onClick={hideModal} testId={'close-modal'} />
+      </div>
 
-      <div className={classes.closeLeft} onClick={hideModal} />
-      <div className={classes.closeRight} onClick={hideModal} />
+      <div className={`${backdropClassName} right-full`} onClick={hideModal} />
+      <div className={`${backdropClassName} left-full`} onClick={hideModal} />
     </div>
   );
 };

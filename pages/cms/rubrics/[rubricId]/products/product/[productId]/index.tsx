@@ -109,12 +109,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
       </Inner>
     </CmsProductLayout>
   );
-
-  /*
-  * <DataLayoutContentFrame>
-      <ProductConnections product={product} />
-    </DataLayoutContentFrame>
-  * */
 };
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}

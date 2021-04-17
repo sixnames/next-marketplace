@@ -1,12 +1,9 @@
 import ModalText from 'components/Modal/ModalText';
+import { ProductAttributeModel, ProductModel } from 'db/dbModels';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
-import {
-  CmsProductAttributeFragment,
-  CmsProductFragment,
-  CreateProductConnectionInput,
-} from 'generated/apolloComponents';
+import { CreateProductConnectionInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import useValidationSchema from '../../../hooks/useValidationSchema';
@@ -17,7 +14,7 @@ import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 
 export interface CreateConnectionModalInterface {
-  product: CmsProductFragment;
+  product: ProductModel;
   confirm: (input: CreateProductConnectionInput) => void;
 }
 
@@ -28,22 +25,22 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
   });
 
   const addedAttributesIds: string[] = product.connections.map(({ attributeId }) => {
-    return attributeId;
+    return `${attributeId}`;
   });
 
   const attributesOptions: SelectOptionInterface[] = product.attributes.reduce(
-    (acc: SelectOptionInterface[], { attribute }) => {
+    (acc: SelectOptionInterface[], { attributeVariant, attributeName, attributeId }) => {
       if (
-        attribute.variant !== ATTRIBUTE_VARIANT_SELECT ||
-        addedAttributesIds.includes(attribute._id)
+        attributeVariant !== ATTRIBUTE_VARIANT_SELECT ||
+        addedAttributesIds.includes(`${attributeId}`)
       ) {
         return acc;
       }
       return [
         ...acc,
         {
-          _id: attribute._id,
-          name: attribute.name,
+          _id: `${attributeId}`,
+          name: `${attributeName}`,
         },
       ];
     },
@@ -71,7 +68,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
           attributeId: null,
         }}
         onSubmit={(values) => {
-          const productAttribute: CmsProductAttributeFragment | undefined = product.attributes.find(
+          const productAttribute: ProductAttributeModel | undefined = product.attributes.find(
             ({ attributeId }) => {
               return attributeId === values.attributeId;
             },

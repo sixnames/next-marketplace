@@ -124,6 +124,7 @@ export const Rubric = objectType({
       },
       resolve: async (source, args, context): Promise<ProductsPaginationPayloadModel> => {
         const { city } = await getRequestParams(context);
+
         const paginationResult = await productsPaginationQuery({
           input: {
             ...args.input,

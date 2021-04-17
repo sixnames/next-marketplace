@@ -147,12 +147,6 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
       </Inner>
     </CmsProductLayout>
   );
-
-  /*
-  * <DataLayoutContentFrame>
-      <ProductConnections product={product} />
-    </DataLayoutContentFrame>
-  * */
 };
 
 interface ProductPageInterface extends PagePropsInterface, ProductAssetsInterface {}

@@ -492,7 +492,6 @@ export interface ProductAttributeModel {
   attributeId: ObjectIdModel;
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
-  attributeName?: string | null;
   attributeMetric?: MetricModel | null;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
@@ -501,6 +500,7 @@ export interface ProductAttributeModel {
   textI18n?: TranslationModel | null;
 
   // types for ui
+  attributeName?: string | null;
   number?: number | null;
   readableValue?: string | null;
   index?: number;

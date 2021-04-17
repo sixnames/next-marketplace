@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ModalTitle.module.css';
 import { SizeType } from 'types/clientTypes';
 
 interface ModalTitleInterface {
@@ -20,14 +19,22 @@ const ModalTitle: React.FC<ModalTitleInterface> = ({
 }) => {
   return (
     <div
-      className={`${classes.frame} ${low ? classes.frameLow : ''} ${className ? className : null}`}
+      className={`wp-desktop:flex wp-desktop:items-center wp-desktop:justify-between ${
+        low ? '' : 'mb-6'
+      } ${className ? className : null}`}
     >
-      <h2 className={`${classes.text} ${size === 'small' ? classes.textSmall : ''}`}>
-        {children}
-        {subtitle && <span className={classes.subtitle}>{subtitle}</span>}
-      </h2>
+      <div>
+        <div
+          className={`font-medium ${
+            size === 'small' ? 'text-2xl wp-desktop:text-3xl' : 'text-3xl wp-desktop:text-4xl'
+          }`}
+        >
+          {children}
+        </div>
+        {subtitle ? <div className='text-secondary-text mt-4'>{subtitle}</div> : null}
+      </div>
 
-      {right && <div className={classes.right}>{right}</div>}
+      {right && <div className='mt-3 wp-desktop:mt-0'>{right}</div>}
     </div>
   );
 };

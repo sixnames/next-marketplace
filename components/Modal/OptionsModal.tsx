@@ -25,6 +25,7 @@ export interface OptionsModalCommonPropsInterface {
   onSubmit: (selectedOptions: OptionsModalOptionInterface[]) => void;
   optionVariant?: 'checkbox' | 'radio';
   buttonText?: string;
+  initialEmptyListMessage?: string;
 }
 
 export interface OptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -33,6 +34,7 @@ export interface OptionsModalInterface extends OptionsModalCommonPropsInterface 
   error?: any | null;
 }
 
+const defaultEmptyListMessage = 'Список пуст';
 const radioClassName = 'rounded-full';
 const checkboxClassName = 'rounded';
 const translit = new cyrillicToTranslit();
@@ -45,8 +47,10 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   error,
   onSubmit,
   buttonText = 'Применить',
+  initialEmptyListMessage = defaultEmptyListMessage,
 }) => {
-  const [state, setState] = React.useState<OptionsModalLetterInterface[]>([]);
+  const [emptyListMessage, setEmptyListMessage] = React.useState<string | null>(null);
+  const [state, setState] = React.useState<OptionsModalLetterInterface[] | null>(null);
   const [search, setSearch] = React.useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = React.useState<OptionsModalOptionInterface[]>([]);
 
@@ -82,7 +86,14 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
   React.useEffect(() => {
     if (!search) {
-      setState(alphabet || []);
+      const realAlphabet = alphabet || [];
+      setState(realAlphabet);
+
+      if (realAlphabet.length < 1 && !loading) {
+        setEmptyListMessage(initialEmptyListMessage || defaultEmptyListMessage);
+      } else {
+        setEmptyListMessage(null);
+      }
     } else {
       const searchOnLatin = translit.transform(search).toLowerCase();
       const searchOnCyrillic = translit.reverse(search).toLowerCase();
@@ -99,7 +110,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
       });
       setState(filteredAlphabet);
     }
-  }, [alphabet, search]);
+  }, [alphabet, initialEmptyListMessage, loading, search]);
 
   if (loading && !alphabet) {
     return (
@@ -119,6 +130,15 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
     );
   }
 
+  if (emptyListMessage) {
+    return (
+      <ModalFrame size={'midWide'}>
+        {title ? <ModalTitle>{title}</ModalTitle> : null}
+        <RequestError message={emptyListMessage} />
+      </ModalFrame>
+    );
+  }
+
   return (
     <ModalFrame size={'midWide'}>
       {title ? <ModalTitle>{title}</ModalTitle> : null}
@@ -130,7 +150,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      {state.map(({ letter, docs }) => {
+      {(state || []).map(({ letter, docs }) => {
         if (docs.length < 1) {
           return null;
         }
@@ -164,9 +184,12 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
           </div>
         );
       })}
-      <FixedButtons>
-        <Button onClick={() => onSubmit(selectedOptions)}>{buttonText}</Button>
-      </FixedButtons>
+
+      {selectedOptions.length > 0 ? (
+        <FixedButtons>
+          <Button onClick={() => onSubmit(selectedOptions)}>{buttonText}</Button>
+        </FixedButtons>
+      ) : null}
     </ModalFrame>
   );
 };

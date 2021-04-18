@@ -1,7 +1,10 @@
+import Button from 'components/Buttons/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner/Inner';
+import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
-import { BRAND_OPTIONS_MODAL } from 'config/modals';
+import { BRAND_COLLECTION_OPTIONS_MODAL, BRAND_OPTIONS_MODAL } from 'config/modals';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -10,6 +13,11 @@ import {
 } from 'db/collectionNames';
 import { BrandCollectionModel, BrandModel, ManufacturerModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import {
+  useUpdateProductBrandCollectionMutation,
+  useUpdateProductBrandMutation,
+  useUpdateProductManufacturerMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
@@ -17,7 +25,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -36,42 +44,190 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  // const router = useRouter();
+  const router = useRouter();
   const {
-    // onErrorCallback,
-    // onCompleteCallback,
-    // showLoading,
-    // hideLoading,
-    // showErrorNotification,
+    onErrorCallback,
+    onCompleteCallback,
+    showLoading,
+    hideLoading,
+    showErrorNotification,
     showModal,
-  } = useMutationCallbacks();
+  } = useMutationCallbacks({ withModal: true });
+
+  const [updateProductBrandMutation] = useUpdateProductBrandMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductBrand }) => {
+      if (updateProductBrand.success) {
+        onCompleteCallback(updateProductBrand);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductBrand.message });
+      }
+    },
+  });
+
+  const [updateProductBrandCollectionMutation] = useUpdateProductBrandCollectionMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductBrandCollection }) => {
+      if (updateProductBrandCollection.success) {
+        onCompleteCallback(updateProductBrandCollection);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductBrandCollection.message });
+      }
+    },
+  });
+
+  const [updateProductManufacturerMutation] = useUpdateProductManufacturerMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductManufacturer }) => {
+      if (updateProductManufacturer.success) {
+        onCompleteCallback(updateProductManufacturer);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductManufacturer.message });
+      }
+    },
+  });
 
   return (
     <CmsProductLayout product={product}>
       <Inner>
-        <FakeInput
-          onClick={() => {
-            showModal<BrandOptionsModalInterface>({
-              variant: BRAND_OPTIONS_MODAL,
-              props: {
-                optionVariant: 'radio',
-                onSubmit: (selectedOptions) => {
-                  console.log(selectedOptions);
+        <InputLine label={'Бренд'}>
+          <FakeInput
+            low
+            value={brand ? `${brand.name}` : emptyValue}
+            onClick={() => {
+              showModal<BrandOptionsModalInterface>({
+                variant: BRAND_OPTIONS_MODAL,
+                props: {
+                  optionVariant: 'radio',
+                  onSubmit: (selectedOptions) => {
+                    const brand = selectedOptions[0];
+
+                    if (brand) {
+                      showLoading();
+                      updateProductBrandMutation({
+                        variables: {
+                          input: {
+                            productId: product._id,
+                            brandSlug: brand.slug,
+                          },
+                        },
+                      }).catch((e) => console.log(e));
+                      return;
+                    }
+                    showErrorNotification({ title: 'Бренд не указан' });
+                  },
                 },
-              },
-            });
-          }}
-          value={brand ? `${brand.name}` : emptyValue}
-          label={'Бренд'}
-        />
-        <FakeInput
-          value={brandCollection ? `${brandCollection.name}` : emptyValue}
-          label={'Коллекция бренда'}
-        />
-        <FakeInput
-          value={manufacturer ? `${manufacturer.name}` : emptyValue}
-          label={'Производитель'}
-        />
+              });
+            }}
+          />
+
+          {product.brandSlug ? (
+            <div className='mt-4'>
+              <Button
+                onClick={() => {
+                  updateProductBrandMutation({
+                    variables: {
+                      input: {
+                        productId: product._id,
+                        brandSlug: null,
+                      },
+                    },
+                  }).catch((e) => console.log(e));
+                }}
+                size={'small'}
+                theme={'secondary'}
+              >
+                Очистить
+              </Button>
+            </div>
+          ) : null}
+        </InputLine>
+
+        <InputLine label={!product.brandSlug ? 'Бренд не назначен' : 'Коллекция бренда'}>
+          <FakeInput
+            low
+            disabled={!product.brandSlug}
+            value={brandCollection ? `${brandCollection.name}` : emptyValue}
+            onClick={() => {
+              showModal<BrandCollectionOptionsModalInterface>({
+                variant: BRAND_COLLECTION_OPTIONS_MODAL,
+                props: {
+                  brandSlug: `${product.brandSlug}`,
+                  optionVariant: 'radio',
+                  onSubmit: (selectedOptions) => {
+                    const brand = selectedOptions[0];
+
+                    if (brand) {
+                      showLoading();
+                      updateProductBrandCollectionMutation({
+                        variables: {
+                          input: {
+                            productId: product._id,
+                            brandCollectionSlug: brand.slug,
+                          },
+                        },
+                      }).catch((e) => console.log(e));
+                      return;
+                    }
+                    showErrorNotification({ title: 'Коллекция бренда не указана' });
+                  },
+                },
+              });
+            }}
+          />
+
+          {product.brandCollectionSlug ? (
+            <div className='mt-4'>
+              <Button
+                onClick={() => {
+                  updateProductBrandCollectionMutation({
+                    variables: {
+                      input: {
+                        productId: product._id,
+                        brandCollectionSlug: null,
+                      },
+                    },
+                  }).catch((e) => console.log(e));
+                }}
+                size={'small'}
+                theme={'secondary'}
+              >
+                Очистить
+              </Button>
+            </div>
+          ) : null}
+        </InputLine>
+
+        <InputLine label={'Производитель'}>
+          <FakeInput low value={manufacturer ? `${manufacturer.name}` : emptyValue} />
+
+          {product.manufacturerSlug ? (
+            <div className='mt-4'>
+              <Button
+                onClick={() => {
+                  updateProductManufacturerMutation({
+                    variables: {
+                      input: {
+                        productId: product._id,
+                        manufacturerSlug: null,
+                      },
+                    },
+                  }).catch((e) => console.log(e));
+                }}
+                size={'small'}
+                theme={'secondary'}
+              >
+                Очистить
+              </Button>
+            </div>
+          ) : null}
+        </InputLine>
       </Inner>
     </CmsProductLayout>
   );

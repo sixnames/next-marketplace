@@ -25,14 +25,14 @@ import {
   CREATE_ROLE_MODAL,
   ADULT_MODAL,
   BRAND_OPTIONS_MODAL,
-  // BRAND_COLLECTION_OPTIONS_MODAL,
+  BRAND_COLLECTION_OPTIONS_MODAL,
   // MANUFACTURER_OPTIONS_MODAL,
   // ATTRIBUTE_OPTIONS_MODAL,
 } from 'config/modals';
 
 const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
-// const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
+const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 // const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
 // const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const ConfirmModal = dynamic(() => import('./ConfirmModal/ConfirmModal'));
@@ -119,10 +119,11 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 
-          {/*{modalType === BRAND_COLLECTION_OPTIONS_MODAL && (
+          {modalType === BRAND_COLLECTION_OPTIONS_MODAL && (
             <BrandCollectionOptionsModal {...modalProps} />
           )}
 
+          {/*
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}*/}

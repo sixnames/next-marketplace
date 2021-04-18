@@ -4640,6 +4640,57 @@ export type GetNewAttributeOptionsQuery = (
   )> }
 );
 
+export type GetBrandAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<BrandAlphabetInput>;
+}>;
+
+
+export type GetBrandAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getBrandAlphabetLists: Array<(
+    { __typename?: 'BrandsAlphabetList' }
+    & Pick<BrandsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Brand' }
+      & Pick<Brand, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetBrandCollectionAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<BrandCollectionAlphabetInput>;
+}>;
+
+
+export type GetBrandCollectionAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getBrandCollectionAlphabetLists: Array<(
+    { __typename?: 'BrandCollectionsAlphabetList' }
+    & Pick<BrandCollectionsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'BrandCollection' }
+      & Pick<BrandCollection, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetManufacturerAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<ManufacturerAlphabetInput>;
+}>;
+
+
+export type GetManufacturerAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getManufacturerAlphabetLists: Array<(
+    { __typename?: 'ManufacturersAlphabetList' }
+    & Pick<ManufacturersAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Manufacturer' }
+      & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
 export type UserInListFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
@@ -9199,6 +9250,126 @@ export function useGetNewAttributeOptionsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsQuery>;
 export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
 export type GetNewAttributeOptionsQueryResult = Apollo.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
+export const GetBrandAlphabetListsDocument = gql`
+    query GetBrandAlphabetLists($input: BrandAlphabetInput) {
+  getBrandAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBrandAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetBrandAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrandAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrandAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetBrandAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
+      }
+export function useGetBrandAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
+        }
+export type GetBrandAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsQuery>;
+export type GetBrandAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsLazyQuery>;
+export type GetBrandAlphabetListsQueryResult = Apollo.QueryResult<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>;
+export const GetBrandCollectionAlphabetListsDocument = gql`
+    query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
+  getBrandCollectionAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBrandCollectionAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetBrandCollectionAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrandCollectionAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrandCollectionAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetBrandCollectionAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
+      }
+export function useGetBrandCollectionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
+        }
+export type GetBrandCollectionAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsQuery>;
+export type GetBrandCollectionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsLazyQuery>;
+export type GetBrandCollectionAlphabetListsQueryResult = Apollo.QueryResult<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>;
+export const GetManufacturerAlphabetListsDocument = gql`
+    query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
+  getManufacturerAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetManufacturerAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetManufacturerAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetManufacturerAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManufacturerAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetManufacturerAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
+      }
+export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
+        }
+export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
+export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
+export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
 export const UsersSerchDocument = gql`
     query UsersSerch($input: PaginationInput!) {
   getAllUsers(input: $input) {

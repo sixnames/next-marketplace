@@ -4,7 +4,12 @@ import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner/Inner';
 import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
-import { BRAND_COLLECTION_OPTIONS_MODAL, BRAND_OPTIONS_MODAL } from 'config/modals';
+import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';
+import {
+  BRAND_COLLECTION_OPTIONS_MODAL,
+  BRAND_OPTIONS_MODAL,
+  MANUFACTURER_OPTIONS_MODAL,
+} from 'config/modals';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -161,15 +166,15 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                   brandSlug: `${product.brandSlug}`,
                   optionVariant: 'radio',
                   onSubmit: (selectedOptions) => {
-                    const brand = selectedOptions[0];
+                    const brandCollection = selectedOptions[0];
 
-                    if (brand) {
+                    if (brandCollection) {
                       showLoading();
                       updateProductBrandCollectionMutation({
                         variables: {
                           input: {
                             productId: product._id,
-                            brandCollectionSlug: brand.slug,
+                            brandCollectionSlug: brandCollection.slug,
                           },
                         },
                       }).catch((e) => console.log(e));
@@ -205,7 +210,30 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
         </InputLine>
 
         <InputLine label={'Производитель'}>
-          <FakeInput low value={manufacturer ? `${manufacturer.name}` : emptyValue} />
+          <FakeInput
+            low
+            value={manufacturer ? `${manufacturer.name}` : emptyValue}
+            onClick={() => {
+              showModal<ManufacturerOptionsModalInterface>({
+                variant: MANUFACTURER_OPTIONS_MODAL,
+                props: {
+                  optionVariant: 'radio',
+                  onSubmit: (selectedOptions) => {
+                    const manufacturer = selectedOptions[0];
+                    showLoading();
+                    updateProductManufacturerMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          manufacturerSlug: manufacturer.slug,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  },
+                },
+              });
+            }}
+          />
 
           {product.manufacturerSlug ? (
             <div className='mt-4'>

@@ -1476,6 +1476,7 @@ export const ProductMutations = extendType({
             {
               $set: {
                 brandSlug,
+                brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
               },
             },
             {

@@ -1563,8 +1563,8 @@ export interface NexusGenFieldTypes {
     getISOLanguagesOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getIconsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getManufacturer: NexusGenRootTypes['Manufacturer']; // Manufacturer!
+    getManufacturerAlphabetLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
-    getManufacturerOptionsLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturersOptions: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
     getMyOrder: NexusGenRootTypes['Order'] | null; // Order
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
@@ -2579,8 +2579,8 @@ export interface NexusGenFieldTypeNames {
     getISOLanguagesOptions: 'SelectOption';
     getIconsOptions: 'SelectOption';
     getManufacturer: 'Manufacturer';
+    getManufacturerAlphabetLists: 'ManufacturersAlphabetList';
     getManufacturerBySlug: 'Manufacturer';
-    getManufacturerOptionsLists: 'ManufacturersAlphabetList';
     getManufacturersOptions: 'Manufacturer';
     getMyOrder: 'Order';
     getOptionsGroup: 'OptionsGroup';

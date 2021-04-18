@@ -1,8 +1,8 @@
-import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
-  LanguageModel,
   ManufacturerModel,
   ManufacturerPayloadModel,
   ManufacturersAlphabetListModel,
@@ -10,7 +10,7 @@ import {
   ProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_LANGUAGES, COL_MANUFACTURERS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_MANUFACTURERS, COL_PRODUCTS } from 'db/collectionNames';
 import { aggregatePagination } from 'db/aggregatePagination';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -136,13 +136,11 @@ export const ManufacturerQueries = extendType({
     });
 
     // Should manufacturers grouped by alphabet
-    t.nonNull.list.nonNull.field('getManufacturerOptionsLists', {
+    t.nonNull.list.nonNull.field('getManufacturerAlphabetLists', {
       type: 'ManufacturersAlphabetList',
       description: 'Should manufacturers grouped by alphabet',
       resolve: async (): Promise<ManufacturersAlphabetListModel[]> => {
         const db = await getDatabase();
-        const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-        const languages = await languagesCollection.find({}).toArray();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturers = await manufacturersCollection
           .find(
@@ -156,29 +154,7 @@ export const ManufacturerQueries = extendType({
             },
           )
           .toArray();
-
-        const payload: ManufacturersAlphabetListModel[] = [];
-        ALL_ALPHABETS.forEach((letter) => {
-          const realLetter = letter.toLowerCase();
-          const docs = manufacturers.filter(({ nameI18n }) => {
-            const nameFirstLetters: string[] = [];
-            languages.forEach(({ slug }) => {
-              const firstLetter = (nameI18n[slug] || '').charAt(0);
-              if (firstLetter) {
-                nameFirstLetters.push(firstLetter.toLowerCase());
-              }
-            });
-            return nameFirstLetters.includes(realLetter);
-          });
-
-          if (docs.length > 0) {
-            payload.push({
-              letter,
-              docs,
-            });
-          }
-        });
-        return payload;
+        return getAlphabetList<ManufacturerModel>(manufacturers);
       },
     });
 

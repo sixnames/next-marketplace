@@ -1752,14 +1752,14 @@ type Query {
   getManufacturer(_id: ObjectId!): Manufacturer!
 
   """
+  Should manufacturers grouped by alphabet
+  """
+  getManufacturerAlphabetLists: [ManufacturersAlphabetList!]!
+
+  """
   Should return manufacturer by given slug
   """
   getManufacturerBySlug(slug: String!): Manufacturer!
-
-  """
-  Should manufacturers grouped by alphabet
-  """
-  getManufacturerOptionsLists: [ManufacturersAlphabetList!]!
 
   """
   Should return manufacturers list

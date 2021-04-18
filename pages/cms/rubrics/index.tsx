@@ -1,4 +1,5 @@
 import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Inner from 'components/Inner/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal/CreateRubricModal';
@@ -124,11 +125,22 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
         <title>{`Рубрикатор`}</title>
       </Head>
       <Inner>
-        <div className='sm:flex sm:items-end sm:justify-between mb-8'>
-          <Title low>Рубрикатор</Title>
+        <Title>Рубрикатор</Title>
+
+        <div className='overflow-x-auto'>
+          <Table<RubricModel>
+            columns={columns}
+            data={rubrics}
+            testIdKey={'name'}
+            emptyMessage={'Список пуст'}
+            onRowDoubleClick={(rubric) => {
+              router.push(`${ROUTE_CMS}/rubrics/${rubric._id}`).catch((e) => console.log(e));
+            }}
+          />
+        </div>
+
+        <FixedButtons>
           <Button
-            theme={'secondary'}
-            size={'small'}
             className={'mt-6 sm:mt-0'}
             onClick={() => {
               showModal<CreateRubricModalInterface>({
@@ -144,18 +156,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
           >
             Создать рубрику
           </Button>
-        </div>
-        <div className='overflow-x-auto'>
-          <Table<RubricModel>
-            columns={columns}
-            data={rubrics}
-            testIdKey={'name'}
-            emptyMessage={'Список пуст'}
-            onRowDoubleClick={(rubric) => {
-              router.push(`${ROUTE_CMS}/rubrics/${rubric._id}`).catch((e) => console.log(e));
-            }}
-          />
-        </div>
+        </FixedButtons>
       </Inner>
     </AppContentWrapper>
   );

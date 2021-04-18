@@ -1,7 +1,9 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { COL_ATTRIBUTES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
+import { COL_ATTRIBUTES, COL_LANGUAGES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
+  AlphabetListModelType,
   AttributeModel,
+  LanguageModel,
   ObjectIdModel,
   OptionModel,
   ProductModel,
@@ -333,4 +335,40 @@ export async function updateOptionsList({
     console.log(e);
     return false;
   }
+}
+
+export async function getAlphabetList<TModel extends Record<string, any>>(entityList: TModel[]) {
+  const db = await getDatabase();
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection.find({}).toArray();
+
+  const payload: AlphabetListModelType<TModel>[] = [];
+  ALL_ALPHABETS.forEach((letter) => {
+    const realLetter = letter.toLowerCase();
+    const docs = entityList.filter(({ nameI18n }) => {
+      const nameFirstLetters: string[] = [];
+      languages.forEach(({ slug }) => {
+        const firstLetter = nameI18n ? (nameI18n[slug] || '').charAt(0) : null;
+        if (firstLetter) {
+          nameFirstLetters.push(firstLetter.toLowerCase());
+        }
+      });
+      return nameFirstLetters.includes(realLetter);
+    });
+
+    const sortedDocs = docs.sort((a, b) => {
+      const aName = a.nameI18n ? a.nameI18n[DEFAULT_LOCALE] || '' : '';
+      const bName = b.nameI18n ? b.nameI18n[DEFAULT_LOCALE] || '' : '';
+      return aName.localeCompare(bName);
+    });
+
+    if (docs.length > 0) {
+      payload.push({
+        letter,
+        docs: sortedDocs,
+      });
+    }
+  });
+
+  return payload;
 }

@@ -22,10 +22,9 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
   size = 'normal',
 }) => {
   const { hideModal } = useAppContext();
-
   const sizeClass = `${size === 'small' ? 'max-w-[526px]' : ''} ${
-    size === 'midWide' ? 'max-w-[1320px]' : ''
-  } ${size === 'wide' ? 'max-w-[980px]' : ''} ${size === 'normal' ? 'max-w-[600px]' : ''}`;
+    size === 'midWide' ? 'max-w-[980px]' : ''
+  } ${size === 'wide' ? 'max-w-[1320px]' : ''} ${size === 'normal' ? 'max-w-[600px]' : ''}`;
 
   return (
     <div

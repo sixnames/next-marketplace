@@ -1,5 +1,7 @@
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Inner from 'components/Inner/Inner';
+import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
+import { BRAND_OPTIONS_MODAL } from 'config/modals';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -8,14 +10,14 @@ import {
 } from 'db/collectionNames';
 import { BrandCollectionModel, BrandModel, ManufacturerModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-// import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -34,19 +36,34 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  /*const router = useRouter();
+  const router = useRouter();
   const {
     onErrorCallback,
     onCompleteCallback,
     showLoading,
     hideLoading,
     showErrorNotification,
-  } = useMutationCallbacks();*/
+    showModal,
+  } = useMutationCallbacks();
 
   return (
     <CmsProductLayout product={product}>
       <Inner>
-        <FakeInput value={brand ? `${brand.name}` : emptyValue} label={'Бренд'} />
+        <FakeInput
+          onClick={() => {
+            showModal<BrandOptionsModalInterface>({
+              variant: BRAND_OPTIONS_MODAL,
+              props: {
+                optionVariant: 'radio',
+                onSubmit: (selectedOptions) => {
+                  console.log(selectedOptions);
+                },
+              },
+            });
+          }}
+          value={brand ? `${brand.name}` : emptyValue}
+          label={'Бренд'}
+        />
         <FakeInput
           value={brandCollection ? `${brandCollection.name}` : emptyValue}
           label={'Коллекция бренда'}

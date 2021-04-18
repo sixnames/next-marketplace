@@ -2,7 +2,7 @@ import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
 import { BrandCollectionModel, BrandCollectionsAlphabetListModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getAlphabetList } from 'lib/optionsUtils';
-import { extendType, objectType } from 'nexus';
+import { arg, extendType, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 
 export const BrandCollection = objectType({
@@ -47,6 +47,15 @@ export const BrandCollectionsAlphabetList = objectType({
   },
 });
 
+export const BrandCollectionAlphabetInput = inputObjectType({
+  name: 'BrandCollectionAlphabetInput',
+  definition(t) {
+    t.objectId('brandId');
+    t.string('brandSlug');
+    t.list.nonNull.string('slugs');
+  },
+});
+
 // Brand collection queries
 export const BrandCollectionQueries = extendType({
   type: 'Query',
@@ -55,22 +64,44 @@ export const BrandCollectionQueries = extendType({
     t.nonNull.list.nonNull.field('getBrandCollectionAlphabetLists', {
       type: 'BrandCollectionsAlphabetList',
       description: 'Should return brand collections grouped by alphabet',
-      resolve: async (): Promise<BrandCollectionsAlphabetListModel[]> => {
+      args: {
+        input: arg({
+          type: 'BrandCollectionAlphabetInput',
+        }),
+      },
+      resolve: async (_root, args): Promise<BrandCollectionsAlphabetListModel[]> => {
         const db = await getDatabase();
         const brandCollectionsCollection = db.collection<BrandCollectionModel>(
           COL_BRAND_COLLECTIONS,
         );
-        const brandCollections = await brandCollectionsCollection
-          .find(
-            {},
-            {
-              projection: {
-                _id: true,
-                slug: true,
-                nameI18n: true,
+        const { input } = args;
+        let query: Record<string, any> = {};
+        if (input) {
+          if (input.brandId) {
+            query = { brandId: input.brandId };
+          }
+
+          if (input.brandSlug) {
+            query = { brandSlug: input.brandSlug };
+          }
+
+          if (input.slugs) {
+            query = {
+              slug: {
+                $in: input.slugs,
               },
+            };
+          }
+        }
+
+        const brandCollections = await brandCollectionsCollection
+          .find(query, {
+            projection: {
+              _id: true,
+              slug: true,
+              nameI18n: true,
             },
-          )
+          })
           .toArray();
         return getAlphabetList<BrandCollectionModel>(brandCollections);
       },

@@ -188,6 +188,10 @@ type Brand implements Base & Timestamp {
   url: [URL!]
 }
 
+input BrandAlphabetInput {
+  slugs: [String!]
+}
+
 type BrandCollection implements Base & Timestamp {
   _id: ObjectId!
   createdAt: Date!
@@ -198,6 +202,12 @@ type BrandCollection implements Base & Timestamp {
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
+}
+
+input BrandCollectionAlphabetInput {
+  brandId: ObjectId
+  brandSlug: String
+  slugs: [String!]
 }
 
 type BrandCollectionsAlphabetList implements AlphabetList {
@@ -664,6 +674,10 @@ type Manufacturer implements Base & Timestamp {
   slug: String!
   updatedAt: Date!
   url: [URL!]
+}
+
+input ManufacturerAlphabetInput {
+  slugs: [String!]
 }
 
 type ManufacturerPayload implements Payload {
@@ -1703,7 +1717,7 @@ type Query {
   """
   Should return brands grouped by alphabet
   """
-  getBrandAlphabetLists: [BrandsAlphabetList!]!
+  getBrandAlphabetLists(input: BrandAlphabetInput): [BrandsAlphabetList!]!
 
   """
   Should return brand by slug
@@ -1713,7 +1727,9 @@ type Query {
   """
   Should return brand collections grouped by alphabet
   """
-  getBrandCollectionAlphabetLists: [BrandCollectionsAlphabetList!]!
+  getBrandCollectionAlphabetLists(
+    input: BrandCollectionAlphabetInput
+  ): [BrandCollectionsAlphabetList!]!
 
   """
   Should return top search items
@@ -1768,7 +1784,7 @@ type Query {
   """
   Should return manufacturers grouped by alphabet
   """
-  getManufacturerAlphabetLists: [ManufacturersAlphabetList!]!
+  getManufacturerAlphabetLists(input: ManufacturerAlphabetInput): [ManufacturersAlphabetList!]!
 
   """
   Should return manufacturer by given slug

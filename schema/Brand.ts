@@ -113,6 +113,13 @@ export const BrandsPaginationPayload = objectType({
   },
 });
 
+export const BrandAlphabetInput = inputObjectType({
+  name: 'BrandAlphabetInput',
+  definition(t) {
+    t.list.nonNull.string('slugs');
+  },
+});
+
 export const BrandsAlphabetList = objectType({
   name: 'BrandsAlphabetList',
   definition(t) {
@@ -188,20 +195,34 @@ export const BrandQueries = extendType({
     t.nonNull.list.nonNull.field('getBrandAlphabetLists', {
       type: 'BrandsAlphabetList',
       description: 'Should return brands grouped by alphabet',
-      resolve: async (): Promise<BrandsAlphabetListModel[]> => {
+      args: {
+        input: arg({
+          type: 'BrandAlphabetInput',
+        }),
+      },
+      resolve: async (_root, args): Promise<BrandsAlphabetListModel[]> => {
         const db = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const brands = await brandsCollection
-          .find(
-            {},
-            {
-              projection: {
-                _id: true,
-                slug: true,
-                nameI18n: true,
+        const { input } = args;
+        let query: Record<string, any> = {};
+        if (input) {
+          if (input.slugs) {
+            query = {
+              slug: {
+                $in: input.slugs,
               },
+            };
+          }
+        }
+
+        const brands = await brandsCollection
+          .find(query, {
+            projection: {
+              _id: true,
+              slug: true,
+              nameI18n: true,
             },
-          )
+          })
           .toArray();
         return getAlphabetList<BrandModel>(brands);
       },

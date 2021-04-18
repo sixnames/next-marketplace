@@ -209,6 +209,16 @@ export interface NexusGenInputs {
     formattedAddress: string; // String!
     point: NexusGenInputs['CoordinatesInput']; // CoordinatesInput!
   };
+  BrandAlphabetInput: {
+    // input type
+    slugs?: string[] | null; // [String!]
+  };
+  BrandCollectionAlphabetInput: {
+    // input type
+    brandId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    brandSlug?: string | null; // String
+    slugs?: string[] | null; // [String!]
+  };
   CatalogueDataInput: {
     // input type
     companySlug: string | null; // String
@@ -401,6 +411,10 @@ export interface NexusGenInputs {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     name: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
+  };
+  ManufacturerAlphabetInput: {
+    // input type
+    slugs?: string[] | null; // [String!]
   };
   OptionVariantInput: {
     // input type
@@ -3315,9 +3329,17 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    getBrandAlphabetLists: {
+      // args
+      input?: NexusGenInputs['BrandAlphabetInput'] | null; // BrandAlphabetInput
+    };
     getBrandBySlug: {
       // args
       slug: string; // String!
+    };
+    getBrandCollectionAlphabetLists: {
+      // args
+      input?: NexusGenInputs['BrandCollectionAlphabetInput'] | null; // BrandCollectionAlphabetInput
     };
     getCatalogueSearchResult: {
       // args
@@ -3347,6 +3369,10 @@ export interface NexusGenArgTypes {
     getManufacturer: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    getManufacturerAlphabetLists: {
+      // args
+      input?: NexusGenInputs['ManufacturerAlphabetInput'] | null; // ManufacturerAlphabetInput
     };
     getManufacturerBySlug: {
       // args

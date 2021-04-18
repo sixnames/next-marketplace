@@ -61,6 +61,13 @@ export const ManufacturersPaginationPayload = objectType({
   },
 });
 
+export const ManufacturerAlphabetInput = inputObjectType({
+  name: 'ManufacturerAlphabetInput',
+  definition(t) {
+    t.list.nonNull.string('slugs');
+  },
+});
+
 export const ManufacturersAlphabetList = objectType({
   name: 'ManufacturersAlphabetList',
   definition(t) {
@@ -139,20 +146,34 @@ export const ManufacturerQueries = extendType({
     t.nonNull.list.nonNull.field('getManufacturerAlphabetLists', {
       type: 'ManufacturersAlphabetList',
       description: 'Should return manufacturers grouped by alphabet',
-      resolve: async (): Promise<ManufacturersAlphabetListModel[]> => {
+      args: {
+        input: arg({
+          type: 'ManufacturerAlphabetInput',
+        }),
+      },
+      resolve: async (_root, args): Promise<ManufacturersAlphabetListModel[]> => {
         const db = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-        const manufacturers = await manufacturersCollection
-          .find(
-            {},
-            {
-              projection: {
-                _id: true,
-                slug: true,
-                nameI18n: true,
+        const { input } = args;
+        let query: Record<string, any> = {};
+        if (input) {
+          if (input.slugs) {
+            query = {
+              slug: {
+                $in: input.slugs,
               },
+            };
+          }
+        }
+
+        const manufacturers = await manufacturersCollection
+          .find(query, {
+            projection: {
+              _id: true,
+              slug: true,
+              nameI18n: true,
             },
-          )
+          })
           .toArray();
         return getAlphabetList<ManufacturerModel>(manufacturers);
       },

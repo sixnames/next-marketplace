@@ -1,10 +1,12 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
+import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Icon from 'components/Icon/Icon';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
+import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import * as React from 'react';
 
 export interface OptionsModalOptionInterface extends Record<string, any> {
@@ -22,6 +24,7 @@ export interface OptionsModalCommonPropsInterface {
   title?: string;
   onSubmit: (selectedOptions: OptionsModalOptionInterface[]) => void;
   optionVariant?: 'checkbox' | 'radio';
+  buttonText?: string;
 }
 
 export interface OptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -32,6 +35,7 @@ export interface OptionsModalInterface extends OptionsModalCommonPropsInterface 
 
 const radioClassName = 'rounded-full';
 const checkboxClassName = 'rounded';
+const translit = new cyrillicToTranslit();
 
 const OptionsModal: React.FC<OptionsModalInterface> = ({
   title,
@@ -40,7 +44,10 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   alphabet,
   error,
   onSubmit,
+  buttonText = 'Применить',
 }) => {
+  const [state, setState] = React.useState<OptionsModalLetterInterface[]>([]);
+  const [search, setSearch] = React.useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = React.useState<OptionsModalOptionInterface[]>([]);
 
   const isCheckbox = React.useMemo(() => optionVariant === 'checkbox', [optionVariant]);
@@ -73,6 +80,27 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
     [isCheckbox],
   );
 
+  React.useEffect(() => {
+    if (!search) {
+      setState(alphabet || []);
+    } else {
+      const searchOnLatin = translit.transform(search).toLowerCase();
+      const searchOnCyrillic = translit.reverse(search).toLowerCase();
+
+      const filteredAlphabet = (alphabet || []).map(({ letter, docs }) => {
+        return {
+          letter,
+          docs: docs.filter(({ name }) => {
+            const cyrillicIndex = name.toLowerCase().indexOf(searchOnCyrillic);
+            const latinIndex = name.toLowerCase().indexOf(searchOnLatin);
+            return cyrillicIndex > -1 || latinIndex > -1;
+          }),
+        };
+      });
+      setState(filteredAlphabet);
+    }
+  }, [alphabet, search]);
+
   if (loading && !alphabet) {
     return (
       <ModalFrame size={'midWide'}>
@@ -94,7 +122,19 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   return (
     <ModalFrame size={'midWide'}>
       {title ? <ModalTitle>{title}</ModalTitle> : null}
-      {(alphabet || []).map(({ letter, docs }) => {
+
+      <FormikIndividualSearch
+        onSubmit={setSearch}
+        testId={'options'}
+        withReset
+        onReset={() => setSearch(null)}
+      />
+
+      {state.map(({ letter, docs }) => {
+        if (docs.length < 1) {
+          return null;
+        }
+
         return (
           <div className='mb-12 pb-12 border-b-2 border-secondary-background' key={letter}>
             <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
@@ -125,7 +165,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         );
       })}
       <FixedButtons>
-        <Button onClick={() => onSubmit(selectedOptions)}>Lorem</Button>
+        <Button onClick={() => onSubmit(selectedOptions)}>{buttonText}</Button>
       </FixedButtons>
     </ModalFrame>
   );

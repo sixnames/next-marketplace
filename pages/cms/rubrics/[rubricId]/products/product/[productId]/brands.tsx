@@ -17,7 +17,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -36,13 +36,13 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    hideLoading,
-    showErrorNotification,
+    // onErrorCallback,
+    // onCompleteCallback,
+    // showLoading,
+    // hideLoading,
+    // showErrorNotification,
     showModal,
   } = useMutationCallbacks();
 

@@ -209,7 +209,6 @@ export type Brand = Base & Timestamp & {
   slug: Scalars['String'];
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  collectionsIds: Array<Scalars['ObjectId']>;
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   collections: BrandCollectionsPaginationPayload;
@@ -219,6 +218,10 @@ export type Brand = Base & Timestamp & {
 
 export type BrandCollectionsArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+export type BrandAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
 };
 
 export type BrandCollection = Base & Timestamp & {
@@ -232,6 +235,18 @@ export type BrandCollection = Base & Timestamp & {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+};
+
+export type BrandCollectionAlphabetInput = {
+  brandId?: Maybe<Scalars['ObjectId']>;
+  brandSlug?: Maybe<Scalars['String']>;
+  slugs?: Maybe<Array<Scalars['String']>>;
+};
+
+export type BrandCollectionsAlphabetList = AlphabetList & {
+  __typename?: 'BrandCollectionsAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<BrandCollection>;
 };
 
 export type BrandCollectionsPaginationPayload = PaginationPayload & {
@@ -253,6 +268,12 @@ export type BrandPayload = Payload & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Brand>;
+};
+
+export type BrandsAlphabetList = AlphabetList & {
+  __typename?: 'BrandsAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Brand>;
 };
 
 export type BrandsPaginationPayload = PaginationPayload & {
@@ -691,6 +712,10 @@ export type Manufacturer = Base & Timestamp & {
   description?: Maybe<Scalars['String']>;
 };
 
+export type ManufacturerAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
+};
+
 export type ManufacturerPayload = Payload & {
   __typename?: 'ManufacturerPayload';
   success: Scalars['Boolean'];
@@ -896,8 +921,14 @@ export type Mutation = {
   createProductConnection: ProductPayload;
   /** Should create product connection */
   addProductToConnection: ProductPayload;
-  /** Should create product connection */
+  /** Should delete product from connection and delete connection if there is no products left */
   deleteProductFromConnection: ProductPayload;
+  /** Should update product brand */
+  updateProductBrand: ProductPayload;
+  /** Should update product brand collection */
+  updateProductBrandCollection: ProductPayload;
+  /** Should update product manufacturer */
+  updateProductManufacturer: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
@@ -1278,6 +1309,21 @@ export type MutationAddProductToConnectionArgs = {
 
 export type MutationDeleteProductFromConnectionArgs = {
   input: DeleteProductFromConnectionInput;
+};
+
+
+export type MutationUpdateProductBrandArgs = {
+  input: UpdateProductBrandInput;
+};
+
+
+export type MutationUpdateProductBrandCollectionArgs = {
+  input: UpdateProductBrandCollectionInput;
+};
+
+
+export type MutationUpdateProductManufacturerArgs = {
+  input: UpdateProductManufacturerInput;
 };
 
 
@@ -1814,21 +1860,23 @@ export type Query = {
   getAllOptionsGroups: Array<OptionsGroup>;
   getAttributesGroup: AttributesGroup;
   getAllAttributesGroups: Array<AttributesGroup>;
+  /** Should return brand collections grouped by alphabet */
+  getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
   /** Should return brand by _id */
   getBrand: Brand;
   /** Should return brand by slug */
   getBrandBySlug?: Maybe<Brand>;
   /** Should return paginated brands */
   getAllBrands?: Maybe<BrandsPaginationPayload>;
-  /** Should return brands list */
-  getBrandsOptions: Array<Brand>;
+  /** Should return brands grouped by alphabet */
+  getBrandAlphabetLists: Array<BrandsAlphabetList>;
   /** Should return manufacturer by given id */
   getManufacturer: Manufacturer;
   /** Should return manufacturer by given slug */
   getManufacturerBySlug: Manufacturer;
   /** Should return paginated manufacturers */
   getAllManufacturers: ManufacturersPaginationPayload;
-  /** Should manufacturers grouped by alphabet */
+  /** Should return manufacturers grouped by alphabet */
   getManufacturerAlphabetLists: Array<ManufacturersAlphabetList>;
   /** Should return rubric variant by given id */
   getRubricVariant: RubricVariant;
@@ -1947,6 +1995,11 @@ export type QueryGetAllAttributesGroupsArgs = {
 };
 
 
+export type QueryGetBrandCollectionAlphabetListsArgs = {
+  input?: Maybe<BrandCollectionAlphabetInput>;
+};
+
+
 export type QueryGetBrandArgs = {
   _id: Scalars['ObjectId'];
 };
@@ -1962,6 +2015,11 @@ export type QueryGetAllBrandsArgs = {
 };
 
 
+export type QueryGetBrandAlphabetListsArgs = {
+  input?: Maybe<BrandAlphabetInput>;
+};
+
+
 export type QueryGetManufacturerArgs = {
   _id: Scalars['ObjectId'];
 };
@@ -1974,6 +2032,11 @@ export type QueryGetManufacturerBySlugArgs = {
 
 export type QueryGetAllManufacturersArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetManufacturerAlphabetListsArgs = {
+  input?: Maybe<ManufacturerAlphabetInput>;
 };
 
 
@@ -2483,6 +2546,16 @@ export type UpdateProductAssetIndexInput = {
   assetNewIndex: Scalars['Int'];
 };
 
+export type UpdateProductBrandCollectionInput = {
+  productId: Scalars['ObjectId'];
+  brandCollectionSlug?: Maybe<Scalars['String']>;
+};
+
+export type UpdateProductBrandInput = {
+  productId: Scalars['ObjectId'];
+  brandSlug?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProductCounterInput = {
   shopProductIds: Array<Scalars['ObjectId']>;
   companySlug?: Maybe<Scalars['String']>;
@@ -2499,6 +2572,11 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
+};
+
+export type UpdateProductManufacturerInput = {
+  productId: Scalars['ObjectId'];
+  manufacturerSlug?: Maybe<Scalars['String']>;
 };
 
 export type UpdateRoleInput = {
@@ -2826,6 +2904,45 @@ export type DeleteProductFromConnectionMutationVariables = Exact<{
 export type DeleteProductFromConnectionMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromConnection: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductBrandMutationVariables = Exact<{
+  input: UpdateProductBrandInput;
+}>;
+
+
+export type UpdateProductBrandMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductBrand: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductBrandCollectionMutationVariables = Exact<{
+  input: UpdateProductBrandCollectionInput;
+}>;
+
+
+export type UpdateProductBrandCollectionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductBrandCollection: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductManufacturerMutationVariables = Exact<{
+  input: UpdateProductManufacturerInput;
+}>;
+
+
+export type UpdateProductManufacturerMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductManufacturer: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -5604,6 +5721,108 @@ export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.Muta
 export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
+export const UpdateProductBrandDocument = gql`
+    mutation UpdateProductBrand($input: UpdateProductBrandInput!) {
+  updateProductBrand(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductBrandMutationFn = Apollo.MutationFunction<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>;
+
+/**
+ * __useUpdateProductBrandMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductBrandMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductBrandMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductBrandMutation, { data, loading, error }] = useUpdateProductBrandMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>(UpdateProductBrandDocument, options);
+      }
+export type UpdateProductBrandMutationHookResult = ReturnType<typeof useUpdateProductBrandMutation>;
+export type UpdateProductBrandMutationResult = Apollo.MutationResult<UpdateProductBrandMutation>;
+export type UpdateProductBrandMutationOptions = Apollo.BaseMutationOptions<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>;
+export const UpdateProductBrandCollectionDocument = gql`
+    mutation UpdateProductBrandCollection($input: UpdateProductBrandCollectionInput!) {
+  updateProductBrandCollection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductBrandCollectionMutationFn = Apollo.MutationFunction<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>;
+
+/**
+ * __useUpdateProductBrandCollectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductBrandCollectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductBrandCollectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductBrandCollectionMutation, { data, loading, error }] = useUpdateProductBrandCollectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductBrandCollectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>(UpdateProductBrandCollectionDocument, options);
+      }
+export type UpdateProductBrandCollectionMutationHookResult = ReturnType<typeof useUpdateProductBrandCollectionMutation>;
+export type UpdateProductBrandCollectionMutationResult = Apollo.MutationResult<UpdateProductBrandCollectionMutation>;
+export type UpdateProductBrandCollectionMutationOptions = Apollo.BaseMutationOptions<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>;
+export const UpdateProductManufacturerDocument = gql`
+    mutation UpdateProductManufacturer($input: UpdateProductManufacturerInput!) {
+  updateProductManufacturer(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductManufacturerMutationFn = Apollo.MutationFunction<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
+
+/**
+ * __useUpdateProductManufacturerMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductManufacturerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductManufacturerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductManufacturerMutation, { data, loading, error }] = useUpdateProductManufacturerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>(UpdateProductManufacturerDocument, options);
+      }
+export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
+export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
+export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
 export const GetAllRubricsDocument = gql`
     query GetAllRubrics($input: GetAllRubricsInput) {
   getAllRubrics(input: $input) {

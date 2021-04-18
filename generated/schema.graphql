@@ -983,7 +983,7 @@ type Mutation {
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
 
   """
-  Should create product connection
+  Should delete product from connection and delete connection if there is no products left
   """
   deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayload!
 
@@ -1158,6 +1158,16 @@ type Mutation {
   updateProductAssetIndex(input: UpdateProductAssetIndexInput!): ProductPayload!
 
   """
+  Should update product brand
+  """
+  updateProductBrand(input: UpdateProductBrandInput!): ProductPayload!
+
+  """
+  Should update product brand collection
+  """
+  updateProductBrandCollection(input: UpdateProductBrandCollectionInput!): ProductPayload!
+
+  """
   Should update product counter
   """
   updateProductCounter(input: UpdateProductCounterInput!): Boolean!
@@ -1166,6 +1176,11 @@ type Mutation {
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
+
+  """
+  Should update product manufacturer
+  """
+  updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
 
   """
   Should update role
@@ -2288,6 +2303,16 @@ input UpdateProductAssetIndexInput {
   productId: ObjectId!
 }
 
+input UpdateProductBrandCollectionInput {
+  brandCollectionSlug: String
+  productId: ObjectId!
+}
+
+input UpdateProductBrandInput {
+  brandSlug: String
+  productId: ObjectId!
+}
+
 input UpdateProductCounterInput {
   companySlug: String = "default"
   shopProductIds: [ObjectId!]!
@@ -2303,6 +2328,11 @@ input UpdateProductInput {
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
+  productId: ObjectId!
+}
+
+input UpdateProductManufacturerInput {
+  manufacturerSlug: String
   productId: ObjectId!
 }
 

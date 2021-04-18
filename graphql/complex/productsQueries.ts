@@ -238,3 +238,30 @@ export const DELETE_PRODUCT_FROM_CONNECTION_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT_BRAND_MUTATION = gql`
+  mutation UpdateProductBrand($input: UpdateProductBrandInput!) {
+    updateProductBrand(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_BRAND_COLLECTION_MUTATION = gql`
+  mutation UpdateProductBrandCollection($input: UpdateProductBrandCollectionInput!) {
+    updateProductBrandCollection(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_MANUFACTURER_MUTATION = gql`
+  mutation UpdateProductManufacturer($input: UpdateProductManufacturerInput!) {
+    updateProductManufacturer(input: $input) {
+      success
+      message
+    }
+  }
+`;

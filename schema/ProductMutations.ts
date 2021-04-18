@@ -169,6 +169,30 @@ export const UpdateProductCounterInput = inputObjectType({
   },
 });
 
+export const UpdateProductBrandInput = inputObjectType({
+  name: 'UpdateProductBrandInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.string('brandSlug');
+  },
+});
+
+export const UpdateProductBrandCollectionInput = inputObjectType({
+  name: 'UpdateProductBrandCollectionInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.string('brandCollectionSlug');
+  },
+});
+
+export const UpdateProductManufacturerInput = inputObjectType({
+  name: 'UpdateProductManufacturerInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.string('manufacturerSlug');
+  },
+});
+
 // Product Mutations
 export const ProductMutations = extendType({
   type: 'Mutation',
@@ -1289,7 +1313,8 @@ export const ProductMutations = extendType({
     // if there is no products left
     t.nonNull.field('deleteProductFromConnection', {
       type: 'ProductPayload',
-      description: 'Should create product connection',
+      description:
+        'Should delete product from connection and delete connection if there is no products left',
       args: {
         input: nonNull(
           arg({
@@ -1411,6 +1436,183 @@ export const ProductMutations = extendType({
               payload: updatedProductSlug,
             };
           }
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product brand
+    t.nonNull.field('updateProductBrand', {
+      type: 'ProductPayload',
+      description: 'Should update product brand',
+      args: {
+        input: nonNull(arg({ type: 'UpdateProductBrandInput' })),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const { input } = args;
+          const { productId, brandSlug } = input;
+
+          // Check product availability
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedProductResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                brandSlug,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: updatedProduct,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product brand collection
+    t.nonNull.field('updateProductBrandCollection', {
+      type: 'ProductPayload',
+      description: 'Should update product brand collection',
+      args: {
+        input: nonNull(arg({ type: 'UpdateProductBrandCollectionInput' })),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const { input } = args;
+          const { productId, brandCollectionSlug } = input;
+
+          // Check product availability
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedProductResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                brandCollectionSlug,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: updatedProduct,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product manufacturer
+    t.nonNull.field('updateProductManufacturer', {
+      type: 'ProductPayload',
+      description: 'Should update product manufacturer',
+      args: {
+        input: nonNull(arg({ type: 'UpdateProductManufacturerInput' })),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const { input } = args;
+          const { productId, manufacturerSlug } = input;
+
+          // Check product availability
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedProductResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            {
+              $set: {
+                manufacturerSlug,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: updatedProduct,
+          };
         } catch (e) {
           return {
             success: false,

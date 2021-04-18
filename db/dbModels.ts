@@ -525,14 +525,6 @@ export interface ProductAttributeModel {
   index?: number;
 }
 
-export interface CitiesCounterModel {
-  [key: string]: number;
-}
-
-export interface CitiesBooleanModel {
-  [key: string]: boolean;
-}
-
 export interface ProductModel extends BaseModel, TimestampModel {
   active: boolean;
   slug: string;
@@ -553,7 +545,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   description?: string | null;
   shopsCount?: number;
   available?: boolean;
-  isCustomersChoice?: boolean;
   listFeatures?: ProductAttributeModel[];
   textFeatures?: ProductAttributeModel[];
   tagFeatures?: ProductAttributeModel[];

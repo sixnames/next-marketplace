@@ -7,7 +7,6 @@ import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
-import ProductMarker from 'components/Product/ProductMarker/ProductMarker';
 import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { useAppContext } from 'context/appContext';
@@ -70,7 +69,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
     tagFeatures,
     cardBreadcrumbs,
     cardShopProducts,
-    isCustomersChoice,
     shopsCount,
   } = cardData;
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
@@ -252,8 +250,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               </div>
             </div>
           </div>
-
-          {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
         </div>
 
         <div

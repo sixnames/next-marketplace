@@ -5,7 +5,6 @@ import classes from './ProductSnippetRow.module.css';
 import LayoutCard from 'layout/LayoutCard';
 import RatingStars from '../../RatingStars/RatingStars';
 import Image from 'next/image';
-import ProductMarker from '../ProductMarker/ProductMarker';
 import Link from '../../Link/Link';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import SpinnerInput from '../../FormElements/SpinnerInput/SpinnerInput';
@@ -38,7 +37,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     listFeatures,
     ratingFeatures,
     connections,
-    isCustomersChoice,
     shopsCount,
     mainImage,
   } = product;
@@ -171,8 +169,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
         </div>
       </div>
-
-      {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
 
       <Link
         // style={{ display: 'none' }}

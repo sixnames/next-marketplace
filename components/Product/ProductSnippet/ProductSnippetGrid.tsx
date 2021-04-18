@@ -4,7 +4,6 @@ import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
 import Link from '../../Link/Link';
-import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
@@ -35,7 +34,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     listFeatures,
     ratingFeatures,
     shopsCount,
-    isCustomersChoice,
     mainImage,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
@@ -106,8 +104,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           />
         </div>
       </div>
-
-      {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
 
       <Link
         // style={{ display: 'none' }}

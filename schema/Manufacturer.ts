@@ -135,10 +135,10 @@ export const ManufacturerQueries = extendType({
       },
     });
 
-    // Should manufacturers grouped by alphabet
+    // Should return manufacturers grouped by alphabet
     t.nonNull.list.nonNull.field('getManufacturerAlphabetLists', {
       type: 'ManufacturersAlphabetList',
-      description: 'Should manufacturers grouped by alphabet',
+      description: 'Should return manufacturers grouped by alphabet',
       resolve: async (): Promise<ManufacturersAlphabetListModel[]> => {
         const db = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
@@ -155,18 +155,6 @@ export const ManufacturerQueries = extendType({
           )
           .toArray();
         return getAlphabetList<ManufacturerModel>(manufacturers);
-      },
-    });
-
-    // Should return manufacturers list
-    t.nonNull.list.nonNull.field('getManufacturersOptions', {
-      type: 'Manufacturer',
-      description: 'Should return manufacturers list',
-      resolve: async (_root): Promise<ManufacturerModel[]> => {
-        const db = await getDatabase();
-        const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-        const manufacturers = await manufacturersCollection.find({}).toArray();
-        return manufacturers;
       },
     });
   },

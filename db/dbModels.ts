@@ -784,6 +784,8 @@ export interface CartPayloadModel {
 
 // Lists payload
 export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
+export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
+export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
 
 // Pagination payload
 export type BrandsPaginationPayloadModel = PaginationPayloadType<BrandModel>;

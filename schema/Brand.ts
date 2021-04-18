@@ -1,4 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -6,6 +7,7 @@ import {
   BrandCollectionsPaginationPayloadModel,
   BrandModel,
   BrandPayloadModel,
+  BrandsAlphabetListModel,
   BrandsPaginationPayloadModel,
   ProductModel,
 } from 'db/dbModels';
@@ -114,6 +116,16 @@ export const BrandsPaginationPayload = objectType({
   },
 });
 
+export const BrandsAlphabetList = objectType({
+  name: 'BrandsAlphabetList',
+  definition(t) {
+    t.implements('AlphabetList');
+    t.nonNull.list.nonNull.field('docs', {
+      type: 'Brand',
+    });
+  },
+});
+
 // Brand queries
 export const BrandQueries = extendType({
   type: 'Query',
@@ -175,15 +187,26 @@ export const BrandQueries = extendType({
       },
     });
 
-    // Should return brands list
-    t.nonNull.list.nonNull.field('getBrandsOptions', {
-      type: 'Brand',
-      description: 'Should return brands list',
-      resolve: async (_root): Promise<BrandModel[]> => {
+    // Should return brands grouped by alphabet
+    t.nonNull.list.nonNull.field('getBrandAlphabetLists', {
+      type: 'BrandsAlphabetList',
+      description: 'Should return brands grouped by alphabet',
+      resolve: async (): Promise<BrandsAlphabetListModel[]> => {
         const db = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const brands = await brandsCollection.find({}).toArray();
-        return brands;
+        const brands = await brandsCollection
+          .find(
+            {},
+            {
+              projection: {
+                _id: true,
+                slug: true,
+                nameI18n: true,
+              },
+            },
+          )
+          .toArray();
+        return getAlphabetList<BrandModel>(brands);
       },
     });
   },

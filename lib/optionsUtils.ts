@@ -364,7 +364,7 @@ export async function getAlphabetList<TModel extends Record<string, any>>(entity
 
     if (docs.length > 0) {
       payload.push({
-        letter,
+        letter: letter.toLocaleUpperCase(),
         docs: sortedDocs,
       });
     }

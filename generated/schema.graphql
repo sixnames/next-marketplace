@@ -201,6 +201,11 @@ type BrandCollection implements Base & Timestamp {
   updatedAt: Date!
 }
 
+type BrandCollectionsAlphabetList implements AlphabetList {
+  docs: [BrandCollection!]!
+  letter: String!
+}
+
 type BrandCollectionsPaginationPayload implements PaginationPayload {
   docs: [BrandCollection!]!
   hasNextPage: Boolean!
@@ -218,6 +223,11 @@ type BrandPayload implements Payload {
   message: String!
   payload: Brand
   success: Boolean!
+}
+
+type BrandsAlphabetList implements AlphabetList {
+  docs: [Brand!]!
+  letter: String!
 }
 
 type BrandsPaginationPayload implements PaginationPayload {
@@ -1692,14 +1702,19 @@ type Query {
   getBrand(_id: ObjectId!): Brand!
 
   """
+  Should return brands grouped by alphabet
+  """
+  getBrandAlphabetLists: [BrandsAlphabetList!]!
+
+  """
   Should return brand by slug
   """
   getBrandBySlug(slug: String!): Brand
 
   """
-  Should return brands list
+  Should return brand collections grouped by alphabet
   """
-  getBrandsOptions: [Brand!]!
+  getBrandCollectionAlphabetLists: [BrandCollectionsAlphabetList!]!
 
   """
   Should return top search items
@@ -1752,7 +1767,7 @@ type Query {
   getManufacturer(_id: ObjectId!): Manufacturer!
 
   """
-  Should manufacturers grouped by alphabet
+  Should return manufacturers grouped by alphabet
   """
   getManufacturerAlphabetLists: [ManufacturersAlphabetList!]!
 
@@ -1760,11 +1775,6 @@ type Query {
   Should return manufacturer by given slug
   """
   getManufacturerBySlug(slug: String!): Manufacturer!
-
-  """
-  Should return manufacturers list
-  """
-  getManufacturersOptions: [Manufacturer!]!
 
   """
   Should return session user order by given id

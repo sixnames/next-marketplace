@@ -148,33 +148,6 @@ export const PRODUCT_ATTRIBUTES_AST_QUERY = gql`
   ${productAttributeASTFragment}
 `;
 
-export const brandCollectionsOptionFragment = gql`
-  fragment BrandCollectionsOption on BrandCollection {
-    _id
-    slug
-    name
-  }
-`;
-
-export const BRANDS_OPTIONS_QUERY = gql`
-  query GetProductBrandsOptions {
-    getBrandsOptions {
-      _id
-      slug
-      name
-      collectionsList {
-        ...BrandCollectionsOption
-      }
-    }
-    getManufacturersOptions {
-      _id
-      slug
-      name
-    }
-  }
-  ${brandCollectionsOptionFragment}
-`;
-
 export const UPDATE_PRODUCT_MUTATION = gql`
   mutation UpdateProduct($input: UpdateProductInput!) {
     updateProduct(input: $input) {

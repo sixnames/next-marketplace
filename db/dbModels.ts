@@ -222,7 +222,6 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
-  collectionsIds: ObjectIdModel[];
 
   // types for ui
   name?: string | null;
@@ -231,6 +230,8 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
 export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   nameI18n: TranslationModel;
+  brandSlug: string;
+  brandId: ObjectIdModel;
   descriptionI18n?: TranslationModel | null;
 
   // types for ui

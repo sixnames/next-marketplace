@@ -45,7 +45,6 @@ export const Brand = objectType({
     t.nonNull.string('slug');
     t.nonNull.string('nameI18n');
     t.json('descriptionI18n');
-    t.nonNull.list.nonNull.objectId('collectionsIds');
 
     // Brand name translation field resolver
     t.nonNull.field('name', {
@@ -81,7 +80,7 @@ export const Brand = objectType({
         const paginationResult = await aggregatePagination<BrandCollectionModel>({
           input: args.input,
           collectionName: COL_BRAND_COLLECTIONS,
-          pipeline: [{ $match: { _id: { $in: source.collectionsIds } } }],
+          pipeline: [{ $match: { brandId: source._id } }],
           city,
         });
 
@@ -97,9 +96,7 @@ export const Brand = objectType({
         const brandCollectionsCollection = db.collection<BrandCollectionModel>(
           COL_BRAND_COLLECTIONS,
         );
-        const brands = await brandCollectionsCollection
-          .find({ _id: { $in: source.collectionsIds } })
-          .toArray();
+        const brands = await brandCollectionsCollection.find({ brandId: source._id }).toArray();
         return brands;
       },
     });
@@ -316,7 +313,6 @@ export const BrandMutations = extendType({
             ...args.input,
             slug,
             itemId,
-            collectionsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -532,7 +528,7 @@ export const BrandMutations = extendType({
             fieldName: 'nameI18n',
             fieldArg: values.nameI18n,
             additionalQuery: {
-              _id: { $in: brand.collectionsIds },
+              brandId: brand._id,
             },
           });
           if (exist) {
@@ -549,6 +545,8 @@ export const BrandMutations = extendType({
             ...values,
             itemId,
             slug,
+            brandId: brand._id,
+            brandSlug: brand.slug,
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -650,7 +648,7 @@ export const BrandMutations = extendType({
             fieldName: 'nameI18n',
             fieldArg: values.nameI18n,
             additionalQuery: {
-              $and: [{ _id: { $in: brand.collectionsIds } }, { _id: { $ne: brandCollectionId } }],
+              $and: [{ brandId: brand._id }, { _id: { $ne: brandCollectionId } }],
             },
           });
           if (exist) {

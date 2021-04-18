@@ -27,15 +27,17 @@ export async function getFakeBrand({
   brandConnectionIdString,
   brandIdString,
 }: GetFakeBrandInterface): Promise<GetFakeBrandPayloadInterface> {
-  const brandCollectionId = new ObjectId(brandConnectionIdString);
-  const brandCollection: BrandCollectionModel = {
-    _id: brandCollectionId,
+  const brandId = new ObjectId(brandIdString);
+  const brandSlug = generateSlug(brandName);
+  const brand: BrandModel = {
+    _id: brandId,
     itemId,
     nameI18n: {
-      [DEFAULT_LOCALE]: brandCollectionName,
-      [SECONDARY_LOCALE]: brandCollectionName,
+      [DEFAULT_LOCALE]: brandName,
+      [SECONDARY_LOCALE]: brandName,
     },
-    slug: generateSlug(brandCollectionName),
+    slug: brandSlug,
+    url: [`https://${brandName}.com`],
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
@@ -45,20 +47,21 @@ export async function getFakeBrand({
     updatedAt: new Date(),
   };
 
-  const brand: BrandModel = {
-    _id: new ObjectId(brandIdString),
+  const brandCollectionId = new ObjectId(brandConnectionIdString);
+  const brandCollection: BrandCollectionModel = {
+    _id: brandCollectionId,
     itemId,
+    brandId,
+    brandSlug,
     nameI18n: {
-      [DEFAULT_LOCALE]: brandName,
-      [SECONDARY_LOCALE]: brandName,
+      [DEFAULT_LOCALE]: brandCollectionName,
+      [SECONDARY_LOCALE]: brandCollectionName,
     },
-    slug: generateSlug(brandName),
-    url: [`https://${brandName}.com`],
+    slug: generateSlug(brandCollectionName),
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
     },
-    collectionsIds: [brandCollectionId],
     ...DEFAULT_COUNTERS_OBJECT,
     createdAt: new Date(),
     updatedAt: new Date(),

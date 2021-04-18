@@ -882,7 +882,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     collections: NexusGenRootTypes['BrandCollectionsPaginationPayload']; // BrandCollectionsPaginationPayload!
-    collectionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     collectionsList: NexusGenRootTypes['BrandCollection'][]; // [BrandCollection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
@@ -1908,7 +1907,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     collections: 'BrandCollectionsPaginationPayload';
-    collectionsIds: 'ObjectId';
     collectionsList: 'BrandCollection';
     createdAt: 'Date';
     description: 'String';

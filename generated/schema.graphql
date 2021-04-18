@@ -176,7 +176,6 @@ interface Base {
 type Brand implements Base & Timestamp {
   _id: ObjectId!
   collections(input: PaginationInput): BrandCollectionsPaginationPayload!
-  collectionsIds: [ObjectId!]!
   collectionsList: [BrandCollection!]!
   createdAt: Date!
   description: String

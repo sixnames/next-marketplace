@@ -22,6 +22,7 @@ import {
   COL_LANGUAGES,
   COL_NAV_ITEMS,
   COL_ROLES,
+  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
@@ -119,70 +120,89 @@ export const getCatalogueNavRubrics = async ({
               },
             },
             {
+              $sort: {
+                priorities: -1,
+                views: -1,
+              },
+            },
+            {
+              $lookup: {
+                from: COL_RUBRIC_ATTRIBUTES,
+                as: 'attributes',
+                let: { rubricId: '$_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$rubricId', '$rubricId'],
+                      },
+                      showInCatalogueNav: true,
+                    },
+                  },
+                  {
+                    $sort: {
+                      priorities: -1,
+                      views: -1,
+                    },
+                  },
+                  {
+                    $project: {
+                      variant: false,
+                      viewVariant: false,
+                      optionsGroupId: false,
+                      capitalise: false,
+                      positioningInTitle: false,
+                      attributeId: false,
+                      rubricId: false,
+                      showInCatalogueNav: false,
+                      showInCatalogueFilter: false,
+                      views: false,
+                      priorities: false,
+                      'options.views': false,
+                      'options.priorities': false,
+                      'options.variants': false,
+                      'options.optionsGroupId': false,
+                    },
+                  },
+                  {
+                    $limit: visibleAttributesCount,
+                  },
+                  {
+                    $addFields: {
+                      'options.options': [],
+                    },
+                  },
+                  {
+                    $addFields: {
+                      options: {
+                        $filter: {
+                          input: '$options',
+                          as: 'option',
+                          cond: {
+                            $in: ['$$option.slug', '$$selectedOptionsSlugs'],
+                          },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      options: {
+                        $slice: ['$options', visibleOptionsCount],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
               $project: {
                 _id: 1,
                 slug: 1,
                 nameI18n: 1,
                 priorities: 1,
                 views: 1,
-                attributes: {
-                  $filter: {
-                    input: '$attributes',
-                    as: 'attribute',
-                    cond: {
-                      $eq: ['$$attribute.showInCatalogueNav', true],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $addFields: {
-                attributes: {
-                  $slice: ['$attributes', visibleAttributesCount],
-                },
-              },
-            },
-            {
-              $unwind: {
-                path: '$attributes',
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options.options': [],
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options': {
-                  $filter: {
-                    input: '$attributes.options',
-                    as: 'option',
-                    cond: {
-                      $in: ['$$option.slug', '$$selectedOptionsSlugs'],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $addFields: {
-                'attributes.options': {
-                  $slice: ['$attributes.options', visibleOptionsCount],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: '$_id',
-                slug: { $first: '$slug' },
-                nameI18n: { $first: '$nameI18n' },
-                priorities: { $first: '$priorities' },
-                views: { $first: '$views' },
-                attributes: {
-                  $push: '$attributes',
-                },
+                attributes: 1,
               },
             },
           ],
@@ -202,15 +222,18 @@ export const getCatalogueNavRubrics = async ({
     ])
     .toArray();
   // console.log(shopRubricsAggregation);
+  // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
   // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricModel[] = [];
-  shopRubricsAggregation.forEach((rubric) => {
+  shopRubricsAggregation.forEach(({ nameI18n, attributes, ...restRubric }) => {
     rubrics.push({
-      ...rubric,
-      name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
+      ...restRubric,
+      attributes: [],
+      nameI18n: {},
+      name: getI18nLocaleValue<string>(nameI18n, locale),
       navItems: getRubricNavAttributes({
-        attributes: rubric.attributes,
+        attributes,
         locale,
       }),
     });
@@ -479,7 +502,7 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   session: Session | null;
 }
 
-async function getPageInitialState({
+export async function getPageInitialState({
   context,
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
   const { locale, resolvedUrl } = context;

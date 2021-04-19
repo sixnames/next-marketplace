@@ -1,14 +1,12 @@
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
-  AttributeModel,
   CatalogueDataInterface,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
   ConfigModel,
   GenderModel,
   ObjectIdModel,
-  OptionModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -74,8 +72,8 @@ export function castCatalogueParamToObject(
 }
 
 export interface SelectedFilterInterface {
-  attribute: AttributeModel;
-  options: OptionModel[];
+  attribute: RubricAttributeModel;
+  options: RubricOptionModel[];
 }
 
 interface GetCatalogueTitleInterface {

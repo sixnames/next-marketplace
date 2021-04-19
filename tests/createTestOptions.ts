@@ -61,6 +61,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const genderIt = GENDER_IT as GenderModel;
 
   // Vintage options
+  const optionsGroupWineVintageId = new ObjectId('604cad83b604c1c320c32870');
+
   const optionVintageAId = new ObjectId('604cad83b604c1c320c3286d');
   const optionVintageA: OptionModel = {
     _id: optionVintageAId,
@@ -72,6 +74,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: '1950',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVintageId,
   };
 
   const optionVintageBId = new ObjectId('604cad83b604c1c320c3286e');
@@ -85,6 +88,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: '1978',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVintageId,
   };
 
   const optionVintageCId = new ObjectId('604cad83b604c1c320c3286f');
@@ -98,17 +102,16 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: '2001',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVintageId,
   };
 
   const optionsVintage = [optionVintageA, optionVintageB, optionVintageC];
   const optionsIdsVintage = [optionVintageAId, optionVintageBId, optionVintageCId];
   const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
 
-  const optionsGroupWineVintageId = new ObjectId('604cad83b604c1c320c32870');
   const optionsGroupWineVintage: OptionsGroupModel = {
     _id: optionsGroupWineVintageId,
     variant: optionsGroupVariantText,
-    options: optionsVintage,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Винтаж вина',
       [SECONDARY_LOCALE]: 'Wine vintage',
@@ -116,6 +119,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Color options
+  const optionsGroupColorsId = new ObjectId('604cad83b604c1c320c32874');
+
   const optionColorAId = new ObjectId('604cad83b604c1c320c32871');
   const optionColorA: OptionModel = {
     _id: optionColorAId,
@@ -141,6 +146,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
         [SECONDARY_LOCALE]: 'White',
       },
     },
+    optionsGroupId: optionsGroupColorsId,
   };
 
   const optionColorBId = new ObjectId('604cad83b604c1c320c32872');
@@ -168,6 +174,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
         [SECONDARY_LOCALE]: 'Red',
       },
     },
+    optionsGroupId: optionsGroupColorsId,
   };
 
   const optionColorCId = new ObjectId('604cad83b604c1c320c32873');
@@ -195,17 +202,16 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
         [SECONDARY_LOCALE]: 'Pink',
       },
     },
+    optionsGroupId: optionsGroupColorsId,
   };
 
   const optionsColor = [optionColorA, optionColorB, optionColorC];
   const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
   const optionsIdsColor = [optionColorAId, optionColorBId, optionColorCId];
 
-  const optionsGroupColorsId = new ObjectId('604cad83b604c1c320c32874');
   const optionsGroupColors: OptionsGroupModel = {
     _id: optionsGroupColorsId,
     variant: optionsGroupVariantColor,
-    options: optionsColor,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Цвета',
       [SECONDARY_LOCALE]: 'Colors',
@@ -213,6 +219,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Wine variant options
+  const optionsGroupWineVariantsId = new ObjectId('604cad83b604c1c320c32879');
+
   const optionWineVariantAId = new ObjectId('604cad83b604c1c320c32875');
   const optionWineVariantA: OptionModel = {
     _id: optionWineVariantAId,
@@ -224,6 +232,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'portvein',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVariantsId,
   };
 
   const optionWineVariantBId = new ObjectId('604cad83b604c1c320c32876');
@@ -237,6 +246,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'heres',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVariantsId,
   };
 
   const optionWineVariantCId = new ObjectId('604cad83b604c1c320c32877');
@@ -250,6 +260,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'vermut',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVariantsId,
   };
 
   const optionWineVariantDId = new ObjectId('604cad83b604c1c320c32878');
@@ -265,6 +276,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'kreplenoe',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupWineVariantsId,
   };
 
   const optionsWineVariant = [
@@ -281,11 +293,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   ];
   const optionsSlugsWineVariant = optionsWineVariant.map(({ slug }) => slug);
 
-  const optionsGroupWineVariantsId = new ObjectId('604cad83b604c1c320c32879');
   const optionsGroupWineVariants: OptionsGroupModel = {
     _id: optionsGroupWineVariantsId,
     variant: optionsGroupVariantText,
-    options: optionsWineVariant,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Типы вина',
       [SECONDARY_LOCALE]: 'Wine types',
@@ -293,6 +303,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Combination options
+  const optionsGroupCombinationId = new ObjectId('604cad83b604c1c320c3287e');
+
   const optionCombinationAId = new ObjectId('604cad83b604c1c320c3287a');
   const optionCombinationA: OptionModel = {
     _id: optionCombinationAId,
@@ -305,6 +317,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'white_meat',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupCombinationId,
   };
 
   const optionCombinationBId = new ObjectId('604cad83b604c1c320c3287b');
@@ -319,6 +332,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'soup',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupCombinationId,
   };
 
   const optionCombinationCId = new ObjectId('604cad83b604c1c320c3287c');
@@ -333,6 +347,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'fish',
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupCombinationId,
   };
 
   const optionCombinationDId = new ObjectId('604cad83b604c1c320c3287d');
@@ -347,6 +362,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderIt,
     options: [],
     variants: {},
+    optionsGroupId: optionsGroupCombinationId,
   };
 
   const optionsCombination = [
@@ -363,11 +379,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   ];
   const optionsSlugsCombination = optionsCombination.map(({ slug }) => slug);
 
-  const optionsGroupCombinationId = new ObjectId('604cad83b604c1c320c3287e');
   const optionsGroupCombination: OptionsGroupModel = {
     _id: optionsGroupCombinationId,
     variant: optionsGroupVariantIcon,
-    options: optionsCombination,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Сочетания',
       [SECONDARY_LOCALE]: 'Combinations',

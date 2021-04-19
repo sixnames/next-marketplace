@@ -287,7 +287,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, comp
               <div className={classes.loaderHolder}>
                 {isCatalogueLoading ? (
                   <div className={classes.loaderFrame}>
-                    <Spinner className={classes.loaderSpinner} isNested={true} />
+                    <Spinner className={classes.loaderSpinner} isNested isTransparent />
                   </div>
                 ) : null}
 
@@ -321,7 +321,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, comp
                     );
                   })}
                 </InfiniteScroll>
-                {loading ? <Spinner isNested /> : null}
+                {loading ? <Spinner isNested isTransparent /> : null}
               </div>
             </div>
           </div>

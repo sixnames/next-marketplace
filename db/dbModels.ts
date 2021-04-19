@@ -198,7 +198,6 @@ export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  name?: string | null;
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
@@ -206,6 +205,9 @@ export interface AttributeModel {
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
+
+  // types for ui
+  name?: string | null;
 }
 
 export interface AttributesGroupModel {
@@ -402,12 +404,15 @@ export interface OptionModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  name?: string | null;
   variants: OptionVariantsModel;
   gender?: GenderModel | null;
   color?: string | null;
   icon?: string | null;
   options: OptionModel[];
+  optionsGroupId: ObjectIdModel;
+
+  // types for ui
+  name?: string | null;
 }
 
 // Options Group variant
@@ -420,7 +425,6 @@ export enum OptionsGroupVariantModel {
 export interface OptionsGroupModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  options: OptionModel[];
   variant: OptionsGroupVariantModel;
 }
 
@@ -633,11 +637,13 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel {
+export interface RubricOptionModel
+  extends Omit<OptionModel, 'optionsGroupId' | 'options'>,
+    CountersModel {
   options: RubricOptionModel[];
 }
 
-export interface RubricAttributeModel extends AttributeModel, CountersModel {
+export interface RubricAttributeModel extends Omit<AttributeModel, 'options'>, CountersModel {
   _id: ObjectIdModel;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;

@@ -1,5 +1,5 @@
 import { ROUTE_CATALOGUE } from 'config/common';
-import { AttributeModel, RubricModel } from 'db/dbModels';
+import { RubricAttributeModel, RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
@@ -8,7 +8,7 @@ import Link from 'components/Link/Link';
 import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
-  attribute: AttributeModel;
+  attribute: RubricAttributeModel;
   hideDropdownHandler: () => void;
   rubricSlug: string;
 }

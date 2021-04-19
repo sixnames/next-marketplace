@@ -565,6 +565,7 @@ input DeleteCollectionFromBrandInput {
 input DeleteOptionFromGroupInput {
   optionId: ObjectId!
   optionsGroupId: ObjectId!
+  parentOptionId: ObjectId
 }
 
 input DeleteProductAssetInput {
@@ -2288,6 +2289,7 @@ input UpdateOptionInGroupInput {
   nameI18n: JSONObject!
   optionId: ObjectId!
   optionsGroupId: ObjectId!
+  parentOptionId: ObjectId
   variants: JSONObject!
 }
 

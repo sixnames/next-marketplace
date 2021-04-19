@@ -359,6 +359,7 @@ export interface NexusGenInputs {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    parentOptionId?: NexusGenScalars['ObjectId'] | null; // ObjectId
   };
   DeleteProductAssetInput: {
     // input type
@@ -623,6 +624,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    parentOptionId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateOptionsGroupInput: {

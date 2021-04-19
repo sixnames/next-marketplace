@@ -7,7 +7,6 @@ import {
   AttributesGroupPayloadModel,
   MetricModel,
   OptionModel,
-  OptionsGroupModel,
   ProductModel,
   RubricModel,
 } from 'db/dbModels';
@@ -16,7 +15,7 @@ import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_METRICS,
-  COL_OPTIONS_GROUPS,
+  COL_OPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -476,7 +475,7 @@ export const attributesGroupMutations = extendType({
             COL_ATTRIBUTES_GROUPS,
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
@@ -511,11 +510,13 @@ export const attributesGroupMutations = extendType({
           const slug = generateDefaultLangSlug(values.nameI18n);
           let options: OptionModel[] = [];
           if (values.optionsGroupId) {
-            const optionsGroup = await optionsGroupsCollection.findOne({
-              _id: values.optionsGroupId,
-            });
+            const initialOptions = await optionsCollection
+              .find({
+                optionsGroupId: values.optionsGroupId,
+              })
+              .toArray();
             options = castOptionsForAttribute({
-              options: optionsGroup?.options || [],
+              options: initialOptions,
               attributeSlug: slug,
             });
           }
@@ -628,7 +629,7 @@ export const attributesGroupMutations = extendType({
             COL_ATTRIBUTES_GROUPS,
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
@@ -674,11 +675,14 @@ export const attributesGroupMutations = extendType({
           // Get options
           let options: OptionModel[] = [];
           if (values.optionsGroupId) {
-            const optionsGroup = await optionsGroupsCollection.findOne({
-              _id: values.optionsGroupId,
-            });
+            const initialOptions = await optionsCollection
+              .find({
+                optionsGroupId: values.optionsGroupId,
+              })
+              .toArray();
+
             options = castOptionsForAttribute({
-              options: optionsGroup?.options || [],
+              options: initialOptions,
               attributeSlug: attribute.slug,
             });
           }

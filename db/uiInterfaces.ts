@@ -183,10 +183,13 @@ export interface RubricVariantInterface extends RubricVariantModel {
 
 export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
   options: RubricOptionInterface[];
+  name?: string | null;
 }
 
 export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
   options: RubricOptionInterface[];
+  name?: string | null;
+  metric?: MetricInterface | null;
 }
 
 export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {

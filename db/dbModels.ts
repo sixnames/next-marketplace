@@ -533,7 +533,7 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricOptionModel extends Omit<OptionModel, 'optionsGroupId'>, CountersModel {
+export interface RubricOptionModel extends OptionModel, CountersModel {
   options: RubricOptionModel[];
 }
 

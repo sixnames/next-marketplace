@@ -2,7 +2,8 @@ import { ConfigContextProvider } from 'context/configContext';
 import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
-import { CityModel, CompanyModel, UserModel } from 'db/dbModels';
+import { CompanyModel } from 'db/dbModels';
+import { CityInterface, UserInterface } from 'db/uiInterfaces';
 import { PageUrlsInterface } from 'layout/Meta';
 import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
@@ -22,8 +23,8 @@ export interface PagePropsInterface {
   sessionLocale: string;
   initialApolloState?: any;
   company?: CompanyModel | null;
-  sessionUser?: UserModel | null;
-  currentCity?: CityModel | null;
+  sessionUser?: UserInterface | null;
+  currentCity?: CityInterface | null;
   pageUrls: PageUrlsInterface;
 }
 

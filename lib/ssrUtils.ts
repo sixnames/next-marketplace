@@ -38,6 +38,7 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { CityInterface, ConfigInterface, RubricInterface } from 'db/uiInterfaces';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
@@ -88,7 +89,7 @@ export const getCatalogueNavRubrics = async ({
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopRubricsAggregation = await shopProductsCollection
-    .aggregate<RubricModel>([
+    .aggregate<RubricInterface>([
       {
         $match: {
           ...companyRubricsMatch,
@@ -225,7 +226,7 @@ export const getCatalogueNavRubrics = async ({
   // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
   // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
-  const rubrics: RubricModel[] = [];
+  const rubrics: RubricInterface[] = [];
   shopRubricsAggregation.forEach(({ nameI18n, attributes, ...restRubric }) => {
     rubrics.push({
       ...restRubric,
@@ -233,7 +234,7 @@ export const getCatalogueNavRubrics = async ({
       nameI18n: {},
       name: getI18nLocaleValue<string>(nameI18n, locale),
       navItems: getRubricNavAttributes({
-        attributes,
+        attributes: attributes || [],
         locale,
       }),
     });
@@ -266,8 +267,8 @@ export interface GetPageInitialDataInterface {
 }
 
 export interface PageInitialDataPayload {
-  configs: ConfigModel[];
-  cities: CityModel[];
+  configs: ConfigInterface[];
+  cities: CityInterface[];
   languages: LanguageModel[];
   currency: string;
 }

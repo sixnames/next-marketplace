@@ -905,6 +905,7 @@ export const ProductMutations = extendType({
                 optionId,
                 optionNameI18n: option.nameI18n,
                 productId,
+                productSlug: product.slug,
               },
             ],
           });
@@ -1052,6 +1053,7 @@ export const ProductMutations = extendType({
                   optionId: option._id,
                   optionNameI18n: option.nameI18n,
                   productId: addProductId,
+                  productSlug: addProduct.slug,
                 },
               },
             },

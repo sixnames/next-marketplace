@@ -1,5 +1,5 @@
 import { useSiteContext } from 'context/siteContext';
-import { CatalogueProductInterface } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import LayoutCard from 'layout/LayoutCard';
@@ -13,7 +13,7 @@ import ControlButton from '../../Buttons/ControlButton';
 import { noNaN } from 'lib/numbers';
 
 interface ProductSnippetRowInterface {
-  product: CatalogueProductInterface;
+  product: ProductInterface;
   testId?: string;
   additionalSlug?: string;
   className?: string;
@@ -106,22 +106,22 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             )}
 
             <div className={classes.productConnections}>
-              {connections.map(({ _id, attributeName, connectionProducts }) => {
+              {(connections || []).map(({ _id, attributeName, connectionProducts }) => {
                 return (
                   <div key={`${_id}`} className={classes.connectionsGroup}>
                     <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
-                    {connectionProducts.map(({ option, _id }, index) => {
+                    {connectionProducts.map(({ optionName, _id }, index) => {
                       const isLast = connectionProducts.length - 1 === index;
                       const isCurrent = _id === product._id;
 
                       return (
                         <span
-                          key={`${option._id}`}
+                          key={`${optionName}`}
                           className={`${classes.connectionsGroupValue} ${
                             isCurrent ? classes.connectionsGroupCurrentValue : ''
                           }`}
                         >
-                          {isLast ? option.name : `${option.name}, `}
+                          {isLast ? optionName : `${optionName}, `}
                         </span>
                       );
                     })}

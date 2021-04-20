@@ -1,5 +1,5 @@
 import { useSiteContext } from 'context/siteContext';
-import { CatalogueProductInterface } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import LayoutCard from 'layout/LayoutCard';
 
 interface ProductSnippetGridInterface {
-  product: CatalogueProductInterface;
+  product: ProductInterface;
   testId?: string;
   additionalSlug?: string;
   size?: 'small' | 'normal';

@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const citiesMessages: MessageType[] = [
+export const citiesMessages: MessageBaseInterface[] = [
   {
     slug: 'cities.create.notFound',
     messageI18n: {

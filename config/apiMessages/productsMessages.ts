@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const productsMessages: MessageType[] = [
+export const productsMessages: MessageBaseInterface[] = [
   {
     slug: 'products.create.error',
     messageI18n: {

@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const countriesMessages: MessageType[] = [
+export const countriesMessages: MessageBaseInterface[] = [
   {
     slug: 'countries.create.duplicate',
     messageI18n: {

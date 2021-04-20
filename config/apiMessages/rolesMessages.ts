@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const rolesMessages: MessageType[] = [
+export const rolesMessages: MessageBaseInterface[] = [
   {
     slug: 'roles.create.duplicate',
     messageI18n: {

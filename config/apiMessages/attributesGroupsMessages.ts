@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const attributesGroupsMessages: MessageType[] = [
+export const attributesGroupsMessages: MessageBaseInterface[] = [
   {
     slug: 'attributesGroups.create.duplicate',
     messageI18n: {

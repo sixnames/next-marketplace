@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const languagesMessages: MessageType[] = [
+export const languagesMessages: MessageBaseInterface[] = [
   {
     slug: 'languages.setLanguageAsDefault.error',
     messageI18n: {

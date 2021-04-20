@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const shopsMessages: MessageType[] = [
+export const shopsMessages: MessageBaseInterface[] = [
   {
     slug: 'shops.create.duplicate',
     messageI18n: {

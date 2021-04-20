@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
+import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
-export const commonMessages: MessageType[] = [
+export const commonMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.string.min',
     messageI18n: {

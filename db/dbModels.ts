@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 import { ReadStream } from 'fs';
-import { MessageSlug } from 'types/messageSlugTypes';
 
 export interface UploadModel {
   filename: string;
@@ -81,17 +80,11 @@ export interface CoordinatesModel {
 export interface AddressModel {
   formattedAddress: string;
   point: PointGeoJSONModel;
-
-  // types for ui
-  formattedCoordinates?: CoordinatesModel;
 }
 
 export interface ContactsModel {
   emails: EmailAddressModel[];
   phones: PhoneNumberModel[];
-
-  // types for ui
-  formattedPhones?: FormattedPhoneModel[];
 }
 
 export interface AssetModel {
@@ -201,22 +194,15 @@ export interface AttributeModel {
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
-  options: OptionModel[];
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
-
-  // types for ui
-  name?: string | null;
 }
 
 export interface AttributesGroupModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   attributesIds: ObjectIdModel[];
-
-  // types for ui
-  name?: string | null;
 }
 
 export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
@@ -224,9 +210,6 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
-
-  // types for ui
-  name?: string | null;
 }
 
 export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
@@ -235,9 +218,6 @@ export interface BrandCollectionModel extends BaseModel, TimestampModel, Counter
   brandSlug: string;
   brandId: ObjectIdModel;
   descriptionI18n?: TranslationModel | null;
-
-  // types for ui
-  name?: string | null;
 }
 
 export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
@@ -245,9 +225,6 @@ export interface ManufacturerModel extends BaseModel, TimestampModel, CountersMo
   slug: string;
   url?: URLModel[] | null;
   descriptionI18n?: TranslationModel | null;
-
-  // types for ui
-  name?: string | null;
 }
 
 export interface CartProductModel {
@@ -255,32 +232,17 @@ export interface CartProductModel {
   shopProductId?: ObjectIdModel | null;
   productId?: ObjectIdModel | null;
   amount: number;
-
-  // types for ui
-  product?: ProductModel;
-  shopProduct?: ShopProductModel;
-  isShopless?: boolean;
-  totalPrice?: string;
 }
 
 export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
   cartProducts: CartProductModel[];
-
-  // types for ui
-  totalPrice?: number;
-  productsCount?: number;
-  formattedTotalPrice?: string;
-  isWithShopless?: boolean;
 }
 
 export interface CityModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   slug: string;
-
-  // types for ui
-  name?: string;
 }
 
 export interface CompanyModel extends BaseModel, TimestampModel {
@@ -328,10 +290,6 @@ export interface ConfigModel {
   description?: string | null;
   variant: ConfigVariantModel;
   cities: ConfigCitiesModel;
-
-  // types for ui
-  value?: string[];
-  singleValue?: string;
 }
 
 export interface CountryModel {
@@ -353,11 +311,6 @@ export interface LanguageModel {
   nativeName: string;
 }
 
-export interface MessageType {
-  slug: MessageSlug;
-  messageI18n: TranslationModel;
-}
-
 export interface MessageBase {
   slug: string;
   messageI18n: TranslationModel;
@@ -376,9 +329,6 @@ export interface MessagesGroupModel {
 export interface MetricModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-
-  // types for ui
-  name?: string;
 }
 
 export interface NavItemModel {
@@ -390,10 +340,6 @@ export interface NavItemModel {
   index: number;
   icon?: IconType | null;
   parentId?: ObjectIdModel | null;
-
-  // types for ui
-  name?: string;
-  children?: NavItemModel[];
 }
 
 export interface OptionVariantsModel {
@@ -408,11 +354,8 @@ export interface OptionModel {
   gender?: GenderModel | null;
   color?: string | null;
   icon?: string | null;
-  options: OptionModel[];
   optionsGroupId: ObjectIdModel;
-
-  // types for ui
-  name?: string | null;
+  parentId?: ObjectIdModel;
 }
 
 // Options Group variant
@@ -510,6 +453,8 @@ export interface ProductConnectionModel {
 
 export interface ProductAttributeModel {
   _id: ObjectIdModel;
+  productSlug: string;
+  productId: ObjectIdModel;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
@@ -518,15 +463,22 @@ export interface ProductAttributeModel {
   attributeMetric?: MetricModel | null;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
-  selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
   textI18n?: TranslationModel | null;
+  number?: number | null;
+  optionsValueI18n: TranslationModel;
 
   // types for ui
   attributeName?: string | null;
-  number?: number | null;
   readableValue?: string | null;
   index?: number;
+}
+
+export interface ProductAssetsModel {
+  _id: ObjectIdModel;
+  productSlug: string;
+  productId: ObjectIdModel;
+  assets: AssetModel[];
 }
 
 export interface ProductModel extends BaseModel, TimestampModel {
@@ -536,63 +488,13 @@ export interface ProductModel extends BaseModel, TimestampModel {
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   rubricId: ObjectIdModel;
-  attributes: ProductAttributeModel[];
-  assets: AssetModel[];
+  rubricSlug: string;
   mainImage: string;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
-  manufacturerSlug?: string | null;
-  connections: ProductConnectionModel[];
-
-  // types for ui
-  name?: string | null;
-  description?: string | null;
-  shopsCount?: number;
-  available?: boolean;
-  listFeatures?: ProductAttributeModel[];
-  textFeatures?: ProductAttributeModel[];
-  tagFeatures?: ProductAttributeModel[];
-  iconFeatures?: ProductAttributeModel[];
-  ratingFeatures?: ProductAttributeModel[];
-  cardShopProducts?: ShopProductModel[];
-  price?: number;
-  cardPrices?: {
-    min: string;
-    max: string;
-  };
-  cardBreadcrumbs?: ProductCardBreadcrumbModel[];
-  facets?: ProductFacetModel[] | null;
-  facet?: ProductFacetModel | null;
-  shopProducts?: ShopProductModel[];
-  shopProductIds?: ObjectIdModel[];
-  shopProduct?: ShopProductModel;
-  rubric?: RubricModel;
-}
-
-export interface ProductFacetModel {
-  _id: ObjectIdModel;
-  slug: string;
-  itemId: string;
-  originalName: string;
-  nameI18n: TranslationModel;
-  active: boolean;
-  rubricId: ObjectIdModel;
-  brandCollectionSlug?: string | null;
-  brandSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
-  mainImage: string;
-
-  // types for ui
-  name?: string | null;
-  products?: ProductModel[] | null;
-  product?: ProductModel | null;
-  shopsCount?: number;
-  cardPrices?: {
-    min: string;
-    max: string;
-  };
 }
 
 export interface ProductCardPricesModel {
@@ -624,12 +526,6 @@ export interface RoleBase {
 export interface RoleModel extends RoleBase, TimestampModel {
   rules: RoleRuleModel[];
   allowedAppNavigation: ObjectIdModel[];
-
-  // types for ui
-  name?: string;
-  navItems?: NavItemModel[];
-  appNavigation?: NavItemModel[];
-  cmsNavigation?: NavItemModel[];
 }
 
 export interface RubricVariantModel {
@@ -637,22 +533,17 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricOptionModel
-  extends Omit<OptionModel, 'optionsGroupId' | 'options'>,
-    CountersModel {
+export interface RubricOptionModel extends Omit<OptionModel, 'optionsGroupId'>, CountersModel {
   options: RubricOptionModel[];
 }
 
-export interface RubricAttributeModel extends Omit<AttributeModel, 'options'>, CountersModel {
+export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   options: RubricOptionModel[];
-}
-
-export interface RubricAttributesGroupModel extends AttributesGroupModel {
-  _id: ObjectIdModel;
-  attributes: RubricAttributeModel[];
 }
 
 export interface RubricCatalogueTitleModel {
@@ -670,17 +561,8 @@ export interface RubricModel extends CountersModel {
   catalogueTitle: RubricCatalogueTitleModel;
   slug: string;
   active: boolean;
-  attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
-
-  // types for ui
-  name?: string | null;
-  navItems?: RubricAttributeModel[];
-  activeProductsCount?: number | null;
-  productsCount?: number | null;
-  variant?: RubricVariantModel | null;
-  attributesGroups?: RubricAttributesGroupModel[] | null;
 }
 
 export interface ShopProductModel extends TimestampModel {
@@ -705,14 +587,6 @@ export interface ShopProductModel extends TimestampModel {
   rubricId: ObjectIdModel;
   selectedOptionsSlugs: string[];
   mainImage: string;
-
-  // types for ui
-  name?: string | null;
-  shop?: ShopModel;
-  inCartCount?: number;
-  product?: ProductModel;
-  products?: ProductModel[];
-  facet?: ProductFacetModel | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -832,45 +706,4 @@ export interface CatalogueFilterAttributeModel {
   isSelected: boolean;
   options: CatalogueFilterAttributeOptionModel[];
   viewVariant: AttributeViewVariantModel;
-}
-
-export type CatalogueProductInterface = Omit<ProductModel, 'attributes'>;
-
-export interface CatalogueDataInterface {
-  _id: ObjectIdModel;
-  clearSlug: string;
-  filter: string[];
-  rubricName: string;
-  rubricSlug: string;
-  products: CatalogueProductInterface[];
-  totalProducts: number;
-  catalogueTitle: string;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
-  page: number;
-}
-
-export interface CatalogueProductOptionInterface {
-  _id: string;
-  optionsSlugs: string[];
-}
-
-export interface CatalogueProductPricesInterface {
-  _id: number;
-}
-
-export interface CatalogueProductsAggregationInterface {
-  totalProducts: number;
-  prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
-  docs: ProductModel[];
-}
-
-export interface ProductsPaginationAggregationInterface {
-  docs: ProductFacetModel[];
-  totalDocs?: number | null;
-  totalActiveDocs?: number | null;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
 }

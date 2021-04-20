@@ -1,6 +1,6 @@
 import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeModel } from 'db/dbModels';
+import { CatalogueFilterAttributeInterface } from 'db/dbModels';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
@@ -12,7 +12,7 @@ import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 
 interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueFilterAttributeModel;
+  attribute: CatalogueFilterAttributeInterface;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
@@ -85,8 +85,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   catalogueCounterString: string;
   rubricClearSlug: string;
   isFilterVisible: boolean;

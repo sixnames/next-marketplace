@@ -4,12 +4,12 @@ import Link from 'components/Link/Link';
 import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeModel } from 'db/dbModels';
+import { CatalogueFilterAttributeInterface } from 'db/dbModels';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
 interface AppContentFilterAttributeInterface {
-  attribute: CatalogueFilterAttributeModel;
+  attribute: CatalogueFilterAttributeInterface;
 }
 
 const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = ({ attribute }) => {
@@ -68,8 +68,8 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
 };
 
 interface AppContentFilterInterface {
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   className?: string;
 }

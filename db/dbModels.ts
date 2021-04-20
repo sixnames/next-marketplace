@@ -433,22 +433,17 @@ export interface ProductConnectionItemModel {
   _id: ObjectIdModel;
   option: OptionModel;
   productId: ObjectIdModel;
-
-  // types for ui
-  product?: ProductModel;
 }
 
 export interface ProductConnectionModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
+  attributeMetric?: MetricModel | null;
   attributeNameI18n: TranslationModel;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   connectionProducts: ProductConnectionItemModel[];
-
-  // types for ui
-  attributeName?: string;
 }
 
 export interface ProductAttributeModel {
@@ -467,11 +462,6 @@ export interface ProductAttributeModel {
   textI18n?: TranslationModel | null;
   number?: number | null;
   optionsValueI18n: TranslationModel;
-
-  // types for ui
-  attributeName?: string | null;
-  readableValue?: string | null;
-  index?: number;
 }
 
 export interface ProductAssetsModel {
@@ -539,6 +529,8 @@ export interface RubricOptionModel extends OptionModel, CountersModel {
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
+  attributeId: ObjectIdModel;
+  attributesGroupId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
   showInCatalogueFilter: boolean;
@@ -599,10 +591,6 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   mainImage: string;
-
-  // types for ui
-  productsCount?: number | null;
-  city?: CityModel | null;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {
@@ -616,12 +604,6 @@ export interface UserModel extends BaseModel, TimestampModel {
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   ordersIds?: ObjectIdModel[] | null;
-
-  // types for ui
-  role?: RoleModel;
-  fullName?: string;
-  shortName?: string;
-  companies?: CompanyModel[];
 }
 
 // Payload
@@ -687,23 +669,4 @@ export interface ProductsPaginationPayloadModel {
 export interface CatalogueSearchResultModel {
   rubrics: RubricModel[];
   products: ProductModel[];
-}
-
-export interface CatalogueFilterAttributeOptionModel {
-  _id: ObjectIdModel;
-  slug: string;
-  name: string;
-  nextSlug: string;
-  isSelected: boolean;
-}
-
-export interface CatalogueFilterAttributeModel {
-  _id: ObjectIdModel;
-  clearSlug: string;
-  slug: string;
-  name: string;
-  metric?: string | null;
-  isSelected: boolean;
-  options: CatalogueFilterAttributeOptionModel[];
-  viewVariant: AttributeViewVariantModel;
 }

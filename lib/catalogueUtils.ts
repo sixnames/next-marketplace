@@ -2,8 +2,8 @@ import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   CatalogueDataInterface,
-  CatalogueFilterAttributeModel,
-  CatalogueFilterAttributeOptionModel,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
   ConfigModel,
   GenderModel,
   ObjectIdModel,
@@ -266,8 +266,8 @@ export interface GetCatalogueAttributesInterface {
 
 export interface GetCatalogueAttributesPayloadInterface {
   selectedFilters: SelectedFilterInterface[];
-  castedAttributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  castedAttributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
 }
 
 export async function getCatalogueAttributes({
@@ -278,8 +278,8 @@ export async function getCatalogueAttributes({
   basePath,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
-  const castedAttributes: CatalogueFilterAttributeModel[] = [];
-  const selectedAttributes: CatalogueFilterAttributeModel[] = [];
+  const castedAttributes: CatalogueFilterAttributeInterface[] = [];
+  const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
   const realFilter = filter.filter((filterItem) => {
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
@@ -289,8 +289,8 @@ export async function getCatalogueAttributes({
 
   for await (const attribute of attributes) {
     const { options, slug } = attribute;
-    const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
-    const selectedFilterOptions: CatalogueFilterAttributeOptionModel[] = [];
+    const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
+    const selectedFilterOptions: CatalogueFilterAttributeOptionInterface[] = [];
     const selectedOptions: RubricOptionModel[] = [];
 
     for await (const option of options) {

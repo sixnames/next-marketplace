@@ -2,11 +2,11 @@ import {
   AddressModel,
   AttributeModel,
   AttributesGroupModel,
+  AttributeViewVariantModel,
   BrandCollectionModel,
   BrandModel,
   CartModel,
   CartProductModel,
-  CatalogueFilterAttributeModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -153,13 +153,13 @@ export interface ProductInterface extends ProductModel {
   shopsCount?: number;
   available?: boolean;
   assets?: ProductAssetsModel[];
-  connections?: ProductConnectionModel[];
-  attributes?: ProductAttributeModel[];
-  listFeatures?: ProductAttributeModel[];
-  textFeatures?: ProductAttributeModel[];
-  tagFeatures?: ProductAttributeModel[];
-  iconFeatures?: ProductAttributeModel[];
-  ratingFeatures?: ProductAttributeModel[];
+  connections?: ProductConnectionInterface[];
+  attributes?: ProductAttributeInterface[];
+  listFeatures?: ProductAttributeInterface[];
+  textFeatures?: ProductAttributeInterface[];
+  tagFeatures?: ProductAttributeInterface[];
+  iconFeatures?: ProductAttributeInterface[];
+  ratingFeatures?: ProductAttributeInterface[];
   cardShopProducts?: ShopProductModel[];
   price?: number;
   cardPrices?: ProductCardPricesInterface;
@@ -213,13 +213,13 @@ export interface ShopProductInterface extends ShopProductModel {
   inCartCount?: number;
   product?: ProductInterface;
   products?: ProductInterface[];
-  connections?: ProductConnectionModel[];
-  attributes?: ProductAttributeModel[];
-  listFeatures?: ProductAttributeModel[];
-  textFeatures?: ProductAttributeModel[];
-  tagFeatures?: ProductAttributeModel[];
-  iconFeatures?: ProductAttributeModel[];
-  ratingFeatures?: ProductAttributeModel[];
+  connections?: ProductConnectionInterface[];
+  attributes?: ProductAttributeInterface[];
+  listFeatures?: ProductAttributeInterface[];
+  textFeatures?: ProductAttributeInterface[];
+  tagFeatures?: ProductAttributeInterface[];
+  iconFeatures?: ProductAttributeInterface[];
+  ratingFeatures?: ProductAttributeInterface[];
 }
 
 export interface ShopInterface extends ShopModel {
@@ -243,8 +243,8 @@ export interface CatalogueDataInterface {
   products: ProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
 }
 
@@ -270,4 +270,23 @@ export interface ProductsPaginationAggregationInterface {
   totalPages: number;
   hasPrevPage: boolean;
   hasNextPage: boolean;
+}
+
+export interface CatalogueFilterAttributeOptionInterface {
+  _id: ObjectIdModel;
+  slug: string;
+  name: string;
+  nextSlug: string;
+  isSelected: boolean;
+}
+
+export interface CatalogueFilterAttributeInterface {
+  _id: ObjectIdModel;
+  clearSlug: string;
+  slug: string;
+  name: string;
+  metric?: string | null;
+  isSelected: boolean;
+  options: CatalogueFilterAttributeOptionInterface[];
+  viewVariant: AttributeViewVariantModel;
 }

@@ -22,7 +22,7 @@ import {
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
-  CatalogueFilterAttributeModel,
+  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ProductFacetModel,
@@ -56,8 +56,8 @@ interface RubricProductsInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   page: number;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   pagerUrl: string;
   basePath: string;

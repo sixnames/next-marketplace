@@ -18,7 +18,7 @@ import {
 } from 'config/common';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
-  CatalogueFilterAttributeModel,
+  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ProductFacetModel,
@@ -68,8 +68,8 @@ interface ShopAddProductsListRouteInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   page: number;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
   rubricId: string;

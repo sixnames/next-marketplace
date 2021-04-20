@@ -20,7 +20,7 @@ import {
 import { CONFIRM_MODAL } from 'config/modals';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import {
-  CatalogueFilterAttributeModel,
+  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ShopModel,
@@ -61,8 +61,8 @@ interface ShopProductsListRouteInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   page: number;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
   rubricId: string;

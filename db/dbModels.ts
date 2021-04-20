@@ -431,7 +431,8 @@ export interface OrderModel extends BaseModel, TimestampModel {
 
 export interface ProductConnectionItemModel {
   _id: ObjectIdModel;
-  option: OptionModel;
+  optionId: ObjectIdModel;
+  optionNameI18n: TranslationModel;
   productId: ObjectIdModel;
 }
 
@@ -459,16 +460,10 @@ export interface ProductAttributeModel {
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   selectedOptionsSlugs: string[];
+  selectedOptionsIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
   optionsValueI18n: TranslationModel;
-}
-
-export interface ProductAssetsModel {
-  _id: ObjectIdModel;
-  productSlug: string;
-  productId: ObjectIdModel;
-  assets: AssetModel[];
 }
 
 export interface ProductModel extends BaseModel, TimestampModel {
@@ -485,6 +480,13 @@ export interface ProductModel extends BaseModel, TimestampModel {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
+}
+
+export interface ProductAssetsModel {
+  _id: ObjectIdModel;
+  productSlug: string;
+  productId: ObjectIdModel;
+  assets: AssetModel[];
 }
 
 export interface ProductCardPricesModel {

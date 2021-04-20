@@ -835,7 +835,6 @@ export interface NexusGenObjects {
   RolePayload: dbModels.RolePayloadModel;
   Rubric: dbModels.RubricModel;
   RubricAttribute: dbModels.RubricAttributeModel;
-  RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
   RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
   RubricOption: dbModels.RubricOptionModel;
   RubricPayload: dbModels.RubricPayloadModel;
@@ -1656,7 +1655,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
     attributes: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
-    attributesGroups: NexusGenRootTypes['RubricAttributesGroup'][]; // [RubricAttributesGroup!]!
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!

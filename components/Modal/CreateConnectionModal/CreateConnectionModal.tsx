@@ -1,5 +1,5 @@
 import ModalText from 'components/Modal/ModalText';
-import { ProductAttributeModel, ProductModel } from 'db/dbModels';
+import { ProductAttributeInterface, ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -14,7 +14,7 @@ import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 
 export interface CreateConnectionModalInterface {
-  product: ProductModel;
+  product: ProductInterface;
   confirm: (input: CreateProductConnectionInput) => void;
 }
 
@@ -24,11 +24,11 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
     schema: createProductConnectionModalSchema,
   });
 
-  const addedAttributesIds: string[] = product.connections.map(({ attributeId }) => {
+  const addedAttributesIds: string[] = (product.connections || []).map(({ attributeId }) => {
     return `${attributeId}`;
   });
 
-  const attributesOptions: SelectOptionInterface[] = product.attributes.reduce(
+  const attributesOptions: SelectOptionInterface[] = (product.attributes || []).reduce(
     (acc: SelectOptionInterface[], { attributeVariant, attributeName, attributeId }) => {
       if (
         attributeVariant !== ATTRIBUTE_VARIANT_SELECT ||
@@ -68,11 +68,11 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
           attributeId: null,
         }}
         onSubmit={(values) => {
-          const productAttribute: ProductAttributeModel | undefined = product.attributes.find(
-            ({ attributeId }) => {
-              return attributeId === values.attributeId;
-            },
-          );
+          const productAttribute: ProductAttributeInterface | undefined = (
+            product.attributes || []
+          ).find(({ attributeId }) => {
+            return attributeId === values.attributeId;
+          });
 
           if (!productAttribute) {
             showErrorNotification({ title: 'ID группы атрибутов не найден.' });

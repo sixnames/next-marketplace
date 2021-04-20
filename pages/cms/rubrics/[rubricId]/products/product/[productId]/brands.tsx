@@ -19,6 +19,12 @@ import {
 import { BrandCollectionModel, BrandModel, ManufacturerModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  BrandCollectionInterface,
+  BrandInterface,
+  ManufacturerInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
+import {
   useUpdateProductBrandCollectionMutation,
   useUpdateProductBrandMutation,
   useUpdateProductManufacturerMutation,
@@ -35,10 +41,10 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ProductBrandsInterface {
-  product: ProductModel;
-  brand?: BrandModel | null;
-  brandCollection?: BrandCollectionModel | null;
-  manufacturer?: ManufacturerModel | null;
+  product: ProductInterface;
+  brand?: BrandInterface | null;
+  brandCollection?: BrandCollectionInterface | null;
+  manufacturer?: ManufacturerInterface | null;
 }
 
 const emptyValue = 'Не назначено';

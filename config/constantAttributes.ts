@@ -15,18 +15,25 @@ import {
 import { ObjectId } from 'mongodb';
 
 export function getPriceAttribute(): RubricAttributeModel {
+  const optionsGroupId = new ObjectId();
   const commonOptionFields: Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> = {
     priorities: {},
     views: {},
     options: [],
     variants: {},
     gender: GENDER_IT as GenderModel,
+    optionsGroupId,
   };
 
   const optionSlugPrefix = `${PRICE_ATTRIBUTE_SLUG}${CATALOGUE_OPTION_SEPARATOR}`;
 
   return {
     _id: new ObjectId(),
+    attributeId: new ObjectId(),
+    rubricId: new ObjectId(),
+    rubricSlug: 'slug',
+    attributesGroupId: new ObjectId(),
+    optionsGroupId,
     nameI18n: {
       ru: 'Цена',
       en: 'Price',

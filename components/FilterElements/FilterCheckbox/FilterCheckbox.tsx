@@ -1,4 +1,4 @@
-import { CatalogueFilterAttributeOptionInterface } from 'db/dbModels';
+import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Link from 'next/link';
 import Icon from '../../Icon/Icon';

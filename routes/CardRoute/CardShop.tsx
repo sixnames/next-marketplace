@@ -1,5 +1,5 @@
 import { useSiteContext } from 'context/siteContext';
-import { ShopProductModel } from 'db/dbModels';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './CardShop.module.css';
 import Image from 'next/image';
@@ -14,7 +14,7 @@ import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 
 interface CardShopInterface {
-  shopProduct: ShopProductModel;
+  shopProduct: ShopProductInterface;
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {

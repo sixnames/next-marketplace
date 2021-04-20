@@ -5,6 +5,7 @@ import Inner from 'components/Inner/Inner';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useAddProductAssetsMutation,
@@ -24,7 +25,7 @@ import * as React from 'react';
 import { addProductAssetsSchema } from 'validation/productSchema';
 
 interface ProductAssetsInterface {
-  product: ProductModel;
+  product: ProductInterface;
 }
 
 const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
@@ -86,7 +87,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
     <CmsProductLayout product={product}>
       <Inner>
         <AssetsManager
-          initialAssets={product.assets}
+          initialAssets={product.assets?.assets || []}
           assetsTitle={product.originalName}
           onRemoveHandler={(assetIndex) => {
             deleteProductAssetMutation({

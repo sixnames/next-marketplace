@@ -7,8 +7,9 @@ import {
   ROUTE_CATALOGUE,
 } from 'config/common';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductCardBreadcrumbModel, ProductModel, ShopProductModel } from 'db/dbModels';
+import { ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -26,7 +27,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
-}: GetCardDataInterface): Promise<ProductModel | null> {
+}: GetCardDataInterface): Promise<ProductInterface | null> {
   try {
     // const startTime = new Date().getTime();
     const db = await getDatabase();
@@ -35,7 +36,7 @@ export async function getCardData({
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ProductModel>([
+      .aggregate<ProductInterface>([
         {
           $match: {
             slug,
@@ -191,21 +192,9 @@ export async function getCardData({
       max: getCurrencyString(product.cardPrices?.max),
     };
 
-    // image
-    const sortedAssets = product.assets.sort((assetA, assetB) => {
-      return assetA.index - assetB.index;
-    });
-    const firstAsset = sortedAssets[0];
-    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-    if (firstAsset) {
-      mainImage = firstAsset.url;
-    }
-    // console.log(`image `, new Date().getTime() - startTime);
-
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale,
     });
@@ -213,7 +202,7 @@ export async function getCardData({
 
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       locale,
     });
@@ -221,7 +210,7 @@ export async function getCardData({
 
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       locale,
     });
@@ -229,7 +218,7 @@ export async function getCardData({
 
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       locale,
     });
@@ -237,14 +226,14 @@ export async function getCardData({
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale,
     });
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
-    const cardShopProducts: ShopProductModel[] = [];
+    const cardShopProducts: ShopProductInterface[] = [];
     (product.shopProducts || []).forEach((shopProduct) => {
       const { shop } = shopProduct;
       if (!shop) {
@@ -281,7 +270,7 @@ export async function getCardData({
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
-    for await (const productAttribute of product.attributes) {
+    for await (const productAttribute of product.attributes || []) {
       if (!productAttribute.showAsBreadcrumb) {
         continue;
       }
@@ -297,7 +286,7 @@ export async function getCardData({
       const options = productAttribute.selectedOptions;
 
       // Get first selected option
-      const firstSelectedOption = options[0];
+      const firstSelectedOption = (options || [])[0];
       if (!firstSelectedOption) {
         continue;
       }
@@ -329,7 +318,6 @@ export async function getCardData({
       name: getFieldStringLocale(product.nameI18n, locale),
       description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,
-      mainImage,
       listFeatures,
       textFeatures,
       tagFeatures,

@@ -8,13 +8,14 @@ import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modals';
 import {
-  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
 import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -29,7 +30,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface RubricsRouteInterface {
-  rubrics: RubricModel[];
+  rubrics: RubricInterface[];
 }
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
@@ -60,7 +61,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
     ],
   });
 
-  const columns: TableColumn<RubricModel>[] = [
+  const columns: TableColumn<RubricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -128,7 +129,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
         <Title>Рубрикатор</Title>
 
         <div className='overflow-x-auto'>
-          <Table<RubricModel>
+          <Table<RubricInterface>
             columns={columns}
             data={rubrics}
             testIdKey={'name'}
@@ -186,7 +187,7 @@ export const getServerSideProps = async (
   }
 
   const initialRubrics = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $project: {
           attributes: false,
@@ -254,7 +255,7 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_PRODUCT_FACETS,
+          from: COL_PRODUCTS,
           as: 'products',
           let: { rubricId: '$_id' },
           pipeline: [

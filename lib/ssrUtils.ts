@@ -38,7 +38,7 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CityInterface, ConfigInterface, RubricInterface } from 'db/uiInterfaces';
+import { CityInterface, ConfigInterface, RubricInterface, UserInterface } from 'db/uiInterfaces';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
@@ -481,7 +481,7 @@ export async function getPageSessionUser({
     ])
     .toArray();
   const user = userAggregation[0];
-  const sessionUser: UserModel | null = user
+  const sessionUser: UserInterface | null = user
     ? {
         ...user,
         fullName: getFullName(user),

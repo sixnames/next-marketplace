@@ -1,5 +1,5 @@
-import { MessageBaseInterface } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { MessageBaseInterface } from 'db/uiInterfaces';
 
 export const optionsGroupsMessages: MessageBaseInterface[] = [
   {

@@ -1,4 +1,5 @@
-import { ShopModel, ShopProductModel } from 'db/dbModels';
+import { ShopProductModel } from 'db/dbModels';
+import { ShopInterface, ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { GetProductShopsInput, SortDirection } from 'generated/apolloComponents';
 // import Spinner from '../../components/Spinner/Spinner';
@@ -122,12 +123,12 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
 };
 
 interface CardShopsMapInterface {
-  shops: ShopProductModel[];
+  shops: ShopProductInterface[];
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
-  const shopsSnippets = shops.reduce((acc: ShopModel[], { shop }) => {
+  const shopsSnippets = shops.reduce((acc: ShopInterface[], { shop }) => {
     if (!shop) {
       return acc;
     }

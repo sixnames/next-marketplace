@@ -8,9 +8,6 @@ export const ProductConnectionItem = objectType({
   name: 'ProductConnectionItem',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.field('option', {
-      type: 'Option',
-    });
     t.nonNull.objectId('productId');
     t.nonNull.field('product', {
       type: 'Product',

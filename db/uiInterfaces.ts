@@ -12,7 +12,6 @@ import {
   ConfigModel,
   ContactsModel,
   CoordinatesModel,
-  EmailAddressModel,
   ManufacturerModel,
   MessageModel,
   MetricModel,
@@ -21,7 +20,6 @@ import {
   OptionModel,
   OptionsGroupModel,
   OrderStatusModel,
-  PhoneNumberModel,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
@@ -46,8 +44,10 @@ export interface AddressInterface extends AddressModel {
 }
 
 export interface ContactsInterface extends ContactsModel {
-  emails: EmailAddressModel[];
-  phones: PhoneNumberModel[];
+  formattedPhones: {
+    raw: string;
+    readable: string;
+  }[];
 }
 
 export interface AttributeInterface extends AttributeModel {
@@ -75,8 +75,8 @@ export interface ManufacturerInterface extends ManufacturerModel {
 }
 
 export interface CartProductInterface extends CartProductModel {
-  product?: ProductModel;
-  shopProduct?: ShopProductModel;
+  product?: ProductInterface;
+  shopProduct?: ShopProductInterface;
   isShopless?: boolean;
   totalPrice?: string;
 }
@@ -86,6 +86,7 @@ export interface CartInterface extends CartModel {
   productsCount?: number;
   formattedTotalPrice?: string;
   isWithShopless?: boolean;
+  cartProducts: CartProductInterface[];
 }
 
 export interface CityInterface extends CityModel {
@@ -95,6 +96,10 @@ export interface CityInterface extends CityModel {
 export interface ConfigInterface extends ConfigModel {
   value?: string[];
   singleValue?: string;
+}
+
+export interface CompanyInterface extends CompanyModel {
+  shops?: ShopInterface[];
 }
 
 export interface MessageBaseInterface {
@@ -129,17 +134,20 @@ export interface OrderStatusInterface extends OrderStatusModel {
 }
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
-  product?: ProductModel;
+  product?: ProductInterface;
+  optionName?: string | null;
 }
 
 export interface ProductConnectionInterface extends ProductConnectionModel {
   attributeName?: string;
+  connectionProducts: ProductConnectionItemInterface[];
 }
 
 export interface ProductAttributeInterface extends ProductAttributeModel {
   attributeName?: string | null;
   readableValue?: string | null;
-  index?: number;
+  index?: number | null;
+  selectedOptions?: OptionInterface[] | null;
 }
 
 export interface ProductCardPricesInterface {
@@ -152,7 +160,7 @@ export interface ProductInterface extends ProductModel {
   description?: string | null;
   shopsCount?: number;
   available?: boolean;
-  assets?: ProductAssetsModel[];
+  assets?: ProductAssetsModel | null;
   connections?: ProductConnectionInterface[];
   attributes?: ProductAttributeInterface[];
   listFeatures?: ProductAttributeInterface[];
@@ -160,14 +168,14 @@ export interface ProductInterface extends ProductModel {
   tagFeatures?: ProductAttributeInterface[];
   iconFeatures?: ProductAttributeInterface[];
   ratingFeatures?: ProductAttributeInterface[];
-  cardShopProducts?: ShopProductModel[];
+  cardShopProducts?: ShopProductInterface[];
   price?: number;
   cardPrices?: ProductCardPricesInterface;
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
-  shopProducts?: ShopProductModel[];
   shopProductIds?: ObjectIdModel[];
-  shopProduct?: ShopProductModel;
-  rubric?: RubricModel;
+  shopProducts?: ShopProductInterface[];
+  shopProduct?: ShopProductInterface;
+  rubric?: RubricInterface;
 }
 
 export interface RoleInterface extends RoleModel {
@@ -198,6 +206,10 @@ export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel
   keyword?: string | null;
 }
 
+export interface RubricAttributesGroupInterface extends AttributesGroupInterface {
+  attributes?: RubricAttributeInterface[] | null;
+}
+
 export interface RubricInterface extends RubricModel {
   name?: string | null;
   attributes?: RubricAttributeInterface[] | null;
@@ -205,11 +217,12 @@ export interface RubricInterface extends RubricModel {
   activeProductsCount?: number | null;
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
+  attributesGroups?: RubricAttributesGroupInterface[] | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {
   name?: string | null;
-  shop?: ShopModel;
+  shop?: ShopInterface;
   inCartCount?: number;
   product?: ProductInterface;
   products?: ProductInterface[];
@@ -225,13 +238,15 @@ export interface ShopProductInterface extends ShopProductModel {
 export interface ShopInterface extends ShopModel {
   productsCount?: number | null;
   city?: CityModel | null;
+  contacts: ContactsInterface;
+  address: AddressInterface;
 }
 
 export interface UserInterface extends UserModel {
   role?: RoleInterface;
   fullName?: string;
   shortName?: string;
-  companies?: CompanyModel[];
+  companies?: CompanyInterface[];
 }
 
 export interface CatalogueDataInterface {
@@ -261,7 +276,7 @@ export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
-  docs: ProductModel[];
+  docs: ProductInterface[];
 }
 
 export interface ProductsPaginationAggregationInterface {

@@ -4,7 +4,7 @@ import Link from 'components/Link/Link';
 import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeInterface } from 'db/dbModels';
+import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 

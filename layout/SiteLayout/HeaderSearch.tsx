@@ -1,5 +1,5 @@
 import { ROUTE_CATALOGUE } from 'config/common';
-import { CatalogueProductInterface } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
 import Inner from 'components/Inner/Inner';
@@ -20,7 +20,7 @@ type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
   | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['rubrics'];
 
-type ResultProducts = CatalogueProductInterface[];
+type ResultProducts = ProductInterface[];
 
 interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
@@ -95,9 +95,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const searchRubrics = data?.getCatalogueSearchResult.rubrics;
   const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
   const initialSearchProducts = data?.getCatalogueSearchResult.products as unknown;
-  const searchProducts = initialSearchProducts as CatalogueProductInterface[];
+  const searchProducts = initialSearchProducts as ProductInterface[];
   const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
-  const topProducts = initialTopProducts as CatalogueProductInterface[];
+  const topProducts = initialTopProducts as ProductInterface[];
 
   const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
   const products = searchProducts && searchProducts.length ? searchProducts : topProducts;

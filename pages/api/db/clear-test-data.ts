@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { clearTestData } from 'tests/clearTestData';
+// import { clearTestData } from 'tests/clearTestData';
 
 async function clearTestDataHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.query.key !== process.env.TEST_DATA_KEY) {
@@ -8,7 +8,7 @@ async function clearTestDataHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  await clearTestData();
+  // await clearTestData();
 
   res.statusCode = 200;
   res.end('Test data removed.');

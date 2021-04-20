@@ -1,7 +1,7 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
-import { ProductModel } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface CmsProductLayoutInterface {
-  product: ProductModel;
+  product: ProductInterface;
 }
 
 const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({ product, children }) => {

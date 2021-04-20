@@ -1,4 +1,4 @@
-import { RubricModel } from 'db/dbModels';
+import { RubricInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -11,7 +11,7 @@ const CompanyDefaultLayout = dynamic(
 export interface SiteLayoutProviderInterface extends PagePropsInterface {
   title?: string;
   description?: string;
-  navRubrics: RubricModel[];
+  navRubrics: RubricInterface[];
   previewImage?: string;
 }
 

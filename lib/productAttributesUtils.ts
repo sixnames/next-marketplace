@@ -6,6 +6,7 @@ import {
   DEFAULT_LOCALE,
 } from 'config/common';
 import { ProductAttributeModel } from 'db/dbModels';
+import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 
 export interface GetProductCurrentViewAttributesInterface {
@@ -83,7 +84,7 @@ export function getAttributeReadableValue({
 }
 
 export interface GetProductCurrentViewCastedAttributes {
-  attributes: ProductAttributeModel[];
+  attributes: ProductAttributeInterface[];
   viewVariant: string;
   locale: string;
 }

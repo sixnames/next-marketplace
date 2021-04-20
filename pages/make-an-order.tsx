@@ -13,7 +13,7 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
-import { CartProductModel } from 'db/dbModels';
+import { CartProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
@@ -28,7 +28,7 @@ import classes from 'styles/MakeAnOrderRoute.module.css';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OrderRouteProductInterface {
-  cartProduct: CartProductModel;
+  cartProduct: CartProductInterface;
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {

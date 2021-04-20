@@ -10,8 +10,13 @@ import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
 import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductConnectionItemModel, ProductConnectionModel, ProductModel } from 'db/dbModels';
+import { ProductConnectionItemModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import {
+  ProductConnectionInterface,
+  ProductConnectionItemInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
   useCreateProductConnectionMutation,
@@ -29,8 +34,8 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ProductConnectionControlsInterface {
-  connection: ProductConnectionModel;
-  product: ProductModel;
+  connection: ProductConnectionInterface;
+  product: ProductInterface;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
@@ -96,8 +101,8 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 };
 
 export interface ProductConnectionsItemInterface {
-  product: ProductModel;
-  connection: ProductConnectionModel;
+  product: ProductInterface;
+  connection: ProductConnectionInterface;
 }
 
 const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
@@ -130,7 +135,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   const { connectionProducts } = connection;
 
-  const columns: TableColumn<ProductConnectionItemModel>[] = [
+  const columns: TableColumn<ProductConnectionItemInterface>[] = [
     {
       accessor: 'product.itemId',
       headTitle: 'Арт.',
@@ -216,11 +221,11 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   );
 };
 
-interface ProductConnectionsInterface {
-  product: ProductModel;
+interface ProductConnectionsPropsInterface {
+  product: ProductInterface;
 }
 
-const ProductConnections: React.FC<ProductConnectionsInterface> = ({ product }) => {
+const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
   const router = useRouter();
   const {
     onCompleteCallback,
@@ -249,7 +254,7 @@ const ProductConnections: React.FC<ProductConnectionsInterface> = ({ product }) 
     <CmsProductLayout product={product}>
       <Inner>
         <div className='mb-8'>
-          {product.connections.map((connection) => {
+          {(product.connections || []).map((connection) => {
             return (
               <ProductConnectionsItem
                 key={`${connection._id}`}
@@ -288,7 +293,7 @@ const ProductConnections: React.FC<ProductConnectionsInterface> = ({ product }) 
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductConnectionsInterface {}
+interface ProductPageInterface extends PagePropsInterface, ProductConnectionsPropsInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ pageUrls, product }) => {
   return (
@@ -313,7 +318,7 @@ export const getServerSideProps = async (
   }
 
   const productAggregation = await productsCollection
-    .aggregate([
+    .aggregate<ProductInterface>([
       {
         $match: {
           _id: new ObjectId(`${productId}`),
@@ -365,9 +370,9 @@ export const getServerSideProps = async (
   }
 
   // connections
-  const connections: ProductConnectionModel[] = [];
-  for await (const productConnection of product.connections) {
-    const connectionProducts: ProductConnectionItemModel[] = [];
+  const connections: ProductConnectionInterface[] = [];
+  for await (const productConnection of product.connections || []) {
+    const connectionProducts: ProductConnectionItemInterface[] = [];
     for await (const connectionProduct of productConnection.connectionProducts) {
       const product = await productsCollection.findOne(
         { _id: connectionProduct.productId },
@@ -387,10 +392,7 @@ export const getServerSideProps = async (
       connectionProducts.push({
         ...connectionProduct,
         product,
-        option: {
-          ...connectionProduct.option,
-          name: getFieldStringLocale(connectionProduct.option.nameI18n, props.sessionLocale),
-        },
+        optionName: getFieldStringLocale(connectionProduct.optionNameI18n, props.sessionLocale),
       });
     }
 
@@ -401,10 +403,10 @@ export const getServerSideProps = async (
     });
   }
 
-  const rawProduct: ProductModel = {
+  const rawProduct: ProductInterface = {
     ...product,
     connections,
-    attributes: product.attributes.map((attribute) => {
+    attributes: (product.attributes || []).map((attribute) => {
       return {
         ...attribute,
         attributeName: getFieldStringLocale(attribute.attributeNameI18n, props.sessionLocale),

@@ -1,22 +1,14 @@
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
-  CatalogueDataInterface,
-  CatalogueFilterAttributeInterface,
-  CatalogueFilterAttributeOptionInterface,
   ConfigModel,
   GenderModel,
   ObjectIdModel,
-  ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
-  CatalogueProductPricesInterface,
   RubricAttributeModel,
   RubricCatalogueTitleModel,
   RubricModel,
   RubricOptionModel,
-  CatalogueProductsAggregationInterface,
-  CatalogueProductOptionInterface,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -47,6 +39,16 @@ import {
   SORT_DIR_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
+import {
+  CatalogueDataInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+  CatalogueProductOptionInterface,
+  CatalogueProductPricesInterface,
+  CatalogueProductsAggregationInterface,
+  RubricAttributeInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -224,7 +226,7 @@ export function getRubricCatalogueOptions({
 
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
-  attributes: RubricAttributeModel[];
+  attributes: RubricAttributeInterface[];
   // visibleOptionsCount: number;
   config: CatalogueProductOptionInterface[];
 }
@@ -538,7 +540,7 @@ export function castCatalogueFilters({
 
 export async function getCatalogueRubric(
   pipeline: Record<string, any>[],
-): Promise<RubricModel | null | undefined> {
+): Promise<RubricInterface | null | undefined> {
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricAggregation = await rubricsCollection
@@ -590,7 +592,6 @@ export const getCatalogueData = async ({
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
     const db = await getDatabase();
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args
@@ -872,7 +873,7 @@ export const getCatalogueData = async ({
     // const beforeOptions = new Date().getTime();
     const rubricAttributes = await getRubricCatalogueAttributes({
       config: shopProductsAggregationResult.options,
-      attributes: rubric.attributes,
+      attributes: rubric.attributes || [],
       city,
     });
 
@@ -902,7 +903,7 @@ export const getCatalogueData = async ({
 
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
+        attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
       });
@@ -926,48 +927,13 @@ export const getCatalogueData = async ({
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
+        attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
       });
 
-      // connections
+      // TODO catalogue snippet connections
       const connections: ProductConnectionModel[] = [];
-      for await (const productConnection of product.connections) {
-        const connectionProducts: ProductConnectionItemModel[] = [];
-        for await (const connectionProduct of productConnection.connectionProducts) {
-          const product = await productsCollection.findOne(
-            { _id: connectionProduct.productId },
-            {
-              projection: {
-                _id: 1,
-                slug: 1,
-                nameI18n: 1,
-              },
-            },
-          );
-          if (!product) {
-            continue;
-          }
-          connectionProducts.push({
-            ...connectionProduct,
-            option: {
-              ...connectionProduct.option,
-              name: getFieldStringLocale(connectionProduct.option.nameI18n, locale),
-            },
-            product: {
-              ...product,
-              name: getFieldStringLocale(product.nameI18n, locale),
-            },
-          });
-        }
-
-        connections.push({
-          ...productConnection,
-          attributeName: getFieldStringLocale(productConnection.attributeNameI18n, locale),
-          connectionProducts,
-        });
-      }
 
       products.push({
         ...restProduct,

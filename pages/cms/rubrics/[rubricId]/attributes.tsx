@@ -10,9 +10,14 @@ import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from 'config/commo
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
-import { AttributesGroupModel, RubricAttributeModel, RubricModel } from 'db/dbModels';
+import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
+import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import {
+  AttributesGroupInterface,
+  RubricAttributeInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
@@ -31,7 +36,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricAttributesConsumerInterface {
-  rubric: RubricModel;
+  rubric: RubricInterface;
 }
 
 const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({ rubric }) => {
@@ -81,7 +86,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  function deleteAttributesGroupHandler(attributesGroup: AttributesGroupModel) {
+  function deleteAttributesGroupHandler(attributesGroup: AttributesGroupInterface) {
     showModal({
       variant: CONFIRM_MODAL,
       props: {
@@ -121,7 +126,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     });
   }
 
-  const columns: TableColumn<RubricAttributeModel>[] = [
+  const columns: TableColumn<RubricAttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -218,7 +223,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 }
               >
                 <div className={`overflow-x-auto`}>
-                  <Table<RubricAttributeModel>
+                  <Table<RubricAttributeInterface>
                     data={attributes}
                     columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
@@ -265,7 +270,7 @@ export const getServerSideProps = async (
   }
 
   const initialRubrics = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.rubricId}`),
@@ -275,6 +280,14 @@ export const getServerSideProps = async (
         $project: {
           priorities: false,
           views: false,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRIC_ATTRIBUTES,
+          as: 'attributes',
+          foreignField: 'rubricId',
+          localField: '_id',
         },
       },
       {
@@ -300,7 +313,7 @@ export const getServerSideProps = async (
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
     attributes: [],
     attributesGroups: (initialRubric.attributesGroups || []).map((attributesGroup) => {
-      const groupAttributes = initialRubric.attributes.filter(({ _id }) => {
+      const groupAttributes = (initialRubric.attributes || []).filter(({ _id }) => {
         return attributesGroup.attributesIds.some((attributeId) => attributeId.equals(_id));
       });
 

@@ -1,14 +1,14 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
-import { RubricModel } from 'db/dbModels';
+import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
 
 interface CmsRubricLayoutInterface {
-  rubric: RubricModel;
+  rubric: RubricInterface;
 }
 
 const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, children }) => {

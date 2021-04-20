@@ -1,6 +1,6 @@
 import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeInterface } from 'db/dbModels';
+import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
@@ -11,11 +11,13 @@ import Icon from '../../components/Icon/Icon';
 import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 
-interface CatalogueFilterAttributeInterface {
+interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;
 }
 
-const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
+const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
+  attribute,
+}) => {
   const { currency } = useLocaleContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);

@@ -20,15 +20,15 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
-import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
-  ProductFacetModel,
-  RubricModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+  ProductInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -49,8 +49,8 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricProductsInterface {
-  rubric: RubricModel;
-  docs: ProductFacetModel[];
+  rubric: RubricInterface;
+  docs: ProductInterface[];
   totalDocs: number;
   totalPages: number;
   hasPrevPage: boolean;
@@ -99,7 +99,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       }
     },
   });
-  const columns: TableColumn<ProductFacetModel>[] = [
+  const columns: TableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
@@ -221,7 +221,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`overflow-x-auto`}>
-              <Table<ProductFacetModel>
+              <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
                   router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));
                 }}
@@ -276,7 +276,7 @@ const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...pr
 };
 
 interface ProductsAggregationInterface {
-  docs: ProductFacetModel[];
+  docs: ProductInterface[];
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
@@ -289,7 +289,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
   const db = await getDatabase();
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -373,7 +373,7 @@ export const getServerSideProps = async (
       }
     : {};
 
-  const productsAggregation = await productFacetsCollection
+  const productsAggregation = await productsCollection
     .aggregate<ProductsAggregationInterface>([
       {
         $match: {
@@ -537,7 +537,7 @@ export const getServerSideProps = async (
   // const beforeOptions = new Date().getTime();
   const rubricAttributes = await getRubricCatalogueAttributes({
     config: productsResult.options,
-    attributes: rubric.attributes,
+    attributes: rubric.attributes || [],
     city: initialProps.props.sessionCity,
   });
 
@@ -550,7 +550,7 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
-  const docs: ProductFacetModel[] = [];
+  const docs: ProductInterface[] = [];
   for await (const facet of productsResult.docs) {
     const cardPrices = {
       min: getCurrencyString(facet.cardPrices?.min),

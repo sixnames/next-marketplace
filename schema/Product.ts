@@ -82,7 +82,7 @@ export const ProductAssets = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('productSlug');
-    t.nonNull.list.nonNull.field('asset', {
+    t.nonNull.list.nonNull.field('assets', {
       type: 'Asset',
     });
   },
@@ -103,7 +103,7 @@ export const Product = objectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
     t.boolean('available');
-    t.nonNull.field('mainImage');
+    t.nonNull.string('mainImage');
     t.field('assets', {
       type: 'ProductAssets',
       resolve: async (source): Promise<ProductAssetsModel | null> => {

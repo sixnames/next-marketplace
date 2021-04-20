@@ -23,9 +23,6 @@ export const RubricOption = objectType({
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context): Promise<string> => {
-        if (source.name) {
-          return source.name;
-        }
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
@@ -76,9 +73,6 @@ export const RubricAttribute = objectType({
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context) => {
-        if (source.name) {
-          return source.name;
-        }
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
@@ -92,14 +86,11 @@ export const RubricAttributesGroup = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.list.nonNull.objectId('attributesIds');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'RubricAttribute',
-    });
 
     // AttributesGroup name translation field resolver
     t.nonNull.field('name', {
       type: 'String',
-      resolve: async (source, _args, context) => {
+      resolve: async (source, _args, context): Promise<string> => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },

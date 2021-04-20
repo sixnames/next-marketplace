@@ -355,7 +355,7 @@ export interface OptionModel {
   color?: string | null;
   icon?: string | null;
   optionsGroupId: ObjectIdModel;
-  parentId?: ObjectIdModel;
+  parentId?: ObjectIdModel | null;
 }
 
 // Options Group variant
@@ -539,6 +539,10 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   options: RubricOptionModel[];
+}
+
+export interface RubricAttributesGroupModel extends AttributesGroupModel {
+  attributes?: RubricAttributeModel[] | null;
 }
 
 export interface RubricCatalogueTitleModel {

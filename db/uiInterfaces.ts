@@ -28,6 +28,7 @@ import {
   ProductModel,
   RoleModel,
   RubricAttributeModel,
+  RubricAttributesGroupModel,
   RubricCatalogueTitleModel,
   RubricModel,
   RubricOptionModel,
@@ -206,8 +207,9 @@ export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel
   keyword?: string | null;
 }
 
-export interface RubricAttributesGroupInterface extends AttributesGroupInterface {
+export interface RubricAttributesGroupInterface extends RubricAttributesGroupModel {
   attributes?: RubricAttributeInterface[] | null;
+  name?: string | null;
 }
 
 export interface RubricInterface extends RubricModel {
@@ -280,6 +282,7 @@ export interface CatalogueProductsAggregationInterface {
 }
 
 export interface ProductsPaginationAggregationInterface {
+  docs: ProductInterface[];
   totalDocs?: number | null;
   totalActiveDocs?: number | null;
   totalPages: number;

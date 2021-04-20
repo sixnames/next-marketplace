@@ -35,7 +35,7 @@ input AddOptionToGroupInput {
   icon: String
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
-  parentOptionId: ObjectId
+  parentId: ObjectId
   variants: JSONObject!
 }
 
@@ -113,7 +113,6 @@ type Attribute {
   metric: Metric
   name: String!
   nameI18n: JSONObject!
-  options: [Option!]!
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
@@ -565,7 +564,6 @@ input DeleteCollectionFromBrandInput {
 input DeleteOptionFromGroupInput {
   optionId: ObjectId!
   optionsGroupId: ObjectId!
-  parentOptionId: ObjectId
 }
 
 input DeleteProductAssetInput {
@@ -1250,7 +1248,6 @@ type Option {
   icon: String
   name: String!
   nameI18n: JSONObject!
-  options: [Option!]!
   slug: String!
   variants: JSONObject!
 }
@@ -1431,32 +1428,24 @@ type PointGeoJSON {
 type Product implements Base & Timestamp {
   _id: ObjectId!
   active: Boolean!
-  assets: [Asset!]!
+  assets: ProductAssets
   attributes: [ProductAttribute!]!
   available: Boolean
   brand: Brand
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
-
-  """
-  Should find all connected shop products and return minimal and maximal price.
-  """
-  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
   descriptionI18n: JSONObject!
-  iconFeatures: [ProductAttribute!]!
   itemId: String!
-  listFeatures: [ProductAttribute!]!
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
   name: String!
   nameI18n: JSONObject!
   originalName: String!
-  ratingFeatures: [ProductAttribute!]!
   rubric: Rubric!
   rubricId: ObjectId!
 
@@ -1464,15 +1453,15 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
-
-  """
-  Returns all count number of the shop products
-  """
-  shopsCount: Int!
   slug: String!
-  tagFeatures: [ProductAttribute!]!
-  textFeatures: [ProductAttribute!]!
   updatedAt: Date!
+}
+
+type ProductAssets {
+  _id: ObjectId!
+  assets: [Asset!]!
+  productId: ObjectId!
+  productSlug: ObjectId!
 }
 
 type ProductAttribute {
@@ -1480,14 +1469,13 @@ type ProductAttribute {
   attribute: Attribute!
   attributeId: ObjectId!
   attributeMetric: Metric
-  attributeName: String!
   attributeNameI18n: JSONObject!
   attributeSlug: String!
   attributeVariant: AttributeVariant!
   attributeViewVariant: AttributeViewVariant!
   number: Float
-  readableValue: String
-  selectedOptions: [Option!]!
+  optionsValueI18n: String
+  selectedOptionsIds: [ObjectId!]!
 
   """
   List of selected options slug
@@ -1557,7 +1545,6 @@ type ProductConnection {
 
 type ProductConnectionItem {
   _id: ObjectId!
-  option: Option!
   product: Product!
   productId: ObjectId!
 }
@@ -1833,11 +1820,6 @@ type Query {
   getProduct(_id: ObjectId!): Product
 
   """
-  Should return product attributes AST for selected rubrics
-  """
-  getProductAttributesAST(input: ProductAttributesASTInput!): [ProductAttribute!]!
-
-  """
   Should return product by given slug
   """
   getProductBySlug(slug: String!): Product
@@ -1934,14 +1916,11 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
-  attributes: [RubricAttribute!]!
-  attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   description: String!
   descriptionI18n: JSONObject!
   name: String!
   nameI18n: JSONObject!
-  navItems: [RubricAttribute!]!
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   shortDescription: String!
@@ -1972,7 +1951,6 @@ type RubricAttribute {
 
 type RubricAttributesGroup {
   _id: ObjectId!
-  attributes: [RubricAttribute!]!
   attributesIds: [ObjectId!]!
   name: String!
   nameI18n: JSONObject!
@@ -2289,7 +2267,7 @@ input UpdateOptionInGroupInput {
   nameI18n: JSONObject!
   optionId: ObjectId!
   optionsGroupId: ObjectId!
-  parentOptionId: ObjectId
+  parentId: ObjectId
   variants: JSONObject!
 }
 

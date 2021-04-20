@@ -249,7 +249,7 @@ const CartRoute: React.FC = () => {
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <Spinner isNested />
+          <Spinner isNested isTransparent />
         </Inner>
       </div>
     );

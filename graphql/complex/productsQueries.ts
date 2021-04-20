@@ -16,21 +16,12 @@ export const cmsProductAttributeFragment = gql`
         _id
         name
       }
-      options {
-        _id
-        name
-        color
-      }
     }
   }
 `;
 
 export const cmSProductConnectionItemFragment = gql`
   fragment CmsProductConnectionItem on ProductConnectionItem {
-    option {
-      _id
-      name
-    }
     productId
     product {
       _id
@@ -66,8 +57,11 @@ export const cmsProductFieldsFragment = gql`
     descriptionI18n
     description
     assets {
-      url
-      index
+      _id
+      assets {
+        url
+        index
+      }
     }
     active
     mainImage
@@ -117,7 +111,6 @@ export const productAttributeASTFragment = gql`
     textI18n
     number
     selectedOptionsSlugs
-    attributeName
     attributeNameI18n
     attributeSlug
     attributeVariant
@@ -130,22 +123,8 @@ export const productAttributeASTFragment = gql`
         _id
         name
       }
-      options {
-        _id
-        slug
-        name
-      }
     }
   }
-`;
-
-export const PRODUCT_ATTRIBUTES_AST_QUERY = gql`
-  query GetProductAttributesAST($input: ProductAttributesASTInput!) {
-    getProductAttributesAST(input: $input) {
-      ...ProductAttributeAst
-    }
-  }
-  ${productAttributeASTFragment}
 `;
 
 export const UPDATE_PRODUCT_MUTATION = gql`

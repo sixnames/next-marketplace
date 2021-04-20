@@ -58,7 +58,7 @@ export type AddCollectionToBrandInput = {
 
 export type AddOptionToGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
-  parentOptionId?: Maybe<Scalars['ObjectId']>;
+  parentId?: Maybe<Scalars['ObjectId']>;
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
@@ -143,7 +143,6 @@ export type Attribute = {
   slug?: Maybe<Scalars['String']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
-  options: Array<Option>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -1471,7 +1470,6 @@ export type Option = {
   icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
-  options: Array<Option>;
   name: Scalars['String'];
 };
 
@@ -1484,9 +1482,9 @@ export type OptionsGroup = {
   __typename?: 'OptionsGroup';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  options: Array<Option>;
   variant: OptionsGroupVariant;
   name: Scalars['String'];
+  options: Array<Option>;
 };
 
 export type OptionsGroupPayload = Payload & {
@@ -1661,27 +1659,26 @@ export type Product = Base & Timestamp & {
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
   available?: Maybe<Scalars['Boolean']>;
-  assets: Array<Asset>;
+  mainImage: Scalars['String'];
+  assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
   name: Scalars['String'];
   description: Scalars['String'];
-  mainImage: Scalars['String'];
   rubric: Rubric;
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
-  /** Returns all count number of the shop products */
-  shopsCount: Scalars['Int'];
-  /** Should find all connected shop products and return minimal and maximal price. */
-  cardPrices: ProductCardPrices;
-  listFeatures: Array<ProductAttribute>;
-  textFeatures: Array<ProductAttribute>;
-  tagFeatures: Array<ProductAttribute>;
-  iconFeatures: Array<ProductAttribute>;
-  ratingFeatures: Array<ProductAttribute>;
+};
+
+export type ProductAssets = {
+  __typename?: 'ProductAssets';
+  _id: Scalars['ObjectId'];
+  productId: Scalars['ObjectId'];
+  productSlug: Scalars['ObjectId'];
+  assets: Array<Asset>;
 };
 
 export type ProductAttribute = {
@@ -1696,14 +1693,13 @@ export type ProductAttribute = {
   attributeNameI18n: Scalars['JSONObject'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
+  selectedOptionsIds: Array<Scalars['ObjectId']>;
   /** List of selected options slug */
   selectedOptionsSlugs: Array<Scalars['String']>;
-  selectedOptions: Array<Option>;
   attributeMetric?: Maybe<Metric>;
-  attributeName: Scalars['String'];
   text: Scalars['String'];
   attribute: Attribute;
-  readableValue?: Maybe<Scalars['String']>;
+  optionsValueI18n?: Maybe<Scalars['String']>;
 };
 
 export type ProductAttributeInput = {
@@ -1766,7 +1762,6 @@ export type ProductConnection = {
 export type ProductConnectionItem = {
   __typename?: 'ProductConnectionItem';
   _id: Scalars['ObjectId'];
-  option: Option;
   productId: Scalars['ObjectId'];
   product: Product;
 };
@@ -1910,8 +1905,6 @@ export type Query = {
   getProductShops: Array<ShopProduct>;
   /** Should paginated products */
   getProductsList: ProductsPaginationPayload;
-  /** Should return product attributes AST for selected rubrics */
-  getProductAttributesAST: Array<ProductAttribute>;
   /** Should return shop by given id */
   getShop: Shop;
   /** Should return shop by given slug */
@@ -2080,11 +2073,6 @@ export type QueryGetProductsListArgs = {
 };
 
 
-export type QueryGetProductAttributesAstArgs = {
-  input: ProductAttributesAstInput;
-};
-
-
 export type QueryGetShopArgs = {
   _id: Scalars['ObjectId'];
 };
@@ -2171,15 +2159,12 @@ export type Rubric = {
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
-  attributesGroups: Array<RubricAttributesGroup>;
   name: Scalars['String'];
   description: Scalars['String'];
   shortDescription: Scalars['String'];
   variant: RubricVariant;
   products: ProductsPaginationPayload;
-  navItems: Array<RubricAttribute>;
 };
 
 
@@ -2211,7 +2196,6 @@ export type RubricAttributesGroup = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
-  attributes: Array<RubricAttribute>;
   name: Scalars['String'];
 };
 
@@ -2526,6 +2510,7 @@ export type UpdateMyProfileInput = {
 
 export type UpdateOptionInGroupInput = {
   optionId: Scalars['ObjectId'];
+  parentId?: Maybe<Scalars['ObjectId']>;
   optionsGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
@@ -2692,9 +2677,6 @@ export type CmsProductAttributeFragment = (
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
-    )>, options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id' | 'name' | 'color'>
     )> }
   ) }
 );
@@ -2702,10 +2684,7 @@ export type CmsProductAttributeFragment = (
 export type CmsProductConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
   & Pick<ProductConnectionItem, 'productId'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ), product: (
+  & { product: (
     { __typename?: 'Product' }
     & Pick<Product, '_id' | 'itemId' | 'active' | 'name' | 'slug' | 'mainImage'>
   ) }
@@ -2723,9 +2702,13 @@ export type CmsProductConnectionFragment = (
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
   & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricId' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
-  & { assets: Array<(
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'url' | 'index'>
+  & { assets?: Maybe<(
+    { __typename?: 'ProductAssets' }
+    & Pick<ProductAssets, '_id'>
+    & { assets: Array<(
+      { __typename?: 'Asset' }
+      & Pick<Asset, 'url' | 'index'>
+    )> }
   )>, rubric: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, '_id' | 'slug' | 'name'>
@@ -2758,31 +2741,15 @@ export type GetProductQuery = (
 
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
+  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
-    )>, options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id' | 'slug' | 'name'>
     )> }
   ) }
-);
-
-export type GetProductAttributesAstQueryVariables = Exact<{
-  input: ProductAttributesAstInput;
-}>;
-
-
-export type GetProductAttributesAstQuery = (
-  { __typename?: 'Query' }
-  & { getProductAttributesAST: Array<(
-    { __typename?: 'ProductAttribute' }
-    & ProductAttributeAstFragment
-  )> }
 );
 
 export type UpdateProductMutationVariables = Exact<{
@@ -3157,10 +3124,6 @@ export type RubricAttributeFragment = (
 export type RubricAttributesGroupFragment = (
   { __typename?: 'RubricAttributesGroup' }
   & Pick<RubricAttributesGroup, '_id' | 'name'>
-  & { attributes: Array<(
-    { __typename?: 'RubricAttribute' }
-    & RubricAttributeFragment
-  )> }
 );
 
 export type GetRubricAttributesQueryVariables = Exact<{
@@ -3172,11 +3135,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id'>
-    & { attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & RubricAttributesGroupFragment
-    )> }
+    & Pick<Rubric, '_id' | 'name' | 'slug'>
   ) }
 );
 
@@ -4473,10 +4432,6 @@ export type GetAllRubricVariantsQuery = (
 export type SnippetConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
   & Pick<ProductConnectionItem, '_id' | 'productId'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ) }
 );
 
 export type SnippetConnectionFragment = (
@@ -4490,25 +4445,8 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
-  & { listFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ), ratingFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, connections: Array<(
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
+  & { connections: Array<(
     { __typename?: 'ProductConnection' }
     & SnippetConnectionFragment
   )> }
@@ -4752,20 +4690,11 @@ export const CmsProductAttributeFragmentDoc = gql`
       _id
       name
     }
-    options {
-      _id
-      name
-      color
-    }
   }
 }
     `;
 export const CmsProductConnectionItemFragmentDoc = gql`
     fragment CmsProductConnectionItem on ProductConnectionItem {
-  option {
-    _id
-    name
-  }
   productId
   product {
     _id
@@ -4798,8 +4727,11 @@ export const CmsProductFieldsFragmentDoc = gql`
   descriptionI18n
   description
   assets {
-    url
-    index
+    _id
+    assets {
+      url
+      index
+    }
   }
   active
   mainImage
@@ -4836,7 +4768,6 @@ export const ProductAttributeAstFragmentDoc = gql`
   textI18n
   number
   selectedOptionsSlugs
-  attributeName
   attributeNameI18n
   attributeSlug
   attributeVariant
@@ -4847,11 +4778,6 @@ export const ProductAttributeAstFragmentDoc = gql`
     variant
     metric {
       _id
-      name
-    }
-    options {
-      _id
-      slug
       name
     }
   }
@@ -4914,11 +4840,8 @@ export const RubricAttributesGroupFragmentDoc = gql`
     fragment RubricAttributesGroup on RubricAttributesGroup {
   _id
   name
-  attributes {
-    ...RubricAttribute
-  }
 }
-    ${RubricAttributeFragmentDoc}`;
+    `;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayload {
   success
@@ -5340,10 +5263,6 @@ export const SnippetConnectionItemFragmentDoc = gql`
     fragment SnippetConnectionItem on ProductConnectionItem {
   _id
   productId
-  option {
-    _id
-    name
-  }
 }
     `;
 export const SnippetConnectionFragmentDoc = gql`
@@ -5363,32 +5282,6 @@ export const ProductSnippetFragmentDoc = gql`
   originalName
   slug
   mainImage
-  listFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
-  shopsCount
-  cardPrices {
-    _id
-    min
-    max
-  }
-  ratingFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
   connections {
     ...SnippetConnection
   }
@@ -5450,41 +5343,6 @@ export function useGetProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
 export type GetProductLazyQueryHookResult = ReturnType<typeof useGetProductLazyQuery>;
 export type GetProductQueryResult = Apollo.QueryResult<GetProductQuery, GetProductQueryVariables>;
-export const GetProductAttributesAstDocument = gql`
-    query GetProductAttributesAST($input: ProductAttributesASTInput!) {
-  getProductAttributesAST(input: $input) {
-    ...ProductAttributeAst
-  }
-}
-    ${ProductAttributeAstFragmentDoc}`;
-
-/**
- * __useGetProductAttributesAstQuery__
- *
- * To run a query within a React component, call `useGetProductAttributesAstQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductAttributesAstQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductAttributesAstQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetProductAttributesAstQuery(baseOptions: Apollo.QueryHookOptions<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>(GetProductAttributesAstDocument, options);
-      }
-export function useGetProductAttributesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>(GetProductAttributesAstDocument, options);
-        }
-export type GetProductAttributesAstQueryHookResult = ReturnType<typeof useGetProductAttributesAstQuery>;
-export type GetProductAttributesAstLazyQueryHookResult = ReturnType<typeof useGetProductAttributesAstLazyQuery>;
-export type GetProductAttributesAstQueryResult = Apollo.QueryResult<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>;
 export const UpdateProductDocument = gql`
     mutation UpdateProduct($input: UpdateProductInput!) {
   updateProduct(input: $input) {
@@ -6317,12 +6175,11 @@ export const GetRubricAttributesDocument = gql`
     query GetRubricAttributes($rubricId: ObjectId!) {
   getRubric(_id: $rubricId) {
     _id
-    attributesGroups {
-      ...RubricAttributesGroup
-    }
+    name
+    slug
   }
 }
-    ${RubricAttributesGroupFragmentDoc}`;
+    `;
 
 /**
  * __useGetRubricAttributesQuery__

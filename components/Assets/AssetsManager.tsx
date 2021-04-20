@@ -3,7 +3,6 @@ import InputLine from 'components/FormElements/Input/InputLine';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CONFIRM_MODAL } from 'config/modals';
 import { useAppContext } from 'context/appContext';
-import { CmsProductFragment } from 'generated/apolloComponents';
 import Image from 'next/image';
 import * as React from 'react';
 import { DragDropContext, Draggable, DragUpdate, Droppable } from 'react-beautiful-dnd';
@@ -32,7 +31,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
   onReorderHandler,
   onRemoveHandler,
 }) => {
-  const [assets, setAssets] = React.useState<CmsProductFragment['assets']>([]);
+  const [assets, setAssets] = React.useState<AssetItem[]>([]);
   const { showModal } = useAppContext();
 
   React.useEffect(() => {

@@ -201,9 +201,6 @@ export const rubricAttributesGroupFragment = gql`
   fragment RubricAttributesGroup on RubricAttributesGroup {
     _id
     name
-    attributes {
-      ...RubricAttribute
-    }
   }
   ${rubricAttributeFragment}
 `;
@@ -212,9 +209,8 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
   query GetRubricAttributes($rubricId: ObjectId!) {
     getRubric(_id: $rubricId) {
       _id
-      attributesGroups {
-        ...RubricAttributesGroup
-      }
+      name
+      slug
     }
   }
   ${rubricAttributesGroupFragment}

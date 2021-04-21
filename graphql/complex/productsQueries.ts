@@ -46,61 +46,6 @@ export const cmSProductConnectionFragment = gql`
   ${cmSProductConnectionItemFragment}
 `;
 
-export const cmsProductFieldsFragment = gql`
-  fragment CMSProductFields on Product {
-    _id
-    itemId
-    nameI18n
-    name
-    originalName
-    slug
-    descriptionI18n
-    description
-    assets {
-      _id
-      assets {
-        url
-        index
-      }
-    }
-    active
-    mainImage
-    rubricId
-    rubric {
-      _id
-      slug
-      name
-    }
-    brandSlug
-    brandCollectionSlug
-    manufacturerSlug
-    attributes {
-      ...CMSProductAttribute
-    }
-    connections {
-      ...CmsProductConnection
-    }
-  }
-  ${cmSProductConnectionFragment}
-  ${cmsProductAttributeFragment}
-`;
-
-export const cmsProductFragment = gql`
-  fragment CMSProduct on Product {
-    ...CMSProductFields
-  }
-  ${cmsProductFieldsFragment}
-`;
-
-export const PRODUCT_QUERY = gql`
-  query GetProduct($_id: ObjectId!) {
-    getProduct(_id: $_id) {
-      ...CMSProduct
-    }
-  }
-  ${cmsProductFragment}
-`;
-
 export const productAttributeASTFragment = gql`
   fragment ProductAttributeAst on ProductAttribute {
     _id
@@ -132,12 +77,8 @@ export const UPDATE_PRODUCT_MUTATION = gql`
     updateProduct(input: $input) {
       success
       message
-      payload {
-        ...CMSProduct
-      }
     }
   }
-  ${cmsProductFragment}
 `;
 
 export const UPDATE_PRODUCT_ASSETS_MUTATION = gql`
@@ -145,12 +86,8 @@ export const UPDATE_PRODUCT_ASSETS_MUTATION = gql`
     addProductAssets(input: $input) {
       success
       message
-      payload {
-        ...CMSProduct
-      }
     }
   }
-  ${cmsProductFragment}
 `;
 
 export const DELETE_PRODUCT_ASSET_MUTATION = gql`
@@ -158,12 +95,8 @@ export const DELETE_PRODUCT_ASSET_MUTATION = gql`
     deleteProductAsset(input: $input) {
       success
       message
-      payload {
-        ...CMSProduct
-      }
     }
   }
-  ${cmsProductFragment}
 `;
 
 export const UPDATE_PRODUCT_ASSET_INDEX_MUTATION = gql`
@@ -171,12 +104,8 @@ export const UPDATE_PRODUCT_ASSET_INDEX_MUTATION = gql`
     updateProductAssetIndex(input: $input) {
       success
       message
-      payload {
-        ...CMSProduct
-      }
     }
   }
-  ${cmsProductFragment}
 `;
 
 export const CREATE_PRODUCT_MUTATION = gql`

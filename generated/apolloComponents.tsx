@@ -2699,46 +2699,6 @@ export type CmsProductConnectionFragment = (
   )> }
 );
 
-export type CmsProductFieldsFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricId' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
-  & { assets?: Maybe<(
-    { __typename?: 'ProductAssets' }
-    & Pick<ProductAssets, '_id'>
-    & { assets: Array<(
-      { __typename?: 'Asset' }
-      & Pick<Asset, 'url' | 'index'>
-    )> }
-  )>, rubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id' | 'slug' | 'name'>
-  ), attributes: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CmsProductAttributeFragment
-  )>, connections: Array<(
-    { __typename?: 'ProductConnection' }
-    & CmsProductConnectionFragment
-  )> }
-);
-
-export type CmsProductFragment = (
-  { __typename?: 'Product' }
-  & CmsProductFieldsFragment
-);
-
-export type GetProductQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetProductQuery = (
-  { __typename?: 'Query' }
-  & { getProduct?: Maybe<(
-    { __typename?: 'Product' }
-    & CmsProductFragment
-  )> }
-);
-
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
   & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
@@ -2762,10 +2722,6 @@ export type UpdateProductMutation = (
   & { updateProduct: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2779,10 +2735,6 @@ export type AddProductAssetsMutation = (
   & { addProductAssets: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2796,10 +2748,6 @@ export type DeleteProductAssetMutation = (
   & { deleteProductAsset: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2813,10 +2761,6 @@ export type UpdateProductAssetIndexMutation = (
   & { updateProductAssetIndex: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -4716,48 +4660,6 @@ export const CmsProductConnectionFragmentDoc = gql`
   }
 }
     ${CmsProductConnectionItemFragmentDoc}`;
-export const CmsProductFieldsFragmentDoc = gql`
-    fragment CMSProductFields on Product {
-  _id
-  itemId
-  nameI18n
-  name
-  originalName
-  slug
-  descriptionI18n
-  description
-  assets {
-    _id
-    assets {
-      url
-      index
-    }
-  }
-  active
-  mainImage
-  rubricId
-  rubric {
-    _id
-    slug
-    name
-  }
-  brandSlug
-  brandCollectionSlug
-  manufacturerSlug
-  attributes {
-    ...CMSProductAttribute
-  }
-  connections {
-    ...CmsProductConnection
-  }
-}
-    ${CmsProductAttributeFragmentDoc}
-${CmsProductConnectionFragmentDoc}`;
-export const CmsProductFragmentDoc = gql`
-    fragment CMSProduct on Product {
-  ...CMSProductFields
-}
-    ${CmsProductFieldsFragmentDoc}`;
 export const ProductAttributeAstFragmentDoc = gql`
     fragment ProductAttributeAst on ProductAttribute {
   _id
@@ -5308,52 +5210,14 @@ export const UserCompanyFragmentDoc = gql`
   slug
 }
     `;
-export const GetProductDocument = gql`
-    query GetProduct($_id: ObjectId!) {
-  getProduct(_id: $_id) {
-    ...CMSProduct
-  }
-}
-    ${CmsProductFragmentDoc}`;
-
-/**
- * __useGetProductQuery__
- *
- * To run a query within a React component, call `useGetProductQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetProductQuery(baseOptions: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, options);
-      }
-export function useGetProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, options);
-        }
-export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
-export type GetProductLazyQueryHookResult = ReturnType<typeof useGetProductLazyQuery>;
-export type GetProductQueryResult = Apollo.QueryResult<GetProductQuery, GetProductQueryVariables>;
 export const UpdateProductDocument = gql`
     mutation UpdateProduct($input: UpdateProductInput!) {
   updateProduct(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
 
 /**
@@ -5385,12 +5249,9 @@ export const AddProductAssetsDocument = gql`
   addProductAssets(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type AddProductAssetsMutationFn = Apollo.MutationFunction<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
 
 /**
@@ -5422,12 +5283,9 @@ export const DeleteProductAssetDocument = gql`
   deleteProductAsset(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type DeleteProductAssetMutationFn = Apollo.MutationFunction<DeleteProductAssetMutation, DeleteProductAssetMutationVariables>;
 
 /**
@@ -5459,12 +5317,9 @@ export const UpdateProductAssetIndexDocument = gql`
   updateProductAssetIndex(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type UpdateProductAssetIndexMutationFn = Apollo.MutationFunction<UpdateProductAssetIndexMutation, UpdateProductAssetIndexMutationVariables>;
 
 /**

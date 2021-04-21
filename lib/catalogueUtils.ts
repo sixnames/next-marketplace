@@ -1,5 +1,11 @@
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_CONFIGS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import {
   ConfigModel,
   GenderModel,
@@ -552,15 +558,29 @@ export async function getCatalogueRubric(
           slug: 1,
           nameI18n: 1,
           catalogueTitle: 1,
-          attributes: {
-            $filter: {
-              input: '$attributes',
-              as: 'attribute',
-              cond: {
-                $eq: ['$$attribute.showInCatalogueFilter', true],
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRIC_ATTRIBUTES,
+          as: 'attributes',
+          let: { rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+                showInCatalogueFilter: true,
               },
             },
-          },
+            {
+              $sort: {
+                priorities: SORT_DESC,
+                views: SORT_DESC,
+              },
+            },
+          ],
         },
       },
     ])
@@ -698,9 +718,17 @@ export const getCatalogueData = async ({
           {
             $group: {
               _id: '$productId',
+              itemId: { $first: '$itemId' },
+              slug: { $first: '$slug' },
+              mainImage: { $first: `$mainImage` },
+              originalName: { $first: `$originalName` },
+              nameI18n: { $first: `$nameI18n` },
               views: { $max: `$views.${realCompanySlug}.${city}` },
               priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-              price: {
+              minPrice: {
+                $min: '$price',
+              },
+              maxPrice: {
                 $min: '$price',
               },
               available: {
@@ -729,64 +757,36 @@ export const getCatalogueData = async ({
                   $limit: limit,
                 },
                 {
+                  $addFields: {
+                    shopsCount: { $size: '$shopProductsIds' },
+                    cardPrices: {
+                      min: '$minPrice',
+                      max: '$maxPrice',
+                    },
+                  },
+                },
+                // TODO catalogue snippet connections
+                {
                   $lookup: {
-                    from: COL_PRODUCTS,
-                    as: 'products',
+                    from: COL_PRODUCT_ATTRIBUTES,
+                    as: 'attributes',
                     let: {
                       productId: '$_id',
-                      shopProductsIds: '$shopProductsIds',
-                      price: '$price',
                     },
                     pipeline: [
                       {
                         $match: {
                           $expr: {
-                            $eq: ['$$productId', '$_id'],
+                            $eq: ['$$productId', '$productId'],
                           },
-                        },
-                      },
-                      {
-                        $addFields: {
-                          shopsCount: { $size: '$$shopProductsIds' },
-                          price: '$$price',
-                          attributes: {
-                            $filter: {
-                              input: '$attributes',
-                              as: 'attribute',
-                              cond: {
-                                $or: [
-                                  {
-                                    $eq: [
-                                      '$$attribute.attributeViewVariant',
-                                      ATTRIBUTE_VIEW_VARIANT_LIST,
-                                    ],
-                                  },
-                                  {
-                                    $eq: [
-                                      '$$attribute.attributeViewVariant',
-                                      ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-                                    ],
-                                  },
-                                ],
-                              },
-                            },
+                          attributeViewVariant: {
+                            $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
                           },
                         },
                       },
                     ],
                   },
                 },
-                {
-                  $addFields: {
-                    product: { $arrayElemAt: ['$products', 0] },
-                  },
-                },
-                {
-                  $project: {
-                    products: false,
-                  },
-                },
-                { $replaceRoot: { newRoot: '$product' } },
               ],
               options: [
                 {
@@ -828,7 +828,7 @@ export const getCatalogueData = async ({
               prices: [
                 {
                   $group: {
-                    _id: '$price',
+                    _id: '$minPrice',
                   },
                 },
               ],
@@ -862,7 +862,7 @@ export const getCatalogueData = async ({
       )
       .toArray();
     const shopProductsAggregationResult = shopProductsAggregation[0];
-    // console.log(shopProductsAggregationResult);
+    // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
@@ -893,9 +893,9 @@ export const getCatalogueData = async ({
     });
     for await (const product of shopProductsAggregationResult.docs) {
       // prices
-      const { attributes, price, ...restProduct } = product;
-      const minPrice = noNaN(price);
-      const maxPrice = noNaN(price);
+      const { attributes, ...restProduct } = product;
+      const minPrice = noNaN(product.cardPrices?.min);
+      const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
         min: getCurrencyString(minPrice),
         max: getCurrencyString(maxPrice),
@@ -932,7 +932,6 @@ export const getCatalogueData = async ({
         locale,
       });
 
-      // TODO catalogue snippet connections
       const connections: ProductConnectionModel[] = [];
 
       products.push({

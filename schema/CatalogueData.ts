@@ -541,8 +541,7 @@ export const CatalogueMutations = extendType({
               return selectedSlug.split(CATALOGUE_OPTION_SEPARATOR)[0];
             });
 
-            const updatedAttributes: RubricAttributeModel[] = [];
-            attributes.forEach((attribute: RubricAttributeModel) => {
+            for await (const attribute of attributes) {
               if (attributesSlugs.includes(attribute.slug)) {
                 if (!attribute.views) {
                   attribute.views = DEFAULT_COUNTERS_OBJECT.views;
@@ -555,6 +554,7 @@ export const CatalogueMutations = extendType({
                   attribute.views[`${companySlug}`][city] =
                     noNaN(attribute.views[`${companySlug}`][city]) + VIEWS_COUNTER_STEP;
                 }
+
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,
                   options: attribute.options,
@@ -562,15 +562,23 @@ export const CatalogueMutations = extendType({
                   city,
                 }).sort((optionA, optionB) => {
                   const optionACounter =
-                    noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
+                    noNaN(optionA.views[`${companySlug}`][city]) +
+                    noNaN(optionA.priorities[`${companySlug}`][city]);
                   const optionBCounter =
-                    noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
+                    noNaN(optionB.views[`${companySlug}`][city]) +
+                    noNaN(optionB.priorities[`${companySlug}`][city]);
                   return optionBCounter - optionACounter;
                 });
+
                 attribute.options = updatedOptions;
+                await rubricAttributesCollection.findOneAndUpdate(
+                  { _id: attribute._id },
+                  {
+                    $set: attribute,
+                  },
+                );
               }
-              updatedAttributes.push(attribute);
-            });
+            }
           }
 
           return true;

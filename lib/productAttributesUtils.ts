@@ -5,7 +5,6 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
 } from 'config/common';
-import { ProductAttributeModel } from 'db/dbModels';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 
@@ -47,7 +46,7 @@ export function getProductCurrentViewAttributes({
 }
 
 export interface GetAttributeReadableValueInterface {
-  attribute: ProductAttributeModel;
+  attribute: ProductAttributeInterface;
   locale: string;
 }
 
@@ -63,7 +62,7 @@ export function getAttributeReadableValue({
       attribute.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
     attribute.selectedOptionsSlugs.length > 0
   ) {
-    const asString = getFieldStringLocale(attribute.attributeNameI18n, locale);
+    const asString = getFieldStringLocale(attribute.optionsValueI18n, locale);
 
     return `${asString}${metricName}`;
   }
@@ -121,6 +120,7 @@ export function getProductCurrentViewCastedAttributes({
         attributeName: getFieldStringLocale(attribute.attributeNameI18n, locale),
         attributeMetric,
         selectedOptions: (attribute.selectedOptions || []).map((option) => {
+          // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
           return {
             ...option,
             name: `${getFieldStringLocale(option.nameI18n, locale)}${

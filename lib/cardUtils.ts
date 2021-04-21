@@ -6,7 +6,13 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   ROUTE_CATALOGUE,
 } from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -76,6 +82,12 @@ export async function getCardData({
         {
           $group: {
             _id: '$productId',
+            itemId: { $first: '$itemId' },
+            slug: { $first: '$slug' },
+            mainImage: { $first: `$mainImage` },
+            originalName: { $first: `$originalName` },
+            nameI18n: { $first: `$nameI18n` },
+            rubricId: { $first: `$rubricId` },
             minPrice: {
               $min: '$price',
             },
@@ -100,66 +112,74 @@ export async function getCardData({
             },
           },
         },
+        // TODO product connections
         // Get product rubric
         {
           $lookup: {
-            from: COL_PRODUCTS,
-            as: 'products',
+            from: COL_RUBRICS,
+            as: 'rubrics',
             let: {
-              productId: '$_id',
-              shopProducts: '$shopProducts',
-              shopProductIds: '$shopProductIds',
-              minPrice: '$minPrice',
-              maxPrice: '$maxPrice',
+              rubricId: '$rubricId',
             },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $eq: ['$$productId', '$_id'],
+                    $eq: ['$$rubricId', '$_id'],
                   },
                 },
               },
               {
+                $project: {
+                  _id: true,
+                  slug: true,
+                  nameI18n: true,
+                },
+              },
+            ],
+          },
+        },
+        // Get product attributes
+        {
+          $lookup: {
+            from: COL_PRODUCT_ATTRIBUTES,
+            as: 'attributes',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                  $or: [
+                    {
+                      showInCard: true,
+                    },
+                    {
+                      showAsBreadcrumb: true,
+                    },
+                  ],
+                },
+              },
+              // get attribute selected options
+              {
                 $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubrics',
+                  from: COL_OPTIONS,
+                  as: 'selectedOptions',
                   let: {
-                    rubricId: '$rubricId',
+                    selectedOptionsIds: '$selectedOptionsIds',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$rubricId', '$_id'],
+                          $in: ['$_id', '$$selectedOptionsIds'],
                         },
                       },
                     },
-                    {
-                      $project: {
-                        _id: true,
-                        slug: true,
-                        nameI18n: true,
-                      },
-                    },
                   ],
-                },
-              },
-              {
-                $addFields: {
-                  cardPrices: {
-                    min: '$$minPrice',
-                    max: '$$maxPrice',
-                  },
-                  shopsCount: { $size: '$$shopProducts' },
-                  shopProducts: '$$shopProducts',
-                  shopProductIds: '$$shopProductIds',
-                  rubric: { $arrayElemAt: ['$rubrics', 0] },
-                },
-              },
-              {
-                $project: {
-                  rubrics: false,
                 },
               },
             ],
@@ -167,15 +187,19 @@ export async function getCardData({
         },
         {
           $addFields: {
-            product: { $arrayElemAt: ['$products', 0] },
+            cardPrices: {
+              min: '$minPrice',
+              max: '$maxPrice',
+            },
+            shopsCount: { $size: '$shopProducts' },
+            rubric: { $arrayElemAt: ['$rubrics', 0] },
           },
         },
         {
           $project: {
-            products: false,
+            rubrics: false,
           },
         },
-        { $replaceRoot: { newRoot: '$product' } },
       ])
       .toArray();
     const product = shopProductsAggregation[0];
@@ -283,10 +307,10 @@ export async function getCardData({
       }
 
       // Get all selected options
-      const options = productAttribute.selectedOptions;
+      const options = productAttribute.selectedOptions || [];
 
       // Get first selected option
-      const firstSelectedOption = (options || [])[0];
+      const firstSelectedOption = options[0];
       if (!firstSelectedOption) {
         continue;
       }

@@ -10,13 +10,13 @@ import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 
 export interface GetProductCurrentViewAttributesInterface {
-  attributes: ProductAttributeModel[];
+  attributes: ProductAttributeInterface[];
   viewVariant: string;
 }
 export function getProductCurrentViewAttributes({
   attributes,
   viewVariant,
-}: GetProductCurrentViewAttributesInterface): ProductAttributeModel[] {
+}: GetProductCurrentViewAttributesInterface): ProductAttributeInterface[] {
   return attributes.filter(
     ({ attributeViewVariant, selectedOptionsSlugs, textI18n, number, attributeVariant }) => {
       const isSelect =
@@ -93,11 +93,11 @@ export function getProductCurrentViewCastedAttributes({
   attributes,
   viewVariant,
   locale,
-}: GetProductCurrentViewCastedAttributes): ProductAttributeModel[] {
+}: GetProductCurrentViewCastedAttributes): ProductAttributeInterface[] {
   return getProductCurrentViewAttributes({
     attributes,
     viewVariant,
-  }).reduce((acc: ProductAttributeModel[], attribute) => {
+  }).reduce((acc: ProductAttributeInterface[], attribute) => {
     const readableValue = getAttributeReadableValue({
       attribute,
       locale,
@@ -107,18 +107,28 @@ export function getProductCurrentViewCastedAttributes({
       return acc;
     }
 
+    const attributeMetric = attribute.attributeMetric
+      ? {
+          ...attribute.attributeMetric,
+          name: getFieldStringLocale(attribute.attributeMetric.nameI18n, locale),
+        }
+      : null;
+
     return [
       ...acc,
       {
         ...attribute,
-        readableValue,
         attributeName: getFieldStringLocale(attribute.attributeNameI18n, locale),
-        attributeMetric: attribute.attributeMetric
-          ? {
-              ...attribute.attributeMetric,
-              name: getFieldStringLocale(attribute.attributeMetric.nameI18n, locale),
-            }
-          : null,
+        attributeMetric,
+        selectedOptions: (attribute.selectedOptions || []).map((option) => {
+          return {
+            ...option,
+            name: `${getFieldStringLocale(option.nameI18n, locale)}${
+              attributeMetric ? ` ${attributeMetric.name}` : ''
+            }`,
+          };
+        }),
+        readableValue,
       },
     ];
   }, []);

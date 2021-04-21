@@ -19,14 +19,14 @@ import {
 } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modals';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { ShopModel, ShopProductModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
-  CatalogueFilterAttributeModel,
+  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
-  ShopModel,
-  ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteProductFromShopMutation,
@@ -61,8 +61,8 @@ interface ShopProductsListRouteInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   page: number;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
   rubricId: string;
@@ -112,7 +112,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<ShopProductModel>[] = [
+  const columns: TableColumn<ShopProductInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'Арт',
@@ -310,7 +310,11 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
                       </div>
                     </div>
                     <div className={`overflow-x-auto`}>
-                      <Table<ShopProductModel> columns={columns} data={docs} testIdKey={'_id'} />
+                      <Table<ShopProductInterface>
+                        columns={columns}
+                        data={docs}
+                        testIdKey={'_id'}
+                      />
                     </div>
                     <div className={`mt-6 flex`}>
                       <div className={`mr-6`}>
@@ -615,7 +619,7 @@ export const getServerSideProps = async (
   // const beforeOptions = new Date().getTime();
   const rubricAttributes = await getRubricCatalogueAttributes({
     config: shopProductsResult.options,
-    attributes: rubric.attributes,
+    attributes: rubric.attributes || [],
     city: initialProps.props.sessionCity,
   });
 

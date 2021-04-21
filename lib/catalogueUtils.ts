@@ -1,24 +1,20 @@
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
-  AttributeModel,
-  CatalogueDataInterface,
-  CatalogueFilterAttributeModel,
-  CatalogueFilterAttributeOptionModel,
+  COL_CONFIGS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
+import {
   ConfigModel,
   GenderModel,
   ObjectIdModel,
-  OptionModel,
-  ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
-  CatalogueProductPricesInterface,
   RubricAttributeModel,
   RubricCatalogueTitleModel,
   RubricModel,
   RubricOptionModel,
-  CatalogueProductsAggregationInterface,
-  CatalogueProductOptionInterface,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -49,6 +45,16 @@ import {
   SORT_DIR_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
+import {
+  CatalogueDataInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+  CatalogueProductOptionInterface,
+  CatalogueProductPricesInterface,
+  CatalogueProductsAggregationInterface,
+  RubricAttributeInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -74,8 +80,8 @@ export function castCatalogueParamToObject(
 }
 
 export interface SelectedFilterInterface {
-  attribute: AttributeModel;
-  options: OptionModel[];
+  attribute: RubricAttributeModel;
+  options: RubricOptionModel[];
 }
 
 interface GetCatalogueTitleInterface {
@@ -226,7 +232,7 @@ export function getRubricCatalogueOptions({
 
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
-  attributes: RubricAttributeModel[];
+  attributes: RubricAttributeInterface[];
   // visibleOptionsCount: number;
   config: CatalogueProductOptionInterface[];
 }
@@ -268,8 +274,8 @@ export interface GetCatalogueAttributesInterface {
 
 export interface GetCatalogueAttributesPayloadInterface {
   selectedFilters: SelectedFilterInterface[];
-  castedAttributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  castedAttributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
 }
 
 export async function getCatalogueAttributes({
@@ -280,8 +286,8 @@ export async function getCatalogueAttributes({
   basePath,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
-  const castedAttributes: CatalogueFilterAttributeModel[] = [];
-  const selectedAttributes: CatalogueFilterAttributeModel[] = [];
+  const castedAttributes: CatalogueFilterAttributeInterface[] = [];
+  const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
   const realFilter = filter.filter((filterItem) => {
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
@@ -291,8 +297,8 @@ export async function getCatalogueAttributes({
 
   for await (const attribute of attributes) {
     const { options, slug } = attribute;
-    const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
-    const selectedFilterOptions: CatalogueFilterAttributeOptionModel[] = [];
+    const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
+    const selectedFilterOptions: CatalogueFilterAttributeOptionInterface[] = [];
     const selectedOptions: RubricOptionModel[] = [];
 
     for await (const option of options) {
@@ -540,7 +546,7 @@ export function castCatalogueFilters({
 
 export async function getCatalogueRubric(
   pipeline: Record<string, any>[],
-): Promise<RubricModel | null | undefined> {
+): Promise<RubricInterface | null | undefined> {
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricAggregation = await rubricsCollection
@@ -552,15 +558,29 @@ export async function getCatalogueRubric(
           slug: 1,
           nameI18n: 1,
           catalogueTitle: 1,
-          attributes: {
-            $filter: {
-              input: '$attributes',
-              as: 'attribute',
-              cond: {
-                $eq: ['$$attribute.showInCatalogueFilter', true],
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRIC_ATTRIBUTES,
+          as: 'attributes',
+          let: { rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+                showInCatalogueFilter: true,
               },
             },
-          },
+            {
+              $sort: {
+                priorities: SORT_DESC,
+                views: SORT_DESC,
+              },
+            },
+          ],
         },
       },
     ])
@@ -592,7 +612,6 @@ export const getCatalogueData = async ({
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
     const db = await getDatabase();
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args
@@ -699,9 +718,17 @@ export const getCatalogueData = async ({
           {
             $group: {
               _id: '$productId',
+              itemId: { $first: '$itemId' },
+              slug: { $first: '$slug' },
+              mainImage: { $first: `$mainImage` },
+              originalName: { $first: `$originalName` },
+              nameI18n: { $first: `$nameI18n` },
               views: { $max: `$views.${realCompanySlug}.${city}` },
               priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-              price: {
+              minPrice: {
+                $min: '$price',
+              },
+              maxPrice: {
                 $min: '$price',
               },
               available: {
@@ -730,64 +757,36 @@ export const getCatalogueData = async ({
                   $limit: limit,
                 },
                 {
+                  $addFields: {
+                    shopsCount: { $size: '$shopProductsIds' },
+                    cardPrices: {
+                      min: '$minPrice',
+                      max: '$maxPrice',
+                    },
+                  },
+                },
+                // TODO catalogue snippet connections
+                {
                   $lookup: {
-                    from: COL_PRODUCTS,
-                    as: 'products',
+                    from: COL_PRODUCT_ATTRIBUTES,
+                    as: 'attributes',
                     let: {
                       productId: '$_id',
-                      shopProductsIds: '$shopProductsIds',
-                      price: '$price',
                     },
                     pipeline: [
                       {
                         $match: {
                           $expr: {
-                            $eq: ['$$productId', '$_id'],
+                            $eq: ['$$productId', '$productId'],
                           },
-                        },
-                      },
-                      {
-                        $addFields: {
-                          shopsCount: { $size: '$$shopProductsIds' },
-                          price: '$$price',
-                          attributes: {
-                            $filter: {
-                              input: '$attributes',
-                              as: 'attribute',
-                              cond: {
-                                $or: [
-                                  {
-                                    $eq: [
-                                      '$$attribute.attributeViewVariant',
-                                      ATTRIBUTE_VIEW_VARIANT_LIST,
-                                    ],
-                                  },
-                                  {
-                                    $eq: [
-                                      '$$attribute.attributeViewVariant',
-                                      ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-                                    ],
-                                  },
-                                ],
-                              },
-                            },
+                          attributeViewVariant: {
+                            $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
                           },
                         },
                       },
                     ],
                   },
                 },
-                {
-                  $addFields: {
-                    product: { $arrayElemAt: ['$products', 0] },
-                  },
-                },
-                {
-                  $project: {
-                    products: false,
-                  },
-                },
-                { $replaceRoot: { newRoot: '$product' } },
               ],
               options: [
                 {
@@ -829,7 +828,7 @@ export const getCatalogueData = async ({
               prices: [
                 {
                   $group: {
-                    _id: '$price',
+                    _id: '$minPrice',
                   },
                 },
               ],
@@ -863,7 +862,7 @@ export const getCatalogueData = async ({
       )
       .toArray();
     const shopProductsAggregationResult = shopProductsAggregation[0];
-    // console.log(shopProductsAggregationResult);
+    // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
@@ -874,7 +873,7 @@ export const getCatalogueData = async ({
     // const beforeOptions = new Date().getTime();
     const rubricAttributes = await getRubricCatalogueAttributes({
       config: shopProductsAggregationResult.options,
-      attributes: rubric.attributes,
+      attributes: rubric.attributes || [],
       city,
     });
 
@@ -894,9 +893,9 @@ export const getCatalogueData = async ({
     });
     for await (const product of shopProductsAggregationResult.docs) {
       // prices
-      const { attributes, price, ...restProduct } = product;
-      const minPrice = noNaN(price);
-      const maxPrice = noNaN(price);
+      const { attributes, ...restProduct } = product;
+      const minPrice = noNaN(product.cardPrices?.min);
+      const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
         min: getCurrencyString(minPrice),
         max: getCurrencyString(maxPrice),
@@ -904,7 +903,7 @@ export const getCatalogueData = async ({
 
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
+        attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
       });
@@ -928,48 +927,12 @@ export const getCatalogueData = async ({
 
       // ratingFeatures
       const ratingFeatures = getProductCurrentViewCastedAttributes({
-        attributes,
+        attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
       });
 
-      // connections
       const connections: ProductConnectionModel[] = [];
-      for await (const productConnection of product.connections) {
-        const connectionProducts: ProductConnectionItemModel[] = [];
-        for await (const connectionProduct of productConnection.connectionProducts) {
-          const product = await productsCollection.findOne(
-            { _id: connectionProduct.productId },
-            {
-              projection: {
-                _id: 1,
-                slug: 1,
-                nameI18n: 1,
-              },
-            },
-          );
-          if (!product) {
-            continue;
-          }
-          connectionProducts.push({
-            ...connectionProduct,
-            option: {
-              ...connectionProduct.option,
-              name: getFieldStringLocale(connectionProduct.option.nameI18n, locale),
-            },
-            product: {
-              ...product,
-              name: getFieldStringLocale(product.nameI18n, locale),
-            },
-          });
-        }
-
-        connections.push({
-          ...productConnection,
-          attributeName: getFieldStringLocale(productConnection.attributeNameI18n, locale),
-          connectionProducts,
-        });
-      }
 
       products.push({
         ...restProduct,

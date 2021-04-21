@@ -1,14 +1,3 @@
-import {
-  ATTRIBUTE_VIEW_VARIANT_ICON,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ATTRIBUTE_VIEW_VARIANT_TAG,
-  ATTRIBUTE_VIEW_VARIANT_TEXT,
-} from 'config/common';
-import { getCurrencyString } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { getProductCurrentViewAttributes } from 'lib/productAttributesUtils';
-import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -16,8 +5,9 @@ import {
   BrandCollectionModel,
   BrandModel,
   ManufacturerModel,
+  ProductAssetsModel,
   ProductAttributeModel,
-  ProductCardPricesModel,
+  ProductConnectionModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -27,6 +17,9 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTIONS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -83,6 +76,18 @@ export const ProductAttributesGroupAst = objectType({
   },
 });
 
+export const ProductAssets = objectType({
+  name: 'ProductAssets',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.objectId('productId');
+    t.nonNull.objectId('productSlug');
+    t.nonNull.list.nonNull.field('assets', {
+      type: 'Asset',
+    });
+  },
+});
+
 export const Product = objectType({
   name: 'Product',
   definition(t) {
@@ -98,17 +103,43 @@ export const Product = objectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
     t.boolean('available');
-    t.nonNull.list.nonNull.field('assets', {
-      type: 'Asset',
-      resolve: (source) => {
-        return source.assets.sort((a, b) => a.index - b.index);
+    t.nonNull.string('mainImage');
+    t.field('assets', {
+      type: 'ProductAssets',
+      resolve: async (source): Promise<ProductAssetsModel | null> => {
+        const db = await getDatabase();
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+        const assets = await productAssetsCollection.findOne({ productId: source._id });
+        return assets;
       },
     });
     t.nonNull.list.nonNull.field('attributes', {
       type: 'ProductAttribute',
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        const db = await getDatabase();
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const attributes = await productAttributesCollection
+          .find({ productId: source._id })
+          .toArray();
+        return attributes;
+      },
     });
     t.nonNull.list.nonNull.field('connections', {
       type: 'ProductConnection',
+      resolve: async (source): Promise<ProductConnectionModel[]> => {
+        const db = await getDatabase();
+        const productConnectionsCollection = db.collection<ProductConnectionModel>(
+          COL_PRODUCT_CONNECTIONS,
+        );
+        const connections = await productConnectionsCollection
+          .find({
+            'connectionProducts.productId': source._id,
+          })
+          .toArray();
+        return connections;
+      },
     });
 
     // Product name translation field resolver
@@ -126,22 +157,6 @@ export const Product = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.descriptionI18n);
-      },
-    });
-
-    // Product mainImage field resolver
-    t.nonNull.field('mainImage', {
-      type: 'String',
-      resolve: async (source) => {
-        const sortedAssets = source.assets.sort((assetA, assetB) => {
-          return assetA.index - assetB.index;
-        });
-        const firstAsset = sortedAssets[0];
-
-        if (!firstAsset) {
-          return `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-        }
-        return firstAsset.url;
       },
     });
 
@@ -220,94 +235,6 @@ export const Product = objectType({
           })
           .toArray();
         return shopsProducts;
-      },
-    });
-
-    // Product shopsCount field resolver
-    t.nonNull.field('shopsCount', {
-      type: 'Int',
-      description: 'Returns all count number of the shop products',
-      resolve: async (source, _args): Promise<number> => {
-        return noNaN(source.shopsCount);
-      },
-    });
-
-    // Product cardPrices field resolver
-    t.nonNull.field('cardPrices', {
-      type: 'ProductCardPrices',
-      description: 'Should find all connected shop products and return minimal and maximal price.',
-      resolve: async (source, _args): Promise<ProductCardPricesModel> => {
-        try {
-          const minPrice = noNaN(source.cardPrices?.min);
-          const maxPrice = noNaN(source.cardPrices?.max);
-
-          return {
-            _id: new ObjectId(),
-            min: getCurrencyString(minPrice),
-            max: getCurrencyString(maxPrice),
-          };
-        } catch {
-          return {
-            _id: new ObjectId(),
-            min: '0',
-            max: '0',
-          };
-        }
-      },
-    });
-
-    // Product listFeatures field resolver
-    t.nonNull.list.nonNull.field('listFeatures', {
-      type: 'ProductAttribute',
-      resolve: async (source): Promise<ProductAttributeModel[]> => {
-        return getProductCurrentViewAttributes({
-          attributes: source.attributes,
-          viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-        });
-      },
-    });
-
-    // Product textFeatures field resolver
-    t.nonNull.list.nonNull.field('textFeatures', {
-      type: 'ProductAttribute',
-      resolve: async (source): Promise<ProductAttributeModel[]> => {
-        return getProductCurrentViewAttributes({
-          attributes: source.attributes,
-          viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
-        });
-      },
-    });
-
-    // Product tagFeatures field resolver
-    t.nonNull.list.nonNull.field('tagFeatures', {
-      type: 'ProductAttribute',
-      resolve: async (source): Promise<ProductAttributeModel[]> => {
-        return getProductCurrentViewAttributes({
-          attributes: source.attributes,
-          viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
-        });
-      },
-    });
-
-    // Product iconFeatures field resolver
-    t.nonNull.list.nonNull.field('iconFeatures', {
-      type: 'ProductAttribute',
-      resolve: async (source): Promise<ProductAttributeModel[]> => {
-        return getProductCurrentViewAttributes({
-          attributes: source.attributes,
-          viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
-        });
-      },
-    });
-
-    // Product ratingFeatures field resolver
-    t.nonNull.list.nonNull.field('ratingFeatures', {
-      type: 'ProductAttribute',
-      resolve: async (source): Promise<ProductAttributeModel[]> => {
-        return getProductCurrentViewAttributes({
-          attributes: source.attributes,
-          viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-        });
       },
     });
   },

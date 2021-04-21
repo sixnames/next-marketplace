@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { MessageBaseInterface } from 'db/uiInterfaces';
 
-export const productsMessages: MessageType[] = [
+export const productsMessages: MessageBaseInterface[] = [
   {
     slug: 'products.create.error',
     messageI18n: {
@@ -201,8 +201,8 @@ export const productsMessages: MessageType[] = [
   {
     slug: 'validation.products.rubrics',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Рубрики товара обязательны.`,
-      [SECONDARY_LOCALE]: `Product rubrics is required.`,
+      [DEFAULT_LOCALE]: `Рубрика товара обязательна.`,
+      [SECONDARY_LOCALE]: `Product rubric is required.`,
     },
   },
   {

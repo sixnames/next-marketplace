@@ -1,6 +1,6 @@
 import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeModel } from 'db/dbModels';
+import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
@@ -11,11 +11,13 @@ import Icon from '../../components/Icon/Icon';
 import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 
-interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueFilterAttributeModel;
+interface CatalogueFilterAttributePropsInterface {
+  attribute: CatalogueFilterAttributeInterface;
 }
 
-const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
+const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
+  attribute,
+}) => {
   const { currency } = useLocaleContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
@@ -85,8 +87,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   catalogueCounterString: string;
   rubricClearSlug: string;
   isFilterVisible: boolean;

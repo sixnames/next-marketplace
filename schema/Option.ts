@@ -13,9 +13,6 @@ export const Option = objectType({
     t.field('gender', {
       type: 'Gender',
     });
-    t.nonNull.list.nonNull.field('options', {
-      type: 'Option',
-    });
 
     // Option name translation field resolver
     t.nonNull.field('name', {

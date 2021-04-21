@@ -1,10 +1,10 @@
-import { CityModel, ConfigModel } from 'db/dbModels';
+import { CityInterface, ConfigInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { noNaN } from 'lib/numbers';
 
 interface ConfigContextInterface {
-  configs: ConfigModel[];
-  cities: CityModel[];
+  configs: ConfigInterface[];
+  cities: CityInterface[];
 }
 
 const ConfigContext = React.createContext<ConfigContextInterface>({

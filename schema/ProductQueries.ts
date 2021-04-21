@@ -6,16 +6,9 @@ import {
   SORT_BY_ID,
   SORT_DESC,
 } from 'config/common';
-import {
-  ProductAttributeModel,
-  ProductModel,
-  ProductsPaginationPayloadModel,
-  RubricAttributeModel,
-  RubricModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { ProductModel, ProductsPaginationPayloadModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
@@ -189,79 +182,6 @@ export const ProductQueries = extendType({
           city,
         });
         return paginationResult;
-      },
-    });
-
-    // Should return product attributes AST for selected rubrics
-    t.nonNull.list.nonNull.field('getProductAttributesAST', {
-      type: 'ProductAttribute',
-      description: 'Should return product attributes AST for selected rubrics',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'ProductAttributesASTInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args): Promise<ProductAttributeModel[]> => {
-        const db = await getDatabase();
-        const { input } = args;
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const { rubricId, productId } = input;
-
-        // Get all attributes groups ids
-        const rubric = await rubricsCollection.findOne(
-          { _id: rubricId },
-          { projection: { attributes: 1 } },
-        );
-        if (!rubric) {
-          throw Error('Rubric not found');
-        }
-
-        // Get all attributes groups
-        const attributes = rubric.attributes.reduce(
-          (acc: RubricAttributeModel[], rubricAttribute) => {
-            const exist = acc.some(({ _id }) => rubricAttribute._id.equals(_id));
-            if (exist) {
-              return acc;
-            }
-            return [...acc, rubricAttribute];
-          },
-          [],
-        );
-
-        // Get product
-        let product: ProductModel | null = null;
-        if (productId) {
-          product = await productsCollection.findOne({ _id: productId });
-        }
-
-        // Get all attributes and cast it to ast
-        const attributesAST: ProductAttributeModel[] = [];
-        for await (const attribute of attributes) {
-          const productAttribute = product?.attributes.find(({ attributeId }) => {
-            return attributeId.equals(attribute._id);
-          });
-
-          attributesAST.push({
-            _id: attribute._id,
-            attributeId: attribute._id,
-            attributeSlug: attribute.slug,
-            attributeNameI18n: attribute.nameI18n,
-            attributeViewVariant: attribute.viewVariant,
-            attributeVariant: attribute.variant,
-            selectedOptions: productAttribute?.selectedOptions || [],
-            selectedOptionsSlugs: productAttribute?.selectedOptionsSlugs || [],
-            number: productAttribute?.number || null,
-            textI18n: productAttribute?.textI18n || {},
-            showAsBreadcrumb: productAttribute?.showAsBreadcrumb || false,
-            showInCard: productAttribute?.showInCard || true,
-            attributeMetric: productAttribute?.attributeMetric || null,
-          });
-        }
-
-        return attributesAST;
       },
     });
   },

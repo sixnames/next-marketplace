@@ -1,9 +1,9 @@
-import { UserModel } from 'db/dbModels';
+import { UserInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
 interface UserContextInterface {
-  me?: UserModel | null;
-  setUser: (user: UserModel) => void;
+  me?: UserInterface | null;
+  setUser: (user: UserInterface) => void;
 }
 
 const UserContext = React.createContext<UserContextInterface>({
@@ -12,11 +12,11 @@ const UserContext = React.createContext<UserContextInterface>({
 });
 
 interface UserContextProviderInterface {
-  sessionUser?: UserModel | null;
+  sessionUser?: UserInterface | null;
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, sessionUser }) => {
-  const [user, setUser] = React.useState<UserModel | null | undefined>(() => sessionUser);
+  const [user, setUser] = React.useState<UserInterface | null | undefined>(() => sessionUser);
   const value = React.useMemo(() => {
     return {
       me: user,

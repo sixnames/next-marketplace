@@ -1,4 +1,4 @@
-import { CatalogueFilterAttributeOptionModel } from 'db/dbModels';
+import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './FilterLink.module.css';
 import TagLink, { TagLinkInterface } from './TagLink';
@@ -6,7 +6,7 @@ import Icon from '../Icon/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
-  option: CatalogueFilterAttributeOptionModel;
+  option: CatalogueFilterAttributeOptionInterface;
   withCross?: boolean;
   disabled?: boolean;
   postfix?: string | null;

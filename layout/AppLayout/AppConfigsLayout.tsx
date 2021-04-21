@@ -2,6 +2,7 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import { ROUTE_APP, ROUTE_CMS } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
@@ -64,7 +65,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
   }, [isCms, companyId]);
 
   return (
-    <div className={'pt-11'}>
+    <AppContentWrapper>
       <Head>
         <title>{`Настройки сайта`}</title>
       </Head>
@@ -74,7 +75,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}
-    </div>
+    </AppContentWrapper>
   );
 };
 

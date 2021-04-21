@@ -2,13 +2,14 @@ import { CART_COOKIE_KEY, DEFAULT_LOCALE } from 'config/common';
 import Cookies from 'cookies';
 import {
   COL_CARTS,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { CartInterface } from 'db/uiInterfaces';
 import { getCurrencyString } from 'lib/i18n';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -115,7 +116,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const companyIdStage = companyId ? { companyId: new ObjectId(companyId) } : {};
     const cartAggregation = cartId
       ? await cartsCollection
-          .aggregate([
+          .aggregate<CartInterface>([
             {
               $match: { _id: new ObjectId(cartId) },
             },
@@ -132,7 +133,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             }),
             {
               $lookup: {
-                from: COL_PRODUCT_FACETS,
+                from: COL_PRODUCTS,
                 as: 'cartProducts.products',
                 let: { productId: '$cartProducts.productId' },
                 pipeline: [
@@ -288,7 +289,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     // Products
 
     // Total price
-    const sessionCart: CartModel = {
+    const sessionCart: CartInterface = {
       ...cart,
       productsCount: cart.cartProducts.length,
       isWithShopless: cart.cartProducts.some(({ productId }) => !!productId),

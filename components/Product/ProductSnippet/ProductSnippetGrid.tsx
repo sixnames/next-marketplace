@@ -1,17 +1,16 @@
 import { useSiteContext } from 'context/siteContext';
-import { CatalogueProductInterface } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
 import Link from '../../Link/Link';
-import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import LayoutCard from 'layout/LayoutCard';
 
 interface ProductSnippetGridInterface {
-  product: CatalogueProductInterface;
+  product: ProductInterface;
   testId?: string;
   additionalSlug?: string;
   size?: 'small' | 'normal';
@@ -35,7 +34,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     listFeatures,
     ratingFeatures,
     shopsCount,
-    isCustomersChoice,
     mainImage,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
@@ -106,8 +104,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           />
         </div>
       </div>
-
-      {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
 
       <Link
         // style={{ display: 'none' }}

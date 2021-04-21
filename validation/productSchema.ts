@@ -50,7 +50,6 @@ export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =
       max: 1000,
       slug: 'validation.products.description',
     }),
-    rubricId: objectIdSchema({ ...args, slug: 'validation.products.rubrics' }),
   };
 };
 

@@ -1,15 +1,8 @@
-import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
-import {
-  AttributesGroupModel,
-  ProductsPaginationPayloadModel,
-  RubricAttributeModel,
-  RubricAttributesGroupModel,
-  RubricVariantModel,
-} from 'db/dbModels';
+import { ProductsPaginationPayloadModel, RubricVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const RubricProductsCountersInput = inputObjectType({
@@ -36,46 +29,14 @@ export const Rubric = objectType({
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'RubricAttribute',
-    });
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',
-    });
-
-    // Rubric attributesGroups field resolver
-    t.nonNull.list.nonNull.field('attributesGroups', {
-      type: 'RubricAttributesGroup',
-      resolve: async (source): Promise<RubricAttributesGroupModel[]> => {
-        const db = await getDatabase();
-        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
-        const attributesGroups = await attributesGroupsCollection
-          .find({
-            _id: { $in: source.attributesGroupsIds },
-          })
-          .toArray();
-
-        return attributesGroups.map((attributesGroup) => {
-          return {
-            ...attributesGroup,
-            attributes: source.attributes.filter(({ _id }) => {
-              return attributesGroup.attributesIds.some((attributeId) => attributeId.equals(_id));
-            }),
-          };
-        });
-      },
     });
 
     // Rubric name translation field resolver
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context) => {
-        if (source.name) {
-          return source.name;
-        }
-
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
@@ -124,6 +85,7 @@ export const Rubric = objectType({
       },
       resolve: async (source, args, context): Promise<ProductsPaginationPayloadModel> => {
         const { city } = await getRequestParams(context);
+
         const paginationResult = await productsPaginationQuery({
           input: {
             ...args.input,
@@ -132,26 +94,6 @@ export const Rubric = objectType({
           city,
         });
         return paginationResult;
-      },
-    });
-
-    // Rubric navItems field resolver
-    t.nonNull.list.nonNull.field('navItems', {
-      type: 'RubricAttribute',
-      resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
-        try {
-          const { locale } = await getRequestParams(context);
-
-          const catalogueAttributes = getRubricNavAttributes({
-            attributes: source.attributes,
-            locale,
-          });
-
-          return catalogueAttributes;
-        } catch (e) {
-          console.log(e);
-          return [];
-        }
       },
     });
   },

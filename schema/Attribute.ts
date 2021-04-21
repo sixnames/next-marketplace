@@ -35,9 +35,6 @@ export const Attribute = objectType({
     t.string('slug');
     t.boolean('capitalise');
     t.objectId('optionsGroupId');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'Option',
-    });
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',

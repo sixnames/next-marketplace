@@ -1,4 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -6,6 +7,7 @@ import {
   BrandCollectionsPaginationPayloadModel,
   BrandModel,
   BrandPayloadModel,
+  BrandsAlphabetListModel,
   BrandsPaginationPayloadModel,
   ProductModel,
 } from 'db/dbModels';
@@ -43,7 +45,6 @@ export const Brand = objectType({
     t.nonNull.string('slug');
     t.nonNull.string('nameI18n');
     t.json('descriptionI18n');
-    t.nonNull.list.nonNull.objectId('collectionsIds');
 
     // Brand name translation field resolver
     t.nonNull.field('name', {
@@ -79,7 +80,7 @@ export const Brand = objectType({
         const paginationResult = await aggregatePagination<BrandCollectionModel>({
           input: args.input,
           collectionName: COL_BRAND_COLLECTIONS,
-          pipeline: [{ $match: { _id: { $in: source.collectionsIds } } }],
+          pipeline: [{ $match: { brandId: source._id } }],
           city,
         });
 
@@ -95,9 +96,7 @@ export const Brand = objectType({
         const brandCollectionsCollection = db.collection<BrandCollectionModel>(
           COL_BRAND_COLLECTIONS,
         );
-        const brands = await brandCollectionsCollection
-          .find({ _id: { $in: source.collectionsIds } })
-          .toArray();
+        const brands = await brandCollectionsCollection.find({ brandId: source._id }).toArray();
         return brands;
       },
     });
@@ -108,6 +107,23 @@ export const BrandsPaginationPayload = objectType({
   name: 'BrandsPaginationPayload',
   definition(t) {
     t.implements('PaginationPayload');
+    t.nonNull.list.nonNull.field('docs', {
+      type: 'Brand',
+    });
+  },
+});
+
+export const BrandAlphabetInput = inputObjectType({
+  name: 'BrandAlphabetInput',
+  definition(t) {
+    t.list.nonNull.string('slugs');
+  },
+});
+
+export const BrandsAlphabetList = objectType({
+  name: 'BrandsAlphabetList',
+  definition(t) {
+    t.implements('AlphabetList');
     t.nonNull.list.nonNull.field('docs', {
       type: 'Brand',
     });
@@ -175,15 +191,40 @@ export const BrandQueries = extendType({
       },
     });
 
-    // Should return brands list
-    t.nonNull.list.nonNull.field('getBrandsOptions', {
-      type: 'Brand',
-      description: 'Should return brands list',
-      resolve: async (_root): Promise<BrandModel[]> => {
+    // Should return brands grouped by alphabet
+    t.nonNull.list.nonNull.field('getBrandAlphabetLists', {
+      type: 'BrandsAlphabetList',
+      description: 'Should return brands grouped by alphabet',
+      args: {
+        input: arg({
+          type: 'BrandAlphabetInput',
+        }),
+      },
+      resolve: async (_root, args): Promise<BrandsAlphabetListModel[]> => {
         const db = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const brands = await brandsCollection.find({}).toArray();
-        return brands;
+        const { input } = args;
+        let query: Record<string, any> = {};
+        if (input) {
+          if (input.slugs) {
+            query = {
+              slug: {
+                $in: input.slugs,
+              },
+            };
+          }
+        }
+
+        const brands = await brandsCollection
+          .find(query, {
+            projection: {
+              _id: true,
+              slug: true,
+              nameI18n: true,
+            },
+          })
+          .toArray();
+        return getAlphabetList<BrandModel>(brands);
       },
     });
   },
@@ -293,7 +334,6 @@ export const BrandMutations = extendType({
             ...args.input,
             slug,
             itemId,
-            collectionsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -509,7 +549,7 @@ export const BrandMutations = extendType({
             fieldName: 'nameI18n',
             fieldArg: values.nameI18n,
             additionalQuery: {
-              _id: { $in: brand.collectionsIds },
+              brandId: brand._id,
             },
           });
           if (exist) {
@@ -526,6 +566,8 @@ export const BrandMutations = extendType({
             ...values,
             itemId,
             slug,
+            brandId: brand._id,
+            brandSlug: brand.slug,
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -627,7 +669,7 @@ export const BrandMutations = extendType({
             fieldName: 'nameI18n',
             fieldArg: values.nameI18n,
             additionalQuery: {
-              $and: [{ _id: { $in: brand.collectionsIds } }, { _id: { $ne: brandCollectionId } }],
+              $and: [{ brandId: brand._id }, { _id: { $ne: brandCollectionId } }],
             },
           });
           if (exist) {

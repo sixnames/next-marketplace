@@ -2,11 +2,9 @@ import {
   ProductsPaginationPayloadModel,
   ProductsPaginationInputModel,
   SortDirectionModel,
-  ProductFacetModel,
-  ProductsPaginationAggregationInterface,
-  ProductModel,
+  LanguageModel,
 } from 'db/dbModels';
-import { COL_PRODUCT_FACETS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCTS } from 'db/collectionNames';
 import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
@@ -15,6 +13,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
+import { ProductsPaginationAggregationInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import { CollectionAggregationOptions } from 'mongodb';
 
@@ -52,9 +51,16 @@ export async function productsPaginationQuery({
     // const timeStart = new Date().getTime();
 
     const db = await getDatabase();
-    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const { excludedProductsIds, excludedRubricsIds, rubricId, attributesIds, ...restInputValues } =
-      input || {};
+    const productsCollection = db.collection(COL_PRODUCTS);
+    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+    const {
+      excludedProductsIds,
+      excludedRubricsIds,
+      rubricId,
+      attributesIds,
+      search,
+      ...restInputValues
+    } = input || {};
     const { page, sortDir, sortBy, limit } = restInputValues || {
       page: PAGE_DEFAULT,
       sortDir: SORT_DESC,
@@ -113,19 +119,53 @@ export async function productsPaginationQuery({
       ? [
           {
             $match: {
-              'attributes.attributeId': { $in: attributesIds },
+              selectedAttributesIds: { $in: attributesIds },
             },
           },
         ]
       : [];
 
-    // TODO search pipeline
+    // Search stage
+    let searchStage: Record<string, any>[] = [];
+    if (search) {
+      const languages = await languagesCollection.find({}).toArray();
+      const searchByName = languages.map(({ slug }) => {
+        return {
+          [`nameI18n.${slug}`]: {
+            $regex: search,
+            $options: 'i',
+          },
+        };
+      });
+      searchStage = [
+        {
+          $match: {
+            $or: [
+              ...searchByName,
+              {
+                originalName: {
+                  $regex: search,
+                  $options: 'i',
+                },
+              },
+              {
+                itemId: {
+                  $regex: search,
+                  $options: 'i',
+                },
+              },
+            ],
+          },
+        },
+      ];
+    }
 
     const pipeline = [
       ...rubricsStage,
       ...excludedProductsStage,
       ...excludedRubricsStage,
       ...attributesStage,
+      ...searchStage,
 
       // filter shop products data
       ...shopsMatchPipeline,
@@ -141,14 +181,6 @@ export async function productsPaginationQuery({
             { $sort: sortStage },
             { $skip: skip },
             { $limit: realLimit },
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                as: 'products',
-                localField: '_id',
-                foreignField: '_id',
-              },
-            },
           ],
           countAllDocs: [{ $count: 'totalDocs' }],
           countActiveDocs: [{ $match: { active: true } }, { $count: 'totalActiveDocs' }],
@@ -200,7 +232,7 @@ export async function productsPaginationQuery({
       .explain();
     console.log(JSON.stringify(stats, null, 2));*/
 
-    const aggregated = await productFacetsCollection
+    const aggregated = await productsCollection
       .aggregate<ProductsPaginationAggregationInterface>(pipeline, {
         allowDiskUse: true,
         ...options,
@@ -214,19 +246,8 @@ export async function productsPaginationQuery({
 
     // console.log('Products pagination >>> ', new Date().getTime() - timeStart);
 
-    const finalDocs = aggregationResult.docs.reduce((acc: ProductModel[], { products }) => {
-      if (!products) {
-        return acc;
-      }
-      const product = products[0];
-      if (product) {
-        return [...acc, product];
-      }
-      return acc;
-    }, []);
-
     return {
-      docs: finalDocs,
+      docs: aggregationResult.docs,
       totalDocs: noNaN(aggregationResult.totalDocs),
       totalActiveDocs: noNaN(aggregationResult.totalActiveDocs),
       totalPages: aggregationResult.totalPages || PAGE_DEFAULT,

@@ -75,4 +75,44 @@ export const NEW_ATTRIBUTE_OPTIONS_QUERY = gql`
       ...SelectOption
     }
   }
+  ${selectOptionFragment}
+`;
+
+export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
+  query GetBrandAlphabetLists($input: BrandAlphabetInput) {
+    getBrandAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        slug
+        name
+      }
+    }
+  }
+`;
+
+export const BRAND_COLLECTION_ALPHABET_OPTIONS_QUERY = gql`
+  query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
+    getBrandCollectionAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        slug
+        name
+      }
+    }
+  }
+`;
+
+export const MANUFACTURER_ALPHABET_OPTIONS_QUERY = gql`
+  query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
+    getManufacturerAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        slug
+        name
+      }
+    }
+  }
 `;

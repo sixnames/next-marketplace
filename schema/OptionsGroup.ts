@@ -1,23 +1,19 @@
-import { deleteOptionFromTree, findOptionInTree, updateOptionInTree } from 'lib/optionsUtils';
-import { updateOptionInProducts, updateOptionsList } from 'lib/optionsUtils';
-import { ObjectId } from 'mongodb';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   OPTIONS_GROUP_VARIANT_ICON,
-  SORT_ASC,
+  SORT_DESC,
 } from 'config/common';
 import {
   AttributeModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
-  ProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS_GROUPS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -40,9 +36,6 @@ export const OptionsGroup = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'Option',
-    });
     t.nonNull.field('variant', {
       type: 'OptionsGroupVariant',
     });
@@ -53,6 +46,17 @@ export const OptionsGroup = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
+      },
+    });
+
+    // OptionsGroup options field resolver
+    t.nonNull.list.nonNull.field('options', {
+      type: 'Option',
+      resolve: async (source): Promise<OptionModel[]> => {
+        const db = await getDatabase();
+        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+        const options = optionsCollection.find({ optionsGroupId: source._id }).toArray();
+        return options;
       },
     });
   },
@@ -96,7 +100,7 @@ export const OptionsGroupQueries = extendType({
             {},
             {
               sort: {
-                itemId: SORT_ASC,
+                _id: SORT_DESC,
               },
             },
           )
@@ -152,7 +156,7 @@ export const AddOptionToGroupInput = inputObjectType({
   name: 'AddOptionToGroupInput',
   definition(t) {
     t.nonNull.objectId('optionsGroupId');
-    t.objectId('parentOptionId');
+    t.objectId('parentId');
     t.nonNull.json('nameI18n');
     t.string('color');
     t.string('icon');
@@ -167,6 +171,7 @@ export const UpdateOptionInGroupInput = inputObjectType({
   name: 'UpdateOptionInGroupInput',
   definition(t) {
     t.nonNull.objectId('optionId');
+    t.objectId('parentId');
     t.nonNull.objectId('optionsGroupId');
     t.nonNull.json('nameI18n');
     t.string('color');
@@ -229,10 +234,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Create options group
-          const createdOptionsGroupResult = await optionsGroupsCollection.insertOne({
-            ...input,
-            options: [],
-          });
+          const createdOptionsGroupResult = await optionsGroupsCollection.insertOne(input);
           const createdOptionsGroup = createdOptionsGroupResult.ops[0];
           if (!createdOptionsGroupResult.result.ok || !createdOptionsGroup) {
             return {
@@ -345,6 +347,7 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { _id } = args;
 
@@ -367,8 +370,15 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Delete options group
-          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndDelete({ _id });
-          if (!updatedOptionsGroupResult.ok) {
+          const removedOptionsGroupResult = await optionsGroupsCollection.findOneAndDelete({ _id });
+          if (!removedOptionsGroupResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.delete.error'),
+            };
+          }
+          const removedOptionsResult = await optionsCollection.deleteMany({ optionsGroupId: _id });
+          if (!removedOptionsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.delete.error'),
@@ -411,8 +421,9 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
-          const { optionsGroupId, parentOptionId, ...values } = input;
+          const { optionsGroupId, parentId, ...values } = input;
 
           // Check options group availability
           const optionsGroup = await optionsGroupsCollection.findOne({ _id: optionsGroupId });
@@ -438,15 +449,12 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const inputNameKeys = Object.keys(values.nameI18n);
-          const exist = findOptionInTree({
-            options: optionsGroup.options,
-            condition: ({ nameI18n }) => {
-              return inputNameKeys.some((key) => {
-                return nameI18n[key] === values.nameI18n[key];
-              });
-            },
+          const exist = findDocumentByI18nField({
+            fieldArg: values.nameI18n,
+            collectionName: COL_OPTIONS,
+            fieldName: 'nameI18n',
           });
+
           if (exist) {
             return {
               success: false,
@@ -454,83 +462,30 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          let updatedGroupOptions: OptionModel[];
-
           // Create new option slug
           const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
 
           // Add option
-          if (parentOptionId) {
-            updatedGroupOptions = updateOptionInTree({
-              options: optionsGroup.options,
-              condition: (treeOption) => {
-                return treeOption._id.equals(parentOptionId);
-              },
-              updater: (option) => {
-                const slug = `${option.slug}__${newOptionSlug}`;
-                return {
-                  ...option,
-                  options: [
-                    ...option.options,
-                    {
-                      ...values,
-                      _id: new ObjectId(),
-                      slug,
-                      options: [],
-                    },
-                  ],
-                };
-              },
-            });
-          } else {
-            updatedGroupOptions = [
-              ...optionsGroup.options,
-              {
-                ...values,
-                _id: new ObjectId(),
-                slug: newOptionSlug,
-                options: [],
-                variants: {},
-              },
-            ];
-          }
-
-          // Update options group
-          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
-            { _id: optionsGroupId },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedOptionsGroup = updatedOptionsGroupResult.value;
-          if (!updatedOptionsGroupResult.ok || !updatedOptionsGroup) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.addOption.error'),
-            };
-          }
-
-          // Update attributes and rubrics options list
-          const rubricsUpdated = await updateOptionsList({
+          const createdOptionResult = await optionsCollection.insertOne({
+            ...values,
+            slug: newOptionSlug,
+            parentId,
+            variants: {},
             optionsGroupId,
-            options: updatedGroupOptions,
           });
-          if (!rubricsUpdated) {
+          if (!createdOptionResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.addOption.error'),
             };
           }
+
+          // TODO update options in rubrics
 
           return {
             success: true,
             message: await getApiMessage('optionsGroups.addOption.success'),
-            payload: updatedOptionsGroup,
+            payload: optionsGroup,
           };
         } catch (e) {
           return {
@@ -564,8 +519,9 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
-          const { optionsGroupId, optionId, ...values } = input;
+          const { optionsGroupId, optionId, parentId, ...values } = input;
 
           // Check options group availability
           const optionsGroup = await optionsGroupsCollection.findOne({ _id: optionsGroupId });
@@ -591,16 +547,13 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const inputNameKeys = Object.keys(values.nameI18n);
-          const exist = findOptionInTree({
-            options: optionsGroup.options,
-            condition: ({ nameI18n, _id }) => {
-              return (
-                inputNameKeys.some((key) => {
-                  return nameI18n[key] === values.nameI18n[key];
-                }) && !_id.equals(optionId)
-              );
-            },
+          const exist = findDocumentByI18nField({
+            fieldArg: values.nameI18n,
+            collectionName: COL_OPTIONS,
+            fieldName: 'nameI18n',
+            additionalQuery: parentId
+              ? { _id: { $ne: optionId } }
+              : { _id: { $ne: optionId }, parentId },
           });
 
           if (exist) {
@@ -610,22 +563,20 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update option
-          let updatedOption: OptionModel | null = null;
-          const updatedGroupOptions = updateOptionInTree({
-            options: optionsGroup.options,
-            condition: (treeOption) => {
-              return treeOption._id.equals(optionId);
-            },
-            updater: (option) => {
-              updatedOption = {
-                ...option,
-                ...values,
-              };
+          // Create new option slug
+          const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
 
-              return updatedOption;
+          // Update option
+          const updatedOption = await optionsCollection.findOneAndUpdate(
+            { _id: optionId },
+            {
+              $set: {
+                ...values,
+                parentId,
+                slug: newOptionSlug,
+              },
             },
-          });
+          );
           if (!updatedOption) {
             return {
               success: false,
@@ -633,51 +584,12 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update options group
-          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
-            { _id: optionsGroupId },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedOptionsGroup = updatedOptionsGroupResult.value;
-          if (!updatedOptionsGroupResult.ok || !updatedOptionsGroup) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.updateOption.error'),
-            };
-          }
-
-          // Update attributes and rubrics options list
-          const rubricsUpdated = await updateOptionsList({
-            optionsGroupId,
-            options: updatedGroupOptions,
-          });
-          if (!rubricsUpdated) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.updateOption.error'),
-            };
-          }
-
-          // Update option in product connections and in product attributes
-          const productsUpdated = await updateOptionInProducts({ option: updatedOption });
-          if (!productsUpdated) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.updateOption.error'),
-            };
-          }
+          // TODO update options in rubric attributes and products attributes
 
           return {
             success: true,
             message: await getApiMessage('optionsGroups.updateOption.success'),
-            payload: updatedOptionsGroup,
+            payload: optionsGroup,
           };
         } catch (e) {
           return {
@@ -707,11 +619,11 @@ export const OptionsGroupMutations = extendType({
             schema: deleteOptionFromGroupSchema,
           });
           await validationSchema.validate(args.input);
-
           const { getApiMessage } = await getRequestParams(context);
+
           const db = await getDatabase();
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -724,8 +636,8 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Check if option is used in product connections and in product attributes
-          const usedInProducts = await productsCollection.findOne({
+          // TODO Check if option is used in product connections and in product attributes
+          /*const usedInProducts = await productsCollection.findOne({
             $or: [
               {
                 'attributes.selectedOptions._id': optionId,
@@ -740,54 +652,25 @@ export const OptionsGroupMutations = extendType({
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.used'),
             };
-          }
-
-          // Delete option
-          const updatedGroupOptions = deleteOptionFromTree({
-            options: optionsGroup.options,
-            condition: (treeOption) => {
-              return treeOption._id.equals(optionId);
-            },
-          });
+          }*/
 
           // Update options group options list
-          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
-            {
-              _id: optionsGroupId,
-            },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedOptionsGroup = updatedOptionsGroupResult.value;
-          if (!updatedOptionsGroupResult.ok || !updatedOptionsGroup) {
+          const removedOptionResult = await optionsCollection.findOneAndDelete({
+            _id: optionId,
+          });
+          if (!removedOptionResult.ok) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.error'),
             };
           }
 
-          // Update attributes and rubrics options list
-          const rubricsUpdated = await updateOptionsList({
-            optionsGroupId,
-            options: updatedGroupOptions,
-          });
-          if (!rubricsUpdated) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.deleteOption.error'),
-            };
-          }
+          // TODO Update rubric attributes options list
 
           return {
             success: true,
             message: await getApiMessage('optionsGroups.deleteOption.success'),
-            payload: updatedOptionsGroup,
+            payload: optionsGroup,
           };
         } catch (e) {
           return {

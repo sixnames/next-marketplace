@@ -21,6 +21,13 @@ interface NotificationsContextInterface {
   setNotifications: React.Dispatch<React.SetStateAction<StateNotificationInterface[]>>;
 }
 
+const notificationStyles = {
+  position: 'fixed',
+  bottom: '2rem',
+  right: '2rem',
+  zIndex: 9999,
+} as React.CSSProperties;
+
 const NotificationsContext = React.createContext<NotificationsContextInterface>({
   notifications: [],
   setNotifications: () => undefined,
@@ -51,7 +58,7 @@ const NotificationsProvider: React.FC = ({ children }) => {
     <NotificationsContext.Provider value={value}>
       {children}
       <Portal>
-        <div className='fixed bottom-8 right-8 z-[9999]'>
+        <div style={notificationStyles}>
           {notifications.map((notification, index) => {
             return (
               <Notification

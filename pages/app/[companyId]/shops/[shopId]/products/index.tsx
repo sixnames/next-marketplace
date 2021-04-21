@@ -5,6 +5,7 @@ import { ROUTE_APP } from 'config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { RubricInterface, ShopInterface } from 'db/uiInterfaces';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
@@ -17,14 +18,14 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ShopProductsRouteInterface {
-  shop: ShopModel;
-  rubrics: RubricModel[];
+  shop: ShopInterface;
+  rubrics: RubricInterface[];
 }
 
 const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics }) => {
   const router = useRouter();
 
-  const columns: TableColumn<RubricModel>[] = [
+  const columns: TableColumn<RubricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -60,7 +61,7 @@ const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics
   return (
     <AppShopLayout shop={shop}>
       <Inner>
-        <Table<RubricModel>
+        <Table<RubricInterface>
           columns={columns}
           data={rubrics}
           testIdKey={'name'}
@@ -111,7 +112,7 @@ export const getServerSideProps = async (
   }
 
   const shopRubricsAggregation = await rubricsCollection
-    .aggregate<RubricModel>([
+    .aggregate<RubricInterface>([
       {
         $project: {
           _id: true,

@@ -1,4 +1,4 @@
-import { ProductModel, ShopProductModel } from 'db/dbModels';
+import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
@@ -12,12 +12,12 @@ import classes from './ShopProductModal.module.css';
 import Image from 'next/image';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
-interface ShopProductInterface extends Partial<Omit<ShopProductModel, 'product'>> {
-  product?: Partial<ProductModel> | null;
+interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {
+  product?: Partial<ProductInterface> | null;
 }
 
 export interface ShopProductModalInterface {
-  shopProduct: ShopProductInterface;
+  shopProduct: ModalShopProductInterface;
   confirm: (values: Omit<UpdateShopProductInput, 'productId' | 'shopProductId'>) => void;
   title: string;
 }

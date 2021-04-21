@@ -2,6 +2,7 @@ import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
 import Modal from 'components/Modal/Modal';
 import Spinner from 'components/Spinner/Spinner';
 import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { CompanyModel } from 'db/dbModels';
 import CompanyDefaultLayoutFooter from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutFooter';
@@ -26,9 +27,16 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   company,
 }) => {
   const { isLoading, isModal } = useAppContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+
+  // Metrics
+  const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
+  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
+  const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
     <div className='flex flex-col text-primary-text bg-primary-background min-h-full-height'>
+      <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
       <Meta title={title} description={description} pageUrls={pageUrls} />
       <CompanyDefaultLayoutHeader company={company} />
 

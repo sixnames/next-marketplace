@@ -153,7 +153,7 @@ export interface NexusGenInputs {
     icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    parentOptionId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   AddProductAssetsInput: {
@@ -208,6 +208,16 @@ export interface NexusGenInputs {
     // input type
     formattedAddress: string; // String!
     point: NexusGenInputs['CoordinatesInput']; // CoordinatesInput!
+  };
+  BrandAlphabetInput: {
+    // input type
+    slugs?: string[] | null; // [String!]
+  };
+  BrandCollectionAlphabetInput: {
+    // input type
+    brandId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    brandSlug?: string | null; // String
+    slugs?: string[] | null; // [String!]
   };
   CatalogueDataInput: {
     // input type
@@ -293,11 +303,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     assets: NexusGenScalars['Upload'][]; // [Upload!]!
-    attributes: NexusGenInputs['ProductAttributeInput'][]; // [ProductAttributeInput!]!
-    brandCollectionSlug?: string | null; // String
-    brandSlug?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    manufacturerSlug?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -405,6 +411,10 @@ export interface NexusGenInputs {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     name: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
+  };
+  ManufacturerAlphabetInput: {
+    // input type
+    slugs?: string[] | null; // [String!]
   };
   OptionVariantInput: {
     // input type
@@ -613,6 +623,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateOptionsGroupInput: {
@@ -625,6 +636,16 @@ export interface NexusGenInputs {
     // input type
     assetNewIndex: number; // Int!
     assetUrl: string; // String!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  UpdateProductBrandCollectionInput: {
+    // input type
+    brandCollectionSlug?: string | null; // String
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  UpdateProductBrandInput: {
+    // input type
+    brandSlug?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateProductCounterInput: {
@@ -640,15 +661,15 @@ export interface NexusGenInputs {
   UpdateProductInput: {
     // input type
     active: boolean; // Boolean!
-    attributes: NexusGenInputs['ProductAttributeInput'][]; // [ProductAttributeInput!]!
-    brandCollectionSlug?: string | null; // String
-    brandSlug?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    manufacturerSlug?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  UpdateProductManufacturerInput: {
+    // input type
+    manufacturerSlug?: string | null; // String
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRoleInput: {
     // input type
@@ -744,8 +765,10 @@ export interface NexusGenObjects {
   AttributesGroupPayload: dbModels.AttributesGroupPayloadModel;
   Brand: dbModels.BrandModel;
   BrandCollection: dbModels.BrandCollectionModel;
+  BrandCollectionsAlphabetList: dbModels.BrandCollectionsAlphabetListModel;
   BrandCollectionsPaginationPayload: dbModels.BrandCollectionsPaginationPayloadModel;
   BrandPayload: dbModels.BrandPayloadModel;
+  BrandsAlphabetList: dbModels.BrandsAlphabetListModel;
   BrandsPaginationPayload: dbModels.BrandsPaginationPayloadModel;
   Cart: dbModels.CartModel;
   CartPayload: dbModels.CartPayloadModel;
@@ -770,6 +793,7 @@ export interface NexusGenObjects {
   MakeAnOrderPayload: dbModels.MakeAnOrderPayloadModel;
   Manufacturer: dbModels.ManufacturerModel;
   ManufacturerPayload: dbModels.ManufacturerPayloadModel;
+  ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;
   ManufacturersPaginationPayload: dbModels.ManufacturersPaginationPayloadModel;
   Message: dbModels.MessageModel;
   MessagesGroup: dbModels.MessagesGroupModel;
@@ -790,6 +814,7 @@ export interface NexusGenObjects {
   OrdersPaginationPayload: dbModels.OrdersPaginationPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
   Product: dbModels.ProductModel;
+  ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
   ProductAttributesGroupAst: {
     // root type
@@ -830,6 +855,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
+  AlphabetList: dbModels.AlphabetListModel;
   Base: dbModels.BaseModel;
   PaginationPayload: dbModels.PaginationPayloadModel;
   Payload: dbModels.PayloadModel;
@@ -861,7 +887,6 @@ export interface NexusGenFieldTypes {
     metric: NexusGenRootTypes['Metric'] | null; // Metric
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    options: NexusGenRootTypes['Option'][]; // [Option!]!
     optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -887,7 +912,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     collections: NexusGenRootTypes['BrandCollectionsPaginationPayload']; // BrandCollectionsPaginationPayload!
-    collectionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     collectionsList: NexusGenRootTypes['BrandCollection'][]; // [BrandCollection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
@@ -911,6 +935,11 @@ export interface NexusGenFieldTypes {
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
+  BrandCollectionsAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['BrandCollection'][]; // [BrandCollection!]!
+    letter: string; // String!
+  };
   BrandCollectionsPaginationPayload: {
     // field return type
     docs: NexusGenRootTypes['BrandCollection'][]; // [BrandCollection!]!
@@ -929,6 +958,11 @@ export interface NexusGenFieldTypes {
     message: string; // String!
     payload: NexusGenRootTypes['Brand'] | null; // Brand
     success: boolean; // Boolean!
+  };
+  BrandsAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['Brand'][]; // [Brand!]!
+    letter: string; // String!
   };
   BrandsPaginationPayload: {
     // field return type
@@ -1124,6 +1158,11 @@ export interface NexusGenFieldTypes {
     payload: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer
     success: boolean; // Boolean!
   };
+  ManufacturersAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
+    letter: string; // String!
+  };
   ManufacturersPaginationPayload: {
     // field return type
     docs: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
@@ -1259,8 +1298,11 @@ export interface NexusGenFieldTypes {
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
+    updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
@@ -1292,7 +1334,6 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    options: NexusGenRootTypes['Option'][]; // [Option!]!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -1415,36 +1456,36 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
-    assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
+    assets: NexusGenRootTypes['ProductAssets'] | null; // ProductAssets
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     available: boolean | null; // Boolean
     brand: NexusGenRootTypes['Brand'] | null; // Brand
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
     brandSlug: string | null; // String
-    cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    iconFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     itemId: string; // String!
-    listFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     mainImage: string; // String!
     manufacturer: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer
     manufacturerSlug: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
-    ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
-    shopsCount: number; // Int!
     slug: string; // String!
-    tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
-    textFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     updatedAt: NexusGenScalars['Date']; // Date!
+  };
+  ProductAssets: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    productSlug: NexusGenScalars['ObjectId']; // ObjectId!
   };
   ProductAttribute: {
     // field return type
@@ -1452,14 +1493,13 @@ export interface NexusGenFieldTypes {
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributeMetric: NexusGenRootTypes['Metric'] | null; // Metric
-    attributeName: string; // String!
     attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
     attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
     number: number | null; // Float
-    readableValue: string | null; // String
-    selectedOptions: NexusGenRootTypes['Option'][]; // [Option!]!
+    optionsValueI18n: string | null; // String
+    selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     selectedOptionsSlugs: string[]; // [String!]!
     showAsBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
@@ -1502,7 +1542,6 @@ export interface NexusGenFieldTypes {
   ProductConnectionItem: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    option: NexusGenRootTypes['Option']; // Option!
     product: NexusGenRootTypes['Product']; // Product!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -1553,8 +1592,9 @@ export interface NexusGenFieldTypes {
     getAttributeViewVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributesGroup: NexusGenRootTypes['AttributesGroup']; // AttributesGroup!
     getBrand: NexusGenRootTypes['Brand']; // Brand!
+    getBrandAlphabetLists: NexusGenRootTypes['BrandsAlphabetList'][]; // [BrandsAlphabetList!]!
     getBrandBySlug: NexusGenRootTypes['Brand'] | null; // Brand
-    getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
+    getBrandCollectionAlphabetLists: NexusGenRootTypes['BrandCollectionsAlphabetList'][]; // [BrandCollectionsAlphabetList!]!
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCatalogueSearchTopItems: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCity: NexusGenRootTypes['City']; // City!
@@ -1565,14 +1605,13 @@ export interface NexusGenFieldTypes {
     getISOLanguagesOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getIconsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getManufacturer: NexusGenRootTypes['Manufacturer']; // Manufacturer!
+    getManufacturerAlphabetLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
-    getManufacturersOptions: NexusGenRootTypes['Manufacturer'][]; // [Manufacturer!]!
     getMyOrder: NexusGenRootTypes['Order'] | null; // Order
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
     getOptionsGroupVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getOrder: NexusGenRootTypes['Order']; // Order!
     getProduct: NexusGenRootTypes['Product'] | null; // Product
-    getProductAttributesAST: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     getProductBySlug: NexusGenRootTypes['Product'] | null; // Product
     getProductShops: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     getProductsList: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
@@ -1611,14 +1650,11 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
-    attributes: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
-    attributesGroups: NexusGenRootTypes['RubricAttributesGroup'][]; // [RubricAttributesGroup!]!
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    navItems: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     shortDescription: string; // String!
@@ -1649,7 +1685,6 @@ export interface NexusGenFieldTypes {
   RubricAttributesGroup: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attributes: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
     attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1819,6 +1854,10 @@ export interface NexusGenFieldTypes {
     totalDocs: number; // Int!
     totalPages: number; // Int!
   };
+  AlphabetList: {
+    // field return type
+    letter: string; // String!
+  };
   Base: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1867,7 +1906,6 @@ export interface NexusGenFieldTypeNames {
     metric: 'Metric';
     name: 'String';
     nameI18n: 'JSONObject';
-    options: 'Option';
     optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';
@@ -1893,7 +1931,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     collections: 'BrandCollectionsPaginationPayload';
-    collectionsIds: 'ObjectId';
     collectionsList: 'BrandCollection';
     createdAt: 'Date';
     description: 'String';
@@ -1917,6 +1954,11 @@ export interface NexusGenFieldTypeNames {
     slug: 'String';
     updatedAt: 'Date';
   };
+  BrandCollectionsAlphabetList: {
+    // field return type name
+    docs: 'BrandCollection';
+    letter: 'String';
+  };
   BrandCollectionsPaginationPayload: {
     // field return type name
     docs: 'BrandCollection';
@@ -1935,6 +1977,11 @@ export interface NexusGenFieldTypeNames {
     message: 'String';
     payload: 'Brand';
     success: 'Boolean';
+  };
+  BrandsAlphabetList: {
+    // field return type name
+    docs: 'Brand';
+    letter: 'String';
   };
   BrandsPaginationPayload: {
     // field return type name
@@ -2130,6 +2177,11 @@ export interface NexusGenFieldTypeNames {
     payload: 'Manufacturer';
     success: 'Boolean';
   };
+  ManufacturersAlphabetList: {
+    // field return type name
+    docs: 'Manufacturer';
+    letter: 'String';
+  };
   ManufacturersPaginationPayload: {
     // field return type name
     docs: 'Manufacturer';
@@ -2265,8 +2317,11 @@ export interface NexusGenFieldTypeNames {
     updateOptionsGroup: 'OptionsGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
+    updateProductBrand: 'ProductPayload';
+    updateProductBrandCollection: 'ProductPayload';
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
+    updateProductManufacturer: 'ProductPayload';
     updateRole: 'RolePayload';
     updateRubric: 'RubricPayload';
     updateRubricVariant: 'RubricVariantPayload';
@@ -2298,7 +2353,6 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    options: 'Option';
     slug: 'String';
     variants: 'JSONObject';
   };
@@ -2421,36 +2475,36 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
-    assets: 'Asset';
+    assets: 'ProductAssets';
     attributes: 'ProductAttribute';
     available: 'Boolean';
     brand: 'Brand';
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';
     brandSlug: 'String';
-    cardPrices: 'ProductCardPrices';
     connections: 'ProductConnection';
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
-    iconFeatures: 'ProductAttribute';
     itemId: 'String';
-    listFeatures: 'ProductAttribute';
     mainImage: 'String';
     manufacturer: 'Manufacturer';
     manufacturerSlug: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     originalName: 'String';
-    ratingFeatures: 'ProductAttribute';
     rubric: 'Rubric';
     rubricId: 'ObjectId';
     shopProducts: 'ShopProduct';
-    shopsCount: 'Int';
     slug: 'String';
-    tagFeatures: 'ProductAttribute';
-    textFeatures: 'ProductAttribute';
     updatedAt: 'Date';
+  };
+  ProductAssets: {
+    // field return type name
+    _id: 'ObjectId';
+    assets: 'Asset';
+    productId: 'ObjectId';
+    productSlug: 'ObjectId';
   };
   ProductAttribute: {
     // field return type name
@@ -2458,14 +2512,13 @@ export interface NexusGenFieldTypeNames {
     attribute: 'Attribute';
     attributeId: 'ObjectId';
     attributeMetric: 'Metric';
-    attributeName: 'String';
     attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';
     attributeVariant: 'AttributeVariant';
     attributeViewVariant: 'AttributeViewVariant';
     number: 'Float';
-    readableValue: 'String';
-    selectedOptions: 'Option';
+    optionsValueI18n: 'String';
+    selectedOptionsIds: 'ObjectId';
     selectedOptionsSlugs: 'String';
     showAsBreadcrumb: 'Boolean';
     showInCard: 'Boolean';
@@ -2508,7 +2561,6 @@ export interface NexusGenFieldTypeNames {
   ProductConnectionItem: {
     // field return type name
     _id: 'ObjectId';
-    option: 'Option';
     product: 'Product';
     productId: 'ObjectId';
   };
@@ -2559,8 +2611,9 @@ export interface NexusGenFieldTypeNames {
     getAttributeViewVariantsOptions: 'SelectOption';
     getAttributesGroup: 'AttributesGroup';
     getBrand: 'Brand';
+    getBrandAlphabetLists: 'BrandsAlphabetList';
     getBrandBySlug: 'Brand';
-    getBrandsOptions: 'Brand';
+    getBrandCollectionAlphabetLists: 'BrandCollectionsAlphabetList';
     getCatalogueSearchResult: 'CatalogueSearchResult';
     getCatalogueSearchTopItems: 'CatalogueSearchResult';
     getCity: 'City';
@@ -2571,14 +2624,13 @@ export interface NexusGenFieldTypeNames {
     getISOLanguagesOptions: 'SelectOption';
     getIconsOptions: 'SelectOption';
     getManufacturer: 'Manufacturer';
+    getManufacturerAlphabetLists: 'ManufacturersAlphabetList';
     getManufacturerBySlug: 'Manufacturer';
-    getManufacturersOptions: 'Manufacturer';
     getMyOrder: 'Order';
     getOptionsGroup: 'OptionsGroup';
     getOptionsGroupVariantsOptions: 'SelectOption';
     getOrder: 'Order';
     getProduct: 'Product';
-    getProductAttributesAST: 'ProductAttribute';
     getProductBySlug: 'Product';
     getProductShops: 'ShopProduct';
     getProductsList: 'ProductsPaginationPayload';
@@ -2617,14 +2669,11 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
-    attributes: 'RubricAttribute';
-    attributesGroups: 'RubricAttributesGroup';
     catalogueTitle: 'RubricCatalogueTitle';
     description: 'String';
     descriptionI18n: 'JSONObject';
     name: 'String';
     nameI18n: 'JSONObject';
-    navItems: 'RubricAttribute';
     priorities: 'JSONObject';
     products: 'ProductsPaginationPayload';
     shortDescription: 'String';
@@ -2655,7 +2704,6 @@ export interface NexusGenFieldTypeNames {
   RubricAttributesGroup: {
     // field return type name
     _id: 'ObjectId';
-    attributes: 'RubricAttribute';
     attributesIds: 'ObjectId';
     name: 'String';
     nameI18n: 'JSONObject';
@@ -2824,6 +2872,10 @@ export interface NexusGenFieldTypeNames {
     totalActiveDocs: 'Int';
     totalDocs: 'Int';
     totalPages: 'Int';
+  };
+  AlphabetList: {
+    // field return type name
+    letter: 'String';
   };
   Base: {
     // field return type name
@@ -3188,6 +3240,14 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateProductAssetIndexInput']; // UpdateProductAssetIndexInput!
     };
+    updateProductBrand: {
+      // args
+      input: NexusGenInputs['UpdateProductBrandInput']; // UpdateProductBrandInput!
+    };
+    updateProductBrandCollection: {
+      // args
+      input: NexusGenInputs['UpdateProductBrandCollectionInput']; // UpdateProductBrandCollectionInput!
+    };
     updateProductCounter: {
       // args
       input: NexusGenInputs['UpdateProductCounterInput']; // UpdateProductCounterInput!
@@ -3195,6 +3255,10 @@ export interface NexusGenArgTypes {
     updateProductInCart: {
       // args
       input: NexusGenInputs['UpdateProductInCartInput']; // UpdateProductInCartInput!
+    };
+    updateProductManufacturer: {
+      // args
+      input: NexusGenInputs['UpdateProductManufacturerInput']; // UpdateProductManufacturerInput!
     };
     updateRole: {
       // args
@@ -3282,9 +3346,17 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    getBrandAlphabetLists: {
+      // args
+      input?: NexusGenInputs['BrandAlphabetInput'] | null; // BrandAlphabetInput
+    };
     getBrandBySlug: {
       // args
       slug: string; // String!
+    };
+    getBrandCollectionAlphabetLists: {
+      // args
+      input?: NexusGenInputs['BrandCollectionAlphabetInput'] | null; // BrandCollectionAlphabetInput
     };
     getCatalogueSearchResult: {
       // args
@@ -3315,6 +3387,10 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    getManufacturerAlphabetLists: {
+      // args
+      input?: NexusGenInputs['ManufacturerAlphabetInput'] | null; // ManufacturerAlphabetInput
+    };
     getManufacturerBySlug: {
       // args
       slug: string; // String!
@@ -3334,10 +3410,6 @@ export interface NexusGenArgTypes {
     getProduct: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    getProductAttributesAST: {
-      // args
-      input: NexusGenInputs['ProductAttributesASTInput']; // ProductAttributesASTInput!
     };
     getProductBySlug: {
       // args
@@ -3401,6 +3473,7 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  AlphabetList: 'BrandCollectionsAlphabetList' | 'BrandsAlphabetList' | 'ManufacturersAlphabetList';
   Base:
     | 'Brand'
     | 'BrandCollection'
@@ -3463,8 +3536,10 @@ export interface NexusGenTypeInterfaces {
   AttributesGroupPayload: 'Payload';
   Brand: 'Base' | 'Timestamp';
   BrandCollection: 'Base' | 'Timestamp';
+  BrandCollectionsAlphabetList: 'AlphabetList';
   BrandCollectionsPaginationPayload: 'PaginationPayload';
   BrandPayload: 'Payload';
+  BrandsAlphabetList: 'AlphabetList';
   BrandsPaginationPayload: 'PaginationPayload';
   CartProduct: 'Base';
   CitiesPaginationPayload: 'PaginationPayload';
@@ -3478,6 +3553,7 @@ export interface NexusGenTypeInterfaces {
   MakeAnOrderPayload: 'Payload';
   Manufacturer: 'Base' | 'Timestamp';
   ManufacturerPayload: 'Payload';
+  ManufacturersAlphabetList: 'AlphabetList';
   ManufacturersPaginationPayload: 'PaginationPayload';
   MetricPayload: 'Payload';
   MetricsPaginationPayload: 'PaginationPayload';
@@ -3521,6 +3597,7 @@ export type NexusGenUnionNames = never;
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
 export type NexusGenAbstractsUsingStrategyResolveType =
+  | 'AlphabetList'
   | 'Base'
   | 'PaginationPayload'
   | 'Payload'

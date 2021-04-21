@@ -18,7 +18,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useThemeContext } from 'context/themeContext';
 import { useUserContext } from 'context/userContext';
-import { CartModel, CompanyModel } from 'db/dbModels';
+import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
@@ -130,7 +130,7 @@ const HeaderProfileLink: React.FC = () => {
 };
 
 interface HeaderCartDropdownButtonInterface {
-  cart: CartModel;
+  cart: CartInterface;
 }
 
 const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {
@@ -295,7 +295,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 };
 
 interface CompanyDefaultLayoutHeaderInterface {
-  company?: CompanyModel | null;
+  company?: CompanyInterface | null;
 }
 
 const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> = ({ company }) => {

@@ -7,13 +7,12 @@ import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
-import ProductMarker from 'components/Product/ProductMarker/ProductMarker';
 import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { ProductAttributeModel, ProductModel } from 'db/dbModels';
+import { ProductAttributeInterface, ProductInterface } from 'db/uiInterfaces';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -27,7 +26,7 @@ import classes from 'styles/CardRoute.module.css';
 import CardShops from 'routes/CardRoute/CardShops';
 
 interface CardRouteFeaturesInterface {
-  features: ProductAttributeModel[];
+  features: ProductAttributeInterface[];
 }
 
 const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
@@ -50,7 +49,7 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 };
 
 interface CardRouteInterface {
-  cardData: ProductModel;
+  cardData: ProductInterface;
   companySlug?: string;
 }
 
@@ -70,7 +69,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
     tagFeatures,
     cardBreadcrumbs,
     cardShopProducts,
-    isCustomersChoice,
     shopsCount,
   } = cardData;
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
@@ -161,38 +159,34 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               ) : null}
 
               {/*Connections*/}
-              {connections.length > 0 ? (
+              {(connections || []).length > 0 ? (
                 <div className={classes.connections}>
-                  {connections.map(({ _id, attributeName, connectionProducts }) => {
+                  {(connections || []).map(({ _id, attributeName, connectionProducts }) => {
                     return (
                       <div key={`${_id}`} className={classes.connectionsGroup}>
                         <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
                         <div className={classes.connectionsList}>
-                          {connectionProducts.map(({ option, product }) => {
-                            if (!product) {
-                              return null;
-                            }
-
-                            const isCurrent = product._id === cardData._id;
+                          {connectionProducts.map(({ optionName, productSlug }) => {
+                            const isCurrent = productSlug === cardData.slug;
 
                             if (isCurrent) {
                               return (
                                 <span
                                   className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
-                                  key={`${option._id}`}
+                                  key={`${optionName}`}
                                 >
-                                  {option.name}
+                                  {optionName}
                                 </span>
                               );
                             }
                             return (
                               <Link
-                                data-cy={`connection-${product.slug}`}
+                                data-cy={`connection-${productSlug}`}
                                 className={`${classes.connectionsGroupItem}`}
-                                key={`${option._id}`}
-                                href={`/product/${product.slug}`}
+                                key={`${optionName}`}
+                                href={`/product/${productSlug}`}
                               >
-                                {option.name}
+                                {optionName}
                               </Link>
                             );
                           })}
@@ -252,8 +246,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               </div>
             </div>
           </div>
-
-          {isCustomersChoice ? <ProductMarker>Выбор покупателей</ProductMarker> : null}
         </div>
 
         <div
@@ -304,7 +296,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesCombinationsList}>
-                    {selectedOptions.map(({ _id, name, icon }) => {
+                    {(selectedOptions || []).map(({ _id, name, icon }) => {
                       return (
                         <div className={classes.cardFeaturesCombination} key={`${_id}`}>
                           <Icon className={classes.cardFeaturesCombinationIcon} name={`${icon}`} />
@@ -322,7 +314,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesTagsList}>
-                    {selectedOptions.map((value) => (
+                    {(selectedOptions || []).map((value) => (
                       <div className={classes.cardFeaturesTag} key={`${value._id}`}>
                         {value.name}
                       </div>
@@ -362,7 +354,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
 };
 
 interface CardInterface extends SiteLayoutProviderInterface {
-  cardData?: ProductModel | null;
+  cardData?: ProductInterface | null;
 }
 
 const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {

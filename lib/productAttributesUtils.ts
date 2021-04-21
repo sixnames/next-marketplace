@@ -5,19 +5,19 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
 } from 'config/common';
-import { ProductAttributeModel } from 'db/dbModels';
+import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 
 export interface GetProductCurrentViewAttributesInterface {
-  attributes: ProductAttributeModel[];
+  attributes: ProductAttributeInterface[];
   viewVariant: string;
 }
 export function getProductCurrentViewAttributes({
   attributes,
   viewVariant,
-}: GetProductCurrentViewAttributesInterface): ProductAttributeModel[] {
+}: GetProductCurrentViewAttributesInterface): ProductAttributeInterface[] {
   return attributes.filter(
-    ({ attributeViewVariant, selectedOptions, textI18n, number, attributeVariant }) => {
+    ({ attributeViewVariant, selectedOptionsSlugs, textI18n, number, attributeVariant }) => {
       const isSelect =
         attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
         attributeVariant === ATTRIBUTE_VARIANT_SELECT;
@@ -28,7 +28,7 @@ export function getProductCurrentViewAttributes({
         return false;
       }
 
-      if (isSelect && selectedOptions.length > 0) {
+      if (isSelect && selectedOptionsSlugs.length > 0) {
         return true;
       }
 
@@ -46,7 +46,7 @@ export function getProductCurrentViewAttributes({
 }
 
 export interface GetAttributeReadableValueInterface {
-  attribute: ProductAttributeModel;
+  attribute: ProductAttributeInterface;
   locale: string;
 }
 
@@ -60,13 +60,9 @@ export function getAttributeReadableValue({
   if (
     (attribute.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       attribute.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
-    attribute.selectedOptions.length > 0
+    attribute.selectedOptionsSlugs.length > 0
   ) {
-    const asString = attribute.selectedOptions
-      .map(({ nameI18n }) => {
-        return getFieldStringLocale(nameI18n);
-      })
-      .join(', ');
+    const asString = getFieldStringLocale(attribute.optionsValueI18n, locale);
 
     return `${asString}${metricName}`;
   }
@@ -87,7 +83,7 @@ export function getAttributeReadableValue({
 }
 
 export interface GetProductCurrentViewCastedAttributes {
-  attributes: ProductAttributeModel[];
+  attributes: ProductAttributeInterface[];
   viewVariant: string;
   locale: string;
 }
@@ -96,11 +92,11 @@ export function getProductCurrentViewCastedAttributes({
   attributes,
   viewVariant,
   locale,
-}: GetProductCurrentViewCastedAttributes): ProductAttributeModel[] {
+}: GetProductCurrentViewCastedAttributes): ProductAttributeInterface[] {
   return getProductCurrentViewAttributes({
     attributes,
     viewVariant,
-  }).reduce((acc: ProductAttributeModel[], attribute) => {
+  }).reduce((acc: ProductAttributeInterface[], attribute) => {
     const readableValue = getAttributeReadableValue({
       attribute,
       locale,
@@ -110,24 +106,29 @@ export function getProductCurrentViewCastedAttributes({
       return acc;
     }
 
+    const attributeMetric = attribute.attributeMetric
+      ? {
+          ...attribute.attributeMetric,
+          name: getFieldStringLocale(attribute.attributeMetric.nameI18n, locale),
+        }
+      : null;
+
     return [
       ...acc,
       {
         ...attribute,
-        readableValue,
         attributeName: getFieldStringLocale(attribute.attributeNameI18n, locale),
-        attributeMetric: attribute.attributeMetric
-          ? {
-              ...attribute.attributeMetric,
-              name: getFieldStringLocale(attribute.attributeMetric.nameI18n, locale),
-            }
-          : null,
-        selectedOptions: attribute.selectedOptions.map((option) => {
+        attributeMetric,
+        selectedOptions: (attribute.selectedOptions || []).map((option) => {
+          // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
           return {
             ...option,
-            name: getFieldStringLocale(option.nameI18n, locale),
+            name: `${getFieldStringLocale(option.nameI18n, locale)}${
+              attributeMetric ? ` ${attributeMetric.name}` : ''
+            }`,
           };
         }),
+        readableValue,
       },
     ];
   }, []);

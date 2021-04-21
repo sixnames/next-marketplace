@@ -1,7 +1,7 @@
-import { MessageType } from 'db/dbModels';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { MessageBaseInterface } from 'db/uiInterfaces';
 
-export const cartsMessages: MessageType[] = [
+export const cartsMessages: MessageBaseInterface[] = [
   {
     slug: 'carts.addProduct.cartNotFound',
     messageI18n: {

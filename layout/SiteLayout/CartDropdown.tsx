@@ -1,5 +1,5 @@
 import { useSiteContext } from 'context/siteContext';
-import { CartModel } from 'db/dbModels';
+import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Image from 'next/image';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
@@ -14,7 +14,7 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { noNaN } from 'lib/numbers';
 
 interface CartDropdownInterface {
-  cart: CartModel;
+  cart: CartInterface;
 }
 
 const cartDropdownCssVars = {

@@ -215,3 +215,13 @@ export const PaginationPayload = interfaceType({
     t.nonNull.boolean('hasNextPage');
   },
 });
+
+export const AlphabetList = interfaceType({
+  name: 'AlphabetList',
+  resolveType: (source) => {
+    return source.type;
+  },
+  definition(t) {
+    t.nonNull.string('letter');
+  },
+});

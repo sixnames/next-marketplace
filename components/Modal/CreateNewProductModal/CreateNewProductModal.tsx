@@ -2,40 +2,55 @@ import Button from 'components/Buttons/Button';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
+import { ROUTE_CMS } from 'config/common';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useCreateProductMutation } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
-import { PureQueryOptions, RefetchQueriesFunction } from '@apollo/client';
 import { createProductSchema } from 'validation/productSchema';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
-import { omit } from 'lodash';
 
 export interface CreateNewProductModalInterface {
   rubricId: string;
-  refetchQueries?: (string | PureQueryOptions)[] | RefetchQueriesFunction;
 }
 
-const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
-  rubricId,
-  refetchQueries,
-}) => {
+const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: createProductSchema,
   });
 
-  const { onErrorCallback, onCompleteCallback, hideModal, showLoading } = useMutationCallbacks({
+  const {
+    onErrorCallback,
+    onCompleteCallback,
+    hideModal,
+    showLoading,
+    showErrorNotification,
+    hideLoading,
+  } = useMutationCallbacks({
     withModal: true,
   });
 
   const [createProductMutation] = useCreateProductMutation({
     awaitRefetchQueries: true,
-    refetchQueries,
-    onCompleted: (data) => onCompleteCallback(data.createProduct),
+    onCompleted: (data) => {
+      if (data.createProduct.success) {
+        onCompleteCallback(data.createProduct);
+        router
+          .push(
+            `${ROUTE_CMS}/rubrics/${rubricId}/products/product/${data.createProduct.payload?._id}`,
+          )
+          .catch((e) => console.log(e));
+      } else {
+        hideLoading();
+        showErrorNotification({ title: data.createProduct.message });
+      }
+    },
     onError: onErrorCallback,
   });
 
@@ -44,8 +59,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     nameI18n: {},
     originalName: '',
     descriptionI18n: {},
-    rubricId,
-    attributes: [],
   };
 
   return (
@@ -60,9 +73,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
             variables: {
               input: {
                 ...values,
-                attributes: values.attributes.map((productAttribute) => {
-                  return omit(productAttribute, ['attribute', '__typename', 'attributeName']);
-                }),
+                rubricId,
                 assets: values.assets || [],
               },
             },

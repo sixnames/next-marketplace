@@ -1,71 +1,16 @@
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import ProductAttributesInput from 'components/FormTemplates/ProductAttributesInput';
-import {
-  CreateProductInput,
-  BrandCollectionsOptionFragment,
-  useGetProductBrandsOptionsQuery,
-  ProductAttributeAstFragment,
-} from 'generated/apolloComponents';
-import { useFormikContext } from 'formik';
-import Spinner from 'components/Spinner/Spinner';
-import RequestError from 'components/RequestError/RequestError';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import { CreateProductInput } from 'generated/apolloComponents';
 
-export type ProductFormValuesBaseType = Omit<CreateProductInput, 'attributes' | 'assets'>;
+export type ProductFormValuesBaseType = Omit<CreateProductInput, 'assets' | 'rubricId'>;
 
 export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
-  attributes: ProductAttributeAstFragment[];
   assets?: any[] | null;
 }
 
-interface ProductMainFieldsInterface {
-  productId?: string | null;
-}
-
-const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ productId }) => {
-  const [brandCollections, setBrandCollections] = React.useState<BrandCollectionsOptionFragment[]>(
-    [],
-  );
-  const { values, setFieldValue } = useFormikContext<ProductFormValuesInterface>();
-  const { data, loading, error } = useGetProductBrandsOptionsQuery();
-
-  React.useEffect(() => {
-    if (values.brandSlug) {
-      const currentBrand = data?.getBrandsOptions.find(({ slug }) => values.brandSlug === slug);
-      const currentBrandCollection = currentBrand?.collectionsList.find(({ slug }) => {
-        return slug === values.brandCollectionSlug;
-      });
-
-      if (currentBrand) {
-        if (currentBrandCollection) {
-          setFieldValue('brandCollectionSlug', values.brandCollectionSlug);
-        } else {
-          setFieldValue('brandCollectionSlug', null);
-        }
-        setBrandCollections(currentBrand.collectionsList);
-      }
-    }
-  }, [data, setFieldValue, values.brandCollectionSlug, values.brandSlug]);
-
-  React.useEffect(() => {
-    if (!values.brandSlug) {
-      setFieldValue('brandCollectionSlug', null);
-    }
-  }, [setFieldValue, values.brandSlug]);
-
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data) {
-    return <RequestError message={'Ошибка загрузки списка брендов'} />;
-  }
-
-  const { getBrandsOptions, getManufacturersOptions } = data;
-
+const ProductMainFields: React.FC = () => {
   return (
     <React.Fragment>
       <FormikTranslationsInput
@@ -91,33 +36,6 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ productId }) 
         showInlineError
         isRequired
       />
-
-      <FormikSelect
-        firstOption={'Не выбран'}
-        label={'Бренд'}
-        name={'brandSlug'}
-        options={getBrandsOptions}
-        testId={'brandSlug'}
-      />
-
-      <FormikSelect
-        disabled={!values.brandSlug}
-        firstOption={'Не выбрана'}
-        label={'Линейка бренда'}
-        name={'brandCollectionSlug'}
-        testId={'brandCollectionSlug'}
-        options={brandCollections}
-      />
-
-      <FormikSelect
-        firstOption={'Не выбран'}
-        label={'Производитель'}
-        name={'manufacturerSlug'}
-        testId={'manufacturerSlug'}
-        options={getManufacturersOptions}
-      />
-
-      <ProductAttributesInput productId={productId} />
     </React.Fragment>
   );
 };

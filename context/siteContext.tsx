@@ -2,7 +2,7 @@ import { CartModalInterface } from 'components/Modal/CartModal/CartModal';
 import { CART_MODAL } from 'config/modals';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { CartModel, CompanyModel, RubricModel } from 'db/dbModels';
+import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   AddProductToCartInput,
   AddShoplessProductToCartInput,
@@ -24,11 +24,11 @@ import * as React from 'react';
 
 interface SiteContextStateInterface {
   loadingCart: boolean;
-  cart?: CartModel | null;
+  cart?: CartInterface | null;
 }
 
 interface SiteContextInterface extends SiteContextStateInterface {
-  navRubrics: RubricModel[];
+  navRubrics: RubricInterface[];
   addProductToCart: (input: AddProductToCartInput) => void;
   addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
@@ -54,9 +54,9 @@ const SiteContext = React.createContext<SiteContextInterface>({
 });
 
 interface SiteContextProviderInterface {
-  navRubrics: RubricModel[];
+  navRubrics: RubricInterface[];
   sessionCity: string;
-  company?: CompanyModel | null;
+  company?: CompanyInterface | null;
 }
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({

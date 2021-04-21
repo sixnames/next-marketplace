@@ -1,29 +1,27 @@
-import { castOptionsForRubric } from 'lib/optionsUtils';
+import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
-  ProductFacetModel,
   ProductModel,
+  RubricAttributeModel,
   RubricModel,
   RubricPayloadModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_FACETS,
   COL_PRODUCTS,
+  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_COUNTERS_OBJECT,
-} from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
   addAttributesGroupToRubricSchema,
@@ -163,7 +161,6 @@ export const RubricMutations = extendType({
             ...input,
             slug,
             active: true,
-            attributes: [],
             attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
@@ -362,6 +359,9 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
           const attributesGroupsCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -381,12 +381,32 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Prepare attributes
+          // Create attributes
           const groupAttributes = await attributesCollection
             .find({
               _id: { $in: attributesGroup.attributesIds },
             })
             .toArray();
+
+          const rubricAttributes: RubricAttributeModel[] = [];
+          for await (const attribute of groupAttributes) {
+            const rubricAttribute = await castAttributeForRubric({
+              attribute,
+              rubricSlug: rubric.slug,
+              rubricId,
+            });
+            rubricAttributes.push(rubricAttribute);
+          }
+
+          const createdAttributesResult = await rubricAttributesCollection.insertMany(
+            rubricAttributes,
+          );
+          if (!createdAttributesResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.addAttributesGroup.error'),
+            };
+          }
 
           // Update rubric
           const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
@@ -396,20 +416,6 @@ export const RubricMutations = extendType({
             {
               $push: {
                 attributesGroupsIds: attributesGroup._id,
-                attributes: {
-                  $each: groupAttributes.map((attribute) => {
-                    const visible =
-                      attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
-                      attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
-                    return {
-                      ...attribute,
-                      showInCatalogueFilter: visible,
-                      showInCatalogueNav: visible,
-                      options: castOptionsForRubric(attribute.options),
-                      ...DEFAULT_COUNTERS_OBJECT,
-                    };
-                  }),
-                },
               },
             },
             { returnOriginal: false },
@@ -459,10 +465,13 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
           const { input } = args;
           const { rubricId, attributeId } = input;
 
-          // Check rubric and attributes group availability
+          // Check rubric and attribute availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
           if (!rubric) {
             return {
@@ -470,32 +479,24 @@ export const RubricMutations = extendType({
               message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
             };
           }
+          const rubricAttribute = await rubricAttributesCollection.findOne({ _id: attributeId });
+          if (!rubricAttribute) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
+            };
+          }
 
           // Update rubric attribute
-          const updatedRubricAttributes = rubric.attributes.map((attribute) => {
-            if (attributeId.equals(attribute._id)) {
-              return {
-                ...attribute,
-                showInCatalogueFilter: !attribute.showInCatalogueFilter,
-              };
-            }
-            return attribute;
-          });
-          const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
-            {
-              _id: rubricId,
-            },
+          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
+            { _id: attributeId },
             {
               $set: {
-                attributes: updatedRubricAttributes,
+                showInCatalogueFilter: !rubricAttribute.showInCatalogueFilter,
               },
             },
-            {
-              returnOriginal: false,
-            },
           );
-          const updatedOwnerRubric = updatedOwnerRubricResult.value;
-          if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
+          if (!updatedRubricAttributeResult.ok) {
             return {
               success: false,
               message: await getApiMessage('rubrics.updateAttributesGroup.error'),
@@ -505,7 +506,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.updateAttributesGroup.success'),
-            payload: updatedOwnerRubric,
+            payload: rubric,
           };
         } catch (e) {
           return {
@@ -539,10 +540,13 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
           const { input } = args;
           const { rubricId, attributeId } = input;
 
-          // Check rubric and attributes group availability
+          // Check rubric and attribute availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
           if (!rubric) {
             return {
@@ -550,32 +554,24 @@ export const RubricMutations = extendType({
               message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
             };
           }
+          const rubricAttribute = await rubricAttributesCollection.findOne({ _id: attributeId });
+          if (!rubricAttribute) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
+            };
+          }
 
           // Update rubric attribute
-          const updatedRubricAttributes = rubric.attributes.map((attribute) => {
-            if (attributeId.equals(attribute._id)) {
-              return {
-                ...attribute,
-                showInCatalogueNav: !attribute.showInCatalogueNav,
-              };
-            }
-            return attribute;
-          });
-          const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
-            {
-              _id: rubricId,
-            },
+          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
+            { _id: attributeId },
             {
               $set: {
-                attributes: updatedRubricAttributes,
+                showInCatalogueNav: !rubricAttribute.showInCatalogueNav,
               },
             },
-            {
-              returnOriginal: false,
-            },
           );
-          const updatedOwnerRubric = updatedOwnerRubricResult.value;
-          if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
+          if (!updatedRubricAttributeResult.ok) {
             return {
               success: false,
               message: await getApiMessage('rubrics.updateAttributesGroup.error'),
@@ -585,7 +581,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.updateAttributesGroup.success'),
-            payload: updatedOwnerRubric,
+            payload: rubric,
           };
         } catch (e) {
           return {
@@ -622,6 +618,9 @@ export const RubricMutations = extendType({
           const attributesGroupsCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
           const { input } = args;
           const { rubricId, attributesGroupId } = input;
 
@@ -637,23 +636,11 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Update rubric
-          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-            {
-              _id: rubricId,
-            },
-            {
-              $pull: {
-                attributesGroupsIds: attributesGroupId,
-                attributes: {
-                  _id: { $in: attributesGroup.attributesIds },
-                },
-              },
-            },
-            { returnOriginal: false },
-          );
-          const updatedRubric = updatedRubricResult.value;
-          if (!updatedRubricResult.ok || !updatedRubric) {
+          // Delete rubric attributes
+          const removedRubricAttributesResult = await rubricAttributesCollection.deleteMany({
+            attributesGroupId,
+          });
+          if (!removedRubricAttributesResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
@@ -663,7 +650,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-            payload: updatedRubric,
+            payload: rubric,
           };
         } catch (e) {
           return {
@@ -698,7 +685,7 @@ export const RubricMutations = extendType({
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { rubricId, productId } = input;
 
@@ -714,14 +701,14 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Set product as archived
+          // Delete product
           const removedProductResult = await productsCollection.findOneAndDelete({
             _id: productId,
           });
-          const removedProductFacetResult = await productFacetsCollection.findOneAndDelete({
-            _id: productId,
+          const removedShopProductResult = await shopProductsCollection.findOneAndDelete({
+            productId,
           });
-          if (!removedProductResult.ok || !removedProductFacetResult.ok) {
+          if (!removedProductResult.ok || !removedShopProductResult.ok) {
             return {
               success: false,
               message: await getApiMessage(`rubrics.deleteProduct.error`),

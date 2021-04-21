@@ -21,6 +21,7 @@ import {
   COL_LANGUAGES,
   COL_MANUFACTURERS,
   COL_PRODUCTS,
+  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -463,6 +464,9 @@ export const CatalogueMutations = extendType({
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<BrandCollectionModel>(
             COL_BRAND_COLLECTIONS,
@@ -530,12 +534,22 @@ export const CatalogueMutations = extendType({
             }
 
             // Update rubric counters
+            await rubricsCollection.findOneAndUpdate(
+              {
+                slug: rubricSlug,
+              },
+              counterUpdater,
+            );
+
+            // Update rubric counters
+            const attributes = await rubricAttributesCollection
+              .find({ rubricId: rubric._id })
+              .toArray();
             const attributesSlugs = filter.map((selectedSlug) => {
               return selectedSlug.split(CATALOGUE_OPTION_SEPARATOR)[0];
             });
 
-            const updatedAttributes: RubricAttributeModel[] = [];
-            rubric.attributes.forEach((attribute: RubricAttributeModel) => {
+            for await (const attribute of attributes) {
               if (attributesSlugs.includes(attribute.slug)) {
                 if (!attribute.views) {
                   attribute.views = DEFAULT_COUNTERS_OBJECT.views;
@@ -548,6 +562,7 @@ export const CatalogueMutations = extendType({
                   attribute.views[`${companySlug}`][city] =
                     noNaN(attribute.views[`${companySlug}`][city]) + VIEWS_COUNTER_STEP;
                 }
+
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,
                   options: attribute.options,
@@ -555,39 +570,23 @@ export const CatalogueMutations = extendType({
                   city,
                 }).sort((optionA, optionB) => {
                   const optionACounter =
-                    noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
+                    noNaN(optionA.views[`${companySlug}`][city]) +
+                    noNaN(optionA.priorities[`${companySlug}`][city]);
                   const optionBCounter =
-                    noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
+                    noNaN(optionB.views[`${companySlug}`][city]) +
+                    noNaN(optionB.priorities[`${companySlug}`][city]);
                   return optionBCounter - optionACounter;
                 });
+
                 attribute.options = updatedOptions;
+                await rubricAttributesCollection.findOneAndUpdate(
+                  { _id: attribute._id },
+                  {
+                    $set: attribute,
+                  },
+                );
               }
-              updatedAttributes.push(attribute);
-            });
-
-            const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
-              const attributeAViews = attributeA.views || { [city]: 0 };
-              const attributeAPriorities = attributeA.priorities || { [city]: 0 };
-              const attributeBViews = attributeB.views || { [city]: 0 };
-              const attributeBPriorities = attributeB.priorities || { [city]: 0 };
-
-              const attributeACounter =
-                noNaN(attributeAViews[city]) + noNaN(attributeAPriorities[city]);
-              const attributeBCounter =
-                noNaN(attributeBViews[city]) + noNaN(attributeBPriorities[city]);
-              return attributeBCounter - attributeACounter;
-            });
-
-            await rubricsCollection.findOneAndUpdate(
-              { _id: rubric._id },
-              {
-                ...counterUpdater,
-                $set: {
-                  attributes: sortedAttributes,
-                },
-              },
-              { returnOriginal: false },
-            );
+            }
           }
 
           return true;

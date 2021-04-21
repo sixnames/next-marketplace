@@ -4,10 +4,6 @@ export const SnippetConnectionItemFragment = gql`
   fragment SnippetConnectionItem on ProductConnectionItem {
     _id
     productId
-    option {
-      _id
-      name
-    }
   }
 `;
 
@@ -30,32 +26,6 @@ export const productSnippedFragment = gql`
     originalName
     slug
     mainImage
-    listFeatures {
-      _id
-      attributeId
-      attributeName
-      readableValue
-      attributeMetric {
-        _id
-        name
-      }
-    }
-    shopsCount
-    cardPrices {
-      _id
-      min
-      max
-    }
-    ratingFeatures {
-      _id
-      attributeId
-      attributeName
-      readableValue
-      attributeMetric {
-        _id
-        name
-      }
-    }
     connections {
       ...SnippetConnection
     }

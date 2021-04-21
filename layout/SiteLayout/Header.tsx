@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
-import { CartModel } from 'db/dbModels';
+import { CartInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -140,7 +140,7 @@ const HeaderProfileLink: React.FC = () => {
 };
 
 interface HeaderCartDropdownButtonInterface {
-  cart: CartModel;
+  cart: CartInterface;
 }
 
 const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {

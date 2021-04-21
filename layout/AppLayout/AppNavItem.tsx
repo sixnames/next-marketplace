@@ -1,5 +1,5 @@
 import { ROUTE_APP } from 'config/common';
-import { NavItemModel } from 'db/dbModels';
+import { NavItemInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from '../../components/Icon/Icon';
@@ -10,7 +10,7 @@ import Tooltip from '../../components/TTip/Tooltip';
 import { IconType } from 'types/iconTypes';
 
 interface AppNavItemInterface {
-  item: NavItemModel;
+  item: NavItemInterface;
   compact?: boolean;
   pathname: string;
   openNavHandler: () => void;

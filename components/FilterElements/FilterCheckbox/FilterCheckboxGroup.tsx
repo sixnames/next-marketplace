@@ -1,10 +1,10 @@
-import { CatalogueFilterAttributeOptionModel } from 'db/dbModels';
+import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import FilterCheckbox from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
 
 interface FilterCheckboxGroupInterface {
-  checkboxItems: CatalogueFilterAttributeOptionModel[];
+  checkboxItems: CatalogueFilterAttributeOptionInterface[];
   className?: string;
   checkboxClassName?: string;
   label?: string;

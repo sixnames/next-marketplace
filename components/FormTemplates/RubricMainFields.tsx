@@ -9,7 +9,7 @@ const RubricMainFields: React.FC = () => {
   const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   if (loading) {
-    return <Spinner />;
+    return <Spinner isNested isTransparent />;
   }
   if (error || !data) {
     return <RequestError />;

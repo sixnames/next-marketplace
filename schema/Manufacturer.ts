@@ -1,9 +1,11 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,
+  ManufacturersAlphabetListModel,
   ManufacturersPaginationPayloadModel,
   ProductModel,
 } from 'db/dbModels';
@@ -53,6 +55,23 @@ export const ManufacturersPaginationPayload = objectType({
   name: 'ManufacturersPaginationPayload',
   definition(t) {
     t.implements('PaginationPayload');
+    t.nonNull.list.nonNull.field('docs', {
+      type: 'Manufacturer',
+    });
+  },
+});
+
+export const ManufacturerAlphabetInput = inputObjectType({
+  name: 'ManufacturerAlphabetInput',
+  definition(t) {
+    t.list.nonNull.string('slugs');
+  },
+});
+
+export const ManufacturersAlphabetList = objectType({
+  name: 'ManufacturersAlphabetList',
+  definition(t) {
+    t.implements('AlphabetList');
     t.nonNull.list.nonNull.field('docs', {
       type: 'Manufacturer',
     });
@@ -123,15 +142,40 @@ export const ManufacturerQueries = extendType({
       },
     });
 
-    // Should return manufacturers list
-    t.nonNull.list.nonNull.field('getManufacturersOptions', {
-      type: 'Manufacturer',
-      description: 'Should return manufacturers list',
-      resolve: async (_root): Promise<ManufacturerModel[]> => {
+    // Should return manufacturers grouped by alphabet
+    t.nonNull.list.nonNull.field('getManufacturerAlphabetLists', {
+      type: 'ManufacturersAlphabetList',
+      description: 'Should return manufacturers grouped by alphabet',
+      args: {
+        input: arg({
+          type: 'ManufacturerAlphabetInput',
+        }),
+      },
+      resolve: async (_root, args): Promise<ManufacturersAlphabetListModel[]> => {
         const db = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-        const manufacturers = await manufacturersCollection.find({}).toArray();
-        return manufacturers;
+        const { input } = args;
+        let query: Record<string, any> = {};
+        if (input) {
+          if (input.slugs) {
+            query = {
+              slug: {
+                $in: input.slugs,
+              },
+            };
+          }
+        }
+
+        const manufacturers = await manufacturersCollection
+          .find(query, {
+            projection: {
+              _id: true,
+              slug: true,
+              nameI18n: true,
+            },
+          })
+          .toArray();
+        return getAlphabetList<ManufacturerModel>(manufacturers);
       },
     });
   },

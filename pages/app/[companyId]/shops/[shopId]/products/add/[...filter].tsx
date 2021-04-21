@@ -16,16 +16,15 @@ import {
   ROUTE_APP,
   SORT_DESC,
 } from 'config/common';
-import { COL_PRODUCT_FACETS, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { ShopModel, ShopProductModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
-  CatalogueFilterAttributeModel,
+  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
-  ProductFacetModel,
-  ShopModel,
-  ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+  ProductInterface,
+} from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   AddProductToShopInput,
@@ -52,14 +51,14 @@ import * as React from 'react';
 import { addManyProductsToShopSchema } from 'validation/shopSchema';
 
 type StepType = 1 | 2;
-type CreateChosenProduct = (product: ProductFacetModel) => void;
-type DeleteChosenProduct = (product: ProductFacetModel) => void;
+type CreateChosenProduct = (product: ProductInterface) => void;
+type DeleteChosenProduct = (product: ProductInterface) => void;
 type SetStepHandler = (step: StepType) => void;
 
 interface ShopAddProductsListRouteInterface {
   shop: ShopModel;
-  docs: ProductFacetModel[];
-  chosen: ProductFacetModel[];
+  docs: ProductInterface[];
+  chosen: ProductInterface[];
   createChosenProduct: CreateChosenProduct;
   deleteChosenProduct: DeleteChosenProduct;
   setStepHandler: SetStepHandler;
@@ -68,8 +67,8 @@ interface ShopAddProductsListRouteInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   page: number;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
   rubricId: string;
@@ -95,7 +94,7 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
   setStepHandler,
 }) => {
   const router = useRouter();
-  const columns: TableColumn<ProductFacetModel>[] = [
+  const columns: TableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -119,31 +118,25 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
       },
     },
     {
-      accessor: 'product',
+      accessor: 'itemId',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData.itemId,
+      render: ({ cellData }) => cellData,
     },
     {
-      accessor: 'product',
       headTitle: 'Фото',
-      render: ({ cellData }) => {
+      render: ({ dataItem }) => {
         return (
           <TableRowImage
-            src={`${cellData.mainImage}`}
-            alt={`${cellData.originalName}`}
-            title={`${cellData.originalName}`}
+            src={`${dataItem.mainImage}`}
+            alt={`${dataItem.originalName}`}
+            title={`${dataItem.originalName}`}
           />
         );
       },
     },
     {
-      accessor: 'product.originalName',
+      accessor: 'originalName',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'product.shopsCount',
-      headTitle: 'В магазинах',
       render: ({ cellData }) => cellData,
     },
   ];
@@ -206,7 +199,7 @@ const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
               </div>
             </div>
             <div className={`overflow-x-auto`}>
-              <Table<ProductFacetModel> columns={columns} data={docs} testIdKey={'_id'} />
+              <Table<ProductInterface> columns={columns} data={docs} testIdKey={'_id'} />
             </div>
             <div className={`mt-6 flex`}>
               <div className={`mr-6`}>
@@ -268,7 +261,7 @@ const ShopAddProductsFinalStepRoute: React.FC<ShopAddProductsListRouteInterface>
   });
   const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
 
-  const columns: TableColumn<ProductFacetModel>[] = [
+  const columns: TableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -420,7 +413,7 @@ const ShopAddProductsFinalStepRoute: React.FC<ShopAddProductsListRouteInterface>
                       </div>
                     </div>
                     <div className={`overflow-x-auto`}>
-                      <Table<ProductFacetModel> columns={columns} data={chosen} testIdKey={'_id'} />
+                      <Table<ProductInterface> columns={columns} data={chosen} testIdKey={'_id'} />
                     </div>
                     <div className={`mt-6 flex`}>
                       <div className={`mr-6`}>
@@ -469,7 +462,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   shop,
   ...props
 }) => {
-  const [chosen, setChosen] = React.useState<ProductFacetModel[]>([]);
+  const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
   const [step, setStep] = React.useState<StepType>(1);
 
   const createChosenProduct: CreateChosenProduct = (product) => {
@@ -519,7 +512,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 };
 
 interface ProductsAggregationInterface {
-  docs: ProductFacetModel[];
+  docs: ProductInterface[];
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
@@ -534,7 +527,7 @@ export const getServerSideProps = async (
   const db = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -569,8 +562,6 @@ export const getServerSideProps = async (
 
   // Cast filters
   const {
-    minPrice,
-    maxPrice,
     realFilterOptions,
     sortFilterOptions,
     noFiltersSelected,
@@ -583,16 +574,6 @@ export const getServerSideProps = async (
   });
 
   // Products stages
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          [`minPriceCities.${shop.citySlug}`]: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
-
   const optionsStage = noFiltersSelected
     ? {}
     : {
@@ -642,14 +623,13 @@ export const getServerSideProps = async (
     .toArray();
   const shopProductsIds = shopProductsIdsAggregation.map(({ _id }) => _id);
 
-  const productsAggregation = await productFacetsCollection
+  const productsAggregation = await productsCollection
     .aggregate<ProductsAggregationInterface>([
       {
         $match: {
           rubricId: rubric._id,
           _id: { $nin: shopProductsIds },
           ...searchStage,
-          ...pricesStage,
           ...optionsStage,
         },
       },
@@ -666,27 +646,6 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                as: 'products',
-                let: { facetId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$facetId', '$_id'],
-                      },
-                    },
-                  },
-                  {
-                    $project: {
-                      attributes: false,
-                    },
-                  },
-                ],
-              },
             },
           ],
           options: [
@@ -787,7 +746,7 @@ export const getServerSideProps = async (
   // const beforeOptions = new Date().getTime();
   const rubricAttributes = await getRubricCatalogueAttributes({
     config: productsResult.options,
-    attributes: rubric.attributes,
+    attributes: rubric.attributes || [],
     city: initialProps.props.sessionCity,
   });
 
@@ -800,33 +759,11 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
-  const docs: ProductFacetModel[] = [];
+  const docs: ProductInterface[] = [];
   for await (const facet of productsResult.docs) {
-    const { products, ...restFacet } = facet;
-    const product = products ? products[0] : null;
-    if (!product) {
-      continue;
-    }
-
-    // image
-    const sortedAssets = product.assets.sort((assetA, assetB) => {
-      return assetA.index - assetB.index;
-    });
-    const firstAsset = sortedAssets[0];
-    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-    if (firstAsset) {
-      mainImage = firstAsset.url;
-    }
-
     docs.push({
-      ...restFacet,
-      product: {
-        ...product,
-        name: getFieldStringLocale(product.nameI18n, locale),
-        mainImage,
-        isCustomersChoice: false,
-      },
+      ...facet,
+      name: getFieldStringLocale(facet.nameI18n, locale),
     });
   }
 

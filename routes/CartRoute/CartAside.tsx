@@ -1,4 +1,4 @@
-import { CartModel } from 'db/dbModels';
+import { CartInterface } from 'db/uiInterfaces';
 import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
 import classes from './CartAside.module.css';
@@ -9,7 +9,7 @@ import LayoutCard from 'layout/LayoutCard';
 import { ButtonType } from 'types/clientTypes';
 
 interface CartAsideInterface {
-  cart: CartModel;
+  cart: CartInterface;
   buttonText: string;
   onConfirmHandler?: () => void;
   backLinkHref?: string;

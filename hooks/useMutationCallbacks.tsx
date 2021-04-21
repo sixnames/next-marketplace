@@ -36,7 +36,9 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
       }
 
       if (data.success) {
-        if (withModal) hideModal();
+        if (withModal) {
+          hideModal();
+        }
         hideLoading();
         showSuccessNotification({
           title: data.message,
@@ -66,7 +68,7 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
       hideLoading();
       showErrorNotification({ message });
     },
-    [hideLoading, hideModal, showErrorNotification, withModal],
+    [defaultErrorMessage, hideLoading, hideModal, showErrorNotification, withModal],
   );
 
   return {

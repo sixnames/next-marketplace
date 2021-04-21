@@ -6,9 +6,16 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   ROUTE_CATALOGUE,
 } from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductCardBreadcrumbModel, ProductModel, ShopProductModel } from 'db/dbModels';
+import {
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
+import { ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -26,7 +33,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
-}: GetCardDataInterface): Promise<ProductModel | null> {
+}: GetCardDataInterface): Promise<ProductInterface | null> {
   try {
     // const startTime = new Date().getTime();
     const db = await getDatabase();
@@ -35,7 +42,7 @@ export async function getCardData({
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ProductModel>([
+      .aggregate<ProductInterface>([
         {
           $match: {
             slug,
@@ -75,6 +82,12 @@ export async function getCardData({
         {
           $group: {
             _id: '$productId',
+            itemId: { $first: '$itemId' },
+            slug: { $first: '$slug' },
+            mainImage: { $first: `$mainImage` },
+            originalName: { $first: `$originalName` },
+            nameI18n: { $first: `$nameI18n` },
+            rubricId: { $first: `$rubricId` },
             minPrice: {
               $min: '$price',
             },
@@ -99,66 +112,74 @@ export async function getCardData({
             },
           },
         },
+        // TODO product connections
         // Get product rubric
         {
           $lookup: {
-            from: COL_PRODUCTS,
-            as: 'products',
+            from: COL_RUBRICS,
+            as: 'rubrics',
             let: {
-              productId: '$_id',
-              shopProducts: '$shopProducts',
-              shopProductIds: '$shopProductIds',
-              minPrice: '$minPrice',
-              maxPrice: '$maxPrice',
+              rubricId: '$rubricId',
             },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $eq: ['$$productId', '$_id'],
+                    $eq: ['$$rubricId', '$_id'],
                   },
                 },
               },
               {
+                $project: {
+                  _id: true,
+                  slug: true,
+                  nameI18n: true,
+                },
+              },
+            ],
+          },
+        },
+        // Get product attributes
+        {
+          $lookup: {
+            from: COL_PRODUCT_ATTRIBUTES,
+            as: 'attributes',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                  $or: [
+                    {
+                      showInCard: true,
+                    },
+                    {
+                      showAsBreadcrumb: true,
+                    },
+                  ],
+                },
+              },
+              // get attribute selected options
+              {
                 $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubrics',
+                  from: COL_OPTIONS,
+                  as: 'selectedOptions',
                   let: {
-                    rubricId: '$rubricId',
+                    selectedOptionsIds: '$selectedOptionsIds',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$rubricId', '$_id'],
+                          $in: ['$_id', '$$selectedOptionsIds'],
                         },
                       },
                     },
-                    {
-                      $project: {
-                        _id: true,
-                        slug: true,
-                        nameI18n: true,
-                      },
-                    },
                   ],
-                },
-              },
-              {
-                $addFields: {
-                  cardPrices: {
-                    min: '$$minPrice',
-                    max: '$$maxPrice',
-                  },
-                  shopsCount: { $size: '$$shopProducts' },
-                  shopProducts: '$$shopProducts',
-                  shopProductIds: '$$shopProductIds',
-                  rubric: { $arrayElemAt: ['$rubrics', 0] },
-                },
-              },
-              {
-                $project: {
-                  rubrics: false,
                 },
               },
             ],
@@ -166,15 +187,19 @@ export async function getCardData({
         },
         {
           $addFields: {
-            product: { $arrayElemAt: ['$products', 0] },
+            cardPrices: {
+              min: '$minPrice',
+              max: '$maxPrice',
+            },
+            shopsCount: { $size: '$shopProducts' },
+            rubric: { $arrayElemAt: ['$rubrics', 0] },
           },
         },
         {
           $project: {
-            products: false,
+            rubrics: false,
           },
         },
-        { $replaceRoot: { newRoot: '$product' } },
       ])
       .toArray();
     const product = shopProductsAggregation[0];
@@ -191,21 +216,9 @@ export async function getCardData({
       max: getCurrencyString(product.cardPrices?.max),
     };
 
-    // image
-    const sortedAssets = product.assets.sort((assetA, assetB) => {
-      return assetA.index - assetB.index;
-    });
-    const firstAsset = sortedAssets[0];
-    let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-
-    if (firstAsset) {
-      mainImage = firstAsset.url;
-    }
-    // console.log(`image `, new Date().getTime() - startTime);
-
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale,
     });
@@ -213,7 +226,7 @@ export async function getCardData({
 
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       locale,
     });
@@ -221,7 +234,7 @@ export async function getCardData({
 
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       locale,
     });
@@ -229,7 +242,7 @@ export async function getCardData({
 
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       locale,
     });
@@ -237,14 +250,14 @@ export async function getCardData({
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product.attributes,
+      attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale,
     });
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
-    const cardShopProducts: ShopProductModel[] = [];
+    const cardShopProducts: ShopProductInterface[] = [];
     (product.shopProducts || []).forEach((shopProduct) => {
       const { shop } = shopProduct;
       if (!shop) {
@@ -281,7 +294,7 @@ export async function getCardData({
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
-    for await (const productAttribute of product.attributes) {
+    for await (const productAttribute of product.attributes || []) {
       if (!productAttribute.showAsBreadcrumb) {
         continue;
       }
@@ -294,7 +307,7 @@ export async function getCardData({
       }
 
       // Get all selected options
-      const options = productAttribute.selectedOptions;
+      const options = productAttribute.selectedOptions || [];
 
       // Get first selected option
       const firstSelectedOption = options[0];
@@ -329,7 +342,6 @@ export async function getCardData({
       name: getFieldStringLocale(product.nameI18n, locale),
       description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,
-      mainImage,
       listFeatures,
       textFeatures,
       tagFeatures,

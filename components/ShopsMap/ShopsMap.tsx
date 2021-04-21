@@ -1,4 +1,4 @@
-import { ShopModel } from 'db/dbModels';
+import { ShopInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './ShopsMap.module.css';
 import { Coordinates } from 'generated/apolloComponents';
@@ -12,7 +12,7 @@ import RatingStars from '../RatingStars/RatingStars';
 import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
 
 interface ShopsMapInterface {
-  shops: ShopModel[];
+  shops: ShopInterface[];
 }
 
 const mapContainerStyle = {
@@ -26,7 +26,7 @@ const center = {
 };
 
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
-  const [selected, setSelected] = React.useState<ShopModel | null>(null);
+  const [selected, setSelected] = React.useState<ShopInterface | null>(null);
   const { isDark } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoaded, loadError } = useLoadScript({

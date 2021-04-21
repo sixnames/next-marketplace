@@ -1,5 +1,5 @@
 import { useSiteContext } from 'context/siteContext';
-import { ShopProductModel } from 'db/dbModels';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
@@ -10,7 +10,7 @@ import LinkPhone from '../../components/Link/LinkPhone';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 
 interface CartShopInterface {
-  shopProduct: ShopProductModel;
+  shopProduct: ShopProductInterface;
   cartProductId: string;
 }
 
@@ -104,7 +104,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
 
 interface CartShopsInterface {
   cartProductId: string;
-  shopProducts: ShopProductModel[];
+  shopProducts: ShopProductInterface[];
 }
 
 const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProducts }) => {

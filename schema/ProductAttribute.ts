@@ -1,4 +1,3 @@
-import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { objectType } from 'nexus';
 import { AttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -22,12 +21,10 @@ export const ProductAttribute = objectType({
     t.nonNull.json('attributeNameI18n');
     t.json('textI18n');
     t.float('number');
+    t.nonNull.list.nonNull.objectId('selectedOptionsIds');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
       type: 'String',
       description: 'List of selected options slug',
-    });
-    t.nonNull.list.nonNull.field('selectedOptions', {
-      type: 'Option',
     });
 
     // ProductAttribute metric field resolver
@@ -35,19 +32,6 @@ export const ProductAttribute = objectType({
       type: 'Metric',
       resolve: (source) => {
         return source.attributeMetric || null;
-      },
-    });
-
-    // ProductAttribute name translation field resolver
-    t.nonNull.field('attributeName', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        if (source.attributeName) {
-          return source.attributeName;
-        }
-
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.attributeNameI18n);
       },
     });
 
@@ -78,18 +62,11 @@ export const ProductAttribute = objectType({
     });
 
     // ProductAttribute readableValue field resolver
-    t.field('readableValue', {
+    t.field('optionsValueI18n', {
       type: 'String',
       resolve: async (source, _args, context): Promise<string | null> => {
-        if (source.readableValue) {
-          return source.readableValue;
-        }
-
-        const { locale } = await getRequestParams(context);
-        return getAttributeReadableValue({
-          attribute: source,
-          locale,
-        });
+        const { getFieldLocale } = await getRequestParams(context);
+        return getFieldLocale(source.optionsValueI18n);
       },
     });
   },

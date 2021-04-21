@@ -1,3 +1,4 @@
+import Pager from 'components/Pager/Pager';
 import * as React from 'react';
 import {
   RubricProductFragment,
@@ -30,6 +31,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   search,
   ...props
 }) => {
+  const [page, setPage] = React.useState<number>(1);
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
     ...props,
@@ -43,6 +45,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
         search,
         excludedProductsIds,
         attributesIds,
+        page,
       },
     },
   });
@@ -56,7 +59,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   }
 
   if (loading) {
-    return <Spinner isNested />;
+    return <Spinner isNested isTransparent />;
   }
 
   if (error || !data || !data.getRubricBySlug) {
@@ -68,12 +71,17 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   } = data;
 
   return (
-    <Table<RubricProductFragment>
-      data={products.docs}
-      columns={columns}
-      emptyMessage={'Список пуст'}
-      testIdKey={'nameString'}
-    />
+    <div>
+      <div className='overflow-x-auto'>
+        <Table<RubricProductFragment>
+          data={products.docs}
+          columns={columns}
+          emptyMessage={'Список пуст'}
+          testIdKey={'nameString'}
+        />
+      </div>
+      <Pager page={page} setPage={setPage} totalPages={products.totalPages} />
+    </div>
   );
 };
 
@@ -91,7 +99,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   viewRubricSlug,
   ...props
 }) => {
-  const page = 1;
+  const [page, setPage] = React.useState<number>(1);
 
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
@@ -119,7 +127,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   }
 
   if (loading) {
-    return <Spinner isNested />;
+    return <Spinner isNested isTransparent />;
   }
 
   if (error || !data || !data.getProductsList) {
@@ -127,18 +135,21 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   }
 
   const {
-    getProductsList: { docs },
+    getProductsList: { docs, totalPages },
   } = data;
 
   return (
-    <React.Fragment>
-      <Table<RubricProductFragment>
-        data={docs}
-        columns={columns}
-        emptyMessage={`По запросу "${search}" товаров не найдено`}
-        testIdKey={'name'}
-      />
-    </React.Fragment>
+    <div>
+      <div className='overflow-x-auto'>
+        <Table<RubricProductFragment>
+          data={docs}
+          columns={columns}
+          emptyMessage={`По запросу "${search}" товаров не найдено`}
+          testIdKey={'name'}
+        />
+      </div>
+      <Pager page={page} setPage={setPage} totalPages={totalPages} />
+    </div>
   );
 };
 
@@ -191,7 +202,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   }
 
   if (loading) {
-    return <Spinner isNested />;
+    return <Spinner isNested isTransparent />;
   }
 
   if (error || !data || !data.getAllRubrics) {

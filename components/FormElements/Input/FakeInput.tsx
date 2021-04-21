@@ -6,6 +6,8 @@ interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'lab
   className?: string;
   value: any;
   testId?: string | number | null;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 const FakeInput: React.FC<FakeInputInterface> = ({
@@ -17,6 +19,8 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   labelPostfix,
   labelLink,
   testId,
+  onClick,
+  disabled,
 }) => {
   return (
     <InputLine
@@ -29,7 +33,13 @@ const FakeInput: React.FC<FakeInputInterface> = ({
       low={low}
       labelTag={'div'}
     >
-      <span className={`${classes.frame} ${className ? className : ''}`} data-cy={testId}>
+      <span
+        onClick={onClick}
+        className={`${classes.frame} ${disabled ? classes.disabled : ''} ${
+          className ? className : ''
+        }`}
+        data-cy={testId}
+      >
         {value}
       </span>
     </InputLine>

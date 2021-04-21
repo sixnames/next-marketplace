@@ -58,7 +58,7 @@ export type AddCollectionToBrandInput = {
 
 export type AddOptionToGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
-  parentOptionId?: Maybe<Scalars['ObjectId']>;
+  parentId?: Maybe<Scalars['ObjectId']>;
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
@@ -126,6 +126,10 @@ export type AddressInput = {
   point: CoordinatesInput;
 };
 
+export type AlphabetList = {
+  letter: Scalars['String'];
+};
+
 export type Asset = {
   __typename?: 'Asset';
   url: Scalars['String'];
@@ -139,7 +143,6 @@ export type Attribute = {
   slug?: Maybe<Scalars['String']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
-  options: Array<Option>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -205,7 +208,6 @@ export type Brand = Base & Timestamp & {
   slug: Scalars['String'];
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  collectionsIds: Array<Scalars['ObjectId']>;
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   collections: BrandCollectionsPaginationPayload;
@@ -215,6 +217,10 @@ export type Brand = Base & Timestamp & {
 
 export type BrandCollectionsArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+export type BrandAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
 };
 
 export type BrandCollection = Base & Timestamp & {
@@ -228,6 +234,18 @@ export type BrandCollection = Base & Timestamp & {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+};
+
+export type BrandCollectionAlphabetInput = {
+  brandId?: Maybe<Scalars['ObjectId']>;
+  brandSlug?: Maybe<Scalars['String']>;
+  slugs?: Maybe<Array<Scalars['String']>>;
+};
+
+export type BrandCollectionsAlphabetList = AlphabetList & {
+  __typename?: 'BrandCollectionsAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<BrandCollection>;
 };
 
 export type BrandCollectionsPaginationPayload = PaginationPayload & {
@@ -249,6 +267,12 @@ export type BrandPayload = Payload & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Brand>;
+};
+
+export type BrandsAlphabetList = AlphabetList & {
+  __typename?: 'BrandsAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Brand>;
 };
 
 export type BrandsPaginationPayload = PaginationPayload & {
@@ -515,10 +539,6 @@ export type CreateProductInput = {
   descriptionI18n: Scalars['JSONObject'];
   assets: Array<Scalars['Upload']>;
   rubricId: Scalars['ObjectId'];
-  brandSlug?: Maybe<Scalars['String']>;
-  brandCollectionSlug?: Maybe<Scalars['String']>;
-  manufacturerSlug?: Maybe<Scalars['String']>;
-  attributes: Array<ProductAttributeInput>;
 };
 
 export type CreateRoleInput = {
@@ -691,11 +711,21 @@ export type Manufacturer = Base & Timestamp & {
   description?: Maybe<Scalars['String']>;
 };
 
+export type ManufacturerAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
+};
+
 export type ManufacturerPayload = Payload & {
   __typename?: 'ManufacturerPayload';
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Manufacturer>;
+};
+
+export type ManufacturersAlphabetList = AlphabetList & {
+  __typename?: 'ManufacturersAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Manufacturer>;
 };
 
 export type ManufacturersPaginationPayload = PaginationPayload & {
@@ -890,8 +920,14 @@ export type Mutation = {
   createProductConnection: ProductPayload;
   /** Should create product connection */
   addProductToConnection: ProductPayload;
-  /** Should create product connection */
+  /** Should delete product from connection and delete connection if there is no products left */
   deleteProductFromConnection: ProductPayload;
+  /** Should update product brand */
+  updateProductBrand: ProductPayload;
+  /** Should update product brand collection */
+  updateProductBrandCollection: ProductPayload;
+  /** Should update product manufacturer */
+  updateProductManufacturer: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
@@ -1275,6 +1311,21 @@ export type MutationDeleteProductFromConnectionArgs = {
 };
 
 
+export type MutationUpdateProductBrandArgs = {
+  input: UpdateProductBrandInput;
+};
+
+
+export type MutationUpdateProductBrandCollectionArgs = {
+  input: UpdateProductBrandCollectionInput;
+};
+
+
+export type MutationUpdateProductManufacturerArgs = {
+  input: UpdateProductManufacturerInput;
+};
+
+
 export type MutationUpdateProductCounterArgs = {
   input: UpdateProductCounterInput;
 };
@@ -1419,7 +1470,6 @@ export type Option = {
   icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
-  options: Array<Option>;
   name: Scalars['String'];
 };
 
@@ -1432,9 +1482,9 @@ export type OptionsGroup = {
   __typename?: 'OptionsGroup';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  options: Array<Option>;
   variant: OptionsGroupVariant;
   name: Scalars['String'];
+  options: Array<Option>;
 };
 
 export type OptionsGroupPayload = Payload & {
@@ -1609,27 +1659,26 @@ export type Product = Base & Timestamp & {
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
   available?: Maybe<Scalars['Boolean']>;
-  assets: Array<Asset>;
+  mainImage: Scalars['String'];
+  assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
   name: Scalars['String'];
   description: Scalars['String'];
-  mainImage: Scalars['String'];
   rubric: Rubric;
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
   /** Returns all shop products that product connected to */
   shopProducts: Array<ShopProduct>;
-  /** Returns all count number of the shop products */
-  shopsCount: Scalars['Int'];
-  /** Should find all connected shop products and return minimal and maximal price. */
-  cardPrices: ProductCardPrices;
-  listFeatures: Array<ProductAttribute>;
-  textFeatures: Array<ProductAttribute>;
-  tagFeatures: Array<ProductAttribute>;
-  iconFeatures: Array<ProductAttribute>;
-  ratingFeatures: Array<ProductAttribute>;
+};
+
+export type ProductAssets = {
+  __typename?: 'ProductAssets';
+  _id: Scalars['ObjectId'];
+  productId: Scalars['ObjectId'];
+  productSlug: Scalars['ObjectId'];
+  assets: Array<Asset>;
 };
 
 export type ProductAttribute = {
@@ -1644,14 +1693,13 @@ export type ProductAttribute = {
   attributeNameI18n: Scalars['JSONObject'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
+  selectedOptionsIds: Array<Scalars['ObjectId']>;
   /** List of selected options slug */
   selectedOptionsSlugs: Array<Scalars['String']>;
-  selectedOptions: Array<Option>;
   attributeMetric?: Maybe<Metric>;
-  attributeName: Scalars['String'];
   text: Scalars['String'];
   attribute: Attribute;
-  readableValue?: Maybe<Scalars['String']>;
+  optionsValueI18n?: Maybe<Scalars['String']>;
 };
 
 export type ProductAttributeInput = {
@@ -1714,7 +1762,6 @@ export type ProductConnection = {
 export type ProductConnectionItem = {
   __typename?: 'ProductConnectionItem';
   _id: Scalars['ObjectId'];
-  option: Option;
   productId: Scalars['ObjectId'];
   product: Product;
 };
@@ -1808,22 +1855,24 @@ export type Query = {
   getAllOptionsGroups: Array<OptionsGroup>;
   getAttributesGroup: AttributesGroup;
   getAllAttributesGroups: Array<AttributesGroup>;
+  /** Should return brand collections grouped by alphabet */
+  getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
   /** Should return brand by _id */
   getBrand: Brand;
   /** Should return brand by slug */
   getBrandBySlug?: Maybe<Brand>;
   /** Should return paginated brands */
   getAllBrands?: Maybe<BrandsPaginationPayload>;
-  /** Should return brands list */
-  getBrandsOptions: Array<Brand>;
+  /** Should return brands grouped by alphabet */
+  getBrandAlphabetLists: Array<BrandsAlphabetList>;
   /** Should return manufacturer by given id */
   getManufacturer: Manufacturer;
   /** Should return manufacturer by given slug */
   getManufacturerBySlug: Manufacturer;
   /** Should return paginated manufacturers */
   getAllManufacturers: ManufacturersPaginationPayload;
-  /** Should return manufacturers list */
-  getManufacturersOptions: Array<Manufacturer>;
+  /** Should return manufacturers grouped by alphabet */
+  getManufacturerAlphabetLists: Array<ManufacturersAlphabetList>;
   /** Should return rubric variant by given id */
   getRubricVariant: RubricVariant;
   /** Should return rubric variants list */
@@ -1856,8 +1905,6 @@ export type Query = {
   getProductShops: Array<ShopProduct>;
   /** Should paginated products */
   getProductsList: ProductsPaginationPayload;
-  /** Should return product attributes AST for selected rubrics */
-  getProductAttributesAST: Array<ProductAttribute>;
   /** Should return shop by given id */
   getShop: Shop;
   /** Should return shop by given slug */
@@ -1941,6 +1988,11 @@ export type QueryGetAllAttributesGroupsArgs = {
 };
 
 
+export type QueryGetBrandCollectionAlphabetListsArgs = {
+  input?: Maybe<BrandCollectionAlphabetInput>;
+};
+
+
 export type QueryGetBrandArgs = {
   _id: Scalars['ObjectId'];
 };
@@ -1956,6 +2008,11 @@ export type QueryGetAllBrandsArgs = {
 };
 
 
+export type QueryGetBrandAlphabetListsArgs = {
+  input?: Maybe<BrandAlphabetInput>;
+};
+
+
 export type QueryGetManufacturerArgs = {
   _id: Scalars['ObjectId'];
 };
@@ -1968,6 +2025,11 @@ export type QueryGetManufacturerBySlugArgs = {
 
 export type QueryGetAllManufacturersArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetManufacturerAlphabetListsArgs = {
+  input?: Maybe<ManufacturerAlphabetInput>;
 };
 
 
@@ -2008,11 +2070,6 @@ export type QueryGetProductShopsArgs = {
 
 export type QueryGetProductsListArgs = {
   input?: Maybe<ProductsPaginationInput>;
-};
-
-
-export type QueryGetProductAttributesAstArgs = {
-  input: ProductAttributesAstInput;
 };
 
 
@@ -2102,15 +2159,12 @@ export type Rubric = {
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
-  attributesGroups: Array<RubricAttributesGroup>;
   name: Scalars['String'];
   description: Scalars['String'];
   shortDescription: Scalars['String'];
   variant: RubricVariant;
   products: ProductsPaginationPayload;
-  navItems: Array<RubricAttribute>;
 };
 
 
@@ -2142,7 +2196,6 @@ export type RubricAttributesGroup = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
-  attributes: Array<RubricAttribute>;
   name: Scalars['String'];
 };
 
@@ -2457,6 +2510,7 @@ export type UpdateMyProfileInput = {
 
 export type UpdateOptionInGroupInput = {
   optionId: Scalars['ObjectId'];
+  parentId?: Maybe<Scalars['ObjectId']>;
   optionsGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
@@ -2477,6 +2531,16 @@ export type UpdateProductAssetIndexInput = {
   assetNewIndex: Scalars['Int'];
 };
 
+export type UpdateProductBrandCollectionInput = {
+  productId: Scalars['ObjectId'];
+  brandCollectionSlug?: Maybe<Scalars['String']>;
+};
+
+export type UpdateProductBrandInput = {
+  productId: Scalars['ObjectId'];
+  brandSlug?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProductCounterInput = {
   shopProductIds: Array<Scalars['ObjectId']>;
   companySlug?: Maybe<Scalars['String']>;
@@ -2493,11 +2557,11 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricId: Scalars['ObjectId'];
-  brandSlug?: Maybe<Scalars['String']>;
-  brandCollectionSlug?: Maybe<Scalars['String']>;
+};
+
+export type UpdateProductManufacturerInput = {
+  productId: Scalars['ObjectId'];
   manufacturerSlug?: Maybe<Scalars['String']>;
-  attributes: Array<ProductAttributeInput>;
 };
 
 export type UpdateRoleInput = {
@@ -2613,9 +2677,6 @@ export type CmsProductAttributeFragment = (
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
-    )>, options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id' | 'name' | 'color'>
     )> }
   ) }
 );
@@ -2623,10 +2684,7 @@ export type CmsProductAttributeFragment = (
 export type CmsProductConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
   & Pick<ProductConnectionItem, 'productId'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ), product: (
+  & { product: (
     { __typename?: 'Product' }
     & Pick<Product, '_id' | 'itemId' | 'active' | 'name' | 'slug' | 'mainImage'>
   ) }
@@ -2641,92 +2699,17 @@ export type CmsProductConnectionFragment = (
   )> }
 );
 
-export type CmsProductFieldsFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricId' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
-  & { assets: Array<(
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'url' | 'index'>
-  )>, rubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id' | 'slug' | 'name'>
-  ), attributes: Array<(
-    { __typename?: 'ProductAttribute' }
-    & CmsProductAttributeFragment
-  )>, connections: Array<(
-    { __typename?: 'ProductConnection' }
-    & CmsProductConnectionFragment
-  )> }
-);
-
-export type CmsProductFragment = (
-  { __typename?: 'Product' }
-  & CmsProductFieldsFragment
-);
-
-export type GetProductQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetProductQuery = (
-  { __typename?: 'Query' }
-  & { getProduct?: Maybe<(
-    { __typename?: 'Product' }
-    & CmsProductFragment
-  )> }
-);
-
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
+  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
-    )>, options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id' | 'slug' | 'name'>
     )> }
   ) }
-);
-
-export type GetProductAttributesAstQueryVariables = Exact<{
-  input: ProductAttributesAstInput;
-}>;
-
-
-export type GetProductAttributesAstQuery = (
-  { __typename?: 'Query' }
-  & { getProductAttributesAST: Array<(
-    { __typename?: 'ProductAttribute' }
-    & ProductAttributeAstFragment
-  )> }
-);
-
-export type BrandCollectionsOptionFragment = (
-  { __typename?: 'BrandCollection' }
-  & Pick<BrandCollection, '_id' | 'slug' | 'name'>
-);
-
-export type GetProductBrandsOptionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProductBrandsOptionsQuery = (
-  { __typename?: 'Query' }
-  & { getBrandsOptions: Array<(
-    { __typename?: 'Brand' }
-    & Pick<Brand, '_id' | 'slug' | 'name'>
-    & { collectionsList: Array<(
-      { __typename?: 'BrandCollection' }
-      & BrandCollectionsOptionFragment
-    )> }
-  )>, getManufacturersOptions: Array<(
-    { __typename?: 'Manufacturer' }
-    & Pick<Manufacturer, '_id' | 'slug' | 'name'>
-  )> }
 );
 
 export type UpdateProductMutationVariables = Exact<{
@@ -2739,10 +2722,6 @@ export type UpdateProductMutation = (
   & { updateProduct: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2756,10 +2735,6 @@ export type AddProductAssetsMutation = (
   & { addProductAssets: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2773,10 +2748,6 @@ export type DeleteProductAssetMutation = (
   & { deleteProductAsset: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2790,10 +2761,6 @@ export type UpdateProductAssetIndexMutation = (
   & { updateProductAssetIndex: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
-    & { payload?: Maybe<(
-      { __typename?: 'Product' }
-      & CmsProductFragment
-    )> }
   ) }
 );
 
@@ -2807,6 +2774,10 @@ export type CreateProductMutation = (
   & { createProduct: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, '_id'>
+    )> }
   ) }
 );
 
@@ -2844,6 +2815,45 @@ export type DeleteProductFromConnectionMutationVariables = Exact<{
 export type DeleteProductFromConnectionMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromConnection: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductBrandMutationVariables = Exact<{
+  input: UpdateProductBrandInput;
+}>;
+
+
+export type UpdateProductBrandMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductBrand: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductBrandCollectionMutationVariables = Exact<{
+  input: UpdateProductBrandCollectionInput;
+}>;
+
+
+export type UpdateProductBrandCollectionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductBrandCollection: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductManufacturerMutationVariables = Exact<{
+  input: UpdateProductManufacturerInput;
+}>;
+
+
+export type UpdateProductManufacturerMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductManufacturer: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -3058,10 +3068,6 @@ export type RubricAttributeFragment = (
 export type RubricAttributesGroupFragment = (
   { __typename?: 'RubricAttributesGroup' }
   & Pick<RubricAttributesGroup, '_id' | 'name'>
-  & { attributes: Array<(
-    { __typename?: 'RubricAttribute' }
-    & RubricAttributeFragment
-  )> }
 );
 
 export type GetRubricAttributesQueryVariables = Exact<{
@@ -3073,11 +3079,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id'>
-    & { attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & RubricAttributesGroupFragment
-    )> }
+    & Pick<Rubric, '_id' | 'name' | 'slug'>
   ) }
 );
 
@@ -4374,10 +4376,6 @@ export type GetAllRubricVariantsQuery = (
 export type SnippetConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
   & Pick<ProductConnectionItem, '_id' | 'productId'>
-  & { option: (
-    { __typename?: 'Option' }
-    & Pick<Option, '_id' | 'name'>
-  ) }
 );
 
 export type SnippetConnectionFragment = (
@@ -4391,25 +4389,8 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
-  & { listFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ), ratingFeatures: Array<(
-    { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
-    & { attributeMetric?: Maybe<(
-      { __typename?: 'Metric' }
-      & Pick<Metric, '_id' | 'name'>
-    )> }
-  )>, connections: Array<(
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage'>
+  & { connections: Array<(
     { __typename?: 'ProductConnection' }
     & SnippetConnectionFragment
   )> }
@@ -4541,6 +4522,57 @@ export type GetNewAttributeOptionsQuery = (
   )> }
 );
 
+export type GetBrandAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<BrandAlphabetInput>;
+}>;
+
+
+export type GetBrandAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getBrandAlphabetLists: Array<(
+    { __typename?: 'BrandsAlphabetList' }
+    & Pick<BrandsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Brand' }
+      & Pick<Brand, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetBrandCollectionAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<BrandCollectionAlphabetInput>;
+}>;
+
+
+export type GetBrandCollectionAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getBrandCollectionAlphabetLists: Array<(
+    { __typename?: 'BrandCollectionsAlphabetList' }
+    & Pick<BrandCollectionsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'BrandCollection' }
+      & Pick<BrandCollection, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetManufacturerAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<ManufacturerAlphabetInput>;
+}>;
+
+
+export type GetManufacturerAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getManufacturerAlphabetLists: Array<(
+    { __typename?: 'ManufacturersAlphabetList' }
+    & Pick<ManufacturersAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Manufacturer' }
+      & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
 export type UserInListFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
@@ -4602,20 +4634,11 @@ export const CmsProductAttributeFragmentDoc = gql`
       _id
       name
     }
-    options {
-      _id
-      name
-      color
-    }
   }
 }
     `;
 export const CmsProductConnectionItemFragmentDoc = gql`
     fragment CmsProductConnectionItem on ProductConnectionItem {
-  option {
-    _id
-    name
-  }
   productId
   product {
     _id
@@ -4637,45 +4660,6 @@ export const CmsProductConnectionFragmentDoc = gql`
   }
 }
     ${CmsProductConnectionItemFragmentDoc}`;
-export const CmsProductFieldsFragmentDoc = gql`
-    fragment CMSProductFields on Product {
-  _id
-  itemId
-  nameI18n
-  name
-  originalName
-  slug
-  descriptionI18n
-  description
-  assets {
-    url
-    index
-  }
-  active
-  mainImage
-  rubricId
-  rubric {
-    _id
-    slug
-    name
-  }
-  brandSlug
-  brandCollectionSlug
-  manufacturerSlug
-  attributes {
-    ...CMSProductAttribute
-  }
-  connections {
-    ...CmsProductConnection
-  }
-}
-    ${CmsProductAttributeFragmentDoc}
-${CmsProductConnectionFragmentDoc}`;
-export const CmsProductFragmentDoc = gql`
-    fragment CMSProduct on Product {
-  ...CMSProductFields
-}
-    ${CmsProductFieldsFragmentDoc}`;
 export const ProductAttributeAstFragmentDoc = gql`
     fragment ProductAttributeAst on ProductAttribute {
   _id
@@ -4686,7 +4670,6 @@ export const ProductAttributeAstFragmentDoc = gql`
   textI18n
   number
   selectedOptionsSlugs
-  attributeName
   attributeNameI18n
   attributeSlug
   attributeVariant
@@ -4699,19 +4682,7 @@ export const ProductAttributeAstFragmentDoc = gql`
       _id
       name
     }
-    options {
-      _id
-      slug
-      name
-    }
   }
-}
-    `;
-export const BrandCollectionsOptionFragmentDoc = gql`
-    fragment BrandCollectionsOption on BrandCollection {
-  _id
-  slug
-  name
 }
     `;
 export const RubricInListFragmentDoc = gql`
@@ -4771,11 +4742,8 @@ export const RubricAttributesGroupFragmentDoc = gql`
     fragment RubricAttributesGroup on RubricAttributesGroup {
   _id
   name
-  attributes {
-    ...RubricAttribute
-  }
 }
-    ${RubricAttributeFragmentDoc}`;
+    `;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayload {
   success
@@ -5197,10 +5165,6 @@ export const SnippetConnectionItemFragmentDoc = gql`
     fragment SnippetConnectionItem on ProductConnectionItem {
   _id
   productId
-  option {
-    _id
-    name
-  }
 }
     `;
 export const SnippetConnectionFragmentDoc = gql`
@@ -5220,32 +5184,6 @@ export const ProductSnippetFragmentDoc = gql`
   originalName
   slug
   mainImage
-  listFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
-  shopsCount
-  cardPrices {
-    _id
-    min
-    max
-  }
-  ratingFeatures {
-    _id
-    attributeId
-    attributeName
-    readableValue
-    attributeMetric {
-      _id
-      name
-    }
-  }
   connections {
     ...SnippetConnection
   }
@@ -5272,131 +5210,14 @@ export const UserCompanyFragmentDoc = gql`
   slug
 }
     `;
-export const GetProductDocument = gql`
-    query GetProduct($_id: ObjectId!) {
-  getProduct(_id: $_id) {
-    ...CMSProduct
-  }
-}
-    ${CmsProductFragmentDoc}`;
-
-/**
- * __useGetProductQuery__
- *
- * To run a query within a React component, call `useGetProductQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetProductQuery(baseOptions: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, options);
-      }
-export function useGetProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, options);
-        }
-export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
-export type GetProductLazyQueryHookResult = ReturnType<typeof useGetProductLazyQuery>;
-export type GetProductQueryResult = Apollo.QueryResult<GetProductQuery, GetProductQueryVariables>;
-export const GetProductAttributesAstDocument = gql`
-    query GetProductAttributesAST($input: ProductAttributesASTInput!) {
-  getProductAttributesAST(input: $input) {
-    ...ProductAttributeAst
-  }
-}
-    ${ProductAttributeAstFragmentDoc}`;
-
-/**
- * __useGetProductAttributesAstQuery__
- *
- * To run a query within a React component, call `useGetProductAttributesAstQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductAttributesAstQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductAttributesAstQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetProductAttributesAstQuery(baseOptions: Apollo.QueryHookOptions<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>(GetProductAttributesAstDocument, options);
-      }
-export function useGetProductAttributesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>(GetProductAttributesAstDocument, options);
-        }
-export type GetProductAttributesAstQueryHookResult = ReturnType<typeof useGetProductAttributesAstQuery>;
-export type GetProductAttributesAstLazyQueryHookResult = ReturnType<typeof useGetProductAttributesAstLazyQuery>;
-export type GetProductAttributesAstQueryResult = Apollo.QueryResult<GetProductAttributesAstQuery, GetProductAttributesAstQueryVariables>;
-export const GetProductBrandsOptionsDocument = gql`
-    query GetProductBrandsOptions {
-  getBrandsOptions {
-    _id
-    slug
-    name
-    collectionsList {
-      ...BrandCollectionsOption
-    }
-  }
-  getManufacturersOptions {
-    _id
-    slug
-    name
-  }
-}
-    ${BrandCollectionsOptionFragmentDoc}`;
-
-/**
- * __useGetProductBrandsOptionsQuery__
- *
- * To run a query within a React component, call `useGetProductBrandsOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductBrandsOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductBrandsOptionsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetProductBrandsOptionsQuery(baseOptions?: Apollo.QueryHookOptions<GetProductBrandsOptionsQuery, GetProductBrandsOptionsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductBrandsOptionsQuery, GetProductBrandsOptionsQueryVariables>(GetProductBrandsOptionsDocument, options);
-      }
-export function useGetProductBrandsOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductBrandsOptionsQuery, GetProductBrandsOptionsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductBrandsOptionsQuery, GetProductBrandsOptionsQueryVariables>(GetProductBrandsOptionsDocument, options);
-        }
-export type GetProductBrandsOptionsQueryHookResult = ReturnType<typeof useGetProductBrandsOptionsQuery>;
-export type GetProductBrandsOptionsLazyQueryHookResult = ReturnType<typeof useGetProductBrandsOptionsLazyQuery>;
-export type GetProductBrandsOptionsQueryResult = Apollo.QueryResult<GetProductBrandsOptionsQuery, GetProductBrandsOptionsQueryVariables>;
 export const UpdateProductDocument = gql`
     mutation UpdateProduct($input: UpdateProductInput!) {
   updateProduct(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
 
 /**
@@ -5428,12 +5249,9 @@ export const AddProductAssetsDocument = gql`
   addProductAssets(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type AddProductAssetsMutationFn = Apollo.MutationFunction<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
 
 /**
@@ -5465,12 +5283,9 @@ export const DeleteProductAssetDocument = gql`
   deleteProductAsset(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type DeleteProductAssetMutationFn = Apollo.MutationFunction<DeleteProductAssetMutation, DeleteProductAssetMutationVariables>;
 
 /**
@@ -5502,12 +5317,9 @@ export const UpdateProductAssetIndexDocument = gql`
   updateProductAssetIndex(input: $input) {
     success
     message
-    payload {
-      ...CMSProduct
-    }
   }
 }
-    ${CmsProductFragmentDoc}`;
+    `;
 export type UpdateProductAssetIndexMutationFn = Apollo.MutationFunction<UpdateProductAssetIndexMutation, UpdateProductAssetIndexMutationVariables>;
 
 /**
@@ -5539,6 +5351,9 @@ export const CreateProductDocument = gql`
   createProduct(input: $input) {
     success
     message
+    payload {
+      _id
+    }
   }
 }
     `;
@@ -5670,6 +5485,108 @@ export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.Muta
 export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
+export const UpdateProductBrandDocument = gql`
+    mutation UpdateProductBrand($input: UpdateProductBrandInput!) {
+  updateProductBrand(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductBrandMutationFn = Apollo.MutationFunction<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>;
+
+/**
+ * __useUpdateProductBrandMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductBrandMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductBrandMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductBrandMutation, { data, loading, error }] = useUpdateProductBrandMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>(UpdateProductBrandDocument, options);
+      }
+export type UpdateProductBrandMutationHookResult = ReturnType<typeof useUpdateProductBrandMutation>;
+export type UpdateProductBrandMutationResult = Apollo.MutationResult<UpdateProductBrandMutation>;
+export type UpdateProductBrandMutationOptions = Apollo.BaseMutationOptions<UpdateProductBrandMutation, UpdateProductBrandMutationVariables>;
+export const UpdateProductBrandCollectionDocument = gql`
+    mutation UpdateProductBrandCollection($input: UpdateProductBrandCollectionInput!) {
+  updateProductBrandCollection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductBrandCollectionMutationFn = Apollo.MutationFunction<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>;
+
+/**
+ * __useUpdateProductBrandCollectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductBrandCollectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductBrandCollectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductBrandCollectionMutation, { data, loading, error }] = useUpdateProductBrandCollectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductBrandCollectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>(UpdateProductBrandCollectionDocument, options);
+      }
+export type UpdateProductBrandCollectionMutationHookResult = ReturnType<typeof useUpdateProductBrandCollectionMutation>;
+export type UpdateProductBrandCollectionMutationResult = Apollo.MutationResult<UpdateProductBrandCollectionMutation>;
+export type UpdateProductBrandCollectionMutationOptions = Apollo.BaseMutationOptions<UpdateProductBrandCollectionMutation, UpdateProductBrandCollectionMutationVariables>;
+export const UpdateProductManufacturerDocument = gql`
+    mutation UpdateProductManufacturer($input: UpdateProductManufacturerInput!) {
+  updateProductManufacturer(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductManufacturerMutationFn = Apollo.MutationFunction<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
+
+/**
+ * __useUpdateProductManufacturerMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductManufacturerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductManufacturerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductManufacturerMutation, { data, loading, error }] = useUpdateProductManufacturerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>(UpdateProductManufacturerDocument, options);
+      }
+export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
+export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
+export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
 export const GetAllRubricsDocument = gql`
     query GetAllRubrics($input: GetAllRubricsInput) {
   getAllRubrics(input: $input) {
@@ -6113,12 +6030,11 @@ export const GetRubricAttributesDocument = gql`
     query GetRubricAttributes($rubricId: ObjectId!) {
   getRubric(_id: $rubricId) {
     _id
-    attributesGroups {
-      ...RubricAttributesGroup
-    }
+    name
+    slug
   }
 }
-    ${RubricAttributesGroupFragmentDoc}`;
+    `;
 
 /**
  * __useGetRubricAttributesQuery__
@@ -9046,6 +8962,126 @@ export function useGetNewAttributeOptionsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsQuery>;
 export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
 export type GetNewAttributeOptionsQueryResult = Apollo.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
+export const GetBrandAlphabetListsDocument = gql`
+    query GetBrandAlphabetLists($input: BrandAlphabetInput) {
+  getBrandAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBrandAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetBrandAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrandAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrandAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetBrandAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
+      }
+export function useGetBrandAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
+        }
+export type GetBrandAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsQuery>;
+export type GetBrandAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsLazyQuery>;
+export type GetBrandAlphabetListsQueryResult = Apollo.QueryResult<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>;
+export const GetBrandCollectionAlphabetListsDocument = gql`
+    query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
+  getBrandCollectionAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBrandCollectionAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetBrandCollectionAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrandCollectionAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrandCollectionAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetBrandCollectionAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
+      }
+export function useGetBrandCollectionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
+        }
+export type GetBrandCollectionAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsQuery>;
+export type GetBrandCollectionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsLazyQuery>;
+export type GetBrandCollectionAlphabetListsQueryResult = Apollo.QueryResult<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>;
+export const GetManufacturerAlphabetListsDocument = gql`
+    query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
+  getManufacturerAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetManufacturerAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetManufacturerAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetManufacturerAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManufacturerAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetManufacturerAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
+      }
+export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
+        }
+export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
+export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
+export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
 export const UsersSerchDocument = gql`
     query UsersSerch($input: PaginationInput!) {
   getAllUsers(input: $input) {

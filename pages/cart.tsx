@@ -12,7 +12,7 @@ import Title from 'components/Title/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import { CartProductModel, ShopProductModel } from 'db/dbModels';
+import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
@@ -30,7 +30,7 @@ interface CartProductFrameInterface {
   isShopsVisible?: boolean;
   mainImage: string;
   originalName: string;
-  shopProducts?: ShopProductModel[];
+  shopProducts?: ShopProductInterface[];
   slug: string;
 }
 
@@ -105,11 +105,11 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ itemId, o
   );
 };
 
-interface CartProductInterface {
-  cartProduct: CartProductModel;
+interface CartProductPropsInterface {
+  cartProduct: CartProductInterface;
 }
 
-const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
+const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
   const [isShopsVisible, setIsShopsVisible] = React.useState<boolean>(false);
   const { updateProductInCart } = useSiteContext();
   const { product, _id, amount } = cartProduct;
@@ -168,7 +168,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
   );
 };
 
-const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
+const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   if (!shopProduct) {
@@ -249,7 +249,7 @@ const CartRoute: React.FC = () => {
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <Spinner isNested />
+          <Spinner isNested isTransparent />
         </Inner>
       </div>
     );
@@ -344,9 +344,9 @@ const CartRoute: React.FC = () => {
   );
 };
 
-type CartInterface = SiteLayoutProviderInterface;
+type CartPageInterface = SiteLayoutProviderInterface;
 
-const Cart: NextPage<CartInterface> = (props) => {
+const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
     <SiteLayoutProvider title={'Корзина'} {...props}>
       <CartRoute />
@@ -356,7 +356,7 @@ const Cart: NextPage<CartInterface> = (props) => {
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CartInterface>> {
+): Promise<GetServerSidePropsResult<CartPageInterface>> {
   const { props } = await getSiteInitialData({
     context,
   });
@@ -366,4 +366,4 @@ export async function getServerSideProps(
   };
 }
 
-export default Cart;
+export default CartPage;

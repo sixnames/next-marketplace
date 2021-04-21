@@ -2,7 +2,7 @@ import AssetsManager from 'components/Assets/AssetsManager';
 import Button from 'components/Buttons/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import Inner from 'components/Inner/Inner';
-import { COL_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
@@ -182,8 +182,18 @@ export const getServerSideProps = async (
         },
       },
       {
-        $project: {
-          attributes: false,
+        $lookup: {
+          as: 'assets',
+          from: COL_PRODUCT_ASSETS,
+          localField: '_id',
+          foreignField: 'productId',
+        },
+      },
+      {
+        $addFields: {
+          assets: {
+            $arrayElemAt: ['$assets', 0],
+          },
         },
       },
     ])

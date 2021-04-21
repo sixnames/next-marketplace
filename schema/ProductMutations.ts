@@ -899,6 +899,7 @@ export const ProductMutations = extendType({
             attributeNameI18n: productAttribute.attributeNameI18n,
             attributeVariant: productAttribute.attributeVariant,
             attributeViewVariant: productAttribute.attributeViewVariant,
+            productsIds: [productId],
             connectionProducts: [
               {
                 _id: productId,
@@ -1048,6 +1049,7 @@ export const ProductMutations = extendType({
             { _id: connectionId },
             {
               $push: {
+                productsIds: addProductId,
                 connectionProducts: {
                   _id: addProductId,
                   optionId: option._id,
@@ -1157,7 +1159,7 @@ export const ProductMutations = extendType({
           );
           const { input } = args;
           const { productId, deleteProductId, connectionId } = input;
-          const minimumProductsCountForConnectionDelete = 1;
+          const minimumProductsCountForConnectionDelete = 2;
 
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
@@ -1173,7 +1175,7 @@ export const ProductMutations = extendType({
           const errorMessage = await getApiMessage('products.connection.deleteError');
           const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
-          if (connection.connectionProducts.length > minimumProductsCountForConnectionDelete) {
+          if (connection.connectionProducts.length < minimumProductsCountForConnectionDelete) {
             const removedConnectionResult = await productConnectionsCollection.findOneAndDelete({
               _id: connectionId,
             });
@@ -1195,6 +1197,7 @@ export const ProductMutations = extendType({
             { _id: connectionId },
             {
               $pull: {
+                productsIds: deleteProductId,
                 connectionProducts: {
                   productId: deleteProductId,
                 },

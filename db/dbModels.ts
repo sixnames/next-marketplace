@@ -446,6 +446,7 @@ export interface ProductConnectionModel {
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   connectionProducts: ProductConnectionItemModel[];
+  productsIds: ObjectIdModel[];
 }
 
 export interface ProductAttributeModel {

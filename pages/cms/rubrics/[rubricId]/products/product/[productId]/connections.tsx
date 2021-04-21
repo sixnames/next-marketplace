@@ -9,7 +9,7 @@ import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
-import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { COL_PRODUCT_ATTRIBUTES, COL_PRODUCT_CONNECTIONS, COL_PRODUCTS } from 'db/collectionNames';
 import { ProductConnectionItemModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -76,7 +76,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
         showModal<ProductSearchModalInterface>({
           variant: PRODUCT_SEARCH_MODAL,
           props: {
-            rubricSlug: product.rubric?.slug,
+            rubricSlug: product.rubricSlug,
             createHandler: (addProduct) => {
               showLoading();
               addProductToConnectionMutation({
@@ -165,7 +165,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
-      accessor: 'option.name',
+      accessor: 'optionName',
       headTitle: 'Значение',
       render: ({ cellData }) => cellData,
     },
@@ -326,43 +326,77 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubrics',
-          let: { rubricId: '$rubricId' },
+          from: COL_PRODUCT_CONNECTIONS,
+          as: 'connections',
+          let: { productId: '$_id' },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $eq: ['$$rubricId', '$_id'],
+                  $in: ['$$productId', '$productsIds'],
                 },
               },
             },
             {
-              $project: {
-                _id: true,
-                slug: true,
-                nameI18n: true,
+              $unwind: '$connectionProducts',
+            },
+            {
+              $lookup: {
+                from: COL_PRODUCTS,
+                as: 'connectionProducts.product',
+                let: { productId: '$connectionProducts.productId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$productId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                'connectionProducts.product': {
+                  $arrayElemAt: ['$connectionProducts.product', 0],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: '$_id',
+                attributeId: { $first: '$attributeId' },
+                attributeSlug: { $first: '$attributeSlug' },
+                attributeNameI18n: { $first: '$attributeNameI18n' },
+                productsIds: { $first: '$productsIds' },
+                connectionProducts: {
+                  $addToSet: '$connectionProducts',
+                },
               },
             },
           ],
         },
       },
       {
-        $addFields: {
-          rubric: {
-            $arrayElemAt: ['$rubrics', 0],
-          },
-        },
-      },
-      {
-        $project: {
-          rubrics: false,
+        $lookup: {
+          from: COL_PRODUCT_ATTRIBUTES,
+          as: 'attributes',
+          let: { productId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$productId', '$productId'],
+                },
+              },
+            },
+          ],
         },
       },
     ])
     .toArray();
   const product = productAggregation[0];
-
   if (!product) {
     return {
       notFound: true,
@@ -374,24 +408,8 @@ export const getServerSideProps = async (
   for await (const productConnection of product.connections || []) {
     const connectionProducts: ProductConnectionItemInterface[] = [];
     for await (const connectionProduct of productConnection.connectionProducts) {
-      const product = await productsCollection.findOne(
-        { _id: connectionProduct.productId },
-        {
-          projection: {
-            _id: true,
-            slug: true,
-            itemId: true,
-            originalName: true,
-            mainImage: true,
-          },
-        },
-      );
-      if (!product) {
-        continue;
-      }
       connectionProducts.push({
         ...connectionProduct,
-        product,
         optionName: getFieldStringLocale(connectionProduct.optionNameI18n, props.sessionLocale),
       });
     }

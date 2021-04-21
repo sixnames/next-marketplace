@@ -10,6 +10,7 @@ import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal/CreateNewProductModal';
 import Pager from 'components/Pager/Pager';
+import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import {
@@ -31,6 +32,7 @@ import {
 } from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import usePageLoadingState from 'hooks/usePageLoadingState';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -78,6 +80,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   productPath,
 }) => {
   const router = useRouter();
+  const isPageLoading = usePageLoadingState();
   const {
     onErrorCallback,
     onCompleteCallback,
@@ -220,7 +223,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
           </div>
 
           <div className={'max-w-full'}>
-            <div className={`overflow-x-auto`}>
+            <div className={`relative overflow-x-auto`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
                   router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));
@@ -229,6 +232,8 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
                 data={docs}
                 testIdKey={'_id'}
               />
+
+              {isPageLoading ? <Spinner isNestedAbsolute /> : null}
             </div>
 
             <Pager
@@ -374,155 +379,158 @@ export const getServerSideProps = async (
     : {};
 
   const productsAggregation = await productsCollection
-    .aggregate<ProductsAggregationInterface>([
-      {
-        $match: {
-          rubricId: rubric._id,
-          ...searchStage,
-          ...optionsStage,
+    .aggregate<ProductsAggregationInterface>(
+      [
+        {
+          $match: {
+            rubricId: rubric._id,
+            ...searchStage,
+            ...optionsStage,
+          },
         },
-      },
-      {
-        $facet: {
-          docs: [
-            {
-              $sort: {
-                _id: SORT_DESC,
+        {
+          $facet: {
+            docs: [
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
               },
-            },
-            {
-              $skip: skip,
-            },
-            {
-              $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_SHOP_PRODUCTS,
-                as: 'shopProducts',
-                let: { facetId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$facetId', '$productId'],
+              {
+                $skip: skip,
+              },
+              {
+                $limit: limit,
+              },
+              {
+                $lookup: {
+                  from: COL_SHOP_PRODUCTS,
+                  as: 'shopProducts',
+                  let: { productId: '$_id' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$productId'],
+                        },
                       },
                     },
+                    {
+                      $project: {
+                        price: true,
+                        available: true,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  shopsCount: {
+                    $size: '$shopProducts',
                   },
-                  {
-                    $project: {
-                      price: true,
-                      available: true,
+                  cardPrices: {
+                    min: {
+                      $min: '$shopProducts.price',
+                    },
+                    max: {
+                      $max: '$shopProducts.price',
                     },
                   },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                shopsCount: {
-                  $size: '$shopProducts',
                 },
-                cardPrices: {
-                  min: {
-                    $min: '$shopProducts.price',
+              },
+              {
+                $project: {
+                  shopProducts: false,
+                },
+              },
+            ],
+            options: [
+              {
+                $project: {
+                  selectedOptionsSlugs: 1,
+                },
+              },
+              {
+                $unwind: '$selectedOptionsSlugs',
+              },
+              {
+                $group: {
+                  _id: '$selectedOptionsSlugs',
+                },
+              },
+              {
+                $addFields: {
+                  slugArray: {
+                    $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
                   },
-                  max: {
-                    $max: '$shopProducts.price',
+                },
+              },
+              {
+                $addFields: {
+                  attributeSlug: {
+                    $arrayElemAt: ['$slugArray', 0],
                   },
                 },
               },
-            },
-            {
-              $project: {
-                shopProducts: false,
-              },
-            },
-          ],
-          options: [
-            {
-              $project: {
-                selectedOptionsSlugs: 1,
-              },
-            },
-            {
-              $unwind: '$selectedOptionsSlugs',
-            },
-            {
-              $group: {
-                _id: '$selectedOptionsSlugs',
-              },
-            },
-            {
-              $addFields: {
-                slugArray: {
-                  $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
+              {
+                $group: {
+                  _id: '$attributeSlug',
+                  optionsSlugs: {
+                    $addToSet: '$_id',
+                  },
                 },
               },
-            },
-            {
-              $addFields: {
-                attributeSlug: {
-                  $arrayElemAt: ['$slugArray', 0],
-                },
+            ],
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
               },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+          },
+        },
+        {
+          $addFields: {
+            totalDocs: '$totalDocsObject.totalDocs',
+          },
+        },
+        {
+          $addFields: {
+            totalPagesFloat: {
+              $divide: ['$totalDocs', limit],
             },
-            {
-              $group: {
-                _id: '$attributeSlug',
-                optionsSlugs: {
-                  $addToSet: '$_id',
-                },
-              },
+          },
+        },
+        {
+          $addFields: {
+            totalPages: {
+              $ceil: '$totalPagesFloat',
             },
-          ],
-          countAllDocs: [
-            {
-              $count: 'totalDocs',
+          },
+        },
+        {
+          $project: {
+            docs: 1,
+            totalDocs: 1,
+            options: 1,
+            prices: 1,
+            totalPages: 1,
+            hasPrevPage: {
+              $gt: [page, PAGE_DEFAULT],
             },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-        },
-      },
-      {
-        $addFields: {
-          totalDocs: '$totalDocsObject.totalDocs',
-        },
-      },
-      {
-        $addFields: {
-          totalPagesFloat: {
-            $divide: ['$totalDocs', limit],
+            hasNextPage: {
+              $lt: [page, '$totalPages'],
+            },
           },
         },
-      },
-      {
-        $addFields: {
-          totalPages: {
-            $ceil: '$totalPagesFloat',
-          },
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          totalDocs: 1,
-          options: 1,
-          prices: 1,
-          totalPages: 1,
-          hasPrevPage: {
-            $gt: [page, PAGE_DEFAULT],
-          },
-          hasNextPage: {
-            $lt: [page, '$totalPages'],
-          },
-        },
-      },
-    ])
+      ],
+      { allowDiskUse: true },
+    )
     .toArray();
   const productsResult = productsAggregation[0];
   if (!productsResult) {
@@ -551,15 +559,15 @@ export const getServerSideProps = async (
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
   const docs: ProductInterface[] = [];
-  for await (const facet of productsResult.docs) {
+  for await (const product of productsResult.docs) {
     const cardPrices = {
-      min: getCurrencyString(facet.cardPrices?.min),
-      max: getCurrencyString(facet.cardPrices?.max),
+      min: getCurrencyString(product.cardPrices?.min),
+      max: getCurrencyString(product.cardPrices?.max),
     };
     docs.push({
-      ...facet,
+      ...product,
       cardPrices,
-      name: getFieldStringLocale(facet.nameI18n, locale),
+      name: getFieldStringLocale(product.nameI18n, locale),
     });
   }
 

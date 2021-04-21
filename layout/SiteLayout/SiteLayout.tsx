@@ -1,3 +1,4 @@
+import { useConfigContext } from 'context/configContext';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
@@ -23,9 +24,17 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   pageUrls,
 }) => {
   const { isLoading, isModal } = useAppContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+
+  // Metrics
+  const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
+  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
+  const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
     <div className='flex flex-col text-primary-text bg-primary-background min-h-full-height'>
+      <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
+
       <Meta title={title} description={description} pageUrls={pageUrls} />
 
       <Header />

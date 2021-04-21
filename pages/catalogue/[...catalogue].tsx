@@ -21,6 +21,7 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/uiInterfaces';
+import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
@@ -43,6 +44,7 @@ interface CatalogueRouteInterface {
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, companySlug }) => {
   const router = useRouter();
+  const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
@@ -51,23 +53,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, comp
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
-  const [isCatalogueLoading, setIsCatalogueLoading] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    const handleRouteStart = () => {
-      setIsCatalogueLoading(true);
-    };
-    const handleRouteComplete = () => {
-      setIsCatalogueLoading(false);
-    };
-    router.events.on('routeChangeStart', handleRouteStart);
-    router.events.on('routeChangeComplete', handleRouteComplete);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteStart);
-      router.events.off('routeChangeComplete', handleRouteComplete);
-    };
-    // eslint-disable-next-line
-  }, []);
 
   React.useEffect(() => {
     setState(catalogueData);
@@ -285,7 +270,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, comp
               )}
 
               <div className={classes.loaderHolder}>
-                {isCatalogueLoading ? (
+                {isPageLoading ? (
                   <div className={classes.loaderFrame}>
                     <Spinner className={classes.loaderSpinner} isNested isTransparent />
                   </div>

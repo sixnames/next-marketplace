@@ -534,6 +534,14 @@ export const CatalogueMutations = extendType({
             }
 
             // Update rubric counters
+            await rubricsCollection.findOneAndUpdate(
+              {
+                slug: rubricSlug,
+              },
+              counterUpdater,
+            );
+
+            // Update rubric counters
             const attributes = await rubricAttributesCollection
               .find({ rubricId: rubric._id })
               .toArray();

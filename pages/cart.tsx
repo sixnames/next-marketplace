@@ -344,9 +344,9 @@ const CartRoute: React.FC = () => {
   );
 };
 
-type CCartPageInterface = SiteLayoutProviderInterface;
+type CartPageInterface = SiteLayoutProviderInterface;
 
-const CartPage: NextPage<CCartPageInterface> = (props) => {
+const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
     <SiteLayoutProvider title={'Корзина'} {...props}>
       <CartRoute />
@@ -356,7 +356,7 @@ const CartPage: NextPage<CCartPageInterface> = (props) => {
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CCartPageInterface>> {
+): Promise<GetServerSidePropsResult<CartPageInterface>> {
   const { props } = await getSiteInitialData({
     context,
   });

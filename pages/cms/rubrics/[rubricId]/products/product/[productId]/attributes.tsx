@@ -1,3 +1,7 @@
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner/Inner';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -6,6 +10,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   SORT_DESC,
 } from 'config/common';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS, COL_RUBRIC_ATTRIBUTES } from 'db/collectionNames';
 import { AttributeVariantModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -17,21 +22,128 @@ import {
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { Form, Formik } from 'formik';
 
 interface ProductAttributesInterface {
-  product: ProductModel;
+  product: ProductInterface;
 }
 
+const attributesGroupClassName = 'relative mb-12';
+const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
+
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
-  console.log(product);
+  const { locale } = useRouter();
+  const {
+    stringAttributesAST,
+    numberAttributesAST,
+    selectAttributesAST,
+    multipleSelectAttributesAST,
+  } = product;
+
   return (
     <CmsProductLayout product={product}>
-      <Inner></Inner>
+      <Inner>
+        {selectAttributesAST ? (
+          <div className={attributesGroupClassName}>
+            <div className={attributesGroupTitleClassName}>
+              {getConstantTranslation(
+                `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_SELECT}.${locale}`,
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {multipleSelectAttributesAST ? (
+          <div className={attributesGroupClassName}>
+            <div className={attributesGroupTitleClassName}>
+              {getConstantTranslation(
+                `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}.${locale}`,
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {numberAttributesAST ? (
+          <Formik
+            initialValues={numberAttributesAST}
+            onSubmit={(values) => {
+              console.log(values.attributes);
+            }}
+          >
+            {() => {
+              return (
+                <Form>
+                  <div className={attributesGroupClassName}>
+                    <div className={attributesGroupTitleClassName}>
+                      {getConstantTranslation(
+                        `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_NUMBER}.${locale}`,
+                      )}
+                    </div>
+                    {numberAttributesAST.attributes.map((attribute, index) => {
+                      return (
+                        <FormikInput
+                          type={'number'}
+                          label={`${attribute.attributeName}`}
+                          name={`attributes[${index}].number`}
+                          key={`${attribute.attributeId}`}
+                        />
+                      );
+                    })}
+
+                    <FixedButtons>
+                      <Button type={'submit'}>Сохранить</Button>
+                    </FixedButtons>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+        ) : null}
+
+        {stringAttributesAST ? (
+          <Formik
+            initialValues={stringAttributesAST}
+            onSubmit={(values) => {
+              console.log(values);
+            }}
+          >
+            {() => {
+              return (
+                <Form>
+                  <div className={attributesGroupClassName}>
+                    <div className={attributesGroupTitleClassName}>
+                      {getConstantTranslation(
+                        `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_STRING}.${locale}`,
+                      )}
+                    </div>
+
+                    {stringAttributesAST.attributes.map((attribute, index) => {
+                      return (
+                        <FormikTranslationsInput
+                          variant={'textarea'}
+                          label={`${attribute.attributeName}`}
+                          name={`attributes[${index}].textI18n`}
+                          key={`${attribute.attributeId}`}
+                        />
+                      );
+                    })}
+
+                    <FixedButtons>
+                      <Button type={'submit'}>Сохранить</Button>
+                    </FixedButtons>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+        ) : null}
+      </Inner>
     </CmsProductLayout>
   );
 };
@@ -154,7 +266,13 @@ export const getServerSideProps = async (
       });
       // console.log(currentProductAttribute, rubricAttributeAST.attributeId);
       if (currentProductAttribute) {
-        astGroup.attributes.push(currentProductAttribute);
+        astGroup.attributes.push({
+          ...currentProductAttribute,
+          attributeName: getFieldStringLocale(
+            currentProductAttribute.attributeNameI18n,
+            props.sessionLocale,
+          ),
+        });
         continue;
       }
 

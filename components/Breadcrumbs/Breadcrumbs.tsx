@@ -1,4 +1,4 @@
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../Inner/Inner';
@@ -17,7 +17,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config =
   const { locale } = useRouter();
 
   const mainPageName = React.useMemo(() => {
-    return getFieldTranslation(`breadcrumbs.main.${locale}`);
+    return getConstantTranslation(`breadcrumbs.main.${locale}`);
   }, [locale]);
 
   return (

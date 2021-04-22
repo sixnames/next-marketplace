@@ -1,3 +1,4 @@
+import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import * as React from 'react';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useFormikContext } from 'formik';
@@ -10,7 +11,11 @@ import Icon from '../../Icon/Icon';
 import Tooltip from '../../TTip/Tooltip';
 import { TranslationModel } from 'db/dbModels';
 
-const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
+interface FormikTranslationsInputInterface extends FormikInputPropsInterface {
+  variant?: 'input' | 'textarea';
+}
+
+const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
   name: inputName,
   testId,
   label,
@@ -22,6 +27,7 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
   isRequired,
   isHorizontal,
   labelTag,
+  variant = 'input',
   ...props
 }) => {
   const { dbLocales, defaultLocale } = useLocaleContext();
@@ -31,6 +37,25 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
 
   // Return just one input if site has one language
   if (dbLocales.length < minimalLanguagesCount) {
+    if (variant === 'textarea') {
+      return (
+        <FormikTextarea
+          {...props}
+          lineClass={lineClass}
+          low={low}
+          wide={wide}
+          labelPostfix={labelPostfix}
+          labelLink={labelLink}
+          isRequired={isRequired}
+          isHorizontal={isHorizontal}
+          labelTag={labelTag}
+          label={label}
+          name={`${inputName}.${defaultLocale}`}
+          testId={`${testId}-${defaultLocale}`}
+        />
+      );
+    }
+
     return (
       <FormikInput
         {...props}
@@ -89,7 +114,11 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
             }
           >
             <div className={classes.languageInput}>
-              <FormikInput {...props} name={name} testId={`${testId}-${localeSlug}`} low />
+              {variant === 'textarea' ? (
+                <FormikTextarea {...props} name={name} testId={`${testId}-${localeSlug}`} low />
+              ) : (
+                <FormikInput {...props} name={name} testId={`${testId}-${localeSlug}`} low />
+              )}
             </div>
           </Accordion>
         );

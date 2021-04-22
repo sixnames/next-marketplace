@@ -11,7 +11,7 @@
   margin: 0;
   font-family: var(--font);
   color: var(--inputTextColor);
-  border: 1px solid var(--borderColor);
+  border: 1px solid var(--inputBorder);
   background-color: var(--inputBackground);
   line-height: normal;
   resize: vertical;

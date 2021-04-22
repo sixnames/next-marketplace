@@ -171,6 +171,6 @@ export const constantTranslations = {
   },
 };
 
-export const getFieldTranslation = (path: string): string => {
+export const getConstantTranslation = (path: string): string => {
   return `${get(constantTranslations, path)}`;
 };

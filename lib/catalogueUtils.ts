@@ -58,7 +58,7 @@ import {
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
 import capitalize from 'capitalize';
 
@@ -109,7 +109,7 @@ export function getCatalogueTitle({
     return getFieldStringLocale(defaultTitleI18n, locale);
   }
 
-  const titleSeparator = getFieldTranslation(`catalogueTitleSeparator.${locale}`);
+  const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
   const rubricKeywordTranslation = getFieldStringLocale(keywordI18n, locale);
   const rubricKeyword =
     rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE

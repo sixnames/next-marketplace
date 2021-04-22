@@ -1,5 +1,5 @@
 import { NOTIFICATION_TIMEOUT } from 'config/common';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Portal from '@reach/portal';
@@ -80,7 +80,7 @@ function useNotificationsContext() {
   const context = React.useContext<NotificationsContextInterface>(NotificationsContext);
 
   const defaultErrorMessage = React.useMemo(() => {
-    return getFieldTranslation(`messages.error.${locale}`);
+    return getConstantTranslation(`messages.error.${locale}`);
   }, [locale]);
 
   if (!context) {

@@ -5,7 +5,12 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
 } from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES, COL_OPTIONS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES_GROUPS,
+  COL_LANGUAGES,
+  COL_OPTIONS,
+  COL_RUBRIC_ATTRIBUTES,
+} from 'db/collectionNames';
 import {
   AlphabetListModelType,
   AttributeModel,
@@ -173,6 +178,68 @@ export function castOptionsForRubric({
 }: CastOptionsForRubricInterface): RubricOptionModel[] {
   const topLevelOptions = options.filter(({ parentId }) => !parentId);
   return castOptionsToTree({ topLevelOptions, allOptions: options, attributeSlug });
+}
+
+interface AddOptionToRubricAttributeInterface {
+  parentId?: ObjectIdModel | null;
+  optionsGroupId: ObjectIdModel;
+  option: OptionModel;
+}
+
+export async function addOptionToRubricAttribute({
+  optionsGroupId,
+  parentId,
+  option,
+}: AddOptionToRubricAttributeInterface): Promise<boolean> {
+  const db = await getDatabase();
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+  const rubricAttributes = await rubricAttributesCollection.find({ optionsGroupId }).toArray();
+
+  let updatedAttributesCount = 0;
+  for await (const rubricAttribute of rubricAttributes) {
+    const castedOption = {
+      ...option,
+      slug: `${rubricAttribute.slug}-${option.slug}`,
+      ...DEFAULT_COUNTERS_OBJECT,
+      options: [],
+    };
+
+    const { attributeId } = rubricAttribute;
+
+    let updatedOptions: RubricOptionModel[] = [];
+    if (parentId) {
+      updatedOptions = updateRubricOptionInTree({
+        options: rubricAttribute.options,
+        condition: (treeOption) => {
+          return treeOption._id.equals(parentId);
+        },
+        updater: (treeOption) => {
+          return {
+            ...treeOption,
+            options: [...treeOption.options, castedOption],
+          };
+        },
+      });
+    }
+
+    updatedOptions = [...rubricAttribute.options, castedOption];
+
+    const updatedAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
+      {
+        attributeId,
+      },
+      {
+        $set: {
+          options: updatedOptions,
+        },
+      },
+    );
+
+    if (updatedAttributeResult.ok) {
+      updatedAttributesCount = updatedAttributesCount + 1;
+    }
+  }
+  return updatedAttributesCount === rubricAttributes.length;
 }
 
 interface CastAttributeForRubricInterface {

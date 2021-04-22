@@ -1,3 +1,4 @@
+import { addOptionToRubricAttribute } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -473,14 +474,26 @@ export const OptionsGroupMutations = extendType({
             variants: {},
             optionsGroupId,
           });
-          if (!createdOptionResult.result.ok) {
+          const createdOption = createdOptionResult.ops[0];
+          if (!createdOptionResult.result.ok || !createdOption) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.addOption.error'),
             };
           }
 
-          // TODO update options in rubrics
+          // Update options in rubric attributes
+          const updatedRubricOptionsResult = await addOptionToRubricAttribute({
+            option: createdOption,
+            parentId,
+            optionsGroupId,
+          });
+          if (!updatedRubricOptionsResult) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.addOption.error'),
+            };
+          }
 
           return {
             success: true,

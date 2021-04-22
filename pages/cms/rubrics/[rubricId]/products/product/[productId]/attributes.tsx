@@ -1,5 +1,6 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
+import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner/Inner';
@@ -8,6 +9,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -34,8 +36,9 @@ interface ProductAttributesInterface {
   product: ProductInterface;
 }
 
-const attributesGroupClassName = 'relative mb-12';
+const attributesGroupClassName = 'relative mb-24';
 const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
+const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
   const { locale } = useRouter();
@@ -56,6 +59,19 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                 `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_SELECT}.${locale}`,
               )}
             </div>
+
+            <div className={selectsListClassName}>
+              {selectAttributesAST.attributes.map((attribute) => {
+                return (
+                  <FakeInput
+                    value={`${attribute.readableValue || ''}`}
+                    label={`${attribute.attributeName}`}
+                    key={`${attribute.attributeId}`}
+                    testId={`${attribute.attributeSlug}`}
+                  />
+                );
+              })}
+            </div>
           </div>
         ) : null}
 
@@ -65,6 +81,19 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
               {getConstantTranslation(
                 `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}.${locale}`,
               )}
+            </div>
+
+            <div className={selectsListClassName}>
+              {multipleSelectAttributesAST.attributes.map((attribute) => {
+                return (
+                  <FakeInput
+                    value={`${attribute.readableValue || ''}`}
+                    label={`${attribute.attributeName}`}
+                    key={`${attribute.attributeId}`}
+                    testId={`${attribute.attributeSlug}`}
+                  />
+                );
+              })}
             </div>
           </div>
         ) : null}
@@ -92,6 +121,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           label={`${attribute.attributeName}`}
                           name={`attributes[${index}].number`}
                           key={`${attribute.attributeId}`}
+                          testId={`${attribute.attributeSlug}`}
                         />
                       );
                     })}
@@ -130,6 +160,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           label={`${attribute.attributeName}`}
                           name={`attributes[${index}].textI18n`}
                           key={`${attribute.attributeId}`}
+                          testId={`${attribute.attributeSlug}`}
                         />
                       );
                     })}
@@ -266,8 +297,15 @@ export const getServerSideProps = async (
       });
       // console.log(currentProductAttribute, rubricAttributeAST.attributeId);
       if (currentProductAttribute) {
+        const readableValue = getFieldStringLocale(
+          currentProductAttribute.optionsValueI18n,
+          props.sessionLocale,
+        );
+        const finalReadableValue =
+          readableValue === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : readableValue;
         astGroup.attributes.push({
           ...currentProductAttribute,
+          readableValue: finalReadableValue,
           attributeName: getFieldStringLocale(
             currentProductAttribute.attributeNameI18n,
             props.sessionLocale,

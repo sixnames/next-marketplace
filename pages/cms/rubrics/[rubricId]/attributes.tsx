@@ -284,18 +284,37 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'attributes',
-          foreignField: 'rubricId',
-          localField: '_id',
-        },
-      },
-      {
-        $lookup: {
           from: COL_ATTRIBUTES_GROUPS,
           as: 'attributesGroups',
-          foreignField: '_id',
-          localField: 'attributesGroupsIds',
+          let: { attributesGroupsIds: '$attributesGroupsIds', rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$_id', '$$attributesGroupsIds'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_RUBRIC_ATTRIBUTES,
+                as: 'attributes',
+                let: { attributesIds: '$attributesIds' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $in: ['$attributeId', '$$attributesIds'] },
+                          { $eq: ['$$rubricId', '$rubricId'] },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
         },
       },
     ])
@@ -308,19 +327,15 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
-  const rawRubric = {
+  const rawRubric: RubricInterface = {
     ...initialRubric,
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
     attributes: [],
     attributesGroups: (initialRubric.attributesGroups || []).map((attributesGroup) => {
-      const groupAttributes = (initialRubric.attributes || []).filter(({ _id }) => {
-        return attributesGroup.attributesIds.some((attributeId) => attributeId.equals(_id));
-      });
-
       return {
         ...attributesGroup,
         name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-        attributes: groupAttributes.map((attribute) => {
+        attributes: (attributesGroup.attributes || []).map((attribute) => {
           return {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, sessionLocale),

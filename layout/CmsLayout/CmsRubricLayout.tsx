@@ -15,12 +15,6 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, children 
   const navConfig = React.useMemo(() => {
     return [
       {
-        name: 'Детали',
-        testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}`,
-        exact: true,
-      },
-      {
         name: 'Товары',
         testId: 'products',
         path: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
@@ -29,6 +23,12 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, children 
         name: 'Атрибуты',
         testId: 'attributes',
         path: `${ROUTE_CMS}/rubrics/${rubric._id}/attributes`,
+        exact: true,
+      },
+      {
+        name: 'Детали',
+        testId: 'details',
+        path: `${ROUTE_CMS}/rubrics/${rubric._id}`,
         exact: true,
       },
     ];

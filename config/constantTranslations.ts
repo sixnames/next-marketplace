@@ -92,6 +92,24 @@ export const constantTranslations = {
         [SECONDARY_LOCALE]: 'Number',
       },
     },
+    attributeVariantsPlural: {
+      [ATTRIBUTE_VARIANT_SELECT]: {
+        [DEFAULT_LOCALE]: 'Селекты',
+        [SECONDARY_LOCALE]: 'Selects',
+      },
+      [ATTRIBUTE_VARIANT_MULTIPLE_SELECT]: {
+        [DEFAULT_LOCALE]: 'Мульти-селекты',
+        [SECONDARY_LOCALE]: 'Multi-selects',
+      },
+      [ATTRIBUTE_VARIANT_STRING]: {
+        [DEFAULT_LOCALE]: 'Текстовые',
+        [SECONDARY_LOCALE]: 'Strings',
+      },
+      [ATTRIBUTE_VARIANT_NUMBER]: {
+        [DEFAULT_LOCALE]: 'Числовые',
+        [SECONDARY_LOCALE]: 'Numbers',
+      },
+    },
     attributePositioning: {
       [ATTRIBUTE_POSITION_IN_TITLE_BEGIN]: {
         [DEFAULT_LOCALE]: 'Начало заголовка',

@@ -1513,22 +1513,6 @@ input ProductAttributesASTInput {
   rubricId: ObjectId!
 }
 
-type ProductAttributesGroupAst implements Base {
-  _id: ObjectId!
-  astAttributes: [ProductAttribute!]!
-  attributes: [Attribute!]!
-  attributesIds: [ObjectId!]!
-  itemId: String!
-  name: String!
-  nameI18n: JSONObject!
-}
-
-type ProductCardBreadcrumb {
-  _id: ObjectId!
-  href: String!
-  name: String!
-}
-
 type ProductCardPrices {
   _id: ObjectId!
   max: String!

@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
-  AttributeModel,
   BrandCollectionModel,
   BrandModel,
   ManufacturerModel,
@@ -15,7 +14,6 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
-  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
@@ -32,49 +30,6 @@ export const ProductCardPrices = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.string('min');
     t.nonNull.string('max');
-  },
-});
-
-export const ProductCardBreadcrumb = objectType({
-  name: 'ProductCardBreadcrumb',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('name');
-    t.nonNull.string('href');
-  },
-});
-
-export const ProductAttributesGroupAst = objectType({
-  name: 'ProductAttributesGroupAst',
-  definition(t) {
-    t.implements('Base');
-    t.nonNull.json('nameI18n');
-    t.nonNull.list.nonNull.objectId('attributesIds');
-    t.nonNull.list.nonNull.field('astAttributes', {
-      type: 'ProductAttribute',
-    });
-
-    // AttributesGroup name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
-      },
-    });
-
-    // AttributesGroup attributes list field resolver
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'Attribute',
-      resolve: async (source): Promise<AttributeModel[]> => {
-        const db = await getDatabase();
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const attributes = await attributesCollection
-          .find({ _id: { $in: source.attributesIds } })
-          .toArray();
-        return attributes;
-      },
-    });
   },
 });
 

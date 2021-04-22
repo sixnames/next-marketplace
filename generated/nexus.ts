@@ -817,15 +817,6 @@ export interface NexusGenObjects {
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
-  ProductAttributesGroupAst: {
-    // root type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    astAttributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
-    attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-    itemId: string; // String!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-  };
-  ProductCardBreadcrumb: dbModels.ProductCardBreadcrumbModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;
   ProductConnection: dbModels.ProductConnectionModel;
   ProductConnectionItem: dbModels.ProductConnectionItemModel;
@@ -1508,22 +1499,6 @@ export interface NexusGenFieldTypes {
     showInCard: boolean; // Boolean!
     text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-  };
-  ProductAttributesGroupAst: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    astAttributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
-    attributes: NexusGenRootTypes['Attribute'][]; // [Attribute!]!
-    attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-    itemId: string; // String!
-    name: string; // String!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-  };
-  ProductCardBreadcrumb: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    href: string; // String!
-    name: string; // String!
   };
   ProductCardPrices: {
     // field return type
@@ -2529,22 +2504,6 @@ export interface NexusGenFieldTypeNames {
     text: 'String';
     textI18n: 'JSONObject';
   };
-  ProductAttributesGroupAst: {
-    // field return type name
-    _id: 'ObjectId';
-    astAttributes: 'ProductAttribute';
-    attributes: 'Attribute';
-    attributesIds: 'ObjectId';
-    itemId: 'String';
-    name: 'String';
-    nameI18n: 'JSONObject';
-  };
-  ProductCardBreadcrumb: {
-    // field return type name
-    _id: 'ObjectId';
-    href: 'String';
-    name: 'String';
-  };
   ProductCardPrices: {
     // field return type name
     _id: 'ObjectId';
@@ -3485,7 +3444,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'Manufacturer'
     | 'Order'
     | 'Product'
-    | 'ProductAttributesGroupAst'
     | 'Shop'
     | 'User';
   PaginationPayload:
@@ -3567,7 +3525,6 @@ export interface NexusGenTypeInterfaces {
   OrderStatus: 'Timestamp';
   OrdersPaginationPayload: 'PaginationPayload';
   Product: 'Base' | 'Timestamp';
-  ProductAttributesGroupAst: 'Base';
   ProductPayload: 'Payload';
   Role: 'Timestamp';
   RolePayload: 'Payload';

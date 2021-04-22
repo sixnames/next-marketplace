@@ -1725,24 +1725,6 @@ export type ProductAttributesAstInput = {
   rubricId: Scalars['ObjectId'];
 };
 
-export type ProductAttributesGroupAst = Base & {
-  __typename?: 'ProductAttributesGroupAst';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
-  attributesIds: Array<Scalars['ObjectId']>;
-  astAttributes: Array<ProductAttribute>;
-  name: Scalars['String'];
-  attributes: Array<Attribute>;
-};
-
-export type ProductCardBreadcrumb = {
-  __typename?: 'ProductCardBreadcrumb';
-  _id: Scalars['ObjectId'];
-  name: Scalars['String'];
-  href: Scalars['String'];
-};
-
 export type ProductCardPrices = {
   __typename?: 'ProductCardPrices';
   _id: Scalars['ObjectId'];

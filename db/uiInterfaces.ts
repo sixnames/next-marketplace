@@ -154,6 +154,23 @@ export interface ProductAttributeInterface extends ProductAttributeModel {
 
 export type ProductCardPricesInterface = ProductCardPricesModel;
 
+export interface RubricAttributeASTInterface {
+  attributeId: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  viewVariant: AttributeViewVariantModel;
+}
+
+export interface RubricAttributesGroupASTInterface {
+  _id: string;
+  attributes: RubricAttributeASTInterface[];
+}
+
+export interface ProductAttributesGroupASTInterface {
+  _id: string;
+  attributes: ProductAttributeInterface[];
+}
+
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -173,6 +190,11 @@ export interface ProductInterface extends ProductModel {
   shopProducts?: ShopProductInterface[];
   shopProduct?: ShopProductInterface;
   rubric?: RubricInterface;
+  rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
+  stringAttributesAST?: ProductAttributesGroupASTInterface | null;
+  numberAttributesAST?: ProductAttributesGroupASTInterface | null;
+  multipleSelectAttributesAST?: ProductAttributesGroupASTInterface | null;
+  selectAttributesAST?: ProductAttributesGroupASTInterface | null;
 }
 
 export interface RoleInterface extends RoleModel {

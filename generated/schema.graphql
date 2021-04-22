@@ -650,6 +650,7 @@ type LanguagePayload implements Payload {
 
 input MakeAnOrderInput {
   comment: String
+  companySlug: String!
   email: EmailAddress!
   name: String!
   phone: PhoneNumber!
@@ -1540,7 +1541,6 @@ type ProductConnection {
   attributeSlug: String!
   attributeVariant: AttributeVariant!
   attributeViewVariant: AttributeViewVariant!
-  connectionProducts: [ProductConnectionItem!]!
 }
 
 type ProductConnectionItem {

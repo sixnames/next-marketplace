@@ -1,23 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const SnippetConnectionItemFragment = gql`
-  fragment SnippetConnectionItem on ProductConnectionItem {
-    _id
-    productId
-  }
-`;
-
-export const SnippetConnectionFragment = gql`
-  fragment SnippetConnection on ProductConnection {
-    _id
-    attributeName
-    connectionProducts {
-      ...SnippetConnectionItem
-    }
-  }
-  ${SnippetConnectionItemFragment}
-`;
-
 export const productSnippedFragment = gql`
   fragment ProductSnippet on Product {
     _id
@@ -26,11 +8,7 @@ export const productSnippedFragment = gql`
     originalName
     slug
     mainImage
-    connections {
-      ...SnippetConnection
-    }
   }
-  ${SnippetConnectionFragment}
 `;
 
 export const searchRubricFragment = gql`

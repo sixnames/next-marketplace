@@ -270,6 +270,7 @@ export const MakeAnOrderInput = inputObjectType({
     t.nonNull.phone('phone');
     t.nonNull.email('email');
     t.string('comment');
+    t.nonNull.string('companySlug');
   },
 });
 
@@ -478,7 +479,7 @@ export const OrderMutations = extendType({
           const orderItemId = await getNextItemId(COL_ORDERS);
           const createdOrderResult = await ordersCollection.insertOne({
             itemId: orderItemId,
-
+            companySlug: input.companySlug,
             statusId: initialStatus._id,
             products: castedOrderProducts,
             comment: input.comment,

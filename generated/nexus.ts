@@ -408,6 +408,7 @@ export interface NexusGenInputs {
   MakeAnOrderInput: {
     // input type
     comment?: string | null; // String
+    companySlug: string; // String!
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     name: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
@@ -1537,7 +1538,6 @@ export interface NexusGenFieldTypes {
     attributeSlug: string; // String!
     attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
-    connectionProducts: NexusGenRootTypes['ProductConnectionItem'][]; // [ProductConnectionItem!]!
   };
   ProductConnectionItem: {
     // field return type
@@ -2556,7 +2556,6 @@ export interface NexusGenFieldTypeNames {
     attributeSlug: 'String';
     attributeVariant: 'AttributeVariant';
     attributeViewVariant: 'AttributeViewVariant';
-    connectionProducts: 'ProductConnectionItem';
   };
   ProductConnectionItem: {
     // field return type name

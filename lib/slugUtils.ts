@@ -21,15 +21,33 @@ export const generateDefaultLangSlug = (languages: TranslationModel) => {
   return generateSlug(defaultValue);
 };
 
-export interface generateProductSlugInterface {
+export interface GenerateProductSlugInterface {
   nameI18n: TranslationModel;
   itemId: string;
 }
 
-export const generateProductSlug = ({ nameI18n, itemId }: generateProductSlugInterface) => {
+export const generateProductSlug = ({ nameI18n, itemId }: GenerateProductSlugInterface) => {
   const defaultValue = nameI18n[DEFAULT_LOCALE];
   if (!defaultValue) {
     throw Error('defaultValue not found in generateDefaultLangSlug');
   }
   return generateSlug(`${defaultValue} ${itemId}`);
+};
+
+export interface GenerateCompanySlugInterface {
+  name: string;
+  itemId: string;
+}
+
+export const generateCompanySlug = ({ name, itemId }: GenerateCompanySlugInterface) => {
+  return generateSlug(`${name} ${itemId}`);
+};
+
+export interface GenerateShopSlugInterface {
+  name: string;
+  itemId: string;
+}
+
+export const generateShopSlug = ({ name, itemId }: GenerateShopSlugInterface) => {
+  return generateSlug(`${name} ${itemId}`);
 };

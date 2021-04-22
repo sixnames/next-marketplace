@@ -427,6 +427,7 @@ export interface OrderModel extends BaseModel, TimestampModel {
   statusId: ObjectIdModel;
   customer: OrderCustomerModel;
   products: OrderProductModel[];
+  companySlug: string;
   logs: OrderLogModel[];
 }
 

@@ -394,6 +394,7 @@ export interface OrderLogModel {
   createdAt: DateModel;
 }
 
+// TODO reduce order mode
 export interface OrderProductModel {
   _id: ObjectIdModel;
   itemId: string;

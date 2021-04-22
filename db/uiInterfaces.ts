@@ -199,6 +199,7 @@ export interface RubricAttributeInterface extends RubricAttributeModel, Attribut
   options: RubricOptionInterface[];
   name?: string | null;
   metric?: MetricInterface | null;
+  rubric?: RubricInterface | null;
 }
 
 export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {

@@ -155,9 +155,6 @@ const Meta: React.FC<MetaInterface> = ({
         {yaVerification
           ? parse(yaVerification, {
               trim: true,
-              replace: (domNode) => {
-                console.log(domNode);
-              },
             })
           : null}
       </Head>

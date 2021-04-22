@@ -597,7 +597,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO update options in rubric attributes and products attributes
+          // TODO update options in rubric attributes and products attributes and connections
 
           return {
             success: true,

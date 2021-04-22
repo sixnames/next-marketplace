@@ -1,3 +1,4 @@
+import { RubricAttributeInterface } from 'db/uiInterfaces';
 import { castAttributeForRubric, castOptionsForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
@@ -558,6 +559,7 @@ export const attributesGroupMutations = extendType({
               attribute: createdAttribute,
               rubricSlug: rubric.slug,
               rubricId: rubric._id,
+              rubricGender: rubric.catalogueTitle.gender,
             });
             await rubricAttributesCollection.insertOne(rubricAttribute);
           }
@@ -690,22 +692,63 @@ export const attributesGroupMutations = extendType({
               .toArray();
           }
 
-          const updatedRubricAttribute = await rubricAttributesCollection.updateMany(
-            {
-              attributeId,
-            },
-            {
-              $set: {
-                ...values,
-                metric,
-                options: castOptionsForRubric({
-                  options: attributeOptions,
-                  attributeSlug: attribute.slug,
-                }),
+          const rubricAttributes = await rubricAttributesCollection
+            .aggregate<RubricAttributeInterface>([
+              { $match: { attributeId } },
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: { rubricId: '$rubricId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$rubricId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $addFields: {
+                        rubric: {
+                          $arrayElemAt: ['rubric', 0],
+                        },
+                      },
+                    },
+                  ],
+                },
               },
-            },
-          );
-          if (!updatedRubricAttribute.result.ok) {
+            ])
+            .toArray();
+          let updatedRubricAttributesCont = 0;
+          for await (const rubricAttribute of rubricAttributes) {
+            const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
+            if (!rubricGender) {
+              continue;
+            }
+
+            const updatedRubricAttribute = await rubricAttributesCollection.findOneAndUpdate(
+              {
+                attributeId: rubricAttribute.attributeId,
+              },
+              {
+                $set: {
+                  ...values,
+                  metric,
+                  options: castOptionsForRubric({
+                    options: attributeOptions,
+                    attributeSlug: attribute.slug,
+                    rubricGender,
+                  }),
+                },
+              },
+            );
+            if (updatedRubricAttribute.ok) {
+              updatedRubricAttributesCont = updatedRubricAttributesCont + 1;
+            }
+          }
+
+          if (updatedRubricAttributesCont !== rubricAttributes.length) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

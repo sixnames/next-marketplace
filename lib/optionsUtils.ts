@@ -15,6 +15,7 @@ import {
   AlphabetListModelType,
   AttributeModel,
   AttributesGroupModel,
+  GenderModel,
   LanguageModel,
   ObjectIdModel,
   OptionModel,
@@ -142,27 +143,55 @@ export function deleteOptionFromTree({
   });
 }
 
+interface CastSingleOptionForRubricInterface {
+  option: OptionModel;
+  attributeSlug: string;
+  rubricGender: GenderModel;
+}
+
+export function castSingleOptionForRubric({
+  attributeSlug,
+  option,
+  rubricGender,
+}: CastSingleOptionForRubricInterface) {
+  const variant = option.variants[rubricGender];
+  const finalOptionName = variant || option.nameI18n;
+  return {
+    ...option,
+    nameI18n: finalOptionName,
+    slug: `${attributeSlug}-${option.slug}`,
+    ...DEFAULT_COUNTERS_OBJECT,
+  };
+}
+
 interface CastOptionsToTreeInterface {
   topLevelOptions: OptionModel[];
   allOptions: OptionModel[];
   attributeSlug: string;
+  rubricGender: GenderModel;
 }
 
 export function castOptionsToTree({
   topLevelOptions,
   allOptions,
   attributeSlug,
+  rubricGender,
 }: CastOptionsToTreeInterface): RubricOptionModel[] {
   return topLevelOptions.map((option) => {
     const children = allOptions.filter(({ parentId }) => {
       return parentId && parentId.equals(option._id);
     });
 
+    const castedOption = castSingleOptionForRubric({ option, attributeSlug, rubricGender });
+
     return {
-      ...option,
-      slug: `${attributeSlug}-${option.slug}`,
-      ...DEFAULT_COUNTERS_OBJECT,
-      options: castOptionsToTree({ topLevelOptions: children, allOptions, attributeSlug }),
+      ...castedOption,
+      options: castOptionsToTree({
+        topLevelOptions: children,
+        allOptions,
+        attributeSlug,
+        rubricGender,
+      }),
     };
   });
 }
@@ -170,14 +199,16 @@ export function castOptionsToTree({
 interface CastOptionsForRubricInterface {
   options: OptionModel[];
   attributeSlug: string;
+  rubricGender: GenderModel;
 }
 
 export function castOptionsForRubric({
   options,
   attributeSlug,
+  rubricGender,
 }: CastOptionsForRubricInterface): RubricOptionModel[] {
   const topLevelOptions = options.filter(({ parentId }) => !parentId);
-  return castOptionsToTree({ topLevelOptions, allOptions: options, attributeSlug });
+  return castOptionsToTree({ rubricGender, topLevelOptions, allOptions: options, attributeSlug });
 }
 
 interface AddOptionToRubricAttributeInterface {
@@ -246,12 +277,14 @@ interface CastAttributeForRubricInterface {
   attribute: AttributeModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  rubricGender: GenderModel;
 }
 
 export async function castAttributeForRubric({
   attribute,
   rubricId,
   rubricSlug,
+  rubricGender,
 }: CastAttributeForRubricInterface): Promise<RubricAttributeModel> {
   const db = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -280,6 +313,7 @@ export async function castAttributeForRubric({
     showInCatalogueFilter: visible,
     showInCatalogueNav: visible,
     options: castOptionsForRubric({
+      rubricGender,
       options,
       attributeSlug: attribute.slug,
     }),

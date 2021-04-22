@@ -5,6 +5,7 @@ import {
   OptionModel,
   ProductAssetsModel,
   ProductAttributeModel,
+  ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
@@ -18,6 +19,7 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -833,6 +835,9 @@ export const ProductMutations = extendType({
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,
           );
+          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+            COL_PRODUCT_CONNECTION_ITEMS,
+          );
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { productId, attributeId } = input;
@@ -900,18 +905,26 @@ export const ProductMutations = extendType({
             attributeVariant: productAttribute.attributeVariant,
             attributeViewVariant: productAttribute.attributeViewVariant,
             productsIds: [productId],
-            connectionProducts: [
-              {
-                _id: productId,
-                optionId,
-                optionNameI18n: option.nameI18n,
-                productId,
-                productSlug: product.slug,
-              },
-            ],
           });
           const createdConnection = createdConnectionResult.ops[0];
           if (!createdConnectionResult.result.ok || !createdConnection) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.connection.createError`),
+            };
+          }
+
+          // Create connection item
+          const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
+            _id: productId,
+            optionId,
+            optionNameI18n: option.nameI18n,
+            productId,
+            productSlug: product.slug,
+            connectionId: createdConnection._id,
+          });
+          const createdConnectionItem = createdConnectionItemResult.ops[0];
+          if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
             return {
               success: false,
               message: await getApiMessage(`products.connection.createError`),
@@ -983,6 +996,9 @@ export const ProductMutations = extendType({
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,
           );
+          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+            COL_PRODUCT_CONNECTION_ITEMS,
+          );
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { productId, addProductId, connectionId } = input;
@@ -997,6 +1013,11 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.notFound`),
             };
           }
+
+          // Get all connection items
+          const connectionItems = await productConnectionItemsCollection
+            .find({ connectionId: connection._id })
+            .toArray();
 
           // Check attribute existence in added product
           const addProductAttribute = await productsAttributesCollection.findOne({
@@ -1013,12 +1034,9 @@ export const ProductMutations = extendType({
 
           // Check attribute value in added product
           // it should have attribute value and shouldn't intersect with existing values in connection
-          const connectionValues = connection.connectionProducts.reduce(
-            (acc: ObjectId[], { optionId }) => {
-              return [...acc, optionId];
-            },
-            [],
-          );
+          const connectionValues = connectionItems.reduce((acc: ObjectId[], { optionId }) => {
+            return [...acc, optionId];
+          }, []);
           const includes = connectionValues.some((_id) => {
             return _id.equals(addProductOptionId);
           });
@@ -1044,34 +1062,25 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Update connections
-          const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
-            { _id: connectionId },
-            {
-              $push: {
-                productsIds: addProductId,
-                connectionProducts: {
-                  _id: addProductId,
-                  optionId: option._id,
-                  optionNameI18n: option.nameI18n,
-                  productId: addProductId,
-                  productSlug: addProduct.slug,
-                },
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedConnection = updatedConnectionResult.value;
-          if (!updatedConnectionResult.ok || !updatedConnection) {
+          // Create connection item
+          const CreatedConnectionItemResult = await productConnectionItemsCollection.insertOne({
+            _id: addProductId,
+            optionId: option._id,
+            optionNameI18n: option.nameI18n,
+            productId: addProductId,
+            productSlug: addProduct.slug,
+            connectionId,
+          });
+
+          const CreatedConnectionItem = CreatedConnectionItemResult.ops[0];
+          if (!CreatedConnectionItemResult.result.ok || !CreatedConnectionItem) {
             return {
               success: false,
               message: await getApiMessage(`products.connection.createError`),
             };
           }
 
-          // Update product with new slug and connection
+          // Update product
           const updatedAddProductResult = await productsCollection.findOneAndUpdate(
             {
               _id: addProductId,
@@ -1157,6 +1166,9 @@ export const ProductMutations = extendType({
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,
           );
+          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+            COL_PRODUCT_CONNECTION_ITEMS,
+          );
           const { input } = args;
           const { productId, deleteProductId, connectionId } = input;
           const minimumProductsCountForConnectionDelete = 2;
@@ -1172,10 +1184,16 @@ export const ProductMutations = extendType({
             };
           }
 
+          // Get connection items
+          const connectionItems = await productConnectionItemsCollection
+            .find({ connectionId })
+            .toArray();
+
           const errorMessage = await getApiMessage('products.connection.deleteError');
           const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
-          if (connection.connectionProducts.length < minimumProductsCountForConnectionDelete) {
+          // Delete connection if it has one item
+          if (connectionItems.length < minimumProductsCountForConnectionDelete) {
             const removedConnectionResult = await productConnectionsCollection.findOneAndDelete({
               _id: connectionId,
             });
@@ -1185,30 +1203,22 @@ export const ProductMutations = extendType({
                 message: errorMessage,
               };
             }
-
-            return {
-              success: true,
-              message: successMessage,
-              payload: product,
-            };
           }
 
-          const updatedProductConnectionResult = await productConnectionsCollection.findOneAndUpdate(
-            { _id: connectionId },
+          // Remove connection item
+          const removedConnectionItemResult = await productConnectionItemsCollection.findOneAndDelete(
             {
-              $pull: {
-                productsIds: deleteProductId,
-                connectionProducts: {
-                  productId: deleteProductId,
-                },
-              },
-            },
-            {
-              returnOriginal: false,
+              productId: deleteProductId,
             },
           );
-          const updatedProductConnection = updatedProductConnectionResult.value;
-          if (!updatedProductConnectionResult.ok || !updatedProductConnection) {
+          if (!removedConnectionItemResult.ok) {
+            return {
+              success: false,
+              message: errorMessage,
+            };
+          }
+          const removedConnectionItem = removedConnectionItemResult.value;
+          if (!removedConnectionItemResult.ok || !removedConnectionItem) {
             return {
               success: false,
               message: errorMessage,

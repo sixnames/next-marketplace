@@ -110,8 +110,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 return (
                   <div key={`${_id}`} className={classes.connectionsGroup}>
                     <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
-                    {connectionProducts.map(({ optionName, _id }, index) => {
-                      const isLast = connectionProducts.length - 1 === index;
+                    {(connectionProducts || []).map(({ optionName, _id }, index) => {
+                      const isLast = (connectionProducts || []).length - 1 === index;
                       const isCurrent = _id === product._id;
 
                       return (

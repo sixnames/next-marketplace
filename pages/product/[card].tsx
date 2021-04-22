@@ -166,7 +166,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                       <div key={`${_id}`} className={classes.connectionsGroup}>
                         <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
                         <div className={classes.connectionsList}>
-                          {connectionProducts.map(({ optionName, productSlug }) => {
+                          {(connectionProducts || []).map(({ optionName, productSlug }) => {
                             const isCurrent = productSlug === cardData.slug;
 
                             if (isCurrent) {

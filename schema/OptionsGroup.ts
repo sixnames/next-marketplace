@@ -1,4 +1,8 @@
-import { addOptionToRubricAttribute } from 'lib/optionsUtils';
+import {
+  addOptionToRubricAttribute,
+  deleteOptionFromRubricAttributes,
+  updateOptionInRubricAttributes,
+} from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -12,9 +16,17 @@ import {
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
+  ProductAttributeModel,
+  ProductConnectionItemModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
+  COL_OPTIONS_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+} from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -580,7 +592,7 @@ export const OptionsGroupMutations = extendType({
           const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
 
           // Update option
-          const updatedOption = await optionsCollection.findOneAndUpdate(
+          const updatedOptionResult = await optionsCollection.findOneAndUpdate(
             { _id: optionId },
             {
               $set: {
@@ -590,14 +602,19 @@ export const OptionsGroupMutations = extendType({
               },
             },
           );
-          if (!updatedOption) {
+          const updatedOption = updatedOptionResult.value;
+          if (!updatedOptionResult.ok || !updatedOption) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
             };
           }
 
-          // TODO update options in rubric attributes and products attributes and connections
+          // update options in products attributes and connections
+          await updateOptionInRubricAttributes({
+            option: updatedOption,
+            optionsGroupId,
+          });
 
           return {
             success: true,
@@ -637,6 +654,12 @@ export const OptionsGroupMutations = extendType({
           const db = await getDatabase();
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+            COL_PRODUCT_CONNECTION_ITEMS,
+          );
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -649,23 +672,27 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO Check if option is used in product connections and in product attributes
-          /*const usedInProducts = await productsCollection.findOne({
-            $or: [
-              {
-                'attributes.selectedOptions._id': optionId,
-              },
-              {
-                'connections.connectionProducts.option._id': optionId,
-              },
-            ],
+          // Check if option is used in product attributes
+          const usedInProductAttributes = await productAttributesCollection.findOne({
+            selectedOptionsIds: optionId,
           });
-          if (usedInProducts) {
+          if (usedInProductAttributes) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.used'),
             };
-          }*/
+          }
+
+          // Check if option is used in product connections
+          const usedInProductConnections = await productConnectionItemsCollection.findOne({
+            optionId,
+          });
+          if (usedInProductConnections) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.deleteOption.used'),
+            };
+          }
 
           // Update options group options list
           const removedOptionResult = await optionsCollection.findOneAndDelete({
@@ -678,7 +705,11 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO Update rubric attributes options list
+          // Update rubric attributes options list
+          await deleteOptionFromRubricAttributes({
+            optionId,
+            optionsGroupId,
+          });
 
           return {
             success: true,

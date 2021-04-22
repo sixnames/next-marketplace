@@ -37,9 +37,6 @@ export const ProductConnection = objectType({
     t.nonNull.field('attributeVariant', {
       type: 'AttributeVariant',
     });
-    t.nonNull.list.nonNull.field('connectionProducts', {
-      type: 'ProductConnectionItem',
-    });
 
     // ProductConnection name translation field resolver
     t.nonNull.field('attributeName', {

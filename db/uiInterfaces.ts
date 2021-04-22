@@ -141,7 +141,7 @@ export interface ProductConnectionItemInterface extends ProductConnectionItemMod
 
 export interface ProductConnectionInterface extends ProductConnectionModel {
   attributeName?: string;
-  connectionProducts: ProductConnectionItemInterface[];
+  connectionProducts?: ProductConnectionItemInterface[];
 }
 
 export interface ProductAttributeInterface extends ProductAttributeModel {

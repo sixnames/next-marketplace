@@ -436,6 +436,7 @@ export interface ProductConnectionItemModel {
   optionNameI18n: TranslationModel;
   productSlug: string;
   productId: ObjectIdModel;
+  connectionId: ObjectIdModel;
 }
 
 export interface ProductConnectionModel {
@@ -446,7 +447,6 @@ export interface ProductConnectionModel {
   attributeNameI18n: TranslationModel;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
-  connectionProducts: ProductConnectionItemModel[];
   productsIds: ObjectIdModel[];
 }
 

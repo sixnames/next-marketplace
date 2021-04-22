@@ -9,7 +9,12 @@ import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
-import { COL_PRODUCT_ATTRIBUTES, COL_PRODUCT_CONNECTIONS, COL_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+} from 'db/collectionNames';
 import { ProductConnectionItemModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -66,7 +71,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
     },
   });
 
-  const excludedProductsIds = connection.connectionProducts.map(({ productId }) => `${productId}`);
+  const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
 
   return (
     <ContentItemControls
@@ -338,41 +343,42 @@ export const getServerSideProps = async (
               },
             },
             {
-              $unwind: '$connectionProducts',
-            },
-            {
               $lookup: {
-                from: COL_PRODUCTS,
-                as: 'connectionProducts.product',
-                let: { productId: '$connectionProducts.productId' },
+                from: COL_PRODUCT_CONNECTION_ITEMS,
+                as: 'connectionProducts',
+                let: { connectionId: '$_id' },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $eq: ['$$productId', '$_id'],
+                        $eq: ['$$connectionId', '$connectionId'],
+                      },
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: COL_PRODUCTS,
+                      as: 'product',
+                      let: { productId: '$productId' },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$$productId', '$_id'],
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $addFields: {
+                      product: {
+                        $arrayElemAt: ['$product', 0],
                       },
                     },
                   },
                 ],
-              },
-            },
-            {
-              $addFields: {
-                'connectionProducts.product': {
-                  $arrayElemAt: ['$connectionProducts.product', 0],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: '$_id',
-                attributeId: { $first: '$attributeId' },
-                attributeSlug: { $first: '$attributeSlug' },
-                attributeNameI18n: { $first: '$attributeNameI18n' },
-                productsIds: { $first: '$productsIds' },
-                connectionProducts: {
-                  $addToSet: '$connectionProducts',
-                },
               },
             },
           ],
@@ -407,7 +413,7 @@ export const getServerSideProps = async (
   const connections: ProductConnectionInterface[] = [];
   for await (const productConnection of product.connections || []) {
     const connectionProducts: ProductConnectionItemInterface[] = [];
-    for await (const connectionProduct of productConnection.connectionProducts) {
+    for await (const connectionProduct of productConnection.connectionProducts || []) {
       connectionProducts.push({
         ...connectionProduct,
         optionName: getFieldStringLocale(connectionProduct.optionNameI18n, props.sessionLocale),

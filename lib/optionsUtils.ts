@@ -9,7 +9,10 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_LANGUAGES,
   COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
   COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
 } from 'db/collectionNames';
 import {
   AlphabetListModelType,
@@ -19,10 +22,14 @@ import {
   LanguageModel,
   ObjectIdModel,
   OptionModel,
+  ProductAttributeModel,
+  ProductConnectionItemModel,
   RubricAttributeModel,
   RubricOptionModel,
+  TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { RubricAttributeInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
 export interface FindOptionInGroupInterface {
@@ -319,6 +326,211 @@ export async function castAttributeForRubric({
     }),
     ...DEFAULT_COUNTERS_OBJECT,
   };
+}
+
+interface UpdateOptionInRubricAttributesInterface {
+  option: OptionModel;
+  optionsGroupId: ObjectIdModel;
+}
+
+export async function updateOptionInRubricAttributes({
+  option,
+  optionsGroupId,
+}: UpdateOptionInRubricAttributesInterface) {
+  const db = await getDatabase();
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+  const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+    COL_PRODUCT_CONNECTION_ITEMS,
+  );
+  const languages = await languagesCollection.find({}).toArray();
+  const languagesSlugs = languages.map(({ slug }) => slug);
+
+  const rubricAttributes = await rubricAttributesCollection
+    .aggregate<RubricAttributeInterface>([
+      {
+        $match: {
+          optionsGroupId,
+          variant: {
+            $in: [ATTRIBUTE_VARIANT_SELECT, ATTRIBUTE_VARIANT_MULTIPLE_SELECT],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubric',
+          let: { rubricId: '$rubricId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$_id'],
+                },
+              },
+            },
+            {
+              $project: {
+                catalogueTitle: true,
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  for await (const rubricAttribute of rubricAttributes) {
+    // Update option in rubric attributes
+    const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
+    if (!rubricGender) {
+      continue;
+    }
+
+    const castedOption = castSingleOptionForRubric({
+      rubricGender,
+      attributeSlug: rubricAttribute.slug,
+      option,
+    });
+
+    const updatedOptionsForAttribute = updateOptionInTree({
+      options: rubricAttribute.options,
+      condition: (treeOption) => {
+        return treeOption._id.equals(castedOption._id);
+      },
+      updater: (treeOption) => {
+        return {
+          ...castedOption,
+          priorities: treeOption.priorities,
+          views: treeOption.views,
+          options: treeOption.options,
+        };
+      },
+    });
+
+    await rubricAttributesCollection.findOneAndUpdate(
+      {
+        attributeId: rubricAttribute._id,
+      },
+      {
+        $set: {
+          options: updatedOptionsForAttribute,
+        },
+      },
+    );
+
+    // Update option in product attributes
+    const productAttributes = await productAttributesCollection
+      .find({
+        attributeId: rubricAttribute.attributeId,
+        selectedOptionsIds: castedOption._id,
+      })
+      .toArray();
+
+    for await (const productAttribute of productAttributes) {
+      const productAttributeOptions = await optionsCollection.find({
+        _id: { $in: productAttribute.selectedOptionsIds },
+      });
+
+      const optionsValueI18n: TranslationModel = {};
+      languagesSlugs.forEach((locale) => {
+        const optionNames: string[] = [];
+
+        productAttributeOptions.forEach((productAttributeOption) => {
+          const castedOption = castSingleOptionForRubric({
+            rubricGender,
+            attributeSlug: rubricAttribute.slug,
+            option: productAttributeOption,
+          });
+          const optionNameLocale = castedOption.nameI18n[locale] || null;
+
+          if (optionNameLocale) {
+            optionNames.push(optionNameLocale);
+          }
+        });
+        if (optionNames.length > 0) {
+          optionsValueI18n[locale] = optionNames.join(', ');
+        }
+      });
+
+      await productAttributesCollection.findOneAndUpdate(
+        {
+          attributeId: productAttribute.attributeId,
+        },
+        {
+          $set: {
+            optionsValueI18n,
+          },
+        },
+      );
+
+      // Update product connection items
+      await productConnectionItemsCollection.updateMany(
+        {
+          productId: productAttribute.productId,
+          optionId: castedOption._id,
+        },
+        {
+          $set: {
+            optionNameI18n: castedOption.nameI18n,
+          },
+        },
+      );
+    }
+  }
+}
+
+interface DeleteOptionFromRubricAttributesInterface {
+  optionId: ObjectIdModel;
+  optionsGroupId: ObjectIdModel;
+}
+
+export async function deleteOptionFromRubricAttributes({
+  optionId,
+  optionsGroupId,
+}: DeleteOptionFromRubricAttributesInterface) {
+  const db = await getDatabase();
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+
+  const rubricAttributes = await rubricAttributesCollection
+    .aggregate<RubricAttributeInterface>([
+      {
+        $match: {
+          optionsGroupId,
+          variant: {
+            $in: [ATTRIBUTE_VARIANT_SELECT, ATTRIBUTE_VARIANT_MULTIPLE_SELECT],
+          },
+        },
+      },
+    ])
+    .toArray();
+
+  for await (const rubricAttribute of rubricAttributes) {
+    const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
+    if (!rubricGender) {
+      continue;
+    }
+
+    const updatedOptionsForRubricAttribute = deleteOptionFromTree({
+      options: rubricAttribute.options,
+      condition: (treeOption) => {
+        return treeOption._id.equals(optionId);
+      },
+    });
+
+    await rubricAttributesCollection.findOneAndUpdate(
+      {
+        attributeId: rubricAttribute.attributeId,
+      },
+      {
+        $set: {
+          options: updatedOptionsForRubricAttribute,
+        },
+      },
+    );
+  }
 }
 
 export async function getAlphabetList<TModel extends Record<string, any>>(entityList: TModel[]) {

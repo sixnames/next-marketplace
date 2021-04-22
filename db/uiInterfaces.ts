@@ -309,3 +309,13 @@ export interface CatalogueFilterAttributeInterface {
   options: CatalogueFilterAttributeOptionInterface[];
   viewVariant: AttributeViewVariantModel;
 }
+
+export interface ProductCardPricesAggregationInterface {
+  _id: ObjectIdModel;
+  minPrice: number;
+  maxPrice: number;
+}
+
+export interface ProductShopsCountAggregationInterface {
+  shopsCount: number;
+}

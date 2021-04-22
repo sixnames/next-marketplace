@@ -1436,6 +1436,7 @@ type Product implements Base & Timestamp {
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
+  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
@@ -1454,6 +1455,7 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
+  shopsCount: Int!
   slug: String!
   updatedAt: Date!
 }

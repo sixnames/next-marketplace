@@ -1,3 +1,10 @@
+import {
+  ProductCardPricesAggregationInterface,
+  ProductShopsCountAggregationInterface,
+} from 'db/uiInterfaces';
+import { getCurrencyString } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -7,6 +14,7 @@ import {
   ManufacturerModel,
   ProductAssetsModel,
   ProductAttributeModel,
+  ProductCardPricesModel,
   ProductConnectionModel,
   RubricModel,
   ShopProductModel,
@@ -157,6 +165,80 @@ export const Product = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.descriptionI18n);
+      },
+    });
+
+    // Product cardPrices field resolver
+    t.nonNull.field('cardPrices', {
+      type: 'ProductCardPrices',
+      resolve: async (source, _args, context): Promise<ProductCardPricesModel> => {
+        try {
+          const { city } = await getRequestParams(context);
+          const db = await getDatabase();
+          const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          // TODO company slug
+          const shopProductsAggregation = await shopProductsCollection
+            .aggregate<ProductCardPricesAggregationInterface>([
+              {
+                $match: {
+                  productId: source._id,
+                  citySlug: city,
+                },
+              },
+              {
+                $group: {
+                  _id: '$productId',
+                  minPrice: { $min: '$price' },
+                  maxPrice: { $max: '$price' },
+                },
+              },
+            ])
+            .toArray();
+          const shopProductsAggregationResult = shopProductsAggregation[0];
+
+          return {
+            _id: new ObjectId(),
+            min: getCurrencyString(noNaN(shopProductsAggregationResult?.minPrice)),
+            max: getCurrencyString(noNaN(shopProductsAggregationResult?.maxPrice)),
+          };
+        } catch (e) {
+          return {
+            _id: new ObjectId(),
+            min: '0',
+            max: '0',
+          };
+        }
+      },
+    });
+
+    // Product shopsCount field resolver
+    t.nonNull.field('shopsCount', {
+      type: 'Int',
+      resolve: async (source, _args, context): Promise<number> => {
+        try {
+          const { city } = await getRequestParams(context);
+          const db = await getDatabase();
+          const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          // TODO company slug
+          const shopProductsAggregation = await shopProductsCollection
+            .aggregate<ProductShopsCountAggregationInterface>([
+              {
+                $match: {
+                  productId: source._id,
+                  citySlug: city,
+                },
+              },
+              {
+                $count: 'shopsCount',
+              },
+            ])
+            .toArray();
+          const shopProductsAggregationResult = shopProductsAggregation[0];
+
+          return shopProductsAggregationResult.shopsCount;
+        } catch (e) {
+          return 0;
+        }
       },
     });
 

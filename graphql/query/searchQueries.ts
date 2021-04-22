@@ -8,6 +8,12 @@ export const productSnippedFragment = gql`
     originalName
     slug
     mainImage
+    shopsCount
+    cardPrices {
+      _id
+      min
+      max
+    }
   }
 `;
 

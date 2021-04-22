@@ -408,7 +408,7 @@ export interface NexusGenInputs {
   MakeAnOrderInput: {
     // input type
     comment?: string | null; // String
-    companySlug: string; // String!
+    companySlug: string | null; // String
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     name: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!

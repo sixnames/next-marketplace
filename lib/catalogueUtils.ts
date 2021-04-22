@@ -897,6 +897,7 @@ export const getCatalogueData = async ({
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
+        _id: new ObjectId(),
         min: getCurrencyString(minPrice),
         max: getCurrencyString(maxPrice),
       };

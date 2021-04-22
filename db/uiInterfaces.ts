@@ -23,6 +23,7 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
+  ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -151,15 +152,11 @@ export interface ProductAttributeInterface extends ProductAttributeModel {
   selectedOptions?: OptionInterface[] | null;
 }
 
-export interface ProductCardPricesInterface {
-  min: string;
-  max: string;
-}
+export type ProductCardPricesInterface = ProductCardPricesModel;
 
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
-  shopsCount?: number;
   available?: boolean;
   assets?: ProductAssetsModel | null;
   connections?: ProductConnectionInterface[];
@@ -171,7 +168,6 @@ export interface ProductInterface extends ProductModel {
   ratingFeatures?: ProductAttributeInterface[];
   cardShopProducts?: ShopProductInterface[];
   price?: number;
-  cardPrices?: ProductCardPricesInterface;
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
   shopProductIds?: ObjectIdModel[];
   shopProducts?: ShopProductInterface[];

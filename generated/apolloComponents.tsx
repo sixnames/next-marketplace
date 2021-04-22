@@ -687,7 +687,7 @@ export type MakeAnOrderInput = {
   phone: Scalars['PhoneNumber'];
   email: Scalars['EmailAddress'];
   comment?: Maybe<Scalars['String']>;
-  companySlug: Scalars['String'];
+  companySlug?: Maybe<Scalars['String']>;
 };
 
 export type MakeAnOrderPayload = Payload & {

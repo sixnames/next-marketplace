@@ -212,6 +212,7 @@ export async function getCardData({
 
     // prices
     const cardPrices = {
+      _id: new ObjectId(),
       min: getCurrencyString(product.cardPrices?.min),
       max: getCurrencyString(product.cardPrices?.max),
     };

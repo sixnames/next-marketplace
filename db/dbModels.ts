@@ -394,7 +394,6 @@ export interface OrderLogModel {
   createdAt: DateModel;
 }
 
-// TODO reduce order mode
 export interface OrderProductModel {
   _id: ObjectIdModel;
   itemId: string;
@@ -484,6 +483,10 @@ export interface ProductModel extends BaseModel, TimestampModel {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
+
+  // types for aggregation
+  shopsCount?: number;
+  cardPrices?: ProductCardPricesModel;
 }
 
 export interface ProductAssetsModel {

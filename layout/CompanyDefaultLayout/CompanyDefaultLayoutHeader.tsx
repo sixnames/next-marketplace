@@ -307,7 +307,10 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
   const { data } = useGetCatalogueSearchTopItemsQuery({
     ssr: false,
     variables: {
-      input: {},
+      input: {
+        companyId: company ? company._id : null,
+        companySlug: company ? company.slug : null,
+      },
     },
   });
 

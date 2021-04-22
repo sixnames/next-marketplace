@@ -650,7 +650,7 @@ type LanguagePayload implements Payload {
 
 input MakeAnOrderInput {
   comment: String
-  companySlug: String!
+  companySlug: String = "default"
   email: EmailAddress!
   name: String!
   phone: PhoneNumber!

@@ -29,6 +29,7 @@ import {
 } from 'db/collectionNames';
 import { ObjectId } from 'mongodb';
 import {
+  CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   ORDER_LOG_VARIANT_STATUS,
   ORDER_STATUS_NEW,
@@ -270,7 +271,7 @@ export const MakeAnOrderInput = inputObjectType({
     t.nonNull.phone('phone');
     t.nonNull.email('email');
     t.string('comment');
-    t.nonNull.string('companySlug');
+    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
   },
 });
 
@@ -479,7 +480,7 @@ export const OrderMutations = extendType({
           const orderItemId = await getNextItemId(COL_ORDERS);
           const createdOrderResult = await ordersCollection.insertOne({
             itemId: orderItemId,
-            companySlug: input.companySlug,
+            companySlug: `${input.companySlug}`,
             statusId: initialStatus._id,
             products: castedOrderProducts,
             comment: input.comment,

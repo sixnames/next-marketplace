@@ -561,6 +561,7 @@ export const getServerSideProps = async (
   const docs: ProductInterface[] = [];
   for await (const product of productsResult.docs) {
     const cardPrices = {
+      _id: new ObjectId(),
       min: getCurrencyString(product.cardPrices?.min),
       max: getCurrencyString(product.cardPrices?.max),
     };

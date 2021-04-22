@@ -1,9 +1,3 @@
-import {
-  ProductCardPricesAggregationInterface,
-  ProductShopsCountAggregationInterface,
-} from 'db/uiInterfaces';
-import { getCurrencyString } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -171,35 +165,16 @@ export const Product = objectType({
     // Product cardPrices field resolver
     t.nonNull.field('cardPrices', {
       type: 'ProductCardPrices',
-      resolve: async (source, _args, context): Promise<ProductCardPricesModel> => {
+      resolve: async (source): Promise<ProductCardPricesModel> => {
         try {
-          const { city } = await getRequestParams(context);
-          const db = await getDatabase();
-          const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          // TODO company slug
-          const shopProductsAggregation = await shopProductsCollection
-            .aggregate<ProductCardPricesAggregationInterface>([
-              {
-                $match: {
-                  productId: source._id,
-                  citySlug: city,
-                },
-              },
-              {
-                $group: {
-                  _id: '$productId',
-                  minPrice: { $min: '$price' },
-                  maxPrice: { $max: '$price' },
-                },
-              },
-            ])
-            .toArray();
-          const shopProductsAggregationResult = shopProductsAggregation[0];
+          if (source.cardPrices) {
+            return source.cardPrices;
+          }
 
           return {
             _id: new ObjectId(),
-            min: getCurrencyString(noNaN(shopProductsAggregationResult?.minPrice)),
-            max: getCurrencyString(noNaN(shopProductsAggregationResult?.maxPrice)),
+            min: '0',
+            max: '0',
           };
         } catch (e) {
           return {
@@ -214,28 +189,12 @@ export const Product = objectType({
     // Product shopsCount field resolver
     t.nonNull.field('shopsCount', {
       type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
+      resolve: async (source): Promise<number> => {
         try {
-          const { city } = await getRequestParams(context);
-          const db = await getDatabase();
-          const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          // TODO company slug
-          const shopProductsAggregation = await shopProductsCollection
-            .aggregate<ProductShopsCountAggregationInterface>([
-              {
-                $match: {
-                  productId: source._id,
-                  citySlug: city,
-                },
-              },
-              {
-                $count: 'shopsCount',
-              },
-            ])
-            .toArray();
-          const shopProductsAggregationResult = shopProductsAggregation[0];
-
-          return shopProductsAggregationResult.shopsCount;
+          if (source.shopsCount) {
+            return source.shopsCount;
+          }
+          return 0;
         } catch (e) {
           return 0;
         }

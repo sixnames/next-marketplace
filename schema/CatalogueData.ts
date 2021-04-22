@@ -1,6 +1,7 @@
 import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   BrandCollectionModel,
@@ -184,6 +185,7 @@ export const CatalogueQueries = extendType({
                       $addFields: {
                         shopsCount: { $size: '$$shopProductsIds' },
                         cardPrices: {
+                          _id: new ObjectId(),
                           min: '$$minPrice',
                           max: '$$maxPrice',
                         },
@@ -374,6 +376,7 @@ export const CatalogueQueries = extendType({
                       $addFields: {
                         shopsCount: { $size: '$$shopProductsIds' },
                         cardPrices: {
+                          _id: new ObjectId(),
                           min: '$$minPrice',
                           max: '$$maxPrice',
                         },

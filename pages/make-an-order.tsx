@@ -13,7 +13,7 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
-import { CartProductInterface } from 'db/uiInterfaces';
+import { CartProductInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
@@ -103,7 +103,11 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
   );
 };
 
-const MakeAnOrderRoute: React.FC = () => {
+interface MakeAnOrderRouteInterface {
+  company?: CompanyInterface | null;
+}
+
+const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { loadingCart, cart, makeAnOrder } = useSiteContext();
@@ -196,6 +200,7 @@ const MakeAnOrderRoute: React.FC = () => {
             makeAnOrder({
               ...values,
               phone: phoneToRaw(values.phone),
+              companySlug: company?.slug,
             });
           }}
         >
@@ -282,7 +287,7 @@ type MakeAnOrderInterface = SiteLayoutProviderInterface;
 const MakeAnOrder: NextPage<MakeAnOrderInterface> = (props) => {
   return (
     <SiteLayoutProvider title={'Корзина'} {...props}>
-      <MakeAnOrderRoute />
+      <MakeAnOrderRoute company={props.company} />
     </SiteLayoutProvider>
   );
 };

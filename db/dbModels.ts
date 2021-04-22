@@ -572,6 +572,7 @@ export interface RubricModel extends CountersModel {
 
 export interface ShopProductModel extends TimestampModel {
   _id: ObjectIdModel;
+  active: boolean;
   available: number;
   citySlug: string;
   price: number;

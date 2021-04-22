@@ -846,6 +846,7 @@ export const ShopMutations = extendType({
           // Create shop product
           const createdShopProductResult = await shopProductsCollection.insertOne({
             ...values,
+            active: true,
             formattedPrice: getCurrencyString(values.price),
             formattedOldPrice: '',
             discountedPercent: 0,
@@ -942,6 +943,7 @@ export const ShopMutations = extendType({
             // Create shop product
             const createdShopProductResult = await shopProductsCollection.insertOne({
               ...values,
+              active: true,
               formattedPrice: getCurrencyString(values.price),
               formattedOldPrice: '',
               discountedPercent: 0,

@@ -559,7 +559,7 @@ export const attributesGroupMutations = extendType({
               attribute: createdAttribute,
               rubricSlug: rubric.slug,
               rubricId: rubric._id,
-              rubricGender: rubric.catalogueTitle.gender,
+              rubricGender: rubric.catalogueTitle?.gender,
             });
             await rubricAttributesCollection.insertOne(rubricAttribute);
           }
@@ -711,7 +711,7 @@ export const attributesGroupMutations = extendType({
                     {
                       $addFields: {
                         rubric: {
-                          $arrayElemAt: ['rubric', 0],
+                          $arrayElemAt: ['$rubric', 0],
                         },
                       },
                     },
@@ -722,11 +722,6 @@ export const attributesGroupMutations = extendType({
             .toArray();
           let updatedRubricAttributesCont = 0;
           for await (const rubricAttribute of rubricAttributes) {
-            const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
-            if (!rubricGender) {
-              continue;
-            }
-
             const updatedRubricAttribute = await rubricAttributesCollection.findOneAndUpdate(
               {
                 attributeId: rubricAttribute.attributeId,
@@ -738,7 +733,7 @@ export const attributesGroupMutations = extendType({
                   options: castOptionsForRubric({
                     options: attributeOptions,
                     attributeSlug: attribute.slug,
-                    rubricGender,
+                    rubricGender: rubricAttribute.rubric?.catalogueTitle?.gender,
                   }),
                 },
               },

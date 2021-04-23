@@ -153,7 +153,7 @@ export function deleteOptionFromTree({
 interface CastSingleOptionForRubricInterface {
   option: OptionModel;
   attributeSlug: string;
-  rubricGender: GenderModel;
+  rubricGender?: GenderModel | null;
 }
 
 export function castSingleOptionForRubric({
@@ -161,7 +161,7 @@ export function castSingleOptionForRubric({
   option,
   rubricGender,
 }: CastSingleOptionForRubricInterface) {
-  const variant = option.variants[rubricGender];
+  const variant = rubricGender ? option.variants[rubricGender] : null;
   const finalOptionName = variant || option.nameI18n;
   return {
     ...option,
@@ -175,7 +175,7 @@ interface CastOptionsToTreeInterface {
   topLevelOptions: OptionModel[];
   allOptions: OptionModel[];
   attributeSlug: string;
-  rubricGender: GenderModel;
+  rubricGender?: GenderModel | null;
 }
 
 export function castOptionsToTree({
@@ -206,7 +206,7 @@ export function castOptionsToTree({
 interface CastOptionsForRubricInterface {
   options: OptionModel[];
   attributeSlug: string;
-  rubricGender: GenderModel;
+  rubricGender?: GenderModel | null;
 }
 
 export function castOptionsForRubric({
@@ -284,7 +284,7 @@ interface CastAttributeForRubricInterface {
   attribute: AttributeModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  rubricGender: GenderModel;
+  rubricGender?: GenderModel | null;
 }
 
 export async function castAttributeForRubric({
@@ -384,10 +384,7 @@ export async function updateOptionInRubricAttributes({
 
   for await (const rubricAttribute of rubricAttributes) {
     // Update option in rubric attributes
-    const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
-    if (!rubricGender) {
-      continue;
-    }
+    const rubricGender = rubricAttribute.rubric?.catalogueTitle?.gender;
 
     const castedOption = castSingleOptionForRubric({
       rubricGender,
@@ -421,6 +418,7 @@ export async function updateOptionInRubricAttributes({
       },
     );
 
+    // TODO
     // Update option in product attributes
     const productAttributes = await productAttributesCollection
       .find({
@@ -428,11 +426,13 @@ export async function updateOptionInRubricAttributes({
         selectedOptionsIds: castedOption._id,
       })
       .toArray();
+    console.log('productAttributes', productAttributes.length);
 
     for await (const productAttribute of productAttributes) {
       const productAttributeOptions = await optionsCollection.find({
         _id: { $in: productAttribute.selectedOptionsIds },
       });
+      console.log('productAttributeOptions');
 
       const optionsValueI18n: TranslationModel = {};
       languagesSlugs.forEach((locale) => {
@@ -508,11 +508,6 @@ export async function deleteOptionFromRubricAttributes({
     .toArray();
 
   for await (const rubricAttribute of rubricAttributes) {
-    const rubricGender = rubricAttribute.rubric?.catalogueTitle.gender;
-    if (!rubricGender) {
-      continue;
-    }
-
     const updatedOptionsForRubricAttribute = deleteOptionFromTree({
       options: rubricAttribute.options,
       condition: (treeOption) => {

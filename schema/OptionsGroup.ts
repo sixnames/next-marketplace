@@ -572,7 +572,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const exist = findDocumentByI18nField({
+          const exist = await findDocumentByI18nField({
             fieldArg: values.nameI18n,
             collectionName: COL_OPTIONS,
             fieldName: 'nameI18n',

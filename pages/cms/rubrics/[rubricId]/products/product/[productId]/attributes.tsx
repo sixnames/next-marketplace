@@ -114,21 +114,26 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_NUMBER}.${locale}`,
                       )}
                     </div>
-                    {numberAttributesAST.attributes.map((attribute, index) => {
-                      return (
-                        <FormikInput
-                          type={'number'}
-                          label={`${attribute.attributeName}`}
-                          name={`attributes[${index}].number`}
-                          key={`${attribute.attributeId}`}
-                          testId={`${attribute.attributeSlug}`}
-                        />
-                      );
-                    })}
 
-                    <FixedButtons>
-                      <Button type={'submit'}>Сохранить</Button>
-                    </FixedButtons>
+                    <div className='relative'>
+                      <div className={selectsListClassName}>
+                        {numberAttributesAST.attributes.map((attribute, index) => {
+                          return (
+                            <FormikInput
+                              type={'number'}
+                              label={`${attribute.attributeName}`}
+                              name={`attributes[${index}].number`}
+                              key={`${attribute.attributeId}`}
+                              testId={`${attribute.attributeSlug}`}
+                            />
+                          );
+                        })}
+                      </div>
+
+                      <FixedButtons>
+                        <Button type={'submit'}>Сохранить</Button>
+                      </FixedButtons>
+                    </div>
                   </div>
                 </Form>
               );
@@ -153,21 +158,23 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                       )}
                     </div>
 
-                    {stringAttributesAST.attributes.map((attribute, index) => {
-                      return (
-                        <FormikTranslationsInput
-                          variant={'textarea'}
-                          label={`${attribute.attributeName}`}
-                          name={`attributes[${index}].textI18n`}
-                          key={`${attribute.attributeId}`}
-                          testId={`${attribute.attributeSlug}`}
-                        />
-                      );
-                    })}
+                    <div className='relative'>
+                      {stringAttributesAST.attributes.map((attribute, index) => {
+                        return (
+                          <FormikTranslationsInput
+                            variant={'textarea'}
+                            label={`${attribute.attributeName}`}
+                            name={`attributes[${index}].textI18n`}
+                            key={`${attribute.attributeId}`}
+                            testId={`${attribute.attributeSlug}`}
+                          />
+                        );
+                      })}
 
-                    <FixedButtons>
-                      <Button type={'submit'}>Сохранить</Button>
-                    </FixedButtons>
+                      <FixedButtons>
+                        <Button type={'submit'}>Сохранить</Button>
+                      </FixedButtons>
+                    </div>
                   </div>
                 </Form>
               );
@@ -295,7 +302,6 @@ export const getServerSideProps = async (
       const currentProductAttribute = productAttributes.find(({ attributeId }) => {
         return attributeId.equals(rubricAttributeAST.attributeId);
       });
-      // console.log(currentProductAttribute, rubricAttributeAST.attributeId);
       if (currentProductAttribute) {
         const readableValue = getFieldStringLocale(
           currentProductAttribute.optionsValueI18n,

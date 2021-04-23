@@ -429,10 +429,11 @@ export async function updateOptionInRubricAttributes({
     console.log('productAttributes', productAttributes.length);
 
     for await (const productAttribute of productAttributes) {
-      const productAttributeOptions = await optionsCollection.find({
-        _id: { $in: productAttribute.selectedOptionsIds },
-      });
-      console.log('productAttributeOptions');
+      const productAttributeOptions = await optionsCollection
+        .find({
+          _id: { $in: productAttribute.selectedOptionsIds },
+        })
+        .toArray();
 
       const optionsValueI18n: TranslationModel = {};
       languagesSlugs.forEach((locale) => {

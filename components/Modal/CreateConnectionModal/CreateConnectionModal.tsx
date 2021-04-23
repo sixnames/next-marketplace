@@ -29,9 +29,9 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
   });
 
   const attributesOptions: SelectOptionInterface[] = (product.attributes || []).reduce(
-    (acc: SelectOptionInterface[], { attributeVariant, attributeName, attributeId }) => {
+    (acc: SelectOptionInterface[], { attribute, attributeId }) => {
       if (
-        attributeVariant !== ATTRIBUTE_VARIANT_SELECT ||
+        attribute?.variant !== ATTRIBUTE_VARIANT_SELECT ||
         addedAttributesIds.includes(`${attributeId}`)
       ) {
         return acc;
@@ -40,7 +40,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
         ...acc,
         {
           _id: `${attributeId}`,
-          name: `${attributeName}`,
+          name: `${attribute?.name}`,
         },
       ];
     },

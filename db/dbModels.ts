@@ -433,7 +433,7 @@ export interface OrderModel extends BaseModel, TimestampModel {
 export interface ProductConnectionItemModel {
   _id: ObjectIdModel;
   optionId: ObjectIdModel;
-  optionNameI18n: TranslationModel;
+  // optionNameI18n: TranslationModel;
   productSlug: string;
   productId: ObjectIdModel;
   connectionId: ObjectIdModel;
@@ -443,10 +443,10 @@ export interface ProductConnectionModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
-  attributeMetric?: MetricModel | null;
-  attributeNameI18n: TranslationModel;
-  attributeVariant: AttributeVariantModel;
-  attributeViewVariant: AttributeViewVariantModel;
+  // attributeMetric?: MetricModel | null;
+  // attributeNameI18n: TranslationModel;
+  // attributeVariant: AttributeVariantModel;
+  // attributeViewVariant: AttributeViewVariantModel;
   productsIds: ObjectIdModel[];
 }
 
@@ -458,15 +458,15 @@ export interface ProductAttributeModel {
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
   attributeSlug: string;
-  attributeNameI18n: TranslationModel;
-  attributeMetric?: MetricModel | null;
-  attributeVariant: AttributeVariantModel;
-  attributeViewVariant: AttributeViewVariantModel;
+  // attributeNameI18n: TranslationModel;
+  // attributeMetric?: MetricModel | null;
+  // attributeVariant: AttributeVariantModel;
+  // attributeViewVariant: AttributeViewVariantModel;
   selectedOptionsSlugs: string[];
   selectedOptionsIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
-  optionsValueI18n: TranslationModel;
+  // optionsValueI18n: TranslationModel;
 }
 
 export interface ProductModel extends BaseModel, TimestampModel {
@@ -544,7 +544,6 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   rubricSlug: string;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
-  options: RubricOptionModel[];
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {

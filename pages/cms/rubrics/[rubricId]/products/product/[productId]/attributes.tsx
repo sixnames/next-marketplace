@@ -14,7 +14,7 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS, COL_RUBRIC_ATTRIBUTES } from 'db/collectionNames';
-import { AttributeVariantModel, ProductModel } from 'db/dbModels';
+import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   ProductAttributeInterface,
@@ -65,7 +65,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.attributeName}`}
+                    label={`${attribute.attribute?.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.attributeSlug}`}
                   />
@@ -88,7 +88,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.attributeName}`}
+                    label={`${attribute.attribute?.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.attributeSlug}`}
                   />
@@ -121,7 +121,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           return (
                             <FormikInput
                               type={'number'}
-                              label={`${attribute.attributeName}`}
+                              label={`${attribute.attribute?.name}`}
                               name={`attributes[${index}].number`}
                               key={`${attribute.attributeId}`}
                               testId={`${attribute.attributeSlug}`}
@@ -163,7 +163,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         return (
                           <FormikTranslationsInput
                             variant={'textarea'}
-                            label={`${attribute.attributeName}`}
+                            label={`${attribute.attribute?.name}`}
                             name={`attributes[${index}].textI18n`}
                             key={`${attribute.attributeId}`}
                             testId={`${attribute.attributeSlug}`}
@@ -303,38 +303,39 @@ export const getServerSideProps = async (
         return attributeId.equals(rubricAttributeAST.attributeId);
       });
       if (currentProductAttribute) {
-        const readableValue = getFieldStringLocale(
+        // TODO readableValue
+        const readableValue = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+        /*const readableValue = getFieldStringLocale(
           currentProductAttribute.optionsValueI18n,
           props.sessionLocale,
-        );
+        );*/
         const finalReadableValue =
           readableValue === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : readableValue;
         astGroup.attributes.push({
           ...currentProductAttribute,
           readableValue: finalReadableValue,
-          attributeName: getFieldStringLocale(
-            currentProductAttribute.attributeNameI18n,
-            props.sessionLocale,
-          ),
+          attribute: currentProductAttribute.attribute
+            ? {
+                ...currentProductAttribute.attribute,
+                name: getFieldStringLocale(
+                  currentProductAttribute.attribute.nameI18n,
+                  props.sessionLocale,
+                ),
+              }
+            : null,
         });
         continue;
       }
 
-      const { attributeId, nameI18n, slug, viewVariant } = rubricAttributeAST;
+      const { attributeId, slug } = rubricAttributeAST;
       const newProductAttribute: ProductAttributeInterface = {
         _id: new ObjectId(),
         attributeId,
         productId: product._id,
         productSlug: product.slug,
-        attributeNameI18n: nameI18n,
-        attributeName: getFieldStringLocale(nameI18n, props.sessionLocale),
-        attributeViewVariant: viewVariant,
-        attributeVariant: variant as AttributeVariantModel,
         attributeSlug: slug,
         selectedOptionsIds: [],
-        optionsValueI18n: {},
         selectedOptionsSlugs: [],
-        attributeMetric: null,
         number: undefined,
         textI18n: {},
         showAsBreadcrumb: false,

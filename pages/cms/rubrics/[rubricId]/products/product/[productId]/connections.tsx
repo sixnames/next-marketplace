@@ -75,7 +75,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
   return (
     <ContentItemControls
-      testId={`${connection.attributeName}-connection`}
+      testId={`${connection.attribute?.name}-connection`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -185,7 +185,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  message: `Вы уверенны, что хотите удалить ${dataItem?.product?.originalName} из связи ${connection.attributeName}?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem?.product?.originalName} из связи ${connection.attribute?.name}?`,
                   testId: 'delete-product-from-connection-modal',
                   confirm: () => {
                     showLoading();
@@ -210,8 +210,8 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   return (
     <Accordion
-      testId={`${connection.attributeName}-connection`}
-      title={`${connection.attributeName}`}
+      testId={`${connection.attribute?.name}-connection`}
+      title={`${connection.attribute?.name}`}
       isOpen
       className='mb-8'
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
@@ -219,7 +219,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       <Table<ProductConnectionItemModel>
         columns={columns}
         data={connectionProducts}
-        tableTestId={`${connection.attributeName}-connection-list`}
+        tableTestId={`${connection.attribute?.name}-connection-list`}
         testIdKey={'product.name'}
       />
     </Accordion>
@@ -416,13 +416,23 @@ export const getServerSideProps = async (
     for await (const connectionProduct of productConnection.connectionProducts || []) {
       connectionProducts.push({
         ...connectionProduct,
-        optionName: getFieldStringLocale(connectionProduct.optionNameI18n, props.sessionLocale),
+        option: connectionProduct.option
+          ? {
+              ...connectionProduct.option,
+              name: getFieldStringLocale(connectionProduct.option?.nameI18n, props.sessionLocale),
+            }
+          : null,
       });
     }
 
     connections.push({
       ...productConnection,
-      attributeName: getFieldStringLocale(productConnection.attributeNameI18n, props.sessionLocale),
+      attribute: productConnection.attribute
+        ? {
+            ...productConnection.attribute,
+            name: getFieldStringLocale(productConnection.attribute?.nameI18n, props.sessionLocale),
+          }
+        : null,
       connectionProducts,
     });
   }
@@ -430,10 +440,15 @@ export const getServerSideProps = async (
   const rawProduct: ProductInterface = {
     ...product,
     connections,
-    attributes: (product.attributes || []).map((attribute) => {
+    attributes: (product.attributes || []).map((productAttribute) => {
       return {
-        ...attribute,
-        attributeName: getFieldStringLocale(attribute.attributeNameI18n, props.sessionLocale),
+        ...productAttribute,
+        attribute: productAttribute.attribute
+          ? {
+              ...productAttribute.attribute,
+              name: getFieldStringLocale(productAttribute.attribute.nameI18n, props.sessionLocale),
+            }
+          : null,
       };
     }),
   };

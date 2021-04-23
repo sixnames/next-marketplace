@@ -21,7 +21,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const { _id, options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
 
-  if (options.length < 1) {
+  if ((options || []).length < 1) {
     return null;
   }
 
@@ -31,7 +31,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {name}
       </div>
       <ul>
-        {options.map((option) => {
+        {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
               <Link

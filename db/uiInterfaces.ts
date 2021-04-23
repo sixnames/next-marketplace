@@ -137,19 +137,19 @@ export interface OrderStatusInterface extends OrderStatusModel {
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
   product?: ProductInterface;
-  optionName?: string | null;
+  option?: OptionInterface | null;
 }
 
 export interface ProductConnectionInterface extends ProductConnectionModel {
-  attributeName?: string;
+  attribute?: AttributeInterface | null;
   connectionProducts?: ProductConnectionItemInterface[];
 }
 
 export interface ProductAttributeInterface extends ProductAttributeModel {
-  attributeName?: string | null;
   readableValue?: string | null;
   index?: number | null;
   selectedOptions?: OptionInterface[] | null;
+  attribute?: AttributeInterface | null;
 }
 
 export type ProductCardPricesInterface = ProductCardPricesModel;
@@ -214,7 +214,7 @@ export interface RubricOptionInterface extends RubricOptionModel, OptionInterfac
 }
 
 export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
-  options: RubricOptionInterface[];
+  options?: RubricOptionInterface[] | null;
   name?: string | null;
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;

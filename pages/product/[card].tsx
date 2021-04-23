@@ -32,14 +32,14 @@ interface CardRouteFeaturesInterface {
 const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
   return features.length > 0 ? (
     <div className={classes.mainFrameFeatures}>
-      {features.map(({ showInCard, _id, attributeName, readableValue }) => {
+      {features.map(({ showInCard, _id, attribute, readableValue }) => {
         if (!showInCard) {
           return null;
         }
 
         return (
           <div key={`${_id}`} className={classes.feature}>
-            <div className={classes.featureTitle}>{attributeName}</div>
+            <div className={classes.featureTitle}>{attribute?.name}</div>
             <div className={classes.featureValue}>{readableValue}</div>
           </div>
         );
@@ -147,10 +147,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                   <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
                   <div className={classes.outerRatingsList}>
-                    {(ratingFeatures || []).map(({ attributeName, _id, number }) => {
+                    {(ratingFeatures || []).map(({ attribute, _id, number }) => {
                       return (
                         <div key={`${_id}`} className={classes.outerRatingsItem}>
-                          {attributeName} {number}
+                          {attribute?.name} {number}
                         </div>
                       );
                     })}
@@ -161,21 +161,21 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               {/*Connections*/}
               {(connections || []).length > 0 ? (
                 <div className={classes.connections}>
-                  {(connections || []).map(({ _id, attributeName, connectionProducts }) => {
+                  {(connections || []).map(({ _id, attribute, connectionProducts }) => {
                     return (
                       <div key={`${_id}`} className={classes.connectionsGroup}>
-                        <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
+                        <div className={classes.connectionsGroupLabel}>{`${attribute?.name}:`}</div>
                         <div className={classes.connectionsList}>
-                          {(connectionProducts || []).map(({ optionName, productSlug }) => {
+                          {(connectionProducts || []).map(({ option, productSlug }) => {
                             const isCurrent = productSlug === cardData.slug;
 
                             if (isCurrent) {
                               return (
                                 <span
                                   className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
-                                  key={`${optionName}`}
+                                  key={`${option?.name}`}
                                 >
-                                  {optionName}
+                                  {option?.name}
                                 </span>
                               );
                             }
@@ -183,10 +183,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                               <Link
                                 data-cy={`connection-${productSlug}`}
                                 className={`${classes.connectionsGroupItem}`}
-                                key={`${optionName}`}
+                                key={`${option?.name}`}
                                 href={`/product/${productSlug}`}
                               >
-                                {optionName}
+                                {option?.name}
                               </Link>
                             );
                           })}
@@ -291,10 +291,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
-            {(iconFeatures || []).map(({ attributeName, _id, selectedOptions }) => {
+            {(iconFeatures || []).map(({ attribute, _id, selectedOptions }) => {
               return (
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
-                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
+                  <div className={classes.cardFeaturesLabel}>{attribute?.name}</div>
                   <div className={classes.cardFeaturesCombinationsList}>
                     {(selectedOptions || []).map(({ _id, name, icon }) => {
                       return (
@@ -309,10 +309,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               );
             })}
 
-            {(tagFeatures || []).map(({ attributeName, selectedOptions, _id }) => {
+            {(tagFeatures || []).map(({ attribute, selectedOptions, _id }) => {
               return (
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
-                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
+                  <div className={classes.cardFeaturesLabel}>{attribute?.name}</div>
                   <div className={classes.cardFeaturesTagsList}>
                     {(selectedOptions || []).map((value) => (
                       <div className={classes.cardFeaturesTag} key={`${value._id}`}>
@@ -326,13 +326,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
           </div>
 
           <div className={classes.cardFeaturesContent}>
-            {(textFeatures || []).map(({ attributeName, _id, readableValue }) => {
+            {(textFeatures || []).map(({ attribute, _id, readableValue }) => {
               if (!readableValue) {
                 return null;
               }
               return (
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
-                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
+                  <div className={classes.cardFeaturesLabel}>{attribute?.name}</div>
                   <div className={classes.cardFeaturesText}>
                     <p>{readableValue}</p>
                   </div>

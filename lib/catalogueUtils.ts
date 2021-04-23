@@ -11,10 +11,8 @@ import {
   GenderModel,
   ObjectIdModel,
   ProductConnectionModel,
-  RubricAttributeModel,
   RubricCatalogueTitleModel,
   RubricModel,
-  RubricOptionModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -54,6 +52,7 @@ import {
   CatalogueProductsAggregationInterface,
   RubricAttributeInterface,
   RubricInterface,
+  RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -80,8 +79,8 @@ export function castCatalogueParamToObject(
 }
 
 export interface SelectedFilterInterface {
-  attribute: RubricAttributeModel;
-  options: RubricOptionModel[];
+  attribute: RubricAttributeInterface;
+  options: RubricOptionInterface[];
 }
 
 interface GetCatalogueTitleInterface {
@@ -200,7 +199,7 @@ export function getCatalogueTitle({
 }
 
 export interface GetRubricCatalogueOptionsInterface {
-  options: RubricOptionModel[];
+  options: RubricOptionInterface[];
   // maxVisibleOptions: number;
   visibleOptionsSlugs: string[];
   city: string;
@@ -211,7 +210,7 @@ export function getRubricCatalogueOptions({
   // maxVisibleOptions,
   visibleOptionsSlugs,
   city,
-}: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
+}: GetRubricCatalogueOptionsInterface): RubricOptionInterface[] {
   const visibleOptions = options.filter(({ slug }) => {
     return visibleOptionsSlugs.includes(slug);
   });
@@ -242,8 +241,8 @@ export async function getRubricCatalogueAttributes({
   attributes,
   // visibleOptionsCount,
   config,
-}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
-  const sortedAttributes: RubricAttributeModel[] = [];
+}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeInterface[]> {
+  const sortedAttributes: RubricAttributeInterface[] = [];
   attributes.forEach((attribute) => {
     const attributeInConfig = config.find(({ _id }) => _id === attribute.slug);
     if (!attributeInConfig) {
@@ -253,7 +252,7 @@ export async function getRubricCatalogueAttributes({
     sortedAttributes.push({
       ...attribute,
       options: getRubricCatalogueOptions({
-        options: attribute.options,
+        options: attribute.options || [],
         // maxVisibleOptions: visibleOptionsCount,
         visibleOptionsSlugs: attributeInConfig.optionsSlugs,
         city,
@@ -266,7 +265,7 @@ export async function getRubricCatalogueAttributes({
 
 export interface GetCatalogueAttributesInterface {
   filter: string[];
-  attributes: RubricAttributeModel[];
+  attributes: RubricAttributeInterface[];
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
   basePath: string;
@@ -299,9 +298,9 @@ export async function getCatalogueAttributes({
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
     const selectedFilterOptions: CatalogueFilterAttributeOptionInterface[] = [];
-    const selectedOptions: RubricOptionModel[] = [];
+    const selectedOptions: RubricOptionInterface[] = [];
 
-    for await (const option of options) {
+    for await (const option of options || []) {
       // check if selected
       const optionSlug = option.slug;
       const isSelected = realFilter.includes(optionSlug);

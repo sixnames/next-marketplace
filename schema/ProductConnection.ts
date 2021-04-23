@@ -1,4 +1,3 @@
-import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -31,20 +30,5 @@ export const ProductConnection = objectType({
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
     t.json('attributeNameI18n');
-    t.nonNull.field('attributeViewVariant', {
-      type: 'AttributeViewVariant',
-    });
-    t.nonNull.field('attributeVariant', {
-      type: 'AttributeVariant',
-    });
-
-    // ProductConnection name translation field resolver
-    t.nonNull.field('attributeName', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.attributeNameI18n);
-      },
-    });
   },
 });

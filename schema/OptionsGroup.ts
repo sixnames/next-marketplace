@@ -1,8 +1,3 @@
-import {
-  addOptionToRubricAttribute,
-  deleteOptionFromRubricAttributes,
-  updateOptionInRubricAttributes,
-} from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -494,19 +489,6 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update options in rubric attributes
-          const updatedRubricOptionsResult = await addOptionToRubricAttribute({
-            option: createdOption,
-            parentId,
-            optionsGroupId,
-          });
-          if (!updatedRubricOptionsResult) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.addOption.error'),
-            };
-          }
-
           return {
             success: true,
             message: await getApiMessage('optionsGroups.addOption.success'),
@@ -610,12 +592,6 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // update options in products attributes and connections
-          await updateOptionInRubricAttributes({
-            option: updatedOption,
-            optionsGroupId,
-          });
-
           return {
             success: true,
             message: await getApiMessage('optionsGroups.updateOption.success'),
@@ -704,12 +680,6 @@ export const OptionsGroupMutations = extendType({
               message: await getApiMessage('optionsGroups.deleteOption.error'),
             };
           }
-
-          // Update rubric attributes options list
-          await deleteOptionFromRubricAttributes({
-            optionId,
-            optionsGroupId,
-          });
 
           return {
             success: true,

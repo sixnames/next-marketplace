@@ -1,3 +1,4 @@
+import { ProductAttributeInterface, ProductConnectionInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -844,11 +845,23 @@ export const ProductMutations = extendType({
 
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
+
+          // TODO
           const productConnections = await productConnectionsCollection
-            .find({ productId })
+            .aggregate<ProductConnectionInterface>([
+              {
+                $match: { productId },
+              },
+            ])
             .toArray();
+
+          // TODO
           const productAttributes = await productsAttributesCollection
-            .find({ productId })
+            .aggregate<ProductAttributeInterface>([
+              {
+                $match: { productId },
+              },
+            ])
             .toArray();
 
           // Find current attribute in product
@@ -863,7 +876,7 @@ export const ProductMutations = extendType({
           }
 
           // Check attribute variant. Must be as Select
-          if (productAttribute.attributeVariant !== ATTRIBUTE_VARIANT_SELECT) {
+          if (productAttribute.attribute?.variant !== ATTRIBUTE_VARIANT_SELECT) {
             return {
               success: false,
               message: await getApiMessage(`products.update.attributeVariantError`),
@@ -901,9 +914,6 @@ export const ProductMutations = extendType({
           const createdConnectionResult = await productConnectionsCollection.insertOne({
             attributeId: productAttribute.attributeId,
             attributeSlug: productAttribute.attributeSlug,
-            attributeNameI18n: productAttribute.attributeNameI18n,
-            attributeVariant: productAttribute.attributeVariant,
-            attributeViewVariant: productAttribute.attributeViewVariant,
             productsIds: [productId],
           });
           const createdConnection = createdConnectionResult.ops[0];
@@ -918,7 +928,6 @@ export const ProductMutations = extendType({
           const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
             _id: productId,
             optionId,
-            optionNameI18n: option.nameI18n,
             productId,
             productSlug: product.slug,
             connectionId: createdConnection._id,
@@ -1066,7 +1075,6 @@ export const ProductMutations = extendType({
           const CreatedConnectionItemResult = await productConnectionItemsCollection.insertOne({
             _id: addProductId,
             optionId: option._id,
-            optionNameI18n: option.nameI18n,
             productId: addProductId,
             productSlug: addProduct.slug,
             connectionId,

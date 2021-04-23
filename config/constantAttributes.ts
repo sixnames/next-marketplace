@@ -9,12 +9,12 @@ import {
   AttributeVariantModel,
   AttributeViewVariantModel,
   GenderModel,
-  RubricAttributeModel,
   RubricOptionModel,
 } from 'db/dbModels';
+import { RubricAttributeInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
-export function getPriceAttribute(): RubricAttributeModel {
+export function getPriceAttribute(): RubricAttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields: Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> = {
     priorities: {},

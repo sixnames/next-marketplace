@@ -393,7 +393,6 @@ export const RubricMutations = extendType({
             const rubricAttribute = await castAttributeForRubric({
               attribute,
               rubricSlug: rubric.slug,
-              rubricGender: rubric.catalogueTitle?.gender,
               rubricId,
             });
             rubricAttributes.push(rubricAttribute);

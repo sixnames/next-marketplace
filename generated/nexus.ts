@@ -1486,13 +1486,8 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributeMetric: NexusGenRootTypes['Metric'] | null; // Metric
-    attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
-    attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
-    attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
     number: number | null; // Float
-    optionsValueI18n: string | null; // String
     selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     selectedOptionsSlugs: string[]; // [String!]!
     showAsBreadcrumb: boolean; // Boolean!
@@ -1510,11 +1505,8 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributeName: string; // String!
     attributeNameI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     attributeSlug: string; // String!
-    attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
-    attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
   };
   ProductConnectionItem: {
     // field return type
@@ -1647,7 +1639,6 @@ export interface NexusGenFieldTypes {
     metric: NexusGenRootTypes['Metric'] | null; // Metric
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -2490,13 +2481,8 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
-    attributeMetric: 'Metric';
-    attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';
-    attributeVariant: 'AttributeVariant';
-    attributeViewVariant: 'AttributeViewVariant';
     number: 'Float';
-    optionsValueI18n: 'String';
     selectedOptionsIds: 'ObjectId';
     selectedOptionsSlugs: 'String';
     showAsBreadcrumb: 'Boolean';
@@ -2514,11 +2500,8 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     attributeId: 'ObjectId';
-    attributeName: 'String';
     attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';
-    attributeVariant: 'AttributeVariant';
-    attributeViewVariant: 'AttributeViewVariant';
   };
   ProductConnectionItem: {
     // field return type name
@@ -2651,7 +2634,6 @@ export interface NexusGenFieldTypeNames {
     metric: 'Metric';
     name: 'String';
     nameI18n: 'JSONObject';
-    options: 'RubricOption';
     optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';

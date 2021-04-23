@@ -1,3 +1,4 @@
+import { RubricAttributeInterface } from 'db/uiInterfaces';
 import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
@@ -545,8 +546,13 @@ export const CatalogueMutations = extendType({
             );
 
             // Update rubric counters
+            // TODO
             const attributes = await rubricAttributesCollection
-              .find({ rubricId: rubric._id })
+              .aggregate<RubricAttributeInterface>([
+                {
+                  $match: { rubricId: rubric._id },
+                },
+              ])
               .toArray();
             const attributesSlugs = filter.map((selectedSlug) => {
               return selectedSlug.split(CATALOGUE_OPTION_SEPARATOR)[0];
@@ -568,7 +574,7 @@ export const CatalogueMutations = extendType({
 
                 const updatedOptions = updateRubricOptionsViews({
                   selectedOptionsSlugs: filter,
-                  options: attribute.options,
+                  options: attribute.options || [],
                   companySlug: `${companySlug}`,
                   city,
                 }).sort((optionA, optionB) => {

@@ -1471,13 +1471,8 @@ type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
-  attributeMetric: Metric
-  attributeNameI18n: JSONObject!
   attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
   number: Float
-  optionsValueI18n: String
   selectedOptionsIds: [ObjectId!]!
 
   """
@@ -1522,11 +1517,8 @@ type ProductCardPrices {
 type ProductConnection {
   _id: ObjectId!
   attributeId: ObjectId!
-  attributeName: String!
   attributeNameI18n: JSONObject
   attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
 }
 
 type ProductConnectionItem {
@@ -1922,7 +1914,6 @@ type RubricAttribute {
   metric: Metric
   name: String!
   nameI18n: JSONObject!
-  options: [RubricOption!]!
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject

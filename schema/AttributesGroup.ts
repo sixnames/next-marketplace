@@ -1,5 +1,3 @@
-import { RubricAttributeInterface } from 'db/uiInterfaces';
-import { castAttributeForRubric, castOptionsForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -7,9 +5,7 @@ import {
   AttributesGroupModel,
   AttributesGroupPayloadModel,
   MetricModel,
-  OptionModel,
   ProductAttributeModel,
-  ProductConnectionModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -19,9 +15,7 @@ import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_METRICS,
-  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -478,10 +472,6 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
 
           // Check if attributes group exist
           const attributesGroup = await attributesGroupCollection.findOne({
@@ -550,20 +540,6 @@ export const attributesGroupMutations = extendType({
             };
           }
 
-          // Add attribute to rubric attributes
-          const rubrics = await rubricsCollection
-            .find({ attributesGroupsIds: attributesGroupId })
-            .toArray();
-          for await (const rubric of rubrics) {
-            const rubricAttribute = await castAttributeForRubric({
-              attribute: createdAttribute,
-              rubricSlug: rubric.slug,
-              rubricId: rubric._id,
-              rubricGender: rubric.catalogueTitle?.gender,
-            });
-            await rubricAttributesCollection.insertOne(rubricAttribute);
-          }
-
           return {
             success: true,
             message: await getApiMessage('attributesGroups.addAttribute.success'),
@@ -608,16 +584,6 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
 
           // Check if attributes group exist
           const group = await attributesGroupCollection.findOne({
@@ -678,114 +644,6 @@ export const attributesGroupMutations = extendType({
           );
           const updatedAttribute = updatedAttributeResult.value;
           if (!updatedAttributeResult.ok || !updatedAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
-
-          // Update rubric attributes
-          let attributeOptions: OptionModel[] = [];
-          if (values.optionsGroupId) {
-            attributeOptions = await optionsCollection
-              .find({ optionsGroupId: values.optionsGroupId })
-              .toArray();
-          }
-
-          const rubricAttributes = await rubricAttributesCollection
-            .aggregate<RubricAttributeInterface>([
-              { $match: { attributeId } },
-              {
-                $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubric',
-                  let: { rubricId: '$rubricId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$rubricId', '$_id'],
-                        },
-                      },
-                    },
-                    {
-                      $addFields: {
-                        rubric: {
-                          $arrayElemAt: ['$rubric', 0],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            ])
-            .toArray();
-          let updatedRubricAttributesCont = 0;
-          for await (const rubricAttribute of rubricAttributes) {
-            const updatedRubricAttribute = await rubricAttributesCollection.findOneAndUpdate(
-              {
-                attributeId: rubricAttribute.attributeId,
-              },
-              {
-                $set: {
-                  ...values,
-                  metric,
-                  options: castOptionsForRubric({
-                    options: attributeOptions,
-                    attributeSlug: attribute.slug,
-                    rubricGender: rubricAttribute.rubric?.catalogueTitle?.gender,
-                  }),
-                },
-              },
-            );
-            if (updatedRubricAttribute.ok) {
-              updatedRubricAttributesCont = updatedRubricAttributesCont + 1;
-            }
-          }
-
-          if (updatedRubricAttributesCont !== rubricAttributes.length) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
-
-          // Update product attributes
-          const updatedProductAttributesResult = await productAttributesCollection.updateMany(
-            {
-              attributeId,
-            },
-            {
-              $set: {
-                attributeNameI18n: values.nameI18n,
-                attributeMetric: metric,
-                attributeVariant: values.variant,
-                attributeViewVariant: values.viewVariant,
-              },
-            },
-          );
-          if (!updatedProductAttributesResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
-
-          // Update attribute in product connections
-          const updatedProductConnectionsResult = await productConnectionsCollection.updateMany(
-            {
-              attributeId,
-            },
-            {
-              $set: {
-                attributeNameI18n: values.nameI18n,
-                attributeMetric: metric,
-                attributeVariant: values.variant,
-                attributeViewVariant: values.viewVariant,
-              },
-            },
-          );
-          if (!updatedProductConnectionsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

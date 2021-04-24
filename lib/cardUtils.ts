@@ -167,7 +167,7 @@ export async function getCardData({
               {
                 $lookup: {
                   from: COL_OPTIONS,
-                  as: 'selectedOptions',
+                  as: 'options',
                   let: {
                     selectedOptionsIds: '$selectedOptionsIds',
                   },
@@ -203,6 +203,7 @@ export async function getCardData({
       ])
       .toArray();
     const product = shopProductsAggregation[0];
+
     if (!product || !product.rubric) {
       return null;
     }
@@ -308,7 +309,7 @@ export async function getCardData({
       }
 
       // Get all selected options
-      const options = productAttribute.selectedOptions || [];
+      const options = productAttribute.options || [];
 
       // Get first selected option
       const firstSelectedOption = options[0];

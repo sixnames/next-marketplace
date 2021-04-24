@@ -72,9 +72,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <div className={classes.name}>{originalName}</div>
             <div className={classes.nameTranslation}>{name}</div>
             <div className={classes.listFeatures}>
-              {(listFeatures || []).map(({ name, attributeId, readableValue }) => {
+              {(listFeatures || []).map(({ name, _id, readableValue }) => {
                 return (
-                  <React.Fragment key={`${attributeId}`}>
+                  <React.Fragment key={`${_id}`}>
                     <div className={classes.listFeaturesLabel}>{name}</div>
                     <div className={classes.listFeaturesValue}>{readableValue}</div>
                   </React.Fragment>
@@ -84,9 +84,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.mainContentBottom}>
               <div className={classes.outerRatingList}>
-                {(ratingFeatures || []).map(({ attributeId, name, readableValue }) => {
+                {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
                   return (
-                    <div key={`${attributeId}`} className={classes.outerRating}>
+                    <div key={`${_id}`} className={classes.outerRating}>
                       {`${name} ${readableValue}`}
                     </div>
                   );

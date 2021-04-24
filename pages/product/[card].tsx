@@ -291,12 +291,12 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
-            {(iconFeatures || []).map(({ _id, name, selectedOptions }) => {
+            {(iconFeatures || []).map(({ _id, name, options }) => {
               return (
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{name}</div>
                   <div className={classes.cardFeaturesCombinationsList}>
-                    {(selectedOptions || []).map(({ _id, name, icon }) => {
+                    {(options || []).map(({ _id, name, icon }) => {
                       return (
                         <div className={classes.cardFeaturesCombination} key={`${_id}`}>
                           <Icon className={classes.cardFeaturesCombinationIcon} name={`${icon}`} />
@@ -309,12 +309,12 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
               );
             })}
 
-            {(tagFeatures || []).map(({ name, selectedOptions, _id }) => {
+            {(tagFeatures || []).map(({ name, options, _id }) => {
               return (
                 <div className={classes.cardFeaturesGroup} key={`${_id}`}>
                   <div className={classes.cardFeaturesLabel}>{name}</div>
                   <div className={classes.cardFeaturesTagsList}>
-                    {(selectedOptions || []).map((value) => (
+                    {(options || []).map((value) => (
                       <div className={classes.cardFeaturesTag} key={`${value._id}`}>
                         {value.name}
                       </div>

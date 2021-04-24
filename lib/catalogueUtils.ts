@@ -608,9 +608,9 @@ export const getCatalogueData = async ({
   companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    console.log(' ');
-    console.log('===========================================================');
-    const timeStart = new Date().getTime();
+    // console.log(' ');
+    // console.log('===========================================================');
+    // const timeStart = new Date().getTime();
     const db = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
@@ -620,12 +620,12 @@ export const getCatalogueData = async ({
     const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
 
     // Get configs
-    const configsTimeStart = new Date().getTime();
+    // const configsTimeStart = new Date().getTime();
     const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs({
       companySlug: realCompanySlug,
       city,
     });
-    console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
+    // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Cast selected options
     const {
@@ -700,7 +700,7 @@ export const getCatalogueData = async ({
       visibleOptionsCount,
     });
 
-    const shopProductsStart = new Date().getTime();
+    // const shopProductsStart = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>(
         [
@@ -855,7 +855,7 @@ export const getCatalogueData = async ({
     // console.log(shopProductsAggregationResult);
     // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
-    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
+    // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
       return null;
@@ -863,7 +863,7 @@ export const getCatalogueData = async ({
 
     // Get filter attributes
     const { rubric } = shopProductsAggregationResult;
-    const beforeOptions = new Date().getTime();
+    // const beforeOptions = new Date().getTime();
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
       locale,
@@ -871,7 +871,7 @@ export const getCatalogueData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: ROUTE_CATALOGUE,
     });
-    console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
+    // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products
     const products = [];
@@ -939,7 +939,7 @@ export const getCatalogueData = async ({
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-    console.log('Total time: ', new Date().getTime() - timeStart);
+    // console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,

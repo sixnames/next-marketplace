@@ -1,6 +1,7 @@
 import { getPriceAttribute } from 'config/constantAttributes';
 import {
   COL_CONFIGS,
+  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -776,29 +777,37 @@ export const getCatalogueData = async ({
                           $expr: {
                             $eq: ['$$productId', '$productId'],
                           },
-                          attributeViewVariant: {
+                          viewVariant: {
                             $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
                           },
                         },
                       },
-                      /*{
+                      {
                         $lookup: {
-                          from: COL_ATTRIBUTES,
-                          as: 'attribute',
+                          from: COL_OPTIONS,
+                          as: 'options',
                           let: {
-                            attributeId: '$attributeId',
+                            optionsGroupId: '$optionsGroupId',
+                            selectedOptionsIds: '$selectedOptionsIds',
                           },
                           pipeline: [
                             {
                               $match: {
                                 $expr: {
-                                  $eq: ['$$attributeId', '$_id'],
+                                  $and: [
+                                    {
+                                      $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                                    },
+                                    {
+                                      $in: ['$_id', '$$selectedOptionsIds'],
+                                    },
+                                  ],
                                 },
                               },
                             },
                           ],
                         },
-                      },*/
+                      },
                     ],
                   },
                 },
@@ -844,7 +853,7 @@ export const getCatalogueData = async ({
       .toArray();
     const shopProductsAggregationResult = shopProductsAggregation[0];
     // console.log(shopProductsAggregationResult);
-    console.log(shopProductsAggregationResult.docs[0]);
+    // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
     console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
@@ -879,7 +888,7 @@ export const getCatalogueData = async ({
         min: getCurrencyString(minPrice),
         max: getCurrencyString(maxPrice),
       };
-      console.log(attributes?.length);
+
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes: attributes || [],

@@ -1471,7 +1471,6 @@ type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
-  attributeSlug: String!
   number: Float
   selectedOptionsIds: [ObjectId!]!
 

@@ -6,12 +6,14 @@ interface GetCatalogueRubricPipelineInterface {
   city: string;
   visibleAttributesCount?: number | null;
   visibleOptionsCount?: number | null;
+  viewVariant?: 'filter' | 'nav';
 }
 export function getCatalogueRubricPipeline({
   companySlug,
   city,
   visibleAttributesCount,
   visibleOptionsCount,
+  viewVariant = 'filter',
 }: GetCatalogueRubricPipelineInterface): Record<string, any>[] {
   const sortStage = {
     [`priorities.${companySlug}.${city}`]: SORT_DESC,
@@ -34,6 +36,15 @@ export function getCatalogueRubricPipeline({
         },
       ]
     : [];
+
+  const rubricAttributesViewVariant =
+    viewVariant === 'filter'
+      ? {
+          showInCatalogueFilter: true,
+        }
+      : {
+          showInCatalogueNav: true,
+        };
 
   return [
     // Get attributes ond options slugs
@@ -99,7 +110,7 @@ export function getCatalogueRubricPipeline({
             },
           },
 
-          // Lookup rubric attribute
+          // Lookup rubric attributes
           {
             $lookup: {
               from: COL_RUBRIC_ATTRIBUTES,
@@ -117,7 +128,7 @@ export function getCatalogueRubricPipeline({
                         },
                       ],
                     },
-                    showInCatalogueNav: true,
+                    ...rubricAttributesViewVariant,
                   },
                 },
                 {
@@ -128,7 +139,6 @@ export function getCatalogueRubricPipeline({
                   $project: {
                     variant: false,
                     viewVariant: false,
-                    capitalise: false,
                     attributeId: false,
                     rubricId: false,
                     showInCatalogueNav: false,
@@ -137,6 +147,7 @@ export function getCatalogueRubricPipeline({
                     priorities: false,
                   },
                 },
+
                 // Lookup rubric attribute options
                 {
                   $lookup: {

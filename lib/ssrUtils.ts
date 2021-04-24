@@ -98,6 +98,7 @@ export const getCatalogueNavRubrics = async ({
     companySlug,
     visibleAttributesCount,
     visibleOptionsCount,
+    viewVariant: 'nav',
   });
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
@@ -119,10 +120,22 @@ export const getCatalogueNavRubrics = async ({
       {
         $sort: sortStage,
       },
+      {
+        $project: {
+          descriptionI18n: false,
+          shortDescriptionI18n: false,
+          catalogueTitle: false,
+          attributesGroupsIds: false,
+          views: false,
+          priorities: false,
+          variantId: false,
+        },
+      },
     ])
     .toArray();
   // console.log(shopRubricsAggregation);
   // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
+  // console.log(JSON.stringify(shopRubricsAggregation[0], null, 2));
   // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricInterface[] = [];

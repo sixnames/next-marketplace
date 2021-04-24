@@ -1486,7 +1486,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributeSlug: string; // String!
     number: number | null; // Float
     selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     selectedOptionsSlugs: string[]; // [String!]!
@@ -2480,7 +2479,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
-    attributeSlug: 'String';
     number: 'Float';
     selectedOptionsIds: 'ObjectId';
     selectedOptionsSlugs: 'String';

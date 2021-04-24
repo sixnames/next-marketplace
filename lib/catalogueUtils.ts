@@ -865,7 +865,7 @@ export const getCatalogueData = async ({
     const { rubric } = shopProductsAggregationResult;
     const beforeOptions = new Date().getTime();
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: rubric.attributes || [],
+      attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
       locale,
       filter,
       productsPrices: shopProductsAggregationResult.prices,

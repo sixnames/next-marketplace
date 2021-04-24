@@ -147,7 +147,7 @@ export interface ProductConnectionInterface extends ProductConnectionModel {
 export interface ProductAttributeInterface extends ProductAttributeModel, AttributeInterface {
   readableValue?: string | null;
   index?: number | null;
-  selectedOptions?: OptionInterface[] | null;
+  options?: OptionInterface[] | null;
 }
 
 export interface RubricAttributesGroupASTInterface {

@@ -587,6 +587,9 @@ export const attributesGroupMutations = extendType({
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
           );
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
 
           // Check if attributes group exist
           const group = await attributesGroupCollection.findOne({
@@ -664,6 +667,23 @@ export const attributesGroupMutations = extendType({
             },
           );
           if (!updatedRubricAttributeResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+            };
+          }
+
+          // Update product attribute
+          const updatedProductAttributeResult = await productAttributesCollection.updateMany(
+            { attributeId },
+            {
+              $set: {
+                ...values,
+                metric,
+              },
+            },
+          );
+          if (!updatedProductAttributeResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

@@ -659,7 +659,7 @@ export const getCatalogueData = async ({
       ? {}
       : {
           selectedOptionsSlugs: {
-            $all: realFilterOptions,
+            $in: realFilterOptions,
           },
         };
 
@@ -685,7 +685,7 @@ export const getCatalogueData = async ({
     // sort by price
     if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
       sortStage = {
-        price: sortDir,
+        minPrice: sortDir,
         priorities: SORT_DESC,
         views: SORT_DESC,
         available: SORT_DESC,
@@ -895,6 +895,7 @@ export const getCatalogueData = async ({
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
       });
+
       const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
         const indexInRubric = rubricListViewAttributes.findIndex(
           ({ slug }) => slug === listAttribute.slug,

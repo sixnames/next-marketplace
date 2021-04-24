@@ -63,7 +63,7 @@ export function getAttributeReadableValue({
     productAttribute.selectedOptionsSlugs.length > 0
   ) {
     return getStringValueFromOptionsList({
-      options: productAttribute.selectedOptions || [],
+      options: productAttribute.options || [],
       locale,
       metricName,
     });
@@ -108,30 +108,29 @@ export function getProductCurrentViewCastedAttributes({
       return acc;
     }
 
-    const attributeMetric = attribute.metric
+    const metric = attribute.metric
       ? {
           ...attribute.metric,
           name: getFieldStringLocale(attribute.metric.nameI18n, locale),
         }
       : null;
 
-    return [
-      ...acc,
-      {
-        ...attribute,
-        attributeName: getFieldStringLocale(attribute.nameI18n, locale),
-        attributeMetric,
-        selectedOptions: (attribute.selectedOptions || []).map((option) => {
-          // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
-          return {
-            ...option,
-            name: `${getFieldStringLocale(option.nameI18n, locale)}${
-              attributeMetric ? ` ${attributeMetric.name}` : ''
-            }`,
-          };
-        }),
-        readableValue,
-      },
-    ];
+    const castedAttribute: ProductAttributeInterface = {
+      ...attribute,
+      name: getFieldStringLocale(attribute.nameI18n, locale),
+      metric,
+      options: (attribute.options || []).map((option) => {
+        // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
+        return {
+          ...option,
+          name: `${getFieldStringLocale(option.nameI18n, locale)}${
+            metric ? ` ${metric.name}` : ''
+          }`,
+        };
+      }),
+      readableValue,
+    };
+
+    return [...acc, castedAttribute];
   }, []);
 }

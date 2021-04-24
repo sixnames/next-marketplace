@@ -129,7 +129,6 @@ export function getCatalogueRubricPipeline({
                     variant: false,
                     viewVariant: false,
                     capitalise: false,
-                    positioningInTitle: false,
                     attributeId: false,
                     rubricId: false,
                     showInCatalogueNav: false,

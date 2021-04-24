@@ -11,7 +11,6 @@ import {
   ConfigModel,
   GenderModel,
   ObjectIdModel,
-  ProductConnectionModel,
   RubricCatalogueTitleModel,
   RubricModel,
   ShopProductModel,
@@ -303,7 +302,7 @@ export async function getCatalogueAttributes({
 
     for await (const option of options || []) {
       // check if selected
-      const optionSlug = option.slug;
+      const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
       const isSelected = realFilter.includes(optionSlug);
 
       const optionNextSlug = isSelected
@@ -876,12 +875,6 @@ export const getCatalogueData = async ({
     // Get filter attributes
     const { rubric } = shopProductsAggregationResult;
     const beforeOptions = new Date().getTime();
-    /*const rubricAttributes = await getRubricCatalogueAttributes({
-      config: shopProductsAggregationResult.options,
-      attributes: rubric.attributes || [],
-      city,
-    });*/
-
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: rubric.attributes || [],
       locale,
@@ -938,15 +931,14 @@ export const getCatalogueData = async ({
         locale,
       });
 
-      const connections: ProductConnectionModel[] = [];
-
       products.push({
         ...restProduct,
         listFeatures,
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        connections,
+        // TODO catalogue product connections
+        connections: [],
       });
     }
 

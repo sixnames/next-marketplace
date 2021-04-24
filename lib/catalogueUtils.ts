@@ -3,8 +3,6 @@ import {
   COL_CONFIGS,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
@@ -13,7 +11,6 @@ import {
   GenderModel,
   ObjectIdModel,
   RubricCatalogueTitleModel,
-  RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -48,11 +45,9 @@ import {
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-  CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
   RubricAttributeInterface,
-  RubricInterface,
   RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
@@ -228,40 +223,6 @@ export function getRubricCatalogueOptions({
       }),
     };
   });
-}
-
-export interface GetRubricCatalogueAttributesInterface {
-  city: string;
-  attributes: RubricAttributeInterface[];
-  // visibleOptionsCount: number;
-  config: CatalogueProductOptionInterface[];
-}
-
-export async function getRubricCatalogueAttributes({
-  city,
-  attributes,
-  // visibleOptionsCount,
-  config,
-}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeInterface[]> {
-  const sortedAttributes: RubricAttributeInterface[] = [];
-  attributes.forEach((attribute) => {
-    const attributeInConfig = config.find(({ _id }) => _id === attribute.slug);
-    if (!attributeInConfig) {
-      return;
-    }
-
-    sortedAttributes.push({
-      ...attribute,
-      options: getRubricCatalogueOptions({
-        options: attribute.options || [],
-        // maxVisibleOptions: visibleOptionsCount,
-        visibleOptionsSlugs: attributeInConfig.optionsSlugs,
-        city,
-      }),
-    });
-  });
-
-  return [getPriceAttribute(), ...sortedAttributes];
 }
 
 export interface GetCatalogueAttributesInterface {
@@ -542,51 +503,6 @@ export function castCatalogueFilters({
     skip,
     pagerUrl: `/${pagerUrlParts.join('/')}`,
   };
-}
-
-export async function getCatalogueRubric(
-  pipeline: Record<string, any>[],
-): Promise<RubricInterface | null | undefined> {
-  const db = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const rubricAggregation = await rubricsCollection
-    .aggregate([
-      ...pipeline,
-      {
-        $project: {
-          _id: 1,
-          slug: 1,
-          nameI18n: 1,
-          catalogueTitle: 1,
-        },
-      },
-      {
-        $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'attributes',
-          let: { rubricId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-                showInCatalogueFilter: true,
-              },
-            },
-            {
-              $sort: {
-                priorities: SORT_DESC,
-                views: SORT_DESC,
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const rubric = rubricAggregation[0];
-  return rubric;
 }
 
 export interface GetCatalogueDataInterface {

@@ -1,20 +1,27 @@
-import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_CITY,
+  SORT_DESC,
+} from 'config/common';
 import { COL_OPTIONS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
 
 interface GetCatalogueRubricPipelineInterface {
-  companySlug: string;
-  city: string;
+  companySlug?: string;
+  city?: string;
   visibleAttributesCount?: number | null;
   visibleOptionsCount?: number | null;
   viewVariant?: 'filter' | 'nav';
 }
-export function getCatalogueRubricPipeline({
-  companySlug,
-  city,
-  visibleAttributesCount,
-  visibleOptionsCount,
-  viewVariant = 'filter',
-}: GetCatalogueRubricPipelineInterface): Record<string, any>[] {
+export function getCatalogueRubricPipeline(
+  props?: GetCatalogueRubricPipelineInterface,
+): Record<string, any>[] {
+  const { companySlug, city, visibleAttributesCount, visibleOptionsCount, viewVariant } = props || {
+    companySlug: CONFIG_DEFAULT_COMPANY_SLUG,
+    city: DEFAULT_CITY,
+    viewVariant: 'filter',
+  };
+
   const sortStage = {
     [`priorities.${companySlug}.${city}`]: SORT_DESC,
     [`views.${companySlug}.${city}`]: SORT_DESC,

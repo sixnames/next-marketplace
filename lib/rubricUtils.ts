@@ -15,7 +15,7 @@ export function getRubricNavOptions({
       ...option,
       name: getI18nLocaleValue(option.nameI18n, locale),
       options: getRubricNavOptions({
-        options: option.options,
+        options: option.options || [],
         locale,
       }),
     };

@@ -1956,7 +1956,6 @@ type RubricOption {
   icon: String
   name: String!
   nameI18n: JSONObject!
-  options: [RubricOption!]!
   priorities: JSONObject!
   slug: String!
   variants: JSONObject!

@@ -22,11 +22,10 @@ import {
   COL_LANGUAGES,
   COL_NAV_ITEMS,
   COL_ROLES,
-  COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
 } from 'db/collectionNames';
+import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import {
   CityModel,
   CompanyModel,
@@ -62,21 +61,22 @@ export const getCatalogueNavRubrics = async ({
   locale,
   company,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
-  // console.log(' ');
-  // console.log('=================== getCatalogueNavRubrics =======================');
-  // const timeStart = new Date().getTime();
+  console.log(' ');
+  console.log('=================== getCatalogueNavRubrics =======================');
+  const timeStart = new Date().getTime();
   const db = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
 
   // Get configs
   const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
     slug: 'stickyNavVisibleAttributesCount',
-    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
   const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
     slug: 'stickyNavVisibleOptionsCount',
-    companySlug: company?.slug || CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
   const visibleAttributesCount =
     noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
@@ -86,6 +86,19 @@ export const getCatalogueNavRubrics = async ({
     noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
+
+  const sortStage = {
+    [`priorities.${companySlug}.${city}`]: SORT_DESC,
+    [`views.${companySlug}.${city}`]: SORT_DESC,
+    _id: SORT_DESC,
+  };
+
+  const rubricsPipeline = getCatalogueRubricPipeline({
+    city,
+    companySlug,
+    visibleAttributesCount,
+    visibleOptionsCount,
+  });
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopRubricsAggregation = await shopProductsCollection
@@ -97,167 +110,38 @@ export const getCatalogueNavRubrics = async ({
         },
       },
       {
-        $unwind: '$selectedOptionsSlugs',
-      },
-      {
-        $group: {
-          _id: '$rubricId',
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubrics',
-          let: { rubricId: '$_id', selectedOptionsSlugs: '$selectedOptionsSlugs' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$rubricId'],
-                },
-              },
-            },
-            {
-              $sort: {
-                priorities: -1,
-                views: -1,
-              },
-            },
-            {
-              $lookup: {
-                from: COL_RUBRIC_ATTRIBUTES,
-                as: 'attributes',
-                let: { rubricId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$rubricId', '$rubricId'],
-                      },
-                      showInCatalogueNav: true,
-                    },
-                  },
-                  {
-                    $sort: {
-                      priorities: -1,
-                      views: -1,
-                    },
-                  },
-                  {
-                    $project: {
-                      variant: false,
-                      viewVariant: false,
-                      optionsGroupId: false,
-                      capitalise: false,
-                      positioningInTitle: false,
-                      attributeId: false,
-                      rubricId: false,
-                      showInCatalogueNav: false,
-                      showInCatalogueFilter: false,
-                      views: false,
-                      priorities: false,
-                      'options.views': false,
-                      'options.priorities': false,
-                      'options.variants': false,
-                      'options.optionsGroupId': false,
-                    },
-                  },
-                  {
-                    $limit: visibleAttributesCount,
-                  },
-                  {
-                    $addFields: {
-                      'options.options': [],
-                    },
-                  },
-                  {
-                    $addFields: {
-                      options: {
-                        $filter: {
-                          input: '$options',
-                          as: 'option',
-                          cond: {
-                            $in: ['$$option.slug', '$$selectedOptionsSlugs'],
-                          },
-                        },
-                      },
-                    },
-                  },
-                  {
-                    $addFields: {
-                      options: {
-                        $slice: ['$options', visibleOptionsCount],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                slug: 1,
-                nameI18n: 1,
-                priorities: 1,
-                views: 1,
-                attributes: 1,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          rubric: { $arrayElemAt: ['$rubrics', 0] },
-        },
-      },
-      {
         $project: {
-          rubrics: false,
+          selectedOptionsSlugs: true,
+          rubricId: true,
         },
       },
-      { $replaceRoot: { newRoot: '$rubric' } },
+      ...rubricsPipeline,
+      {
+        $sort: sortStage,
+      },
     ])
     .toArray();
   // console.log(shopRubricsAggregation);
   // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
-  // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
+  console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricInterface[] = [];
   shopRubricsAggregation.forEach(({ nameI18n, attributes, ...restRubric }) => {
     rubrics.push({
       ...restRubric,
-      attributes: [],
       nameI18n: {},
       name: getI18nLocaleValue<string>(nameI18n, locale),
-      navItems: getRubricNavAttributes({
+      attributes: getRubricNavAttributes({
         attributes: attributes || [],
         locale,
       }),
     });
   });
-  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
-  const sortedRubrics = rubrics.sort((rubricA, rubricB) => {
-    const rubricAViews = rubricA.views[companySlug] || { [city]: rubricA._id.getTimestamp() };
-    const rubricAPriorities = rubricA.priorities[companySlug] || {
-      [city]: rubricA._id.getTimestamp(),
-    };
-    const rubricBViews = rubricB.views[companySlug] || { [city]: rubricB._id.getTimestamp() };
-    const rubricBPriorities = rubricB.priorities[companySlug] || {
-      [city]: rubricB._id.getTimestamp(),
-    };
-
-    const rubricACounter = noNaN(rubricAViews[city]) + noNaN(rubricAPriorities[city]);
-    const rubricBCounter = noNaN(rubricBViews[city]) + noNaN(rubricBPriorities[city]);
-    return rubricBCounter - rubricACounter;
-  });
 
   // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
-  return sortedRubrics;
+  // return sortedRubrics;
+  return rubrics;
 };
 
 export interface GetPageInitialDataInterface {

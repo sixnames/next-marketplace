@@ -533,7 +533,7 @@ export interface RubricVariantModel {
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {
-  options: RubricOptionModel[];
+  options?: RubricOptionModel[] | null;
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {

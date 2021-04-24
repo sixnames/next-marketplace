@@ -209,7 +209,7 @@ export interface RubricVariantInterface extends RubricVariantModel {
 }
 
 export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
-  options: RubricOptionInterface[];
+  options?: RubricOptionInterface[] | null;
   name?: string | null;
 }
 
@@ -298,6 +298,7 @@ export interface CatalogueProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
   docs: ProductInterface[];
+  rubric: RubricInterface;
 }
 
 export interface ProductsPaginationAggregationInterface {

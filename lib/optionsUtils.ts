@@ -69,8 +69,8 @@ export function findOptionInTree({
       return;
     }
 
-    if (treeOption.options?.length > 0) {
-      option = findOptionInTree({ options: treeOption.options, condition });
+    if ((treeOption.options || []).length > 0) {
+      option = findOptionInTree({ options: treeOption.options || [], condition });
     }
 
     if (!option && condition(treeOption)) {

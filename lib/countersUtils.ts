@@ -9,6 +9,7 @@ export interface GetRubricCatalogueOptionsInterface {
   companySlug: string;
 }
 
+// TODO
 export function updateRubricOptionsViews({
   options,
   selectedOptionsSlugs,
@@ -28,7 +29,7 @@ export function updateRubricOptionsViews({
     return {
       ...option,
       options: updateRubricOptionsViews({
-        options: option.options,
+        options: option.options || [],
         selectedOptionsSlugs,
         companySlug,
         city,

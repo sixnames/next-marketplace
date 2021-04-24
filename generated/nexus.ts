@@ -1674,7 +1674,6 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2669,7 +2668,6 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    options: 'RubricOption';
     priorities: 'JSONObject';
     slug: 'String';
     variants: 'JSONObject';

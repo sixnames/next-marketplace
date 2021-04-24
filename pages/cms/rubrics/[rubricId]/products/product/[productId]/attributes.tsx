@@ -65,9 +65,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.attribute?.name}`}
+                    label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.attributeSlug}`}
+                    testId={`${attribute.slug}`}
                   />
                 );
               })}
@@ -88,9 +88,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.attribute?.name}`}
+                    label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.attributeSlug}`}
+                    testId={`${attribute.slug}`}
                   />
                 );
               })}
@@ -121,10 +121,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           return (
                             <FormikInput
                               type={'number'}
-                              label={`${attribute.attribute?.name}`}
+                              label={`${attribute.name}`}
                               name={`attributes[${index}].number`}
                               key={`${attribute.attributeId}`}
-                              testId={`${attribute.attributeSlug}`}
+                              testId={`${attribute.slug}`}
                             />
                           );
                         })}
@@ -163,10 +163,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         return (
                           <FormikTranslationsInput
                             variant={'textarea'}
-                            label={`${attribute.attribute?.name}`}
+                            label={`${attribute.name}`}
                             name={`attributes[${index}].textI18n`}
                             key={`${attribute.attributeId}`}
-                            testId={`${attribute.attributeSlug}`}
+                            testId={`${attribute.slug}`}
                           />
                         );
                       })}
@@ -262,6 +262,7 @@ export const getServerSideProps = async (
               $group: {
                 _id: '$variant',
                 attributes: {
+                  // TODO
                   $push: {
                     attributeId: '$attributeId',
                     slug: '$slug',
@@ -314,26 +315,16 @@ export const getServerSideProps = async (
         astGroup.attributes.push({
           ...currentProductAttribute,
           readableValue: finalReadableValue,
-          attribute: currentProductAttribute.attribute
-            ? {
-                ...currentProductAttribute.attribute,
-                name: getFieldStringLocale(
-                  currentProductAttribute.attribute.nameI18n,
-                  props.sessionLocale,
-                ),
-              }
-            : null,
+          name: getFieldStringLocale(currentProductAttribute.nameI18n, props.sessionLocale),
         });
         continue;
       }
 
-      const { attributeId, slug } = rubricAttributeAST;
       const newProductAttribute: ProductAttributeInterface = {
+        ...rubricAttributeAST,
         _id: new ObjectId(),
-        attributeId,
         productId: product._id,
         productSlug: product.slug,
-        attributeSlug: slug,
         selectedOptionsIds: [],
         selectedOptionsSlugs: [],
         number: undefined,

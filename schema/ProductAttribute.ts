@@ -11,7 +11,6 @@ export const ProductAttribute = objectType({
     t.nonNull.boolean('showInCard');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
-    t.nonNull.string('attributeSlug');
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.objectId('selectedOptionsIds');

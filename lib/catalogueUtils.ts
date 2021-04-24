@@ -761,6 +761,8 @@ export const getCatalogueData = async ({
                   },
                 },
                 // TODO catalogue snippet connections
+
+                // Lookup product attributes
                 {
                   $lookup: {
                     from: COL_PRODUCT_ATTRIBUTES,
@@ -779,50 +781,28 @@ export const getCatalogueData = async ({
                           },
                         },
                       },
+                      /*{
+                        $lookup: {
+                          from: COL_ATTRIBUTES,
+                          as: 'attribute',
+                          let: {
+                            attributeId: '$attributeId',
+                          },
+                          pipeline: [
+                            {
+                              $match: {
+                                $expr: {
+                                  $eq: ['$$attributeId', '$_id'],
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },*/
                     ],
                   },
                 },
               ],
-              /*options: [
-                {
-                  $project: {
-                    selectedOptionsSlugs: 1,
-                  },
-                },
-                {
-                  $unwind: '$selectedOptionsSlugs',
-                },
-                {
-                  $group: {
-                    _id: '$selectedOptionsSlugs',
-                  },
-                },
-                {
-                  $addFields: {
-                    slugArray: {
-                      $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
-                    },
-                  },
-                },
-                {
-                  $addFields: {
-                    attributeSlug: {
-                      $arrayElemAt: ['$slugArray', 0],
-                    },
-                    optionSlug: {
-                      $arrayElemAt: ['$slugArray', 1],
-                    },
-                  },
-                },
-                {
-                  $group: {
-                    _id: '$attributeSlug',
-                    optionsSlugs: {
-                      $addToSet: '$optionSlug',
-                    },
-                  },
-                },
-              ],*/
               prices: [
                 {
                   $group: {
@@ -864,7 +844,7 @@ export const getCatalogueData = async ({
       .toArray();
     const shopProductsAggregationResult = shopProductsAggregation[0];
     // console.log(shopProductsAggregationResult);
-    // console.log(shopProductsAggregationResult.docs[0]);
+    console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
     console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
@@ -899,7 +879,7 @@ export const getCatalogueData = async ({
         min: getCurrencyString(minPrice),
         max: getCurrencyString(maxPrice),
       };
-
+      console.log(attributes?.length);
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes: attributes || [],
@@ -908,7 +888,7 @@ export const getCatalogueData = async ({
       });
       const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
         const indexInRubric = rubricListViewAttributes.findIndex(
-          ({ slug }) => slug === listAttribute.attributeSlug,
+          ({ slug }) => slug === listAttribute.slug,
         );
         const finalIndexInRubric = indexInRubric < 0 ? 0 : indexInRubric;
         const index = rubricListViewAttributes.length - finalIndexInRubric;
@@ -937,7 +917,6 @@ export const getCatalogueData = async ({
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        // TODO catalogue product connections
         connections: [],
       });
     }

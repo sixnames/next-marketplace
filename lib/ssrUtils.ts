@@ -61,9 +61,9 @@ export const getCatalogueNavRubrics = async ({
   locale,
   company,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
-  console.log(' ');
-  console.log('=================== getCatalogueNavRubrics =======================');
-  const timeStart = new Date().getTime();
+  // console.log(' ');
+  // console.log('=================== getCatalogueNavRubrics =======================');
+  // const timeStart = new Date().getTime();
   const db = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -123,7 +123,7 @@ export const getCatalogueNavRubrics = async ({
     .toArray();
   // console.log(shopRubricsAggregation);
   // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
-  console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
+  // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricInterface[] = [];
   shopRubricsAggregation.forEach(({ nameI18n, attributes, ...restRubric }) => {

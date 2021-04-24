@@ -876,7 +876,7 @@ export const ProductMutations = extendType({
           }
 
           // Check attribute variant. Must be as Select
-          if (productAttribute.attribute?.variant !== ATTRIBUTE_VARIANT_SELECT) {
+          if (productAttribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
             return {
               success: false,
               message: await getApiMessage(`products.update.attributeVariantError`),
@@ -913,7 +913,7 @@ export const ProductMutations = extendType({
           // Create connection
           const createdConnectionResult = await productConnectionsCollection.insertOne({
             attributeId: productAttribute.attributeId,
-            attributeSlug: productAttribute.attributeSlug,
+            attributeSlug: productAttribute.slug,
             productsIds: [productId],
           });
           const createdConnection = createdConnectionResult.ops[0];

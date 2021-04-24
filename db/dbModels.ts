@@ -443,30 +443,20 @@ export interface ProductConnectionModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
-  // attributeMetric?: MetricModel | null;
-  // attributeNameI18n: TranslationModel;
-  // attributeVariant: AttributeVariantModel;
-  // attributeViewVariant: AttributeViewVariantModel;
   productsIds: ObjectIdModel[];
 }
 
-export interface ProductAttributeModel {
+export interface ProductAttributeModel extends AttributeModel {
   _id: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
-  attributeSlug: string;
-  // attributeNameI18n: TranslationModel;
-  // attributeMetric?: MetricModel | null;
-  // attributeVariant: AttributeVariantModel;
-  // attributeViewVariant: AttributeViewVariantModel;
   selectedOptionsSlugs: string[];
   selectedOptionsIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
-  // optionsValueI18n: TranslationModel;
 }
 
 export interface ProductModel extends BaseModel, TimestampModel {

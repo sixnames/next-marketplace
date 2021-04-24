@@ -23,7 +23,6 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -145,25 +144,15 @@ export interface ProductConnectionInterface extends ProductConnectionModel {
   connectionProducts?: ProductConnectionItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel {
+export interface ProductAttributeInterface extends ProductAttributeModel, AttributeInterface {
   readableValue?: string | null;
   index?: number | null;
   selectedOptions?: OptionInterface[] | null;
-  attribute?: AttributeInterface | null;
-}
-
-export type ProductCardPricesInterface = ProductCardPricesModel;
-
-export interface RubricAttributeASTInterface {
-  attributeId: ObjectIdModel;
-  slug: string;
-  nameI18n: TranslationModel;
-  viewVariant: AttributeViewVariantModel;
 }
 
 export interface RubricAttributesGroupASTInterface {
   _id: string;
-  attributes: RubricAttributeASTInterface[];
+  attributes: RubricAttributeInterface[];
 }
 
 export interface ProductAttributesGroupASTInterface {
@@ -296,7 +285,6 @@ export interface CatalogueProductPricesInterface {
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
   docs: ProductInterface[];
   rubric: RubricInterface;
 }

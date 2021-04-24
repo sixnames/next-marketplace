@@ -17,13 +17,13 @@ export function getProductCurrentViewAttributes({
   attributes,
   viewVariant,
 }: GetProductCurrentViewAttributesInterface): ProductAttributeInterface[] {
-  return attributes.filter(({ attribute, selectedOptionsSlugs, textI18n, number }) => {
+  return attributes.filter((attribute) => {
+    const { variant, selectedOptionsSlugs, textI18n, number } = attribute;
     const isSelect =
-      attribute?.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-      attribute?.variant === ATTRIBUTE_VARIANT_SELECT;
-    const isText = attribute?.variant === ATTRIBUTE_VARIANT_STRING;
-    const isNumber = attribute?.variant === ATTRIBUTE_VARIANT_NUMBER;
-    const isExactViewVariant = attribute?.viewVariant === viewVariant;
+      variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT;
+    const isText = variant === ATTRIBUTE_VARIANT_STRING;
+    const isNumber = variant === ATTRIBUTE_VARIANT_NUMBER;
+    const isExactViewVariant = attribute.viewVariant === viewVariant;
     if (!isExactViewVariant) {
       return false;
     }
@@ -54,12 +54,12 @@ export function getAttributeReadableValue({
   productAttribute,
   locale,
 }: GetAttributeReadableValueInterface): string | null {
-  const metricName = productAttribute.attribute?.metric
-    ? ` ${getFieldStringLocale(productAttribute.attribute?.metric.nameI18n, locale)}`
+  const metricName = productAttribute.metric
+    ? ` ${getFieldStringLocale(productAttribute.metric.nameI18n, locale)}`
     : '';
   if (
-    (productAttribute.attribute?.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-      productAttribute.attribute?.variant === ATTRIBUTE_VARIANT_SELECT) &&
+    (productAttribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+      productAttribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
     productAttribute.selectedOptionsSlugs.length > 0
   ) {
     return getStringValueFromOptionsList({
@@ -70,14 +70,14 @@ export function getAttributeReadableValue({
   }
 
   // String
-  if (productAttribute.attribute?.variant === ATTRIBUTE_VARIANT_STRING) {
+  if (productAttribute.variant === ATTRIBUTE_VARIANT_STRING) {
     return productAttribute.textI18n
       ? `${getFieldStringLocale(productAttribute.textI18n, locale)}${metricName}`
       : null;
   }
 
   // Number
-  if (productAttribute.attribute?.variant === ATTRIBUTE_VARIANT_NUMBER) {
+  if (productAttribute.variant === ATTRIBUTE_VARIANT_NUMBER) {
     return productAttribute.number ? `${productAttribute.number}${metricName}` : null;
   }
 
@@ -108,10 +108,10 @@ export function getProductCurrentViewCastedAttributes({
       return acc;
     }
 
-    const attributeMetric = attribute.attribute?.metric
+    const attributeMetric = attribute.metric
       ? {
-          ...attribute.attribute?.metric,
-          name: getFieldStringLocale(attribute.attribute?.metric.nameI18n, locale),
+          ...attribute.metric,
+          name: getFieldStringLocale(attribute.metric.nameI18n, locale),
         }
       : null;
 
@@ -119,7 +119,7 @@ export function getProductCurrentViewCastedAttributes({
       ...acc,
       {
         ...attribute,
-        attributeName: getFieldStringLocale(attribute.attribute?.nameI18n, locale),
+        attributeName: getFieldStringLocale(attribute.nameI18n, locale),
         attributeMetric,
         selectedOptions: (attribute.selectedOptions || []).map((option) => {
           // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);

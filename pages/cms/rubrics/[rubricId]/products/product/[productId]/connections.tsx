@@ -443,12 +443,7 @@ export const getServerSideProps = async (
     attributes: (product.attributes || []).map((productAttribute) => {
       return {
         ...productAttribute,
-        attribute: productAttribute.attribute
-          ? {
-              ...productAttribute.attribute,
-              name: getFieldStringLocale(productAttribute.attribute.nameI18n, props.sessionLocale),
-            }
-          : null,
+        name: getFieldStringLocale(productAttribute.nameI18n, props.sessionLocale),
       };
     }),
   };

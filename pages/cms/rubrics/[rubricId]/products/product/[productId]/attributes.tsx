@@ -13,7 +13,12 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS, COL_RUBRIC_ATTRIBUTES } from 'db/collectionNames';
+import {
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_RUBRIC_ATTRIBUTES,
+} from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -23,6 +28,7 @@ import {
 } from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -236,6 +242,32 @@ export const getServerSideProps = async (
                 _id: SORT_DESC,
               },
             },
+            {
+              $lookup: {
+                from: COL_OPTIONS,
+                as: 'options',
+                let: {
+                  optionsGroupId: '$optionsGroupId',
+                  selectedOptionsIds: '$selectedOptionsIds',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          {
+                            $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                          },
+                          {
+                            $in: ['$_id', '$$selectedOptionsIds'],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
           ],
         },
       },
@@ -262,13 +294,7 @@ export const getServerSideProps = async (
               $group: {
                 _id: '$variant',
                 attributes: {
-                  // TODO
-                  $push: {
-                    attributeId: '$attributeId',
-                    slug: '$slug',
-                    nameI18n: '$nameI18n',
-                    viewVariant: '$viewVariant',
-                  },
+                  $push: '$$ROOT',
                 },
               },
             },
@@ -304,14 +330,14 @@ export const getServerSideProps = async (
         return attributeId.equals(rubricAttributeAST.attributeId);
       });
       if (currentProductAttribute) {
-        // TODO readableValue
-        const readableValue = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-        /*const readableValue = getFieldStringLocale(
-          currentProductAttribute.optionsValueI18n,
-          props.sessionLocale,
-        );*/
+        const readableValue = getAttributeReadableValue({
+          productAttribute: currentProductAttribute,
+          locale: props.sessionLocale,
+        });
+
         const finalReadableValue =
           readableValue === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : readableValue;
+
         astGroup.attributes.push({
           ...currentProductAttribute,
           readableValue: finalReadableValue,
@@ -323,6 +349,7 @@ export const getServerSideProps = async (
       const newProductAttribute: ProductAttributeInterface = {
         ...rubricAttributeAST,
         _id: new ObjectId(),
+        name: getFieldStringLocale(rubricAttributeAST.nameI18n, props.sessionLocale),
         productId: product._id,
         productSlug: product.slug,
         selectedOptionsIds: [],

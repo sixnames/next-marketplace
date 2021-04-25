@@ -55,7 +55,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({ product, childr
         <title>{product.originalName}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{product.originalName}</Title>
+        <Title subtitle={`Арт. ${product.itemId}`}>{product.originalName}</Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

@@ -13,6 +13,7 @@ export interface OptionsModalOptionInterface extends Record<string, any> {
   _id: any;
   slug: string;
   name: string;
+  options?: OptionsModalOptionInterface[] | null;
 }
 
 export interface OptionsModalLetterInterface {

@@ -14,7 +14,6 @@ import {
   GenderModel,
   LanguageModel,
   ObjectIdModel,
-  OptionModel,
   RubricAttributeModel,
   RubricOptionModel,
 } from 'db/dbModels';
@@ -23,8 +22,25 @@ import { OptionInterface, RubricOptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 
+interface GetOptionsTreeInterface {
+  options: OptionInterface[];
+  parentId?: ObjectId | null;
+}
+
+export function getOptionsTree({ options, parentId }: GetOptionsTreeInterface): OptionInterface[] {
+  const parentOptions = options.filter((option) =>
+    parentId ? option.parentId?.equals(parentId) : !option.parentId,
+  );
+  return parentOptions.map((parentOption) => {
+    return {
+      ...parentOption,
+      options: getOptionsTree({ options, parentId: parentOption._id }),
+    };
+  });
+}
+
 export interface GetStringValueFromOptionsList {
-  options: OptionModel[] | OptionInterface[];
+  options: OptionInterface[];
   locale: string;
   metricName?: string;
   gender?: GenderModel;

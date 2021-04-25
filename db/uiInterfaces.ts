@@ -124,6 +124,7 @@ export interface NavItemInterface extends NavItemModel {
 export interface OptionInterface extends OptionModel {
   name?: string | null;
   options?: OptionInterface[] | null;
+  level?: number | null;
 }
 
 export interface OptionsGroupInterface extends OptionsGroupModel {

@@ -4,6 +4,7 @@ import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner/Inner';
+import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -13,6 +14,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modals';
 import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
@@ -26,6 +28,7 @@ import {
   ProductAttributesGroupASTInterface,
   ProductInterface,
 } from 'db/uiInterfaces';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
@@ -47,6 +50,7 @@ const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
+  const { showModal } = useMutationCallbacks({ withModal: true });
   const { locale } = useRouter();
   const {
     stringAttributesAST,
@@ -74,6 +78,19 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.slug}`}
+                    onClick={() => {
+                      if (attribute.optionsGroupId) {
+                        showModal<AttributeOptionsModalInterface>({
+                          variant: ATTRIBUTE_OPTIONS_MODAL,
+                          props: {
+                            optionsGroupId: `${attribute.optionsGroupId}`,
+                            onSubmit: (value) => {
+                              console.log(value);
+                            },
+                          },
+                        });
+                      }
+                    }}
                   />
                 );
               })}

@@ -116,3 +116,36 @@ export const MANUFACTURER_ALPHABET_OPTIONS_QUERY = gql`
     }
   }
 `;
+
+export const OPTIONS_ALPHABET_QUERY = gql`
+  query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
+    getOptionAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        name
+        slug
+        options {
+          _id
+          name
+          slug
+          options {
+            _id
+            name
+            slug
+            options {
+              _id
+              name
+              slug
+              options {
+                _id
+                name
+                slug
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;

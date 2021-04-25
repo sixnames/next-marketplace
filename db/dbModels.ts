@@ -356,6 +356,8 @@ export interface OptionModel {
   icon?: string | null;
   optionsGroupId: ObjectIdModel;
   parentId?: ObjectIdModel | null;
+
+  options?: OptionModel[] | null;
 }
 
 // Options Group variant
@@ -642,6 +644,7 @@ export interface CartPayloadModel {
 export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
 export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
 export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
+export type OptionAlphabetListModel = AlphabetListModelType<OptionModel>;
 
 // Pagination payload
 export type BrandsPaginationPayloadModel = PaginationPayloadType<BrandModel>;

@@ -1471,12 +1471,25 @@ export type Option = {
   icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
+  options?: Maybe<Array<Option>>;
   name: Scalars['String'];
+};
+
+export type OptionAlphabetInput = {
+  optionsGroupId: Scalars['ObjectId'];
+  parentId?: Maybe<Scalars['ObjectId']>;
+  slugs?: Maybe<Array<Scalars['String']>>;
 };
 
 export type OptionVariantInput = {
   value: Scalars['JSONObject'];
   gender: Gender;
+};
+
+export type OptionsAlphabetList = AlphabetList & {
+  __typename?: 'OptionsAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Option>;
 };
 
 export type OptionsGroup = {
@@ -1690,19 +1703,13 @@ export type ProductAttribute = {
   showInCard: Scalars['Boolean'];
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
-  attributeSlug: Scalars['String'];
-  attributeViewVariant: AttributeViewVariant;
-  attributeVariant: AttributeVariant;
-  attributeNameI18n: Scalars['JSONObject'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
   selectedOptionsIds: Array<Scalars['ObjectId']>;
   /** List of selected options slug */
   selectedOptionsSlugs: Array<Scalars['String']>;
-  attributeMetric?: Maybe<Metric>;
   text: Scalars['String'];
   attribute: Attribute;
-  optionsValueI18n?: Maybe<Scalars['String']>;
 };
 
 export type ProductAttributeInput = {
@@ -1738,9 +1745,6 @@ export type ProductConnection = {
   attributeId: Scalars['ObjectId'];
   attributeSlug: Scalars['String'];
   attributeNameI18n?: Maybe<Scalars['JSONObject']>;
-  attributeViewVariant: AttributeViewVariant;
-  attributeVariant: AttributeVariant;
-  attributeName: Scalars['String'];
 };
 
 export type ProductConnectionItem = {
@@ -1833,6 +1837,8 @@ export type Query = {
   getAllAppNavItems: Array<NavItem>;
   /** Should return all cms nav items */
   getAllCmsNavItems: Array<NavItem>;
+  /** Should return options grouped by alphabet */
+  getOptionAlphabetLists: Array<OptionsAlphabetList>;
   /** Should return options group by given id */
   getOptionsGroup: OptionsGroup;
   /** Should return options groups list */
@@ -1954,6 +1960,11 @@ export type QueryGetRoleArgs = {
 
 export type QueryGetAllMetricsArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetOptionAlphabetListsArgs = {
+  input: OptionAlphabetInput;
 };
 
 
@@ -2167,7 +2178,6 @@ export type RubricAttribute = {
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  options: Array<RubricOption>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
   metric?: Maybe<Metric>;
@@ -2211,7 +2221,6 @@ export type RubricOption = {
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   variants: Scalars['JSONObject'];
-  options: Array<RubricOption>;
   name: Scalars['String'];
 };
 
@@ -4495,6 +4504,39 @@ export type GetManufacturerAlphabetListsQuery = (
     & { docs: Array<(
       { __typename?: 'Manufacturer' }
       & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetOptionAlphabetListsQueryVariables = Exact<{
+  input: OptionAlphabetInput;
+}>;
+
+
+export type GetOptionAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getOptionAlphabetLists: Array<(
+    { __typename?: 'OptionsAlphabetList' }
+    & Pick<OptionsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, '_id' | 'name' | 'slug'>
+      & { options?: Maybe<Array<(
+        { __typename?: 'Option' }
+        & Pick<Option, '_id' | 'name' | 'slug'>
+        & { options?: Maybe<Array<(
+          { __typename?: 'Option' }
+          & Pick<Option, '_id' | 'name' | 'slug'>
+          & { options?: Maybe<Array<(
+            { __typename?: 'Option' }
+            & Pick<Option, '_id' | 'name' | 'slug'>
+            & { options?: Maybe<Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, '_id' | 'name' | 'slug'>
+            )>> }
+          )>> }
+        )>> }
+      )>> }
     )> }
   )> }
 );
@@ -8929,6 +8971,66 @@ export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.La
 export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
 export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
 export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
+export const GetOptionAlphabetListsDocument = gql`
+    query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
+  getOptionAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      name
+      slug
+      options {
+        _id
+        name
+        slug
+        options {
+          _id
+          name
+          slug
+          options {
+            _id
+            name
+            slug
+            options {
+              _id
+              name
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOptionAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetOptionAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOptionAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOptionAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetOptionAlphabetListsQuery(baseOptions: Apollo.QueryHookOptions<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(GetOptionAlphabetListsDocument, options);
+      }
+export function useGetOptionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(GetOptionAlphabetListsDocument, options);
+        }
+export type GetOptionAlphabetListsQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsQuery>;
+export type GetOptionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsLazyQuery>;
+export type GetOptionAlphabetListsQueryResult = Apollo.QueryResult<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>;
 export const UsersSerchDocument = gql`
     query UsersSerch($input: PaginationInput!) {
   getAllUsers(input: $input) {

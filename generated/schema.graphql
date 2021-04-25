@@ -1249,13 +1249,25 @@ type Option {
   icon: String
   name: String!
   nameI18n: JSONObject!
+  options: [Option!]
   slug: String!
   variants: JSONObject!
+}
+
+input OptionAlphabetInput {
+  optionsGroupId: ObjectId!
+  parentId: ObjectId
+  slugs: [String!]
 }
 
 input OptionVariantInput {
   gender: Gender!
   value: JSONObject!
+}
+
+type OptionsAlphabetList implements AlphabetList {
+  docs: [Option!]!
+  letter: String!
 }
 
 type OptionsGroup {
@@ -1775,6 +1787,11 @@ type Query {
   Should return session user order by given id
   """
   getMyOrder(_id: ObjectId!): Order
+
+  """
+  Should return options grouped by alphabet
+  """
+  getOptionAlphabetLists(input: OptionAlphabetInput!): [OptionsAlphabetList!]!
 
   """
   Should return options group by given id

@@ -417,6 +417,12 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
+  OptionAlphabetInput: {
+    // input type
+    optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    slugs?: string[] | null; // [String!]
+  };
   OptionVariantInput: {
     // input type
     gender: NexusGenEnums['Gender']; // Gender!
@@ -804,6 +810,11 @@ export interface NexusGenObjects {
   Mutation: {};
   NavItem: dbModels.NavItemModel;
   Option: dbModels.OptionModel;
+  OptionsAlphabetList: {
+    // root type
+    docs: NexusGenRootTypes['Option'][]; // [Option!]!
+    letter: string; // String!
+  };
   OptionsGroup: dbModels.OptionsGroupModel;
   OptionsGroupPayload: dbModels.OptionsGroupPayloadModel;
   Order: dbModels.OrderModel;
@@ -1326,8 +1337,14 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    options: NexusGenRootTypes['Option'][] | null; // [Option!]
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
+  };
+  OptionsAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['Option'][]; // [Option!]!
+    letter: string; // String!
   };
   OptionsGroup: {
     // field return type
@@ -1576,6 +1593,7 @@ export interface NexusGenFieldTypes {
     getManufacturerAlphabetLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
     getMyOrder: NexusGenRootTypes['Order'] | null; // Order
+    getOptionAlphabetLists: NexusGenRootTypes['OptionsAlphabetList'][]; // [OptionsAlphabetList!]!
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
     getOptionsGroupVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getOrder: NexusGenRootTypes['Order']; // Order!
@@ -2319,8 +2337,14 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
+    options: 'Option';
     slug: 'String';
     variants: 'JSONObject';
+  };
+  OptionsAlphabetList: {
+    // field return type name
+    docs: 'Option';
+    letter: 'String';
   };
   OptionsGroup: {
     // field return type name
@@ -2569,6 +2593,7 @@ export interface NexusGenFieldTypeNames {
     getManufacturerAlphabetLists: 'ManufacturersAlphabetList';
     getManufacturerBySlug: 'Manufacturer';
     getMyOrder: 'Order';
+    getOptionAlphabetLists: 'OptionsAlphabetList';
     getOptionsGroup: 'OptionsGroup';
     getOptionsGroupVariantsOptions: 'SelectOption';
     getOrder: 'Order';
@@ -3339,6 +3364,10 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    getOptionAlphabetLists: {
+      // args
+      input: NexusGenInputs['OptionAlphabetInput']; // OptionAlphabetInput!
+    };
     getOptionsGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3413,7 +3442,11 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  AlphabetList: 'BrandCollectionsAlphabetList' | 'BrandsAlphabetList' | 'ManufacturersAlphabetList';
+  AlphabetList:
+    | 'BrandCollectionsAlphabetList'
+    | 'BrandsAlphabetList'
+    | 'ManufacturersAlphabetList'
+    | 'OptionsAlphabetList';
   Base:
     | 'Brand'
     | 'BrandCollection'
@@ -3496,6 +3529,7 @@ export interface NexusGenTypeInterfaces {
   ManufacturersPaginationPayload: 'PaginationPayload';
   MetricPayload: 'Payload';
   MetricsPaginationPayload: 'PaginationPayload';
+  OptionsAlphabetList: 'AlphabetList';
   OptionsGroupPayload: 'Payload';
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';

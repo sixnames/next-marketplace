@@ -28,6 +28,7 @@ import {
   ProductAttributesGroupASTInterface,
   ProductInterface,
 } from 'db/uiInterfaces';
+import { useUpdateProductSelectAttributeMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -50,7 +51,15 @@ const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
-  const { showModal } = useMutationCallbacks({ withModal: true });
+  const router = useRouter();
+  const {
+    showModal,
+    onCompleteCallback,
+    showErrorNotification,
+    hideLoading,
+    onErrorCallback,
+    showLoading,
+  } = useMutationCallbacks({ withModal: true });
   const { locale } = useRouter();
   const {
     stringAttributesAST,
@@ -58,6 +67,19 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
     selectAttributesAST,
     multipleSelectAttributesAST,
   } = product;
+
+  const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttributeMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductSelectAttribute }) => {
+      if (updateProductSelectAttribute.success) {
+        onCompleteCallback(updateProductSelectAttribute);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductSelectAttribute.message });
+      }
+    },
+  });
 
   return (
     <CmsProductLayout product={product}>
@@ -86,7 +108,17 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             optionVariant: 'radio',
                             onSubmit: (value) => {
-                              console.log(value);
+                              showLoading();
+                              updateProductSelectAttributeMutation({
+                                variables: {
+                                  input: {
+                                    productId: product._id,
+                                    attributeId: attribute.attributeId,
+                                    productAttributeId: attribute._id,
+                                    selectedOptionsIds: value.map(({ _id }) => _id),
+                                  },
+                                },
+                              }).catch((e) => console.log(e));
                             },
                           },
                         });

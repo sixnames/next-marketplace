@@ -929,6 +929,8 @@ export type Mutation = {
   updateProductBrandCollection: ProductPayload;
   /** Should update product manufacturer */
   updateProductManufacturer: ProductPayload;
+  /** Should update product attribute */
+  updateProductSelectAttribute: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
@@ -1324,6 +1326,11 @@ export type MutationUpdateProductBrandCollectionArgs = {
 
 export type MutationUpdateProductManufacturerArgs = {
   input: UpdateProductManufacturerInput;
+};
+
+
+export type MutationUpdateProductSelectAttributeArgs = {
+  input: UpdateProductSelectAttributeInput;
 };
 
 
@@ -2557,6 +2564,13 @@ export type UpdateProductManufacturerInput = {
   manufacturerSlug?: Maybe<Scalars['String']>;
 };
 
+export type UpdateProductSelectAttributeInput = {
+  productId: Scalars['ObjectId'];
+  productAttributeId: Scalars['ObjectId'];
+  attributeId: Scalars['ObjectId'];
+  selectedOptionsIds: Array<Scalars['ObjectId']>;
+};
+
 export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
@@ -3493,6 +3507,19 @@ export type UpdateProductManufacturerMutationVariables = Exact<{
 export type UpdateProductManufacturerMutation = (
   { __typename?: 'Mutation' }
   & { updateProductManufacturer: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductSelectAttributeMutationVariables = Exact<{
+  input: UpdateProductSelectAttributeInput;
+}>;
+
+
+export type UpdateProductSelectAttributeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductSelectAttribute: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -7127,6 +7154,40 @@ export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.Mutati
 export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
+export const UpdateProductSelectAttributeDocument = gql`
+    mutation UpdateProductSelectAttribute($input: UpdateProductSelectAttributeInput!) {
+  updateProductSelectAttribute(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductSelectAttributeMutationFn = Apollo.MutationFunction<UpdateProductSelectAttributeMutation, UpdateProductSelectAttributeMutationVariables>;
+
+/**
+ * __useUpdateProductSelectAttributeMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductSelectAttributeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductSelectAttributeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductSelectAttributeMutation, { data, loading, error }] = useUpdateProductSelectAttributeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductSelectAttributeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductSelectAttributeMutation, UpdateProductSelectAttributeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductSelectAttributeMutation, UpdateProductSelectAttributeMutationVariables>(UpdateProductSelectAttributeDocument, options);
+      }
+export type UpdateProductSelectAttributeMutationHookResult = ReturnType<typeof useUpdateProductSelectAttributeMutation>;
+export type UpdateProductSelectAttributeMutationResult = Apollo.MutationResult<UpdateProductSelectAttributeMutation>;
+export type UpdateProductSelectAttributeMutationOptions = Apollo.BaseMutationOptions<UpdateProductSelectAttributeMutation, UpdateProductSelectAttributeMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

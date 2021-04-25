@@ -3,6 +3,7 @@ import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
+  AttributeModel,
   OptionModel,
   ProductAssetsModel,
   ProductAttributeModel,
@@ -17,6 +18,7 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
+  COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -195,6 +197,16 @@ export const UpdateProductManufacturerInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('productId');
     t.string('manufacturerSlug');
+  },
+});
+
+export const UpdateProductAttributeInput = inputObjectType({
+  name: 'UpdateProductSelectAttributeInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.objectId('productAttributeId');
+    t.nonNull.objectId('attributeId');
+    t.nonNull.list.nonNull.objectId('selectedOptionsIds');
   },
 });
 
@@ -1417,6 +1429,112 @@ export const ProductMutations = extendType({
             payload: updatedProduct,
           };
         } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product attribute
+    t.nonNull.field('updateProductSelectAttribute', {
+      type: 'ProductPayload',
+      description: 'Should update product attribute',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductSelectAttributeInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const { input } = args;
+          const { selectedOptionsIds, productId, attributeId, productAttributeId } = input;
+
+          // Check if product exist
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          // Check if product attribute exist
+          let productAttribute = await productAttributesCollection.findOne({
+            _id: productAttributeId,
+          });
+
+          // Create new product attribute if original is absent
+          if (!productAttribute) {
+            const attribute = await attributesCollection.findOne({ _id: attributeId });
+
+            if (!attribute) {
+              return {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+            }
+
+            productAttribute = {
+              ...attribute,
+              attributeId,
+              productId: product._id,
+              productSlug: product.slug,
+              selectedOptionsIds: [],
+              selectedOptionsSlugs: [],
+              number: undefined,
+              textI18n: {},
+              showAsBreadcrumb: false,
+              showInCard: true,
+            };
+          }
+
+          // Get selected options tree
+          const optionsAggregation = await optionsCollection
+            .aggregate([
+              {
+                $match: {
+                  _id: {
+                    $in: selectedOptionsIds,
+                  },
+                },
+              },
+              {
+                $graphLookup: {
+                  from: COL_OPTIONS,
+                  as: 'options',
+                  startWith: '$parentId',
+                  connectFromField: 'parentId',
+                  connectToField: '_id',
+                  depthField: 'level',
+                },
+              },
+            ])
+            .toArray();
+          const selectedOptionTree = optionsAggregation[0];
+          const { options, ...restOption } = selectedOptionTree;
+
+          // todo sort options in descendant order
+
+          console.log(JSON.stringify({ productAttribute, options, restOption }, null, 2));
+
+          return {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+        } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

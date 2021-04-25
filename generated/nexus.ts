@@ -678,6 +678,13 @@ export interface NexusGenInputs {
     manufacturerSlug?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateProductSelectAttributeInput: {
+    // input type
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+  };
   UpdateRoleInput: {
     // input type
     description?: string | null; // String
@@ -1306,6 +1313,7 @@ export interface NexusGenFieldTypes {
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
@@ -2306,6 +2314,7 @@ export interface NexusGenFieldTypeNames {
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
+    updateProductSelectAttribute: 'ProductPayload';
     updateRole: 'RolePayload';
     updateRubric: 'RubricPayload';
     updateRubricVariant: 'RubricVariantPayload';
@@ -3224,6 +3233,10 @@ export interface NexusGenArgTypes {
     updateProductManufacturer: {
       // args
       input: NexusGenInputs['UpdateProductManufacturerInput']; // UpdateProductManufacturerInput!
+    };
+    updateProductSelectAttribute: {
+      // args
+      input: NexusGenInputs['UpdateProductSelectAttributeInput']; // UpdateProductSelectAttributeInput!
     };
     updateRole: {
       // args

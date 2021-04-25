@@ -1183,6 +1183,11 @@ type Mutation {
   updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
 
   """
+  Should update product attribute
+  """
+  updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
+
+  """
   Should update role
   """
   updateRole(input: UpdateRoleInput!): RolePayload!
@@ -2306,6 +2311,13 @@ input UpdateProductInput {
 input UpdateProductManufacturerInput {
   manufacturerSlug: String
   productId: ObjectId!
+}
+
+input UpdateProductSelectAttributeInput {
+  attributeId: ObjectId!
+  productAttributeId: ObjectId!
+  productId: ObjectId!
+  selectedOptionsIds: [ObjectId!]!
 }
 
 input UpdateRoleInput {

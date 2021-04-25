@@ -84,6 +84,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
                             optionsGroupId: `${attribute.optionsGroupId}`,
+                            optionVariant: 'radio',
                             onSubmit: (value) => {
                               console.log(value);
                             },
@@ -114,6 +115,19 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.slug}`}
+                    onClick={() => {
+                      if (attribute.optionsGroupId) {
+                        showModal<AttributeOptionsModalInterface>({
+                          variant: ATTRIBUTE_OPTIONS_MODAL,
+                          props: {
+                            optionsGroupId: `${attribute.optionsGroupId}`,
+                            onSubmit: (value) => {
+                              console.log(value);
+                            },
+                          },
+                        });
+                      }
+                    }}
                   />
                 );
               })}

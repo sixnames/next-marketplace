@@ -170,14 +170,29 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.slug}`}
+                    onClear={
+                      attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
+                    }
                     onClick={() => {
+                      console.log(attribute);
                       if (attribute.optionsGroupId) {
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
                             optionsGroupId: `${attribute.optionsGroupId}`,
+                            title: `${attribute.name}`,
                             onSubmit: (value) => {
-                              console.log(value);
+                              showLoading();
+                              updateProductSelectAttributeMutation({
+                                variables: {
+                                  input: {
+                                    productId: product._id,
+                                    attributeId: attribute.attributeId,
+                                    productAttributeId: attribute._id,
+                                    selectedOptionsIds: value.map(({ _id }) => _id),
+                                  },
+                                },
+                              }).catch((e) => console.log(e));
                             },
                           },
                         });

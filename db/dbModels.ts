@@ -358,6 +358,7 @@ export interface OptionModel {
   parentId?: ObjectIdModel | null;
 
   options?: OptionModel[] | null;
+  level?: number;
 }
 
 // Options Group variant

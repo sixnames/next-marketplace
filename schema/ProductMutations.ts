@@ -1501,37 +1501,77 @@ export const ProductMutations = extendType({
           }
 
           // Get selected options tree
-          const optionsAggregation = await optionsCollection
-            .aggregate([
-              {
-                $match: {
-                  _id: {
-                    $in: selectedOptionsIds,
+          const finalOptions: OptionModel[] = [];
+          if (selectedOptionsIds.length > 0) {
+            const optionsAggregation = await optionsCollection
+              .aggregate([
+                {
+                  $match: {
+                    _id: {
+                      $in: selectedOptionsIds,
+                    },
                   },
                 },
-              },
-              {
-                $graphLookup: {
-                  from: COL_OPTIONS,
-                  as: 'options',
-                  startWith: '$parentId',
-                  connectFromField: 'parentId',
-                  connectToField: '_id',
-                  depthField: 'level',
+                {
+                  $graphLookup: {
+                    from: COL_OPTIONS,
+                    as: 'options',
+                    startWith: '$parentId',
+                    connectFromField: 'parentId',
+                    connectToField: '_id',
+                    depthField: 'level',
+                  },
                 },
+              ])
+              .toArray();
+
+            // sort parent options in descendant order for each selected option
+            optionsAggregation.forEach((selectedOptionTree) => {
+              const { options, ...restOption } = selectedOptionTree;
+
+              const sortedOptions = (options || []).sort((a, b) => {
+                return noNaN(b.level) - noNaN(a.level);
+              });
+
+              const treeQueue = [...sortedOptions, restOption];
+              treeQueue.forEach((finalOption) => {
+                finalOptions.push(finalOption);
+              });
+            });
+          }
+
+          // Update or create product attribute
+          const finalSelectedOptionsSlugs = finalOptions.map(({ slug }) => slug);
+          const finalSelectedOptionsIds = finalOptions.map(({ _id }) => _id);
+          const { _id, ...restProductAttribute } = productAttribute;
+          const updatedProductAttributeResult = await productAttributesCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...restProductAttribute,
+                selectedOptionsSlugs: finalSelectedOptionsSlugs,
+                selectedOptionsIds: finalSelectedOptionsIds,
               },
-            ])
-            .toArray();
-          const selectedOptionTree = optionsAggregation[0];
-          const { options, ...restOption } = selectedOptionTree;
-
-          // todo sort options in descendant order
-
-          console.log(JSON.stringify({ productAttribute, options, restOption }, null, 2));
+            },
+            {
+              upsert: true,
+              returnOriginal: false,
+            },
+          );
+          const updatedProductAttribute = updatedProductAttributeResult.value;
+          if (!updatedProductAttributeResult.ok || !updatedProductAttribute) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
 
           return {
-            success: false,
-            message: await getApiMessage('products.update.error'),
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: product,
           };
         } catch (e) {
           console.log(e);

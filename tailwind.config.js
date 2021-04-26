@@ -64,6 +64,7 @@ module.exports = {
         'form-input-height-sm': '2.5rem',
         'form-input-height-2xsm': '2rem',
         'form-line-height': '2rem',
+        'input-padding-horizontal': 'var(--inputPaddingHorizontal)',
         'button-min-width': '14rem',
         'button-min-width-sm': '9rem',
         'control-button-height': 'var(--formInputHeight)',

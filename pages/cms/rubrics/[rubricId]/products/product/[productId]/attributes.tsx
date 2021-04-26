@@ -174,7 +174,6 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                       attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
                     }
                     onClick={() => {
-                      console.log(attribute);
                       if (attribute.optionsGroupId) {
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,

@@ -43,7 +43,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
         data-cy={testId}
       >
         <div
-          className='relative flex items-center z-10 h-form-input-height w-full'
+          className='relative flex items-center z-10 h-form-input-height w-full px-input-padding-horizontal'
           onClick={onClick}
         >
           {value}

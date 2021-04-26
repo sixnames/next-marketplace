@@ -292,7 +292,6 @@
   --inputBorder: rgba(var(--inputBorderRGB), 0.3);
   --inputBorderFocus: rgba(var(--inputBorderRGB), 0.6);
   --inputBorderError: var(--wp-error);
-  --inputPaddingHorizontal: 1.5rem;
   --rangeRailBackground: var(--wp-mid-gray-100);
 
   --borderColor: rgba(255, 255, 255, 0.1);

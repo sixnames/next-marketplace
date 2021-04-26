@@ -308,6 +308,7 @@ export interface CatalogueFilterAttributeOptionInterface {
 
 export interface CatalogueFilterAttributeInterface {
   _id: ObjectIdModel;
+  attributeId: ObjectIdModel;
   clearSlug: string;
   slug: string;
   name: string;

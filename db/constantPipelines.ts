@@ -146,7 +146,6 @@ export function getCatalogueRubricPipeline(
                   $project: {
                     variant: false,
                     viewVariant: false,
-                    attributeId: false,
                     rubricId: false,
                     showInCatalogueNav: false,
                     showInCatalogueFilter: false,

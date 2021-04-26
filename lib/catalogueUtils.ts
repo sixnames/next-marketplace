@@ -327,8 +327,9 @@ export async function getCatalogueAttributes({
 
     const isSelected = castedOptions.some(({ isSelected }) => isSelected);
 
-    const castedAttribute = {
+    const castedAttribute: CatalogueFilterAttributeInterface = {
       _id: attribute._id,
+      attributeId: attribute.attributeId,
       clearSlug,
       slug: attribute.slug,
       name: getFieldStringLocale(attribute.nameI18n, locale),
@@ -524,9 +525,9 @@ export const getCatalogueData = async ({
   companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    // console.log(' ');
-    // console.log('===========================================================');
-    // const timeStart = new Date().getTime();
+    console.log(' ');
+    console.log('===========================================================');
+    const timeStart = new Date().getTime();
     const db = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
@@ -615,7 +616,7 @@ export const getCatalogueData = async ({
       visibleOptionsCount,
     });
 
-    // const shopProductsStart = new Date().getTime();
+    const shopProductsStart = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>(
         [
@@ -770,7 +771,7 @@ export const getCatalogueData = async ({
     // console.log(shopProductsAggregationResult);
     // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
-    // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
+    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
 
     if (!shopProductsAggregationResult) {
       return null;
@@ -854,7 +855,7 @@ export const getCatalogueData = async ({
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-    // console.log('Total time: ', new Date().getTime() - timeStart);
+    console.log('Total time: ', new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,

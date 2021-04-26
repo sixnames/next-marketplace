@@ -1,4 +1,4 @@
-import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
@@ -20,19 +20,18 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 }) => {
   const { currency } = useLocaleContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
-  const maxVisibleOptions = maxVisibleOptionsString ? noNaN(maxVisibleOptionsString) : 5;
+  const maxVisibleOptions = maxVisibleOptionsString
+    ? noNaN(maxVisibleOptionsString)
+    : noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
 
   const { name, clearSlug, options, isSelected, metric, slug } = attribute;
-
-  const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(+maxVisibleOptions);
-  const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
-  const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
   const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
+  if (name === 'Виноград') {
+    console.log(attribute.attributeId);
+  }
   return (
     <div className={classes.attribute}>
       <div className={classes.attributeTitle}>
@@ -45,7 +44,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       </div>
 
       <div className={classes.attributeList}>
-        {visibleOptions.map((option) => {
+        {options.map((option) => {
           const testId = `${option.slug}`;
           return (
             <FilterLink
@@ -57,29 +56,11 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             />
           );
         })}
-        {isOptionsOpen
-          ? hiddenOptions.map((option) => {
-              const testId = `${option.slug}`;
-              return (
-                <FilterLink
-                  className={classes.attributeOption}
-                  option={option}
-                  key={testId}
-                  testId={testId}
-                  postfix={postfix}
-                />
-              );
-            })
-          : null}
       </div>
 
-      {hiddenOptions.length > 0 ? (
-        <div
-          className={`${classes.moreTrigger} ${isOptionsOpen ? classes.moreTriggerActive : ''}`}
-          onClick={() => setIsOptionsOpen((prevState) => !prevState)}
-        >
-          <Icon name={moreTriggerIcon} />
-          {moreTriggerText}
+      {options.length === maxVisibleOptions && !isPrice ? (
+        <div className={`${classes.moreTrigger}`} onClick={() => console.log(attribute._id)}>
+          Показать еще
         </div>
       ) : null}
     </div>

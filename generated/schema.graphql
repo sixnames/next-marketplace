@@ -269,6 +269,12 @@ type CartProduct implements Base {
   shopProductId: ObjectId
 }
 
+input CatalogueAdditionalOptionsInput {
+  attributeSlug: String!
+  companyId: ObjectId
+  filter: [String!]!
+}
+
 input CatalogueDataInput {
   companySlug: String = "default"
   filter: [String!]!
@@ -1737,6 +1743,7 @@ type Query {
   getBrandCollectionAlphabetLists(
     input: BrandCollectionAlphabetInput
   ): [BrandCollectionsAlphabetList!]!
+  getCatalogueAdditionalOptions(input: CatalogueAdditionalOptionsInput!): [OptionsAlphabetList!]
 
   """
   Should return top search items

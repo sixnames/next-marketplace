@@ -310,6 +310,12 @@ export type CartProduct = Base & {
   productId?: Maybe<Scalars['ObjectId']>;
 };
 
+export type CatalogueAdditionalOptionsInput = {
+  companyId?: Maybe<Scalars['ObjectId']>;
+  attributeId: Scalars['ObjectId'];
+  filter: Array<Scalars['String']>;
+};
+
 export type CatalogueDataInput = {
   companySlug?: Maybe<Scalars['String']>;
   filter: Array<Scalars['String']>;
@@ -1827,6 +1833,7 @@ export type Query = {
   getAllCurrencies: Array<Currency>;
   /** Should all languages list */
   getAllLanguages: Array<Language>;
+  getCatalogueAdditionalOptions?: Maybe<Array<OptionsAlphabetList>>;
   /** Should return top search items */
   getCatalogueSearchTopItems: CatalogueSearchResult;
   /** Should return top search items */
@@ -1946,6 +1953,11 @@ export type QueryGetUserArgs = {
 
 export type QueryGetAllUsersArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetCatalogueAdditionalOptionsArgs = {
+  input: CatalogueAdditionalOptionsInput;
 };
 
 
@@ -3872,6 +3884,23 @@ export type GetAttributesGroupsForRubricQuery = (
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, '_id' | 'name'>
   )> }
+);
+
+export type GetCatalogueAdditionalOptionsQueryVariables = Exact<{
+  input: CatalogueAdditionalOptionsInput;
+}>;
+
+
+export type GetCatalogueAdditionalOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getCatalogueAdditionalOptions?: Maybe<Array<(
+    { __typename?: 'OptionsAlphabetList' }
+    & Pick<OptionsAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, '_id' | 'name' | 'slug'>
+    )> }
+  )>> }
 );
 
 export type CompanyInListFragment = (
@@ -8041,6 +8070,46 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: Apollo.La
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
+export const GetCatalogueAdditionalOptionsDocument = gql`
+    query GetCatalogueAdditionalOptions($input: CatalogueAdditionalOptionsInput!) {
+  getCatalogueAdditionalOptions(input: $input) {
+    letter
+    docs {
+      _id
+      name
+      slug
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatalogueAdditionalOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueAdditionalOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueAdditionalOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueAdditionalOptionsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCatalogueAdditionalOptionsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueAdditionalOptionsQuery, GetCatalogueAdditionalOptionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCatalogueAdditionalOptionsQuery, GetCatalogueAdditionalOptionsQueryVariables>(GetCatalogueAdditionalOptionsDocument, options);
+      }
+export function useGetCatalogueAdditionalOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueAdditionalOptionsQuery, GetCatalogueAdditionalOptionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCatalogueAdditionalOptionsQuery, GetCatalogueAdditionalOptionsQueryVariables>(GetCatalogueAdditionalOptionsDocument, options);
+        }
+export type GetCatalogueAdditionalOptionsQueryHookResult = ReturnType<typeof useGetCatalogueAdditionalOptionsQuery>;
+export type GetCatalogueAdditionalOptionsLazyQueryHookResult = ReturnType<typeof useGetCatalogueAdditionalOptionsLazyQuery>;
+export type GetCatalogueAdditionalOptionsQueryResult = Apollo.QueryResult<GetCatalogueAdditionalOptionsQuery, GetCatalogueAdditionalOptionsQueryVariables>;
 export const GetAllCompaniesDocument = gql`
     query GetAllCompanies($input: PaginationInput) {
   getAllCompanies(input: $input) {

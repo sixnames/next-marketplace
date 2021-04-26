@@ -1,4 +1,6 @@
-import { castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { OptionInterface } from 'db/uiInterfaces';
+import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { getAlphabetList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -7,6 +9,7 @@ import {
   CatalogueSearchResultModel,
   LanguageModel,
   ManufacturerModel,
+  OptionAlphabetListModel,
   OptionModel,
   ProductModel,
   RubricAttributeModel,
@@ -32,6 +35,7 @@ import {
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_MANUFACTURER_KEY,
+  CATALOGUE_OPTION_SEPARATOR,
   CONFIG_DEFAULT_COMPANY_SLUG,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
@@ -67,9 +71,136 @@ export const CatalogueSearchInput = inputObjectType({
   },
 });
 
+export const CatalogueAdditionalOptionsInput = inputObjectType({
+  name: 'CatalogueAdditionalOptionsInput',
+  definition(t) {
+    t.objectId('companyId');
+    t.nonNull.string('attributeSlug');
+    t.nonNull.list.nonNull.string('filter');
+  },
+});
+
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
+    // Should return all options of current attribute for current catalogue rubric
+    t.list.nonNull.field('getCatalogueAdditionalOptions', {
+      type: 'OptionsAlphabetList',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueAdditionalOptionsInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<OptionAlphabetListModel[] | null> => {
+        const db = await getDatabase();
+        const { city } = await getRequestParams(context);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const { companyId, filter, attributeSlug } = args.input;
+        const [rubricSlug, ...filterOptions] = filter;
+
+        const { minPrice, maxPrice, realFilterOptions, noFiltersSelected } = castCatalogueFilters({
+          filters: filterOptions,
+        });
+
+        const pricesStage =
+          minPrice && maxPrice
+            ? {
+                price: {
+                  $gte: minPrice,
+                  $lte: maxPrice,
+                },
+              }
+            : {};
+
+        const optionsStage = noFiltersSelected
+          ? {}
+          : {
+              selectedOptionsSlugs: {
+                $in: realFilterOptions,
+              },
+            };
+
+        const companyRubricsMatch = companyId ? { companyId } : {};
+
+        const productsInitialMatch = {
+          ...companyRubricsMatch,
+          rubricSlug,
+          citySlug: city,
+          ...optionsStage,
+          ...pricesStage,
+        };
+
+        const shopProductsAggregation = await shopProductsCollection
+          .aggregate<OptionInterface>([
+            {
+              $match: { ...productsInitialMatch },
+            },
+            {
+              $unwind: '$selectedOptionsSlugs',
+            },
+            {
+              $addFields: {
+                slugArray: {
+                  $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+                },
+              },
+            },
+            {
+              $addFields: {
+                attributeSlug: {
+                  $arrayElemAt: ['$slugArray', 0],
+                },
+                optionSlug: {
+                  $arrayElemAt: ['$slugArray', 1],
+                },
+              },
+            },
+            {
+              $match: {
+                attributeSlug,
+              },
+            },
+            {
+              $group: {
+                _id: '$attributeSlug',
+                optionsSlugs: {
+                  $addToSet: '$optionSlug',
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_OPTIONS,
+                as: 'options',
+                let: { optionsSlugs: '$optionsSlugs' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $in: ['$slug', '$$optionsSlugs'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $unwind: '$options',
+            },
+            {
+              $replaceRoot: {
+                newRoot: '$options',
+              },
+            },
+          ])
+          .toArray();
+
+        return getAlphabetList<OptionModel>(shopProductsAggregation);
+      },
+    });
+
     // Should return top search items
     t.nonNull.field('getCatalogueSearchTopItems', {
       type: 'CatalogueSearchResult',

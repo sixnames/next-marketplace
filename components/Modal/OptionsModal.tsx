@@ -13,6 +13,7 @@ export interface OptionsModalOptionInterface extends Record<string, any> {
   _id: any;
   slug: string;
   name: string;
+  options?: OptionsModalOptionInterface[] | null;
 }
 
 export interface OptionsModalLetterInterface {
@@ -82,6 +83,57 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
       });
     },
     [isCheckbox],
+  );
+
+  const renderOption = React.useCallback(
+    (option: OptionsModalOptionInterface) => {
+      const { _id, name, options } = option;
+      const isSelected = selectedOptions.some((option) => _id === option._id);
+
+      if (options && options.length > 0) {
+        return (
+          <div>
+            <div
+              onClick={() => onOptionClickHandler(option)}
+              className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
+            >
+              <div
+                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary-background border-2 border-border-color text-theme ${
+                  isCheckbox ? checkboxClassName : radioClassName
+                }`}
+              >
+                {isSelected ? inputIcon : null}
+              </div>
+
+              <div>{name}</div>
+            </div>
+            <div className='ml-6'>
+              {options.map((child) => {
+                return <div key={`${child._id}`}>{renderOption(child)}</div>;
+              })}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div
+          onClick={() => onOptionClickHandler(option)}
+          className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
+        >
+          <div
+            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary-background border-2 border-border-color text-theme ${
+              isCheckbox ? checkboxClassName : radioClassName
+            }`}
+          >
+            {isSelected ? inputIcon : null}
+          </div>
+
+          <div>{name}</div>
+        </div>
+      );
+    },
+    [inputIcon, isCheckbox, onOptionClickHandler, selectedOptions],
   );
 
   React.useEffect(() => {
@@ -160,25 +212,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
             <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
               {docs.map((option) => {
-                const { _id, name } = option;
-                const isSelected = selectedOptions.some((option) => _id === option._id);
-                return (
-                  <div
-                    onClick={() => onOptionClickHandler(option)}
-                    className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
-                    key={`${_id}`}
-                  >
-                    <div
-                      className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary-background border-2 border-border-color text-theme ${
-                        isCheckbox ? checkboxClassName : radioClassName
-                      }`}
-                    >
-                      {isSelected ? inputIcon : null}
-                    </div>
-
-                    <div>{name}</div>
-                  </div>
-                );
+                return <div key={`${option._id}`}>{renderOption(option)}</div>;
               })}
             </div>
           </div>

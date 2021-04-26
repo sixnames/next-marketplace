@@ -23,6 +23,7 @@ export const COL_PRODUCTS = 'products';
 export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';
 export const COL_PRODUCT_ASSETS = 'productAssets';
 export const COL_PRODUCT_CONNECTIONS = 'productConnections';
+export const COL_PRODUCT_CONNECTION_ITEMS = 'productConnectionItems';
 export const COL_ROLES = 'roles';
 export const COL_RUBRICS = 'rubrics';
 export const COL_RUBRIC_ATTRIBUTES = 'rubricAttributes';

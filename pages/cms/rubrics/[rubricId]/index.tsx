@@ -57,10 +57,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     descriptionI18n,
     shortDescriptionI18n,
     catalogueTitle: {
-      defaultTitleI18n: catalogueTitle.defaultTitleI18n,
-      prefixI18n: catalogueTitle.prefixI18n,
-      keywordI18n: catalogueTitle.keywordI18n,
-      gender: catalogueTitle.gender as any,
+      defaultTitleI18n: catalogueTitle?.defaultTitleI18n,
+      prefixI18n: catalogueTitle?.prefixI18n,
+      keywordI18n: catalogueTitle?.keywordI18n,
+      gender: catalogueTitle?.gender as any,
     },
     variantId,
   };

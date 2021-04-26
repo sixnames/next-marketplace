@@ -15,19 +15,25 @@ export interface TextareaInterface extends InputLinePropsInterface {
 const Textarea: React.FC<TextareaInterface> = ({
   name,
   className,
+  isRequired,
   lineClass,
   label,
-  labelLink,
-  notValid,
-  labelPostfix,
-  value,
-  isRequired,
   low,
+  wide,
+  labelPostfix,
+  isHorizontal,
+  labelLink,
+  value,
+  notValid,
   testId,
+  labelTag,
+  lineIcon,
   ...props
 }) => {
   return (
     <InputLine
+      isHorizontal={isHorizontal}
+      labelTag={labelTag}
       isRequired={isRequired}
       name={name}
       lineClass={lineClass}

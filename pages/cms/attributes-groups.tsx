@@ -9,7 +9,7 @@ import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupM
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_IN_GROUP_MODAL, ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
 import {
@@ -259,7 +259,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
       accessor: 'variant',
       headTitle: 'Тип',
       render: ({ cellData }) =>
-        getFieldTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
+        getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
     },
     {
       accessor: 'optionsGroup',
@@ -279,7 +279,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         if (!cellData) {
           return null;
         }
-        return getFieldTranslation(
+        return getConstantTranslation(
           `selectsOptions.attributePositioning.${cellData[locale]}.${locale}`,
         );
       },

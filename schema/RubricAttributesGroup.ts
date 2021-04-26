@@ -15,9 +15,6 @@ export const RubricOption = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.nonNull.json('variants');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'RubricOption',
-    });
 
     // RubricOption name translation field resolver
     t.nonNull.field('name', {
@@ -42,9 +39,6 @@ export const RubricAttribute = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.json('positioningInTitle');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'RubricOption',
-    });
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
     });

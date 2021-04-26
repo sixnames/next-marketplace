@@ -269,6 +269,12 @@ type CartProduct implements Base {
   shopProductId: ObjectId
 }
 
+input CatalogueAdditionalOptionsInput {
+  attributeSlug: String!
+  companyId: ObjectId
+  filter: [String!]!
+}
+
 input CatalogueDataInput {
   companySlug: String = "default"
   filter: [String!]!
@@ -650,6 +656,7 @@ type LanguagePayload implements Payload {
 
 input MakeAnOrderInput {
   comment: String
+  companySlug: String = "default"
   email: EmailAddress!
   name: String!
   phone: PhoneNumber!
@@ -1182,6 +1189,21 @@ type Mutation {
   updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
 
   """
+  Should update product number attribute
+  """
+  updateProductNumberAttribute(input: UpdateProductNumberAttributeInput!): ProductPayload!
+
+  """
+  Should update product select attribute
+  """
+  updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
+
+  """
+  Should update product text attribute
+  """
+  updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
+
+  """
   Should update role
   """
   updateRole(input: UpdateRoleInput!): RolePayload!
@@ -1248,13 +1270,25 @@ type Option {
   icon: String
   name: String!
   nameI18n: JSONObject!
+  options: [Option!]
   slug: String!
   variants: JSONObject!
+}
+
+input OptionAlphabetInput {
+  optionsGroupId: ObjectId!
+  parentId: ObjectId
+  slugs: [String!]
 }
 
 input OptionVariantInput {
   gender: Gender!
   value: JSONObject!
+}
+
+type OptionsAlphabetList implements AlphabetList {
+  docs: [Option!]!
+  letter: String!
 }
 
 type OptionsGroup {
@@ -1435,6 +1469,7 @@ type Product implements Base & Timestamp {
   brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
+  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
@@ -1453,6 +1488,7 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   shopProducts: [ShopProduct!]!
+  shopsCount: Int!
   slug: String!
   updatedAt: Date!
 }
@@ -1468,13 +1504,7 @@ type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
-  attributeMetric: Metric
-  attributeNameI18n: JSONObject!
-  attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
   number: Float
-  optionsValueI18n: String
   selectedOptionsIds: [ObjectId!]!
 
   """
@@ -1510,22 +1540,6 @@ input ProductAttributesASTInput {
   rubricId: ObjectId!
 }
 
-type ProductAttributesGroupAst implements Base {
-  _id: ObjectId!
-  astAttributes: [ProductAttribute!]!
-  attributes: [Attribute!]!
-  attributesIds: [ObjectId!]!
-  itemId: String!
-  name: String!
-  nameI18n: JSONObject!
-}
-
-type ProductCardBreadcrumb {
-  _id: ObjectId!
-  href: String!
-  name: String!
-}
-
 type ProductCardPrices {
   _id: ObjectId!
   max: String!
@@ -1535,12 +1549,8 @@ type ProductCardPrices {
 type ProductConnection {
   _id: ObjectId!
   attributeId: ObjectId!
-  attributeName: String!
   attributeNameI18n: JSONObject
   attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
-  connectionProducts: [ProductConnectionItem!]!
 }
 
 type ProductConnectionItem {
@@ -1733,6 +1743,7 @@ type Query {
   getBrandCollectionAlphabetLists(
     input: BrandCollectionAlphabetInput
   ): [BrandCollectionsAlphabetList!]!
+  getCatalogueAdditionalOptions(input: CatalogueAdditionalOptionsInput!): [OptionsAlphabetList!]
 
   """
   Should return top search items
@@ -1798,6 +1809,11 @@ type Query {
   Should return session user order by given id
   """
   getMyOrder(_id: ObjectId!): Order
+
+  """
+  Should return options grouped by alphabet
+  """
+  getOptionAlphabetLists(input: OptionAlphabetInput!): [OptionsAlphabetList!]!
 
   """
   Should return options group by given id
@@ -1936,7 +1952,6 @@ type RubricAttribute {
   metric: Metric
   name: String!
   nameI18n: JSONObject!
-  options: [RubricOption!]!
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
@@ -1979,7 +1994,6 @@ type RubricOption {
   icon: String
   name: String!
   nameI18n: JSONObject!
-  options: [RubricOption!]!
   priorities: JSONObject!
   slug: String!
   variants: JSONObject!
@@ -2314,6 +2328,35 @@ input UpdateProductInput {
 input UpdateProductManufacturerInput {
   manufacturerSlug: String
   productId: ObjectId!
+}
+
+input UpdateProductNumberAttributeInput {
+  attributes: [UpdateProductNumberAttributeItemInput!]!
+  productId: ObjectId!
+}
+
+input UpdateProductNumberAttributeItemInput {
+  attributeId: ObjectId!
+  number: Float
+  productAttributeId: ObjectId!
+}
+
+input UpdateProductSelectAttributeInput {
+  attributeId: ObjectId!
+  productAttributeId: ObjectId!
+  productId: ObjectId!
+  selectedOptionsIds: [ObjectId!]!
+}
+
+input UpdateProductTextAttributeInput {
+  attributes: [UpdateProductTextAttributeItemInput!]!
+  productId: ObjectId!
+}
+
+input UpdateProductTextAttributeItemInput {
+  attributeId: ObjectId!
+  productAttributeId: ObjectId!
+  textI18n: JSONObject
 }
 
 input UpdateRoleInput {

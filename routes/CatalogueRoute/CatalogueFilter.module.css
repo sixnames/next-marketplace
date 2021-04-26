@@ -84,19 +84,8 @@
   margin-top: 1.5rem;
 }
 
-.moreTrigger svg {
-  width: 0.875rem;
-  height: 0.875rem;
-  margin-right: 0.875rem;
-  fill: currentColor;
-}
-
-.moreTriggerActive svg {
-  fill: var(--theme);
-}
-
-.moreAttributesTrigger {
-  width: 100%;
+.moreTrigger:hover {
+  color: var(--theme);
 }
 
 .filterTitle {

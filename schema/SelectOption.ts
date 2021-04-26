@@ -7,7 +7,7 @@ import {
   ISO_LANGUAGES,
   OPTIONS_GROUP_VARIANT_ENUMS,
 } from 'config/common';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { SelectOptionModel } from 'db/dbModels';
 import { iconTypesList } from 'types/iconTypes';
@@ -23,7 +23,7 @@ export const SelectOptionsQueries = extendType({
         const { locale } = await getRequestParams(context);
         return GENDER_ENUMS.map((gender) => ({
           _id: gender,
-          name: getFieldTranslation(`selectsOptions.gender.${gender}.${locale}`),
+          name: getConstantTranslation(`selectsOptions.gender.${gender}.${locale}`),
         }));
       },
     });
@@ -36,7 +36,7 @@ export const SelectOptionsQueries = extendType({
         const { locale } = await getRequestParams(context);
         return ATTRIBUTE_VARIANTS_ENUMS.map((variant) => ({
           _id: variant,
-          name: getFieldTranslation(`selectsOptions.attributeVariants.${variant}.${locale}`),
+          name: getConstantTranslation(`selectsOptions.attributeVariants.${variant}.${locale}`),
         }));
       },
     });
@@ -49,7 +49,7 @@ export const SelectOptionsQueries = extendType({
         const { locale } = await getRequestParams(context);
         return ATTRIBUTE_VIEW_VARIANTS_ENUMS.map((variant) => ({
           _id: variant,
-          name: getFieldTranslation(`selectsOptions.attributeView.${variant}.${locale}`),
+          name: getConstantTranslation(`selectsOptions.attributeView.${variant}.${locale}`),
         }));
       },
     });
@@ -62,7 +62,7 @@ export const SelectOptionsQueries = extendType({
         const { locale } = await getRequestParams(context);
         return OPTIONS_GROUP_VARIANT_ENUMS.map((variant) => ({
           _id: variant,
-          name: getFieldTranslation(`selectsOptions.optionsGroupVariant.${variant}.${locale}`),
+          name: getConstantTranslation(`selectsOptions.optionsGroupVariant.${variant}.${locale}`),
         }));
       },
     });
@@ -75,7 +75,7 @@ export const SelectOptionsQueries = extendType({
         const { locale } = await getRequestParams(context);
         return ATTRIBUTE_POSITION_IN_TITLE_ENUMS.map((position) => ({
           _id: position,
-          name: getFieldTranslation(`selectsOptions.attributePositioning.${position}.${locale}`),
+          name: getConstantTranslation(`selectsOptions.attributePositioning.${position}.${locale}`),
         }));
       },
     });

@@ -94,7 +94,9 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/rubrics/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -135,7 +137,9 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
-              router.push(`${ROUTE_CMS}/rubrics/${rubric._id}`).catch((e) => console.log(e));
+              router
+                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`)
+                .catch((e) => console.log(e));
             }}
           />
         </div>

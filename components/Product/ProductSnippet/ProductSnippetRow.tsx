@@ -72,10 +72,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <div className={classes.name}>{originalName}</div>
             <div className={classes.nameTranslation}>{name}</div>
             <div className={classes.listFeatures}>
-              {(listFeatures || []).map(({ attributeName, attributeId, readableValue }) => {
+              {(listFeatures || []).map(({ name, _id, readableValue }) => {
                 return (
-                  <React.Fragment key={`${attributeId}`}>
-                    <div className={classes.listFeaturesLabel}>{attributeName}</div>
+                  <React.Fragment key={`${_id}`}>
+                    <div className={classes.listFeaturesLabel}>{name}</div>
                     <div className={classes.listFeaturesValue}>{readableValue}</div>
                   </React.Fragment>
                 );
@@ -84,10 +84,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.mainContentBottom}>
               <div className={classes.outerRatingList}>
-                {(ratingFeatures || []).map(({ attributeId, attributeName, readableValue }) => {
+                {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
                   return (
-                    <div key={`${attributeId}`} className={classes.outerRating}>
-                      {`${attributeName} ${readableValue}`}
+                    <div key={`${_id}`} className={classes.outerRating}>
+                      {`${name} ${readableValue}`}
                     </div>
                   );
                 })}
@@ -106,22 +106,22 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             )}
 
             <div className={classes.productConnections}>
-              {(connections || []).map(({ _id, attributeName, connectionProducts }) => {
+              {(connections || []).map(({ _id, attribute, connectionProducts }) => {
                 return (
                   <div key={`${_id}`} className={classes.connectionsGroup}>
-                    <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
-                    {connectionProducts.map(({ optionName, _id }, index) => {
-                      const isLast = connectionProducts.length - 1 === index;
+                    <div className={classes.connectionsGroupLabel}>{`${attribute?.name}:`}</div>
+                    {(connectionProducts || []).map(({ option, _id }, index) => {
+                      const isLast = (connectionProducts || []).length - 1 === index;
                       const isCurrent = _id === product._id;
 
                       return (
                         <span
-                          key={`${optionName}`}
+                          key={`${option?.name}`}
                           className={`${classes.connectionsGroupValue} ${
                             isCurrent ? classes.connectionsGroupCurrentValue : ''
                           }`}
                         >
-                          {isLast ? optionName : `${optionName}, `}
+                          {isLast ? option?.name : `${option?.name}, `}
                         </span>
                       );
                     })}

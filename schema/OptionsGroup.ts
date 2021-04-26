@@ -1,3 +1,4 @@
+import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -11,12 +12,19 @@ import {
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
+  ProductAttributeModel,
+  ProductConnectionItemModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
+  COL_OPTIONS_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+} from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -463,7 +471,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Create new option slug
-          const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
+          const newOptionSlug = await getNextItemId(COL_OPTIONS);
 
           // Add option
           const createdOptionResult = await optionsCollection.insertOne({
@@ -473,14 +481,13 @@ export const OptionsGroupMutations = extendType({
             variants: {},
             optionsGroupId,
           });
-          if (!createdOptionResult.result.ok) {
+          const createdOption = createdOptionResult.ops[0];
+          if (!createdOptionResult.result.ok || !createdOption) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.addOption.error'),
             };
           }
-
-          // TODO update options in rubrics
 
           return {
             success: true,
@@ -547,7 +554,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const exist = findDocumentByI18nField({
+          const exist = await findDocumentByI18nField({
             fieldArg: values.nameI18n,
             collectionName: COL_OPTIONS,
             fieldName: 'nameI18n',
@@ -563,28 +570,23 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Create new option slug
-          const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
-
           // Update option
-          const updatedOption = await optionsCollection.findOneAndUpdate(
+          const updatedOptionResult = await optionsCollection.findOneAndUpdate(
             { _id: optionId },
             {
               $set: {
                 ...values,
                 parentId,
-                slug: newOptionSlug,
               },
             },
           );
-          if (!updatedOption) {
+          const updatedOption = updatedOptionResult.value;
+          if (!updatedOptionResult.ok || !updatedOption) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
             };
           }
-
-          // TODO update options in rubric attributes and products attributes
 
           return {
             success: true,
@@ -624,6 +626,12 @@ export const OptionsGroupMutations = extendType({
           const db = await getDatabase();
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+            COL_PRODUCT_CONNECTION_ITEMS,
+          );
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -636,23 +644,27 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO Check if option is used in product connections and in product attributes
-          /*const usedInProducts = await productsCollection.findOne({
-            $or: [
-              {
-                'attributes.selectedOptions._id': optionId,
-              },
-              {
-                'connections.connectionProducts.option._id': optionId,
-              },
-            ],
+          // Check if option is used in product attributes
+          const usedInProductAttributes = await productAttributesCollection.findOne({
+            selectedOptionsIds: optionId,
           });
-          if (usedInProducts) {
+          if (usedInProductAttributes) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.used'),
             };
-          }*/
+          }
+
+          // Check if option is used in product connections
+          const usedInProductConnections = await productConnectionItemsCollection.findOne({
+            optionId,
+          });
+          if (usedInProductConnections) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.deleteOption.used'),
+            };
+          }
 
           // Update options group options list
           const removedOptionResult = await optionsCollection.findOneAndDelete({
@@ -664,8 +676,6 @@ export const OptionsGroupMutations = extendType({
               message: await getApiMessage('optionsGroups.deleteOption.error'),
             };
           }
-
-          // TODO Update rubric attributes options list
 
           return {
             success: true,

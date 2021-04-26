@@ -27,7 +27,7 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ICON,
 } from 'config/common';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 
 type OptionInGroupModalValuesType =
@@ -144,7 +144,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                     <FormikTranslationsInput
                       key={gender}
                       name={`variants.${gender}`}
-                      label={getFieldTranslation(`selectsOptions.gender.${gender}.${locale}`)}
+                      label={getConstantTranslation(`selectsOptions.gender.${gender}.${locale}`)}
                       testId={`variant-${gender}`}
                       showInlineError
                     />

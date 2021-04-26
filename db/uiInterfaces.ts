@@ -136,30 +136,33 @@ export interface OrderStatusInterface extends OrderStatusModel {
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
   product?: ProductInterface;
-  optionName?: string | null;
+  option?: OptionInterface | null;
 }
 
 export interface ProductConnectionInterface extends ProductConnectionModel {
-  attributeName?: string;
-  connectionProducts: ProductConnectionItemInterface[];
+  attribute?: AttributeInterface | null;
+  connectionProducts?: ProductConnectionItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel {
-  attributeName?: string | null;
+export interface ProductAttributeInterface extends ProductAttributeModel, AttributeInterface {
   readableValue?: string | null;
   index?: number | null;
-  selectedOptions?: OptionInterface[] | null;
+  options?: OptionInterface[] | null;
 }
 
-export interface ProductCardPricesInterface {
-  min: string;
-  max: string;
+export interface RubricAttributesGroupASTInterface {
+  _id: string;
+  attributes: RubricAttributeInterface[];
+}
+
+export interface ProductAttributesGroupASTInterface {
+  _id: string;
+  attributes: ProductAttributeInterface[];
 }
 
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
-  shopsCount?: number;
   available?: boolean;
   assets?: ProductAssetsModel | null;
   connections?: ProductConnectionInterface[];
@@ -171,12 +174,16 @@ export interface ProductInterface extends ProductModel {
   ratingFeatures?: ProductAttributeInterface[];
   cardShopProducts?: ShopProductInterface[];
   price?: number;
-  cardPrices?: ProductCardPricesInterface;
   cardBreadcrumbs?: ProductCardBreadcrumbModel[];
   shopProductIds?: ObjectIdModel[];
   shopProducts?: ShopProductInterface[];
   shopProduct?: ShopProductInterface;
   rubric?: RubricInterface;
+  rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
+  stringAttributesAST?: ProductAttributesGroupASTInterface | null;
+  numberAttributesAST?: ProductAttributesGroupASTInterface | null;
+  multipleSelectAttributesAST?: ProductAttributesGroupASTInterface | null;
+  selectAttributesAST?: ProductAttributesGroupASTInterface | null;
 }
 
 export interface RoleInterface extends RoleModel {
@@ -191,14 +198,15 @@ export interface RubricVariantInterface extends RubricVariantModel {
 }
 
 export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
-  options: RubricOptionInterface[];
+  options?: RubricOptionInterface[] | null;
   name?: string | null;
 }
 
 export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
-  options: RubricOptionInterface[];
+  options?: RubricOptionInterface[] | null;
   name?: string | null;
   metric?: MetricInterface | null;
+  rubric?: RubricInterface | null;
 }
 
 export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {
@@ -277,8 +285,8 @@ export interface CatalogueProductPricesInterface {
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
   docs: ProductInterface[];
+  rubric: RubricInterface;
 }
 
 export interface ProductsPaginationAggregationInterface {
@@ -300,6 +308,7 @@ export interface CatalogueFilterAttributeOptionInterface {
 
 export interface CatalogueFilterAttributeInterface {
   _id: ObjectIdModel;
+  attributeId: ObjectIdModel;
   clearSlug: string;
   slug: string;
   name: string;
@@ -307,4 +316,14 @@ export interface CatalogueFilterAttributeInterface {
   isSelected: boolean;
   options: CatalogueFilterAttributeOptionInterface[];
   viewVariant: AttributeViewVariantModel;
+}
+
+export interface ProductCardPricesAggregationInterface {
+  _id: ObjectIdModel;
+  minPrice: number;
+  maxPrice: number;
+}
+
+export interface ProductShopsCountAggregationInterface {
+  shopsCount: number;
 }

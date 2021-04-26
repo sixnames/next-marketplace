@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useAppContext } from 'context/appContext';
 import { useRouter } from 'next/router';
@@ -20,7 +20,7 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
   const { showModal, hideModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
   const defaultErrorMessage = React.useMemo(() => {
-    return getFieldTranslation(`messages.error.${locale}`);
+    return getConstantTranslation(`messages.error.${locale}`);
   }, [locale]);
 
   const onCompleteCallback = useCallback(

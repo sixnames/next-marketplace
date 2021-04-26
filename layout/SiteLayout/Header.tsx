@@ -267,7 +267,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                           <div className='mt-4 mb-4' key={`${_id}`}>
                             <div className='mb-2 text-secondary-text'>{name}</div>
                             <ul>
-                              {options.map((option) => {
+                              {(options || []).map((option) => {
                                 const isCurrent = asPath === option.slug;
                                 return (
                                   <li key={`${option._id}`}>

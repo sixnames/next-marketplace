@@ -1,9 +1,8 @@
-import { RubricAttributeModel, RubricOptionModel } from 'db/dbModels';
 import { RubricAttributeInterface, RubricOptionInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
 
 export interface GetRubricNavOptionsInterface {
-  options: RubricOptionModel[];
+  options: RubricOptionInterface[];
   locale: string;
 }
 
@@ -16,7 +15,7 @@ export function getRubricNavOptions({
       ...option,
       name: getI18nLocaleValue(option.nameI18n, locale),
       options: getRubricNavOptions({
-        options: option.options,
+        options: option.options || [],
         locale,
       }),
     };
@@ -25,7 +24,7 @@ export function getRubricNavOptions({
 
 export interface GetRubricNavAttributesInterface {
   locale: string;
-  attributes: RubricAttributeModel[];
+  attributes: RubricAttributeInterface[];
 }
 
 export function getRubricNavAttributes({
@@ -44,7 +43,7 @@ export function getRubricNavAttributes({
         : null,
       name: getI18nLocaleValue(attribute.nameI18n, locale),
       options: getRubricNavOptions({
-        options: attribute.options,
+        options: attribute.options || [],
         locale,
       }),
     });

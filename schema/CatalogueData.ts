@@ -1,6 +1,7 @@
-import { castCatalogueParamToObject } from 'lib/catalogueUtils';
-import { updateRubricOptionsViews } from 'lib/countersUtils';
-import { noNaN } from 'lib/numbers';
+import { OptionInterface } from 'db/uiInterfaces';
+import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { getAlphabetList } from 'lib/optionsUtils';
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   BrandCollectionModel,
@@ -8,6 +9,8 @@ import {
   CatalogueSearchResultModel,
   LanguageModel,
   ManufacturerModel,
+  OptionAlphabetListModel,
+  OptionModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -20,6 +23,7 @@ import {
   COL_BRANDS,
   COL_LANGUAGES,
   COL_MANUFACTURERS,
+  COL_OPTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -33,8 +37,6 @@ import {
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
   CONFIG_DEFAULT_COMPANY_SLUG,
-  DEFAULT_COUNTERS_OBJECT,
-  DEFAULT_PRIORITY,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -69,9 +71,136 @@ export const CatalogueSearchInput = inputObjectType({
   },
 });
 
+export const CatalogueAdditionalOptionsInput = inputObjectType({
+  name: 'CatalogueAdditionalOptionsInput',
+  definition(t) {
+    t.objectId('companyId');
+    t.nonNull.string('attributeSlug');
+    t.nonNull.list.nonNull.string('filter');
+  },
+});
+
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
+    // Should return all options of current attribute for current catalogue rubric
+    t.list.nonNull.field('getCatalogueAdditionalOptions', {
+      type: 'OptionsAlphabetList',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueAdditionalOptionsInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<OptionAlphabetListModel[] | null> => {
+        const db = await getDatabase();
+        const { city } = await getRequestParams(context);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const { companyId, filter, attributeSlug } = args.input;
+        const [rubricSlug, ...filterOptions] = filter;
+
+        const { minPrice, maxPrice, realFilterOptions, noFiltersSelected } = castCatalogueFilters({
+          filters: filterOptions,
+        });
+
+        const pricesStage =
+          minPrice && maxPrice
+            ? {
+                price: {
+                  $gte: minPrice,
+                  $lte: maxPrice,
+                },
+              }
+            : {};
+
+        const optionsStage = noFiltersSelected
+          ? {}
+          : {
+              selectedOptionsSlugs: {
+                $in: realFilterOptions,
+              },
+            };
+
+        const companyRubricsMatch = companyId ? { companyId } : {};
+
+        const productsInitialMatch = {
+          ...companyRubricsMatch,
+          rubricSlug,
+          citySlug: city,
+          ...optionsStage,
+          ...pricesStage,
+        };
+
+        const shopProductsAggregation = await shopProductsCollection
+          .aggregate<OptionInterface>([
+            {
+              $match: { ...productsInitialMatch },
+            },
+            {
+              $unwind: '$selectedOptionsSlugs',
+            },
+            {
+              $addFields: {
+                slugArray: {
+                  $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+                },
+              },
+            },
+            {
+              $addFields: {
+                attributeSlug: {
+                  $arrayElemAt: ['$slugArray', 0],
+                },
+                optionSlug: {
+                  $arrayElemAt: ['$slugArray', 1],
+                },
+              },
+            },
+            {
+              $match: {
+                attributeSlug,
+              },
+            },
+            {
+              $group: {
+                _id: '$attributeSlug',
+                optionsSlugs: {
+                  $addToSet: '$optionSlug',
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_OPTIONS,
+                as: 'options',
+                let: { optionsSlugs: '$optionsSlugs' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $in: ['$slug', '$$optionsSlugs'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $unwind: '$options',
+            },
+            {
+              $replaceRoot: {
+                newRoot: '$options',
+              },
+            },
+          ])
+          .toArray();
+
+        return getAlphabetList<OptionModel>(shopProductsAggregation);
+      },
+    });
+
     // Should return top search items
     t.nonNull.field('getCatalogueSearchTopItems', {
       type: 'CatalogueSearchResult',
@@ -184,6 +313,7 @@ export const CatalogueQueries = extendType({
                       $addFields: {
                         shopsCount: { $size: '$$shopProductsIds' },
                         cardPrices: {
+                          _id: new ObjectId(),
                           min: '$$minPrice',
                           max: '$$maxPrice',
                         },
@@ -374,6 +504,7 @@ export const CatalogueQueries = extendType({
                       $addFields: {
                         shopsCount: { $size: '$$shopProductsIds' },
                         cardPrices: {
+                          _id: new ObjectId(),
                           min: '$$minPrice',
                           max: '$$maxPrice',
                         },
@@ -467,6 +598,7 @@ export const CatalogueMutations = extendType({
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
           );
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<BrandCollectionModel>(
             COL_BRAND_COLLECTIONS,
@@ -488,19 +620,30 @@ export const CatalogueMutations = extendType({
             const selectedBrandSlugs: string[] = [];
             const selectedBrandCollectionSlugs: string[] = [];
             const selectedManufacturerSlugs: string[] = [];
+            const selectedAttributesSlugs: string[] = [];
+            const selectedOptionsSlugs: string[] = [];
+
             filter.forEach((param) => {
               const castedParam = castCatalogueParamToObject(param);
               const { slug, value } = castedParam;
 
               if (slug === CATALOGUE_BRAND_KEY) {
                 selectedBrandSlugs.push(value);
+                return;
               }
+
               if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
                 selectedBrandCollectionSlugs.push(value);
+                return;
               }
+
               if (slug === CATALOGUE_MANUFACTURER_KEY) {
                 selectedManufacturerSlugs.push(value);
+                return;
               }
+
+              selectedAttributesSlugs.push(slug);
+              selectedOptionsSlugs.push(value);
             });
 
             const counterUpdater = {
@@ -541,50 +684,41 @@ export const CatalogueMutations = extendType({
               counterUpdater,
             );
 
-            // Update rubric counters
-            const attributes = await rubricAttributesCollection
-              .find({ rubricId: rubric._id })
-              .toArray();
-            const attributesSlugs = filter.map((selectedSlug) => {
-              return selectedSlug.split(CATALOGUE_OPTION_SEPARATOR)[0];
-            });
-
-            for await (const attribute of attributes) {
-              if (attributesSlugs.includes(attribute.slug)) {
-                if (!attribute.views) {
-                  attribute.views = DEFAULT_COUNTERS_OBJECT.views;
-                } else {
-                  if (!attribute.views[`${companySlug}`]) {
-                    attribute.views[`${companySlug}`] = {
-                      [city]: DEFAULT_PRIORITY,
-                    };
-                  }
-                  attribute.views[`${companySlug}`][city] =
-                    noNaN(attribute.views[`${companySlug}`][city]) + VIEWS_COUNTER_STEP;
-                }
-
-                const updatedOptions = updateRubricOptionsViews({
-                  selectedOptionsSlugs: filter,
-                  options: attribute.options,
-                  companySlug: `${companySlug}`,
-                  city,
-                }).sort((optionA, optionB) => {
-                  const optionACounter =
-                    noNaN(optionA.views[`${companySlug}`][city]) +
-                    noNaN(optionA.priorities[`${companySlug}`][city]);
-                  const optionBCounter =
-                    noNaN(optionB.views[`${companySlug}`][city]) +
-                    noNaN(optionB.priorities[`${companySlug}`][city]);
-                  return optionBCounter - optionACounter;
-                });
-
-                attribute.options = updatedOptions;
-                await rubricAttributesCollection.findOneAndUpdate(
-                  { _id: attribute._id },
-                  {
-                    $set: attribute,
+            // Update rubric attributes counters
+            if (selectedAttributesSlugs.length > 0) {
+              await rubricAttributesCollection.updateMany(
+                {
+                  rubricId: rubric._id,
+                  slug: {
+                    $in: selectedAttributesSlugs,
                   },
-                );
+                },
+                counterUpdater,
+              );
+
+              const selectedRubricAttributes = await rubricAttributesCollection
+                .find({
+                  rubricId: rubric._id,
+                  slug: {
+                    $in: selectedAttributesSlugs,
+                  },
+                })
+                .toArray();
+
+              for await (const rubricAttribute of selectedRubricAttributes) {
+                const { optionsGroupId } = rubricAttribute;
+
+                if (optionsGroupId) {
+                  await optionsCollection.updateMany(
+                    {
+                      optionsGroupId,
+                      slug: {
+                        $in: selectedOptionsSlugs,
+                      },
+                    },
+                    counterUpdater,
+                  );
+                }
               }
             }
           }

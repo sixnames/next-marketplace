@@ -81,7 +81,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         <div className={classes.outerRatingList}>
           {firstRatingFeature ? (
             <div key={`${firstRatingFeature.attributeId}`} className={classes.outerRating}>
-              {`${firstRatingFeature.attributeName} ${firstRatingFeature.readableValue}`}
+              {`${firstRatingFeature.name} ${firstRatingFeature.readableValue}`}
             </div>
           ) : null}
         </div>

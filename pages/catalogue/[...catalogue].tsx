@@ -40,9 +40,14 @@ import classes from 'styles/CatalogueRoute.module.css';
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
+  companyId?: string;
 }
 
-const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, companySlug }) => {
+const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
+  catalogueData,
+  companyId,
+  companySlug,
+}) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -213,6 +218,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData, comp
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
+            companyId={companyId}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
             catalogueCounterString={catalogueCounterString}
@@ -347,7 +353,11 @@ const Catalogue: NextPage<CatalogueInterface> = ({
       description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
       {...props}
     >
-      <CatalogueRoute catalogueData={catalogueData} companySlug={company?.slug} />
+      <CatalogueRoute
+        catalogueData={catalogueData}
+        companySlug={company?.slug}
+        companyId={company?._id ? `${company?._id}` : undefined}
+      />
     </SiteLayoutProvider>
   );
 };

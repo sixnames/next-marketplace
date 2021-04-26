@@ -20,12 +20,13 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
+import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   CatalogueFilterAttributeInterface,
-  CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ProductInterface,
   RubricInterface,
@@ -36,12 +37,7 @@ import usePageLoadingState from 'hooks/usePageLoadingState';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import {
-  castCatalogueFilters,
-  getCatalogueAttributes,
-  getCatalogueRubric,
-  getRubricCatalogueAttributes,
-} from 'lib/catalogueUtils';
+import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -285,9 +281,9 @@ interface ProductsAggregationInterface {
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
+  rubric: RubricInterface;
 }
 
 export const getServerSideProps = async (
@@ -313,19 +309,6 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-  // const city = shop.citySlug;
-
-  // Get rubric
-  const rubric = await getCatalogueRubric([
-    {
-      $match: { _id: new ObjectId(`${rubricId}`) },
-    },
-  ]);
-  if (!rubric) {
-    return {
-      notFound: true,
-    };
-  }
 
   // Cast filters
   const {
@@ -378,12 +361,14 @@ export const getServerSideProps = async (
       }
     : {};
 
+  const rubricsPipeline = getCatalogueRubricPipeline();
+
   const productsAggregation = await productsCollection
     .aggregate<ProductsAggregationInterface>(
       [
         {
           $match: {
-            rubricId: rubric._id,
+            rubricId: new ObjectId(`${rubricId}`),
             ...searchStage,
             ...optionsStage,
           },
@@ -445,53 +430,18 @@ export const getServerSideProps = async (
                 },
               },
             ],
-            options: [
-              {
-                $project: {
-                  selectedOptionsSlugs: 1,
-                },
-              },
-              {
-                $unwind: '$selectedOptionsSlugs',
-              },
-              {
-                $group: {
-                  _id: '$selectedOptionsSlugs',
-                },
-              },
-              {
-                $addFields: {
-                  slugArray: {
-                    $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  attributeSlug: {
-                    $arrayElemAt: ['$slugArray', 0],
-                  },
-                },
-              },
-              {
-                $group: {
-                  _id: '$attributeSlug',
-                  optionsSlugs: {
-                    $addToSet: '$_id',
-                  },
-                },
-              },
-            ],
             countAllDocs: [
               {
                 $count: 'totalDocs',
               },
             ],
+            rubrics: rubricsPipeline,
           },
         },
         {
           $addFields: {
             totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+            rubric: { $arrayElemAt: ['$rubrics', 0] },
           },
         },
         {
@@ -516,6 +466,7 @@ export const getServerSideProps = async (
         {
           $project: {
             docs: 1,
+            rubric: 1,
             totalDocs: 1,
             options: 1,
             prices: 1,
@@ -543,14 +494,9 @@ export const getServerSideProps = async (
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const rubricAttributes = await getRubricCatalogueAttributes({
-    config: productsResult.options,
-    attributes: rubric.attributes || [],
-    city: initialProps.props.sessionCity,
-  });
-
+  const { rubric } = productsResult;
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    attributes: rubricAttributes,
+    attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filter: restFilter,
     productsPrices: [],
@@ -561,6 +507,7 @@ export const getServerSideProps = async (
   const docs: ProductInterface[] = [];
   for await (const product of productsResult.docs) {
     const cardPrices = {
+      _id: new ObjectId(),
       min: getCurrencyString(product.cardPrices?.min),
       max: getCurrencyString(product.cardPrices?.max),
     };

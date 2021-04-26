@@ -17,14 +17,17 @@ import {
   ROUTE_APP,
   SORT_DESC,
 } from 'config/common';
+import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL } from 'config/modals';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
+  RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -37,12 +40,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import {
-  castCatalogueFilters,
-  getCatalogueAttributes,
-  getCatalogueRubric,
-  getRubricCatalogueAttributes,
-} from 'lib/catalogueUtils';
+import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -376,6 +374,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
 
 interface ShopProductsAggregationInterface {
   docs: ShopProductModel[];
+  rubric: RubricInterface;
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
@@ -403,18 +402,6 @@ export const getServerSideProps = async (
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // Get rubric
-  const rubric = await getCatalogueRubric([
-    {
-      $match: { _id: new ObjectId(rubricId) },
-    },
-  ]);
-  if (!rubric) {
     return {
       notFound: true,
     };
@@ -483,12 +470,14 @@ export const getServerSideProps = async (
       }
     : {};
 
+  const rubricsPipeline = getCatalogueRubricPipeline();
+
   const shopProductsAggregation = await shopProductsCollection
     .aggregate<ShopProductsAggregationInterface>([
       {
         $match: {
           shopId: shop._id,
-          rubricId: rubric._id,
+          rubricId: new ObjectId(rubricId),
           ...searchStage,
           ...pricesStage,
           ...optionsStage,
@@ -563,11 +552,13 @@ export const getServerSideProps = async (
               $count: 'totalDocs',
             },
           ],
+          rubrics: rubricsPipeline,
         },
       },
       {
         $addFields: {
           totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+          rubric: { $arrayElemAt: ['$rubrics', 0] },
         },
       },
       {
@@ -592,6 +583,7 @@ export const getServerSideProps = async (
       {
         $project: {
           docs: 1,
+          rubric: 1,
           totalDocs: 1,
           options: 1,
           prices: 1,
@@ -617,14 +609,9 @@ export const getServerSideProps = async (
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const rubricAttributes = await getRubricCatalogueAttributes({
-    config: shopProductsResult.options,
-    attributes: rubric.attributes || [],
-    city: initialProps.props.sessionCity,
-  });
-
+  const { rubric } = shopProductsResult;
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    attributes: rubricAttributes,
+    attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filter: restFilter,
     productsPrices: shopProductsResult.prices,

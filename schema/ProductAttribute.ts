@@ -11,28 +11,12 @@ export const ProductAttribute = objectType({
     t.nonNull.boolean('showInCard');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
-    t.nonNull.string('attributeSlug');
-    t.nonNull.field('attributeViewVariant', {
-      type: 'AttributeViewVariant',
-    });
-    t.nonNull.field('attributeVariant', {
-      type: 'AttributeVariant',
-    });
-    t.nonNull.json('attributeNameI18n');
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.objectId('selectedOptionsIds');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
       type: 'String',
       description: 'List of selected options slug',
-    });
-
-    // ProductAttribute metric field resolver
-    t.field('attributeMetric', {
-      type: 'Metric',
-      resolve: (source) => {
-        return source.attributeMetric || null;
-      },
     });
 
     // ProductAttribute text translation field resolver
@@ -58,15 +42,6 @@ export const ProductAttribute = objectType({
           throw Error('Attribute not found in ProductAttribute');
         }
         return attribute;
-      },
-    });
-
-    // ProductAttribute readableValue field resolver
-    t.field('optionsValueI18n', {
-      type: 'String',
-      resolve: async (source, _args, context): Promise<string | null> => {
-        const { getFieldLocale } = await getRequestParams(context);
-        return getFieldLocale(source.optionsValueI18n);
       },
     });
   },

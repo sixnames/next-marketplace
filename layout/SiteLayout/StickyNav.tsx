@@ -1,4 +1,4 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
@@ -21,7 +21,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const { _id, options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
 
-  if (options.length < 1) {
+  if ((options || []).length < 1) {
     return null;
   }
 
@@ -31,12 +31,12 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {name}
       </div>
       <ul>
-        {options.map((option) => {
+        {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
               <Link
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${option.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                 onClick={hideDropdownHandler}
                 className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text hover:no-underline hover:text-theme'
               >
@@ -72,7 +72,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { catalogue = [], card = [] } = query;
   const realCatalogueQuery = alwaysArray(catalogue);
   const catalogueSlug = realCatalogueQuery[0];
-  const { name, slug, navItems } = rubric;
+  const { name, slug, attributes } = rubric;
 
   // Get rubric slug from product card path
   const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
@@ -118,7 +118,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <Inner>
           <div className='grid gap-4 pb-10 grid-cols-8'>
             <div className='grid gap-4 grid-cols-4 col-span-5'>
-              {(navItems || []).map((attribute) => {
+              {(attributes || []).map((attribute) => {
                 return (
                   <StickyNavAttribute
                     key={`${attribute._id}`}

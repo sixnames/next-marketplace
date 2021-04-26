@@ -21,7 +21,7 @@ import {
 import { aggregatePagination } from 'db/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
-import { generateSlug } from 'lib/slugUtils';
+import { generateCompanySlug, generateShopSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
   addShopToCompanySchema,
@@ -298,7 +298,10 @@ export const CompanyMutations = extendType({
           }
 
           // Create company
-          const slug = generateSlug(input.name);
+          const slug = generateCompanySlug({
+            name: input.name,
+            itemId,
+          });
           const createdCompanyResult = await companiesCollection.insertOne({
             ...input,
             itemId,
@@ -699,7 +702,10 @@ export const CompanyMutations = extendType({
           }
 
           // Create shop
-          const slug = generateSlug(values.name);
+          const slug = generateShopSlug({
+            name: values.name,
+            itemId,
+          });
           const mainImage = getMainImage(assets);
           const createdShopResult = await shopsCollection.insertOne({
             ...values,

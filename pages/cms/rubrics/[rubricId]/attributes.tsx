@@ -7,7 +7,7 @@ import Inner from 'components/Inner/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from 'config/common';
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
@@ -136,7 +136,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       accessor: 'variant',
       headTitle: 'Тип',
       render: ({ cellData }) =>
-        getFieldTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
+        getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
     },
     {
       accessor: 'metric',
@@ -284,18 +284,37 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'attributes',
-          foreignField: 'rubricId',
-          localField: '_id',
-        },
-      },
-      {
-        $lookup: {
           from: COL_ATTRIBUTES_GROUPS,
           as: 'attributesGroups',
-          foreignField: '_id',
-          localField: 'attributesGroupsIds',
+          let: { attributesGroupsIds: '$attributesGroupsIds', rubricId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$_id', '$$attributesGroupsIds'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_RUBRIC_ATTRIBUTES,
+                as: 'attributes',
+                let: { attributesIds: '$attributesIds' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $in: ['$attributeId', '$$attributesIds'] },
+                          { $eq: ['$$rubricId', '$rubricId'] },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
         },
       },
     ])
@@ -308,19 +327,15 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
-  const rawRubric = {
+  const rawRubric: RubricInterface = {
     ...initialRubric,
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
     attributes: [],
     attributesGroups: (initialRubric.attributesGroups || []).map((attributesGroup) => {
-      const groupAttributes = (initialRubric.attributes || []).filter(({ _id }) => {
-        return attributesGroup.attributesIds.some((attributeId) => attributeId.equals(_id));
-      });
-
       return {
         ...attributesGroup,
         name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-        attributes: groupAttributes.map((attribute) => {
+        attributes: (attributesGroup.attributes || []).map((attribute) => {
           return {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, sessionLocale),

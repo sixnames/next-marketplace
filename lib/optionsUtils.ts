@@ -4,38 +4,89 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
+  GENDER_HE,
 } from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES, COL_OPTIONS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
 import {
   AlphabetListModelType,
   AttributeModel,
   AttributesGroupModel,
+  GenderModel,
   LanguageModel,
   ObjectIdModel,
-  OptionModel,
   RubricAttributeModel,
   RubricOptionModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { OptionInterface, RubricOptionInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 
+interface GetOptionsTreeInterface {
+  options: OptionInterface[];
+  parentId?: ObjectId | null;
+}
+
+export function getOptionsTree({ options, parentId }: GetOptionsTreeInterface): OptionInterface[] {
+  const parentOptions = options.filter((option) =>
+    parentId ? option.parentId?.equals(parentId) : !option.parentId,
+  );
+  return parentOptions.map((parentOption) => {
+    return {
+      ...parentOption,
+      options: getOptionsTree({ options, parentId: parentOption._id }),
+    };
+  });
+}
+
+export interface GetStringValueFromOptionsList {
+  options: OptionInterface[];
+  locale: string;
+  metricName?: string;
+  gender?: GenderModel;
+}
+
+export function getStringValueFromOptionsList({
+  options,
+  locale,
+  metricName,
+  gender = GENDER_HE as GenderModel,
+}: GetStringValueFromOptionsList): string {
+  if (options.length < 1) {
+    return '';
+  }
+
+  const names: string[] = [];
+
+  options.forEach((option) => {
+    const name = option.variants[gender]
+      ? getFieldStringLocale(option.variants[gender], locale)
+      : getFieldStringLocale(option.nameI18n, locale);
+    names.push(name);
+  });
+
+  const asString = names.join(', ');
+
+  return `${asString}${metricName}`;
+}
+
 export interface FindOptionInGroupInterface {
-  options: RubricOptionModel[];
+  options: RubricOptionModel[] | RubricOptionInterface[];
   condition: (treeOption: RubricOptionModel) => boolean;
 }
 
 export function findOptionInTree({
   options,
   condition,
-}: FindOptionInGroupInterface): RubricOptionModel | null | undefined {
-  let option: RubricOptionModel | null | undefined = null;
+}: FindOptionInGroupInterface): RubricOptionModel | RubricOptionInterface | null | undefined {
+  let option: RubricOptionModel | RubricOptionInterface | null | undefined = null;
   options.forEach((treeOption) => {
     if (option) {
       return;
     }
 
-    if (treeOption.options.length > 0) {
-      option = findOptionInTree({ options: treeOption.options, condition });
+    if ((treeOption.options || []).length > 0) {
+      option = findOptionInTree({ options: treeOption.options || [], condition });
     }
 
     if (!option && condition(treeOption)) {
@@ -43,136 +94,6 @@ export function findOptionInTree({
     }
   });
   return option;
-}
-
-export interface UpdateOptionInGroup extends FindOptionInGroupInterface {
-  updater: (option: RubricOptionModel) => RubricOptionModel;
-}
-
-export function updateOptionInTree({
-  options,
-  updater,
-  condition,
-}: UpdateOptionInGroup): RubricOptionModel[] {
-  return options.map((treeOption) => {
-    if (condition(treeOption)) {
-      return updater(treeOption);
-    }
-    if (treeOption.options.length > 0) {
-      return {
-        ...treeOption,
-        options: updateOptionInTree({ options: treeOption.options, updater, condition }),
-      };
-    }
-    return treeOption;
-  });
-}
-
-export interface FindRubricOptionInGroupInterface {
-  options: RubricOptionModel[];
-  condition: (treeOption: RubricOptionModel) => boolean;
-}
-
-export function findRubricOptionInTree({
-  options,
-  condition,
-}: FindRubricOptionInGroupInterface): RubricOptionModel | null | undefined {
-  let option: RubricOptionModel | null | undefined = null;
-  options.forEach((treeOption) => {
-    if (option) {
-      return;
-    }
-
-    if (treeOption.options.length > 0) {
-      option = findRubricOptionInTree({ options: treeOption.options, condition });
-    }
-
-    if (!option && condition(treeOption)) {
-      option = treeOption;
-    }
-  });
-  return option;
-}
-
-export interface UpdateRubricOptionInGroup {
-  updater: (option: RubricOptionModel) => RubricOptionModel;
-  options: RubricOptionModel[];
-  condition: (treeOption: RubricOptionModel) => boolean;
-}
-
-export function updateRubricOptionInTree({
-  options,
-  updater,
-  condition,
-}: UpdateRubricOptionInGroup): RubricOptionModel[] {
-  return options.map((treeOption) => {
-    if (condition(treeOption)) {
-      return updater(treeOption);
-    }
-    if (treeOption.options.length > 0) {
-      return {
-        ...treeOption,
-        options: updateRubricOptionInTree({ options: treeOption.options, updater, condition }),
-      };
-    }
-    return treeOption;
-  });
-}
-
-export function deleteOptionFromTree({
-  options,
-  condition,
-}: FindOptionInGroupInterface): RubricOptionModel[] {
-  return options.filter((treeOption) => {
-    if (condition(treeOption)) {
-      return false;
-    }
-    if (treeOption.options.length > 0) {
-      return {
-        ...treeOption,
-        options: deleteOptionFromTree({ options: treeOption.options, condition }),
-      };
-    }
-    return treeOption;
-  });
-}
-
-interface CastOptionsToTreeInterface {
-  topLevelOptions: OptionModel[];
-  allOptions: OptionModel[];
-  attributeSlug: string;
-}
-
-export function castOptionsToTree({
-  topLevelOptions,
-  allOptions,
-  attributeSlug,
-}: CastOptionsToTreeInterface): RubricOptionModel[] {
-  return topLevelOptions.map((option) => {
-    const children = allOptions.filter(({ parentId }) => {
-      return parentId && parentId.equals(option._id);
-    });
-
-    return {
-      ...option,
-      slug: `${attributeSlug}-${option.slug}`,
-      ...DEFAULT_COUNTERS_OBJECT,
-      options: castOptionsToTree({ topLevelOptions: children, allOptions, attributeSlug }),
-    };
-  });
-}
-
-interface CastOptionsForRubricInterface {
-  options: OptionModel[];
-  attributeSlug: string;
-}
-
-export function castOptionsForRubric({
-  options,
-  attributeSlug,
-}: CastOptionsForRubricInterface): RubricOptionModel[] {
-  const topLevelOptions = options.filter(({ parentId }) => !parentId);
-  return castOptionsToTree({ topLevelOptions, allOptions: options, attributeSlug });
 }
 
 interface CastAttributeForRubricInterface {
@@ -187,17 +108,11 @@ export async function castAttributeForRubric({
   rubricSlug,
 }: CastAttributeForRubricInterface): Promise<RubricAttributeModel> {
   const db = await getDatabase();
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
   const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
 
   const attributesGroup = await attributesGroupsCollection.findOne({
     attributesIds: attribute._id,
   });
-
-  let options: OptionModel[] = [];
-  if (attribute.optionsGroupId) {
-    options = await optionsCollection.find({ optionsGroupId: attribute.optionsGroupId }).toArray();
-  }
 
   const visible =
     attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
@@ -212,10 +127,6 @@ export async function castAttributeForRubric({
     attributesGroupId: new ObjectId(attributesGroup?._id),
     showInCatalogueFilter: visible,
     showInCatalogueNav: visible,
-    options: castOptionsForRubric({
-      options,
-      attributeSlug: attribute.slug,
-    }),
     ...DEFAULT_COUNTERS_OBJECT,
   };
 }

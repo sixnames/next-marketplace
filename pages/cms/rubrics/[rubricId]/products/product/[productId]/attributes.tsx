@@ -81,6 +81,25 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
     },
   });
 
+  const clearSelectFieldHandler = React.useCallback(
+    (attribute: ProductAttributeInterface) => {
+      if (attribute.optionsGroupId) {
+        showLoading();
+        updateProductSelectAttributeMutation({
+          variables: {
+            input: {
+              productId: product._id,
+              attributeId: attribute.attributeId,
+              productAttributeId: attribute._id,
+              selectedOptionsIds: [],
+            },
+          },
+        }).catch((e) => console.log(e));
+      }
+    },
+    [product._id, showLoading, updateProductSelectAttributeMutation],
+  );
+
   return (
     <CmsProductLayout product={product}>
       <Inner>
@@ -100,6 +119,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
                     testId={`${attribute.slug}`}
+                    onClear={
+                      attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
+                    }
                     onClick={() => {
                       if (attribute.optionsGroupId) {
                         showModal<AttributeOptionsModalInterface>({
@@ -107,6 +129,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                           props: {
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             optionVariant: 'radio',
+                            title: `${attribute.name}`,
                             onSubmit: (value) => {
                               showLoading();
                               updateProductSelectAttributeMutation({

@@ -197,6 +197,8 @@ export interface AttributeModel {
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
+  showInCard: boolean;
+  showAsBreadcrumb: boolean;
 }
 
 export interface AttributesGroupModel {
@@ -358,7 +360,7 @@ export interface OptionModel {
   parentId?: ObjectIdModel | null;
 
   options?: OptionModel[] | null;
-  level?: number;
+  level?: number | null;
 }
 
 // Options Group variant
@@ -452,8 +454,6 @@ export interface ProductAttributeModel extends AttributeModel {
   _id: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
-  showInCard: boolean;
-  showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
   selectedOptionsSlugs: string[];
   selectedOptionsIds: ObjectIdModel[];

@@ -512,6 +512,8 @@ export const attributesGroupMutations = extendType({
             ...values,
             slug,
             metric,
+            showAsBreadcrumb: false,
+            showInCard: true,
           });
           const createdAttribute = createdAttributeResult.ops[0];
           if (!createdAttributeResult.result.ok || !createdAttribute) {

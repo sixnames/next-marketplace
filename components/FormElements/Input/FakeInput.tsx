@@ -1,3 +1,4 @@
+import ControlButton from 'components/Buttons/ControlButton';
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import classes from './FakeInput.module.css';
@@ -7,6 +8,7 @@ interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'lab
   value: any;
   testId?: string | number | null;
   onClick?: () => void;
+  onClear?: () => void;
   disabled?: boolean;
 }
 
@@ -20,6 +22,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   labelLink,
   testId,
   onClick,
+  onClear,
   disabled,
 }) => {
   return (
@@ -33,15 +36,21 @@ const FakeInput: React.FC<FakeInputInterface> = ({
       low={low}
       labelTag={'div'}
     >
-      <span
-        onClick={onClick}
+      <div
         className={`${classes.frame} ${disabled ? classes.disabled : ''} ${
           className ? className : ''
         }`}
         data-cy={testId}
       >
-        {value}
-      </span>
+        <div className='relative z-10' onClick={onClick}>
+          {value}
+        </div>
+        {onClear ? (
+          <div onClick={onClear} className='absolute right-0 inset-y-0 z-20'>
+            <ControlButton title={'Очистить поле'} icon={'cross'} />
+          </div>
+        ) : null}
+      </div>
     </InputLine>
   );
 };

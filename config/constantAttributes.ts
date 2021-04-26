@@ -42,6 +42,8 @@ export function getPriceAttribute(): RubricAttributeInterface {
     showInCatalogueFilter: true,
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as AttributeViewVariantModel,
     variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    showAsBreadcrumb: false,
+    showInCard: true,
     options: [
       {
         _id: new ObjectId(),

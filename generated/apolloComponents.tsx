@@ -929,8 +929,12 @@ export type Mutation = {
   updateProductBrandCollection: ProductPayload;
   /** Should update product manufacturer */
   updateProductManufacturer: ProductPayload;
-  /** Should update product attribute */
+  /** Should update product select attribute */
   updateProductSelectAttribute: ProductPayload;
+  /** Should update product number attribute */
+  updateProductNumberAttribute: ProductPayload;
+  /** Should update product text attribute */
+  updateProductTextAttribute: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
@@ -1331,6 +1335,16 @@ export type MutationUpdateProductManufacturerArgs = {
 
 export type MutationUpdateProductSelectAttributeArgs = {
   input: UpdateProductSelectAttributeInput;
+};
+
+
+export type MutationUpdateProductNumberAttributeArgs = {
+  input: UpdateProductNumberAttributeInput;
+};
+
+
+export type MutationUpdateProductTextAttributeArgs = {
+  input: UpdateProductTextAttributeInput;
 };
 
 
@@ -2564,11 +2578,33 @@ export type UpdateProductManufacturerInput = {
   manufacturerSlug?: Maybe<Scalars['String']>;
 };
 
+export type UpdateProductNumberAttributeInput = {
+  productId: Scalars['ObjectId'];
+  attributes: Array<UpdateProductNumberAttributeItemInput>;
+};
+
+export type UpdateProductNumberAttributeItemInput = {
+  productAttributeId: Scalars['ObjectId'];
+  attributeId: Scalars['ObjectId'];
+  number?: Maybe<Scalars['Float']>;
+};
+
 export type UpdateProductSelectAttributeInput = {
   productId: Scalars['ObjectId'];
   productAttributeId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
   selectedOptionsIds: Array<Scalars['ObjectId']>;
+};
+
+export type UpdateProductTextAttributeInput = {
+  productId: Scalars['ObjectId'];
+  attributes: Array<UpdateProductTextAttributeItemInput>;
+};
+
+export type UpdateProductTextAttributeItemInput = {
+  productAttributeId: Scalars['ObjectId'];
+  attributeId: Scalars['ObjectId'];
+  textI18n?: Maybe<Scalars['JSONObject']>;
 };
 
 export type UpdateRoleInput = {
@@ -3520,6 +3556,32 @@ export type UpdateProductSelectAttributeMutationVariables = Exact<{
 export type UpdateProductSelectAttributeMutation = (
   { __typename?: 'Mutation' }
   & { updateProductSelectAttribute: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductNumberAttributeMutationVariables = Exact<{
+  input: UpdateProductNumberAttributeInput;
+}>;
+
+
+export type UpdateProductNumberAttributeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductNumberAttribute: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductTextAttributeMutationVariables = Exact<{
+  input: UpdateProductTextAttributeInput;
+}>;
+
+
+export type UpdateProductTextAttributeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductTextAttribute: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -7188,6 +7250,74 @@ export function useUpdateProductSelectAttributeMutation(baseOptions?: Apollo.Mut
 export type UpdateProductSelectAttributeMutationHookResult = ReturnType<typeof useUpdateProductSelectAttributeMutation>;
 export type UpdateProductSelectAttributeMutationResult = Apollo.MutationResult<UpdateProductSelectAttributeMutation>;
 export type UpdateProductSelectAttributeMutationOptions = Apollo.BaseMutationOptions<UpdateProductSelectAttributeMutation, UpdateProductSelectAttributeMutationVariables>;
+export const UpdateProductNumberAttributeDocument = gql`
+    mutation UpdateProductNumberAttribute($input: UpdateProductNumberAttributeInput!) {
+  updateProductNumberAttribute(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductNumberAttributeMutationFn = Apollo.MutationFunction<UpdateProductNumberAttributeMutation, UpdateProductNumberAttributeMutationVariables>;
+
+/**
+ * __useUpdateProductNumberAttributeMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductNumberAttributeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductNumberAttributeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductNumberAttributeMutation, { data, loading, error }] = useUpdateProductNumberAttributeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductNumberAttributeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductNumberAttributeMutation, UpdateProductNumberAttributeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductNumberAttributeMutation, UpdateProductNumberAttributeMutationVariables>(UpdateProductNumberAttributeDocument, options);
+      }
+export type UpdateProductNumberAttributeMutationHookResult = ReturnType<typeof useUpdateProductNumberAttributeMutation>;
+export type UpdateProductNumberAttributeMutationResult = Apollo.MutationResult<UpdateProductNumberAttributeMutation>;
+export type UpdateProductNumberAttributeMutationOptions = Apollo.BaseMutationOptions<UpdateProductNumberAttributeMutation, UpdateProductNumberAttributeMutationVariables>;
+export const UpdateProductTextAttributeDocument = gql`
+    mutation UpdateProductTextAttribute($input: UpdateProductTextAttributeInput!) {
+  updateProductTextAttribute(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductTextAttributeMutationFn = Apollo.MutationFunction<UpdateProductTextAttributeMutation, UpdateProductTextAttributeMutationVariables>;
+
+/**
+ * __useUpdateProductTextAttributeMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductTextAttributeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductTextAttributeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductTextAttributeMutation, { data, loading, error }] = useUpdateProductTextAttributeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductTextAttributeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductTextAttributeMutation, UpdateProductTextAttributeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductTextAttributeMutation, UpdateProductTextAttributeMutationVariables>(UpdateProductTextAttributeDocument, options);
+      }
+export type UpdateProductTextAttributeMutationHookResult = ReturnType<typeof useUpdateProductTextAttributeMutation>;
+export type UpdateProductTextAttributeMutationResult = Apollo.MutationResult<UpdateProductTextAttributeMutation>;
+export type UpdateProductTextAttributeMutationOptions = Apollo.BaseMutationOptions<UpdateProductTextAttributeMutation, UpdateProductTextAttributeMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

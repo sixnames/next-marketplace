@@ -98,7 +98,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
         const accordionIconClass = notEmpty ? classes.iconDone : classes.iconEmpty;
         const name = `${inputName}.${localeSlug}`;
         const isDefault = defaultLocale === localeSlug;
-
+        console.log(accordionIconClass);
         return (
           <Accordion
             testId={`${testId}-accordion-${localeSlug}`}

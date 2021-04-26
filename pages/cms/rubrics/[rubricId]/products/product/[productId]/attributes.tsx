@@ -28,7 +28,11 @@ import {
   ProductAttributesGroupASTInterface,
   ProductInterface,
 } from 'db/uiInterfaces';
-import { useUpdateProductSelectAttributeMutation } from 'generated/apolloComponents';
+import {
+  useUpdateProductNumberAttributeMutation,
+  useUpdateProductSelectAttributeMutation,
+  useUpdateProductTextAttributeMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -77,6 +81,32 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
       } else {
         hideLoading();
         showErrorNotification({ title: updateProductSelectAttribute.message });
+      }
+    },
+  });
+
+  const [updateProductNumberAttributeMutation] = useUpdateProductNumberAttributeMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductNumberAttribute }) => {
+      if (updateProductNumberAttribute.success) {
+        onCompleteCallback(updateProductNumberAttribute);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductNumberAttribute.message });
+      }
+    },
+  });
+
+  const [updateProductTextAttributeMutation] = useUpdateProductTextAttributeMutation({
+    onError: onErrorCallback,
+    onCompleted: ({ updateProductTextAttribute }) => {
+      if (updateProductTextAttribute.success) {
+        onCompleteCallback(updateProductTextAttribute);
+        router.reload();
+      } else {
+        hideLoading();
+        showErrorNotification({ title: updateProductTextAttribute.message });
       }
     },
   });
@@ -208,7 +238,21 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
           <Formik
             initialValues={numberAttributesAST}
             onSubmit={(values) => {
-              console.log(values.attributes);
+              showLoading();
+              updateProductNumberAttributeMutation({
+                variables: {
+                  input: {
+                    productId: product._id,
+                    attributes: values.attributes.map((attribute) => {
+                      return {
+                        attributeId: attribute.attributeId,
+                        productAttributeId: attribute._id,
+                        number: attribute.number ?? null,
+                      };
+                    }),
+                  },
+                },
+              }).catch((e) => console.log(e));
             }}
           >
             {() => {
@@ -251,7 +295,21 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
           <Formik
             initialValues={stringAttributesAST}
             onSubmit={(values) => {
-              console.log(values);
+              showLoading();
+              updateProductTextAttributeMutation({
+                variables: {
+                  input: {
+                    productId: product._id,
+                    attributes: values.attributes.map((attribute) => {
+                      return {
+                        attributeId: attribute.attributeId,
+                        productAttributeId: attribute._id,
+                        textI18n: attribute.textI18n || null,
+                      };
+                    }),
+                  },
+                },
+              }).catch((e) => console.log(e));
             }}
           >
             {() => {
@@ -471,11 +529,11 @@ export const getServerSideProps = async (
       numberAttributesAST = astGroup;
     }
 
-    if (variant === ATTRIBUTE_VARIANT_SELECT) {
+    if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
       multipleSelectAttributesAST = astGroup;
     }
 
-    if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
+    if (variant === ATTRIBUTE_VARIANT_SELECT) {
       selectAttributesAST = astGroup;
     }
   }

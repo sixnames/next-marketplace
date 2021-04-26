@@ -110,3 +110,21 @@ export const UPDATE_PRODUCT_SELECT_ATTRIBUTE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT_NUMBER_ATTRIBUTE_MUTATION = gql`
+  mutation UpdateProductNumberAttribute($input: UpdateProductNumberAttributeInput!) {
+    updateProductNumberAttribute(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_TEXT_ATTRIBUTE_MUTATION = gql`
+  mutation UpdateProductTextAttribute($input: UpdateProductTextAttributeInput!) {
+    updateProductTextAttribute(input: $input) {
+      success
+      message
+    }
+  }
+`;

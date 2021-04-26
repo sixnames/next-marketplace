@@ -34,6 +34,7 @@ import {
   ASSETS_PRODUCT_IMAGE_WIDTH,
   ATTRIBUTE_VARIANT_SELECT,
   CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_LOCALE,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -200,13 +201,51 @@ export const UpdateProductManufacturerInput = inputObjectType({
   },
 });
 
-export const UpdateProductAttributeInput = inputObjectType({
+export const UpdateProductSelectAttributeInput = inputObjectType({
   name: 'UpdateProductSelectAttributeInput',
   definition(t) {
     t.nonNull.objectId('productId');
     t.nonNull.objectId('productAttributeId');
     t.nonNull.objectId('attributeId');
     t.nonNull.list.nonNull.objectId('selectedOptionsIds');
+  },
+});
+
+export const UpdateProductNumberAttributeItemInput = inputObjectType({
+  name: 'UpdateProductNumberAttributeItemInput',
+  definition(t) {
+    t.nonNull.objectId('productAttributeId');
+    t.nonNull.objectId('attributeId');
+    t.float('number');
+  },
+});
+
+export const UpdateProductNumberAttributeInput = inputObjectType({
+  name: 'UpdateProductNumberAttributeInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.list.nonNull.field('attributes', {
+      type: 'UpdateProductNumberAttributeItemInput',
+    });
+  },
+});
+
+export const UpdateProductTextAttributeItemInput = inputObjectType({
+  name: 'UpdateProductTextAttributeItemInput',
+  definition(t) {
+    t.nonNull.objectId('productAttributeId');
+    t.nonNull.objectId('attributeId');
+    t.json('textI18n');
+  },
+});
+
+export const UpdateProductTextAttributeInput = inputObjectType({
+  name: 'UpdateProductTextAttributeInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.list.nonNull.field('attributes', {
+      type: 'UpdateProductTextAttributeItemInput',
+    });
   },
 });
 
@@ -1437,10 +1476,10 @@ export const ProductMutations = extendType({
       },
     });
 
-    // Should update product attribute
+    // Should update product select attribute
     t.nonNull.field('updateProductSelectAttribute', {
       type: 'ProductPayload',
-      description: 'Should update product attribute',
+      description: 'Should update product select attribute',
       args: {
         input: nonNull(
           arg({
@@ -1566,6 +1605,216 @@ export const ProductMutations = extendType({
               success: false,
               message: await getApiMessage('products.update.error'),
             };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: product,
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product number attribute
+    t.nonNull.field('updateProductNumberAttribute', {
+      type: 'ProductPayload',
+      description: 'Should update product number attribute',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductNumberAttributeInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const { input } = args;
+          const { productId, attributes } = input;
+
+          // Check if product exist
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          for await (const attributesItem of attributes) {
+            const { number, attributeId, productAttributeId } = attributesItem;
+
+            // Delete product attribute if value is empty
+            if (!number && number !== 0) {
+              await productAttributesCollection.findOneAndDelete({ _id: productAttributeId });
+              continue;
+            }
+
+            // Check if product attribute exist
+            let productAttribute = await productAttributesCollection.findOne({
+              _id: productAttributeId,
+            });
+
+            // Create new product attribute if original is absent
+            if (!productAttribute) {
+              const attribute = await attributesCollection.findOne({ _id: attributeId });
+
+              if (!attribute) {
+                return {
+                  success: false,
+                  message: await getApiMessage('products.update.error'),
+                };
+              }
+
+              productAttribute = {
+                ...attribute,
+                attributeId,
+                productId: product._id,
+                productSlug: product.slug,
+                selectedOptionsIds: [],
+                selectedOptionsSlugs: [],
+                number: undefined,
+                textI18n: {},
+                showAsBreadcrumb: false,
+                showInCard: true,
+              };
+            }
+
+            // Update or create product attribute
+            const { _id, ...restProductAttribute } = productAttribute;
+            await productAttributesCollection.findOneAndUpdate(
+              {
+                _id,
+              },
+              {
+                $set: {
+                  ...restProductAttribute,
+                  number,
+                },
+              },
+              {
+                upsert: true,
+                returnOriginal: false,
+              },
+            );
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('products.update.success'),
+            payload: product,
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update product text attribute
+    t.nonNull.field('updateProductTextAttribute', {
+      type: 'ProductPayload',
+      description: 'Should update product text attribute',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductTextAttributeInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const { input } = args;
+          const { productId, attributes } = input;
+
+          // Check if product exist
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          for await (const attributesItem of attributes) {
+            const { textI18n, attributeId, productAttributeId } = attributesItem;
+
+            // Delete product attribute if value is empty
+            if (!textI18n || !textI18n[DEFAULT_LOCALE]) {
+              await productAttributesCollection.findOneAndDelete({ _id: productAttributeId });
+              continue;
+            }
+
+            // Check if product attribute exist
+            let productAttribute = await productAttributesCollection.findOne({
+              _id: productAttributeId,
+            });
+
+            // Create new product attribute if original is absent
+            if (!productAttribute) {
+              const attribute = await attributesCollection.findOne({ _id: attributeId });
+
+              if (!attribute) {
+                return {
+                  success: false,
+                  message: await getApiMessage('products.update.error'),
+                };
+              }
+
+              productAttribute = {
+                ...attribute,
+                attributeId,
+                productId: product._id,
+                productSlug: product.slug,
+                selectedOptionsIds: [],
+                selectedOptionsSlugs: [],
+                number: undefined,
+                textI18n: {},
+                showAsBreadcrumb: false,
+                showInCard: true,
+              };
+            }
+
+            // Update or create product attribute
+            const { _id, ...restProductAttribute } = productAttribute;
+            await productAttributesCollection.findOneAndUpdate(
+              {
+                _id,
+              },
+              {
+                $set: {
+                  ...restProductAttribute,
+                  textI18n,
+                },
+              },
+              {
+                upsert: true,
+                returnOriginal: false,
+              },
+            );
           }
 
           return {

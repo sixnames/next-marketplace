@@ -1183,9 +1183,19 @@ type Mutation {
   updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
 
   """
-  Should update product attribute
+  Should update product number attribute
+  """
+  updateProductNumberAttribute(input: UpdateProductNumberAttributeInput!): ProductPayload!
+
+  """
+  Should update product select attribute
   """
   updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
+
+  """
+  Should update product text attribute
+  """
+  updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
 
   """
   Should update role
@@ -2313,11 +2323,33 @@ input UpdateProductManufacturerInput {
   productId: ObjectId!
 }
 
+input UpdateProductNumberAttributeInput {
+  attributes: [UpdateProductNumberAttributeItemInput!]!
+  productId: ObjectId!
+}
+
+input UpdateProductNumberAttributeItemInput {
+  attributeId: ObjectId!
+  number: Float
+  productAttributeId: ObjectId!
+}
+
 input UpdateProductSelectAttributeInput {
   attributeId: ObjectId!
   productAttributeId: ObjectId!
   productId: ObjectId!
   selectedOptionsIds: [ObjectId!]!
+}
+
+input UpdateProductTextAttributeInput {
+  attributes: [UpdateProductTextAttributeItemInput!]!
+  productId: ObjectId!
+}
+
+input UpdateProductTextAttributeItemInput {
+  attributeId: ObjectId!
+  productAttributeId: ObjectId!
+  textI18n: JSONObject
 }
 
 input UpdateRoleInput {

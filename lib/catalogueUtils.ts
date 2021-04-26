@@ -584,7 +584,6 @@ export const getCatalogueData = async ({
     const productsInitialMatch = {
       ...companyRubricsMatch,
       rubricSlug,
-      // rubricId: rubric._id,
       citySlug: city,
       ...optionsStage,
       ...pricesStage,

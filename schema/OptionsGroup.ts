@@ -1,3 +1,4 @@
+import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -24,7 +25,6 @@ import {
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -471,7 +471,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Create new option slug
-          const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
+          const newOptionSlug = await getNextItemId(COL_OPTIONS);
 
           // Add option
           const createdOptionResult = await optionsCollection.insertOne({
@@ -570,9 +570,6 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Create new option slug
-          const newOptionSlug = generateDefaultLangSlug(values.nameI18n);
-
           // Update option
           const updatedOptionResult = await optionsCollection.findOneAndUpdate(
             { _id: optionId },
@@ -580,7 +577,6 @@ export const OptionsGroupMutations = extendType({
               $set: {
                 ...values,
                 parentId,
-                slug: newOptionSlug,
               },
             },
           );

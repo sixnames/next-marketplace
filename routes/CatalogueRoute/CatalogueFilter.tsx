@@ -1,4 +1,6 @@
+import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
@@ -13,11 +15,14 @@ import 'rc-slider/assets/index.css';
 
 interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;
+  companyId?: string;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
+  companyId,
 }) => {
+  const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
@@ -29,9 +34,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
-  if (name === 'Виноград') {
-    console.log(attribute.attributeId);
-  }
   return (
     <div className={classes.attribute}>
       <div className={classes.attributeTitle}>
@@ -59,7 +61,19 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       </div>
 
       {options.length === maxVisibleOptions && !isPrice ? (
-        <div className={`${classes.moreTrigger}`} onClick={() => console.log(attribute._id)}>
+        <div
+          className={`${classes.moreTrigger}`}
+          onClick={() => {
+            showModal<CatalogueAdditionalOptionsModalInterface>({
+              variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+              props: {
+                attributeSlug: attribute.slug,
+                title: attribute.name,
+                companyId,
+              },
+            });
+          }}
+        >
           Показать еще
         </div>
       ) : null}
@@ -74,6 +88,7 @@ interface CatalogueFilterInterface {
   rubricClearSlug: string;
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
+  companyId?: string;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
@@ -83,6 +98,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   catalogueCounterString,
   hideFilterHandler,
   isFilterVisible,
+  companyId,
 }) => {
   const { currency } = useLocaleContext();
   const { isMobile } = useAppContext();
@@ -142,7 +158,13 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         ) : null}
 
         {attributes.map((attribute) => {
-          return <CatalogueFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
+          return (
+            <CatalogueFilterAttribute
+              companyId={companyId}
+              attribute={attribute}
+              key={`${attribute._id}`}
+            />
+          );
         })}
       </div>
     </div>

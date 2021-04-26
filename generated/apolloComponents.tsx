@@ -312,7 +312,7 @@ export type CartProduct = Base & {
 
 export type CatalogueAdditionalOptionsInput = {
   companyId?: Maybe<Scalars['ObjectId']>;
-  attributeId: Scalars['ObjectId'];
+  attributeSlug: Scalars['String'];
   filter: Array<Scalars['String']>;
 };
 

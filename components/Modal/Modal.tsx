@@ -28,9 +28,11 @@ import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
   ATTRIBUTE_OPTIONS_MODAL,
+  CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
 } from 'config/modals';
 
 const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
+const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
@@ -126,6 +128,10 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
+
+          {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
+            <CatalogueAdditionalOptionsModal {...modalProps} />
+          )}
         </React.Suspense>
       </div>
 

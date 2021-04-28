@@ -34,9 +34,15 @@ const SignInRoute: React.FC = () => {
             redirect: false,
             ...values,
           })
-            .then(({ ok }) => {
+            .then((res) => {
               hideLoading();
-              if (ok) {
+
+              if (!res) {
+                setIsError(true);
+                return;
+              }
+
+              if (res.ok) {
                 setIsError(false);
                 window.location.pathname = '/';
                 return;

@@ -496,7 +496,7 @@ export const getServerSideProps = async (
   // const beforeOptions = new Date().getTime();
   const { rubric } = productsResult;
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
+    attributes: [getPriceAttribute(), ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filter: restFilter,
     productsPrices: [],
@@ -521,9 +521,9 @@ export const getServerSideProps = async (
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: RubricProductsInterface = {
     rubric: {
-      ...rubric,
+      ...(rubric || {}),
       attributes: [],
-      name: getFieldStringLocale(rubric.nameI18n, locale),
+      name: getFieldStringLocale(rubric?.nameI18n, locale),
     },
     clearSlug: `${basePath}${sortPathname}`,
     totalDocs: productsResult.totalDocs,

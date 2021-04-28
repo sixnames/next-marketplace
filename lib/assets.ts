@@ -116,7 +116,7 @@ StoreUploadsInterface): Promise<AssetModel[] | null> => {
       let buffer: Buffer | null = null;
 
       buffer = await getBufferFromFileStream(fileStream);
-      fileName = `${itemId}-${finalIndex}-${ext}`;
+      fileName = `${itemId}-${finalIndex}${ext}`;
 
       /*if (!asImage) {
         buffer = await getBufferFromFileStream(fileStream);

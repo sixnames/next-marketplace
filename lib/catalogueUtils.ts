@@ -1,8 +1,11 @@
 import { getPriceAttribute } from 'config/constantAttributes';
 import {
+  COL_ATTRIBUTES,
   COL_CONFIGS,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
@@ -677,7 +680,90 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                // TODO catalogue snippet connections
+
+                // Lookup product connection
+                {
+                  $lookup: {
+                    from: COL_PRODUCT_CONNECTIONS,
+                    as: 'connection',
+                    let: {
+                      productId: '$_id',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $in: ['$$productId', '$productsIds'],
+                          },
+                        },
+                      },
+                      {
+                        $lookup: {
+                          from: COL_ATTRIBUTES,
+                          as: 'attribute',
+                          let: { attributeId: '$attributeId' },
+                          pipeline: [
+                            {
+                              $match: {
+                                $expr: {
+                                  $eq: ['$$attributeId', '$_id'],
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        $addFields: {
+                          attribute: {
+                            $arrayElemAt: ['$attribute', 0],
+                          },
+                        },
+                      },
+                      {
+                        $lookup: {
+                          from: COL_PRODUCT_CONNECTION_ITEMS,
+                          as: 'connectionProducts',
+                          let: {
+                            connectionId: '$_id',
+                          },
+                          pipeline: [
+                            {
+                              $match: {
+                                $expr: {
+                                  $eq: ['$connectionId', '$$connectionId'],
+                                },
+                              },
+                            },
+                            {
+                              $lookup: {
+                                from: COL_OPTIONS,
+                                as: 'option',
+                                let: { optionId: '$optionId' },
+                                pipeline: [
+                                  {
+                                    $match: {
+                                      $expr: {
+                                        $eq: ['$$optionId', '$_id'],
+                                      },
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              $addFields: {
+                                option: {
+                                  $arrayElemAt: ['$option', 0],
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
 
                 // Lookup product attributes
                 {

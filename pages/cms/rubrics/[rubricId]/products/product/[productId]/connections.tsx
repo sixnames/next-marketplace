@@ -10,6 +10,8 @@ import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
 import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
@@ -170,7 +172,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
-      accessor: 'optionName',
+      accessor: 'option.name',
       headTitle: 'Значение',
       render: ({ cellData }) => cellData,
     },
@@ -344,6 +346,29 @@ export const getServerSideProps = async (
             },
             {
               $lookup: {
+                from: COL_ATTRIBUTES,
+                as: 'attribute',
+                let: { attributeId: '$attributeId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$attributeId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                attribute: {
+                  $arrayElemAt: ['$attribute', 0],
+                },
+              },
+            },
+            {
+              $lookup: {
                 from: COL_PRODUCT_CONNECTION_ITEMS,
                 as: 'connectionProducts',
                 let: { connectionId: '$_id' },
@@ -353,6 +378,22 @@ export const getServerSideProps = async (
                       $expr: {
                         $eq: ['$$connectionId', '$connectionId'],
                       },
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: COL_OPTIONS,
+                      as: 'option',
+                      let: { optionId: '$optionId' },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$$optionId', '$_id'],
+                            },
+                          },
+                        },
+                      ],
                     },
                   },
                   {
@@ -375,6 +416,9 @@ export const getServerSideProps = async (
                     $addFields: {
                       product: {
                         $arrayElemAt: ['$product', 0],
+                      },
+                      option: {
+                        $arrayElemAt: ['$option', 0],
                       },
                     },
                   },

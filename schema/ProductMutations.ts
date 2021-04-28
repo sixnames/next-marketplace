@@ -1,4 +1,3 @@
-import { ProductAttributeInterface, ProductConnectionInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -896,29 +895,19 @@ export const ProductMutations = extendType({
 
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
-
-          // TODO
           const productConnections = await productConnectionsCollection
-            .aggregate<ProductConnectionInterface>([
+            .aggregate([
               {
-                $match: { productId },
+                $match: { productIds: productId },
               },
             ])
             .toArray();
-
-          // TODO
-          const productAttributes = await productsAttributesCollection
-            .aggregate<ProductAttributeInterface>([
-              {
-                $match: { productId },
-              },
-            ])
-            .toArray();
+          const productAttribute = await productsAttributesCollection.findOne({
+            productId,
+            attributeId,
+          });
 
           // Find current attribute in product
-          const productAttribute = productAttributes.find((productAttribute) => {
-            return productAttribute.attributeId.equals(attributeId);
-          });
           if (!product || !productAttribute) {
             return {
               success: false,

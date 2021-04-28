@@ -527,13 +527,16 @@ export const ProductMutations = extendType({
             asImage: true,
             width: ASSETS_PRODUCT_IMAGE_WIDTH,
           });
+
           if (!assets) {
             return {
               success: false,
               message: await getApiMessage(`products.update.error`),
             };
           }
-          const mainImage = getMainImage(assets);
+
+          const finalAssets = [...initialAssets.assets, ...assets];
+          const mainImage = getMainImage(finalAssets);
 
           // Update product
           const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
@@ -542,7 +545,7 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                assets,
+                assets: finalAssets,
               },
             },
             {

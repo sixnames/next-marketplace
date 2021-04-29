@@ -1,7 +1,7 @@
+import fs from 'fs';
 import { MongoClient, Db } from 'mongodb';
 import path from 'path';
-// const test = require(path.join(process.cwd(), 'db', 'ca-certificates', 'Yandex', 'root.crt'));
-// console.log(test);
+
 // Create cached connection variable
 let cachedDb: Db | undefined;
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
@@ -9,6 +9,26 @@ const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 // A function for connecting to MongoDB,
 // taking a single parameter of the connection string
 export async function getDatabase(): Promise<Db> {
+  // TODO test
+  console.log(' ');
+  const postsDirectory = path.join(process.cwd(), 'posts');
+  console.log('postsDirectory ', postsDirectory);
+
+  const filenames = fs.readdirSync(postsDirectory);
+  console.log('filenames ', filenames);
+
+  const posts = filenames.map(async (filename: string) => {
+    const filePath = path.join(postsDirectory, filename);
+    const fileContents = await fs.readFileSync(filePath, 'utf8');
+    return {
+      filename,
+      content: fileContents,
+    };
+  });
+  console.log(JSON.stringify(await Promise.all(posts), null, 2));
+  console.log(' ');
+  // TODO test
+
   // If the database connection is cached,
   // use it instead of creating a new connection
   if (cachedDb) {

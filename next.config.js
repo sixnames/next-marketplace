@@ -17,25 +17,6 @@ module.exports = {
   },
   async headers() {
     return [
-      // Catalogue
-      /*{
-        source: '/catalogue/:catalogue*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 's-maxage=604800000, stale-while-revalidate=86400000',
-          },
-        ],
-      },
-      {
-        source: '/product/:card',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 's-maxage=604800000, stale-while-revalidate=86400000',
-          },
-        ],
-      },*/
       // Assets
       {
         source: '/fonts/:all*(woff2|woff)',

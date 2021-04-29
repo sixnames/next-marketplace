@@ -1,6 +1,7 @@
 import { MongoClient, Db } from 'mongodb';
 import path from 'path';
-
+// const test = require(path.join(process.cwd(), 'db', 'ca-certificates', 'Yandex', 'root.crt'));
+// console.log(test);
 // Create cached connection variable
 let cachedDb: Db | undefined;
 
@@ -28,7 +29,7 @@ export async function getDatabase(): Promise<Db> {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           tls: true,
-          tlsCAFile: path.join(process.cwd(), 'db', 'ca-certificates', 'Yandex', 'root.crt'),
+          tlsCAFile: path.resolve(process.cwd(), 'db', 'root.crt'),
           replicaSet: process.env.MONGO_DB_RS,
           authSource: process.env.MONGO_DB_NAME,
         }

@@ -1,12 +1,11 @@
-import { sendEmail } from 'emails/mailer';
+import { sendOrderCreatedEmail } from 'emails/orderCreatedEmail';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function sendTestEmail(_req: NextApiRequest, res: NextApiResponse) {
-  await sendEmail({
-    content: 'content',
-    text: 'content',
-    to: ['slava.kirshman@gmail.com', 'slava.kirshman@icloud.com'],
-    subject: 'subject',
+  await sendOrderCreatedEmail({
+    to: 'slava.kirshman@gmail.com',
+    userName: 'Slava',
+    orderItemId: '879822',
   });
 
   res.send('Send');

@@ -680,7 +680,6 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-
             ordersIds: [],
             roleId: guestRole._id,
             createdAt: new Date(),
@@ -698,6 +697,7 @@ export const UserMutations = mutationType({
           await signUpEmail({
             to: createdUser.email,
             userName: createdUser.name,
+            password,
           });
 
           return {

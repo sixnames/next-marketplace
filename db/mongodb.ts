@@ -3,6 +3,7 @@ import path from 'path';
 
 // Create cached connection variable
 let cachedDb: Db | undefined;
+const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
 // A function for connecting to MongoDB,
 // taking a single parameter of the connection string
@@ -28,7 +29,7 @@ export async function getDatabase(): Promise<Db> {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           tls: true,
-          tlsCAFile: path.join(process.cwd(), 'db/ca-certificates/Yandex/root.crt'),
+          tlsCAFile,
           replicaSet: process.env.MONGO_DB_RS,
           authSource: process.env.MONGO_DB_NAME,
         }

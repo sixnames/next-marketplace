@@ -5,7 +5,7 @@ export interface SendEmailInterface {
   subject: string;
   content: string;
   text: string;
-  to: string;
+  to: string | string[];
 }
 
 export const sendEmail = async ({ content, subject, text, to }: SendEmailInterface) => {
@@ -40,7 +40,7 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
 
     // send mail with defined transport object
     await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address '"Fred Foo 👻" <foo@example.com>'
+      from: '"Hello" <order@winepoint.ru>', // sender address '"Fred Foo 👻" <foo@example.com>'
       to, // list of receivers
       subject, // Subject line
       text, // plain text body
@@ -50,7 +50,7 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
       }),
     });
 
-    // console.log('Message sent: %s', info.messageId);
+    // console.log(`Message sent: ${info.messageId}`);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Preview only available when sending through an Ethereal account

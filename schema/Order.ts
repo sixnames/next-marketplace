@@ -361,7 +361,6 @@ export const OrderMutations = extendType({
               phone: phoneToRaw(input.phone),
               itemId,
               password,
-
               ordersIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -379,6 +378,7 @@ export const OrderMutations = extendType({
             await signUpEmail({
               to: createdUser.email,
               userName: createdUser.name,
+              password,
             });
           }
           if (!user) {

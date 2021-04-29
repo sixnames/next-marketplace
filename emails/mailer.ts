@@ -39,7 +39,7 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
     });
 
     // send mail with defined transport object
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: '"Hello" <order@winepoint.ru>', // sender address '"Fred Foo 👻" <foo@example.com>'
       to, // list of receivers
       subject, // Subject line
@@ -50,7 +50,7 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
       }),
     });
 
-    console.log(`Message sent: ${info.messageId}`);
+    // console.log(`Message sent: ${info.messageId}`);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Preview only available when sending through an Ethereal account

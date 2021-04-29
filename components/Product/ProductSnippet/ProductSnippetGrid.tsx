@@ -1,7 +1,6 @@
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
 import Link from '../../Link/Link';
 import RatingStars from '../../RatingStars/RatingStars';
@@ -13,7 +12,6 @@ interface ProductSnippetGridInterface {
   product: ProductInterface;
   testId?: string;
   additionalSlug?: string;
-  size?: 'small' | 'normal';
   className?: string;
 }
 
@@ -21,7 +19,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   product,
   testId,
   additionalSlug,
-  size = 'normal',
   className,
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
@@ -39,7 +36,6 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
-  const sizeClass = classes[size];
   const listFeaturesString = (listFeatures || [])
     .map(({ readableValue }) => {
       return readableValue;
@@ -48,10 +44,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
 
   return (
     <LayoutCard
-      className={`${classes.snippetCard} ${sizeClass} ${className ? className : ''}`}
+      className={`relative grid grid-cols-12 ${className ? className : ''}`}
       testId={testId}
     >
-      <div className={`${classes.image} ${classes.leftColumn}`}>
+      <div className='relative flex items-center justify-center mb-4 flex-grow pt-4 pl-5 pr-5 col-span-4 snippet-image'>
         <Image
           priority={true}
           src={mainImage}
@@ -63,56 +59,70 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           height={190}
           quality={50}
         />
+        <Link
+          target={'_blank'}
+          className='block absolute z-10 inset-0 text-indent-full'
+          href={`/product${additionalLinkSlug}/${slug}`}
+        >
+          {originalName}
+        </Link>
       </div>
-      <div className={classes.content}>
-        <div className={classes.contentTop}>
-          <div className={classes.name}>{originalName}</div>
-          <div className={classes.nameTranslation}>{name}</div>
-          <div className={classes.attributes}>{listFeaturesString}</div>
+
+      <div className={`col-span-8 flex flex-col pt-12 pr-5`}>
+        <div className='mb-auto pb-4'>
+          <div className='text-xl font-medium mb-1'>
+            <Link
+              target={'_blank'}
+              className='block text-primary-text hover:no-underline hover:text-primary-text'
+              href={`/product${additionalLinkSlug}/${slug}`}
+            >
+              {originalName}
+            </Link>
+          </div>
+          <div className='text-sm text-secondary-text mb-3'>{name}</div>
+          <div className='text-sm text-secondary-text'>{listFeaturesString}</div>
         </div>
         <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
       </div>
 
-      <div className={`${classes.rating} ${classes.leftColumn}`}>
-        <RatingStars size={'small'} rating={4.9} />
-      </div>
-
-      <div className={classes.bottomRight}>
-        <div className={classes.outerRatingList}>
-          {firstRatingFeature ? (
-            <div key={`${firstRatingFeature.attributeId}`} className={classes.outerRating}>
-              {`${firstRatingFeature.name} ${firstRatingFeature.readableValue}`}
-            </div>
-          ) : null}
-        </div>
-
-        <div className={classes.btns}>
-          <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
-          <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
-          <ControlButton
-            ariaLabel={'Добавить в корзину'}
-            testId={`catalogue-item-${slug}-add-to-cart`}
-            onClick={() =>
-              addShoplessProductToCart({
-                amount: 1,
-                productId: _id,
-              })
-            }
-            icon={'cart'}
-            theme={'accent'}
-            roundedTopLeft
-          />
+      <div className='col-span-4 flex flex-col'>
+        <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
+          <RatingStars size={'small'} rating={4.9} />
         </div>
       </div>
 
-      <Link
-        // style={{ display: 'none' }}
-        prefetch={false}
-        className={classes.link}
-        href={`/product${additionalLinkSlug}/${slug}`}
-      >
-        {originalName}
-      </Link>
+      <div className='col-span-8 flex flex-col'>
+        <div className='flex items-end justify-between h-control-button-height mt-auto'>
+          <div className='flex flex-wrap items-center h-control-button-height'>
+            {firstRatingFeature ? (
+              <div
+                key={`${firstRatingFeature.attributeId}`}
+                className='text-secondary-text text-sm uppercase whitespace-nowrap mr-3 mt-1 mb-1'
+              >
+                {`${firstRatingFeature.name} ${firstRatingFeature.readableValue}`}
+              </div>
+            ) : null}
+          </div>
+
+          <div className='flex items-center justify-end'>
+            <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+            <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+            <ControlButton
+              ariaLabel={'Добавить в корзину'}
+              testId={`catalogue-item-${slug}-add-to-cart`}
+              onClick={() =>
+                addShoplessProductToCart({
+                  amount: 1,
+                  productId: _id,
+                })
+              }
+              icon={'cart'}
+              theme={'accent'}
+              roundedTopLeft
+            />
+          </div>
+        </div>
+      </div>
     </LayoutCard>
   );
 };

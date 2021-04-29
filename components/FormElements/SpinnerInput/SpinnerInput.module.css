@@ -1,9 +1,12 @@
 .frame {
   position: relative;
+}
+
+.normalWidth {
   width: var(--buttonMinWidth);
 }
 
-.frameSmall {
+.shorterWidth {
   width: var(--buttonMinWidthSmall);
 }
 

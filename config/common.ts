@@ -196,6 +196,9 @@ export const CATALOGUE_BRAND_KEY = 'brand';
 export const CATALOGUE_BRAND_COLLECTION_KEY = 'brandCollection';
 export const CATALOGUE_MANUFACTURER_KEY = 'manufacturer';
 export const PRICE_ATTRIBUTE_SLUG = 'price';
+export const CATALOGUE_VIEW_STORAGE_KEY = 'catalogueView';
+export const CATALOGUE_VIEW_ROW = 'row';
+export const CATALOGUE_VIEW_GRID = 'grid';
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

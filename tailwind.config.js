@@ -47,6 +47,9 @@ module.exports = {
       },
       minHeight: {
         'full-height': 'var(--fullHeight, 100vh)',
+        'control-button-height': 'var(--formInputHeight)',
+        'control-button-height-s': 'var(--formInputHeightSmall)',
+        'control-button-height-xs': 'var(--formInputHeightSmaller)',
       },
       height: {},
       screens: {

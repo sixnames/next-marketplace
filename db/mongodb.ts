@@ -29,7 +29,7 @@ export async function getDatabase(): Promise<Db> {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           tls: true,
-          tlsCAFile: path.resolve(process.cwd(), 'db', 'root.crt'),
+          tlsCAFile: path.resolve(process.cwd(), 'public', 'root.crt'),
           replicaSet: process.env.MONGO_DB_RS,
           authSource: process.env.MONGO_DB_NAME,
         }

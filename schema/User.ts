@@ -697,7 +697,7 @@ export const UserMutations = mutationType({
           await signUpEmail({
             to: createdUser.email,
             userName: createdUser.name,
-            password,
+            password: input.password,
           });
 
           return {

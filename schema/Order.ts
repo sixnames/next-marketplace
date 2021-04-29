@@ -378,7 +378,7 @@ export const OrderMutations = extendType({
             await signUpEmail({
               to: createdUser.email,
               userName: createdUser.name,
-              password,
+              password: newPassword,
             });
           }
           if (!user) {

@@ -4,6 +4,7 @@ import path from 'path';
 // console.log(test);
 // Create cached connection variable
 let cachedDb: Db | undefined;
+const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
 // A function for connecting to MongoDB,
 // taking a single parameter of the connection string
@@ -29,7 +30,7 @@ export async function getDatabase(): Promise<Db> {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           tls: true,
-          tlsCAFile: path.resolve(process.cwd(), 'public', 'root.crt'),
+          tlsCAFile,
           replicaSet: process.env.MONGO_DB_RS,
           authSource: process.env.MONGO_DB_NAME,
         }

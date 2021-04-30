@@ -103,24 +103,6 @@ export const UpdateConfigInput = inputObjectType({
   },
 });
 
-export const UpdateAssetConfigInput = inputObjectType({
-  name: 'UpdateAssetConfigInput',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.boolean('multi');
-    t.nonNull.list.nonNull.string('acceptedFormats');
-    t.nonNull.string('slug');
-    t.nonNull.string('companySlug');
-    t.nonNull.string('group');
-    t.nonNull.string('name');
-    t.string('description');
-    t.nonNull.field('variant', {
-      type: 'ConfigVariant',
-    });
-    t.nonNull.list.nonNull.upload('assets');
-  },
-});
-
 // Config Mutations
 export const ConfigMutations = extendType({
   type: 'Mutation',

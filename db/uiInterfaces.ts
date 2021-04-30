@@ -233,7 +233,6 @@ export interface RubricInterface extends RubricModel {
 export interface ShopProductInterface extends ShopProductModel {
   name?: string | null;
   shop?: ShopInterface;
-  inCartCount?: number;
   product?: ProductInterface;
   products?: ProductInterface[];
   connections?: ProductConnectionInterface[];
@@ -348,6 +347,7 @@ export interface OrderProductInterface extends OrderProductModel {
   formattedPrice?: string | null;
   totalPrice?: number | null;
   formattedTotalPrice?: string | null;
+  name?: string | null;
 }
 
 export interface OrderInterface extends OrderModel {

@@ -6,53 +6,39 @@ import FormattedDate from 'components/FormattedDateTime/FormattedDate';
 import Icon from 'components/Icon/Icon';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
 import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Tooltip from 'components/TTip/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
-import {
-  MyOrderFragment,
-  MyOrderProductFragment,
-  useGetAllMyOrdersQuery,
-} from 'generated/apolloComponents';
+import { COL_ORDER_PRODUCTS, COL_ORDERS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { OrderModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
-import { getSession } from 'next-auth/client';
+import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
-  orderProduct: MyOrderProductFragment;
+  orderProduct: OrderProductInterface;
 }
 
 const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct }) => {
-  const { addProductToCart } = useSiteContext();
-  const {
-    name,
-    shopProduct,
-    itemId,
-    shop,
-    formattedPrice,
-    formattedOldPrice,
-    discountedPercent,
-    amount,
-  } = orderProduct;
+  const { addProductToCart, getShopProductInCartCount } = useSiteContext();
+  const { originalName, shopProduct, itemId, shop, price, amount } = orderProduct;
 
   const addToCartAmount = 1;
-  let inCartCount = 1;
-  if (shopProduct) {
-    inCartCount = shopProduct.inCartCount;
-  }
+  const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
   const productNotExist = !shopProduct || !shopProduct.product;
   const isCartButtonDisabled =
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
   const productImageSrc = shopProduct
-    ? shopProduct.product.mainImage
+    ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
@@ -62,8 +48,8 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
       <div className={classes.productImage}>
         <Image
           src={productImageSrc}
-          alt={name}
-          title={name}
+          alt={`${originalName}`}
+          title={`${originalName}`}
           width={imageWidth}
           height={imageHeight}
         />
@@ -72,14 +58,12 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
         <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
 
         <div className={classes.orderProductGrid}>
-          <div className={classes.productName}>{name}</div>
+          <div className={classes.productName}>{originalName}</div>
 
           <div className={classes.productTotals}>
             <ProductShopPrices
               className={classes.productTotalsPrice}
-              formattedPrice={formattedPrice}
-              formattedOldPrice={formattedOldPrice}
-              discountedPercent={discountedPercent}
+              formattedPrice={price}
               size={'small'}
             />
             <Icon name={'cross'} className={classes.productTotalsIcon} />
@@ -121,12 +105,12 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
 };
 
 interface ProfileOrderInterface {
-  order: MyOrderFragment;
+  order: OrderInterface;
 }
 
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const { itemId, createdAt, formattedTotalPrice, status, products } = order;
+  const { itemId, createdAt, totalPrice, status, products } = order;
   const { repeatAnOrder } = useSiteContext();
 
   return (
@@ -152,10 +136,10 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
             <div>
               <div className={classes.orderHeadGrid}>
                 <div>
-                  <Currency className={classes.orderTotalPrice} value={formattedTotalPrice} />
+                  <Currency className={classes.orderTotalPrice} value={totalPrice} />
                 </div>
-                <div className={classes.orderStatus} style={{ color: status.color }}>
-                  {status.name}
+                <div className={classes.orderStatus} style={status ? { color: status.color } : {}}>
+                  {status?.name}
                 </div>
               </div>
             </div>
@@ -165,7 +149,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
               <div>
                 <ControlButton
                   roundedTopRight
-                  onClick={() => repeatAnOrder(order._id)}
+                  onClick={() => repeatAnOrder(`${order._id}`)}
                   className={classes.orderCartBtn}
                   iconSize={'big'}
                   icon={'cart'}
@@ -177,8 +161,8 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
         </div>
 
         <DisclosurePanel data-cy={`profile-order-${itemId}-content`}>
-          {products.map((orderProduct) => {
-            return <ProfileOrderProduct orderProduct={orderProduct} key={orderProduct._id} />;
+          {(products || []).map((orderProduct) => {
+            return <ProfileOrderProduct orderProduct={orderProduct} key={`${orderProduct._id}`} />;
           })}
         </DisclosurePanel>
       </div>
@@ -186,31 +170,21 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   );
 };
 
-const ProfileOrdersRoute: React.FC = () => {
-  const { data, loading, error } = useGetAllMyOrdersQuery({
-    fetchPolicy: 'network-only',
-  });
+interface ProfileOrdersRouteInterface {
+  orders: OrderInterface[];
+}
 
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data || !data.getAllMyOrders) {
-    return <RequestError />;
-  }
-
-  const { docs } = data.getAllMyOrders;
-
+const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) => {
   return (
     <div className={classes.frame} data-cy={'profile-orders'}>
-      {docs.length < 1 ? (
+      {orders.length < 1 ? (
         <div>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />
         </div>
       ) : (
         <React.Fragment>
-          {docs.map((order) => {
-            return <ProfileOrder key={order._id} order={order} />;
+          {orders.map((order) => {
+            return <ProfileOrder key={`${order._id}`} order={order} />;
           })}
         </React.Fragment>
       )}
@@ -218,13 +192,13 @@ const ProfileOrdersRoute: React.FC = () => {
   );
 };
 
-type ProfileInterface = SiteLayoutProviderInterface;
+interface ProfileInterface extends SiteLayoutProviderInterface, ProfileOrdersRouteInterface {}
 
-const Profile: NextPage<ProfileInterface> = (props) => {
+const Profile: NextPage<ProfileInterface> = ({ orders, ...props }) => {
   return (
     <SiteLayoutProvider title={'История заказов'} {...props}>
       <ProfileLayout>
-        <ProfileOrdersRoute />
+        <ProfileOrdersRoute orders={orders} />
       </ProfileLayout>
     </SiteLayoutProvider>
   );
@@ -233,12 +207,13 @@ const Profile: NextPage<ProfileInterface> = (props) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProfileInterface>> {
+  const db = await getDatabase();
+  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getSiteInitialData({
     context,
   });
 
-  const session = await getSession(context);
-  if (!session?.user) {
+  if (!props.sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -247,8 +222,86 @@ export async function getServerSideProps(
     };
   }
 
+  const orderAggregation = await ordersCollection
+    .aggregate<OrderInterface>([
+      {
+        $match: { customerId: new ObjectId(props.sessionUser._id) },
+      },
+      {
+        $lookup: {
+          from: COL_ORDER_PRODUCTS,
+          as: 'products',
+          let: { orderId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$orderId', '$orderId'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_SHOPS,
+                as: 'shop',
+                let: { shopId: '$shopId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$shopId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $lookup: {
+                from: COL_SHOP_PRODUCTS,
+                as: 'shopProduct',
+                let: { shopProductId: '$shopProductId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$shopProductId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                shopProduct: {
+                  $arrayElemAt: ['$shopProduct', 0],
+                },
+                shop: {
+                  $arrayElemAt: ['$shop', 0],
+                },
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  const orders = orderAggregation.map((order) => {
+    return {
+      ...order,
+      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
+        return acc + amount * price;
+      }, 0),
+    };
+  });
+
   return {
-    props,
+    props: {
+      ...props,
+      orders: castDbData(orders),
+    },
   };
 }
 

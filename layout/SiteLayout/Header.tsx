@@ -164,7 +164,7 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
 
 const HeaderCartLink: React.FC = () => {
   const { cart } = useSiteContext();
-
+  console.log(cart);
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
       <Menu>

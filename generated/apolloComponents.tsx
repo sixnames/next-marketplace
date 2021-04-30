@@ -923,12 +923,8 @@ export type Mutation = {
   deleteProductAsset: ProductPayload;
   /** Should update product asset index */
   updateProductAssetIndex: ProductPayload;
-  /** Should create product connection */
-  createProductConnection: ProductPayload;
-  /** Should create product connection */
-  addProductToConnection: ProductPayload;
-  /** Should delete product from connection and delete connection if there is no products left */
-  deleteProductFromConnection: ProductPayload;
+  /** Should update product counter */
+  updateProductCounter: Scalars['Boolean'];
   /** Should update product brand */
   updateProductBrand: ProductPayload;
   /** Should update product brand collection */
@@ -941,8 +937,12 @@ export type Mutation = {
   updateProductNumberAttribute: ProductPayload;
   /** Should update product text attribute */
   updateProductTextAttribute: ProductPayload;
-  /** Should update product counter */
-  updateProductCounter: Scalars['Boolean'];
+  /** Should create product connection */
+  createProductConnection: ProductPayload;
+  /** Should create product connection */
+  addProductToConnection: ProductPayload;
+  /** Should delete product from connection and delete connection if there is no products left */
+  deleteProductFromConnection: ProductPayload;
   /** Should update shop product */
   updateShopProduct: ShopProductPayload;
   /** Should update many shop products */
@@ -1309,18 +1309,8 @@ export type MutationUpdateProductAssetIndexArgs = {
 };
 
 
-export type MutationCreateProductConnectionArgs = {
-  input: CreateProductConnectionInput;
-};
-
-
-export type MutationAddProductToConnectionArgs = {
-  input: AddProductToConnectionInput;
-};
-
-
-export type MutationDeleteProductFromConnectionArgs = {
-  input: DeleteProductFromConnectionInput;
+export type MutationUpdateProductCounterArgs = {
+  input: UpdateProductCounterInput;
 };
 
 
@@ -1354,8 +1344,18 @@ export type MutationUpdateProductTextAttributeArgs = {
 };
 
 
-export type MutationUpdateProductCounterArgs = {
-  input: UpdateProductCounterInput;
+export type MutationCreateProductConnectionArgs = {
+  input: CreateProductConnectionInput;
+};
+
+
+export type MutationAddProductToConnectionArgs = {
+  input: AddProductToConnectionInput;
+};
+
+
+export type MutationDeleteProductFromConnectionArgs = {
+  input: DeleteProductFromConnectionInput;
 };
 
 
@@ -1550,13 +1550,6 @@ export type Order = Base & Timestamp & {
   updatedAt: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
   statusId: Scalars['ObjectId'];
-  customer: OrderCustomer;
-  products: Array<OrderProduct>;
-  logs: Array<OrderLog>;
-  status: OrderStatus;
-  totalPrice: Scalars['Int'];
-  formattedTotalPrice: Scalars['String'];
-  productsCount: Scalars['Int'];
 };
 
 export type OrderCustomer = {
@@ -1590,13 +1583,6 @@ export enum OrderLogVariant {
   Status = 'status'
 }
 
-export type OrderPayload = Payload & {
-  __typename?: 'OrderPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  payload?: Maybe<Order>;
-};
-
 export type OrderProduct = {
   __typename?: 'OrderProduct';
   _id: Scalars['ObjectId'];
@@ -1606,23 +1592,17 @@ export type OrderProduct = {
   slug: Scalars['String'];
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
-  descriptionI18n: Scalars['JSONObject'];
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   companyId: Scalars['ObjectId'];
-  oldPrices: Array<ShopProductOldPrice>;
   name: Scalars['String'];
-  description: Scalars['String'];
   product?: Maybe<Product>;
   shopProduct?: Maybe<ShopProduct>;
   shop?: Maybe<Shop>;
-  company?: Maybe<Company>;
   formattedPrice: Scalars['String'];
   formattedTotalPrice: Scalars['String'];
   totalPrice: Scalars['Int'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
-  discountedPercent?: Maybe<Scalars['Int']>;
 };
 
 export type OrderStatus = Timestamp & {
@@ -1634,20 +1614,6 @@ export type OrderStatus = Timestamp & {
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
   name: Scalars['String'];
-};
-
-export type OrdersPaginationPayload = PaginationPayload & {
-  __typename?: 'OrdersPaginationPayload';
-  sortBy: Scalars['String'];
-  sortDir: SortDirection;
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  hasPrevPage: Scalars['Boolean'];
-  hasNextPage: Scalars['Boolean'];
-  docs: Array<Order>;
 };
 
 export type PaginationInput = {
@@ -1737,21 +1703,6 @@ export type ProductAttribute = {
   selectedOptionsSlugs: Array<Scalars['String']>;
   text: Scalars['String'];
   attribute: Attribute;
-};
-
-export type ProductAttributeInput = {
-  _id: Scalars['ObjectId'];
-  showInCard: Scalars['Boolean'];
-  showAsBreadcrumb: Scalars['Boolean'];
-  attributeId: Scalars['ObjectId'];
-  attributeSlug: Scalars['String'];
-  attributeNameI18n: Scalars['JSONObject'];
-  attributeViewVariant: AttributeViewVariant;
-  attributeVariant: AttributeVariant;
-  textI18n?: Maybe<Scalars['JSONObject']>;
-  number?: Maybe<Scalars['Float']>;
-  /** List of selected options slug */
-  selectedOptionsSlugs: Array<Scalars['String']>;
 };
 
 export type ProductAttributesAstInput = {
@@ -1935,14 +1886,6 @@ export type Query = {
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
   getAllCompanies?: Maybe<CompaniesPaginationPayload>;
-  /** Should return order by given id */
-  getOrder: Order;
-  /** Should return session user order by given id */
-  getMyOrder?: Maybe<Order>;
-  /** Should return all paginated orders */
-  getAllOrders: OrdersPaginationPayload;
-  /** Should return all paginated orders */
-  getAllMyOrders?: Maybe<OrdersPaginationPayload>;
 };
 
 
@@ -2128,26 +2071,6 @@ export type QueryGetCompanyArgs = {
 
 
 export type QueryGetAllCompaniesArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetOrderArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetMyOrderArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllOrdersArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetAllMyOrdersArgs = {
   input?: Maybe<PaginationInput>;
 };
 
@@ -2694,12 +2617,6 @@ export type User = Base & Timestamp & {
   shortName: Scalars['String'];
   formattedPhone: FormattedPhone;
   role: Role;
-  orders: OrdersPaginationPayload;
-};
-
-
-export type UserOrdersArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 export type UserPayload = Payload & {
@@ -4214,184 +4131,6 @@ export type GetOptionsGroupQuery = (
   ) }
 );
 
-export type OrderStatusFragment = (
-  { __typename?: 'OrderStatus' }
-  & Pick<OrderStatus, '_id' | 'name' | 'color'>
-);
-
-export type CmsOrderInListCustomerFragment = (
-  { __typename?: 'OrderCustomer' }
-  & Pick<OrderCustomer, '_id' | 'itemId' | 'shortName' | 'email'>
-  & { formattedPhone: (
-    { __typename?: 'FormattedPhone' }
-    & Pick<FormattedPhone, 'raw' | 'readable'>
-  ) }
-);
-
-export type CmsOrderInListFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ), customer: (
-    { __typename?: 'OrderCustomer' }
-    & CmsOrderInListCustomerFragment
-  ) }
-);
-
-export type GetAllCmsOrdersQueryVariables = Exact<{
-  input?: Maybe<PaginationInput>;
-}>;
-
-
-export type GetAllCmsOrdersQuery = (
-  { __typename?: 'Query' }
-  & { getAllOrders: (
-    { __typename?: 'OrdersPaginationPayload' }
-    & Pick<OrdersPaginationPayload, 'totalDocs' | 'page' | 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'Order' }
-      & CmsOrderInListFragment
-    )> }
-  ) }
-);
-
-export type CmsOrderShopProductFragment = (
-  { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '_id'>
-  & { product: (
-    { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'mainImage'>
-  ) }
-);
-
-export type CmsOrderShopFragment = (
-  { __typename?: 'Shop' }
-  & Pick<Shop, '_id' | 'name' | 'slug'>
-  & { address: (
-    { __typename?: 'Address' }
-    & Pick<Address, 'formattedAddress'>
-    & { formattedCoordinates: (
-      { __typename?: 'Coordinates' }
-      & Pick<Coordinates, 'lat' | 'lng'>
-    ) }
-  ), contacts: (
-    { __typename?: 'Contacts' }
-    & Pick<Contacts, 'emails'>
-    & { formattedPhones: Array<(
-      { __typename?: 'FormattedPhone' }
-      & Pick<FormattedPhone, 'raw' | 'readable'>
-    )> }
-  ), logo: (
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'index' | 'url'>
-  ) }
-);
-
-export type CmsOrderProductFragment = (
-  { __typename?: 'OrderProduct' }
-  & Pick<OrderProduct, '_id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice'>
-  & { shopProduct?: Maybe<(
-    { __typename?: 'ShopProduct' }
-    & CmsOrderShopProductFragment
-  )>, shop?: Maybe<(
-    { __typename?: 'Shop' }
-    & CmsOrderShopFragment
-  )> }
-);
-
-export type CmsOrderFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { products: Array<(
-    { __typename?: 'OrderProduct' }
-    & CmsOrderProductFragment
-  )>, status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ), customer: (
-    { __typename?: 'OrderCustomer' }
-    & CmsOrderInListCustomerFragment
-  ) }
-);
-
-export type GetCmsOrderQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetCmsOrderQuery = (
-  { __typename?: 'Query' }
-  & { getOrder: (
-    { __typename?: 'Order' }
-    & CmsOrderFragment
-  ) }
-);
-
-export type MyOrderShopProductFragment = (
-  { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '_id' | 'available' | 'inCartCount'>
-  & { product: (
-    { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'slug' | 'itemId' | 'mainImage'>
-  ) }
-);
-
-export type MyOrderShopFragment = (
-  { __typename?: 'Shop' }
-  & Pick<Shop, '_id' | 'name' | 'slug'>
-  & { address: (
-    { __typename?: 'Address' }
-    & Pick<Address, 'formattedAddress'>
-    & { formattedCoordinates: (
-      { __typename?: 'Coordinates' }
-      & Pick<Coordinates, 'lat' | 'lng'>
-    ) }
-  ) }
-);
-
-export type MyOrderProductFragment = (
-  { __typename?: 'OrderProduct' }
-  & Pick<OrderProduct, '_id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice' | 'formattedOldPrice' | 'discountedPercent' | 'name'>
-  & { shopProduct?: Maybe<(
-    { __typename?: 'ShopProduct' }
-    & MyOrderShopProductFragment
-  )>, shop?: Maybe<(
-    { __typename?: 'Shop' }
-    & MyOrderShopFragment
-  )> }
-);
-
-export type MyOrderFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { products: Array<(
-    { __typename?: 'OrderProduct' }
-    & MyOrderProductFragment
-  )>, status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ) }
-);
-
-export type GetAllMyOrdersQueryVariables = Exact<{
-  input?: Maybe<PaginationInput>;
-}>;
-
-
-export type GetAllMyOrdersQuery = (
-  { __typename?: 'Query' }
-  & { getAllMyOrders?: Maybe<(
-    { __typename?: 'OrdersPaginationPayload' }
-    & Pick<OrdersPaginationPayload, 'totalDocs' | 'page' | 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'Order' }
-      & MyOrderFragment
-    )> }
-  )> }
-);
-
 export type CmsRoleFragment = (
   { __typename?: 'Role' }
   & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff' | 'description' | 'nameI18n'>
@@ -4993,176 +4732,6 @@ export const OptionsGroupFragmentDoc = gql`
   }
 }
     ${OptionInGroupFragmentDoc}`;
-export const OrderStatusFragmentDoc = gql`
-    fragment OrderStatus on OrderStatus {
-  _id
-  name
-  color
-}
-    `;
-export const CmsOrderInListCustomerFragmentDoc = gql`
-    fragment CmsOrderInListCustomer on OrderCustomer {
-  _id
-  itemId
-  shortName
-  formattedPhone {
-    raw
-    readable
-  }
-  email
-}
-    `;
-export const CmsOrderInListFragmentDoc = gql`
-    fragment CmsOrderInList on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  status {
-    ...OrderStatus
-  }
-  customer {
-    ...CmsOrderInListCustomer
-  }
-}
-    ${OrderStatusFragmentDoc}
-${CmsOrderInListCustomerFragmentDoc}`;
-export const CmsOrderShopProductFragmentDoc = gql`
-    fragment CmsOrderShopProduct on ShopProduct {
-  _id
-  product {
-    _id
-    mainImage
-  }
-}
-    `;
-export const CmsOrderShopFragmentDoc = gql`
-    fragment CmsOrderShop on Shop {
-  _id
-  name
-  slug
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-  contacts {
-    emails
-    formattedPhones {
-      raw
-      readable
-    }
-  }
-  logo {
-    index
-    url
-  }
-}
-    `;
-export const CmsOrderProductFragmentDoc = gql`
-    fragment CmsOrderProduct on OrderProduct {
-  _id
-  itemId
-  amount
-  formattedPrice
-  formattedTotalPrice
-  shopProduct {
-    ...CmsOrderShopProduct
-  }
-  shop {
-    ...CmsOrderShop
-  }
-}
-    ${CmsOrderShopProductFragmentDoc}
-${CmsOrderShopFragmentDoc}`;
-export const CmsOrderFragmentDoc = gql`
-    fragment CmsOrder on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  products {
-    ...CmsOrderProduct
-  }
-  status {
-    ...OrderStatus
-  }
-  customer {
-    ...CmsOrderInListCustomer
-  }
-}
-    ${CmsOrderProductFragmentDoc}
-${OrderStatusFragmentDoc}
-${CmsOrderInListCustomerFragmentDoc}`;
-export const MyOrderShopProductFragmentDoc = gql`
-    fragment MyOrderShopProduct on ShopProduct {
-  _id
-  available
-  inCartCount
-  product {
-    _id
-    slug
-    itemId
-    mainImage
-  }
-}
-    `;
-export const MyOrderShopFragmentDoc = gql`
-    fragment MyOrderShop on Shop {
-  _id
-  name
-  slug
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-}
-    `;
-export const MyOrderProductFragmentDoc = gql`
-    fragment MyOrderProduct on OrderProduct {
-  _id
-  itemId
-  amount
-  formattedPrice
-  formattedTotalPrice
-  formattedOldPrice
-  discountedPercent
-  name
-  shopProduct {
-    ...MyOrderShopProduct
-  }
-  shop {
-    ...MyOrderShop
-  }
-}
-    ${MyOrderShopProductFragmentDoc}
-${MyOrderShopFragmentDoc}`;
-export const MyOrderFragmentDoc = gql`
-    fragment MyOrder on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  products {
-    ...MyOrderProduct
-  }
-  status {
-    ...OrderStatus
-  }
-}
-    ${MyOrderProductFragmentDoc}
-${OrderStatusFragmentDoc}`;
 export const CmsRoleFragmentDoc = gql`
     fragment CmsRole on Role {
   _id
@@ -8587,121 +8156,6 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetAllCmsOrdersDocument = gql`
-    query GetAllCMSOrders($input: PaginationInput) {
-  getAllOrders(input: $input) {
-    totalDocs
-    page
-    totalPages
-    docs {
-      ...CmsOrderInList
-    }
-  }
-}
-    ${CmsOrderInListFragmentDoc}`;
-
-/**
- * __useGetAllCmsOrdersQuery__
- *
- * To run a query within a React component, call `useGetAllCmsOrdersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllCmsOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllCmsOrdersQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllCmsOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, options);
-      }
-export function useGetAllCmsOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, options);
-        }
-export type GetAllCmsOrdersQueryHookResult = ReturnType<typeof useGetAllCmsOrdersQuery>;
-export type GetAllCmsOrdersLazyQueryHookResult = ReturnType<typeof useGetAllCmsOrdersLazyQuery>;
-export type GetAllCmsOrdersQueryResult = Apollo.QueryResult<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>;
-export const GetCmsOrderDocument = gql`
-    query GetCmsOrder($_id: ObjectId!) {
-  getOrder(_id: $_id) {
-    ...CmsOrder
-  }
-}
-    ${CmsOrderFragmentDoc}`;
-
-/**
- * __useGetCmsOrderQuery__
- *
- * To run a query within a React component, call `useGetCmsOrderQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCmsOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCmsOrderQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetCmsOrderQuery(baseOptions: Apollo.QueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, options);
-      }
-export function useGetCmsOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, options);
-        }
-export type GetCmsOrderQueryHookResult = ReturnType<typeof useGetCmsOrderQuery>;
-export type GetCmsOrderLazyQueryHookResult = ReturnType<typeof useGetCmsOrderLazyQuery>;
-export type GetCmsOrderQueryResult = Apollo.QueryResult<GetCmsOrderQuery, GetCmsOrderQueryVariables>;
-export const GetAllMyOrdersDocument = gql`
-    query GetAllMyOrders($input: PaginationInput) {
-  getAllMyOrders(input: $input) {
-    totalDocs
-    page
-    totalPages
-    docs {
-      ...MyOrder
-    }
-  }
-}
-    ${MyOrderFragmentDoc}`;
-
-/**
- * __useGetAllMyOrdersQuery__
- *
- * To run a query within a React component, call `useGetAllMyOrdersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllMyOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllMyOrdersQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllMyOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, options);
-      }
-export function useGetAllMyOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, options);
-        }
-export type GetAllMyOrdersQueryHookResult = ReturnType<typeof useGetAllMyOrdersQuery>;
-export type GetAllMyOrdersLazyQueryHookResult = ReturnType<typeof useGetAllMyOrdersLazyQuery>;
-export type GetAllMyOrdersQueryResult = Apollo.QueryResult<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

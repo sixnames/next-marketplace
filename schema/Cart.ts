@@ -563,8 +563,8 @@ export const CartMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
           const db = await getDatabase();
-          const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+          const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
           // Check if order exists
@@ -659,7 +659,7 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $push: {
-                products: {
+                cartProducts: {
                   $each: cartNewProducts,
                 },
               },

@@ -19,6 +19,7 @@ import {
   useRepeatAnOrderMutation,
   useUpdateProductInCartMutation,
 } from 'generated/apolloComponents';
+import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -34,6 +35,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  getShopProductInCartCount: (shopProductId: string) => number;
   makeAnOrder: (input: MakeAnOrderInput) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
@@ -48,6 +50,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
   addShopToCartProduct: () => undefined,
   updateProductInCart: () => undefined,
   deleteProductFromCart: () => undefined,
+  getShopProductInCartCount: () => 0,
   makeAnOrder: () => undefined,
   repeatAnOrder: () => undefined,
   clearCart: () => undefined,
@@ -300,6 +303,19 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     [repeatAnOrderMutation, showErrorNotification],
   );
 
+  const getShopProductInCartCount = React.useCallback(
+    (shopProductId: string) => {
+      const currentProduct = state.cart?.cartProducts.find((cartProduct) => {
+        return `${cartProduct.shopProductId}` === shopProductId;
+      });
+      if (!currentProduct) {
+        return 0;
+      }
+      return noNaN(currentProduct?.amount);
+    },
+    [state.cart],
+  );
+
   const initialValue = React.useMemo(() => {
     return {
       navRubrics,
@@ -311,6 +327,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       clearCart,
       makeAnOrder,
       repeatAnOrder,
+      getShopProductInCartCount,
       ...state,
     };
   }, [
@@ -319,6 +336,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     addShoplessProductToCart,
     clearCart,
     deleteProductFromCart,
+    getShopProductInCartCount,
     makeAnOrder,
     navRubrics,
     repeatAnOrder,

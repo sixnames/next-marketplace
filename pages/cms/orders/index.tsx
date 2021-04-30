@@ -9,12 +9,9 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import { ROUTE_CMS } from 'config/common';
-import { CmsOrderInListFragment, useGetAllCmsOrdersQuery } from 'generated/apolloComponents';
-import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
+import { OrderInterface } from 'db/uiInterfaces';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -45,24 +42,7 @@ const CmsOrdersFilter: React.FC = () => {
 };
 
 const CmsOrdersContent: React.FC = () => {
-  const { setPage, page, contentFilters } = useDataLayoutMethods();
-  const { data, loading, error } = useGetAllCmsOrdersQuery({
-    variables: {
-      input: contentFilters,
-    },
-  });
-
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data || !data.getAllOrders) {
-    return <RequestError />;
-  }
-
-  const { totalPages, docs } = data.getAllOrders;
-
-  const columns: TableColumn<CmsOrderInListFragment>[] = [
+  const columns: TableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
@@ -119,8 +99,8 @@ const CmsOrdersContent: React.FC = () => {
   return (
     <div data-cy={'orders-list'}>
       <DataLayoutContentFrame>
-        <Table<CmsOrderInListFragment> columns={columns} data={docs} testIdKey={'itemId'} />
-        <Pager page={page} setPage={setPage} totalPages={totalPages} />
+        <Table<OrderInterface> columns={columns} data={[]} testIdKey={'itemId'} />
+        <Pager page={1} setPage={() => undefined} totalPages={0} />
       </DataLayoutContentFrame>
     </div>
   );

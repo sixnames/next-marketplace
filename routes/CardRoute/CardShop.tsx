@@ -19,16 +19,10 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
-  const { addProductToCart } = useSiteContext();
+  const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const [amount, setAmount] = React.useState<number>(1);
-  const {
-    shop,
-    formattedOldPrice,
-    formattedPrice,
-    discountedPercent,
-    available,
-    inCartCount,
-  } = shopProduct;
+  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
+  const inCartCount = getShopProductInCartCount(`${shopProduct._id}`);
 
   if (!shop) {
     return null;

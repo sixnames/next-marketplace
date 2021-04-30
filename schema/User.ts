@@ -341,8 +341,6 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-
-            ordersIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -658,7 +656,6 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-            ordersIds: [],
             roleId: guestRole._id,
             createdAt: new Date(),
             updatedAt: new Date(),

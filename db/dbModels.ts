@@ -392,11 +392,13 @@ export enum OrderLogVariantModel {
   status = 'status',
 }
 
-export interface OrderLogModel extends TimestampModel {
+export interface OrderLogModel {
   _id: ObjectIdModel;
   variant: OrderLogVariantModel;
   userId: ObjectIdModel;
   orderId: ObjectIdModel;
+  statusId: ObjectIdModel;
+  createdAt: DateModel;
 }
 
 export interface OrderProductModel extends TimestampModel {
@@ -427,14 +429,14 @@ export interface OrderCustomerModel extends TimestampModel {
 }
 
 export interface OrderModel extends BaseModel, TimestampModel {
-  comment?: string | null;
   statusId: ObjectIdModel;
+  comment?: string | null;
   customerId: ObjectIdModel;
   companySlug: string;
-  productIds: ObjectIdModel;
-  shopProductIds: ObjectIdModel;
-  shopIds: ObjectIdModel;
-  companyIds: ObjectIdModel;
+  productIds: ObjectIdModel[];
+  shopProductIds: ObjectIdModel[];
+  shopIds: ObjectIdModel[];
+  companyIds: ObjectIdModel[];
 }
 
 export interface ProductConnectionItemModel {
@@ -610,7 +612,6 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
-  ordersIds?: ObjectIdModel[] | null;
 }
 
 // Payload

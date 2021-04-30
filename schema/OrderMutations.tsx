@@ -10,11 +10,14 @@ import {
   COL_COMPANIES,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_ORDER_PRODUCTS,
   COL_PRODUCTS,
   COL_ROLES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
+  COL_ORDER_LOGS,
+  COL_ORDER_CUSTOMERS,
 } from 'db/collectionNames';
 import {
   CartModel,
@@ -105,6 +108,9 @@ export const OrderMutations = extendType({
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+          const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+          const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
+          const orderCustomersCollection = db.collection<OrderCustomerModel>(COL_ORDER_CUSTOMERS);
           const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
@@ -159,7 +165,6 @@ export const OrderMutations = extendType({
               phone: phoneToRaw(input.phone),
               itemId,
               password,
-              ordersIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
             });
@@ -201,33 +206,17 @@ export const OrderMutations = extendType({
           const order: OrderModel = {
             _id: orderId,
             itemId: orderItemId,
-            companySlug: `${input.companySlug}`,
             statusId: initialStatus._id,
+            customerId: user._id,
+            companySlug: `${input.companySlug}`,
             comment: input.comment,
+            productIds: [],
+            shopProductIds: [],
+            shopIds: [],
+            companyIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
           };
-
-          // Clean up session cart
-          const updatedCartResult = await cartsCollection.findOneAndUpdate(
-            { _id: cart._id },
-            {
-              $set: {
-                cartProducts: [],
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCart = updatedCartResult.value;
-          if (!updatedCartResult.ok || !updatedCart) {
-            return {
-              success: false,
-              message: await getApiMessage('orders.makeAnOrder.error'),
-            };
-          }
 
           // Cast cart products to order products
           const castedOrderProducts: OrderProductModel[] = [];
@@ -262,18 +251,47 @@ export const OrderMutations = extendType({
               break;
             }
 
+            // Add product id to the order
+            const productIdExist = order.productIds.some((_id) => _id.equals(product._id));
+            if (!productIdExist) {
+              order.productIds.push(product._id);
+            }
+
+            // Add shop product id to the order
+            const shopProductIdExist = order.shopProductIds.some((_id) =>
+              _id.equals(shopProduct._id),
+            );
+            if (!shopProductIdExist) {
+              order.shopProductIds.push(shopProduct._id);
+            }
+
+            // Add shop id to the order
+            const shopIdExist = order.shopIds.some((_id) => _id.equals(shop._id));
+            if (!shopIdExist) {
+              order.shopIds.push(shop._id);
+            }
+
+            // Add company id to the order
+            const companyIdExist = order.companyIds.some((_id) => _id.equals(company._id));
+            if (!companyIdExist) {
+              order.shopIds.push(company._id);
+            }
+
             castedOrderProducts.push({
               _id: new ObjectId(),
               itemId,
-              nameI18n,
-              originalName,
-              slug,
-              amount,
               price,
+              amount,
+              slug,
+              originalName,
+              nameI18n,
               productId: product._id,
               shopProductId: shopProduct._id,
               shopId: shop._id,
               companyId: company._id,
+              orderId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
             });
           }
 
@@ -284,10 +302,20 @@ export const OrderMutations = extendType({
               message: await getApiMessage('orders.makeAnOrder.productsNotFound'),
             };
           }
+          const createdOrderProductsResult = await orderProductsCollection.insertMany(
+            castedOrderProducts,
+          );
+          if (!createdOrderProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('orders.makeAnOrder.error'),
+            };
+          }
 
           // Create order customer
           const customer: OrderCustomerModel = {
             _id: new ObjectId(),
+            orderId,
             phone: phoneToRaw(input.phone),
             name: input.name,
             email: input.email,
@@ -295,15 +323,21 @@ export const OrderMutations = extendType({
             lastName: user.lastName,
             itemId: user.itemId,
             userId: user._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
           };
+          await orderCustomersCollection.insertOne(customer);
 
           // Create order log
           const orderLog: OrderLogModel = {
             _id: new ObjectId(),
+            orderId,
             userId: user._id,
+            statusId: initialStatus._id,
             variant: ORDER_LOG_VARIANT_STATUS as OrderLogVariantModel,
             createdAt: new Date(),
           };
+          await orderLogsCollection.insertOne(orderLog);
 
           // Insert order
           const createdOrderResult = await ordersCollection.insertOne(order);
@@ -315,19 +349,21 @@ export const OrderMutations = extendType({
             };
           }
 
-          // Add order to user orders list
-          const updatedUserResult = await usersCollection.findOneAndUpdate(
-            { _id: user._id },
+          // Clean up session cart
+          const updatedCartResult = await cartsCollection.findOneAndUpdate(
+            { _id: cart._id },
             {
-              $push: {
-                ordersIds: createdOrder._id,
+              $set: {
+                cartProducts: [],
+                updatedAt: new Date(),
               },
             },
             {
               returnOriginal: false,
             },
           );
-          if (!updatedUserResult.ok || !updatedUserResult.value) {
+          const updatedCart = updatedCartResult.value;
+          if (!updatedCartResult.ok || !updatedCart) {
             return {
               success: false,
               message: await getApiMessage('orders.makeAnOrder.error'),

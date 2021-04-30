@@ -273,6 +273,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const makeAnOrder = React.useCallback(
     (input: MakeAnOrderInput) => {
+      showLoading();
       makeAnOrderMutation({
         variables: {
           input,
@@ -281,7 +282,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [makeAnOrderMutation, showErrorNotification],
+    [makeAnOrderMutation, showErrorNotification, showLoading],
   );
 
   const repeatAnOrder = React.useCallback(

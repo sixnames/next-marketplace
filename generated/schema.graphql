@@ -1318,15 +1318,8 @@ type Order implements Base & Timestamp {
   _id: ObjectId!
   comment: String
   createdAt: Date!
-  customer: OrderCustomer!
-  formattedTotalPrice: String!
   itemId: String!
-  logs: [OrderLog!]!
-  products: [OrderProduct!]!
-  productsCount: Int!
-  status: OrderStatus!
   statusId: ObjectId!
-  totalPrice: Int!
   updatedAt: Date!
 }
 
@@ -1361,27 +1354,15 @@ enum OrderLogVariant {
   status
 }
 
-type OrderPayload implements Payload {
-  message: String!
-  payload: Order
-  success: Boolean!
-}
-
 type OrderProduct {
   _id: ObjectId!
   amount: Int!
-  company: Company
   companyId: ObjectId!
-  description: String!
-  descriptionI18n: JSONObject!
-  discountedPercent: Int
-  formattedOldPrice: String
   formattedPrice: String!
   formattedTotalPrice: String!
   itemId: Int!
   name: String!
   nameI18n: JSONObject!
-  oldPrices: [ShopProductOldPrice!]!
   originalName: String!
   price: Int!
   product: Product
@@ -1402,19 +1383,6 @@ type OrderStatus implements Timestamp {
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
-}
-
-type OrdersPaginationPayload implements PaginationPayload {
-  docs: [Order!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
 }
 
 input PaginationInput {
@@ -1514,24 +1482,6 @@ type ProductAttribute {
   showAsBreadcrumb: Boolean!
   showInCard: Boolean!
   text: String!
-  textI18n: JSONObject
-}
-
-input ProductAttributeInput {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  attributeNameI18n: JSONObject!
-  attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
-  number: Float
-
-  """
-  List of selected options slug
-  """
-  selectedOptionsSlugs: [String!]!
-  showAsBreadcrumb: Boolean!
-  showInCard: Boolean!
   textI18n: JSONObject
 }
 
@@ -1667,19 +1617,9 @@ type Query {
   getAllMetricsOptions: [Metric!]!
 
   """
-  Should return all paginated orders
-  """
-  getAllMyOrders(input: PaginationInput): OrdersPaginationPayload
-
-  """
   Should return options groups list
   """
   getAllOptionsGroups: [OptionsGroup!]!
-
-  """
-  Should return all paginated orders
-  """
-  getAllOrders(input: PaginationInput): OrdersPaginationPayload!
 
   """
   Should return all roles list
@@ -1806,11 +1746,6 @@ type Query {
   getManufacturerBySlug(slug: String!): Manufacturer!
 
   """
-  Should return session user order by given id
-  """
-  getMyOrder(_id: ObjectId!): Order
-
-  """
   Should return options grouped by alphabet
   """
   getOptionAlphabetLists(input: OptionAlphabetInput!): [OptionsAlphabetList!]!
@@ -1824,11 +1759,6 @@ type Query {
   Should return options groups variants options
   """
   getOptionsGroupVariantsOptions: [SelectOption!]!
-
-  """
-  Should return order by given id
-  """
-  getOrder(_id: ObjectId!): Order!
 
   """
   Should return product by given id
@@ -2431,7 +2361,6 @@ type User implements Base & Timestamp {
   itemId: String!
   lastName: String
   name: String!
-  orders(input: PaginationInput): OrdersPaginationPayload!
   phone: PhoneNumber!
   role: Role!
   roleId: ObjectId!

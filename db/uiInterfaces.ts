@@ -19,6 +19,10 @@ import {
   ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
+  OrderCustomerModel,
+  OrderLogModel,
+  OrderModel,
+  OrderProductModel,
   OrderStatusModel,
   ProductAssetsModel,
   ProductAttributeModel,
@@ -127,10 +131,6 @@ export interface OptionInterface extends OptionModel {
 }
 
 export interface OptionsGroupInterface extends OptionsGroupModel {
-  name?: string | null;
-}
-
-export interface OrderStatusInterface extends OrderStatusModel {
   name?: string | null;
 }
 
@@ -326,4 +326,38 @@ export interface ProductCardPricesAggregationInterface {
 
 export interface ProductShopsCountAggregationInterface {
   shopsCount: number;
+}
+
+export interface OrderStatusInterface extends OrderStatusModel {
+  name?: string | null;
+}
+
+export interface OrderLogInterface extends OrderLogModel {
+  user?: UserInterface | null;
+}
+
+export interface OrderCustomerInterface extends OrderCustomerModel {
+  user?: UserInterface | null;
+}
+
+export interface OrderProductInterface extends OrderProductModel {
+  product?: ProductInterface | null;
+  shopProduct?: ShopProductInterface | null;
+  shop?: ShopInterface | null;
+  company?: CompanyInterface | null;
+  formattedPrice?: string | null;
+  totalPrice?: number | null;
+  formattedTotalPrice?: string | null;
+}
+
+export interface OrderInterface extends OrderModel {
+  customer?: OrderCustomerInterface | null;
+  products?: OrderProductInterface[] | null;
+  logs?: OrderLogInterface[] | null;
+  shopsCount?: number | null;
+  shops?: ShopInterface[] | null;
+  status?: OrderStatusInterface | null;
+  productsCount?: number | null;
+  totalPrice?: number | null;
+  formattedTotalPrice?: string | null;
 }

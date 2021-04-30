@@ -392,30 +392,29 @@ export enum OrderLogVariantModel {
   status = 'status',
 }
 
-export interface OrderLogModel {
+export interface OrderLogModel extends TimestampModel {
   _id: ObjectIdModel;
   variant: OrderLogVariantModel;
   userId: ObjectIdModel;
-  createdAt: DateModel;
+  orderId: ObjectIdModel;
 }
 
-export interface OrderProductModel {
+export interface OrderProductModel extends TimestampModel {
   _id: ObjectIdModel;
   itemId: string;
   price: number;
   amount: number;
   slug: string;
   originalName: string;
-  oldPrices: ShopProductOldPriceModel[];
   nameI18n: TranslationModel;
-  descriptionI18n: TranslationModel;
   productId: ObjectIdModel;
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  orderId: ObjectIdModel;
 }
 
-export interface OrderCustomerModel {
+export interface OrderCustomerModel extends TimestampModel {
   _id: ObjectIdModel;
   userId: ObjectIdModel;
   itemId: string;
@@ -424,16 +423,18 @@ export interface OrderCustomerModel {
   secondName?: string | null;
   email: EmailAddressModel;
   phone: PhoneNumberModel;
+  orderId: ObjectIdModel;
 }
 
 export interface OrderModel extends BaseModel, TimestampModel {
   comment?: string | null;
   statusId: ObjectIdModel;
-  customer: OrderCustomerModel;
-  products: OrderProductModel[];
-  // TODO companyId ???
+  customerId: ObjectIdModel;
   companySlug: string;
-  logs: OrderLogModel[];
+  productIds: ObjectIdModel;
+  shopProductIds: ObjectIdModel;
+  shopIds: ObjectIdModel;
+  companyIds: ObjectIdModel;
 }
 
 export interface ProductConnectionItemModel {

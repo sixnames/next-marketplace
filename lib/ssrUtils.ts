@@ -2,6 +2,9 @@ import {
   CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
   CATALOGUE_NAV_VISIBLE_OPTIONS,
   CONFIG_DEFAULT_COMPANY_SLUG,
+  COOKIE_CITY,
+  COOKIE_COMPANY_SLUG,
+  COOKIE_LOCALE,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -49,6 +52,7 @@ import { Session } from 'next-auth';
 import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
+import nookies from 'nookies';
 
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
@@ -452,6 +456,27 @@ export async function getPageInitialState({
     companySlug: company?.slug,
   });
   const initialData = castDbData(rawInitialData);
+
+  // Set company slug as a cookie
+  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
+  // Set sessionLocale as a cookie
+  nookies.set(context, COOKIE_LOCALE, sessionLocale, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
+  // Set sessionCity as a cookie
+  nookies.set(context, COOKIE_CITY, sessionCity, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
 
   return {
     db,

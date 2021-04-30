@@ -1054,11 +1054,6 @@ type Mutation {
   toggleAttributeInRubricNav(input: UpdateAttributeInRubricInput!): RubricPayload!
 
   """
-  Should asset update config
-  """
-  updateAssetConfig(input: UpdateAssetConfigInput!): ConfigPayload!
-
-  """
   Should update attribute in the attributes group
   """
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!

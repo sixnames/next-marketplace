@@ -1,4 +1,4 @@
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
+import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
 import { COL_MESSAGES } from 'db/collectionNames';
 import { MessageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -7,7 +7,7 @@ import { MessageSlug } from 'types/messageSlugTypes';
 
 interface GetApiMessageInterface {
   slug: MessageSlug;
-  locale: string;
+  locale?: string;
 }
 
 export async function getApiMessageValue({
@@ -22,7 +22,7 @@ export async function getApiMessageValue({
     return LOCALE_NOT_FOUND_FIELD_MESSAGE;
   }
 
-  return getI18nLocaleValue(messageEntity.messageI18n, locale);
+  return getI18nLocaleValue(messageEntity.messageI18n, locale || DEFAULT_LOCALE);
 }
 
 export async function getValidationMessages(): Promise<MessageModel[]> {

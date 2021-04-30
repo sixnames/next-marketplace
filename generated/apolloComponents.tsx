@@ -835,8 +835,6 @@ export type Mutation = {
   deleteCityFromCountry: CountryPayload;
   /** Should update config */
   updateConfig: ConfigPayload;
-  /** Should asset update config */
-  updateAssetConfig: ConfigPayload;
   /** Should create role */
   createRole: RolePayload;
   /** Should update role */
@@ -1086,11 +1084,6 @@ export type MutationDeleteCityFromCountryArgs = {
 
 export type MutationUpdateConfigArgs = {
   input: UpdateConfigInput;
-};
-
-
-export type MutationUpdateAssetConfigArgs = {
-  input: UpdateAssetConfigInput;
 };
 
 
@@ -3175,19 +3168,6 @@ export type UpdateConfigMutationVariables = Exact<{
 export type UpdateConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateConfig: (
-    { __typename?: 'ConfigPayload' }
-    & Pick<ConfigPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateAssetConfigMutationVariables = Exact<{
-  input: UpdateAssetConfigInput;
-}>;
-
-
-export type UpdateAssetConfigMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAssetConfig: (
     { __typename?: 'ConfigPayload' }
     & Pick<ConfigPayload, 'success' | 'message'>
   ) }
@@ -6035,40 +6015,6 @@ export function useUpdateConfigMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateConfigMutationHookResult = ReturnType<typeof useUpdateConfigMutation>;
 export type UpdateConfigMutationResult = Apollo.MutationResult<UpdateConfigMutation>;
 export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<UpdateConfigMutation, UpdateConfigMutationVariables>;
-export const UpdateAssetConfigDocument = gql`
-    mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
-  updateAssetConfig(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateAssetConfigMutationFn = Apollo.MutationFunction<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
-
-/**
- * __useUpdateAssetConfigMutation__
- *
- * To run a mutation, you first call `useUpdateAssetConfigMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAssetConfigMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAssetConfigMutation, { data, loading, error }] = useUpdateAssetConfigMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAssetConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>(UpdateAssetConfigDocument, options);
-      }
-export type UpdateAssetConfigMutationHookResult = ReturnType<typeof useUpdateAssetConfigMutation>;
-export type UpdateAssetConfigMutationResult = Apollo.MutationResult<UpdateAssetConfigMutation>;
-export type UpdateAssetConfigMutationOptions = Apollo.BaseMutationOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)

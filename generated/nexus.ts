@@ -1298,7 +1298,6 @@ export interface NexusGenFieldTypes {
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     toggleAttributeInRubricCatalogue: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricNav: NexusGenRootTypes['RubricPayload']; // RubricPayload!
-    updateAssetConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -2265,7 +2264,6 @@ export interface NexusGenFieldTypeNames {
     signUp: 'UserPayload';
     toggleAttributeInRubricCatalogue: 'RubricPayload';
     toggleAttributeInRubricNav: 'RubricPayload';
-    updateAssetConfig: 'ConfigPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
@@ -3069,10 +3067,6 @@ export interface NexusGenArgTypes {
     toggleAttributeInRubricNav: {
       // args
       input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
-    };
-    updateAssetConfig: {
-      // args
-      input: NexusGenInputs['UpdateAssetConfigInput']; // UpdateAssetConfigInput!
     };
     updateAttributeInGroup: {
       // args

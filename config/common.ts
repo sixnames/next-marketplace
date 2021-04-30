@@ -17,6 +17,9 @@ export const THEME_COOKIE_KEY = 'theme';
 export const ADULT_KEY = 'adult';
 export const ADULT_TRUE = 'true';
 export const ADULT_FALSE = 'false';
+export const COOKIE_COMPANY_SLUG = 'companySlug';
+export const COOKIE_LOCALE = 'locale';
+export const COOKIE_CITY = 'city';
 
 // THEME
 export const THEME_DARK = 'dark';

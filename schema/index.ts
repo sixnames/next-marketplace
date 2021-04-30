@@ -41,5 +41,5 @@ export * from './OrderStatus';
 export * from './OrderProduct';
 export * from './OrderCustomer';
 export * from './Order';
-export * from './OrderMutations';
+export * from 'schema/OrderMutations';
 export * from './scalars';

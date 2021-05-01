@@ -19,6 +19,7 @@ export interface SpinnerInterface {
   placeholder?: string;
   disabled?: boolean;
   size?: 'small' | 'normal';
+  isShort?: boolean;
   onChange?: (e: {
     target: {
       id?: string;
@@ -42,6 +43,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
   minusTestId,
   size = 'normal',
   max,
+  isShort,
   ...props
 }) => {
   const sizeClass = classes[size];
@@ -54,9 +56,9 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
 
   return (
     <div
-      className={`${classes.frame} ${isSmall ? classes.frameSmall : ''} ${
-        frameClassName ? frameClassName : ''
-      }`}
+      className={`${classes.frame} ${
+        isSmall ? (isShort ? '' : classes.shorterWidth) : isShort ? '' : classes.normalWidth
+      } ${frameClassName ? frameClassName : ''}`}
     >
       <button
         aria-label={'Уменьшить количество'}

@@ -26,6 +26,7 @@ export interface PagePropsInterface {
   sessionUser?: UserInterface | null;
   currentCity?: CityInterface | null;
   pageUrls: PageUrlsInterface;
+  companySlug: string;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -35,16 +36,13 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
   const { session, initialData } = pageProps;
-  const apolloClient = useApollo(
-    pageProps.initialApolloState,
-    pageProps.sessionLocale,
-    pageProps.sessionCity,
-  );
+  const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
     <Provider session={session}>
       <ApolloProvider client={apolloClient}>
         <AppContextProvider
+          companySlug={pageProps.companySlug}
           sessionCity={pageProps.sessionCity}
           isMobileDevice={pageProps.isMobileDevice}
         >

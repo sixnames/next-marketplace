@@ -1,137 +1,52 @@
-import { ReadStream } from 'fs';
-import { AssetModel, UploadModel } from 'db/dbModels';
+import Formidable from 'formidable';
+import { promises as fs } from 'fs';
+import { AssetModel } from 'db/dbModels';
+import { alwaysArray } from 'lib/arrayUtils';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
+import mime from 'mime-types';
 // import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
 
-export const getBufferFromFileStream = (stream: ReadStream) => {
-  return new Promise<Buffer>((resolve, reject) => {
-    // Store file data chunks in this array
-    const chunks: any[] = [];
-    // We can use this variable to store the final data
-    let fileBuffer;
-
-    // An error occurred with the stream
-    stream.once('error', (error) => {
-      reject(error);
-    });
-
-    // File is done being read
-    stream.once('end', () => {
-      // create the final data Buffer from data chunks;
-      fileBuffer = Buffer.concat(chunks);
-      resolve(fileBuffer);
-    });
-
-    // Data is flushed from fileStream in chunks,
-    // this callback will be executed for each chunk
-    stream.on('data', (chunk) => {
-      chunks.push(chunk); // push data chunk to array
-    });
-  });
-};
-
-/*interface GetSharpBufferInterface {
-  file: UploadModel;
-  format?: keyof FormatEnum | AvailableFormatInfo;
-  width?: number;
-  height?: number;
-  quality?: number;
+interface StoreRestApiUploadsAsset {
+  buffer: Buffer;
+  ext: string | false;
 }
 
-export async function getSharpBuffer({
-  file,
-  format,
-  width,
-  height,
-  quality = 80,
-}: GetSharpBufferInterface): Promise<Buffer | null> {
-  try {
-    const { createReadStream } = await file;
-
-    // Read file into stream.Readable
-    const fileStream = createReadStream();
-
-    // Convert stream to the Buffer
-    const buffer = await getBufferFromFileStream(fileStream);
-
-    let transform = sharp(buffer);
-
-    if (width || height) {
-      transform = transform.resize(width, height);
-    }
-
-    if (format) {
-      transform = transform.toFormat(format, { quality });
-    } else {
-      transform = transform.webp({ quality });
-    }
-
-    return transform.toBuffer();
-  } catch (e) {
-    console.log('getSharpImage ERROR==== ', e);
-    return null;
-  }
-}*/
-
-// export interface StoreUploadsInterface extends Omit<GetSharpBufferInterface, 'file'> {
-export interface StoreUploadsInterface {
-  files: UploadModel[];
+export interface StoreRestApiUploadsInterface {
+  files: Formidable.Files;
   itemId: number | string;
   dist: string;
   startIndex?: number;
-  asImage?: boolean;
-
-  width?: number;
-  height?: number;
-  quality?: number;
 }
 
-export const storeUploads = async ({
+export async function storeRestApiUploads({
   files,
   itemId,
   dist,
   startIndex = 0,
-}: // asImage,
-// width,
-// height,
-// format,
-// quality,
-StoreUploadsInterface): Promise<AssetModel[] | null> => {
+}: StoreRestApiUploadsInterface): Promise<AssetModel[] | null> {
   try {
     const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
+    const initialFiles: Formidable.File[][] = [];
+    Object.keys(files).forEach((key) => {
+      initialFiles.push(alwaysArray(files[key]));
+    });
 
-    for await (const [index, file] of files.entries()) {
+    const uploads: StoreRestApiUploadsAsset[] = [];
+    for await (const file of initialFiles) {
+      const buffer = await fs.readFile(file[0].path);
+      uploads.push({
+        buffer,
+        ext: file[0].type ? mime.extension(file[0].type) : '',
+      });
+    }
+
+    for await (const [index, file] of uploads.entries()) {
       const fileIndex = index + 1;
       const finalStartIndex = startIndex + 1;
       const finalIndex = finalStartIndex + fileIndex;
-
-      const { createReadStream, ext } = await file;
-      let fileName = ``;
-
-      // Read file into stream.Readable
-      const fileStream = createReadStream();
-
-      // Convert stream to the Buffer
-      let buffer: Buffer | null = null;
-
-      buffer = await getBufferFromFileStream(fileStream);
-      fileName = `${itemId}-${finalIndex}${ext}`;
-
-      /*if (!asImage) {
-        buffer = await getBufferFromFileStream(fileStream);
-        fileName = `${itemId}-${finalIndex}-${ext}`;
-      } else {
-        const extension = format ? `.${format}` : '.webp';
-        buffer = await getSharpBuffer({
-          file,
-          width,
-          height,
-          format,
-          quality,
-        });
-        fileName = `${itemId}-${finalIndex}-${extension}`;
-      }*/
+      const { buffer, ext } = file;
+      const fileName = `${itemId}-${finalIndex}${ext ? `.${ext}` : ''}`;
 
       if (!buffer) {
         return null;
@@ -150,9 +65,9 @@ StoreUploadsInterface): Promise<AssetModel[] | null> => {
     return assets;
   } catch (e) {
     console.log(e);
-    return [];
+    return null;
   }
-};
+}
 
 export const deleteUpload = async ({ filePath }: DeleteFileToS3Interface): Promise<boolean> => {
   return deleteFileFromS3({ filePath });

@@ -12,6 +12,7 @@ import {
   ConfigModel,
   ContactsModel,
   CoordinatesModel,
+  FormattedPhoneModel,
   ManufacturerModel,
   MessageModel,
   MetricModel,
@@ -19,6 +20,10 @@ import {
   ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
+  OrderCustomerModel,
+  OrderLogModel,
+  OrderModel,
+  OrderProductModel,
   OrderStatusModel,
   ProductAssetsModel,
   ProductAttributeModel,
@@ -130,10 +135,6 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
   name?: string | null;
 }
 
-export interface OrderStatusInterface extends OrderStatusModel {
-  name?: string | null;
-}
-
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
   product?: ProductInterface;
   option?: OptionInterface | null;
@@ -233,7 +234,6 @@ export interface RubricInterface extends RubricModel {
 export interface ShopProductInterface extends ShopProductModel {
   name?: string | null;
   shop?: ShopInterface;
-  inCartCount?: number;
   product?: ProductInterface;
   products?: ProductInterface[];
   connections?: ProductConnectionInterface[];
@@ -257,6 +257,7 @@ export interface UserInterface extends UserModel {
   fullName?: string;
   shortName?: string;
   companies?: CompanyInterface[];
+  formattedPhone?: FormattedPhoneModel | null;
 }
 
 export interface CatalogueDataInterface {
@@ -326,4 +327,42 @@ export interface ProductCardPricesAggregationInterface {
 
 export interface ProductShopsCountAggregationInterface {
   shopsCount: number;
+}
+
+export interface OrderStatusInterface extends OrderStatusModel {
+  name?: string | null;
+}
+
+export interface OrderLogInterface extends OrderLogModel {
+  user?: UserInterface | null;
+}
+
+export interface OrderCustomerInterface extends OrderCustomerModel {
+  user?: UserInterface | null;
+  fullName?: string;
+  shortName?: string;
+  formattedPhone?: FormattedPhoneModel | null;
+}
+
+export interface OrderProductInterface extends OrderProductModel {
+  product?: ProductInterface | null;
+  shopProduct?: ShopProductInterface | null;
+  shop?: ShopInterface | null;
+  company?: CompanyInterface | null;
+  formattedPrice?: string | null;
+  totalPrice?: number | null;
+  formattedTotalPrice?: string | null;
+  name?: string | null;
+}
+
+export interface OrderInterface extends OrderModel {
+  customer?: OrderCustomerInterface | null;
+  products?: OrderProductInterface[] | null;
+  logs?: OrderLogInterface[] | null;
+  shopsCount?: number | null;
+  shops?: ShopInterface[] | null;
+  status?: OrderStatusInterface | null;
+  productsCount?: number | null;
+  totalPrice?: number | null;
+  formattedTotalPrice?: string | null;
 }

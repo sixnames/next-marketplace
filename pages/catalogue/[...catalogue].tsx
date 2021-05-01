@@ -12,6 +12,9 @@ import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import {
   CATALOGUE_FILTER_SORT_KEYS,
+  CATALOGUE_VIEW_GRID,
+  CATALOGUE_VIEW_ROW,
+  CATALOGUE_VIEW_STORAGE_KEY,
   SORT_ASC_STR,
   SORT_BY_KEY,
   SORT_DESC_STR,
@@ -54,10 +57,22 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
-  const [isRowView, setIsRowView] = React.useState<boolean>(true);
+  const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_ROW);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
+
+  React.useEffect(() => {
+    const storageValue = window.localStorage.getItem(CATALOGUE_VIEW_STORAGE_KEY);
+    setCatalogueVie(storageValue || CATALOGUE_VIEW_ROW);
+  }, []);
+
+  const setIsRowViewHandler = React.useCallback((view: string) => {
+    setCatalogueVie(view);
+    window.localStorage.setItem(CATALOGUE_VIEW_STORAGE_KEY, view);
+  }, []);
+
+  const isRowView = React.useMemo(() => catalogueView === CATALOGUE_VIEW_ROW, [catalogueView]);
 
   React.useEffect(() => {
     setState(catalogueData);
@@ -258,7 +273,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                       className={`${classes.viewControlsItem} ${
                         isRowView ? '' : classes.viewControlsItemActive
                       }`}
-                      onClick={() => setIsRowView(false)}
+                      onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
                     >
                       <Icon name={'grid'} />
                     </button>
@@ -267,7 +282,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                       className={`${classes.viewControlsItem} ${
                         isRowView ? classes.viewControlsItemActive : ''
                       }`}
-                      onClick={() => setIsRowView(true)}
+                      onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
                     >
                       <Icon name={'rows'} />
                     </button>

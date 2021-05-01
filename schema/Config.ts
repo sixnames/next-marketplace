@@ -1,17 +1,10 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import {
-  ASSETS_DIST_CONFIGS,
-  CONFIG_VARIANTS_ENUMS,
-  DEFAULT_CITY,
-  DEFAULT_LOCALE,
-  SORT_ASC,
-} from 'config/common';
+import { CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
 import { COL_CONFIGS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { storeUploads } from 'lib/assets';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',
@@ -110,24 +103,6 @@ export const UpdateConfigInput = inputObjectType({
   },
 });
 
-export const UpdateAssetConfigInput = inputObjectType({
-  name: 'UpdateAssetConfigInput',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.boolean('multi');
-    t.nonNull.list.nonNull.string('acceptedFormats');
-    t.nonNull.string('slug');
-    t.nonNull.string('companySlug');
-    t.nonNull.string('group');
-    t.nonNull.string('name');
-    t.string('description');
-    t.nonNull.field('variant', {
-      type: 'ConfigVariant',
-    });
-    t.nonNull.list.nonNull.upload('assets');
-  },
-});
-
 // Config Mutations
 export const ConfigMutations = extendType({
   type: 'Mutation',
@@ -174,85 +149,6 @@ export const ConfigMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('configs.update.success'),
-            payload: updatedConfig,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: await getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should asset update config
-    t.nonNull.field('updateAssetConfig', {
-      type: 'ConfigPayload',
-      description: 'Should asset update config',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAssetConfigInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
-        try {
-          // Validate
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const { input } = args;
-          const { _id, companySlug } = input;
-
-          // Update config
-          const assets = await storeUploads({
-            files: input.assets,
-            dist: `${ASSETS_DIST_CONFIGS}/${companySlug}`,
-            itemId: input.slug,
-          });
-          if (!assets) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.updateAsset.error'),
-            };
-          }
-          const currentAsset = assets[0];
-          if (!currentAsset) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.updateAsset.error'),
-            };
-          }
-
-          const updatedConfigResult = await configsCollection.findOneAndUpdate(
-            { _id },
-            {
-              $set: {
-                ...input,
-                cities: {
-                  [DEFAULT_CITY]: {
-                    [DEFAULT_LOCALE]: [currentAsset.url],
-                  },
-                },
-              },
-            },
-            {
-              upsert: true,
-              returnOriginal: false,
-            },
-          );
-          const updatedConfig = updatedConfigResult.value;
-          if (!updatedConfigResult.ok || !updatedConfig) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.updateAsset.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('configs.updateAsset.success'),
             payload: updatedConfig,
           };
         } catch (e) {

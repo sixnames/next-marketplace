@@ -27,15 +27,6 @@ export const UPDATE_COMPANY_MUTATION = gql`
   }
 `;
 
-export const UPDATE_COMPANY_LOGO_MUTATION = gql`
-  mutation UpdateCompanyLogo($input: UpdateCompanyLogoInput!) {
-    updateCompanyLogo(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_SHOP_TO_COMPANY_MUTATION = gql`
   mutation AddShopToCompany($input: AddShopToCompanyInput!) {
     addShopToCompany(input: $input) {

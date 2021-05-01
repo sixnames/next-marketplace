@@ -1,10 +1,10 @@
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { CompanyModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
+import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_COMPANIES, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCurrencyString } from 'lib/i18n';
-import { getPercentage, noNaN } from 'lib/numbers';
+import { noNaN } from 'lib/numbers';
 
 export const OrderProduct = objectType({
   name: 'OrderProduct',
@@ -16,14 +16,10 @@ export const OrderProduct = objectType({
     t.nonNull.string('slug');
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopProductId');
     t.nonNull.objectId('shopId');
     t.nonNull.objectId('companyId');
-    t.nonNull.list.nonNull.field('oldPrices', {
-      type: 'ShopProductOldPrice',
-    });
 
     // OrderProduct name translation field resolver
     t.nonNull.field('name', {
@@ -31,15 +27,6 @@ export const OrderProduct = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
-      },
-    });
-
-    // OrderProduct description translation field resolver
-    t.nonNull.field('description', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.descriptionI18n);
       },
     });
 
@@ -76,17 +63,6 @@ export const OrderProduct = objectType({
       },
     });
 
-    // OrderProduct company field resolver
-    t.field('company', {
-      type: 'Company',
-      resolve: async (source): Promise<CompanyModel | null> => {
-        const db = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const company = await companiesCollection.findOne({ _id: source.shopId });
-        return company;
-      },
-    });
-
     // OrderProduct formattedPrice field resolver
     t.nonNull.field('formattedPrice', {
       type: 'String',
@@ -112,29 +88,6 @@ export const OrderProduct = objectType({
         const { price, amount } = source;
         const totalPrice = noNaN(price) * noNaN(amount);
         return totalPrice;
-      },
-    });
-
-    // OrderProduct formattedOldPrice field resolver
-    t.field('formattedOldPrice', {
-      type: 'String',
-      resolve: async (source, _args): Promise<string | null> => {
-        const lastOldPrice = source.oldPrices[source.oldPrices.length - 1];
-        return lastOldPrice ? getCurrencyString(lastOldPrice.price) : null;
-      },
-    });
-
-    // OrderProduct discountedPercent field resolver
-    t.field('discountedPercent', {
-      type: 'Int',
-      resolve: async (source): Promise<number | null> => {
-        const lastOldPrice = source.oldPrices[source.oldPrices.length - 1];
-        return lastOldPrice && lastOldPrice.price > source.price
-          ? getPercentage({
-              fullValue: lastOldPrice.price,
-              partialValue: source.price,
-            })
-          : null;
       },
     });
   },

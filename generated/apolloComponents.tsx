@@ -24,8 +24,6 @@ export type Scalars = {
   PhoneNumber: any;
   /** A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt. */
   URL: any;
-  /** Upload custom scalar type */
-  Upload: any;
 };
 
 export type AddAttributeToGroupInput = {
@@ -66,11 +64,6 @@ export type AddOptionToGroupInput = {
   gender: Gender;
 };
 
-export type AddProductAssetsInput = {
-  productId: Scalars['ObjectId'];
-  assets: Array<Scalars['Upload']>;
-};
-
 export type AddProductToCartInput = {
   shopProductId: Scalars['ObjectId'];
   amount: Scalars['Int'];
@@ -89,11 +82,6 @@ export type AddProductToShopInput = {
   available: Scalars['Int'];
 };
 
-export type AddShopAssetsInput = {
-  shopId: Scalars['ObjectId'];
-  assets: Array<Scalars['Upload']>;
-};
-
 export type AddShopToCartProductInput = {
   cartProductId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
@@ -103,8 +91,6 @@ export type AddShopToCompanyInput = {
   companyId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
-  logo: Array<Scalars['Upload']>;
-  assets: Array<Scalars['Upload']>;
   contacts: ContactsInput;
   address: AddressInput;
 };
@@ -499,7 +485,6 @@ export type CreateCompanyInput = {
   ownerId: Scalars['ObjectId'];
   staffIds: Array<Scalars['ObjectId']>;
   domain?: Maybe<Scalars['String']>;
-  logo: Array<Scalars['Upload']>;
   contacts: ContactsInput;
 };
 
@@ -543,7 +528,6 @@ export type CreateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  assets: Array<Scalars['Upload']>;
   rubricId: Scalars['ObjectId'];
 };
 
@@ -835,8 +819,6 @@ export type Mutation = {
   deleteCityFromCountry: CountryPayload;
   /** Should update config */
   updateConfig: ConfigPayload;
-  /** Should asset update config */
-  updateAssetConfig: ConfigPayload;
   /** Should create role */
   createRole: RolePayload;
   /** Should update role */
@@ -917,18 +899,12 @@ export type Mutation = {
   createProduct: ProductPayload;
   /** Should update product */
   updateProduct: ProductPayload;
-  /** Should add product assets */
-  addProductAssets: ProductPayload;
   /** Should update product assets */
   deleteProductAsset: ProductPayload;
   /** Should update product asset index */
   updateProductAssetIndex: ProductPayload;
-  /** Should create product connection */
-  createProductConnection: ProductPayload;
-  /** Should create product connection */
-  addProductToConnection: ProductPayload;
-  /** Should delete product from connection and delete connection if there is no products left */
-  deleteProductFromConnection: ProductPayload;
+  /** Should update product counter */
+  updateProductCounter: Scalars['Boolean'];
   /** Should update product brand */
   updateProductBrand: ProductPayload;
   /** Should update product brand collection */
@@ -941,22 +917,22 @@ export type Mutation = {
   updateProductNumberAttribute: ProductPayload;
   /** Should update product text attribute */
   updateProductTextAttribute: ProductPayload;
-  /** Should update product counter */
-  updateProductCounter: Scalars['Boolean'];
+  /** Should create product connection */
+  createProductConnection: ProductPayload;
+  /** Should create product connection */
+  addProductToConnection: ProductPayload;
+  /** Should delete product from connection and delete connection if there is no products left */
+  deleteProductFromConnection: ProductPayload;
   /** Should update shop product */
   updateShopProduct: ShopProductPayload;
   /** Should update many shop products */
   updateManyShopProducts: ShopProductPayload;
   /** Should update shop */
   updateShop: ShopPayload;
-  /** Should add shop assets */
-  addShopAssets: ShopPayload;
   /** Should delete shop asset */
   deleteShopAsset: ShopPayload;
   /** Should update shop asset index */
   updateShopAssetIndex: ShopPayload;
-  /** Should update shop logo */
-  updateShopLogo: ShopPayload;
   /** Should add product to the shop */
   addProductToShop: ShopPayload;
   /** Should add many products to the shop */
@@ -967,8 +943,6 @@ export type Mutation = {
   createCompany: CompanyPayload;
   /** Should update company */
   updateCompany: CompanyPayload;
-  /** Should update company logo */
-  updateCompanyLogo: CompanyPayload;
   /** Should delete company */
   deleteCompany: CompanyPayload;
   /** Should create shop and add it to the company */
@@ -1086,11 +1060,6 @@ export type MutationDeleteCityFromCountryArgs = {
 
 export type MutationUpdateConfigArgs = {
   input: UpdateConfigInput;
-};
-
-
-export type MutationUpdateAssetConfigArgs = {
-  input: UpdateAssetConfigInput;
 };
 
 
@@ -1294,11 +1263,6 @@ export type MutationUpdateProductArgs = {
 };
 
 
-export type MutationAddProductAssetsArgs = {
-  input: AddProductAssetsInput;
-};
-
-
 export type MutationDeleteProductAssetArgs = {
   input: DeleteProductAssetInput;
 };
@@ -1309,18 +1273,8 @@ export type MutationUpdateProductAssetIndexArgs = {
 };
 
 
-export type MutationCreateProductConnectionArgs = {
-  input: CreateProductConnectionInput;
-};
-
-
-export type MutationAddProductToConnectionArgs = {
-  input: AddProductToConnectionInput;
-};
-
-
-export type MutationDeleteProductFromConnectionArgs = {
-  input: DeleteProductFromConnectionInput;
+export type MutationUpdateProductCounterArgs = {
+  input: UpdateProductCounterInput;
 };
 
 
@@ -1354,8 +1308,18 @@ export type MutationUpdateProductTextAttributeArgs = {
 };
 
 
-export type MutationUpdateProductCounterArgs = {
-  input: UpdateProductCounterInput;
+export type MutationCreateProductConnectionArgs = {
+  input: CreateProductConnectionInput;
+};
+
+
+export type MutationAddProductToConnectionArgs = {
+  input: AddProductToConnectionInput;
+};
+
+
+export type MutationDeleteProductFromConnectionArgs = {
+  input: DeleteProductFromConnectionInput;
 };
 
 
@@ -1374,11 +1338,6 @@ export type MutationUpdateShopArgs = {
 };
 
 
-export type MutationAddShopAssetsArgs = {
-  input: AddShopAssetsInput;
-};
-
-
 export type MutationDeleteShopAssetArgs = {
   input: DeleteShopAssetInput;
 };
@@ -1386,11 +1345,6 @@ export type MutationDeleteShopAssetArgs = {
 
 export type MutationUpdateShopAssetIndexArgs = {
   input: UpdateShopAssetIndexInput;
-};
-
-
-export type MutationUpdateShopLogoArgs = {
-  input: UpdateShopLogoInput;
 };
 
 
@@ -1416,11 +1370,6 @@ export type MutationCreateCompanyArgs = {
 
 export type MutationUpdateCompanyArgs = {
   input: UpdateCompanyInput;
-};
-
-
-export type MutationUpdateCompanyLogoArgs = {
-  input: UpdateCompanyLogoInput;
 };
 
 
@@ -1550,13 +1499,6 @@ export type Order = Base & Timestamp & {
   updatedAt: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
   statusId: Scalars['ObjectId'];
-  customer: OrderCustomer;
-  products: Array<OrderProduct>;
-  logs: Array<OrderLog>;
-  status: OrderStatus;
-  totalPrice: Scalars['Int'];
-  formattedTotalPrice: Scalars['String'];
-  productsCount: Scalars['Int'];
 };
 
 export type OrderCustomer = {
@@ -1590,13 +1532,6 @@ export enum OrderLogVariant {
   Status = 'status'
 }
 
-export type OrderPayload = Payload & {
-  __typename?: 'OrderPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  payload?: Maybe<Order>;
-};
-
 export type OrderProduct = {
   __typename?: 'OrderProduct';
   _id: Scalars['ObjectId'];
@@ -1606,23 +1541,17 @@ export type OrderProduct = {
   slug: Scalars['String'];
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
-  descriptionI18n: Scalars['JSONObject'];
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   companyId: Scalars['ObjectId'];
-  oldPrices: Array<ShopProductOldPrice>;
   name: Scalars['String'];
-  description: Scalars['String'];
   product?: Maybe<Product>;
   shopProduct?: Maybe<ShopProduct>;
   shop?: Maybe<Shop>;
-  company?: Maybe<Company>;
   formattedPrice: Scalars['String'];
   formattedTotalPrice: Scalars['String'];
   totalPrice: Scalars['Int'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
-  discountedPercent?: Maybe<Scalars['Int']>;
 };
 
 export type OrderStatus = Timestamp & {
@@ -1634,20 +1563,6 @@ export type OrderStatus = Timestamp & {
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
   name: Scalars['String'];
-};
-
-export type OrdersPaginationPayload = PaginationPayload & {
-  __typename?: 'OrdersPaginationPayload';
-  sortBy: Scalars['String'];
-  sortDir: SortDirection;
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  hasPrevPage: Scalars['Boolean'];
-  hasNextPage: Scalars['Boolean'];
-  docs: Array<Order>;
 };
 
 export type PaginationInput = {
@@ -1737,21 +1652,6 @@ export type ProductAttribute = {
   selectedOptionsSlugs: Array<Scalars['String']>;
   text: Scalars['String'];
   attribute: Attribute;
-};
-
-export type ProductAttributeInput = {
-  _id: Scalars['ObjectId'];
-  showInCard: Scalars['Boolean'];
-  showAsBreadcrumb: Scalars['Boolean'];
-  attributeId: Scalars['ObjectId'];
-  attributeSlug: Scalars['String'];
-  attributeNameI18n: Scalars['JSONObject'];
-  attributeViewVariant: AttributeViewVariant;
-  attributeVariant: AttributeVariant;
-  textI18n?: Maybe<Scalars['JSONObject']>;
-  number?: Maybe<Scalars['Float']>;
-  /** List of selected options slug */
-  selectedOptionsSlugs: Array<Scalars['String']>;
 };
 
 export type ProductAttributesAstInput = {
@@ -1935,14 +1835,6 @@ export type Query = {
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
   getAllCompanies?: Maybe<CompaniesPaginationPayload>;
-  /** Should return order by given id */
-  getOrder: Order;
-  /** Should return session user order by given id */
-  getMyOrder?: Maybe<Order>;
-  /** Should return all paginated orders */
-  getAllOrders: OrdersPaginationPayload;
-  /** Should return all paginated orders */
-  getAllMyOrders?: Maybe<OrdersPaginationPayload>;
 };
 
 
@@ -2128,26 +2020,6 @@ export type QueryGetCompanyArgs = {
 
 
 export type QueryGetAllCompaniesArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetOrderArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetMyOrderArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllOrdersArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetAllMyOrdersArgs = {
   input?: Maybe<PaginationInput>;
 };
 
@@ -2407,19 +2279,6 @@ export type Timestamp = {
 };
 
 
-export type UpdateAssetConfigInput = {
-  _id: Scalars['ObjectId'];
-  multi: Scalars['Boolean'];
-  acceptedFormats: Array<Scalars['String']>;
-  slug: Scalars['String'];
-  companySlug: Scalars['String'];
-  group: Scalars['String'];
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  variant: ConfigVariant;
-  assets: Array<Scalars['Upload']>;
-};
-
 export type UpdateAttributeInGroupInput = {
   attributesGroupId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
@@ -2470,11 +2329,6 @@ export type UpdateCompanyInput = {
   staffIds: Array<Scalars['ObjectId']>;
   domain?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
-};
-
-export type UpdateCompanyLogoInput = {
-  companyId: Scalars['ObjectId'];
-  logo: Array<Scalars['Upload']>;
 };
 
 export type UpdateConfigInput = {
@@ -2655,11 +2509,6 @@ export type UpdateShopInput = {
   address: AddressInput;
 };
 
-export type UpdateShopLogoInput = {
-  shopId: Scalars['ObjectId'];
-  logo: Array<Scalars['Upload']>;
-};
-
 export type UpdateShopProductInput = {
   available: Scalars['Int'];
   price: Scalars['Int'];
@@ -2677,7 +2526,6 @@ export type UpdateUserInput = {
   roleId: Scalars['ObjectId'];
 };
 
-
 export type User = Base & Timestamp & {
   __typename?: 'User';
   _id: Scalars['ObjectId'];
@@ -2694,12 +2542,6 @@ export type User = Base & Timestamp & {
   shortName: Scalars['String'];
   formattedPhone: FormattedPhone;
   role: Role;
-  orders: OrdersPaginationPayload;
-};
-
-
-export type UserOrdersArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 export type UserPayload = Payload & {
@@ -3211,19 +3053,6 @@ export type UpdateCompanyMutation = (
   ) }
 );
 
-export type UpdateCompanyLogoMutationVariables = Exact<{
-  input: UpdateCompanyLogoInput;
-}>;
-
-
-export type UpdateCompanyLogoMutation = (
-  { __typename?: 'Mutation' }
-  & { updateCompanyLogo: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
-
 export type AddShopToCompanyMutationVariables = Exact<{
   input: AddShopToCompanyInput;
 }>;
@@ -3258,19 +3087,6 @@ export type UpdateConfigMutationVariables = Exact<{
 export type UpdateConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateConfig: (
-    { __typename?: 'ConfigPayload' }
-    & Pick<ConfigPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateAssetConfigMutationVariables = Exact<{
-  input: UpdateAssetConfigInput;
-}>;
-
-
-export type UpdateAssetConfigMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAssetConfig: (
     { __typename?: 'ConfigPayload' }
     & Pick<ConfigPayload, 'success' | 'message'>
   ) }
@@ -3421,19 +3237,6 @@ export type UpdateProductMutationVariables = Exact<{
 export type UpdateProductMutation = (
   { __typename?: 'Mutation' }
   & { updateProduct: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
-  ) }
-);
-
-export type AddProductAssetsMutationVariables = Exact<{
-  input: AddProductAssetsInput;
-}>;
-
-
-export type AddProductAssetsMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductAssets: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -3690,19 +3493,6 @@ export type UpdateShopMutation = (
   ) }
 );
 
-export type AddShopAssetsMutationVariables = Exact<{
-  input: AddShopAssetsInput;
-}>;
-
-
-export type AddShopAssetsMutation = (
-  { __typename?: 'Mutation' }
-  & { addShopAssets: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
-
 export type DeleteShopAssetMutationVariables = Exact<{
   input: DeleteShopAssetInput;
 }>;
@@ -3724,19 +3514,6 @@ export type UpdateShopAssetIndexMutationVariables = Exact<{
 export type UpdateShopAssetIndexMutation = (
   { __typename?: 'Mutation' }
   & { updateShopAssetIndex: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateShopLogoMutationVariables = Exact<{
-  input: UpdateShopLogoInput;
-}>;
-
-
-export type UpdateShopLogoMutation = (
-  { __typename?: 'Mutation' }
-  & { updateShopLogo: (
     { __typename?: 'ShopPayload' }
     & Pick<ShopPayload, 'success' | 'message'>
   ) }
@@ -4212,184 +3989,6 @@ export type GetOptionsGroupQuery = (
     { __typename?: 'OptionsGroup' }
     & OptionsGroupFragment
   ) }
-);
-
-export type OrderStatusFragment = (
-  { __typename?: 'OrderStatus' }
-  & Pick<OrderStatus, '_id' | 'name' | 'color'>
-);
-
-export type CmsOrderInListCustomerFragment = (
-  { __typename?: 'OrderCustomer' }
-  & Pick<OrderCustomer, '_id' | 'itemId' | 'shortName' | 'email'>
-  & { formattedPhone: (
-    { __typename?: 'FormattedPhone' }
-    & Pick<FormattedPhone, 'raw' | 'readable'>
-  ) }
-);
-
-export type CmsOrderInListFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ), customer: (
-    { __typename?: 'OrderCustomer' }
-    & CmsOrderInListCustomerFragment
-  ) }
-);
-
-export type GetAllCmsOrdersQueryVariables = Exact<{
-  input?: Maybe<PaginationInput>;
-}>;
-
-
-export type GetAllCmsOrdersQuery = (
-  { __typename?: 'Query' }
-  & { getAllOrders: (
-    { __typename?: 'OrdersPaginationPayload' }
-    & Pick<OrdersPaginationPayload, 'totalDocs' | 'page' | 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'Order' }
-      & CmsOrderInListFragment
-    )> }
-  ) }
-);
-
-export type CmsOrderShopProductFragment = (
-  { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '_id'>
-  & { product: (
-    { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'mainImage'>
-  ) }
-);
-
-export type CmsOrderShopFragment = (
-  { __typename?: 'Shop' }
-  & Pick<Shop, '_id' | 'name' | 'slug'>
-  & { address: (
-    { __typename?: 'Address' }
-    & Pick<Address, 'formattedAddress'>
-    & { formattedCoordinates: (
-      { __typename?: 'Coordinates' }
-      & Pick<Coordinates, 'lat' | 'lng'>
-    ) }
-  ), contacts: (
-    { __typename?: 'Contacts' }
-    & Pick<Contacts, 'emails'>
-    & { formattedPhones: Array<(
-      { __typename?: 'FormattedPhone' }
-      & Pick<FormattedPhone, 'raw' | 'readable'>
-    )> }
-  ), logo: (
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'index' | 'url'>
-  ) }
-);
-
-export type CmsOrderProductFragment = (
-  { __typename?: 'OrderProduct' }
-  & Pick<OrderProduct, '_id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice'>
-  & { shopProduct?: Maybe<(
-    { __typename?: 'ShopProduct' }
-    & CmsOrderShopProductFragment
-  )>, shop?: Maybe<(
-    { __typename?: 'Shop' }
-    & CmsOrderShopFragment
-  )> }
-);
-
-export type CmsOrderFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { products: Array<(
-    { __typename?: 'OrderProduct' }
-    & CmsOrderProductFragment
-  )>, status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ), customer: (
-    { __typename?: 'OrderCustomer' }
-    & CmsOrderInListCustomerFragment
-  ) }
-);
-
-export type GetCmsOrderQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetCmsOrderQuery = (
-  { __typename?: 'Query' }
-  & { getOrder: (
-    { __typename?: 'Order' }
-    & CmsOrderFragment
-  ) }
-);
-
-export type MyOrderShopProductFragment = (
-  { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '_id' | 'available' | 'inCartCount'>
-  & { product: (
-    { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'slug' | 'itemId' | 'mainImage'>
-  ) }
-);
-
-export type MyOrderShopFragment = (
-  { __typename?: 'Shop' }
-  & Pick<Shop, '_id' | 'name' | 'slug'>
-  & { address: (
-    { __typename?: 'Address' }
-    & Pick<Address, 'formattedAddress'>
-    & { formattedCoordinates: (
-      { __typename?: 'Coordinates' }
-      & Pick<Coordinates, 'lat' | 'lng'>
-    ) }
-  ) }
-);
-
-export type MyOrderProductFragment = (
-  { __typename?: 'OrderProduct' }
-  & Pick<OrderProduct, '_id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice' | 'formattedOldPrice' | 'discountedPercent' | 'name'>
-  & { shopProduct?: Maybe<(
-    { __typename?: 'ShopProduct' }
-    & MyOrderShopProductFragment
-  )>, shop?: Maybe<(
-    { __typename?: 'Shop' }
-    & MyOrderShopFragment
-  )> }
-);
-
-export type MyOrderFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-  & { products: Array<(
-    { __typename?: 'OrderProduct' }
-    & MyOrderProductFragment
-  )>, status: (
-    { __typename?: 'OrderStatus' }
-    & OrderStatusFragment
-  ) }
-);
-
-export type GetAllMyOrdersQueryVariables = Exact<{
-  input?: Maybe<PaginationInput>;
-}>;
-
-
-export type GetAllMyOrdersQuery = (
-  { __typename?: 'Query' }
-  & { getAllMyOrders?: Maybe<(
-    { __typename?: 'OrdersPaginationPayload' }
-    & Pick<OrdersPaginationPayload, 'totalDocs' | 'page' | 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'Order' }
-      & MyOrderFragment
-    )> }
-  )> }
 );
 
 export type CmsRoleFragment = (
@@ -4993,176 +4592,6 @@ export const OptionsGroupFragmentDoc = gql`
   }
 }
     ${OptionInGroupFragmentDoc}`;
-export const OrderStatusFragmentDoc = gql`
-    fragment OrderStatus on OrderStatus {
-  _id
-  name
-  color
-}
-    `;
-export const CmsOrderInListCustomerFragmentDoc = gql`
-    fragment CmsOrderInListCustomer on OrderCustomer {
-  _id
-  itemId
-  shortName
-  formattedPhone {
-    raw
-    readable
-  }
-  email
-}
-    `;
-export const CmsOrderInListFragmentDoc = gql`
-    fragment CmsOrderInList on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  status {
-    ...OrderStatus
-  }
-  customer {
-    ...CmsOrderInListCustomer
-  }
-}
-    ${OrderStatusFragmentDoc}
-${CmsOrderInListCustomerFragmentDoc}`;
-export const CmsOrderShopProductFragmentDoc = gql`
-    fragment CmsOrderShopProduct on ShopProduct {
-  _id
-  product {
-    _id
-    mainImage
-  }
-}
-    `;
-export const CmsOrderShopFragmentDoc = gql`
-    fragment CmsOrderShop on Shop {
-  _id
-  name
-  slug
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-  contacts {
-    emails
-    formattedPhones {
-      raw
-      readable
-    }
-  }
-  logo {
-    index
-    url
-  }
-}
-    `;
-export const CmsOrderProductFragmentDoc = gql`
-    fragment CmsOrderProduct on OrderProduct {
-  _id
-  itemId
-  amount
-  formattedPrice
-  formattedTotalPrice
-  shopProduct {
-    ...CmsOrderShopProduct
-  }
-  shop {
-    ...CmsOrderShop
-  }
-}
-    ${CmsOrderShopProductFragmentDoc}
-${CmsOrderShopFragmentDoc}`;
-export const CmsOrderFragmentDoc = gql`
-    fragment CmsOrder on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  products {
-    ...CmsOrderProduct
-  }
-  status {
-    ...OrderStatus
-  }
-  customer {
-    ...CmsOrderInListCustomer
-  }
-}
-    ${CmsOrderProductFragmentDoc}
-${OrderStatusFragmentDoc}
-${CmsOrderInListCustomerFragmentDoc}`;
-export const MyOrderShopProductFragmentDoc = gql`
-    fragment MyOrderShopProduct on ShopProduct {
-  _id
-  available
-  inCartCount
-  product {
-    _id
-    slug
-    itemId
-    mainImage
-  }
-}
-    `;
-export const MyOrderShopFragmentDoc = gql`
-    fragment MyOrderShop on Shop {
-  _id
-  name
-  slug
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-}
-    `;
-export const MyOrderProductFragmentDoc = gql`
-    fragment MyOrderProduct on OrderProduct {
-  _id
-  itemId
-  amount
-  formattedPrice
-  formattedTotalPrice
-  formattedOldPrice
-  discountedPercent
-  name
-  shopProduct {
-    ...MyOrderShopProduct
-  }
-  shop {
-    ...MyOrderShop
-  }
-}
-    ${MyOrderShopProductFragmentDoc}
-${MyOrderShopFragmentDoc}`;
-export const MyOrderFragmentDoc = gql`
-    fragment MyOrder on Order {
-  _id
-  itemId
-  productsCount
-  formattedTotalPrice
-  comment
-  createdAt
-  products {
-    ...MyOrderProduct
-  }
-  status {
-    ...OrderStatus
-  }
-}
-    ${MyOrderProductFragmentDoc}
-${OrderStatusFragmentDoc}`;
 export const CmsRoleFragmentDoc = gql`
     fragment CmsRole on Role {
   _id
@@ -6330,40 +5759,6 @@ export function useUpdateCompanyMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateCompanyMutationHookResult = ReturnType<typeof useUpdateCompanyMutation>;
 export type UpdateCompanyMutationResult = Apollo.MutationResult<UpdateCompanyMutation>;
 export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
-export const UpdateCompanyLogoDocument = gql`
-    mutation UpdateCompanyLogo($input: UpdateCompanyLogoInput!) {
-  updateCompanyLogo(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateCompanyLogoMutationFn = Apollo.MutationFunction<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>;
-
-/**
- * __useUpdateCompanyLogoMutation__
- *
- * To run a mutation, you first call `useUpdateCompanyLogoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCompanyLogoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCompanyLogoMutation, { data, loading, error }] = useUpdateCompanyLogoMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateCompanyLogoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>(UpdateCompanyLogoDocument, options);
-      }
-export type UpdateCompanyLogoMutationHookResult = ReturnType<typeof useUpdateCompanyLogoMutation>;
-export type UpdateCompanyLogoMutationResult = Apollo.MutationResult<UpdateCompanyLogoMutation>;
-export type UpdateCompanyLogoMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>;
 export const AddShopToCompanyDocument = gql`
     mutation AddShopToCompany($input: AddShopToCompanyInput!) {
   addShopToCompany(input: $input) {
@@ -6466,40 +5861,6 @@ export function useUpdateConfigMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateConfigMutationHookResult = ReturnType<typeof useUpdateConfigMutation>;
 export type UpdateConfigMutationResult = Apollo.MutationResult<UpdateConfigMutation>;
 export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<UpdateConfigMutation, UpdateConfigMutationVariables>;
-export const UpdateAssetConfigDocument = gql`
-    mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
-  updateAssetConfig(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateAssetConfigMutationFn = Apollo.MutationFunction<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
-
-/**
- * __useUpdateAssetConfigMutation__
- *
- * To run a mutation, you first call `useUpdateAssetConfigMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAssetConfigMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAssetConfigMutation, { data, loading, error }] = useUpdateAssetConfigMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAssetConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>(UpdateAssetConfigDocument, options);
-      }
-export type UpdateAssetConfigMutationHookResult = ReturnType<typeof useUpdateAssetConfigMutation>;
-export type UpdateAssetConfigMutationResult = Apollo.MutationResult<UpdateAssetConfigMutation>;
-export type UpdateAssetConfigMutationOptions = Apollo.BaseMutationOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)
@@ -6902,40 +6263,6 @@ export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
 export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
 export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
-export const AddProductAssetsDocument = gql`
-    mutation AddProductAssets($input: AddProductAssetsInput!) {
-  addProductAssets(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddProductAssetsMutationFn = Apollo.MutationFunction<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
-
-/**
- * __useAddProductAssetsMutation__
- *
- * To run a mutation, you first call `useAddProductAssetsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductAssetsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductAssetsMutation, { data, loading, error }] = useAddProductAssetsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductAssetsMutation(baseOptions?: Apollo.MutationHookOptions<AddProductAssetsMutation, AddProductAssetsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductAssetsMutation, AddProductAssetsMutationVariables>(AddProductAssetsDocument, options);
-      }
-export type AddProductAssetsMutationHookResult = ReturnType<typeof useAddProductAssetsMutation>;
-export type AddProductAssetsMutationResult = Apollo.MutationResult<AddProductAssetsMutation>;
-export type AddProductAssetsMutationOptions = Apollo.BaseMutationOptions<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
 export const DeleteProductAssetDocument = gql`
     mutation DeleteProductAsset($input: DeleteProductAssetInput!) {
   deleteProductAsset(input: $input) {
@@ -7585,40 +6912,6 @@ export function useUpdateShopMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateShopMutationHookResult = ReturnType<typeof useUpdateShopMutation>;
 export type UpdateShopMutationResult = Apollo.MutationResult<UpdateShopMutation>;
 export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<UpdateShopMutation, UpdateShopMutationVariables>;
-export const AddShopAssetsDocument = gql`
-    mutation AddShopAssets($input: AddShopAssetsInput!) {
-  addShopAssets(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddShopAssetsMutationFn = Apollo.MutationFunction<AddShopAssetsMutation, AddShopAssetsMutationVariables>;
-
-/**
- * __useAddShopAssetsMutation__
- *
- * To run a mutation, you first call `useAddShopAssetsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddShopAssetsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addShopAssetsMutation, { data, loading, error }] = useAddShopAssetsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddShopAssetsMutation(baseOptions?: Apollo.MutationHookOptions<AddShopAssetsMutation, AddShopAssetsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShopAssetsMutation, AddShopAssetsMutationVariables>(AddShopAssetsDocument, options);
-      }
-export type AddShopAssetsMutationHookResult = ReturnType<typeof useAddShopAssetsMutation>;
-export type AddShopAssetsMutationResult = Apollo.MutationResult<AddShopAssetsMutation>;
-export type AddShopAssetsMutationOptions = Apollo.BaseMutationOptions<AddShopAssetsMutation, AddShopAssetsMutationVariables>;
 export const DeleteShopAssetDocument = gql`
     mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
   deleteShopAsset(input: $input) {
@@ -7687,40 +6980,6 @@ export function useUpdateShopAssetIndexMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateShopAssetIndexMutationHookResult = ReturnType<typeof useUpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationResult = Apollo.MutationResult<UpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationOptions = Apollo.BaseMutationOptions<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>;
-export const UpdateShopLogoDocument = gql`
-    mutation UpdateShopLogo($input: UpdateShopLogoInput!) {
-  updateShopLogo(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateShopLogoMutationFn = Apollo.MutationFunction<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>;
-
-/**
- * __useUpdateShopLogoMutation__
- *
- * To run a mutation, you first call `useUpdateShopLogoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateShopLogoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateShopLogoMutation, { data, loading, error }] = useUpdateShopLogoMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateShopLogoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>(UpdateShopLogoDocument, options);
-      }
-export type UpdateShopLogoMutationHookResult = ReturnType<typeof useUpdateShopLogoMutation>;
-export type UpdateShopLogoMutationResult = Apollo.MutationResult<UpdateShopLogoMutation>;
-export type UpdateShopLogoMutationOptions = Apollo.BaseMutationOptions<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>;
 export const AddProductToShopDocument = gql`
     mutation AddProductToShop($input: AddProductToShopInput!) {
   addProductToShop(input: $input) {
@@ -8587,121 +7846,6 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetAllCmsOrdersDocument = gql`
-    query GetAllCMSOrders($input: PaginationInput) {
-  getAllOrders(input: $input) {
-    totalDocs
-    page
-    totalPages
-    docs {
-      ...CmsOrderInList
-    }
-  }
-}
-    ${CmsOrderInListFragmentDoc}`;
-
-/**
- * __useGetAllCmsOrdersQuery__
- *
- * To run a query within a React component, call `useGetAllCmsOrdersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllCmsOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllCmsOrdersQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllCmsOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, options);
-      }
-export function useGetAllCmsOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, options);
-        }
-export type GetAllCmsOrdersQueryHookResult = ReturnType<typeof useGetAllCmsOrdersQuery>;
-export type GetAllCmsOrdersLazyQueryHookResult = ReturnType<typeof useGetAllCmsOrdersLazyQuery>;
-export type GetAllCmsOrdersQueryResult = Apollo.QueryResult<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>;
-export const GetCmsOrderDocument = gql`
-    query GetCmsOrder($_id: ObjectId!) {
-  getOrder(_id: $_id) {
-    ...CmsOrder
-  }
-}
-    ${CmsOrderFragmentDoc}`;
-
-/**
- * __useGetCmsOrderQuery__
- *
- * To run a query within a React component, call `useGetCmsOrderQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCmsOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCmsOrderQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetCmsOrderQuery(baseOptions: Apollo.QueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, options);
-      }
-export function useGetCmsOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, options);
-        }
-export type GetCmsOrderQueryHookResult = ReturnType<typeof useGetCmsOrderQuery>;
-export type GetCmsOrderLazyQueryHookResult = ReturnType<typeof useGetCmsOrderLazyQuery>;
-export type GetCmsOrderQueryResult = Apollo.QueryResult<GetCmsOrderQuery, GetCmsOrderQueryVariables>;
-export const GetAllMyOrdersDocument = gql`
-    query GetAllMyOrders($input: PaginationInput) {
-  getAllMyOrders(input: $input) {
-    totalDocs
-    page
-    totalPages
-    docs {
-      ...MyOrder
-    }
-  }
-}
-    ${MyOrderFragmentDoc}`;
-
-/**
- * __useGetAllMyOrdersQuery__
- *
- * To run a query within a React component, call `useGetAllMyOrdersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllMyOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllMyOrdersQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllMyOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, options);
-      }
-export function useGetAllMyOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, options);
-        }
-export type GetAllMyOrdersQueryHookResult = ReturnType<typeof useGetAllMyOrdersQuery>;
-export type GetAllMyOrdersLazyQueryHookResult = ReturnType<typeof useGetAllMyOrdersLazyQuery>;
-export type GetAllMyOrdersQueryResult = Apollo.QueryResult<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

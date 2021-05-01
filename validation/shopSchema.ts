@@ -3,7 +3,6 @@ import {
   addressSchema,
   contactsInputSchema,
   objectIdSchema,
-  requiredAssetSchema,
   requiredNumberSchema,
   requiredStringSchema,
 } from 'validation/schemaTemplates';
@@ -98,19 +97,5 @@ export const updateShopSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     shopId: shopIdSchema(args),
     ...shopFieldsSchema(args),
-  });
-};
-
-export const addShopAssetsSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    shopId: shopIdSchema(args),
-    assets: requiredAssetSchema({ ...args, slug: 'validation.shops.assets' }),
-  });
-};
-
-export const updateShopLogoSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    shopId: shopIdSchema(args),
-    logo: requiredAssetSchema({ ...args, slug: 'validation.shops.logo' }),
   });
 };

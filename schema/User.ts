@@ -9,14 +9,12 @@ import { getDatabase } from 'db/mongodb';
 import {
   CompanyModel,
   FormattedPhoneModel,
-  OrderModel,
-  OrdersPaginationPayloadModel,
   RoleModel,
   UserModel,
   UserPayloadModel,
   UsersPaginationPayloadModel,
 } from 'db/dbModels';
-import { COL_COMPANIES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { ROLE_SLUG_COMPANY_MANAGER, ROLE_SLUG_COMPANY_OWNER, ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -100,26 +98,6 @@ export const User = objectType({
           return guestRole;
         }
         return role;
-      },
-    });
-
-    // User order field resolver
-    t.nonNull.field('orders', {
-      type: 'OrdersPaginationPayload',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (source, args, context): Promise<OrdersPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<OrderModel>({
-          pipeline: [{ $match: { _id: { $in: source.ordersIds } } }],
-          collectionName: COL_ORDERS,
-          input: args.input,
-          city,
-        });
-        return paginationResult;
       },
     });
   },
@@ -363,8 +341,6 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-
-            ordersIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -680,7 +656,6 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-            ordersIds: [],
             roleId: guestRole._id,
             createdAt: new Date(),
             updatedAt: new Date(),

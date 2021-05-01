@@ -39,11 +39,6 @@ input AddOptionToGroupInput {
   variants: JSONObject!
 }
 
-input AddProductAssetsInput {
-  assets: [Upload!]!
-  productId: ObjectId!
-}
-
 input AddProductToCartInput {
   amount: Int!
   shopProductId: ObjectId!
@@ -62,11 +57,6 @@ input AddProductToShopInput {
   shopId: ObjectId!
 }
 
-input AddShopAssetsInput {
-  assets: [Upload!]!
-  shopId: ObjectId!
-}
-
 input AddShopToCartProductInput {
   cartProductId: ObjectId!
   shopProductId: ObjectId!
@@ -74,11 +64,9 @@ input AddShopToCartProductInput {
 
 input AddShopToCompanyInput {
   address: AddressInput!
-  assets: [Upload!]!
   citySlug: String!
   companyId: ObjectId!
   contacts: ContactsInput!
-  logo: [Upload!]!
   name: String!
 }
 
@@ -454,7 +442,6 @@ input CreateBrandInput {
 input CreateCompanyInput {
   contacts: ContactsInput!
   domain: String
-  logo: [Upload!]!
   name: String!
   ownerId: ObjectId!
   staffIds: [ObjectId!]!
@@ -497,7 +484,6 @@ input CreateProductConnectionInput {
 
 input CreateProductInput {
   active: Boolean!
-  assets: [Upload!]!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -789,11 +775,6 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayload!
 
   """
-  Should add product assets
-  """
-  addProductAssets(input: AddProductAssetsInput!): ProductPayload!
-
-  """
   Should add product to the cart or should increase product amount if already exist in cart
   """
   addProductToCart(input: AddProductToCartInput!): CartPayload!
@@ -807,11 +788,6 @@ type Mutation {
   Should add product to the shop
   """
   addProductToShop(input: AddProductToShopInput!): ShopPayload!
-
-  """
-  Should add shop assets
-  """
-  addShopAssets(input: AddShopAssetsInput!): ShopPayload!
 
   """
   Should add shop to the cart product
@@ -1054,11 +1030,6 @@ type Mutation {
   toggleAttributeInRubricNav(input: UpdateAttributeInRubricInput!): RubricPayload!
 
   """
-  Should asset update config
-  """
-  updateAssetConfig(input: UpdateAssetConfigInput!): ConfigPayload!
-
-  """
   Should update attribute in the attributes group
   """
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!
@@ -1092,11 +1063,6 @@ type Mutation {
   Should update company
   """
   updateCompany(input: UpdateCompanyInput!): CompanyPayload!
-
-  """
-  Should update company logo
-  """
-  updateCompanyLogo(input: UpdateCompanyLogoInput!): CompanyPayload!
 
   """
   Should update config
@@ -1229,11 +1195,6 @@ type Mutation {
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
 
   """
-  Should update shop logo
-  """
-  updateShopLogo(input: UpdateShopLogoInput!): ShopPayload!
-
-  """
   Should update shop product
   """
   updateShopProduct(input: UpdateShopProductInput!): ShopProductPayload!
@@ -1318,15 +1279,8 @@ type Order implements Base & Timestamp {
   _id: ObjectId!
   comment: String
   createdAt: Date!
-  customer: OrderCustomer!
-  formattedTotalPrice: String!
   itemId: String!
-  logs: [OrderLog!]!
-  products: [OrderProduct!]!
-  productsCount: Int!
-  status: OrderStatus!
   statusId: ObjectId!
-  totalPrice: Int!
   updatedAt: Date!
 }
 
@@ -1361,27 +1315,15 @@ enum OrderLogVariant {
   status
 }
 
-type OrderPayload implements Payload {
-  message: String!
-  payload: Order
-  success: Boolean!
-}
-
 type OrderProduct {
   _id: ObjectId!
   amount: Int!
-  company: Company
   companyId: ObjectId!
-  description: String!
-  descriptionI18n: JSONObject!
-  discountedPercent: Int
-  formattedOldPrice: String
   formattedPrice: String!
   formattedTotalPrice: String!
   itemId: Int!
   name: String!
   nameI18n: JSONObject!
-  oldPrices: [ShopProductOldPrice!]!
   originalName: String!
   price: Int!
   product: Product
@@ -1402,19 +1344,6 @@ type OrderStatus implements Timestamp {
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
-}
-
-type OrdersPaginationPayload implements PaginationPayload {
-  docs: [Order!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
 }
 
 input PaginationInput {
@@ -1514,24 +1443,6 @@ type ProductAttribute {
   showAsBreadcrumb: Boolean!
   showInCard: Boolean!
   text: String!
-  textI18n: JSONObject
-}
-
-input ProductAttributeInput {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  attributeNameI18n: JSONObject!
-  attributeSlug: String!
-  attributeVariant: AttributeVariant!
-  attributeViewVariant: AttributeViewVariant!
-  number: Float
-
-  """
-  List of selected options slug
-  """
-  selectedOptionsSlugs: [String!]!
-  showAsBreadcrumb: Boolean!
-  showInCard: Boolean!
   textI18n: JSONObject
 }
 
@@ -1667,19 +1578,9 @@ type Query {
   getAllMetricsOptions: [Metric!]!
 
   """
-  Should return all paginated orders
-  """
-  getAllMyOrders(input: PaginationInput): OrdersPaginationPayload
-
-  """
   Should return options groups list
   """
   getAllOptionsGroups: [OptionsGroup!]!
-
-  """
-  Should return all paginated orders
-  """
-  getAllOrders(input: PaginationInput): OrdersPaginationPayload!
 
   """
   Should return all roles list
@@ -1806,11 +1707,6 @@ type Query {
   getManufacturerBySlug(slug: String!): Manufacturer!
 
   """
-  Should return session user order by given id
-  """
-  getMyOrder(_id: ObjectId!): Order
-
-  """
   Should return options grouped by alphabet
   """
   getOptionAlphabetLists(input: OptionAlphabetInput!): [OptionsAlphabetList!]!
@@ -1824,11 +1720,6 @@ type Query {
   Should return options groups variants options
   """
   getOptionsGroupVariantsOptions: [SelectOption!]!
-
-  """
-  Should return order by given id
-  """
-  getOrder(_id: ObjectId!): Order!
 
   """
   Should return product by given id
@@ -2147,19 +2038,6 @@ A field whose value conforms to the standard URL format as specified in RFC3986:
 """
 scalar URL
 
-input UpdateAssetConfigInput {
-  _id: ObjectId!
-  acceptedFormats: [String!]!
-  assets: [Upload!]!
-  companySlug: String!
-  description: String
-  group: String!
-  multi: Boolean!
-  name: String!
-  slug: String!
-  variant: ConfigVariant!
-}
-
 input UpdateAttributeInGroupInput {
   attributeId: ObjectId!
   attributesGroupId: ObjectId!
@@ -2210,11 +2088,6 @@ input UpdateCompanyInput {
   name: String!
   ownerId: ObjectId!
   staffIds: [ObjectId!]!
-}
-
-input UpdateCompanyLogoInput {
-  companyId: ObjectId!
-  logo: [Upload!]!
 }
 
 input UpdateConfigInput {
@@ -2395,11 +2268,6 @@ input UpdateShopInput {
   shopId: ObjectId!
 }
 
-input UpdateShopLogoInput {
-  logo: [Upload!]!
-  shopId: ObjectId!
-}
-
 input UpdateShopProductInput {
   available: Int!
   price: Int!
@@ -2417,11 +2285,6 @@ input UpdateUserInput {
   userId: ObjectId!
 }
 
-"""
-Upload custom scalar type
-"""
-scalar Upload
-
 type User implements Base & Timestamp {
   _id: ObjectId!
   createdAt: Date!
@@ -2431,7 +2294,6 @@ type User implements Base & Timestamp {
   itemId: String!
   lastName: String
   name: String!
-  orders(input: PaginationInput): OrdersPaginationPayload!
   phone: PhoneNumber!
   role: Role!
   roleId: ObjectId!

@@ -5,7 +5,7 @@ import Percent from '../../Percent/Percent';
 
 interface ProductPricesInterface {
   discountedPercent?: number | null;
-  formattedPrice: string;
+  formattedPrice?: string | number | null;
   formattedOldPrice?: string | null;
   className?: string;
   size?: 'small' | 'normal' | 'big';

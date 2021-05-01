@@ -8,7 +8,6 @@ import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
-  useAddProductAssetsMutation,
   useDeleteProductAssetMutation,
   useUpdateProductAssetIndexMutation,
 } from 'generated/apolloComponents';
@@ -39,20 +38,6 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
   } = useMutationCallbacks();
   const validationSchema = useValidationSchema({
     schema: addProductAssetsSchema,
-  });
-
-  const [addProductAssetsMutation] = useAddProductAssetsMutation({
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.addProductAssets.success) {
-        onCompleteCallback(data.addProductAssets);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.addProductAssets.message });
-      }
-    },
   });
 
   const [deleteProductAssetMutation] = useDeleteProductAssetMutation({
@@ -116,16 +101,35 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
           enableReinitialize
           validationSchema={validationSchema}
           initialValues={{ assets: [], productId: product._id }}
-          onSubmit={(values, formikHelpers) => {
-            showLoading();
-            addProductAssetsMutation({
-              variables: {
-                input: values,
-              },
-              update: () => {
-                formikHelpers.resetForm();
-              },
-            }).catch((e) => console.log(e));
+          onSubmit={(values) => {
+            if (values.assets) {
+              showLoading();
+              const formData = new FormData();
+              values.assets.forEach((file, index) => {
+                formData.append(`assets[${index}]`, file);
+              });
+              formData.append('productId', `${values.productId}`);
+
+              fetch('/api/add-product-asset', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
           }}
         >
           {() => {

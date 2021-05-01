@@ -1,3 +1,4 @@
+import { OrderInterface } from 'db/uiInterfaces';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CartModel,
@@ -5,11 +6,16 @@ import {
   CartProductModel,
   OrderModel,
   ProductModel,
-  ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
-import { COL_CARTS, COL_ORDERS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_CARTS,
+  COL_ORDER_PRODUCTS,
+  COL_ORDERS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   addProductToCartSchema,
@@ -557,13 +563,58 @@ export const CartMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
           const db = await getDatabase();
-          const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
           // Check if order exists
-          const order = await ordersCollection.findOne({ _id: args.input.orderId });
+          const orderAggregation = await ordersCollection
+            .aggregate<OrderInterface>([
+              {
+                $match: { _id: args.input.orderId },
+              },
+              {
+                $lookup: {
+                  from: COL_ORDER_PRODUCTS,
+                  as: 'products',
+                  let: { orderId: '$_id' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$orderId', '$orderId'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_SHOP_PRODUCTS,
+                        as: 'shopProduct',
+                        let: { shopProductId: '$shopProductId' },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$shopProductId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        shopProduct: {
+                          $arrayElemAt: ['$shopProduct', 0],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ])
+            .toArray();
+          const order = orderAggregation[0];
           if (!order) {
             return {
               success: false,
@@ -573,15 +624,14 @@ export const CartMutations = extendType({
 
           // Cast order products for cart
           const cartNewProducts: CartProductModel[] = [];
-          for await (const orderProduct of order.products) {
-            const { amount, shopProductId } = orderProduct;
-            const shopProductExist = await shopProductsCollection.findOne({ _id: shopProductId });
-            if (!shopProductExist) {
+          for await (const orderProduct of order.products || []) {
+            const { amount, shopProduct, shopProductId } = orderProduct;
+            if (!shopProduct) {
               break;
             }
 
             const productExist = await productsCollection.findOne({
-              _id: shopProductExist.productId,
+              _id: shopProduct.productId,
             });
             if (!productExist) {
               break;
@@ -589,12 +639,12 @@ export const CartMutations = extendType({
 
             let finalAmount = amount;
 
-            if (!shopProductExist.available) {
+            if (!shopProduct.available) {
               break;
             }
 
-            if (shopProductExist.available < amount) {
-              finalAmount = shopProductExist.available;
+            if (shopProduct.available < amount) {
+              finalAmount = shopProduct.available;
             }
 
             cartNewProducts.push({
@@ -609,7 +659,7 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $push: {
-                products: {
+                cartProducts: {
                   $each: cartNewProducts,
                 },
               },

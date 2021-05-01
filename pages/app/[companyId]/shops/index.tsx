@@ -31,7 +31,7 @@ const ShopsRoute: React.FC = () => {
   });
 
   if (loading) {
-    return <Spinner isNested />;
+    return <Spinner isNested isTransparent />;
   }
 
   if (error || !data || !data.getCompanyShops) {

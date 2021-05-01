@@ -2,7 +2,6 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
-import { useUpdateAssetConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { get } from 'lodash';
 import { useRouter } from 'next/router';
@@ -17,13 +16,7 @@ interface ConfigsAssetInputInterface {
 const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => {
   const router = useRouter();
   const { slug, name, description, acceptedFormats, cities } = config;
-  const { onErrorCallback, showErrorNotification } = useMutationCallbacks({});
-  const [updateAssetConfigMutation] = useUpdateAssetConfigMutation({
-    onError: onErrorCallback,
-    onCompleted: () => {
-      router.reload();
-    },
-  });
+  const { showErrorNotification, showLoading } = useMutationCallbacks({});
 
   const file = get(cities, `${DEFAULT_CITY}.${DEFAULT_LOCALE}`);
 
@@ -47,22 +40,28 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
                 lineContentClass='flex items-start'
                 setImageHandler={(files) => {
                   if (files) {
-                    updateAssetConfigMutation({
-                      variables: {
-                        input: {
-                          _id: config._id,
-                          slug: config.slug,
-                          companySlug: config.companySlug,
-                          description: config.description,
-                          variant: config.variant as any,
-                          acceptedFormats: config.acceptedFormats,
-                          group: config.group,
-                          multi: config.multi,
-                          name: config.name,
-                          assets: [files[0]],
-                        },
-                      },
-                    }).catch(() => showErrorNotification());
+                    showLoading();
+                    const formData = new FormData();
+                    formData.append('assets', files[0]);
+                    formData.append('config', JSON.stringify(config));
+
+                    fetch('/api/update-asset-config', {
+                      method: 'POST',
+                      body: formData,
+                    })
+                      .then((res) => {
+                        return res.json();
+                      })
+                      .then((json) => {
+                        if (json.success) {
+                          router.reload();
+                          return;
+                        }
+                        showErrorNotification({ title: json.message });
+                      })
+                      .catch(() => {
+                        showErrorNotification({ title: 'error' });
+                      });
                   }
                 }}
               >

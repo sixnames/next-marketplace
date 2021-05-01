@@ -5,7 +5,13 @@ import { CONFIRM_MODAL } from 'config/modals';
 import { useAppContext } from 'context/appContext';
 import Image from 'next/image';
 import * as React from 'react';
-import { DragDropContext, Draggable, DragUpdate, Droppable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Draggable,
+  DragUpdate,
+  Droppable,
+  resetServerContext,
+} from 'react-beautiful-dnd';
 import classes from './AssetsManager.module.css';
 
 interface AssetItem {
@@ -33,6 +39,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
 }) => {
   const [assets, setAssets] = React.useState<AssetItem[]>([]);
   const { showModal } = useAppContext();
+  resetServerContext();
 
   React.useEffect(() => {
     setAssets(initialAssets);

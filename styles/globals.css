@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .text-indent-full {
+    overflow: hidden;
+    text-indent: -999em;
+  }
+}
+
 @layer base {
   .header-aside {
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
@@ -14,6 +21,11 @@
   .burger-dropdown {
     height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
   }
+
+  .snippet-image img {
+    filter: drop-shadow(var(--wp-shadow-25));
+  }
+
 
   .footer {
     box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);

@@ -56,7 +56,6 @@ export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =
 export const createProductSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     ...productCommonFieldsSchema(args),
-    assets: requiredAssetSchema({ ...args, slug: 'validation.products.assets' }),
   });
 };
 

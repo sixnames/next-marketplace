@@ -9,15 +9,6 @@ export const UPDATE_SHOP_MUTATION = gql`
   }
 `;
 
-export const UPDATE_SHOP_ASSETS_MUTATION = gql`
-  mutation AddShopAssets($input: AddShopAssetsInput!) {
-    addShopAssets(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const DELETE_SHOP_ASSET_MUTATION = gql`
   mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
     deleteShopAsset(input: $input) {
@@ -30,15 +21,6 @@ export const DELETE_SHOP_ASSET_MUTATION = gql`
 export const UPDATE_SHOP_ASSET_INDEX_MUTATION = gql`
   mutation UpdateShopAssetIndex($input: UpdateShopAssetIndexInput!) {
     updateShopAssetIndex(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_SHOP_LOGO_MUTATION = gql`
-  mutation UpdateShopLogo($input: UpdateShopLogoInput!) {
-    updateShopLogo(input: $input) {
       success
       message
     }

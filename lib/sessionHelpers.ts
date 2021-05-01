@@ -3,7 +3,6 @@ import { CartModel, RoleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CART_COOKIE_KEY,
-  CITY_HEADER,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   LOCALE_HEADER,
@@ -11,6 +10,7 @@ import {
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
 } from 'config/common';
+import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
 import { COL_CARTS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
@@ -28,7 +28,6 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
     return null;
   }
 
-  // TODO add id field to the session user after NextAuth update
   // Get session user from db
   const db = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -77,18 +76,18 @@ export const getSessionLocale = (context: NexusContext): string => {
   // Get locale form context if request form server
   // Otherwise get locale from Content-Language header
   // populated with Apollo client
-  return context?.locale || context?.req?.headers[LOCALE_HEADER] || DEFAULT_LOCALE;
+  const cookies = nookies.get(context);
+  return (
+    cookies?.locale || context?.locale || context?.req?.headers[LOCALE_HEADER] || DEFAULT_LOCALE
+  );
 };
 
 export const getSessionCity = (context: NexusContext): string => {
   // Get city form context if request form server
   // Otherwise get city from x-city header
   // populated with Apollo client
-  const headerCity = context?.req?.headers[CITY_HEADER];
-  if (headerCity) {
-    return `${headerCity}`;
-  }
-  return context?.city || DEFAULT_CITY;
+  const cookies = nookies.get(context);
+  return cookies?.city || context?.city || DEFAULT_CITY;
 };
 
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {

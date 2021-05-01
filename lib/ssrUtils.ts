@@ -2,6 +2,9 @@ import {
   CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
   CATALOGUE_NAV_VISIBLE_OPTIONS,
   CONFIG_DEFAULT_COMPANY_SLUG,
+  COOKIE_CITY,
+  COOKIE_COMPANY_SLUG,
+  COOKIE_LOCALE,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -49,6 +52,7 @@ import { Session } from 'next-auth';
 import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
+import nookies from 'nookies';
 
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
@@ -453,6 +457,27 @@ export async function getPageInitialState({
   });
   const initialData = castDbData(rawInitialData);
 
+  // Set company slug as a cookie
+  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
+  // Set sessionLocale as a cookie
+  nookies.set(context, COOKIE_LOCALE, sessionLocale, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
+  // Set sessionCity as a cookie
+  nookies.set(context, COOKIE_CITY, sessionCity, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
   return {
     db,
     path,
@@ -461,6 +486,7 @@ export async function getPageInitialState({
     session,
     initialData,
     company: castDbData(company),
+    companySlug: company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
     sessionUser,
@@ -500,6 +526,7 @@ export async function getAppInitialData({
     sessionCity,
     sessionLocale,
     initialData,
+    companySlug,
     session,
   } = await getPageInitialState({ context });
 
@@ -555,6 +582,7 @@ export async function getAppInitialData({
 
   return {
     props: {
+      companySlug,
       initialData,
       currentCity,
       sessionCity,
@@ -595,6 +623,7 @@ export async function getSiteInitialData({
     initialData,
     company,
     sessionUser,
+    companySlug,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -609,6 +638,7 @@ export async function getSiteInitialData({
 
   return {
     props: {
+      companySlug,
       initialData,
       navRubrics,
       currentCity,

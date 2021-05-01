@@ -57,8 +57,6 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
     name: '',
     citySlug: '',
     address: null,
-    logo: [],
-    assets: [],
     contacts: {
       emails: [''],
       phones: [''],

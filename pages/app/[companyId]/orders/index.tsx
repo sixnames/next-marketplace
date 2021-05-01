@@ -6,13 +6,13 @@ import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { ROUTE_APP, SORT_DESC } from 'config/common';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import AppLayout from 'layout/AppLayout/AppLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -35,7 +35,10 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link testId={`order-${dataItem.itemId}-link`} href={`${ROUTE_CMS}/orders/${dataItem._id}`}>
+        <Link
+          testId={`order-${dataItem.itemId}-link`}
+          href={`${ROUTE_APP}/${router.query.companyId}/orders/${dataItem._id}`}
+        >
           {cellData}
         </Link>
       ),
@@ -105,9 +108,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
             data={orders}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
-              router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
-                console.log(e);
-              });
+              router
+                .push(`${ROUTE_APP}/${router.query.companyId}/orders/${dataItem._id}`)
+                .catch((e) => {
+                  console.log(e);
+                });
             }}
           />
         </div>
@@ -121,19 +126,30 @@ interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
 const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls}>
       <OrdersRoute orders={orders} />
-    </CmsLayout>
+    </AppLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
+  const { query } = context;
   const db = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const { props } = await getAppInitialData({ context, isCms: true });
-  if (!props) {
+  const { props } = await getAppInitialData({ context });
+  if (!props || !props.sessionUser) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const company = (props.sessionUser.companies || []).find(({ _id }) => {
+    return `${_id}` === `${query.companyId}`;
+  });
+
+  if (!company) {
     return {
       notFound: true,
     };
@@ -141,6 +157,11 @@ export const getServerSideProps = async (
 
   const initialOrders = await ordersCollection
     .aggregate<OrderInterface>([
+      {
+        $match: {
+          companySlug: company.slug,
+        },
+      },
       {
         $lookup: {
           from: COL_ORDER_STATUSES,

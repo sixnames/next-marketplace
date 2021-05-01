@@ -56,7 +56,6 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
         {products.map((product) => {
           return (
             <ProductSnippetGrid
-              size={'small'}
               product={product}
               key={`${product._id}`}
               testId={`search-product`}

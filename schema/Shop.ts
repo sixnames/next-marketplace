@@ -1,7 +1,5 @@
-import { ASSETS_DIST_SHOPS, ASSETS_LOGO_WIDTH, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
-import { deleteUpload, getMainImage, reorderAssets, storeUploads } from 'lib/assets';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
 import { getCurrencyString } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -27,9 +25,7 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   addManyProductsToShopSchema,
   addProductToShopSchema,
-  addShopAssetsSchema,
   deleteProductFromShopSchema,
-  updateShopLogoSchema,
   updateShopSchema,
 } from 'validation/shopSchema';
 
@@ -283,22 +279,6 @@ export const UpdateShopInCompanyInput = inputObjectType({
   },
 });
 
-export const UpdateShopLogoInput = inputObjectType({
-  name: 'UpdateShopLogoInput',
-  definition(t) {
-    t.nonNull.objectId('shopId');
-    t.nonNull.list.nonNull.upload('logo');
-  },
-});
-
-export const AddShopAssetsInput = inputObjectType({
-  name: 'AddShopAssetsInput',
-  definition(t) {
-    t.nonNull.objectId('shopId');
-    t.nonNull.list.nonNull.upload('assets');
-  },
-});
-
 export const DeleteShopAssetInput = inputObjectType({
   name: 'DeleteShopAssetInput',
   definition(t) {
@@ -396,122 +376,6 @@ export const ShopMutations = extendType({
             success: true,
             message: await getApiMessage('shops.update.success'),
             payload: updatedShop,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should add shop assets
-    t.nonNull.field('addShopAssets', {
-      type: 'ShopPayload',
-      description: 'Should add shop assets',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'AddShopAssetsInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
-        try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addShopAssetsSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const { input } = args;
-          const { shopId } = input;
-
-          // Check shop availability
-          const shop = await shopsCollection.findOne({ _id: shopId });
-          if (!shop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.update.notFound'),
-            };
-          }
-
-          // Update shop assets
-          const sortedAssets = shop.assets.sort((assetA, assetB) => {
-            return assetB.index - assetA.index;
-          });
-          const firstAsset = sortedAssets[0];
-          const startIndex = noNaN(firstAsset?.index);
-          const assets = await storeUploads({
-            itemId: shop.itemId,
-            dist: ASSETS_DIST_SHOPS,
-            files: input.assets,
-            startIndex,
-            asImage: true,
-            width: ASSETS_SHOP_IMAGE_WIDTH,
-          });
-          if (!assets) {
-            return {
-              success: false,
-              message: await getApiMessage(`shops.update.error`),
-            };
-          }
-
-          // Update shop
-          const updatedShopResult = await shopsCollection.findOneAndUpdate(
-            { _id: shopId },
-            {
-              $set: {
-                updatedAt: new Date(),
-              },
-              $push: {
-                assets: {
-                  $each: assets,
-                },
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedShop = updatedShopResult.value;
-          if (!updatedShopResult.ok || !updatedShop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.update.error'),
-            };
-          }
-
-          const mainImage = getMainImage(updatedShop.assets);
-          const updatedShopMainImageResult = await shopsCollection.findOneAndUpdate(
-            { _id: shopId },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedShopMainImage = updatedShopMainImageResult.value;
-          if (!updatedShopMainImageResult.ok || !updatedShopMainImage) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.update.success'),
-            payload: updatedShopMainImage,
           };
         } catch (e) {
           return {
@@ -670,101 +534,6 @@ export const ShopMutations = extendType({
                 updatedAt: new Date(),
                 assets: reorderedAssetsWithUpdatedIndexes,
                 mainImage,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedShop = updatedShopResult.value;
-          if (!updatedShopResult.ok || !updatedShop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.update.success'),
-            payload: updatedShop,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should update shop logo
-    t.nonNull.field('updateShopLogo', {
-      type: 'ShopPayload',
-      description: 'Should update shop logo',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateShopLogoInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
-        try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateShopLogoSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const { input } = args;
-          const { shopId } = input;
-
-          // Check shop availability
-          const shop = await shopsCollection.findOne({ _id: shopId });
-          if (!shop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.update.notFound'),
-            };
-          }
-
-          // Delete shop logo
-          const removedAsset = await deleteUpload({ filePath: `${shop.logo.url}` });
-          if (!removedAsset) {
-            return {
-              success: false,
-              message: await getApiMessage(`shops.update.error`),
-            };
-          }
-
-          // Upload new shop logo
-          const uploadedLogo = await storeUploads({
-            itemId: shop.itemId,
-            dist: ASSETS_DIST_SHOPS,
-            files: input.logo,
-            startIndex: 0,
-            asImage: true,
-            width: ASSETS_LOGO_WIDTH,
-          });
-          if (!uploadedLogo) {
-            return {
-              success: false,
-              message: await getApiMessage(`shops.update.error`),
-            };
-          }
-
-          // Update shop
-          const updatedShopResult = await shopsCollection.findOneAndUpdate(
-            { _id: shopId },
-            {
-              $set: {
-                updatedAt: new Date(),
-                logo: uploadedLogo[0],
               },
             },
             {

@@ -17,6 +17,9 @@ export const THEME_COOKIE_KEY = 'theme';
 export const ADULT_KEY = 'adult';
 export const ADULT_TRUE = 'true';
 export const ADULT_FALSE = 'false';
+export const COOKIE_COMPANY_SLUG = 'companySlug';
+export const COOKIE_LOCALE = 'locale';
+export const COOKIE_CITY = 'city';
 
 // THEME
 export const THEME_DARK = 'dark';
@@ -196,6 +199,9 @@ export const CATALOGUE_BRAND_KEY = 'brand';
 export const CATALOGUE_BRAND_COLLECTION_KEY = 'brandCollection';
 export const CATALOGUE_MANUFACTURER_KEY = 'manufacturer';
 export const PRICE_ATTRIBUTE_SLUG = 'price';
+export const CATALOGUE_VIEW_STORAGE_KEY = 'catalogueView';
+export const CATALOGUE_VIEW_ROW = 'row';
+export const CATALOGUE_VIEW_GRID = 'grid';
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

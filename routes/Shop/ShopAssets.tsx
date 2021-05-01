@@ -9,11 +9,11 @@ import {
   useAddShopAssetsMutation,
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
-  useUpdateShopLogoMutation,
 } from 'generated/apolloComponents';
 import { SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { useRouter } from 'next/router';
 import { addShopAssetsSchema } from 'validation/shopSchema';
 import classes from './ShopAssets.module.css';
 import * as React from 'react';
@@ -23,12 +23,14 @@ interface ShopAssetsInterface {
 }
 
 const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
+  const router = useRouter();
   const { _id, slug, logo, name } = shop;
   const {
     onErrorCallback,
     showErrorNotification,
     onCompleteCallback,
     showLoading,
+    hideLoading,
   } = useMutationCallbacks({});
   const validationSchema = useValidationSchema({
     schema: addShopAssetsSchema,
@@ -42,13 +44,6 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
       },
     },
   ];
-
-  const [updateShopLogoMutation] = useUpdateShopLogoMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateShopLogo),
-    refetchQueries,
-  });
 
   const [addShopAssetsMutation] = useAddShopAssetsMutation({
     awaitRefetchQueries: true,
@@ -89,18 +84,32 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
                 testId={slug}
                 width={'10rem'}
                 height={'10rem'}
-                format={'image/png'}
                 setImageHandler={(files) => {
                   if (files) {
                     showLoading();
-                    updateShopLogoMutation({
-                      variables: {
-                        input: {
-                          shopId: _id,
-                          logo: [files[0]],
-                        },
-                      },
-                    }).catch(() => showErrorNotification());
+                    const formData = new FormData();
+                    formData.append('assets', files[0]);
+                    formData.append('shopId', `${shop._id}`);
+
+                    fetch('/api/update-shop-logo', {
+                      method: 'POST',
+                      body: formData,
+                    })
+                      .then((res) => {
+                        return res.json();
+                      })
+                      .then((json) => {
+                        if (json.success) {
+                          router.reload();
+                          return;
+                        }
+                        hideLoading();
+                        showErrorNotification({ title: json.message });
+                      })
+                      .catch(() => {
+                        hideLoading();
+                        showErrorNotification({ title: 'error' });
+                      });
                   }
                 }}
               >

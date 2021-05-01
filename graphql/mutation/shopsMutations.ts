@@ -27,24 +27,6 @@ export const DELETE_SHOP_ASSET_MUTATION = gql`
   }
 `;
 
-export const UPDATE_SHOP_ASSET_INDEX_MUTATION = gql`
-  mutation UpdateShopAssetIndex($input: UpdateShopAssetIndexInput!) {
-    updateShopAssetIndex(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_SHOP_LOGO_MUTATION = gql`
-  mutation UpdateShopLogo($input: UpdateShopLogoInput!) {
-    updateShopLogo(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_PRODUCT_TO_SHOP_MUTATION = gql`
   mutation AddProductToShop($input: AddProductToShopInput!) {
     addProductToShop(input: $input) {

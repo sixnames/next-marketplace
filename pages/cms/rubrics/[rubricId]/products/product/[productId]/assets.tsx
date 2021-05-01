@@ -122,9 +122,11 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
                     router.reload();
                     return;
                   }
+                  hideLoading();
                   showErrorNotification({ title: json.message });
                 })
                 .catch(() => {
+                  hideLoading();
                   showErrorNotification({ title: 'error' });
                 });
             }

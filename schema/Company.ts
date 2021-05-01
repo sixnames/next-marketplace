@@ -27,11 +27,8 @@ import {
   addShopToCompanySchema,
   createCompanySchema,
   deleteShopFromCompanySchema,
-  updateCompanyLogoSchema,
   updateCompanySchema,
 } from 'validation/companySchema';
-import { deleteUpload, storeUploads } from 'lib/assets';
-import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'config/common';
 
 export const Company = objectType({
   name: 'Company',

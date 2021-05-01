@@ -73,7 +73,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
               input: {
                 ...values,
                 rubricId,
-                assets: values.assets || [],
               },
             },
           });

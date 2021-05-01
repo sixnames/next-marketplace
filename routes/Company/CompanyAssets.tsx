@@ -12,7 +12,7 @@ interface CompanyAssetsInterface {
 }
 
 const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
-  const { showErrorNotification, showLoading } = useMutationCallbacks({});
+  const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
   const { logo, slug } = company;
 
@@ -35,12 +35,12 @@ const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
                 width={'10rem'}
                 height={'10rem'}
                 setImageHandler={(files) => {
-                  showLoading();
-                  const formData = new FormData();
-                  formData.append('assets', files[0]);
-                  formData.append('companyId', `${company._id}`);
-
                   if (files) {
+                    showLoading();
+                    const formData = new FormData();
+                    formData.append('assets', files[0]);
+                    formData.append('companyId', `${company._id}`);
+
                     fetch('/api/update-company-logo', {
                       method: 'POST',
                       body: formData,
@@ -53,9 +53,11 @@ const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
                           router.reload();
                           return;
                         }
+                        hideLoading();
                         showErrorNotification({ title: json.message });
                       })
                       .catch(() => {
+                        hideLoading();
                         showErrorNotification({ title: 'error' });
                       });
                   }

@@ -39,12 +39,12 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
                 description={description}
                 lineContentClass='flex items-start'
                 setImageHandler={(files) => {
-                  showLoading();
-                  const formData = new FormData();
-                  formData.append('assets', files[0]);
-                  formData.append('config', JSON.stringify(config));
-
                   if (files) {
+                    showLoading();
+                    const formData = new FormData();
+                    formData.append('assets', files[0]);
+                    formData.append('config', JSON.stringify(config));
+
                     fetch('/api/update-asset-config', {
                       method: 'POST',
                       body: formData,

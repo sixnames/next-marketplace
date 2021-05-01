@@ -1,7 +1,69 @@
-import { ReadStream } from 'fs';
+import Formidable from 'formidable';
+import { promises as fs, ReadStream } from 'fs';
 import { AssetModel, UploadModel } from 'db/dbModels';
+import { alwaysArray } from 'lib/arrayUtils';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
+import mime from 'mime-types';
 // import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
+
+interface StoreRestApiUploadsAsset {
+  buffer: Buffer;
+  ext: string | false;
+}
+
+export interface StoreRestApiUploadsInterface {
+  files: Formidable.File[] | Formidable.File;
+  itemId: number | string;
+  dist: string;
+  startIndex?: number;
+}
+
+export async function storeRestApiUploads({
+  files,
+  itemId,
+  dist,
+  startIndex = 0,
+}: StoreRestApiUploadsInterface): Promise<AssetModel[] | null> {
+  try {
+    const filePath = `${dist}/${itemId}`;
+    const assets: AssetModel[] = [];
+
+    const uploads: StoreRestApiUploadsAsset[] = [];
+    for await (const file of alwaysArray(files)) {
+      const buffer = await fs.readFile(file.path);
+      uploads.push({
+        buffer,
+        ext: mime.extension(file.type),
+      });
+    }
+
+    for await (const [index, file] of uploads.entries()) {
+      const fileIndex = index + 1;
+      const finalStartIndex = startIndex + 1;
+      const finalIndex = finalStartIndex + fileIndex;
+      const { buffer, ext } = file;
+      const fileName = `${itemId}-${finalIndex}${ext ? `.${ext}` : ''}`;
+
+      if (!buffer) {
+        return null;
+      }
+
+      // Upload Buffer to the S3
+      const url = await uploadFileToS3({
+        buffer,
+        filePath,
+        fileName,
+      });
+
+      assets.push({ index: finalIndex, url });
+    }
+
+    return assets;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
 
 export const getBufferFromFileStream = (stream: ReadStream) => {
   return new Promise<Buffer>((resolve, reject) => {

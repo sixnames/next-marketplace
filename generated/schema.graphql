@@ -39,11 +39,6 @@ input AddOptionToGroupInput {
   variants: JSONObject!
 }
 
-input AddProductAssetsInput {
-  assets: [Upload!]!
-  productId: ObjectId!
-}
-
 input AddProductToCartInput {
   amount: Int!
   shopProductId: ObjectId!
@@ -59,11 +54,6 @@ input AddProductToShopInput {
   available: Int!
   price: Int!
   productId: ObjectId!
-  shopId: ObjectId!
-}
-
-input AddShopAssetsInput {
-  assets: [Upload!]!
   shopId: ObjectId!
 }
 
@@ -800,11 +790,6 @@ type Mutation {
   addProductToShop(input: AddProductToShopInput!): ShopPayload!
 
   """
-  Should add shop assets
-  """
-  addShopAssets(input: AddShopAssetsInput!): ShopPayload!
-
-  """
   Should add shop to the cart product
   """
   addShopToCartProduct(input: AddShopToCartProductInput!): CartPayload!
@@ -1208,11 +1193,6 @@ type Mutation {
   Should update shop asset index
   """
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
-
-  """
-  Should update shop logo
-  """
-  updateShopLogo(input: UpdateShopLogoInput!): ShopPayload!
 
   """
   Should update shop product
@@ -2110,11 +2090,6 @@ input UpdateCompanyInput {
   staffIds: [ObjectId!]!
 }
 
-input UpdateCompanyLogoInput {
-  companyId: ObjectId!
-  logo: [Upload!]!
-}
-
 input UpdateConfigInput {
   _id: ObjectId!
   acceptedFormats: [String!]!
@@ -2293,11 +2268,6 @@ input UpdateShopInput {
   shopId: ObjectId!
 }
 
-input UpdateShopLogoInput {
-  logo: [Upload!]!
-  shopId: ObjectId!
-}
-
 input UpdateShopProductInput {
   available: Int!
   price: Int!
@@ -2314,11 +2284,6 @@ input UpdateUserInput {
   secondName: String
   userId: ObjectId!
 }
-
-"""
-Upload custom scalar type
-"""
-scalar Upload
 
 type User implements Base & Timestamp {
   _id: ObjectId!

@@ -37,13 +37,6 @@ declare global {
       opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
     ): void; // "PhoneNumber";
     /**
-     * Upload custom scalar type
-     */
-    upload<FieldName extends string>(
-      fieldName: FieldName,
-      opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
-    ): void; // "Upload";
-    /**
      * Date custom scalar type
      */
     date<FieldName extends string>(
@@ -89,13 +82,6 @@ declare global {
       fieldName: FieldName,
       ...opts: core.ScalarOutSpread<TypeName, FieldName>
     ): void; // "PhoneNumber";
-    /**
-     * Upload custom scalar type
-     */
-    upload<FieldName extends string>(
-      fieldName: FieldName,
-      ...opts: core.ScalarOutSpread<TypeName, FieldName>
-    ): void; // "Upload";
     /**
      * Date custom scalar type
      */
@@ -156,11 +142,6 @@ export interface NexusGenInputs {
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
-  AddProductAssetsInput: {
-    // input type
-    assets: NexusGenScalars['Upload'][]; // [Upload!]!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   AddProductToCartInput: {
     // input type
     amount: number; // Int!
@@ -177,11 +158,6 @@ export interface NexusGenInputs {
     available: number; // Int!
     price: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    shopId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  AddShopAssetsInput: {
-    // input type
-    assets: NexusGenScalars['Upload'][]; // [Upload!]!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   AddShopToCartProductInput: {
@@ -535,11 +511,6 @@ export interface NexusGenInputs {
     ownerId: NexusGenScalars['ObjectId']; // ObjectId!
     staffIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
   };
-  UpdateCompanyLogoInput: {
-    // input type
-    companyId: NexusGenScalars['ObjectId']; // ObjectId!
-    logo: NexusGenScalars['Upload'][]; // [Upload!]!
-  };
   UpdateConfigInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -718,11 +689,6 @@ export interface NexusGenInputs {
     name: string; // String!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  UpdateShopLogoInput: {
-    // input type
-    logo: NexusGenScalars['Upload'][]; // [Upload!]!
-    shopId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   UpdateShopProductInput: {
     // input type
     available: number; // Int!
@@ -765,7 +731,6 @@ export interface NexusGenScalars {
   ObjectId: dbModels.ObjectIdModel;
   PhoneNumber: dbModels.PhoneNumberModel;
   URL: dbModels.URLModel;
-  Upload: dbModels.UploadModel;
 }
 
 export interface NexusGenObjects {
@@ -1231,7 +1196,6 @@ export interface NexusGenFieldTypes {
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    addShopAssets: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -1313,7 +1277,6 @@ export interface NexusGenFieldTypes {
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    updateShopLogo: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopProduct: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateUser: NexusGenRootTypes['UserPayload']; // UserPayload!
   };
@@ -2195,7 +2158,6 @@ export interface NexusGenFieldTypeNames {
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
     addProductToShop: 'ShopPayload';
-    addShopAssets: 'ShopPayload';
     addShopToCartProduct: 'CartPayload';
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
@@ -2277,7 +2239,6 @@ export interface NexusGenFieldTypeNames {
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
-    updateShopLogo: 'ShopPayload';
     updateShopProduct: 'ShopProductPayload';
     updateUser: 'UserPayload';
   };
@@ -2851,10 +2812,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['AddProductToShopInput']; // AddProductToShopInput!
     };
-    addShopAssets: {
-      // args
-      input: NexusGenInputs['AddShopAssetsInput']; // AddShopAssetsInput!
-    };
     addShopToCartProduct: {
       // args
       input: NexusGenInputs['AddShopToCartProductInput']; // AddShopToCartProductInput!
@@ -3174,10 +3131,6 @@ export interface NexusGenArgTypes {
     updateShopAssetIndex: {
       // args
       input: NexusGenInputs['UpdateShopAssetIndexInput']; // UpdateShopAssetIndexInput!
-    };
-    updateShopLogo: {
-      // args
-      input: NexusGenInputs['UpdateShopLogoInput']; // UpdateShopLogoInput!
     };
     updateShopProduct: {
       // args

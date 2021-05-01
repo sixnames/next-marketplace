@@ -24,8 +24,6 @@ export type Scalars = {
   PhoneNumber: any;
   /** A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt. */
   URL: any;
-  /** Upload custom scalar type */
-  Upload: any;
 };
 
 export type AddAttributeToGroupInput = {
@@ -66,11 +64,6 @@ export type AddOptionToGroupInput = {
   gender: Gender;
 };
 
-export type AddProductAssetsInput = {
-  productId: Scalars['ObjectId'];
-  assets: Array<Scalars['Upload']>;
-};
-
 export type AddProductToCartInput = {
   shopProductId: Scalars['ObjectId'];
   amount: Scalars['Int'];
@@ -87,11 +80,6 @@ export type AddProductToShopInput = {
   productId: Scalars['ObjectId'];
   price: Scalars['Int'];
   available: Scalars['Int'];
-};
-
-export type AddShopAssetsInput = {
-  shopId: Scalars['ObjectId'];
-  assets: Array<Scalars['Upload']>;
 };
 
 export type AddShopToCartProductInput = {
@@ -941,14 +929,10 @@ export type Mutation = {
   updateManyShopProducts: ShopProductPayload;
   /** Should update shop */
   updateShop: ShopPayload;
-  /** Should add shop assets */
-  addShopAssets: ShopPayload;
   /** Should delete shop asset */
   deleteShopAsset: ShopPayload;
   /** Should update shop asset index */
   updateShopAssetIndex: ShopPayload;
-  /** Should update shop logo */
-  updateShopLogo: ShopPayload;
   /** Should add product to the shop */
   addProductToShop: ShopPayload;
   /** Should add many products to the shop */
@@ -959,8 +943,6 @@ export type Mutation = {
   createCompany: CompanyPayload;
   /** Should update company */
   updateCompany: CompanyPayload;
-  /** Should update company logo */
-  updateCompanyLogo: CompanyPayload;
   /** Should delete company */
   deleteCompany: CompanyPayload;
   /** Should create shop and add it to the company */
@@ -1356,11 +1338,6 @@ export type MutationUpdateShopArgs = {
 };
 
 
-export type MutationAddShopAssetsArgs = {
-  input: AddShopAssetsInput;
-};
-
-
 export type MutationDeleteShopAssetArgs = {
   input: DeleteShopAssetInput;
 };
@@ -1368,11 +1345,6 @@ export type MutationDeleteShopAssetArgs = {
 
 export type MutationUpdateShopAssetIndexArgs = {
   input: UpdateShopAssetIndexInput;
-};
-
-
-export type MutationUpdateShopLogoArgs = {
-  input: UpdateShopLogoInput;
 };
 
 
@@ -1398,11 +1370,6 @@ export type MutationCreateCompanyArgs = {
 
 export type MutationUpdateCompanyArgs = {
   input: UpdateCompanyInput;
-};
-
-
-export type MutationUpdateCompanyLogoArgs = {
-  input: UpdateCompanyLogoInput;
 };
 
 
@@ -2364,11 +2331,6 @@ export type UpdateCompanyInput = {
   contacts: ContactsInput;
 };
 
-export type UpdateCompanyLogoInput = {
-  companyId: Scalars['ObjectId'];
-  logo: Array<Scalars['Upload']>;
-};
-
 export type UpdateConfigInput = {
   _id: Scalars['ObjectId'];
   multi: Scalars['Boolean'];
@@ -2547,11 +2509,6 @@ export type UpdateShopInput = {
   address: AddressInput;
 };
 
-export type UpdateShopLogoInput = {
-  shopId: Scalars['ObjectId'];
-  logo: Array<Scalars['Upload']>;
-};
-
 export type UpdateShopProductInput = {
   available: Scalars['Int'];
   price: Scalars['Int'];
@@ -2568,7 +2525,6 @@ export type UpdateUserInput = {
   phone: Scalars['PhoneNumber'];
   roleId: Scalars['ObjectId'];
 };
-
 
 export type User = Base & Timestamp & {
   __typename?: 'User';
@@ -3097,19 +3053,6 @@ export type UpdateCompanyMutation = (
   ) }
 );
 
-export type UpdateCompanyLogoMutationVariables = Exact<{
-  input: UpdateCompanyLogoInput;
-}>;
-
-
-export type UpdateCompanyLogoMutation = (
-  { __typename?: 'Mutation' }
-  & { updateCompanyLogo: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
-
 export type AddShopToCompanyMutationVariables = Exact<{
   input: AddShopToCompanyInput;
 }>;
@@ -3550,19 +3493,6 @@ export type UpdateShopMutation = (
   ) }
 );
 
-export type AddShopAssetsMutationVariables = Exact<{
-  input: AddShopAssetsInput;
-}>;
-
-
-export type AddShopAssetsMutation = (
-  { __typename?: 'Mutation' }
-  & { addShopAssets: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
-
 export type DeleteShopAssetMutationVariables = Exact<{
   input: DeleteShopAssetInput;
 }>;
@@ -3584,19 +3514,6 @@ export type UpdateShopAssetIndexMutationVariables = Exact<{
 export type UpdateShopAssetIndexMutation = (
   { __typename?: 'Mutation' }
   & { updateShopAssetIndex: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateShopLogoMutationVariables = Exact<{
-  input: UpdateShopLogoInput;
-}>;
-
-
-export type UpdateShopLogoMutation = (
-  { __typename?: 'Mutation' }
-  & { updateShopLogo: (
     { __typename?: 'ShopPayload' }
     & Pick<ShopPayload, 'success' | 'message'>
   ) }
@@ -5842,40 +5759,6 @@ export function useUpdateCompanyMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateCompanyMutationHookResult = ReturnType<typeof useUpdateCompanyMutation>;
 export type UpdateCompanyMutationResult = Apollo.MutationResult<UpdateCompanyMutation>;
 export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
-export const UpdateCompanyLogoDocument = gql`
-    mutation UpdateCompanyLogo($input: UpdateCompanyLogoInput!) {
-  updateCompanyLogo(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateCompanyLogoMutationFn = Apollo.MutationFunction<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>;
-
-/**
- * __useUpdateCompanyLogoMutation__
- *
- * To run a mutation, you first call `useUpdateCompanyLogoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCompanyLogoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCompanyLogoMutation, { data, loading, error }] = useUpdateCompanyLogoMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateCompanyLogoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>(UpdateCompanyLogoDocument, options);
-      }
-export type UpdateCompanyLogoMutationHookResult = ReturnType<typeof useUpdateCompanyLogoMutation>;
-export type UpdateCompanyLogoMutationResult = Apollo.MutationResult<UpdateCompanyLogoMutation>;
-export type UpdateCompanyLogoMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyLogoMutation, UpdateCompanyLogoMutationVariables>;
 export const AddShopToCompanyDocument = gql`
     mutation AddShopToCompany($input: AddShopToCompanyInput!) {
   addShopToCompany(input: $input) {
@@ -7029,40 +6912,6 @@ export function useUpdateShopMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateShopMutationHookResult = ReturnType<typeof useUpdateShopMutation>;
 export type UpdateShopMutationResult = Apollo.MutationResult<UpdateShopMutation>;
 export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<UpdateShopMutation, UpdateShopMutationVariables>;
-export const AddShopAssetsDocument = gql`
-    mutation AddShopAssets($input: AddShopAssetsInput!) {
-  addShopAssets(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddShopAssetsMutationFn = Apollo.MutationFunction<AddShopAssetsMutation, AddShopAssetsMutationVariables>;
-
-/**
- * __useAddShopAssetsMutation__
- *
- * To run a mutation, you first call `useAddShopAssetsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddShopAssetsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addShopAssetsMutation, { data, loading, error }] = useAddShopAssetsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddShopAssetsMutation(baseOptions?: Apollo.MutationHookOptions<AddShopAssetsMutation, AddShopAssetsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShopAssetsMutation, AddShopAssetsMutationVariables>(AddShopAssetsDocument, options);
-      }
-export type AddShopAssetsMutationHookResult = ReturnType<typeof useAddShopAssetsMutation>;
-export type AddShopAssetsMutationResult = Apollo.MutationResult<AddShopAssetsMutation>;
-export type AddShopAssetsMutationOptions = Apollo.BaseMutationOptions<AddShopAssetsMutation, AddShopAssetsMutationVariables>;
 export const DeleteShopAssetDocument = gql`
     mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
   deleteShopAsset(input: $input) {
@@ -7131,40 +6980,6 @@ export function useUpdateShopAssetIndexMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateShopAssetIndexMutationHookResult = ReturnType<typeof useUpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationResult = Apollo.MutationResult<UpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationOptions = Apollo.BaseMutationOptions<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>;
-export const UpdateShopLogoDocument = gql`
-    mutation UpdateShopLogo($input: UpdateShopLogoInput!) {
-  updateShopLogo(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateShopLogoMutationFn = Apollo.MutationFunction<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>;
-
-/**
- * __useUpdateShopLogoMutation__
- *
- * To run a mutation, you first call `useUpdateShopLogoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateShopLogoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateShopLogoMutation, { data, loading, error }] = useUpdateShopLogoMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateShopLogoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>(UpdateShopLogoDocument, options);
-      }
-export type UpdateShopLogoMutationHookResult = ReturnType<typeof useUpdateShopLogoMutation>;
-export type UpdateShopLogoMutationResult = Apollo.MutationResult<UpdateShopLogoMutation>;
-export type UpdateShopLogoMutationOptions = Apollo.BaseMutationOptions<UpdateShopLogoMutation, UpdateShopLogoMutationVariables>;
 export const AddProductToShopDocument = gql`
     mutation AddProductToShop($input: AddProductToShopInput!) {
   addProductToShop(input: $input) {

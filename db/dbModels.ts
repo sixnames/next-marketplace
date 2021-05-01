@@ -1,14 +1,5 @@
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
-import { ReadStream } from 'fs';
-
-export interface UploadModel {
-  filename: string;
-  mimetype: string;
-  encoding: string;
-  ext: string;
-  createReadStream: () => ReadStream;
-}
 
 export type DateModel = Date;
 export type JSONObjectModel = Record<string, any>;

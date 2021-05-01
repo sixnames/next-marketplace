@@ -6,15 +6,12 @@ import InnerWide from 'components/Inner/InnerWide';
 import { Form, Formik } from 'formik';
 import {
   ShopFragment,
-  useAddShopAssetsMutation,
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
 } from 'generated/apolloComponents';
 import { SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
-import { addShopAssetsSchema } from 'validation/shopSchema';
 import classes from './ShopAssets.module.css';
 import * as React from 'react';
 
@@ -32,9 +29,6 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
     showLoading,
     hideLoading,
   } = useMutationCallbacks({});
-  const validationSchema = useValidationSchema({
-    schema: addShopAssetsSchema,
-  });
 
   const refetchQueries = [
     {
@@ -44,13 +38,6 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
       },
     },
   ];
-
-  const [addShopAssetsMutation] = useAddShopAssetsMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.addShopAssets),
-    refetchQueries,
-  });
 
   const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
     awaitRefetchQueries: true,
@@ -150,18 +137,36 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
 
       <Formik
         enableReinitialize
-        validationSchema={validationSchema}
         initialValues={{ assets: [], shopId: _id }}
-        onSubmit={(values, formikHelpers) => {
-          showLoading();
-          addShopAssetsMutation({
-            variables: {
-              input: values,
-            },
-            update: () => {
-              formikHelpers.resetForm();
-            },
-          }).catch((e) => console.log(e));
+        onSubmit={(values) => {
+          if (values.assets && values.assets.length > 0) {
+            showLoading();
+            const formData = new FormData();
+            values.assets.forEach((file, index) => {
+              formData.append(`assets[${index}]`, file);
+            });
+            formData.append('shopId', `${values.shopId}`);
+
+            fetch('/api/add-shop-asset', {
+              method: 'POST',
+              body: formData,
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((json) => {
+                if (json.success) {
+                  router.reload();
+                  return;
+                }
+                hideLoading();
+                showErrorNotification({ title: json.message });
+              })
+              .catch(() => {
+                hideLoading();
+                showErrorNotification({ title: 'error' });
+              });
+          }
         }}
       >
         {() => {

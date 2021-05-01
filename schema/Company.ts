@@ -180,14 +180,6 @@ export const UpdateCompanyInput = inputObjectType({
   },
 });
 
-export const UpdateCompanyLogoInput = inputObjectType({
-  name: 'UpdateCompanyLogoInput',
-  definition(t) {
-    t.nonNull.objectId('companyId');
-    t.nonNull.list.nonNull.upload('logo');
-  },
-});
-
 export const AddShopToCompanyInput = inputObjectType({
   name: 'AddShopToCompanyInput',
   definition(t) {

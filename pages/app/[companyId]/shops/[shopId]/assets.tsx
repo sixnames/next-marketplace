@@ -8,38 +8,34 @@ import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
 import {
-  useAddShopAssetsMutation,
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
-  useUpdateShopLogoMutation,
 } from 'generated/apolloComponents';
 import { SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { addShopAssetsSchema } from 'validation/shopSchema';
 
 interface ShopAssetsRouteInterface {
   shop: ShopModel;
 }
 
 const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
+  const router = useRouter();
   const { _id, slug, logo, name } = shop;
   const {
+    hideLoading,
     onErrorCallback,
     showErrorNotification,
     onCompleteCallback,
     showLoading,
   } = useMutationCallbacks({});
-  const validationSchema = useValidationSchema({
-    schema: addShopAssetsSchema,
-  });
 
   const refetchQueries = [
     {
@@ -49,20 +45,6 @@ const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
       },
     },
   ];
-
-  const [updateShopLogoMutation] = useUpdateShopLogoMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateShopLogo),
-    refetchQueries,
-  });
-
-  const [addShopAssetsMutation] = useAddShopAssetsMutation({
-    awaitRefetchQueries: true,
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.addShopAssets),
-    refetchQueries,
-  });
 
   const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
     awaitRefetchQueries: true,
@@ -102,14 +84,29 @@ const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
                     setImageHandler={(files) => {
                       if (files) {
                         showLoading();
-                        updateShopLogoMutation({
-                          variables: {
-                            input: {
-                              shopId: _id,
-                              logo: [files[0]],
-                            },
-                          },
-                        }).catch(() => showErrorNotification());
+                        const formData = new FormData();
+                        formData.append('assets', files[0]);
+                        formData.append('shopId', `${shop._id}`);
+
+                        fetch('/api/update-shop-logo', {
+                          method: 'POST',
+                          body: formData,
+                        })
+                          .then((res) => {
+                            return res.json();
+                          })
+                          .then((json) => {
+                            if (json.success) {
+                              router.reload();
+                              return;
+                            }
+                            hideLoading();
+                            showErrorNotification({ title: json.message });
+                          })
+                          .catch(() => {
+                            hideLoading();
+                            showErrorNotification({ title: 'error' });
+                          });
                       }
                     }}
                   >
@@ -152,18 +149,36 @@ const ShopAssetsRoute: React.FC<ShopAssetsRouteInterface> = ({ shop }) => {
 
           <Formik
             enableReinitialize
-            validationSchema={validationSchema}
             initialValues={{ assets: [], shopId: _id }}
-            onSubmit={(values, formikHelpers) => {
-              showLoading();
-              addShopAssetsMutation({
-                variables: {
-                  input: values,
-                },
-                update: () => {
-                  formikHelpers.resetForm();
-                },
-              }).catch((e) => console.log(e));
+            onSubmit={(values) => {
+              if (values.assets && values.assets.length > 0) {
+                showLoading();
+                const formData = new FormData();
+                values.assets.forEach((file, index) => {
+                  formData.append(`assets[${index}]`, file);
+                });
+                formData.append('shopId', `${values.shopId}`);
+
+                fetch('/api/add-shop-asset', {
+                  method: 'POST',
+                  body: formData,
+                })
+                  .then((res) => {
+                    return res.json();
+                  })
+                  .then((json) => {
+                    if (json.success) {
+                      router.reload();
+                      return;
+                    }
+                    hideLoading();
+                    showErrorNotification({ title: json.message });
+                  })
+                  .catch(() => {
+                    hideLoading();
+                    showErrorNotification({ title: 'error' });
+                  });
+              }
             }}
           >
             {() => {

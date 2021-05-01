@@ -54,14 +54,6 @@ export const UpdateProductInput = inputObjectType({
   },
 });
 
-export const UpdateProductAssetsInput = inputObjectType({
-  name: 'AddProductAssetsInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.list.nonNull.upload('assets');
-  },
-});
-
 export const DeleteProductAssetInput = inputObjectType({
   name: 'DeleteProductAssetInput',
   definition(t) {

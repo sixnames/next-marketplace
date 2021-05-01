@@ -2,60 +2,35 @@ import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/clie
 import * as React from 'react';
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
-let cacheLocale: string | undefined | null;
 
-function createIsomorphicLInk(ctx?: any, locale?: string, city?: string) {
+function createIsomorphicLInk(ctx?: any) {
   if (typeof window === 'undefined') {
     // on server
     const { SchemaLink } = require('@apollo/client/link/schema');
     const { schema } = require('../schema/schema');
+
     return new SchemaLink({ schema, context: ctx });
   } else {
     // on client
-    const { setContext } = require('apollo-link-context');
-
-    // set locale to headers for request from client
-    const setLocaleLink = setContext((_: any, { headers }: any) => {
-      return {
-        headers: {
-          ...headers,
-          'Content-Language': locale,
-          'x-city': city,
-        },
-      };
+    const { HttpLink } = require('@apollo/client/link/http');
+    return new HttpLink({
+      uri: '/api/graphql',
+      credentials: 'same-origin',
     });
-
-    const { createUploadLink } = require('apollo-upload-client');
-    return setLocaleLink.concat(
-      createUploadLink({
-        uri: '/api/graphql',
-        credentials: 'same-origin',
-      }),
-    );
   }
 }
 
-function createApolloClient(ctx?: any, locale?: string, city?: string) {
+function createApolloClient(ctx?: any) {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     cache: new InMemoryCache(),
-    link: createIsomorphicLInk(ctx, locale, city),
+    link: createIsomorphicLInk(ctx),
   });
 }
 
-export function initializeApollo(
-  initialState: NormalizedCacheObject | null = null,
-  ctx?: any,
-  locale?: string,
-  city?: string,
-) {
+export function initializeApollo(initialState: NormalizedCacheObject | null = null, ctx?: any) {
   let client = apolloClient;
-
-  if (cacheLocale !== locale) {
-    client = createApolloClient(ctx, locale, city);
-  }
-
-  const _apolloClient = client ?? createApolloClient(ctx, locale, city);
+  const _apolloClient = client ?? createApolloClient(ctx);
 
   if (initialState) {
     _apolloClient.cache.restore(initialState);
@@ -70,12 +45,8 @@ export function initializeApollo(
   return client;
 }
 
-export function useApollo(
-  initialState: NormalizedCacheObject | null = null,
-  locale?: string,
-  city?: string,
-) {
+export function useApollo(initialState: NormalizedCacheObject | null = null) {
   return React.useMemo(() => {
-    return initializeApollo(initialState, null, locale, city);
-  }, [city, initialState, locale]);
+    return initializeApollo(initialState, null);
+  }, [initialState]);
 }

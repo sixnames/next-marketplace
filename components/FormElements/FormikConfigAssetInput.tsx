@@ -41,8 +41,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
                 setImageHandler={(files) => {
                   const formData = new FormData();
                   formData.append('assets', files[0]);
-                  formData.append('configId', `${config._id}`);
-                  formData.append('slug', `${config.slug}`);
+                  formData.append('config', JSON.stringify(config));
 
                   if (files) {
                     fetch('/api/update-asset-config', {

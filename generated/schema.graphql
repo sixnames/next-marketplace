@@ -2072,19 +2072,6 @@ A field whose value conforms to the standard URL format as specified in RFC3986:
 """
 scalar URL
 
-input UpdateAssetConfigInput {
-  _id: ObjectId!
-  acceptedFormats: [String!]!
-  assets: [Upload!]!
-  companySlug: String!
-  description: String
-  group: String!
-  multi: Boolean!
-  name: String!
-  slug: String!
-  variant: ConfigVariant!
-}
-
 input UpdateAttributeInGroupInput {
   attributeId: ObjectId!
   attributesGroupId: ObjectId!

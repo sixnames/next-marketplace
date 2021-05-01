@@ -487,19 +487,6 @@ export interface NexusGenInputs {
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
     secondName?: string | null; // String
   };
-  UpdateAssetConfigInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    acceptedFormats: string[]; // [String!]!
-    assets: NexusGenScalars['Upload'][]; // [Upload!]!
-    companySlug: string; // String!
-    description?: string | null; // String
-    group: string; // String!
-    multi: boolean; // Boolean!
-    name: string; // String!
-    slug: string; // String!
-    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
-  };
   UpdateAttributeInGroupInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!

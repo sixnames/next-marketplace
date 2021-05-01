@@ -16,19 +16,49 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import mime from 'mime-types';
 
-interface StoreUploadsAsset {
+interface ParseRestApiFormDataPayloadInterface {
+  fields: Formidable.Fields;
+  files: Formidable.Files;
+}
+
+export async function parseRestApiFormData(
+  req: NextApiRequest,
+): Promise<ParseRestApiFormDataPayloadInterface | null> {
+  const formData: ParseRestApiFormDataPayloadInterface = await new Promise((resolve, reject) => {
+    const form = new IncomingForm();
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve({ fields, files });
+    });
+  });
+
+  if (!formData) {
+    return null;
+  }
+
+  return formData;
+}
+
+interface StoreRestApiUploadsAsset {
   buffer: Buffer;
   ext: string | false;
 }
 
-export interface StoreUploadsInterface {
-  files: StoreUploadsAsset[];
+export interface StoreRestApiUploadsInterface {
+  files: StoreRestApiUploadsAsset[];
   itemId: number | string;
   dist: string;
   startIndex?: number;
 }
 
-export async function storeUploads({ files, itemId, dist, startIndex = 0 }: StoreUploadsInterface) {
+export async function storeRestApiUploads({
+  files,
+  itemId,
+  dist,
+  startIndex = 0,
+}: StoreRestApiUploadsInterface) {
   try {
     const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
@@ -68,29 +98,24 @@ export const config = {
   },
 };
 
-interface DataInterface {
-  fields: Formidable.Fields;
-  files: Formidable.Files;
-}
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const db = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const formData = await parseRestApiFormData(req);
 
-  // parse form with a Promise wrapper
-  const data: DataInterface = await new Promise((resolve, reject) => {
-    const form = new IncomingForm();
-
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve({ fields, files });
+  if (!formData || !formData.files || !formData.fields) {
+    res.status(500).send({
+      success: false,
+      message: await getApiMessageValue({
+        slug: 'configs.updateAsset.error',
+        locale: req.cookies.locale,
+      }),
     });
-  });
+    return;
+  }
 
-  const files: StoreUploadsAsset[] = [];
-  for await (const file of alwaysArray(data?.files?.assets)) {
+  const files: StoreRestApiUploadsAsset[] = [];
+  for await (const file of alwaysArray(formData.files.assets)) {
     const buffer = await fs.readFile(file.path);
     files.push({
       buffer,
@@ -98,10 +123,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  const assets = await storeUploads({
+  const { fields } = formData;
+  const { _id, ...config }: ConfigModel = JSON.parse(`${fields.config}`);
+
+  const assets = await storeRestApiUploads({
     files,
     dist: `${ASSETS_DIST_CONFIGS}/${req.cookies[COOKIE_COMPANY_SLUG]}`,
-    itemId: `${data?.fields.slug}`,
+    itemId: `${fields.slug}`,
   });
   if (!assets) {
     res.status(500).send({
@@ -126,9 +154,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const updatedConfigResult = await configsCollection.findOneAndUpdate(
-    { _id: new ObjectId(`${data?.fields.configId}`) },
+    { _id: new ObjectId(_id) },
     {
       $set: {
+        ...config,
         cities: {
           [DEFAULT_CITY]: {
             [DEFAULT_LOCALE]: [currentAsset.url],

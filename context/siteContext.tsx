@@ -205,10 +205,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [addProductToCartMutation, showErrorNotification, showLoading],
+    [addProductToCartMutation, hideLoading, showErrorNotification, showLoading],
   );
 
   const addShoplessProductToCart = React.useCallback(
@@ -219,10 +220,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [addShoplessProductToCartMutation, showErrorNotification, showLoading],
+    [addShoplessProductToCartMutation, hideLoading, showErrorNotification, showLoading],
   );
 
   const addShopToCartProduct = React.useCallback(
@@ -233,10 +235,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [addShopToCartProductMutation, showErrorNotification, showLoading],
+    [addShopToCartProductMutation, hideLoading, showErrorNotification, showLoading],
   );
 
   const updateProductInCart = React.useCallback(
@@ -247,10 +250,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [showErrorNotification, showLoading, updateProductInCartMutation],
+    [hideLoading, showErrorNotification, showLoading, updateProductInCartMutation],
   );
 
   const deleteProductFromCart = React.useCallback(
@@ -261,10 +265,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [deleteProductFromCartMutation, showErrorNotification, showLoading],
+    [deleteProductFromCartMutation, hideLoading, showErrorNotification, showLoading],
   );
 
   const clearCart = React.useCallback(() => {
@@ -282,10 +287,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           input,
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [makeAnOrderMutation, showErrorNotification, showLoading],
+    [hideLoading, makeAnOrderMutation, showErrorNotification, showLoading],
   );
 
   const repeatAnOrder = React.useCallback(
@@ -297,10 +303,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           },
         },
       }).catch(() => {
+        hideLoading();
         showErrorNotification();
       });
     },
-    [repeatAnOrderMutation, showErrorNotification],
+    [hideLoading, repeatAnOrderMutation, showErrorNotification],
   );
 
   const getShopProductInCartCount = React.useCallback(

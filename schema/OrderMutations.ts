@@ -142,6 +142,7 @@ export const OrderMutations = extendType({
             const exist = await usersCollection.findOne({
               $or: [{ email: input.email }, { phone: input.phone }],
             });
+
             if (exist) {
               return {
                 success: false,

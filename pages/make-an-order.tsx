@@ -115,6 +115,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
+  const disabled = !!me;
 
   if (loadingCart && !cart) {
     return (
@@ -122,7 +123,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <Spinner isNested />
+          <Spinner isNested isTransparent />
         </Inner>
       </div>
     );
@@ -220,6 +221,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           testId={'order-form-name'}
                           name={'name'}
                           label={'Имя'}
+                          disabled={disabled}
                           isRequired
                         />
                         <FormikInput
@@ -227,6 +229,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           name={'phone'}
                           type={'tel'}
                           label={'Телефон'}
+                          disabled={disabled}
                           isRequired
                         />
                         <FormikInput
@@ -234,6 +237,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           name={'email'}
                           type={'email'}
                           label={'E-mail'}
+                          disabled={disabled}
                           isRequired
                         />
                       </div>

@@ -1,3 +1,4 @@
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
@@ -9,9 +10,11 @@ import { getAppInitialData } from 'lib/ssrUtils';
 const Cms: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
     <CmsLayout title={'CMS'} pageUrls={pageUrls}>
-      <Inner>
-        <Title>Cms</Title>
-      </Inner>
+      <AppContentWrapper>
+        <Inner>
+          <Title>Cms</Title>
+        </Inner>
+      </AppContentWrapper>
     </CmsLayout>
   );
 };

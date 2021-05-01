@@ -26,6 +26,7 @@ export interface PagePropsInterface {
   sessionUser?: UserInterface | null;
   currentCity?: CityInterface | null;
   pageUrls: PageUrlsInterface;
+  companySlug: string;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -41,6 +42,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
     <Provider session={session}>
       <ApolloProvider client={apolloClient}>
         <AppContextProvider
+          companySlug={pageProps.companySlug}
           sessionCity={pageProps.sessionCity}
           isMobileDevice={pageProps.isMobileDevice}
         >

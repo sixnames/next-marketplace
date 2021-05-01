@@ -1,4 +1,4 @@
-import { ADULT_FALSE, ADULT_KEY, DEFAULT_CITY } from 'config/common';
+import { ADULT_FALSE, ADULT_KEY, CONFIG_DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
 import { ADULT_MODAL } from 'config/modals';
 import * as React from 'react';
 import Router from 'next/router';
@@ -13,6 +13,7 @@ interface ContextState {
   isMobile: boolean;
   isLoading: boolean;
   sessionCity: string;
+  companySlug: string;
 }
 
 type AppContextType = {
@@ -37,24 +38,28 @@ const AppContext = React.createContext<AppContextType>({
     isMobile: false,
     isLoading: false,
     sessionCity: DEFAULT_CITY,
+    companySlug: CONFIG_DEFAULT_COMPANY_SLUG,
   },
 });
 
 interface AppContextProviderInterface {
   isMobileDevice: boolean;
   sessionCity: string;
+  companySlug: string;
 }
 
 const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   children,
   isMobileDevice,
   sessionCity,
+  companySlug,
 }) => {
   const [state, setState] = React.useState<ContextState>(() => ({
     isMobile: isMobileDevice,
     isModal: defaultModalState,
     isLoading: false,
     sessionCity: sessionCity || DEFAULT_CITY,
+    companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
   }));
 
   React.useEffect(() => {

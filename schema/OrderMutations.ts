@@ -274,7 +274,7 @@ export const OrderMutations = extendType({
             // Add company id to the order
             const companyIdExist = order.companyIds.some((_id) => _id.equals(company._id));
             if (!companyIdExist) {
-              order.shopIds.push(company._id);
+              order.companyIds.push(company._id);
             }
 
             castedOrderProducts.push({

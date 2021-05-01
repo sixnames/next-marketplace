@@ -12,6 +12,7 @@ import {
   ConfigModel,
   ContactsModel,
   CoordinatesModel,
+  FormattedPhoneModel,
   ManufacturerModel,
   MessageModel,
   MetricModel,
@@ -256,6 +257,7 @@ export interface UserInterface extends UserModel {
   fullName?: string;
   shortName?: string;
   companies?: CompanyInterface[];
+  formattedPhone?: FormattedPhoneModel | null;
 }
 
 export interface CatalogueDataInterface {
@@ -337,6 +339,9 @@ export interface OrderLogInterface extends OrderLogModel {
 
 export interface OrderCustomerInterface extends OrderCustomerModel {
   user?: UserInterface | null;
+  fullName?: string;
+  shortName?: string;
+  formattedPhone?: FormattedPhoneModel | null;
 }
 
 export interface OrderProductInterface extends OrderProductModel {

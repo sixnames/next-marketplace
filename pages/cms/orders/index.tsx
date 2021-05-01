@@ -1,47 +1,35 @@
-import Button from 'components/Buttons/Button';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
 import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
-import FormikFilter from 'components/FormElements/Filter/FormikFilter';
-import FormikSearch from 'components/FormElements/Search/FormikSearch';
-import HorizontalList from 'components/HorizontalList/HorizontalList';
+import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
-import { ROUTE_CMS } from 'config/common';
+import Title from 'components/Title/Title';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
+import { OrderModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const CmsOrdersFilter: React.FC = () => {
-  const initialValues = { search: '' };
+interface OrdersRouteInterface {
+  orders: OrderInterface[];
+}
 
-  return (
-    <FormikFilter initialValues={initialValues}>
-      {({ onResetHandler }) => (
-        <React.Fragment>
-          <FormikSearch testId={'orders'} />
+const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
+  const router = useRouter();
 
-          <HorizontalList>
-            <Button type={'submit'} size={'small'}>
-              Применить
-            </Button>
-            <Button onClick={onResetHandler} theme={'secondary'} size={'small'}>
-              Сбросить
-            </Button>
-          </HorizontalList>
-        </React.Fragment>
-      )}
-    </FormikFilter>
-  );
-};
-
-const CmsOrdersContent: React.FC = () => {
   const columns: TableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
@@ -74,6 +62,13 @@ const CmsOrdersContent: React.FC = () => {
       },
     },
     {
+      accessor: 'shopsCount',
+      headTitle: 'Магазины',
+      render: ({ cellData }) => {
+        return cellData;
+      },
+    },
+    {
       accessor: 'customer.shortName',
       headTitle: 'Заказчик',
       render: ({ cellData }) => {
@@ -97,36 +92,127 @@ const CmsOrdersContent: React.FC = () => {
   ];
 
   return (
-    <div data-cy={'orders-list'}>
-      <DataLayoutContentFrame>
-        <Table<OrderInterface> columns={columns} data={[]} testIdKey={'itemId'} />
+    <AppContentWrapper>
+      <Head>
+        <title>{`Заказы`}</title>
+      </Head>
+      <Inner>
+        <Title>Заказы</Title>
+
+        <div className='overflow-x-auto' data-cy={'orders-list'}>
+          <Table<OrderInterface>
+            columns={columns}
+            data={orders}
+            testIdKey={'itemId'}
+            onRowDoubleClick={(dataItem) => {
+              router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
+                console.log(e);
+              });
+            }}
+          />
+        </div>
         <Pager page={1} setPage={() => undefined} totalPages={0} />
-      </DataLayoutContentFrame>
-    </div>
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
-const CmsOrdersRoute: React.FC = () => {
-  return (
-    <DataLayout
-      isFilterVisible
-      title={'Заказы'}
-      filterContent={<CmsOrdersFilter />}
-      filterResult={() => <CmsOrdersContent />}
-    />
-  );
-};
+interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CmsOrdersRoute />
+      <OrdersRoute orders={orders} />
     </CmsLayout>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context, isCms: true });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<OrdersInterface>> => {
+  const db = await getDatabase();
+  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  const { props } = await getAppInitialData({ context, isCms: true });
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const initialOrders = await ordersCollection
+    .aggregate<OrderInterface>([
+      {
+        $lookup: {
+          from: COL_ORDER_STATUSES,
+          as: 'status',
+          localField: 'statusId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $lookup: {
+          from: COL_ORDER_CUSTOMERS,
+          as: 'customer',
+          localField: '_id',
+          foreignField: 'orderId',
+        },
+      },
+      {
+        $addFields: {
+          status: {
+            $arrayElemAt: ['$status', 0],
+          },
+          customer: {
+            $arrayElemAt: ['$customer', 0],
+          },
+          shopsCount: {
+            $size: '$shopIds',
+          },
+          productsCount: {
+            $size: '$shopProductIds',
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: SORT_DESC,
+        },
+      },
+    ])
+    .toArray();
+
+  const orders: OrderInterface[] = [];
+  initialOrders.forEach((order) => {
+    orders.push({
+      ...order,
+      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
+        return acc + amount * price;
+      }, 0),
+      status: order.status
+        ? {
+            ...order.status,
+            name: getFieldStringLocale(order.status.nameI18n, props.sessionLocale),
+          }
+        : null,
+      customer: order.customer
+        ? {
+            ...order.customer,
+            shortName: getShortName(order.customer),
+            formattedPhone: {
+              raw: phoneToRaw(order.customer.phone),
+              readable: phoneToReadable(order.customer.phone),
+            },
+          }
+        : null,
+    });
+  });
+
+  return {
+    props: {
+      ...props,
+      orders: castDbData(orders),
+    },
+  };
 };
 
 export default Orders;

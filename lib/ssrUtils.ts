@@ -486,6 +486,7 @@ export async function getPageInitialState({
     session,
     initialData,
     company: castDbData(company),
+    companySlug: company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
     sessionUser,
@@ -525,6 +526,7 @@ export async function getAppInitialData({
     sessionCity,
     sessionLocale,
     initialData,
+    companySlug,
     session,
   } = await getPageInitialState({ context });
 
@@ -580,6 +582,7 @@ export async function getAppInitialData({
 
   return {
     props: {
+      companySlug,
       initialData,
       currentCity,
       sessionCity,
@@ -620,6 +623,7 @@ export async function getSiteInitialData({
     initialData,
     company,
     sessionUser,
+    companySlug,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -634,6 +638,7 @@ export async function getSiteInitialData({
 
   return {
     props: {
+      companySlug,
       initialData,
       navRubrics,
       currentCity,

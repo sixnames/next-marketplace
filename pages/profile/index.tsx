@@ -9,12 +9,19 @@ import RequestError from 'components/RequestError/RequestError';
 import Tooltip from 'components/TTip/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
-import { COL_ORDER_PRODUCTS, COL_ORDERS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_ORDER_PRODUCTS,
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
@@ -229,6 +236,14 @@ export async function getServerSideProps(
       },
       {
         $lookup: {
+          from: COL_ORDER_STATUSES,
+          as: 'status',
+          localField: 'statusId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $lookup: {
           from: COL_ORDER_PRODUCTS,
           as: 'products',
           let: { orderId: '$_id' },
@@ -285,6 +300,13 @@ export async function getServerSideProps(
           ],
         },
       },
+      {
+        $addFields: {
+          status: {
+            $arrayElemAt: ['$status', 0],
+          },
+        },
+      },
     ])
     .toArray();
 
@@ -294,6 +316,12 @@ export async function getServerSideProps(
       totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
         return acc + amount * price;
       }, 0),
+      status: order.status
+        ? {
+            ...order.status,
+            name: getFieldStringLocale(order.status.nameI18n, props.sessionLocale),
+          }
+        : null,
     };
   });
 

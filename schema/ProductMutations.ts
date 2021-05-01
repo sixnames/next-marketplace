@@ -1,4 +1,3 @@
-import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -18,19 +17,10 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { generateProductSlug } from 'lib/slugUtils';
-import {
-  ASSETS_DIST_PRODUCTS,
-  ASSETS_PRODUCT_IMAGE_WIDTH,
-  CONFIG_DEFAULT_COMPANY_SLUG,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
+import { CONFIG_DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
-import {
-  createProductSchema,
-  addProductAssetsSchema,
-  updateProductSchema,
-} from 'validation/productSchema';
-import { deleteUpload, getMainImage, reorderAssets, storeUploads } from 'lib/assets';
+import { createProductSchema, updateProductSchema } from 'validation/productSchema';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -49,7 +39,6 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
-    t.nonNull.list.nonNull.upload('assets');
     t.nonNull.objectId('rubricId');
   },
 });
@@ -128,7 +117,7 @@ export const ProductMutations = extendType({
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { rubricId, assets, ...values } = input;
+          const { rubricId, ...values } = input;
 
           // Get selected rubric
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -141,29 +130,15 @@ export const ProductMutations = extendType({
 
           // Store product assets
           const itemId = await getNextItemId(COL_PRODUCTS);
-          const productAssets = await storeUploads({
-            itemId,
-            dist: ASSETS_DIST_PRODUCTS,
-            files: assets,
-            asImage: true,
-            width: ASSETS_PRODUCT_IMAGE_WIDTH,
-          });
-          if (!productAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.create.error`),
-            };
-          }
 
           const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
 
           const productId = new ObjectId();
-          const mainImage = getMainImage(productAssets);
           const createdProductResult = await productsCollection.insertOne({
             ...values,
             _id: productId,
             itemId,
-            mainImage,
+            mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
             slug,
             rubricId,
             rubricSlug: rubric.slug,
@@ -186,7 +161,12 @@ export const ProductMutations = extendType({
           const createdAssetsResult = await productAssetsCollection.insertOne({
             productId,
             productSlug: slug,
-            assets: productAssets,
+            assets: [
+              {
+                index: 1,
+                url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              },
+            ],
           });
           const createdAssets = createdAssetsResult.ops[0];
           if (!createdAssetsResult.result.ok || !createdAssets) {
@@ -315,145 +295,6 @@ export const ProductMutations = extendType({
             success: true,
             message: await getApiMessage('products.update.success'),
             payload: updatedProduct,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should add product assets
-    t.nonNull.field('addProductAssets', {
-      type: 'ProductPayload',
-      description: 'Should add product assets',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'AddProductAssetsInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addProductAssetsSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-          const { input } = args;
-          const { productId } = input;
-
-          // Check product availability
-          const product = await productsCollection.findOne({ _id: productId });
-          const initialAssets = await productAssetsCollection.findOne({ productId });
-          if (!product || !initialAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.notFound`),
-            };
-          }
-
-          // Update product assets
-          const sortedAssets = initialAssets.assets.sort((assetA, assetB) => {
-            return assetB.index - assetA.index;
-          });
-          const firstAsset = sortedAssets[0];
-          const startIndex = noNaN(firstAsset?.index);
-          const assets = await storeUploads({
-            itemId: product.itemId,
-            dist: ASSETS_DIST_PRODUCTS,
-            files: input.assets,
-            startIndex,
-            asImage: true,
-            width: ASSETS_PRODUCT_IMAGE_WIDTH,
-          });
-
-          if (!assets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          const finalAssets = [...initialAssets.assets, ...assets];
-          const mainImage = getMainImage(finalAssets);
-
-          // Update product
-          const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-            {
-              productId,
-            },
-            {
-              $set: {
-                assets: finalAssets,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedProductAssets = updatedProductAssetsResult.value;
-          if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-          const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedProductMainImage = updatedProductMainImageResult.value;
-          if (!updatedProductMainImageResult.ok || !updatedProductMainImage) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-          const updatedShopProductsResult = await shopProductsCollection.updateMany(
-            {
-              productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
-              },
-            },
-          );
-          if (!updatedShopProductsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('products.update.success'),
-            payload: updatedProductMainImage,
           };
         } catch (e) {
           return {

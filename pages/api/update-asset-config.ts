@@ -1,9 +1,4 @@
-import {
-  ASSETS_DIST_CONFIGS,
-  COOKIE_COMPANY_SLUG,
-  DEFAULT_CITY,
-  DEFAULT_LOCALE,
-} from 'config/common';
+import { ASSETS_DIST_CONFIGS, DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -23,13 +18,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const db = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const formData = await parseRestApiFormData(req);
+  const { locale } = req.cookies;
 
   if (!formData || !formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
       message: await getApiMessageValue({
         slug: 'configs.updateAsset.error',
-        locale: req.cookies.locale,
+        locale,
       }),
     });
     return;
@@ -39,8 +35,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { _id, ...config }: ConfigModel = JSON.parse(`${fields.config}`);
 
   const assets = await storeRestApiUploads({
-    files: formData.files.assets,
-    dist: `${ASSETS_DIST_CONFIGS}/${req.cookies[COOKIE_COMPANY_SLUG]}`,
+    files: formData.files,
+    dist: `${ASSETS_DIST_CONFIGS}/${config.companySlug}`,
     itemId: `${fields.slug}`,
   });
   if (!assets) {
@@ -48,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       success: false,
       message: await getApiMessageValue({
         slug: 'configs.updateAsset.error',
-        locale: req.cookies.locale,
+        locale,
       }),
     });
     return;
@@ -59,7 +55,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       success: false,
       message: await getApiMessageValue({
         slug: 'configs.updateAsset.error',
-        locale: req.cookies.locale,
+        locale,
       }),
     });
     return;
@@ -88,7 +84,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       success: false,
       message: await getApiMessageValue({
         slug: 'configs.updateAsset.error',
-        locale: req.cookies.locale,
+        locale,
       }),
     });
     return;
@@ -98,7 +94,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     success: true,
     message: await getApiMessageValue({
       slug: 'configs.updateAsset.success',
-      locale: req.cookies.locale,
+      locale,
     }),
   });
 };

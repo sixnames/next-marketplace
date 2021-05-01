@@ -16,7 +16,7 @@ interface ConfigsAssetInputInterface {
 const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => {
   const router = useRouter();
   const { slug, name, description, acceptedFormats, cities } = config;
-  const { showErrorNotification } = useMutationCallbacks({});
+  const { showErrorNotification, showLoading } = useMutationCallbacks({});
 
   const file = get(cities, `${DEFAULT_CITY}.${DEFAULT_LOCALE}`);
 
@@ -39,6 +39,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
                 description={description}
                 lineContentClass='flex items-start'
                 setImageHandler={(files) => {
+                  showLoading();
                   const formData = new FormData();
                   formData.append('assets', files[0]);
                   formData.append('config', JSON.stringify(config));

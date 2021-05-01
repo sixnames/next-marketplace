@@ -497,7 +497,6 @@ input CreateProductConnectionInput {
 
 input CreateProductInput {
   active: Boolean!
-  assets: [Upload!]!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -787,11 +786,6 @@ type Mutation {
   Should add option to the group
   """
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayload!
-
-  """
-  Should add product assets
-  """
-  addProductAssets(input: AddProductAssetsInput!): ProductPayload!
 
   """
   Should add product to the cart or should increase product amount if already exist in cart

@@ -10,7 +10,6 @@ import * as React from 'react';
 import { useCreateProductMutation } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import { createProductSchema } from 'validation/productSchema';
-import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
@@ -83,15 +82,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
         {() => {
           return (
             <Form>
-              <FormikDropZone
-                tooltip={'Подсказка для загрузки изображения'}
-                label={'Изображения'}
-                name={'assets'}
-                testId={'product-images'}
-                isRequired
-                showInlineError
-              />
-
               <ProductMainFields />
 
               <ModalButtons>

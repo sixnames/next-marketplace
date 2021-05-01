@@ -12,7 +12,7 @@ interface StoreRestApiUploadsAsset {
 }
 
 export interface StoreRestApiUploadsInterface {
-  files: Formidable.File[] | Formidable.File;
+  files: Formidable.Files;
   itemId: number | string;
   dist: string;
   startIndex?: number;
@@ -27,13 +27,17 @@ export async function storeRestApiUploads({
   try {
     const filePath = `${dist}/${itemId}`;
     const assets: AssetModel[] = [];
+    const initialFiles: Formidable.File[][] = [];
+    Object.keys(files).forEach((key) => {
+      initialFiles.push(alwaysArray(files[key]));
+    });
 
     const uploads: StoreRestApiUploadsAsset[] = [];
-    for await (const file of alwaysArray(files)) {
-      const buffer = await fs.readFile(file.path);
+    for await (const file of initialFiles) {
+      const buffer = await fs.readFile(file[0].path);
       uploads.push({
         buffer,
-        ext: mime.extension(file.type),
+        ext: file[0].type ? mime.extension(file[0].type) : '',
       });
     }
 

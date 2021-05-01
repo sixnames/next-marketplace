@@ -308,7 +308,6 @@ export interface NexusGenInputs {
   CreateProductInput: {
     // input type
     active: boolean; // Boolean!
-    assets: NexusGenScalars['Upload'][]; // [Upload!]!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
@@ -1232,7 +1231,6 @@ export interface NexusGenFieldTypes {
     addCollectionToBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     addManyProductsToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addOptionToGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
-    addProductAssets: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -2198,7 +2196,6 @@ export interface NexusGenFieldTypeNames {
     addCollectionToBrand: 'BrandPayload';
     addManyProductsToShop: 'ShopPayload';
     addOptionToGroup: 'OptionsGroupPayload';
-    addProductAssets: 'ProductPayload';
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
     addProductToShop: 'ShopPayload';
@@ -2846,10 +2843,6 @@ export interface NexusGenArgTypes {
     addOptionToGroup: {
       // args
       input: NexusGenInputs['AddOptionToGroupInput']; // AddOptionToGroupInput!
-    };
-    addProductAssets: {
-      // args
-      input: NexusGenInputs['AddProductAssetsInput']; // AddProductAssetsInput!
     };
     addProductToCart: {
       // args

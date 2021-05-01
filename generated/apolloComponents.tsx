@@ -543,7 +543,6 @@ export type CreateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  assets: Array<Scalars['Upload']>;
   rubricId: Scalars['ObjectId'];
 };
 
@@ -915,8 +914,6 @@ export type Mutation = {
   createProduct: ProductPayload;
   /** Should update product */
   updateProduct: ProductPayload;
-  /** Should add product assets */
-  addProductAssets: ProductPayload;
   /** Should update product assets */
   deleteProductAsset: ProductPayload;
   /** Should update product asset index */
@@ -1284,11 +1281,6 @@ export type MutationCreateProductArgs = {
 
 export type MutationUpdateProductArgs = {
   input: UpdateProductInput;
-};
-
-
-export type MutationAddProductAssetsArgs = {
-  input: AddProductAssetsInput;
 };
 
 
@@ -2323,19 +2315,6 @@ export type Timestamp = {
 };
 
 
-export type UpdateAssetConfigInput = {
-  _id: Scalars['ObjectId'];
-  multi: Scalars['Boolean'];
-  acceptedFormats: Array<Scalars['String']>;
-  slug: Scalars['String'];
-  companySlug: Scalars['String'];
-  group: Scalars['String'];
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  variant: ConfigVariant;
-  assets: Array<Scalars['Upload']>;
-};
-
 export type UpdateAttributeInGroupInput = {
   attributesGroupId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
@@ -3318,19 +3297,6 @@ export type UpdateProductMutationVariables = Exact<{
 export type UpdateProductMutation = (
   { __typename?: 'Mutation' }
   & { updateProduct: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
-  ) }
-);
-
-export type AddProductAssetsMutationVariables = Exact<{
-  input: AddProductAssetsInput;
-}>;
-
-
-export type AddProductAssetsMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductAssets: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -6417,40 +6383,6 @@ export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
 export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
 export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
-export const AddProductAssetsDocument = gql`
-    mutation AddProductAssets($input: AddProductAssetsInput!) {
-  addProductAssets(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddProductAssetsMutationFn = Apollo.MutationFunction<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
-
-/**
- * __useAddProductAssetsMutation__
- *
- * To run a mutation, you first call `useAddProductAssetsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductAssetsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductAssetsMutation, { data, loading, error }] = useAddProductAssetsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductAssetsMutation(baseOptions?: Apollo.MutationHookOptions<AddProductAssetsMutation, AddProductAssetsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductAssetsMutation, AddProductAssetsMutationVariables>(AddProductAssetsDocument, options);
-      }
-export type AddProductAssetsMutationHookResult = ReturnType<typeof useAddProductAssetsMutation>;
-export type AddProductAssetsMutationResult = Apollo.MutationResult<AddProductAssetsMutation>;
-export type AddProductAssetsMutationOptions = Apollo.BaseMutationOptions<AddProductAssetsMutation, AddProductAssetsMutationVariables>;
 export const DeleteProductAssetDocument = gql`
     mutation DeleteProductAsset($input: DeleteProductAssetInput!) {
   deleteProductAsset(input: $input) {

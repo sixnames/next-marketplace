@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import EasyYandexS3 from 'easy-yandex-s3';
 
+// TODO custom EasyYandexS3
 const s3 = new EasyYandexS3({
   auth: {
     accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,

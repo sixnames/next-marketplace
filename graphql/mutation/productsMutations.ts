@@ -9,15 +9,6 @@ export const UPDATE_PRODUCT_MUTATION = gql`
   }
 `;
 
-export const UPDATE_PRODUCT_ASSETS_MUTATION = gql`
-  mutation AddProductAssets($input: AddProductAssetsInput!) {
-    addProductAssets(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const DELETE_PRODUCT_ASSET_MUTATION = gql`
   mutation DeleteProductAsset($input: DeleteProductAssetInput!) {
     deleteProductAsset(input: $input) {

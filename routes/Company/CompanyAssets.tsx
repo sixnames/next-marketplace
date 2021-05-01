@@ -1,9 +1,9 @@
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import InnerWide from 'components/Inner/InnerWide';
 import { Form, Formik } from 'formik';
-import { CompanyFragment, useUpdateCompanyLogoMutation } from 'generated/apolloComponents';
-import { COMPANY_QUERY } from 'graphql/query/companiesQueries';
+import { CompanyFragment } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './CompanyAssets.module.css';
 
@@ -12,26 +12,9 @@ interface CompanyAssetsInterface {
 }
 
 const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
-  const {
-    onErrorCallback,
-    showErrorNotification,
-    onCompleteCallback,
-    showLoading,
-  } = useMutationCallbacks({});
-  const { logo, slug, _id } = company;
-  const [updateCompanyLogoMutation] = useUpdateCompanyLogoMutation({
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    onCompleted: (data) => onCompleteCallback(data.updateCompanyLogo),
-    refetchQueries: [
-      {
-        query: COMPANY_QUERY,
-        variables: {
-          _id: company._id,
-        },
-      },
-    ],
-  });
+  const { showErrorNotification, showLoading } = useMutationCallbacks({});
+  const router = useRouter();
+  const { logo, slug } = company;
 
   return (
     <InnerWide testId={'shop-assets'}>
@@ -51,18 +34,30 @@ const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
                 testId={slug}
                 width={'10rem'}
                 height={'10rem'}
-                format={'image/png'}
                 setImageHandler={(files) => {
+                  showLoading();
+                  const formData = new FormData();
+                  formData.append('assets', files[0]);
+                  formData.append('companyId', `${company._id}`);
+
                   if (files) {
-                    showLoading();
-                    updateCompanyLogoMutation({
-                      variables: {
-                        input: {
-                          companyId: _id,
-                          logo: [files[0]],
-                        },
-                      },
-                    }).catch(() => showErrorNotification());
+                    fetch('/api/update-company-logo', {
+                      method: 'POST',
+                      body: formData,
+                    })
+                      .then((res) => {
+                        return res.json();
+                      })
+                      .then((json) => {
+                        if (json.success) {
+                          router.reload();
+                          return;
+                        }
+                        showErrorNotification({ title: json.message });
+                      })
+                      .catch(() => {
+                        showErrorNotification({ title: 'error' });
+                      });
                   }
                 }}
               >

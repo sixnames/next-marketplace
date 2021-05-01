@@ -74,11 +74,9 @@ input AddShopToCartProductInput {
 
 input AddShopToCompanyInput {
   address: AddressInput!
-  assets: [Upload!]!
   citySlug: String!
   companyId: ObjectId!
   contacts: ContactsInput!
-  logo: [Upload!]!
   name: String!
 }
 
@@ -454,7 +452,6 @@ input CreateBrandInput {
 input CreateCompanyInput {
   contacts: ContactsInput!
   domain: String
-  logo: [Upload!]!
   name: String!
   ownerId: ObjectId!
   staffIds: [ObjectId!]!
@@ -1081,11 +1078,6 @@ type Mutation {
   Should update company
   """
   updateCompany(input: UpdateCompanyInput!): CompanyPayload!
-
-  """
-  Should update company logo
-  """
-  updateCompanyLogo(input: UpdateCompanyLogoInput!): CompanyPayload!
 
   """
   Should update config

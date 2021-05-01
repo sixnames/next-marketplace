@@ -1,7 +1,6 @@
 import Button from 'components/Buttons/Button';
 import DataLayout from 'components/DataLayout/DataLayout';
 import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
 } from 'components/FormTemplates/CompanyMainFields';
@@ -21,9 +20,7 @@ import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { createCompanyClientSchema } from 'validation/companySchema';
 
-export interface CreateCompanyFieldsInterface extends CompanyFormMainValuesInterface {
-  logo: any[];
-}
+export type CreateCompanyFieldsInterface = CompanyFormMainValuesInterface;
 
 const CreateCompanyContent: React.FC = () => {
   const router = useRouter();
@@ -58,7 +55,6 @@ const CreateCompanyContent: React.FC = () => {
     },
     ownerId: null,
     staffIds: [],
-    logo: [null],
     owner: null,
     staff: [],
   };
@@ -99,14 +95,6 @@ const CreateCompanyContent: React.FC = () => {
           {() => {
             return (
               <Form>
-                <FormikImageUpload
-                  label={'Логотип компании'}
-                  name={'logo'}
-                  testId={'logo'}
-                  showInlineError
-                  isRequired
-                />
-
                 <CompanyMainFields />
                 <Button type={'submit'} testId={'company-submit'}>
                   Создать компанию

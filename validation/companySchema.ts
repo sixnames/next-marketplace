@@ -27,7 +27,6 @@ export const createCompanySchema = (args: ValidationSchemaArgsInterface) => {
     ...companyCommonFieldsSchema(args),
     ownerId: objectIdSchema({ ...args, slug: 'validation.companies.owner' }),
     staffIds: Yup.array().of(objectIdSchema({ ...args, slug: 'validation.companies.staff' })),
-    logo: requiredAssetSchema({ ...args, slug: 'validation.companies.logo' }),
   });
 };
 
@@ -62,8 +61,6 @@ export const addShopToCompanySchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     companyId: companyIdSchema(args),
     ...shopFieldsSchema(args),
-    logo: requiredAssetSchema({ ...args, slug: 'validation.shops.logo' }),
-    assets: requiredAssetSchema({ ...args, slug: 'validation.shops.assets' }),
   });
 };
 

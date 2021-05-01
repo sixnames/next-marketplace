@@ -103,8 +103,6 @@ export type AddShopToCompanyInput = {
   companyId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
-  logo: Array<Scalars['Upload']>;
-  assets: Array<Scalars['Upload']>;
   contacts: ContactsInput;
   address: AddressInput;
 };
@@ -499,7 +497,6 @@ export type CreateCompanyInput = {
   ownerId: Scalars['ObjectId'];
   staffIds: Array<Scalars['ObjectId']>;
   domain?: Maybe<Scalars['String']>;
-  logo: Array<Scalars['Upload']>;
   contacts: ContactsInput;
 };
 

@@ -192,11 +192,9 @@ export interface NexusGenInputs {
   AddShopToCompanyInput: {
     // input type
     address: NexusGenInputs['AddressInput']; // AddressInput!
-    assets: NexusGenScalars['Upload'][]; // [Upload!]!
     citySlug: string; // String!
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
-    logo: NexusGenScalars['Upload'][]; // [Upload!]!
     name: string; // String!
   };
   AddShoplessProductToCartInput: {
@@ -265,7 +263,6 @@ export interface NexusGenInputs {
     // input type
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
     domain?: string | null; // String
-    logo: NexusGenScalars['Upload'][]; // [Upload!]!
     name: string; // String!
     ownerId: NexusGenScalars['ObjectId']; // ObjectId!
     staffIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
@@ -1290,7 +1287,6 @@ export interface NexusGenFieldTypes {
     updateCityInCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     updateCollectionInBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     updateCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
-    updateCompanyLogo: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     updateConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
     updateCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     updateCurrency: NexusGenRootTypes['CurrencyPayload']; // CurrencyPayload!
@@ -2255,7 +2251,6 @@ export interface NexusGenFieldTypeNames {
     updateCityInCountry: 'CountryPayload';
     updateCollectionInBrand: 'BrandPayload';
     updateCompany: 'CompanyPayload';
-    updateCompanyLogo: 'CompanyPayload';
     updateConfig: 'ConfigPayload';
     updateCountry: 'CountryPayload';
     updateCurrency: 'CurrencyPayload';
@@ -3075,10 +3070,6 @@ export interface NexusGenArgTypes {
     updateCompany: {
       // args
       input: NexusGenInputs['UpdateCompanyInput']; // UpdateCompanyInput!
-    };
-    updateCompanyLogo: {
-      // args
-      input: NexusGenInputs['UpdateCompanyLogoInput']; // UpdateCompanyLogoInput!
     };
     updateConfig: {
       // args

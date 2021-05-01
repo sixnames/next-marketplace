@@ -30,14 +30,8 @@ import {
   updateCompanyLogoSchema,
   updateCompanySchema,
 } from 'validation/companySchema';
-import { deleteUpload, getMainImage, storeUploads } from 'lib/assets';
-import {
-  ASSETS_DIST_COMPANIES,
-  ASSETS_DIST_SHOPS,
-  ASSETS_DIST_SHOPS_LOGOS,
-  ASSETS_LOGO_WIDTH,
-  ASSETS_SHOP_IMAGE_WIDTH,
-} from 'config/common';
+import { deleteUpload, storeUploads } from 'lib/assets';
+import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'config/common';
 
 export const Company = objectType({
   name: 'Company',
@@ -169,7 +163,6 @@ export const CreateCompanyInput = inputObjectType({
     t.nonNull.objectId('ownerId');
     t.nonNull.list.nonNull.objectId('staffIds');
     t.string('domain');
-    t.nonNull.list.nonNull.upload('logo');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });
@@ -204,8 +197,6 @@ export const AddShopToCompanyInput = inputObjectType({
     t.nonNull.objectId('companyId');
     t.nonNull.string('name');
     t.nonNull.string('citySlug');
-    t.nonNull.list.nonNull.upload('logo');
-    t.nonNull.list.nonNull.upload('assets');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });
@@ -276,26 +267,6 @@ export const CompanyMutations = extendType({
 
           // Store company logo
           const itemId = await getNextItemId(COL_COMPANIES);
-          const logoAssets = await storeUploads({
-            files: input.logo,
-            dist: ASSETS_DIST_COMPANIES,
-            itemId,
-            asImage: true,
-            width: ASSETS_LOGO_WIDTH,
-          });
-          if (!logoAssets) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.create.error'),
-            };
-          }
-          const logo = logoAssets[0];
-          if (!logo) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.create.error'),
-            };
-          }
 
           // Create company
           const slug = generateCompanySlug({
@@ -306,7 +277,10 @@ export const CompanyMutations = extendType({
             ...input,
             itemId,
             slug,
-            logo,
+            logo: {
+              index: 1,
+              url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+            },
             shopsIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -411,108 +385,6 @@ export const CompanyMutations = extendType({
             },
           );
 
-          const updatedCompany = updatedCompanyResult.value;
-          if (!updatedCompanyResult.ok || !updatedCompany) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('companies.update.success'),
-            payload: updatedCompany,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should update company logo
-    t.nonNull.field('updateCompanyLogo', {
-      type: 'CompanyPayload',
-      description: 'Should update company logo',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateCompanyLogoInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
-        try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateCompanyLogoSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const { input } = args;
-          const { companyId } = input;
-
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id: companyId });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.notFound'),
-            };
-          }
-
-          // Delete shop logo
-          const removedAsset = await deleteUpload({ filePath: `${company.logo.url}` });
-          if (!removedAsset) {
-            return {
-              success: false,
-              message: await getApiMessage(`companies.update.error`),
-            };
-          }
-
-          // Upload new shop logo
-          const uploadedLogo = await storeUploads({
-            itemId: company.itemId,
-            dist: ASSETS_DIST_COMPANIES,
-            files: input.logo,
-            startIndex: 0,
-            asImage: true,
-            width: ASSETS_LOGO_WIDTH,
-          });
-          if (!uploadedLogo) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.error'),
-            };
-          }
-          const logo = uploadedLogo[0];
-          if (!logo) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.error'),
-            };
-          }
-
-          // Update company
-          const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
-            { _id: companyId },
-            {
-              $set: {
-                updatedAt: new Date(),
-                logo,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
           const updatedCompany = updatedCompanyResult.value;
           if (!updatedCompanyResult.ok || !updatedCompany) {
             return {
@@ -666,54 +538,22 @@ export const CompanyMutations = extendType({
           // Store shop assets
           const itemId = await getNextItemId(COL_SHOPS);
 
-          const logoAssets = await storeUploads({
-            files: input.logo,
-            dist: ASSETS_DIST_SHOPS_LOGOS,
-            itemId: itemId,
-            asImage: true,
-            width: ASSETS_LOGO_WIDTH,
-          });
-          if (!logoAssets) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.error'),
-            };
-          }
-          const logo = logoAssets[0];
-          if (!logo) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.error'),
-            };
-          }
-
-          const assets = await storeUploads({
-            files: input.assets,
-            dist: ASSETS_DIST_SHOPS,
-            itemId: itemId,
-            asImage: true,
-            width: ASSETS_SHOP_IMAGE_WIDTH,
-          });
-          if (!assets) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.error'),
-            };
-          }
-
           // Create shop
           const slug = generateShopSlug({
             name: values.name,
             itemId,
           });
-          const mainImage = getMainImage(assets);
+
           const createdShopResult = await shopsCollection.insertOne({
             ...values,
             slug,
             itemId,
-            logo,
-            assets,
-            mainImage,
+            logo: {
+              index: 1,
+              url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+            },
+            assets: [],
+            mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
             companyId: companyId,
             createdAt: new Date(),
             updatedAt: new Date(),

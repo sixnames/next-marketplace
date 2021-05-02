@@ -128,6 +128,7 @@ export type Attribute = {
   nameI18n: Scalars['JSONObject'];
   slug?: Maybe<Scalars['String']>;
   capitalise?: Maybe<Scalars['Boolean']>;
+  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
@@ -300,6 +301,7 @@ export type CatalogueAdditionalOptionsInput = {
   companyId?: Maybe<Scalars['ObjectId']>;
   attributeSlug: Scalars['String'];
   filter: Array<Scalars['String']>;
+  rubricSlug: Scalars['String'];
 };
 
 export type CatalogueDataInput = {
@@ -2287,6 +2289,7 @@ export type UpdateAttributeInGroupInput = {
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
+  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -3624,7 +3627,7 @@ export type GetAllAttributesGroupsQuery = (
 
 export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId' | 'capitalise'>
+  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId' | 'capitalise' | 'notShowAsAlphabet'>
   & { optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
     & Pick<OptionsGroup, '_id' | 'name'>
@@ -4394,6 +4397,7 @@ export const AttributeInGroupFragmentDoc = gql`
   positioningInTitle
   optionsGroupId
   capitalise
+  notShowAsAlphabet
   optionsGroup {
     _id
     name

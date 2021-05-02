@@ -242,7 +242,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
             catalogueCounterString={catalogueCounterString}
-            rubricClearSlug={catalogueData.clearSlug}
+            rubricSlug={state.rubricSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
           />

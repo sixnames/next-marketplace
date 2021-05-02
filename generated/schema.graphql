@@ -101,6 +101,7 @@ type Attribute {
   metric: Metric
   name: String!
   nameI18n: JSONObject!
+  notShowAsAlphabet: Boolean
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
@@ -261,6 +262,7 @@ input CatalogueAdditionalOptionsInput {
   attributeSlug: String!
   companyId: ObjectId
   filter: [String!]!
+  rubricSlug: String!
 }
 
 input CatalogueDataInput {
@@ -2045,6 +2047,7 @@ input UpdateAttributeInGroupInput {
   capitalise: Boolean
   metricId: ObjectId
   nameI18n: JSONObject!
+  notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   variant: AttributeVariant!

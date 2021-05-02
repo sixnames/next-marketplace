@@ -77,6 +77,7 @@ export const CatalogueAdditionalOptionsInput = inputObjectType({
     t.objectId('companyId');
     t.nonNull.string('attributeSlug');
     t.nonNull.list.nonNull.string('filter');
+    t.nonNull.string('rubricSlug');
   },
 });
 
@@ -97,11 +98,10 @@ export const CatalogueQueries = extendType({
         const db = await getDatabase();
         const { city } = await getRequestParams(context);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const { companyId, filter, attributeSlug } = args.input;
-        const [rubricSlug, ...filterOptions] = filter;
+        const { companyId, filter, attributeSlug, rubricSlug } = args.input;
 
         const { minPrice, maxPrice, realFilterOptions, noFiltersSelected } = castCatalogueFilters({
-          filters: filterOptions,
+          filters: filter,
         });
 
         const pricesStage =

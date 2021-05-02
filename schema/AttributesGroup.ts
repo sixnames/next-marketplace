@@ -174,6 +174,7 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.objectId('optionsGroupId');
     t.objectId('metricId');
     t.boolean('capitalise');
+    t.boolean('notShowAsAlphabet');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',

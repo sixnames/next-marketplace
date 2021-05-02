@@ -190,6 +190,7 @@ export interface AttributeModel {
   capitalise?: boolean | null;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
+  notShowAsAlphabet?: boolean | null;
 }
 
 export interface AttributesGroupModel {

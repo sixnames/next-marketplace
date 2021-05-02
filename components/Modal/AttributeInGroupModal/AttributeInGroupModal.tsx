@@ -72,6 +72,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle,
         capitalise: attribute.capitalise,
+        notShowAsAlphabet: attribute.notShowAsAlphabet,
       }
     : {
         nameI18n: {},
@@ -81,6 +82,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         optionsGroupId: null,
         positioningInTitle: {},
         capitalise: false,
+        notShowAsAlphabet: true,
       };
 
   return (
@@ -166,6 +168,11 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
+
+              <FormikCheckboxLine
+                label={'Ну показывать опции атрибута сгруппированными по алфавиту'}
+                name={'notShowAsAlphabet'}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

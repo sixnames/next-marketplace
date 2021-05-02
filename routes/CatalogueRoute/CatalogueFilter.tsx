@@ -1,5 +1,9 @@
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import {
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  PRICE_ATTRIBUTE_SLUG,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
@@ -16,11 +20,13 @@ import 'rc-slider/assets/index.css';
 interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;
   companyId?: string;
+  rubricSlug: string;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
   companyId,
+  rubricSlug,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -67,7 +73,9 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
               props: {
+                rubricSlug,
                 attributeSlug: attribute.slug,
+                notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
                 companyId,
               },
@@ -85,7 +93,7 @@ interface CatalogueFilterInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   catalogueCounterString: string;
-  rubricClearSlug: string;
+  rubricSlug: string;
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
   companyId?: string;
@@ -94,7 +102,7 @@ interface CatalogueFilterInterface {
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   attributes,
   selectedAttributes,
-  rubricClearSlug,
+  rubricSlug,
   catalogueCounterString,
   hideFilterHandler,
   isFilterVisible,
@@ -122,7 +130,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
               <Link
-                href={rubricClearSlug}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
                 className={classes.attributeTitleTrigger}
                 onClick={() => {
                   if (isMobile) {
@@ -160,6 +168,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         {attributes.map((attribute) => {
           return (
             <CatalogueFilterAttribute
+              rubricSlug={rubricSlug}
               companyId={companyId}
               attribute={attribute}
               key={`${attribute._id}`}

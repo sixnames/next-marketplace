@@ -19,6 +19,7 @@ export const attributeInGroupFragment = gql`
     positioningInTitle
     optionsGroupId
     capitalise
+    notShowAsAlphabet
     optionsGroup {
       _id
       name

@@ -170,7 +170,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
 
               <FormikCheckboxLine
-                label={'Ну показывать опции атрибута сгруппированными по алфавиту'}
+                label={'Не показывать опции атрибута сгруппированными по алфавиту'}
                 name={'notShowAsAlphabet'}
               />
 

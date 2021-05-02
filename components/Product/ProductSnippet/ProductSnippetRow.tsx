@@ -14,14 +14,12 @@ import { noNaN } from 'lib/numbers';
 interface ProductSnippetRowInterface {
   product: ProductInterface;
   testId?: string;
-  additionalSlug?: string;
   className?: string;
 }
 
 const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   product,
   testId,
-  additionalSlug,
   className,
 }) => {
   const [amount, setAmount] = React.useState<number>(1);
@@ -38,8 +36,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     connections,
     shopsCount,
     mainImage,
+    rubricSlug,
   } = product;
-  const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
 
@@ -64,7 +62,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           <Link
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`/product${additionalLinkSlug}/${slug}`}
+            href={`/catalogue/${rubricSlug}/product/${slug}`}
           >
             {originalName}
           </Link>
@@ -83,7 +81,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               <Link
                 target={'_blank'}
                 className='block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`/product${additionalLinkSlug}/${slug}`}
+                href={`/catalogue/${rubricSlug}/product/${slug}`}
               >
                 {originalName}
               </Link>

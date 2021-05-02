@@ -21,6 +21,10 @@ const LanguageTrigger: React.FC = () => {
     });
   }, [languagesList, router]);
 
+  if (languagesList.length < 2) {
+    return null;
+  }
+
   return (
     <div className={classes.frame}>
       <MenuButtonWithName

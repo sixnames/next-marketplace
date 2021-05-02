@@ -11,15 +11,17 @@ import LayoutCard from 'layout/LayoutCard';
 interface ProductSnippetGridInterface {
   product: ProductInterface;
   testId?: string;
-  additionalSlug?: string;
   className?: string;
+  noAttributes?: boolean;
+  noSecondaryName?: boolean;
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   product,
   testId,
-  additionalSlug,
   className,
+  noSecondaryName,
+  noAttributes,
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
   const {
@@ -32,8 +34,8 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     ratingFeatures,
     shopsCount,
     mainImage,
+    rubricSlug,
   } = product;
-  const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
   const listFeaturesString = (listFeatures || [])
@@ -47,7 +49,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       className={`relative grid grid-cols-12 ${className ? className : ''}`}
       testId={testId}
     >
-      <div className='relative flex items-center justify-center mb-4 flex-grow pt-4 pl-5 pr-5 col-span-4 snippet-image'>
+      <div className='relative flex items-center justify-center mb-4 flex-grow pt-4 pl-5 pr-5 col-span-3 snippet-image'>
         <Image
           priority={true}
           src={mainImage}
@@ -62,36 +64,38 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         <Link
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
-          href={`/product${additionalLinkSlug}/${slug}`}
+          href={`/catalogue/${rubricSlug}/product/${slug}`}
         >
           {originalName}
         </Link>
       </div>
 
-      <div className={`col-span-8 flex flex-col pt-12 pr-5`}>
+      <div className={`col-span-9 flex flex-col pt-12 pr-5`}>
         <div className='mb-auto pb-4'>
-          <div className='text-xl font-medium mb-1'>
+          <div className='text-lg sm:text-xl font-medium mb-1'>
             <Link
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`/product${additionalLinkSlug}/${slug}`}
+              href={`/catalogue/${rubricSlug}/product/${slug}`}
             >
               {originalName}
             </Link>
           </div>
-          <div className='text-sm text-secondary-text mb-3'>{name}</div>
-          <div className='text-sm text-secondary-text'>{listFeaturesString}</div>
+          {noSecondaryName ? null : <div className='text-sm text-secondary-text mb-3'>{name}</div>}
+          {noAttributes ? null : (
+            <div className='text-sm text-secondary-text'>{listFeaturesString}</div>
+          )}
         </div>
         <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
       </div>
 
-      <div className='col-span-4 flex flex-col'>
+      <div className='col-span-3 flex flex-col'>
         <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
           <RatingStars size={'small'} rating={4.9} />
         </div>
       </div>
 
-      <div className='col-span-8 flex flex-col'>
+      <div className='col-span-9 flex flex-col'>
         <div className='flex items-end justify-between h-control-button-height mt-auto'>
           <div className='flex flex-wrap items-center h-control-button-height'>
             {firstRatingFeature ? (

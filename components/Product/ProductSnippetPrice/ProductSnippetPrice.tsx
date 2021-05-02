@@ -23,7 +23,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
   }
 
   return (
-    <div className={`flex items-baseline text-3xl ${className ? className : ''}`}>
+    <div className={`flex items-baseline text-2xl sm:text-3xl ${className ? className : ''}`}>
       <span className='text-secondary-text text-[0.5em] mr-[0.35rem]'>
         {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
       </span>

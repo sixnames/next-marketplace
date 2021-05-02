@@ -613,7 +613,7 @@ export const getServerSideProps = async (
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
-    filter: restFilter,
+    filters: restFilter,
     productsPrices: shopProductsResult.prices,
     basePath,
   });

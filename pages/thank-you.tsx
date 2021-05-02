@@ -1,7 +1,7 @@
 import Button from 'components/Buttons/Button';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { useRouter } from 'next/router';
@@ -40,7 +40,7 @@ const ThankYouRoute: React.FC = () => {
           </Button>
           <Button
             onClick={() => {
-              router.push(`${ROUTE_CATALOGUE}/vino`).catch(() => {
+              router.push(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).catch(() => {
                 showErrorNotification();
               });
             }}

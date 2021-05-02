@@ -5,7 +5,6 @@ import Inner from 'components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';
-import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
   attribute: RubricAttributeInterface;
@@ -67,21 +66,14 @@ interface StickyNavItemInterface {
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
-  const { query } = useRouter();
+  const { asPath } = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
-  const { catalogue = [], card = [] } = query;
-  const realCatalogueQuery = alwaysArray(catalogue);
-  const catalogueSlug = realCatalogueQuery[0];
   const { name, slug, attributes } = rubric;
 
   // Get rubric slug from product card path
-  const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
-  const cardSlugsParts = cardSlugs.map((slug) => {
-    return slug.split('-');
-  });
-  const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-  const rubricSlug = rubricSlugArr ? rubricSlugArr[1] : '';
-  const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
+  const path = `${ROUTE_CATALOGUE}/${slug}`;
+  const reg = RegExp(`${path}`);
+  const isCurrent = reg.test(asPath);
 
   function showDropdownHandler() {
     setIsDropdownOpen(true);
@@ -98,8 +90,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${rubric.slug}`}
     >
       <Link
-        prefetch={false}
-        href={`${ROUTE_CATALOGUE}/${slug}`}
+        href={path}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
@@ -111,7 +102,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       </Link>
 
       <div
-        className={`absolute top-full w-full inset-x-0 bg-primary-background shadow-lg ${
+        className={`absolute top-full w-full inset-x-0 bg-secondary-background shadow-lg ${
           isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
         }`}
       >

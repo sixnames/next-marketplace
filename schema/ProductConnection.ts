@@ -193,7 +193,6 @@ export const ProductConnectionMutations = extendType({
 
           // Create connection item
           const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
-            _id: productId,
             optionId,
             productId,
             productSlug: product.slug,
@@ -339,70 +338,25 @@ export const ProductConnectionMutations = extendType({
           }
 
           // Create connection item
-          const CreatedConnectionItemResult = await productConnectionItemsCollection.insertOne({
-            _id: addProductId,
+          const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
             optionId: option._id,
             productId: addProductId,
             productSlug: addProduct.slug,
             connectionId,
           });
 
-          const CreatedConnectionItem = CreatedConnectionItemResult.ops[0];
-          if (!CreatedConnectionItemResult.result.ok || !CreatedConnectionItem) {
+          const createdConnectionItem = createdConnectionItemResult.ops[0];
+          if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
             return {
               success: false,
               message: await getApiMessage(`products.connection.createError`),
             };
           }
 
-          // Update product
-          const updatedAddProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: addProductId,
-            },
-            {
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedAddProduct = updatedAddProductResult.value;
-          if (!updatedAddProductResult.ok || !updatedAddProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          // Update product with new slug
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
           return {
             success: true,
             message: await getApiMessage('products.connection.addProductSuccess'),
-            payload: updatedProduct,
+            payload: product,
           };
         } catch (e) {
           return {

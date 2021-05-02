@@ -202,6 +202,8 @@ export const PRICE_ATTRIBUTE_SLUG = 'price';
 export const CATALOGUE_VIEW_STORAGE_KEY = 'catalogueView';
 export const CATALOGUE_VIEW_ROW = 'row';
 export const CATALOGUE_VIEW_GRID = 'grid';
+export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
+export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

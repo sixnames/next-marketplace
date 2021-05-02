@@ -2,7 +2,6 @@ import { ShopInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './ShopsMap.module.css';
 import { Coordinates } from 'generated/apolloComponents';
-import { useConfigContext } from 'context/configContext';
 import { useLoadScript, Marker, GoogleMap, InfoWindow } from '@react-google-maps/api';
 import RequestError from '../RequestError/RequestError';
 import Spinner from '../Spinner/Spinner';
@@ -20,19 +19,20 @@ const mapContainerStyle = {
   height: '100%',
 };
 
+// TODO get center of session city
 const center = {
   lat: 55.751957,
   lng: 37.617575,
 };
 
+const shopImageSize = 120;
+
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   const [selected, setSelected] = React.useState<ShopInterface | null>(null);
   const { isDark } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: `${process.env.NEXT_GOOGLE_MAPS_API_KEY}`,
   });
-  const siteIconSrc = getSiteConfigSingleValue('siteLogoIcon');
   const mapRef = React.useRef<any>(null);
 
   const onLoad = React.useCallback(
@@ -44,7 +44,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       shops.forEach(({ address }) => {
         bounds.extend(address.formattedCoordinates);
       });
-      mapRef.current.fitBounds(bounds);
+      mapRef.current.setZoom(10);
     },
     [shops],
   );
@@ -54,11 +54,14 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       return;
     }
     mapRef.current.panTo(coords);
-    mapRef.current.setZoom(12);
+    mapRef.current.setZoom(14);
   }, []);
 
   const options = React.useMemo(() => {
-    return { styles: isDark ? darkMapStyles : lightMapStyles, disableDefaultUI: true };
+    return {
+      styles: isDark ? darkMapStyles : lightMapStyles,
+      disableDefaultUI: true,
+    };
   }, [isDark]);
 
   if (loadError) {
@@ -68,8 +71,6 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   if (!isLoaded) {
     return <Spinner isNested />;
   }
-
-  const shopImageSize = 120;
 
   return (
     <div className={classes.frame}>
@@ -118,15 +119,17 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           {shops.map((shop) => {
             const {
               _id,
+              logo,
               address: { formattedCoordinates },
             } = shop;
+            console.log(logo.url);
             return (
               <Marker
                 key={`${_id}`}
                 position={formattedCoordinates}
                 icon={{
-                  url: siteIconSrc,
-                  scaledSize: new window.google.maps.Size(28, 32),
+                  url: logo.url,
+                  scaledSize: new window.google.maps.Size(40, 40),
                 }}
                 onClick={() => {
                   setSelected(shop);

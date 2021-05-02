@@ -53,11 +53,12 @@ export async function getCardData({
             ...companyRubricsMatch,
           },
         },
+
         // Get shops
         {
           $lookup: {
             from: COL_SHOPS,
-            as: 'shops',
+            as: 'shop',
             let: {
               shopId: '$shopId',
             },
@@ -74,12 +75,7 @@ export async function getCardData({
         },
         {
           $addFields: {
-            shop: { $arrayElemAt: ['$shops', 0] },
-          },
-        },
-        {
-          $project: {
-            shops: false,
+            shop: { $arrayElemAt: ['$shop', 0] },
           },
         },
         {
@@ -226,6 +222,7 @@ export async function getCardData({
             ],
           },
         },
+
         // Get product attributes
         {
           $lookup: {

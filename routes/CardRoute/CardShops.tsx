@@ -123,12 +123,12 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
 };
 
 interface CardShopsMapInterface {
-  shops: ShopProductInterface[];
+  shopProducts: ShopProductInterface[];
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
-  const shopsSnippets = shops.reduce((acc: ShopInterface[], { shop }) => {
+const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shopProducts, setIsMap }) => {
+  const shopsSnippets = shopProducts.reduce((acc: ShopInterface[], { shop }) => {
     if (!shop) {
       return acc;
     }
@@ -166,7 +166,7 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId, initialShops }) =>
   return (
     <div className={classes.frame} data-cy={`card-shops`}>
       {isMap ? (
-        <CardShopsMap shops={initialShops} setIsMap={setIsMap} />
+        <CardShopsMap shopProducts={initialShops} setIsMap={setIsMap} />
       ) : (
         <CardShopsList
           productId={productId}

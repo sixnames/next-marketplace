@@ -1,6 +1,7 @@
 import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
 import Link from 'components/Link/Link';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
+import ShopsMap from 'components/ShopsMap/ShopsMap';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
@@ -11,13 +12,19 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_OPTIONS, COL_PRODUCT_ATTRIBUTES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { ProductInterface, RubricInterface, ShopInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -29,6 +36,7 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 interface HomeRoutInterface {
   topProducts: ProductInterface[];
   navRubrics: RubricInterface[];
+  topShops: ShopInterface[];
 }
 
 const bannersConfig = [
@@ -45,7 +53,7 @@ const bannersConfig = [
 
 const defaultRubricHref = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
 
-const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics }) => {
+const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topShops }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   return (
@@ -142,6 +150,13 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics }) => 
             })}
           </div>
         </section>
+
+        <section className='mb-10 sm:mb-16'>
+          <div className='text-2xl mb-4 font-medium'>
+            <h2>Винотеки</h2>
+          </div>
+          <ShopsMap shops={topShops} />
+        </section>
       </Inner>
     </React.Fragment>
   );
@@ -149,10 +164,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics }) => 
 
 interface HomeInterface extends SiteLayoutProviderInterface, HomeRoutInterface {}
 
-const Home: NextPage<HomeInterface> = ({ topProducts, ...props }) => {
+const Home: NextPage<HomeInterface> = ({ topProducts, topShops, ...props }) => {
   return (
     <SiteLayoutProvider {...props}>
-      <HomeRoute topProducts={topProducts} navRubrics={props.navRubrics} />
+      <HomeRoute topProducts={topProducts} navRubrics={props.navRubrics} topShops={topShops} />
     </SiteLayoutProvider>
   );
 };
@@ -184,6 +199,42 @@ export async function getServerSideProps(
         },
       },
       {
+        $sort: {
+          priorities: SORT_DESC,
+          views: SORT_DESC,
+          available: SORT_DESC,
+          _id: SORT_DESC,
+        },
+      },
+      {
+        $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
+      },
+
+      // Get shops
+      {
+        $lookup: {
+          from: COL_SHOPS,
+          as: 'shop',
+          let: {
+            shopId: '$shopId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$shopId', '$_id'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          shop: { $arrayElemAt: ['$shop', 0] },
+        },
+      },
+      {
         $group: {
           _id: '$productId',
           itemId: { $first: '$itemId' },
@@ -204,24 +255,23 @@ export async function getServerSideProps(
           available: {
             $max: '$available',
           },
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
-          },
           shopProductsIds: {
             $addToSet: '$_id',
           },
+          shopProducts: {
+            $push: {
+              _id: '$_id',
+              price: '$price',
+              available: '$available',
+              shopId: '$shopId',
+              oldPrices: '$oldPrices',
+              shop: '$shop',
+              formattedPrice: '$formattedPrice',
+              formattedOldPrice: '$formattedOldPrice',
+              discountedPercent: '$discountedPercent',
+            },
+          },
         },
-      },
-      {
-        $sort: {
-          priorities: SORT_DESC,
-          views: SORT_DESC,
-          available: SORT_DESC,
-          _id: SORT_DESC,
-        },
-      },
-      {
-        $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
       },
       {
         $addFields: {
@@ -282,10 +332,49 @@ export async function getServerSideProps(
       },
     ])
     .toArray();
-  const products = [];
+
+  const products: ProductInterface[] = [];
+  const topShops: ShopInterface[] = [];
+
   for await (const product of shopProductsAggregation) {
+    const { attributes, shopProducts, ...restProduct } = product;
+
+    // shop products
+    (shopProducts || []).forEach((shopProduct) => {
+      const { shop } = shopProduct;
+
+      if (!shop) {
+        return;
+      }
+
+      const exist = topShops.some(({ _id }) => _id.equals(shop._id));
+
+      if (exist) {
+        return;
+      }
+
+      topShops.push({
+        ...shop,
+        address: {
+          ...shop.address,
+          formattedCoordinates: {
+            lat: shop.address.point.coordinates[1],
+            lng: shop.address.point.coordinates[0],
+          },
+        },
+        contacts: {
+          ...shop.contacts,
+          formattedPhones: shop.contacts.phones.map((phone) => {
+            return {
+              raw: phoneToRaw(phone),
+              readable: phoneToReadable(phone),
+            };
+          }),
+        },
+      });
+    });
+
     // prices
-    const { attributes, ...restProduct } = product;
     const minPrice = noNaN(product.cardPrices?.min);
     const maxPrice = noNaN(product.cardPrices?.max);
     const cardPrices = {
@@ -317,10 +406,12 @@ export async function getServerSideProps(
       connections: [],
     });
   }
+
   return {
     props: {
       ...props,
       topProducts: castDbData(products),
+      topShops: castDbData(topShops),
     },
   };
 }

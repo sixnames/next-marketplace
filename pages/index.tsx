@@ -1,9 +1,12 @@
 import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
+import Link from 'components/Link/Link';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  CATALOGUE_DEFAULT_RUBRIC_SLUG,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
+  ROUTE_CATALOGUE,
   SORT_DESC,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
@@ -26,15 +29,47 @@ interface HomeRoutInterface {
   topProducts: ProductInterface[];
 }
 
+const bannersConfig = [
+  {
+    src: '/home/banner-1.jpg',
+  },
+  {
+    src: '/home/banner-2.jpg',
+  },
+  {
+    src: '/home/banner-3.jpg',
+  },
+];
+
+const defaultRubricHref = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
+
 const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   return (
     <React.Fragment>
       <Inner>
-        <Title>{configTitle}</Title>
-        <div>
-          <div className='text-xl mb-6 font-medium'>Бестселлеры</div>
+        <div className='mb-10 sm:mb-16 overflow-hidden rounded-xl'>
+          <Link className='block' href={defaultRubricHref}>
+            <img
+              className='w-full'
+              src={'/home/slider.jpg'}
+              width='526'
+              height='360'
+              alt={'slider'}
+              title={'slider'}
+            />
+          </Link>
+        </div>
+
+        <div className='mb-10 sm:mb-16 max-w-[690px]'>
+          <Title>{configTitle}</Title>
+        </div>
+
+        <section className='mb-10 sm:mb-16'>
+          <div className='text-xl mb-4 font-medium'>
+            <h2>Бестселлеры</h2>
+          </div>
           <HorizontalScroll>
             {topProducts.map((product) => {
               return (
@@ -44,7 +79,25 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
               );
             })}
           </HorizontalScroll>
-        </div>
+        </section>
+
+        <section className='mb-10 sm:mb-16'>
+          <div className='text-xl mb-4 font-medium'>
+            <h2>Акции</h2>
+          </div>
+          <HorizontalScroll>
+            {bannersConfig.map(({ src }) => {
+              return (
+                <div
+                  className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
+                  key={`${src}`}
+                >
+                  <img src={src} width='526' height='360' alt={src} title={src} />
+                </div>
+              );
+            })}
+          </HorizontalScroll>
+        </section>
       </Inner>
     </React.Fragment>
   );

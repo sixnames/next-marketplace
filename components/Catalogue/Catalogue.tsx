@@ -83,6 +83,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
         input: {
           filter: catalogueData.filters,
           companySlug,
+          rubricSlug: `${router.query.rubricSlug}`,
         },
       },
     }).catch((e) => {
@@ -113,7 +114,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
           console.log(e);
         });
     }
-  }, [router.query.rubricSlug, state.page, state.products.length, state.totalProducts]);
+  }, [
+    router.query.catalogue,
+    router.query.rubricSlug,
+    state.page,
+    state.products.length,
+    state.totalProducts,
+  ]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);

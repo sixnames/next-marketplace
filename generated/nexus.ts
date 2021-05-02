@@ -203,6 +203,7 @@ export interface NexusGenInputs {
     // input type
     companySlug: string | null; // String
     filter: string[]; // [String!]!
+    rubricSlug: string; // String!
   };
   CatalogueSearchInput: {
     // input type

@@ -11,14 +11,12 @@ import LayoutCard from 'layout/LayoutCard';
 interface ProductSnippetGridInterface {
   product: ProductInterface;
   testId?: string;
-  additionalSlug?: string;
   className?: string;
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   product,
   testId,
-  additionalSlug,
   className,
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
@@ -32,8 +30,8 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     ratingFeatures,
     shopsCount,
     mainImage,
+    rubricSlug,
   } = product;
-  const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
   const listFeaturesString = (listFeatures || [])
@@ -62,7 +60,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         <Link
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
-          href={`/product${additionalLinkSlug}/${slug}`}
+          href={`/catalogue/${rubricSlug}/product/${slug}`}
         >
           {originalName}
         </Link>
@@ -74,7 +72,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             <Link
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`/product${additionalLinkSlug}/${slug}`}
+              href={`/catalogue/${rubricSlug}/product/${slug}`}
             >
               {originalName}
             </Link>

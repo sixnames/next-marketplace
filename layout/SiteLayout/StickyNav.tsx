@@ -5,7 +5,6 @@ import Inner from 'components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';
-import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
   attribute: RubricAttributeInterface;
@@ -67,21 +66,14 @@ interface StickyNavItemInterface {
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
-  const { query } = useRouter();
+  const { asPath } = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
-  const { catalogue = [], card = [] } = query;
-  const realCatalogueQuery = alwaysArray(catalogue);
-  const catalogueSlug = realCatalogueQuery[0];
   const { name, slug, attributes } = rubric;
 
   // Get rubric slug from product card path
-  const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
-  const cardSlugsParts = cardSlugs.map((slug) => {
-    return slug.split('-');
-  });
-  const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-  const rubricSlug = rubricSlugArr ? rubricSlugArr[1] : '';
-  const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
+  const path = `${ROUTE_CATALOGUE}/${slug}`;
+  const reg = RegExp(`${path}`);
+  const isCurrent = reg.test(asPath);
 
   function showDropdownHandler() {
     setIsDropdownOpen(true);
@@ -98,10 +90,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${rubric.slug}`}
     >
       <Link
-        prefetch={false}
-        href={`${ROUTE_CATALOGUE}/${slug}`}
+        href={path}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
+        activeClassName='text-blue>>>>>>>>>>>>>>>>>>>>>>'
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
       >
         {name}
@@ -111,7 +103,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       </Link>
 
       <div
-        className={`absolute top-full w-full inset-x-0 bg-primary-background shadow-lg ${
+        className={`absolute top-full w-full inset-x-0 bg-gray-50 dark:bg-gray-800 shadow-lg ${
           isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
         }`}
       >
@@ -141,7 +133,7 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
 
   return (
-    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary-background wp-desktop:block'>
+    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-gray-100 dark:bg-gray-800 wp-desktop:block'>
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {

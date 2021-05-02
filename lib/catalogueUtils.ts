@@ -1,3 +1,4 @@
+import { CatalogueInterface } from 'components/Catalogue/Catalogue';
 import { getPriceAttribute } from 'config/constantAttributes';
 import {
   COL_ATTRIBUTES,
@@ -53,12 +54,15 @@ import {
   RubricAttributeInterface,
   RubricOptionInterface,
 } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import capitalize from 'capitalize';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 export interface CastCatalogueParamToObjectPayloadInterface {
   slug: string;
@@ -229,7 +233,7 @@ export function getRubricCatalogueOptions({
 }
 
 export interface GetCatalogueAttributesInterface {
-  filter: string[];
+  filters: string[];
   attributes: RubricAttributeInterface[];
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
@@ -243,7 +247,7 @@ export interface GetCatalogueAttributesPayloadInterface {
 }
 
 export async function getCatalogueAttributes({
-  filter,
+  filters,
   locale,
   attributes,
   productsPrices,
@@ -253,7 +257,7 @@ export async function getCatalogueAttributes({
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
-  const realFilter = filter.filter((filterItem) => {
+  const realFilter = filters.filter((filterItem) => {
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
     const filterName = filterItemArr[0];
     return filterName !== CATALOGUE_FILTER_PAGE;
@@ -515,7 +519,8 @@ export interface GetCatalogueDataInterface {
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
   input: {
-    filter: string[];
+    rubricSlug: string;
+    filters: string[];
     page: number;
   };
 }
@@ -535,8 +540,7 @@ export const getCatalogueData = async ({
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args
-    const { filter, page } = input;
-    const [rubricSlug, ...filterOptions] = filter;
+    const { filters, page, rubricSlug } = input;
     const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
 
     // Get configs
@@ -560,7 +564,7 @@ export const getCatalogueData = async ({
       limit,
       page: payloadPage,
     } = castCatalogueFilters({
-      filters: filterOptions,
+      filters,
       initialPage: page,
       initialLimit: CATALOGUE_PRODUCTS_LIMIT,
     });
@@ -634,6 +638,7 @@ export const getCatalogueData = async ({
               _id: '$productId',
               itemId: { $first: '$itemId' },
               rubricId: { $first: '$rubricId' },
+              rubricSlug: { $first: `$rubricSlug` },
               slug: { $first: '$slug' },
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },
@@ -869,9 +874,9 @@ export const getCatalogueData = async ({
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
       locale,
-      filter,
+      filters,
       productsPrices: shopProductsAggregationResult.prices,
-      basePath: ROUTE_CATALOGUE,
+      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
@@ -946,7 +951,7 @@ export const getCatalogueData = async ({
     return {
       _id: rubric._id,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
-      filter,
+      filters,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricSlug: rubric.slug,
       products,
@@ -961,3 +966,52 @@ export const getCatalogueData = async ({
     return null;
   }
 };
+
+export async function getCatalogueServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CatalogueInterface>> {
+  // console.log(' ');
+  // console.log('=================== Catalogue getServerSideProps =======================');
+  // const timeStart = new Date().getTime();
+
+  const { query } = context;
+  const { props } = await getSiteInitialData({
+    context,
+  });
+  const { catalogue, rubricSlug } = query;
+
+  const notFoundResponse = {
+    props,
+    notFound: true,
+  };
+
+  if (!rubricSlug) {
+    return notFoundResponse;
+  }
+
+  // catalogue
+  const rawCatalogueData = await getCatalogueData({
+    locale: props.sessionLocale,
+    city: props.sessionCity,
+    companySlug: props.company?.slug,
+    companyId: props.company?._id,
+    input: {
+      rubricSlug: `${rubricSlug}`,
+      filters: alwaysArray(catalogue),
+      page: 1,
+    },
+  });
+  if (!rawCatalogueData) {
+    return notFoundResponse;
+  }
+  const catalogueData = castDbData(rawCatalogueData);
+
+  // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
+
+  return {
+    props: {
+      ...props,
+      catalogueData,
+    },
+  };
+}

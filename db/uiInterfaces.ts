@@ -263,7 +263,7 @@ export interface UserInterface extends UserModel {
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
   clearSlug: string;
-  filter: string[];
+  filters: string[];
   rubricName: string;
   rubricSlug: string;
   products: ProductInterface[];

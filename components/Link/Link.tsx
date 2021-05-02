@@ -33,13 +33,14 @@ const Link: React.FC<LinkInterface> = ({
 }) => {
   const { query, asPath } = useRouter() || { pathname: '', query: '' };
   const asPathArray = asPath.split('?');
-  const cleanAasPath = asPathArray[0];
+  const cleanAsPath = asPathArray[0];
   const hrefArray = href.split('?');
   const hrefQuery = hrefArray[1] || '';
   const parsedHrefQuery = qs.parse(hrefQuery);
   const cleanHref = hrefArray[0];
 
-  let isCurrent = cleanHref === cleanAasPath;
+  const reg = RegExp(`${href}`);
+  let isCurrent = reg.test(asPath);
 
   if (exact) {
     isCurrent = href === asPath;
@@ -47,7 +48,7 @@ const Link: React.FC<LinkInterface> = ({
 
   if (isTab) {
     const currentTab = query.tab || '0';
-    isCurrent = cleanHref === cleanAasPath && currentTab === parsedHrefQuery.tab;
+    isCurrent = cleanHref === cleanAsPath && currentTab === parsedHrefQuery.tab;
   }
 
   return (

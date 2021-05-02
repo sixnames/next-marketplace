@@ -127,7 +127,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // products
     productSlugs.forEach((slug) => {
-      initialSlugs.push(`product/${slug}`);
+      initialSlugs.push(`/catalogue/${rubric.slug}/product/${slug}`);
     });
   });
 

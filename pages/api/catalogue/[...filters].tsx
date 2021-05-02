@@ -1,12 +1,12 @@
-import { DEFAULT_CITY } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSubdomain } from 'tldts';
 
 export interface CatalogueQueryInterface {
-  filter: string[];
-  locale: string;
+  filters: string[];
+  rubricSlug: string;
   companySlug?: string;
   companyId?: string;
   page: number;
@@ -16,7 +16,10 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { headers, query } = req;
     const anyQuery = query as unknown;
-    const { locale, filter, companySlug, companyId, page } = anyQuery as CatalogueQueryInterface;
+    const locale = req.cookies.locale || DEFAULT_LOCALE;
+
+    const { filters, companySlug, companyId, page } = anyQuery as CatalogueQueryInterface;
+    const [rubricSlug, ...restFilters] = filters;
     const host = `${headers.host}`;
     const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
     const sessionCity = subdomain || DEFAULT_CITY;
@@ -26,8 +29,9 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companyId,
       city: sessionCity,
       input: {
+        rubricSlug,
         page: noNaN(page),
-        filter: filter.slice(1),
+        filters: restFilters,
       },
     });
     if (!rawCatalogueData) {

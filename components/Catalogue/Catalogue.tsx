@@ -24,20 +24,17 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/uiInterfaces';
+import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { getCatalogueData } from 'lib/catalogueUtils';
 import { getNumWord } from 'lib/i18n';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
-import { cityIn } from 'lvovich';
 import classes from 'styles/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
@@ -84,7 +81,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
     updateCatalogueCountersMutation({
       variables: {
         input: {
-          filter: catalogueData.filter,
+          filter: catalogueData.filters,
           companySlug,
         },
       },
@@ -97,7 +94,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
       setLoading(true);
-      fetch(`/api/catalogue${router.asPath}?locale=${router.locale}&page=${state.page + 1}`)
+      const filters = alwaysArray(router.query.catalogue).join('/');
+      fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}?page=${state.page + 1}`)
         .then((res) => {
           return res.json();
         })
@@ -115,7 +113,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
           console.log(e);
         });
     }
-  }, [router.asPath, router.locale, state.page, state.products.length, state.totalProducts]);
+  }, [router.query.rubricSlug, state.page, state.products.length, state.totalProducts]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -337,11 +335,11 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   );
 };
 
-interface CatalogueInterface extends SiteLayoutProviderInterface {
+export interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({
+const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
   company,
@@ -376,54 +374,5 @@ const Catalogue: NextPage<CatalogueInterface> = ({
     </SiteLayoutProvider>
   );
 };
-
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CatalogueInterface>> {
-  // console.log(' ');
-  // console.log('=================== Catalogue getServerSideProps =======================');
-  // const timeStart = new Date().getTime();
-
-  const { query } = context;
-  const { props } = await getSiteInitialData({
-    context,
-  });
-
-  const { catalogue } = query;
-
-  const notFoundResponse = {
-    props,
-    notFound: true,
-  };
-
-  if (!catalogue) {
-    return notFoundResponse;
-  }
-
-  // catalogue
-  const rawCatalogueData = await getCatalogueData({
-    locale: props.sessionLocale,
-    city: props.sessionCity,
-    companySlug: props.company?.slug,
-    companyId: props.company?._id,
-    input: {
-      filter: alwaysArray(catalogue),
-      page: 1,
-    },
-  });
-  if (!rawCatalogueData) {
-    return notFoundResponse;
-  }
-  const catalogueData = castDbData(rawCatalogueData);
-
-  // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
-
-  return {
-    props: {
-      ...props,
-      catalogueData,
-    },
-  };
-}
 
 export default Catalogue;

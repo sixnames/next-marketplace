@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_DEFAULT_RUBRIC_SLUG,
+  CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   ROUTE_CATALOGUE,
   SORT_DESC,
@@ -13,7 +14,7 @@ import { useConfigContext } from 'context/configContext';
 import { COL_OPTIONS, COL_PRODUCT_ATTRIBUTES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -27,6 +28,7 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomeRoutInterface {
   topProducts: ProductInterface[];
+  navRubrics: RubricInterface[];
 }
 
 const bannersConfig = [
@@ -43,7 +45,7 @@ const bannersConfig = [
 
 const defaultRubricHref = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
 
-const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
+const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   return (
@@ -54,8 +56,8 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
             <img
               className='w-full'
               src={'/home/slider.jpg'}
-              width='526'
-              height='360'
+              width='1249'
+              height='432'
               alt={'slider'}
               title={'slider'}
             />
@@ -67,7 +69,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
         </div>
 
         <section className='mb-10 sm:mb-16'>
-          <div className='text-xl mb-4 font-medium'>
+          <div className='text-2xl mb-4 font-medium'>
             <h2>Бестселлеры</h2>
           </div>
           <HorizontalScroll>
@@ -82,7 +84,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
         </section>
 
         <section className='mb-10 sm:mb-16'>
-          <div className='text-xl mb-4 font-medium'>
+          <div className='text-2xl mb-4 font-medium'>
             <h2>Акции</h2>
           </div>
           <HorizontalScroll>
@@ -92,11 +94,53 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts }) => {
                   className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
                   key={`${src}`}
                 >
-                  <img src={src} width='526' height='360' alt={src} title={src} />
+                  <Link className='block' href={defaultRubricHref}>
+                    <img src={src} width='526' height='360' alt={src} title={src} />
+                  </Link>
                 </div>
               );
             })}
           </HorizontalScroll>
+        </section>
+
+        <section className='mb-10 sm:mb-16'>
+          <div className='text-2xl mb-4 font-medium'>
+            <h2>Выберите на ваш вкус и цвет</h2>
+          </div>
+          <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-12'>
+            {navRubrics.map((rubric) => {
+              return (rubric.attributes || []).map((attribute) => {
+                return (
+                  <div key={`${attribute._id}`}>
+                    <div className='mb-4 text-lg font-medium'>
+                      <h3>{attribute.name}</h3>
+                    </div>
+                    <ul>
+                      {(attribute.options || []).map((option) => {
+                        return (
+                          <li className='mr-2 mb-2' key={`${option.slug}`}>
+                            <Link
+                              className='max-w-full inline-block bg-secondary-background text-secondary-text rounded-md px-4 py-2 hover:no-underline hover:text-theme'
+                              href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                            >
+                              {option.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <Link
+                      prefetch={false}
+                      href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
+                      className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+                    >
+                      Показать ещё
+                    </Link>
+                  </div>
+                );
+              });
+            })}
+          </div>
         </section>
       </Inner>
     </React.Fragment>
@@ -108,7 +152,7 @@ interface HomeInterface extends SiteLayoutProviderInterface, HomeRoutInterface {
 const Home: NextPage<HomeInterface> = ({ topProducts, ...props }) => {
   return (
     <SiteLayoutProvider {...props}>
-      <HomeRoute topProducts={topProducts} />
+      <HomeRoute topProducts={topProducts} navRubrics={props.navRubrics} />
     </SiteLayoutProvider>
   );
 };

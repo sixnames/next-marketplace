@@ -9,7 +9,7 @@ import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductS
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
-import { ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -292,7 +292,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`${ROUTE_CATALOGUE}/vino`).catch(() => {
+                router.push(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).catch(() => {
                   showErrorNotification();
                 });
               }}

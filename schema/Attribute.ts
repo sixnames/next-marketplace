@@ -34,6 +34,7 @@ export const Attribute = objectType({
     t.nonNull.json('nameI18n');
     t.string('slug');
     t.boolean('capitalise');
+    t.boolean('notShowAsAlphabet');
     t.objectId('optionsGroupId');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {

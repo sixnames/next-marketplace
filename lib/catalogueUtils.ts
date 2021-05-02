@@ -344,6 +344,7 @@ export async function getCatalogueAttributes({
       isSelected,
       metric: attribute.metric ? getFieldStringLocale(attribute.metric.nameI18n, locale) : null,
       viewVariant: attribute.viewVariant,
+      notShowAsAlphabet: attribute.notShowAsAlphabet || false,
     };
 
     if (isSelected) {

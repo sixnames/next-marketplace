@@ -198,6 +198,7 @@ export interface NexusGenInputs {
     attributeSlug: string; // String!
     companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     filter: string[]; // [String!]!
+    rubricSlug: string; // String!
   };
   CatalogueDataInput: {
     // input type
@@ -467,6 +468,7 @@ export interface NexusGenInputs {
     capitalise?: boolean | null; // Boolean
     metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    notShowAsAlphabet?: boolean | null; // Boolean
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
@@ -858,6 +860,7 @@ export interface NexusGenFieldTypes {
     metric: NexusGenRootTypes['Metric'] | null; // Metric
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    notShowAsAlphabet: boolean | null; // Boolean
     optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -1820,6 +1823,7 @@ export interface NexusGenFieldTypeNames {
     metric: 'Metric';
     name: 'String';
     nameI18n: 'JSONObject';
+    notShowAsAlphabet: 'Boolean';
     optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';

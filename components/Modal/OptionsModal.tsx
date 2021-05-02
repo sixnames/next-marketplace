@@ -33,6 +33,7 @@ export interface OptionsModalInterface extends OptionsModalCommonPropsInterface 
   alphabet?: OptionsModalLetterInterface[] | null;
   loading?: boolean | null;
   error?: any | null;
+  notShowAsAlphabet?: boolean | null;
 }
 
 const defaultEmptyListMessage = 'Список пуст';
@@ -49,6 +50,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   onSubmit,
   buttonText = 'Применить',
   initialEmptyListMessage = defaultEmptyListMessage,
+  notShowAsAlphabet,
 }) => {
   const [emptyListMessage, setEmptyListMessage] = React.useState<string | null>(null);
   const [state, setState] = React.useState<OptionsModalLetterInterface[] | null>(null);
@@ -202,22 +204,36 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      {(state || []).map(({ letter, docs }) => {
-        if (docs.length < 1) {
-          return null;
-        }
+      {notShowAsAlphabet ? (
+        <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
+          {(state || []).map(({ docs }) => {
+            if (docs.length < 1) {
+              return null;
+            }
 
-        return (
-          <div className='mb-12 pb-12 border-b-2 border-secondary-background' key={letter}>
-            <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
-            <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
-              {docs.map((option) => {
-                return <div key={`${option._id}`}>{renderOption(option)}</div>;
-              })}
+            return docs.map((option) => {
+              return <div key={`${option._id}`}>{renderOption(option)}</div>;
+            });
+          })}
+        </div>
+      ) : (
+        (state || []).map(({ letter, docs }) => {
+          if (docs.length < 1) {
+            return null;
+          }
+
+          return (
+            <div className='mb-12 pb-12 border-b-2 border-secondary-background' key={letter}>
+              <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
+              <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
+                {docs.map((option) => {
+                  return <div key={`${option._id}`}>{renderOption(option)}</div>;
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
 
       {selectedOptions.length > 0 ? (
         <FixedButtons>

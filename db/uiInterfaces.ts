@@ -315,6 +315,7 @@ export interface CatalogueFilterAttributeInterface {
   name: string;
   metric?: string | null;
   isSelected: boolean;
+  notShowAsAlphabet: boolean;
   options: CatalogueFilterAttributeOptionInterface[];
   viewVariant: AttributeViewVariantModel;
 }

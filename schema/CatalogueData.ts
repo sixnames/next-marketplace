@@ -572,6 +572,7 @@ export const CatalogueDataInput = inputObjectType({
   definition(t) {
     t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
     t.nonNull.list.nonNull.string('filter');
+    t.nonNull.string('rubricSlug');
   },
 });
 
@@ -607,8 +608,7 @@ export const CatalogueMutations = extendType({
 
           // Args
           const { input } = args;
-          const { filter, companySlug } = input;
-          const [rubricSlug] = filter;
+          const { filter, companySlug, rubricSlug } = input;
 
           if (!role.isStaff) {
             const rubric = await rubricsCollection.findOne({ slug: rubricSlug });

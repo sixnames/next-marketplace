@@ -305,6 +305,7 @@ export type CatalogueAdditionalOptionsInput = {
 export type CatalogueDataInput = {
   companySlug?: Maybe<Scalars['String']>;
   filter: Array<Scalars['String']>;
+  rubricSlug: Scalars['String'];
 };
 
 export type CatalogueSearchInput = {

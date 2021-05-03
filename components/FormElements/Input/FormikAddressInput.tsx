@@ -3,9 +3,6 @@ import { useLocaleContext } from 'context/localeContext';
 import { get } from 'lodash';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
-import FieldErrorMessage, {
-  ErrorMessageGapsInterface,
-} from '../FieldErrorMessage/FieldErrorMessage';
 import classes from './FormikAddressInput.module.css';
 import Spinner from '../../Spinner/Spinner';
 import { useDebounce } from 'use-debounce';
@@ -17,6 +14,8 @@ interface FormikAddressInputConsumerInterface extends AddressInputType {
   notValid: boolean;
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
   fieldValue?: GeocodeResultInterface | null;
+  showInlineError?: boolean;
+  error?: any;
 }
 
 const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> = ({
@@ -129,7 +128,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   );
 };
 
-export interface FormikAddressInputInterface extends AddressInputType, ErrorMessageGapsInterface {
+export interface FormikAddressInputInterface extends AddressInputType {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -140,8 +139,6 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
   showInlineError,
   frameClass,
   low,
-  errorMessageLowBottom,
-  errorMessageLowTop,
   ...props
 }) => {
   return (
@@ -151,7 +148,6 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
         const addressError = get(errors, `${name}.formattedAddress`);
         const finalError = addressError || get(error, 'formattedAddress');
         const notValid = Boolean(finalError);
-        const showError = showInlineError && notValid;
         const fieldValue = field.value;
 
         return (
@@ -164,16 +160,10 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
               name={name}
               fieldValue={fieldValue}
               disabled={fieldValue}
+              error={error}
+              showInlineError={showInlineError}
               {...props}
             />
-            {showError ? (
-              <FieldErrorMessage
-                errorMessageLowBottom={errorMessageLowBottom}
-                errorMessageLowTop={errorMessageLowTop}
-                error={finalError}
-                name={name}
-              />
-            ) : null}
           </div>
         );
       }}

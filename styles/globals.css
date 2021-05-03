@@ -8,30 +8,63 @@
     text-indent: -999em;
   }
 
+  .top-half {
+    top: 50%;
+  }
+
+  .left-half {
+    left: 50%;
+  }
+
   .wp-shadow-25 {
     box-shadow: 0 0 5px rgba(9, 9, 9, 0.25);
   }
+
   .wp-shadow-50 {
     box-shadow: 0 0 10px rgba(9, 9, 9, 0.25);
   }
+
   .wp-shadow-100 {
     box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
   }
+
   .wp-shadow-top-100 {
     box-shadow: 0 -5px 20px 0 rgba(9, 9, 9, 0.2);
   }
+
   .wp-shadow-right-100 {
     box-shadow: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
   }
+
   .wp-shadow-bottom-100 {
     box-shadow: 0 20px 15px -15px rgba(9, 9, 9, 0.2);
   }
+
   .wp-shadow-200 {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
   }
 }
 
 @layer base {
+  .form-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .form-input::-webkit-outer-spin-button,
+  .form-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .input-with-icon-padding {
+    padding-left: calc((var(--inputPaddingHorizontal) * 2) + var(--inputIconSize));
+  }
+
+  .input-with-clear-padding {
+    padding-right: calc(var(--controlButtonHeight) + 0.5rem);
+  }
+
   .header-aside {
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
   }

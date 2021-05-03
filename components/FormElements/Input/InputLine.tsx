@@ -1,6 +1,6 @@
+import FieldErrorMessage from 'components/FormElements/FieldErrorMessage/FieldErrorMessage';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
-import classes from './InputLine.module.css';
 import Icon from '../../Icon/Icon';
 import Tooltip from '../../TTip/Tooltip';
 
@@ -19,6 +19,8 @@ export interface InputLinePropsInterface {
   labelTag?: keyof JSX.IntrinsicElements;
   description?: string | null;
   lineIcon?: IconType;
+  showInlineError?: boolean;
+  error?: any;
 }
 
 const InputLine: React.FC<InputLinePropsInterface> = ({
@@ -37,6 +39,8 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   description,
   lineContentClass,
   lineIcon,
+  error,
+  showInlineError,
 }) => {
   const TagName = labelTag;
   const labelTagProps =
@@ -45,39 +49,58 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           htmlFor: name,
         }
       : {};
-
-  const horizontalClassName = isHorizontal ? classes.horizontal : '';
-  const wideClassName = wide ? classes.wide : '';
-  const lowClassName = low ? classes.low : '';
+  const wideClassName = wide ? 'w-full' : '';
+  const lowClassName = low ? '' : 'mb-8';
   const additionalClassName = lineClass ? lineClass : '';
-  const inputLineClassName = `${classes.frame} ${horizontalClassName} ${wideClassName} ${lowClassName} ${additionalClassName}`;
+  const horizontalClassName = isHorizontal ? `md:flex md:items-start md:justify-between` : '';
+  const inputLineClassName = `relative ${wideClassName} ${lowClassName} ${horizontalClassName} ${additionalClassName}`;
+  const notValid = Boolean(error);
+  const showError = showInlineError && notValid;
 
   return (
     <div className={inputLineClassName}>
-      {label && (
-        <TagName {...labelTagProps} className={`${classes.label} ${labelClass ? labelClass : ''}`}>
+      {label ? (
+        <TagName
+          {...labelTagProps}
+          className={`flex items-start min-h-[1.3rem] mb-2 font-medium text-secondary-text ${
+            isHorizontal
+              ? 'md:w-[220px] pt-1 flex-shrink-0'
+              : 'whitespace-nowrap overflow-hidden whitespace-nowrap overflow-ellipsis'
+          } ${labelClass ? labelClass : ''}`}
+        >
           {label}
-          {labelPostfix && <span className={classes.labelPostfix}>{labelPostfix}</span>}
-          {labelLink && <span className={classes.labelLink}>{labelLink}</span>}
-          {isRequired && <sup>*</sup>}
-          {description && (
+          {labelPostfix ? (
+            <span className='ml-2 text-sm text-secondary-text'>{labelPostfix}</span>
+          ) : null}
+          {labelLink ? <span className='ml-2'>{labelLink}</span> : null}
+          {isRequired ? (
+            <sup className='relative inline-block -top-0.5 ml-1 text-lg leading-none text-red-500 font-medium'>
+              *
+            </sup>
+          ) : null}
+          {description ? (
             <Tooltip title={description}>
-              <div className={classes.description}>
-                <Icon name={'question-circle'} />
+              <div className='inline cursor-pointer ml-3'>
+                <Icon className='w-5 h-5' name={'question-circle'} />
               </div>
             </Tooltip>
-          )}
+          ) : null}
         </TagName>
-      )}
-      <div className={classes.holder}>
-        <div className={`${classes.content} ${lineContentClass ? lineContentClass : ''}`}>
-          {children}
-        </div>
-        {lineIcon ? (
-          <div className={classes.iconHolder}>
-            <Icon className={classes.icon} name={lineIcon} />
+      ) : null}
+
+      <div className={isHorizontal ? 'ml-4 flex-grow' : ''}>
+        <div className='flex items-center'>
+          <div className={`relative flex-grow ${lineContentClass ? lineContentClass : ''}`}>
+            {children}
           </div>
-        ) : null}
+          {lineIcon ? (
+            <div className='flex items-center justify-end flex-shrink-0 w-form-input-height h-form-input-height'>
+              <Icon className='w-6 h-6' name={lineIcon} />
+            </div>
+          ) : null}
+        </div>
+
+        {showError && <FieldErrorMessage error={error} name={`${name}`} />}
       </div>
     </div>
   );

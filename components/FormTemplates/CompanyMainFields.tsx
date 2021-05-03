@@ -85,7 +85,14 @@ const CompanyMainFields: React.FC = () => {
   }
   return (
     <React.Fragment>
-      <FormikInput label={'Название'} name={'name'} testId={'name'} showInlineError isRequired />
+      <FormikInput
+        isHorizontal
+        label={'Название'}
+        name={'name'}
+        testId={'name'}
+        showInlineError
+        isRequired
+      />
 
       <FormikMultiLineInput
         label={'Email'}

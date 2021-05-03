@@ -1,15 +1,16 @@
 import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
 import Link from 'components/Link/Link';
+import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap/ShopsMap';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  CATALOGUE_DEFAULT_RUBRIC_SLUG,
-  CATALOGUE_OPTION_SEPARATOR,
+  ROUTE_CATALOGUE_DEFAULT_RUBRIC,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
-  ROUTE_CATALOGUE,
   SORT_DESC,
+  CATALOGUE_OPTION_SEPARATOR,
+  ROUTE_CATALOGUE,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import {
@@ -20,8 +21,9 @@ import {
 } from 'db/collectionNames';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface, ShopInterface } from 'db/uiInterfaces';
+import { ProductInterface, ShopInterface, TopFilterInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import { getCatalogueTitle } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -35,8 +37,8 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomeRoutInterface {
   topProducts: ProductInterface[];
-  navRubrics: RubricInterface[];
   topShops: ShopInterface[];
+  topFilters: TopFilterInterface[];
 }
 
 const bannersConfig = [
@@ -51,16 +53,16 @@ const bannersConfig = [
   },
 ];
 
-const defaultRubricHref = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
-
-const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topShops }) => {
+const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilters }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const sectionClassName = `mb-14 sm:mb-28`;
+
   return (
     <React.Fragment>
       <Inner>
-        <div className='mb-10 sm:mb-16 overflow-hidden rounded-xl'>
-          <Link className='block' href={defaultRubricHref}>
+        <div className='mb-14 sm:mb-20 overflow-hidden rounded-xl'>
+          <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
             <img
               className='w-full'
               src={'/home/slider.jpg'}
@@ -72,11 +74,11 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
           </Link>
         </div>
 
-        <div className='mb-10 sm:mb-16 max-w-[690px]'>
+        <div className='mb-14 sm:mb-20 max-w-[690px]'>
           <Title>{configTitle}</Title>
         </div>
 
-        <section className='mb-10 sm:mb-16'>
+        <section className={sectionClassName}>
           <div className='text-2xl mb-4 font-medium'>
             <h2>Бестселлеры</h2>
           </div>
@@ -91,7 +93,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
           </HorizontalScroll>
         </section>
 
-        <section className='mb-10 sm:mb-16'>
+        <section className={sectionClassName}>
           <div className='text-2xl mb-4 font-medium'>
             <h2>Акции</h2>
           </div>
@@ -102,7 +104,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
                   className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
                   key={`${src}`}
                 >
-                  <Link className='block' href={defaultRubricHref}>
+                  <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
                     <img src={src} width='526' height='360' alt={src} title={src} />
                   </Link>
                 </div>
@@ -111,47 +113,22 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
           </HorizontalScroll>
         </section>
 
-        <section className='mb-10 sm:mb-16'>
+        <section className={sectionClassName}>
           <div className='text-2xl mb-4 font-medium'>
-            <h2>Выберите на ваш вкус и цвет</h2>
+            <h2>Популярные разделы</h2>
           </div>
-          <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-12'>
-            {navRubrics.map((rubric) => {
-              return (rubric.attributes || []).map((attribute) => {
-                return (
-                  <div key={`${attribute._id}`}>
-                    <div className='mb-4 text-lg font-medium'>
-                      <h3>{attribute.name}</h3>
-                    </div>
-                    <ul>
-                      {(attribute.options || []).map((option) => {
-                        return (
-                          <li className='mr-2 mb-2' key={`${option.slug}`}>
-                            <Link
-                              className='max-w-full inline-block bg-secondary-background text-secondary-text rounded-md px-4 py-2 hover:no-underline hover:text-theme'
-                              href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                            >
-                              {option.name}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <Link
-                      prefetch={false}
-                      href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
-                      className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
-                    >
-                      Показать ещё
-                    </Link>
-                  </div>
-                );
-              });
+          <div className='flex flex-wrap gap-3'>
+            {topFilters.map(({ name, href }) => {
+              return (
+                <TagLink href={href} key={href}>
+                  {name}
+                </TagLink>
+              );
             })}
           </div>
         </section>
 
-        <section className='mb-10 sm:mb-16'>
+        <section className={sectionClassName}>
           <div className='text-2xl mb-4 font-medium'>
             <h2>Винотеки</h2>
           </div>
@@ -164,10 +141,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
 
 interface HomeInterface extends SiteLayoutProviderInterface, HomeRoutInterface {}
 
-const Home: NextPage<HomeInterface> = ({ topProducts, topShops, ...props }) => {
+const Home: NextPage<HomeInterface> = ({ topProducts, topShops, topFilters, ...props }) => {
   return (
     <SiteLayoutProvider {...props}>
-      <HomeRoute topProducts={topProducts} navRubrics={props.navRubrics} topShops={topShops} />
+      <HomeRoute topProducts={topProducts} topFilters={topFilters} topShops={topShops} />
     </SiteLayoutProvider>
   );
 };
@@ -406,10 +383,43 @@ export async function getServerSideProps(
       connections: [],
     });
   }
+  // console.log(JSON.stringify(props.navRubrics, null, 2));
+
+  const topFilters: TopFilterInterface[] = [];
+  props.navRubrics.forEach(({ catalogueTitle, slug, attributes }) => {
+    (attributes || []).forEach((attribute) => {
+      const options = (attribute.options || []).slice(0, 2);
+      if (options.length < 1) {
+        return;
+      }
+
+      options.forEach((option) => {
+        const name = getCatalogueTitle({
+          selectedFilters: [
+            {
+              attribute,
+              options: [option],
+            },
+          ],
+          catalogueTitle,
+          locale: sessionLocale,
+        });
+
+        const exist = topFilters.some((topFilter) => topFilter.name === name);
+        if (!exist) {
+          topFilters.push({
+            name,
+            href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`,
+          });
+        }
+      });
+    });
+  });
 
   return {
     props: {
       ...props,
+      topFilters: castDbData(topFilters),
       topProducts: castDbData(products),
       topShops: castDbData(topShops),
     },

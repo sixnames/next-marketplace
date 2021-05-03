@@ -28,7 +28,7 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
   }
 
   return (
-    <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
+    <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
       <CmsNav compact={compact} navItems={me.role?.cmsNavigation || []} />

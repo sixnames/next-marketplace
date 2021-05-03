@@ -37,7 +37,7 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
   }
 
   return (
-    <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary-background`}>
+    <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
       <AppNav compact={compact} navItems={me.role?.appNavigation || []} />

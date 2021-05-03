@@ -40,6 +40,8 @@ const Button: React.FC<ButtonPropsInterface> = ({
       ? 'text-wp-white bg-theme'
       : theme === 'secondary'
       ? 'text-theme bg-secondary-button-background'
+      : theme === 'secondary-b'
+      ? 'text-theme bg-secondary-b-button-background'
       : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100';
 
   const isSmall = size === 'small';

@@ -223,7 +223,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   }
 
   return (
-    <div className='fixed inset-0 bg-secondary-background z-[1] w-full pt-4 pb-8 overflow-y-auto'>
+    <div className='fixed inset-0 bg-secondary z-[1] w-full pt-4 pb-8 overflow-y-auto'>
       <Inner className='pb-24'>
         <div className='flex items-center justify-between mb-8'>
           <ThemeTrigger />
@@ -335,7 +335,7 @@ const Header: React.FC = () => {
   return (
     <React.Fragment>
       <header
-        className='relative z-[130] bg-primary-background shadow-md wp-desktop:shadow-none'
+        className='relative z-[130] bg-primary shadow-md wp-desktop:shadow-none'
         style={headerVars}
         ref={headerRef}
       >
@@ -401,9 +401,9 @@ const Header: React.FC = () => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-desktop:hidden'>
+      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 wp-desktop:hidden'>
         <Inner
-          className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary-background'
+          className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
           lowTop
         >
           <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />

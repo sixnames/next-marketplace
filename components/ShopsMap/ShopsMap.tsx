@@ -60,7 +60,6 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   const options = React.useMemo(() => {
     return {
       styles: isDark ? darkMapStyles : lightMapStyles,
-      disableDefaultUI: true,
     };
   }, [isDark]);
 
@@ -76,7 +75,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
     <div className={classes.frame}>
       <div className={classes.scroller}>
         <div className={classes.list}>
-          {shops.map(({ _id, name, address, productsCount, mainImage }) => {
+          {shops.map(({ _id, name, address, mainImage }) => {
             return (
               <div
                 key={`${_id}`}
@@ -98,7 +97,6 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                   <div className={classes.listItemName}>{name}</div>
                   <div className={classes.listItemAddress}>{address.formattedAddress}</div>
                   <div className={classes.listItemBottom}>
-                    <div className={classes.listItemCounter}>{`${productsCount} товаров`}</div>
                     <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} />
                   </div>
                 </div>

@@ -1,5 +1,7 @@
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
 import { useSiteContext } from 'context/siteContext';
@@ -17,19 +19,21 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdownHandler,
   rubricSlug,
 }) => {
-  const { _id, options, name, metric } = attribute;
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const { options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
-
+  const visibleOptionsCount = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
+  const showOptionsMoreLink = noNaN(visibleOptionsCount) === attribute.options?.length;
   if ((options || []).length < 1) {
     return null;
   }
 
   return (
-    <div key={`${_id}`}>
+    <div className='flex flex-col'>
       <div className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'>
         {name}
       </div>
-      <ul>
+      <ul className='flex-grow flex flex-col'>
         {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
@@ -46,16 +50,18 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           );
         })}
 
-        <li>
-          <Link
-            prefetch={false}
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
-            onClick={hideDropdownHandler}
-            className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
-          >
-            Показать все
-          </Link>
-        </li>
+        {showOptionsMoreLink ? (
+          <li className='mt-auto'>
+            <Link
+              prefetch={false}
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
+              onClick={hideDropdownHandler}
+              className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+            >
+              Показать все
+            </Link>
+          </li>
+        ) : null}
       </ul>
     </div>
   );
@@ -102,7 +108,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       </Link>
 
       <div
-        className={`absolute top-full w-full inset-x-0 bg-secondary-background shadow-lg ${
+        className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
           isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
         }`}
       >
@@ -132,7 +138,7 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
 
   return (
-    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary-background wp-desktop:block'>
+    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary wp-desktop:block'>
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {

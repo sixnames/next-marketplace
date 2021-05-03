@@ -298,6 +298,22 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'string' as ConfigVariantModel,
+      slug: 'twitter',
+      name: 'Ссылка на Twitter',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // SEO
     {

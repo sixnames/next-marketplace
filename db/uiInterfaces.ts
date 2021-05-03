@@ -367,3 +367,8 @@ export interface OrderInterface extends OrderModel {
   totalPrice?: number | null;
   formattedTotalPrice?: string | null;
 }
+
+export interface TopFilterInterface {
+  name: string;
+  href: string;
+}

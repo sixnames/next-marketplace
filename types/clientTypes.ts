@@ -1,7 +1,8 @@
 import { IconType } from 'types/iconTypes';
 
 export type Theme = 'light' | 'dark' | 'undefined';
-export type ButtonTheme = 'primary' | 'secondary' | 'gray';
+export type ButtonTheme = 'primary' | 'secondary' | 'secondary-b' | 'gray';
+export type InputTheme = 'primary' | 'secondary';
 export type SizeType = 'small' | 'normal';
 export type ModalSizeType = 'small' | 'normal' | 'midWide' | 'wide';
 export type ButtonType = 'submit' | 'button' | 'reset';

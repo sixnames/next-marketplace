@@ -8,7 +8,7 @@ interface LayoutCardInterface {
 const LayoutCard: React.FC<LayoutCardInterface> = ({ testId, className, children }) => {
   return (
     <div
-      className={`rounded-md bg-secondary-background dark:shadow-md ${className ? className : ''}`}
+      className={`rounded-md bg-secondary dark:shadow-md ${className ? className : ''}`}
       data-cy={testId}
     >
       {children}

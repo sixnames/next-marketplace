@@ -19,5 +19,6 @@ export const phoneToReadable = (phone?: string | null) => {
   const phonePartA = phone.slice(5, 8);
   const phonePartB = phone.slice(8, 10);
   const phonePartC = phone.slice(10);
-  return `${countryCode} ${code} ${phonePartA} ${phonePartB} ${phonePartC}`;
+  const finalNumber = `${countryCode} ${code} ${phonePartA} ${phonePartB} ${phonePartC}`;
+  return finalNumber.replace('+', '');
 };

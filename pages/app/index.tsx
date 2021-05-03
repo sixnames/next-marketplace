@@ -19,7 +19,7 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
         {(sessionUser?.companies || []).map((company) => {
           return (
             <div
-              className='bg-secondary-background rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
+              className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
               key={`${company._id}`}
               onClick={() => {
                 router.push(`${ROUTE_APP}/${company._id}/shops`).catch((e) => console.log(e));

@@ -128,7 +128,6 @@ export const getCatalogueNavRubrics = async ({
         $project: {
           descriptionI18n: false,
           shortDescriptionI18n: false,
-          catalogueTitle: false,
           attributesGroupsIds: false,
           views: false,
           priorities: false,

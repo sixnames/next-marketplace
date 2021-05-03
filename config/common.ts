@@ -66,12 +66,15 @@ export const ROUTE_CMS = `/cms`;
 export const ROUTE_APP_NAV_GROUP = 'app';
 export const ROUTE_CMS_NAV_GROUP = 'cms';
 export const ROUTE_SIGN_IN = '/sign-in';
+export const ROUTE_CONTACTS = `/contacts`;
+export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
+export const ROUTE_CATALOGUE = `/catalogue`;
+export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
 
 // query params
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
 
 // profile
-export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
@@ -202,7 +205,6 @@ export const PRICE_ATTRIBUTE_SLUG = 'price';
 export const CATALOGUE_VIEW_STORAGE_KEY = 'catalogueView';
 export const CATALOGUE_VIEW_ROW = 'row';
 export const CATALOGUE_VIEW_GRID = 'grid';
-export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
 
 export const NEGATIVE_INDEX = -1;

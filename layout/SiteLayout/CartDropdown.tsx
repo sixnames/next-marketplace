@@ -36,7 +36,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
   return (
     <div
-      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary-background dark:bg-wp-dark-gray-200 wp-desktop:relative wp-desktop:rounded-lg wp-desktop:bottom-auto wp-desktop:inset-x-auto wp-desktop:w-[30rem]'
+      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 wp-desktop:relative wp-desktop:rounded-lg wp-desktop:bottom-auto wp-desktop:inset-x-auto wp-desktop:w-[30rem]'
       style={cartDropdownCssVars}
       data-cy={'cart-dropdown'}
     >
@@ -202,7 +202,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           })}
         </div>
       </div>
-      <div className='p-[var(--framePadding)] border-t border-wp-light-gray-100 bg-primary-background dark:bg-wp-dark-gray-100 dark:border-wp-dark-gray-100'>
+      <div className='p-[var(--framePadding)] border-t border-wp-light-gray-100 bg-primary dark:bg-wp-dark-gray-100 dark:border-wp-dark-gray-100'>
         <div className='flex items-center justify-between mb-[var(--framePadding)]'>
           <div className='text-2xl text-secondary-text'>Итого</div>
           <div className='text-2xl text-primary-text font-medium'>

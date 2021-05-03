@@ -1,9 +1,8 @@
 import * as React from 'react';
-import classes from './TagLink.module.css';
 import Link, { LinkInterface } from './Link';
 
 export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName'> {
-  variant?: 'dark' | 'normal';
+  theme?: 'primary' | 'secondary';
   isActive?: boolean;
   asLink?: boolean;
 }
@@ -11,7 +10,7 @@ export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName'>
 const TagLink: React.FC<TagLinkInterface> = ({
   className,
   children,
-  variant = 'normal',
+  theme = 'secondary',
   href,
   testId,
   isActive,
@@ -20,6 +19,13 @@ const TagLink: React.FC<TagLinkInterface> = ({
   shallow,
   ...props
 }) => {
+  const borderClassName = isActive
+    ? `border-theme`
+    : theme === 'secondary'
+    ? `border-secondary`
+    : `border-primary`;
+  const variantClassName = theme === 'secondary' ? `bg-secondary` : `bg-primary`;
+  const tagClassName = `flex items-center h-10 px-4 border rounded-2xl text-secondary-text ${variantClassName} ${borderClassName}`;
   if (asLink) {
     return (
       <Link
@@ -27,9 +33,9 @@ const TagLink: React.FC<TagLinkInterface> = ({
         testId={testId}
         prefetch={prefetch}
         shallow={shallow}
-        className={`${classes.tagLink} ${isActive ? classes.tagLinkActive : ''} ${
-          variant === 'dark' ? classes.tagLinkDark : ''
-        } ${className ? className : ''}`}
+        className={`${tagClassName} hover:no-underline hover:text-theme ${
+          className ? className : ''
+        }`}
         {...props}
       >
         {children}
@@ -38,12 +44,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
   }
 
   return (
-    <div
-      className={`${classes.tagLink} ${isActive ? classes.tagLinkActive : ''} ${
-        variant === 'dark' ? classes.tagLinkDark : ''
-      } ${className ? className : ''}`}
-      {...props}
-    >
+    <div className={`${tagClassName} ${className ? className : ''}`} {...props}>
       {children}
     </div>
   );

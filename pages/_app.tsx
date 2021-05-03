@@ -35,7 +35,7 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
-  const { session, initialData } = pageProps;
+  const { session, initialData, currentCity } = pageProps;
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
@@ -48,6 +48,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
         >
           <NotificationsProvider>
             <ConfigContextProvider
+              currentCity={currentCity}
               configs={initialData?.configs || []}
               cities={initialData?.cities || []}
             >

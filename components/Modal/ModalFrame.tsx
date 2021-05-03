@@ -30,7 +30,7 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
     <div
       data-cy={testId}
       className={`relative z-[2] w-full py-14 mx-auto my-4 shadow-xl rounded-lg ${sizeClass} ${
-        warning ? 'bg-red-400' : 'bg-primary-background'
+        warning ? 'bg-red-400' : 'bg-primary'
       } ${className ? className : ''} ${withInner ? '' : 'px-inner-block-horizontal-padding'}`}
     >
       <div>{children}</div>

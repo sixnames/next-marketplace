@@ -36,7 +36,7 @@ export const iconTypesList = [
   'sun',
   'upload',
   'user',
-  'vk',
+  'vkontakte',
   'youtube',
   'white-meat',
   'soup',

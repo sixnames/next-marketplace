@@ -27,7 +27,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   disabled,
   theme = 'primary',
 }) => {
-  const inputTheme = theme === 'primary' ? 'bg-primary-background' : 'bg-input-background';
+  const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const disabledClassName = disabled ? 'opacity-50 pointer-events-none' : '';
   const inputBorder = `border border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
   const inputClassName = `relative flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg ${inputBorder} ${inputTheme} ${disabledClassName}`;

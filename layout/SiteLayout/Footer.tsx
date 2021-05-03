@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
     twitterLink;
 
   return (
-    <footer className='footer relative z-[100] pt-6 pb-mobile-nav-height wp-desktop:pb-8 bg-secondary-background'>
+    <footer className='footer relative z-[100] pt-6 pb-mobile-nav-height wp-desktop:pb-8 bg-secondary'>
       <Inner className='grid gap-x-8 gap-y-12 wp-desktop:grid-cols-6'>
         <div className='flex flex-col wp-desktop:col-span-2 max-w-[480px]'>
           <div className='text-2xl font-medium mb-6'>

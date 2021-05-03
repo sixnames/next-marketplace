@@ -130,7 +130,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
                         return (
                           <li className='mr-2 mb-2' key={`${option.slug}`}>
                             <Link
-                              className='max-w-full inline-block bg-secondary-background text-secondary-text rounded-md px-4 py-2 hover:no-underline hover:text-theme'
+                              className='max-w-full inline-block bg-secondary text-secondary-text rounded-md px-4 py-2 hover:no-underline hover:text-theme'
                               href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                             >
                               {option.name}
@@ -410,7 +410,7 @@ export async function getServerSideProps(
       connections: [],
     });
   }
-
+  console.log(JSON.stringify(props.navRubrics, null, 2));
   return {
     props: {
       ...props,

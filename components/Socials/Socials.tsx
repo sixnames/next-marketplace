@@ -17,7 +17,7 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
       href={href}
       target={'_blank'}
       rel={'noreferrer nofollow'}
-      className='flex flex-shrink-0 w-8 h-8 items-center justify-center rounded-full bg-primary-background mr-4 hover:opacity-80'
+      className='flex flex-shrink-0 w-8 h-8 items-center justify-center rounded-full bg-primary mr-4 hover:opacity-80'
     >
       <Icon className='w-4 h-4' name={icon} />
     </a>

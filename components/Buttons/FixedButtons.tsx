@@ -11,10 +11,7 @@ const FixedButtons: React.FC<FixedButtonsInterface> = ({ children, visible = tru
   }
 
   return (
-    <div
-      data-cy={'fixed-buttons'}
-      className='sticky inset-x-0 bottom-0 z-30 pt-6 pb-6 bg-primary-background'
-    >
+    <div data-cy={'fixed-buttons'} className='sticky inset-x-0 bottom-0 z-30 pt-6 pb-6 bg-primary'>
       {children}
     </div>
   );

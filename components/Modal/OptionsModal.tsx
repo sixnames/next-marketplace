@@ -100,7 +100,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
               className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
             >
               <div
-                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary-background border-2 border-border-color text-theme ${
+                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
                   isCheckbox ? checkboxClassName : radioClassName
                 }`}
               >
@@ -124,7 +124,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
           className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
         >
           <div
-            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary-background border-2 border-border-color text-theme ${
+            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
               isCheckbox ? checkboxClassName : radioClassName
             }`}
           >
@@ -223,7 +223,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
           }
 
           return (
-            <div className='mb-12 pb-12 border-b-2 border-secondary-background' key={letter}>
+            <div className='mb-12 pb-12 border-b-2 border-secondary' key={letter}>
               <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
               <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
                 {docs.map((option) => {

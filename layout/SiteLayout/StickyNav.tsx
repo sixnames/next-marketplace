@@ -108,7 +108,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       </Link>
 
       <div
-        className={`absolute top-full w-full inset-x-0 bg-secondary-background shadow-lg ${
+        className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
           isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
         }`}
       >
@@ -138,7 +138,7 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
 
   return (
-    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary-background wp-desktop:block'>
+    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary wp-desktop:block'>
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {

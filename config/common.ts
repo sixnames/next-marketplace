@@ -69,7 +69,7 @@ export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;
 export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
-export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `/catalogue/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
+export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
 
 // query params
 export const QUERY_DATA_LAYOUT_PAGE = 'page';

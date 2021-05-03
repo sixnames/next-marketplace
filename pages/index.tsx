@@ -5,7 +5,7 @@ import ShopsMap from 'components/ShopsMap/ShopsMap';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  CATALOGUE_DEFAULT_RUBRIC_SLUG,
+  ROUTE_CATALOGUE_DEFAULT_RUBRIC,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   ROUTE_CATALOGUE,
@@ -51,8 +51,6 @@ const bannersConfig = [
   },
 ];
 
-const defaultRubricHref = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
-
 const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topShops }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
@@ -60,7 +58,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
     <React.Fragment>
       <Inner>
         <div className='mb-10 sm:mb-16 overflow-hidden rounded-xl'>
-          <Link className='block' href={defaultRubricHref}>
+          <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
             <img
               className='w-full'
               src={'/home/slider.jpg'}
@@ -102,7 +100,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
                   className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
                   key={`${src}`}
                 >
-                  <Link className='block' href={defaultRubricHref}>
+                  <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
                     <img src={src} width='526' height='360' alt={src} title={src} />
                   </Link>
                 </div>

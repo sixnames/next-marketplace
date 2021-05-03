@@ -5,6 +5,7 @@ import { noNaN } from 'lib/numbers';
 interface ConfigContextInterface {
   configs: ConfigInterface[];
   cities: CityInterface[];
+  currentCity?: CityInterface | null;
 }
 
 const ConfigContext = React.createContext<ConfigContextInterface>({
@@ -15,14 +16,16 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
 const ConfigContextProvider: React.FC<ConfigContextInterface> = ({
   configs = [],
   cities = [],
+  currentCity,
   children,
 }) => {
   const initialValue = React.useMemo(() => {
     return {
       configs,
       cities,
+      currentCity,
     };
-  }, [configs, cities]);
+  }, [currentCity, configs, cities]);
 
   return <ConfigContext.Provider value={initialValue}>{children}</ConfigContext.Provider>;
 };

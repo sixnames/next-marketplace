@@ -44,6 +44,8 @@ module.exports = {
         'secondary-background': `var(--secondaryBackground)`,
         'secondary-background-light': `var(--secondaryBackgroundLight)`,
         'secondary-button-background': `var(--secondaryButtonBackground)`,
+        'secondary-b-button-background': `var(--primaryBackground)`,
+        'input-background': `var(--inputBackground)`,
         backdrop: `rgba(50, 50, 50, 0.3)`,
       },
       minHeight: {

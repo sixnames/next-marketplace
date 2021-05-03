@@ -1,7 +1,7 @@
 import ControlButton from 'components/Buttons/ControlButton';
 import * as React from 'react';
+import { InputTheme } from 'types/clientTypes';
 import InputLine, { InputLinePropsInterface } from './InputLine';
-import classes from './FakeInput.module.css';
 
 interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'labelTag'> {
   className?: string;
@@ -10,6 +10,7 @@ interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'lab
   onClick?: () => void;
   onClear?: () => void;
   disabled?: boolean;
+  theme?: InputTheme;
 }
 
 const FakeInput: React.FC<FakeInputInterface> = ({
@@ -24,7 +25,13 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   onClick,
   onClear,
   disabled,
+  theme = 'primary',
 }) => {
+  const inputTheme = theme === 'primary' ? 'bg-primary-background' : 'bg-input-background';
+  const disabledClassName = disabled ? 'opacity-50 pointer-events-none' : '';
+  const inputBorder = `border border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
+  const inputClassName = `relative flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg ${inputBorder} ${inputTheme} ${disabledClassName}`;
+
   return (
     <InputLine
       isRequired={false}
@@ -36,12 +43,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
       low={low}
       labelTag={'div'}
     >
-      <div
-        className={`${classes.frame} ${disabled ? classes.disabled : ''} ${
-          className ? className : ''
-        }`}
-        data-cy={testId}
-      >
+      <div className={`${inputClassName} ${className ? className : ''}`} data-cy={testId}>
         <div
           className='relative flex items-center z-10 h-form-input-height w-full px-input-padding-horizontal'
           onClick={onClick}

@@ -92,6 +92,12 @@
     width: calc(100% - (var(--formInputHeightSmall) * 2));
   }
 
+  .table-image img {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+  }
+
   .spinner-circular {
     animation: rotate 1.5s linear infinite;
     height: 100px;

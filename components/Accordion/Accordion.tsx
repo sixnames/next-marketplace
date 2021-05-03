@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Icon from '../Icon/Icon';
-import classes from './Accordion.module.css';
 
 export interface AccordionInterface {
   titleClassName?: string;
@@ -51,27 +50,36 @@ const Accordion: React.FC<AccordionInterface> = ({
   return (
     <div className={className ? className : ''}>
       <div
-        className={`${noTitleStyle ? classes.titleNoStyle : classes.title} ${
-          titleClassName ? titleClassName : ''
-        }`}
+        className={`flex items-center pr-2 pb-2 ${
+          noTitleStyle
+            ? ''
+            : 'min-h-[3rem] pt-2 pl-4 border-l-4 border-gray-500 shadow-md bg-secondary rounded-md'
+        } ${titleClassName ? titleClassName : ''}`}
       >
-        {!!titleLeft && <div className={classes.titleLeft}>{titleLeft}</div>}
+        {titleLeft ? <div>{titleLeft}</div> : null}
 
         <div
           data-cy={testId}
           onClick={!disabled ? accordionHandler : undefined}
-          className={`${classes.trigger} ${lastInTree || disabled ? classes.triggerDisabled : ''}`}
+          className={`flex items-center mr-4 overflow-ellipsis whitespace-nowrap ${
+            lastInTree || disabled ? 'cursor-default' : 'cursor-pointer hover:text-theme'
+          }`}
         >
           <span>{title}</span>
 
-          {!lastInTree && (
-            <div className={`${classes.arrow} ${open ? classes.arrowActive : ''}`}>
-              <Icon name={'chevron-down'} />
+          {lastInTree || disabled ? null : (
+            <div className={`relative ml-2`}>
+              <Icon
+                className={`w-4 h-4 fill-theme transition transition-duration-150 ${
+                  open ? 'transform rotate-180' : ''
+                }`}
+                name={'chevron-down'}
+              />
             </div>
           )}
         </div>
 
-        {titleRight && <div className={classes.titleRight}>{titleRight}</div>}
+        {titleRight ? <div className='ml-auto flex-shrink-0'>{titleRight}</div> : null}
       </div>
 
       {open && <div>{children}</div>}

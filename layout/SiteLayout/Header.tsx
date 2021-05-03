@@ -401,7 +401,7 @@ const Header: React.FC = () => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-desktop:hidden'>
+      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 wp-desktop:hidden'>
         <Inner
           className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary-background'
           lowTop

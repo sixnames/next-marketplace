@@ -67,7 +67,7 @@ const Input: React.FC<InputPropsInterface> = ({
   const inputPaddingRight = onClear ? 'input-with-clear-padding' : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';
   const disabledClass = readOnly || disabled ? 'cursor-default' : '';
-  const inputClassName = `input-with-icon-padding relative flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg border ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${disabledClassName} ${additionalClass}`;
+  const inputClassName = `relative flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg border ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${disabledClassName} ${additionalClass}`;
 
   const currentValue = !value && value !== 0 ? '' : value;
 

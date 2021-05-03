@@ -46,7 +46,9 @@
 }
 
 @layer base {
+  .form-select,
   .form-input {
+    transition: all 0.2s;
     -webkit-appearance: none;
     -moz-appearance: none;
   }

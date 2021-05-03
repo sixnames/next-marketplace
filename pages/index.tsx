@@ -54,6 +54,8 @@ const bannersConfig = [
 const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topShops }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const visibleOptionsCount = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
+
   return (
     <React.Fragment>
       <Inner>
@@ -116,6 +118,8 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
           <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-12'>
             {navRubrics.map((rubric) => {
               return (rubric.attributes || []).map((attribute) => {
+                const showOptionsMoreLink =
+                  noNaN(visibleOptionsCount) === attribute.options?.length;
                 return (
                   <div key={`${attribute._id}`}>
                     <div className='mb-4 text-lg font-medium'>
@@ -135,13 +139,15 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, navRubrics, topSh
                         );
                       })}
                     </ul>
-                    <Link
-                      prefetch={false}
-                      href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
-                      className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
-                    >
-                      Показать ещё
-                    </Link>
+                    {showOptionsMoreLink ? (
+                      <Link
+                        prefetch={false}
+                        href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
+                        className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+                      >
+                        Показать ещё
+                      </Link>
+                    ) : null}
                   </div>
                 );
               });

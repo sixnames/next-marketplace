@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './StringButton.module.css';
 import { ButtonType } from 'types/clientTypes';
 
 interface StringButtonInterface {
@@ -22,7 +21,9 @@ const StringButton: React.FC<StringButtonInterface> = ({
     <button
       type={type}
       disabled={disabled}
-      className={`${classes.butn} ${className ? className : ''}`}
+      className={`relative z-10 flex items-center justify-center text-theme transition duration-150 font-medium disabled:opacity-70 ${
+        className ? className : ''
+      }`}
       data-cy={testId}
       onClick={onClick}
     >

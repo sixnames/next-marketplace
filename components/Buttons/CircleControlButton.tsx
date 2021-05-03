@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './CircleControlButton.module.css';
 import ControlButton, { ControlButtonInterface } from './ControlButton';
 
 export interface CircleControlButtonInterface extends ControlButtonInterface {
@@ -13,7 +12,7 @@ const CircleControlButton: React.FC<CircleControlButtonInterface> = ({
 }) => {
   return (
     <ControlButton
-      className={`${classes.butn} ${withBorder ? classes.bordered : ''} ${
+      className={`rounded-full ${withBorder ? 'border border-border-color' : ''} ${
         className ? className : ''
       }`}
       {...props}

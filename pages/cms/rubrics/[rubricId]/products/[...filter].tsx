@@ -219,7 +219,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
           </div>
 
           <div className={'max-w-full'}>
-            <div className={`relative overflow-x-auto`}>
+            <div className={`overflow-x-auto`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
                   router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));

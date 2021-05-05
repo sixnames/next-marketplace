@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './LinkEmail.module.css';
 
 interface LinkEmailInterface {
   value?: string | null;
@@ -7,12 +6,17 @@ interface LinkEmailInterface {
 
 const LinkEmail: React.FC<LinkEmailInterface> = ({ value }) => {
   if (!value) {
-    return <div className={classes.frame}>Не указан</div>;
+    return <div className='whitespace-nowrap'>Не указан</div>;
   }
 
   return (
-    <div className={classes.frame}>
-      <a href={`mailto:${value}`}>{value}</a>
+    <div className='whitespace-nowrap'>
+      <a
+        className='text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+        href={`mailto:${value}`}
+      >
+        {value}
+      </a>
     </div>
   );
 };

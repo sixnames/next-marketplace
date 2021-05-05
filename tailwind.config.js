@@ -86,10 +86,17 @@ module.exports = {
         'mobile-nav-height': '85px',
         'input-icon-size': 'var(--inputIconSize)',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: `var(--textColor)`,
+          },
+        },
+      },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

@@ -11,8 +11,6 @@ interface ModalFrameInterface {
   testId?: string;
 }
 
-const backdropClassName = 'absolute top-0 w-[50vw] h-full';
-
 const ModalFrame: React.FC<ModalFrameInterface> = ({
   children,
   className,
@@ -37,9 +35,6 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
       <div className='absolute top-0 right-0 text-secondary-text z-10'>
         <ButtonCross ariaLabel={'Закрыть окно'} onClick={hideModal} testId={'close-modal'} />
       </div>
-
-      <div className={`${backdropClassName} right-full`} onClick={hideModal} />
-      <div className={`${backdropClassName} left-full`} onClick={hideModal} />
     </div>
   );
 };

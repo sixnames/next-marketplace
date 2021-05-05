@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ModalText.module.css';
 
 interface ModalTextInterface {
   className?: string;
@@ -19,10 +18,9 @@ const ModalText: React.FC<ModalTextInterface> = ({
 }) => {
   return (
     <div
-      style={{ textAlign: centered ? 'center' : 'left' }}
-      className={`${classes.text} ${lowBottom ? classes.textLowBottom : ''} ${
-        lowTop ? classes.textLowTop : ''
-      } ${className ? className : ''} ${warning ? classes.warning : ''}`}
+      className={`prose ${centered ? 'text-center' : ''} ${lowBottom ? '' : 'mb-7'} ${
+        lowTop ? '' : 'mt-2'
+      } ${className ? className : ''} ${warning ? 'text-white' : ''}`}
     >
       {children}
     </div>

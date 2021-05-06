@@ -1,8 +1,7 @@
 import * as React from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 import Spinner from '../Spinner/Spinner';
-import Backdrop from '../Backdrop/Backdrop';
 import { useAppContext } from 'context/appContext';
-import classes from './Modal.module.css';
 import dynamic from 'next/dynamic';
 import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
@@ -76,66 +75,70 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
   const { hideModal } = useAppContext();
 
   return (
-    <div className={classes.frame}>
-      <div className={classes.scroll}>
-        <React.Suspense fallback={<Spinner />}>
-          {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
+    <div className='fixed inset-0 z-[999] w-full h-[var(--fullHeight)] min-w-[320px] backdrop backdrop-blur-[3px]'>
+      <div className='relative flex items-center justify-center z-20 w-full min-h-full px-inner-block-horizontal-padding overflow-x-hidden overflow-y-auto'>
+        <OutsideClickHandler onOutsideClick={hideModal}>
+          <React.Suspense fallback={<Spinner />}>
+            {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
 
-          {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
+            {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
 
-          {modalType === LANGUAGE_MODAL && <LanguageModal {...modalProps} />}
+            {modalType === LANGUAGE_MODAL && <LanguageModal {...modalProps} />}
 
-          {modalType === OPTIONS_GROUP_MODAL && <OptionsGroupModal {...modalProps} />}
+            {modalType === OPTIONS_GROUP_MODAL && <OptionsGroupModal {...modalProps} />}
 
-          {modalType === ATTRIBUTES_GROUP_MODAL && <AttributesGroupModal {...modalProps} />}
+            {modalType === ATTRIBUTES_GROUP_MODAL && <AttributesGroupModal {...modalProps} />}
 
-          {modalType === OPTION_IN_GROUP_MODAL && <OptionInGroupModal {...modalProps} />}
+            {modalType === OPTION_IN_GROUP_MODAL && <OptionInGroupModal {...modalProps} />}
 
-          {modalType === ATTRIBUTE_IN_GROUP_MODAL && <AttributeInGroupModal {...modalProps} />}
+            {modalType === ATTRIBUTE_IN_GROUP_MODAL && <AttributeInGroupModal {...modalProps} />}
 
-          {modalType === RUBRIC_VARIANT_MODAL && <RubricVariantModal {...modalProps} />}
+            {modalType === RUBRIC_VARIANT_MODAL && <RubricVariantModal {...modalProps} />}
 
-          {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
+            {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
 
-          {modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
-            <AddAttributesGroupToRubricModal {...modalProps} />
-          )}
+            {modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
+              <AddAttributesGroupToRubricModal {...modalProps} />
+            )}
 
-          {modalType === PRODUCT_SEARCH_MODAL && <ProductSearchModal {...modalProps} />}
+            {modalType === PRODUCT_SEARCH_MODAL && <ProductSearchModal {...modalProps} />}
 
-          {modalType === USERS_SEARCH_MODAL && <UsersSearchModal {...modalProps} />}
+            {modalType === USERS_SEARCH_MODAL && <UsersSearchModal {...modalProps} />}
 
-          {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
+            {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
 
-          {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}
+            {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}
 
-          {modalType === CREATE_CONNECTION_MODAL && <CreateConnectionModal {...modalProps} />}
+            {modalType === CREATE_CONNECTION_MODAL && <CreateConnectionModal {...modalProps} />}
 
-          {modalType === CREATE_SHOP_MODAL && <CreateShopModal {...modalProps} />}
+            {modalType === CREATE_SHOP_MODAL && <CreateShopModal {...modalProps} />}
 
-          {modalType === SHOP_PRODUCT_MODAL && <ShopProductModal {...modalProps} />}
+            {modalType === SHOP_PRODUCT_MODAL && <ShopProductModal {...modalProps} />}
 
-          {modalType === CART_MODAL && <CartModal {...modalProps} />}
+            {modalType === CART_MODAL && <CartModal {...modalProps} />}
 
-          {modalType === CREATE_ROLE_MODAL && <CreateRoleModal {...modalProps} />}
+            {modalType === CREATE_ROLE_MODAL && <CreateRoleModal {...modalProps} />}
 
-          {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
+            {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 
-          {modalType === BRAND_COLLECTION_OPTIONS_MODAL && (
-            <BrandCollectionOptionsModal {...modalProps} />
-          )}
+            {modalType === BRAND_COLLECTION_OPTIONS_MODAL && (
+              <BrandCollectionOptionsModal {...modalProps} />
+            )}
 
-          {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
+            {modalType === MANUFACTURER_OPTIONS_MODAL && (
+              <ManufacturerOptionsModal {...modalProps} />
+            )}
 
-          {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
+            {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
 
-          {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
-            <CatalogueAdditionalOptionsModal {...modalProps} />
-          )}
-        </React.Suspense>
+            {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
+              <CatalogueAdditionalOptionsModal {...modalProps} />
+            )}
+          </React.Suspense>
+        </OutsideClickHandler>
       </div>
 
-      <Backdrop onClick={hideModal} className={classes.backdrop} />
+      <div className='absolute opacity-50 bg-gray-700 inset-0 z-10' />
     </div>
   );
 };

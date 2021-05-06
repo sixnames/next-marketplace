@@ -8,7 +8,6 @@ import { Form, Formik } from 'formik';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import FormikInput from '../../FormElements/Input/FormikInput';
 import Button from '../../Buttons/Button';
-import classes from './ShopProductModal.module.css';
 import Image from 'next/image';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
@@ -37,55 +36,58 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
   return (
     <ModalFrame testId={'update-shop-product-modal'}>
       <ModalTitle>{title}</ModalTitle>
-      <div className={classes.product}>
-        <div className={classes.image}>
+      <div className='flex gap-4'>
+        <div className='w-28 flex-shrink-0'>
           <Image
             src={`${product?.mainImage}`}
             alt={`${product?.name}`}
             title={`${product?.name}`}
+            objectFit={'contain'}
             width={100}
             height={100}
           />
         </div>
-        <div className={classes.name}>{product?.name}</div>
+        <div className='font-medium text-lg'>{product?.name}</div>
       </div>
-      <Formik
-        validationSchema={validationSchema}
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          confirm(values);
-        }}
-      >
-        {() => {
-          return (
-            <Form>
-              <FormikInput
-                label={'Наличие'}
-                type={'number'}
-                min={0}
-                name={'available'}
-                testId={'available'}
-                isRequired
-                showInlineError
-              />
+      <div className='flex-grow'>
+        <Formik
+          validationSchema={validationSchema}
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            confirm(values);
+          }}
+        >
+          {() => {
+            return (
+              <Form>
+                <FormikInput
+                  label={'Наличие'}
+                  type={'number'}
+                  min={0}
+                  name={'available'}
+                  testId={'available'}
+                  isRequired
+                  showInlineError
+                />
 
-              <FormikInput
-                label={'Цена'}
-                type={'number'}
-                min={1}
-                name={'price'}
-                testId={'price'}
-                isRequired
-                showInlineError
-              />
+                <FormikInput
+                  label={'Цена'}
+                  type={'number'}
+                  min={1}
+                  name={'price'}
+                  testId={'price'}
+                  isRequired
+                  showInlineError
+                />
 
-              <Button testId={'shop-submit'} type={'submit'}>
-                Сохранить
-              </Button>
-            </Form>
-          );
-        }}
-      </Formik>
+                <Button testId={'shop-submit'} type={'submit'}>
+                  Сохранить
+                </Button>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
     </ModalFrame>
   );
 };

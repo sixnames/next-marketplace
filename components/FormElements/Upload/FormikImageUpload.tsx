@@ -1,4 +1,3 @@
-import FieldErrorMessage from 'components/FormElements/FieldErrorMessage/FieldErrorMessage';
 import * as React from 'react';
 import { Field, FieldProps, useFormikContext } from 'formik';
 import Icon from '../../Icon/Icon';
@@ -10,8 +9,7 @@ import { useDropzone } from 'react-dropzone';
 import Tooltip from '../../TTip/Tooltip';
 import { get } from 'lodash';
 
-interface FormikImageUploadInterface
-  extends Omit<FormikInputPropsInterface, 'errorMessageLowBottom'> {
+interface FormikImageUploadInterface extends FormikInputPropsInterface {
   tooltip?: any;
   width?: string;
   height?: string;
@@ -37,7 +35,6 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
   lineContentClass,
   setImageHandler,
   showInlineError,
-  errorMessageLowTop,
   format,
 }) => {
   const [files, setFiles] = React.useState<any[]>([]);
@@ -82,8 +79,6 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
         const imageSrc =
           typeof currentValue === 'string' ? currentValue : files[0]?.preview || null;
         const error = get(errors, name);
-        const notValid = Boolean(error);
-        const showError = showInlineError && notValid;
 
         return (
           <InputLine
@@ -97,6 +92,8 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
             isHorizontal={isHorizontal}
             description={description}
             lineContentClass={lineContentClass}
+            showInlineError={showInlineError}
+            error={error}
           >
             <Tooltip title={tooltip}>
               <div className={classes.frame} style={{ width, height }}>
@@ -126,16 +123,6 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
                 )}
               </div>
             </Tooltip>
-
-            {showError && (
-              <FieldErrorMessage
-                errorMessageLowBottom={true}
-                errorMessageLowTop={errorMessageLowTop}
-                error={error}
-                name={name}
-              />
-            )}
-
             {children}
           </InputLine>
         );

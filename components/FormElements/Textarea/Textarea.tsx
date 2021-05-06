@@ -28,6 +28,8 @@ const Textarea: React.FC<TextareaInterface> = ({
   testId,
   labelTag,
   lineIcon,
+  showInlineError,
+  error,
   ...props
 }) => {
   return (
@@ -41,6 +43,8 @@ const Textarea: React.FC<TextareaInterface> = ({
       labelPostfix={labelPostfix}
       labelLink={labelLink}
       low={low}
+      showInlineError={showInlineError}
+      error={error}
     >
       <textarea
         className={`${classes.textarea} ${className ? className : ''} ${

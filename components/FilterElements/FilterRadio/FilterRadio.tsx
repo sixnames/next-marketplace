@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { ParsedUrlQueryInput } from 'querystring';
-import classes from './FilterRadio.module.css';
 import { ObjectType } from 'types/clientTypes';
 
 export interface FilterRadioInterface {
@@ -61,12 +60,16 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
       >
         <a
           data-cy={testId}
-          className={`${classes.frame} ${isCurrent ? classes.current : ''} ${
+          className={`flex items-center text-primary-text hover:no-underline hover:text-theme ${
             className ? className : ''
           }`}
         >
-          <span className={classes.radio}>
-            <span />
+          <span className='relative w-[18px] h-[18px] flex-shrink-0 mr-1 input-border bg-primary rounded-full overflow-hidden cursor-pointer'>
+            <span
+              className={`absolute top-[2px] left-[2px] w-[14px] h-[14px] block rounded-full transition duration-150 ${
+                isCurrent ? 'bg-theme' : ''
+              }`}
+            />
           </span>
 
           {name}

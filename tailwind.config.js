@@ -41,8 +41,10 @@ module.exports = {
         'wp-light-gray-200': `var(--wp-light-gray-200)`,
         'wp-light-gray-300': `var(--wp-light-gray-300)`,
         primary: `var(--primaryBackground)`,
-        secondary: `var(--secondaryBackground)`,
-        'secondary-light': `var(--secondaryBackgroundLight)`,
+        secondary: {
+          DEFAULT: `var(--secondaryBackground)`,
+          light: `var(--secondaryBackgroundLight)`,
+        },
         'secondary-button-background': `var(--secondaryButtonBackground)`,
         'secondary-b-button-background': `var(--primaryBackground)`,
         backdrop: `rgba(50, 50, 50, 0.3)`,
@@ -82,11 +84,19 @@ module.exports = {
         'tabs-nav-height-s': 'var(--formInputHeightSmall)',
         'tabs-nav-height-xs': 'var(--formInputHeightSmaller)',
         'mobile-nav-height': '85px',
+        'input-icon-size': 'var(--inputIconSize)',
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: `var(--textColor)`,
+          },
+        },
       },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

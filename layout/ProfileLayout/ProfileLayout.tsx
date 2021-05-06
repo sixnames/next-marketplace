@@ -11,7 +11,6 @@ import {
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
 import * as React from 'react';
-import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
@@ -91,14 +90,19 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
   }, []);
 
   return (
-    <div className={classes.frame}>
+    <div className='mb-12'>
       <Breadcrumbs currentPageName={'Профиль'} />
+
       <Inner lowTop testId={'profile'}>
-        <div className={classes.content}>
-          <div className={classes.aside}>
+        <div className='flex flex-col gap-8 md:flex-row'>
+          <div className='relative md:w-[var(--catalogue-filter-width)]'>
             <Title>Личный кабинет</Title>
-            <div className={classes.greeting}>С возвращением, {me?.name}</div>
-            <AsideNav className={classes.asideNav} config={navConfig} testId={'profile-nav'} />
+            <div className='text-5 font-medium mb-8 md:mb-12'>С возвращением, {me?.name}</div>
+            <AsideNav
+              className='sticky left-0 top-6 wp-desktop:top-16'
+              config={navConfig}
+              testId={'profile-nav'}
+            />
           </div>
           <div data-cy={testId}>{children}</div>
         </div>

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import CircleControlButton, { CircleControlButtonInterface } from './CircleControlButton';
-import classes from './ControlButtonChevron.module.css';
 
 interface ControlButtonChevronInterface
   extends Omit<
@@ -18,8 +17,8 @@ const ControlButtonChevron: React.FC<ControlButtonChevronInterface> = ({
 }) => {
   return (
     <CircleControlButton
-      className={`${className ? className : ''} ${classes.butn}`}
-      iconClass={`${isActive ? classes.activeIcon : ''} ${iconClass ? iconClass : ''}`}
+      className={`${className ? className : ''}`}
+      iconClass={`${isActive ? 'fill-theme' : ''} ${iconClass ? iconClass : ''}`}
       iconPositionTop={isActive ? 0 : 2}
       withBorder
       icon={isActive ? 'chevron-up' : 'chevron-down'}

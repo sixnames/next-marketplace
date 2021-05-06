@@ -5,9 +5,6 @@ import { useDropzone } from 'react-dropzone';
 import InputLine from '../Input/InputLine';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import FieldErrorMessage, {
-  ErrorMessageGapsInterface,
-} from '../FieldErrorMessage/FieldErrorMessage';
 import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
 import Tooltip from '../../TTip/Tooltip';
@@ -83,7 +80,7 @@ const FormikDropZonePreview: React.FC<FormikDropZonePreviewInterface> = ({
   );
 };
 
-interface FormikDropZoneInterface extends ErrorMessageGapsInterface {
+interface FormikDropZoneInterface {
   format?: string;
   name: string;
   label?: string;
@@ -99,6 +96,7 @@ interface FormikDropZoneInterface extends ErrorMessageGapsInterface {
   showInlineError?: boolean;
   limit?: number;
   disabled?: boolean;
+  error?: any;
 }
 
 interface FormikDropZoneConsumerInterface extends FormikDropZoneInterface {
@@ -120,6 +118,8 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
   value = [],
   testId,
   disabled,
+  error,
+  showInlineError,
 }) => {
   const [removeIndex, setRemoveIndex] = React.useState<number>(NEGATIVE_INDEX);
   const [files, setFiles] = React.useState<any[]>([]);
@@ -176,6 +176,8 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
       labelPostfix={labelPostfix}
       labelLink={labelLink}
       low={low}
+      error={error}
+      showInlineError={showInlineError}
     >
       <div className={classes.holder}>
         <span className={classes.frame} {...getRootProps()} data-cy={testId}>
@@ -223,21 +225,11 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
 };
 
 const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
-  const {
-    frameClass,
-    name,
-    showInlineError,
-    limit,
-    disabled,
-    errorMessageLowTop,
-    errorMessageLowBottom,
-  } = props;
+  const { frameClass, name, showInlineError, limit, disabled } = props;
   return (
     <Field name={name}>
       {({ field, form: { setFieldValue, errors } }: FieldProps<any[]>) => {
         const error = get(errors, name);
-        const notValid = Boolean(error);
-        const showError = showInlineError && notValid;
         const value: any[] = field.value;
         const limited = limit ? alwaysArray(value).length >= noNaN(limit) : false;
         const initialDisabled = disabled || limited;
@@ -248,17 +240,10 @@ const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
               disabled={initialDisabled}
               value={value}
               setFieldValue={setFieldValue}
+              error={error}
+              showInlineError={showInlineError}
               {...props}
             />
-
-            {showError && (
-              <FieldErrorMessage
-                errorMessageLowBottom={errorMessageLowBottom}
-                errorMessageLowTop={errorMessageLowTop}
-                error={error}
-                name={name}
-              />
-            )}
           </div>
         );
       }}

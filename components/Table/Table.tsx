@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { get } from 'lodash';
 import RequestError from '../RequestError/RequestError';
-import classes from './Table.module.css';
 
 export interface RenderArgs<T> {
   cellData: any;
@@ -30,11 +29,13 @@ type TableInterface<T> = {
   onRowClick?: (dataItem: T) => void;
   onRowDoubleClick?: (dataItem: T) => void;
   className?: string;
-  fixPosition?: number;
   emptyMessage?: string;
   testIdKey?: string;
   tableTestId?: string;
 };
+
+const cellClassName = 'z-10 align-middle h-8 py-2 px-4 text-left border border-gray-500';
+const rowClassName = 'transition transition-duration-150';
 
 const Table = <T extends Record<string, any>>({
   data,
@@ -45,19 +46,10 @@ const Table = <T extends Record<string, any>>({
   onRowClick,
   onRowDoubleClick,
   className,
-  fixPosition = 0,
   emptyMessage = 'Список пуст',
   testIdKey = '',
   tableTestId,
 }: TableInterface<T>) => {
-  const fixedStyle: React.CSSProperties = React.useMemo(() => {
-    return {
-      transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
-      backgroundColor: fixPosition ? 'var(--gray)' : undefined,
-      color: fixPosition ? 'white' : undefined,
-    };
-  }, [fixPosition]);
-
   const tHead = columns.map(({ headTitle, sortBy, cellStyle, isHidden }) => ({
     headTitle: headTitle,
     sortBy,
@@ -79,7 +71,9 @@ const Table = <T extends Record<string, any>>({
             onDoubleClick={() => (onRowDoubleClick ? onRowDoubleClick(dataItem) : null)}
             key={key}
             data-cy={`${testId}-row`}
-            className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
+            className={`${rowClassName} ${
+              isWarning ? 'bg-red-500 bg-opacity-20' : 'bg-primary hover:bg-secondary'
+            }`}
           >
             {columns.map((cell, cellIndex) => {
               const { accessor, render, cellStyle, colSpan, isHidden } = cell;
@@ -93,7 +87,7 @@ const Table = <T extends Record<string, any>>({
                 <td
                   colSpan={colSpan}
                   key={`${accessor}${cellIndex}`}
-                  className={classes.cell}
+                  className={cellClassName}
                   style={cellStyle}
                 >
                   {render && render({ cellData, dataItem, cellIndex, rowIndex })}
@@ -124,23 +118,21 @@ const Table = <T extends Record<string, any>>({
   }
 
   return (
-    <table className={className || ''} data-cy={tableTestId}>
+    <table className={`relative ${className ? className : ''}`} data-cy={tableTestId}>
       <thead>
-        <tr className={classes.row}>
-          {tHead.map(({ headTitle, sortBy, cellStyle, isHidden }, i) => {
+        <tr className={`${rowClassName} bg-primary`}>
+          {tHead.map(({ headTitle, sortBy, isHidden }, i) => {
             if (isHidden) {
               return null;
             }
 
             return (
               <th
-                className={classes.headCell}
+                className={`${cellClassName} bg-secondary`}
                 onClick={() => !!sortHandler && !!sortBy && sortHandler(sortBy)}
                 key={`${headTitle}${i}`}
               >
-                <div style={{ ...cellStyle, ...fixedStyle }} className={classes.fixedCell}>
-                  {headTitle}
-                </div>
+                {headTitle}
               </th>
             );
           })}
@@ -150,14 +142,14 @@ const Table = <T extends Record<string, any>>({
       <tbody>
         {renderTableBody}
 
-        {!!footerColumns.length && (
-          <tr className={`${classes.row} ${classes.rowGap}`}>
-            <td colSpan={columns.length} className={classes.cell} />
+        {footerColumns.length > 0 ? (
+          <tr className={`${rowClassName}`}>
+            <td colSpan={columns.length} className='h-4' />
           </tr>
-        )}
+        ) : null}
       </tbody>
 
-      {!!footerColumns.length && <tfoot>{renderTableFooter}</tfoot>}
+      {footerColumns.length > 0 ? <tfoot>{renderTableFooter}</tfoot> : null}
     </table>
   );
 };

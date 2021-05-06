@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ControlButton.module.css';
 import Icon from '../Icon/Icon';
 import Tooltip from '../TTip/Tooltip';
 import { noNaN } from 'lib/numbers';
@@ -44,17 +43,34 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   iconPositionTop,
   ariaLabel,
 }) => {
-  const themeClass = classes[theme];
-  const sizeClass = classes[size];
-  const iconSizeClass = `${iconSize === 'smaller' ? classes.smallerIcon : ''} ${
-    iconSize === 'small' ? classes.smallIcon : ''
-  } ${iconSize === 'mid' ? classes.midIcon : ''} ${iconSize === 'big' ? classes.bigIcon : ''}`;
-  const roundedClass = `${roundedTopLeft ? classes.roundedTopLeft : ''} ${
-    roundedTopRight ? classes.roundedTopRight : ''
+  const themeClass =
+    theme === 'blank' ? `text-secondary-text` : `text-primary-text bg-secondary-light`;
+
+  const sizeClass =
+    size === 'smaller'
+      ? 'w-[var(--controlButtonHeightSmaller)] h-[var(--controlButtonHeightSmaller)]'
+      : size === 'small'
+      ? 'w-[var(--controlButtonHeightSmall)] h-[var(--controlButtonHeightSmall)]'
+      : 'w-[var(--controlButtonHeight)] h-[var(--controlButtonHeight)]';
+
+  const iconSizeClass =
+    iconSize === 'smaller'
+      ? 'w-3 h-3'
+      : iconSize === 'small'
+      ? 'w-4 h-4'
+      : iconSize === 'mid'
+      ? 'w-6 h-6'
+      : iconSize === 'big'
+      ? 'w-7 h-7'
+      : 'w-5 h-5';
+
+  const roundedClass = `${roundedTopLeft ? 'rounded-tl-md rounded-br-md' : ''} ${
+    roundedTopRight ? 'rounded-tr-md rounded-bl-md' : ''
   }`;
-  const buttonClass = `${classes.butn} ${
+
+  const buttonClass = `relative z-30 flex items-center justify-center transition duration-150 hover:text-theme ${
     className ? className : ''
-  } ${themeClass} ${roundedClass} ${iconSizeClass} ${sizeClass}`;
+  } ${themeClass} ${roundedClass} ${sizeClass}`;
 
   return (
     <React.Fragment>
@@ -73,7 +89,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
               left: noNaN(iconPositionLeft),
             }}
             name={icon}
-            className={`${iconClass ? iconClass : ''}`}
+            className={`${iconSizeClass} ${iconClass ? iconClass : ''}`}
           />
         </button>
       </Tooltip>

@@ -2,11 +2,8 @@ import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import Textarea, { TextareaInterface } from './Textarea';
 import { get } from 'lodash';
-import FieldErrorMessage, {
-  ErrorMessageGapsInterface,
-} from '../FieldErrorMessage/FieldErrorMessage';
 
-interface FormikTextareaInterface extends TextareaInterface, ErrorMessageGapsInterface {
+interface FormikTextareaInterface extends TextareaInterface {
   name: string;
   frameClass?: string;
   showInlineError?: boolean;
@@ -18,8 +15,6 @@ const FormikTextarea: React.FC<FormikTextareaInterface> = ({
   isRequired,
   showInlineError,
   frameClass,
-  errorMessageLowTop,
-  errorMessageLowBottom,
   ...props
 }) => {
   return (
@@ -27,7 +22,6 @@ const FormikTextarea: React.FC<FormikTextareaInterface> = ({
       {({ field, form: { errors } }: FieldProps) => {
         const error = get(errors, name);
         const notValid = Boolean(error);
-        const showError = showInlineError && notValid;
 
         return (
           <div className={frameClass ? frameClass : ''}>
@@ -35,18 +29,11 @@ const FormikTextarea: React.FC<FormikTextareaInterface> = ({
               autoComplete={autoComplete}
               isRequired={isRequired}
               notValid={notValid}
+              error={error}
+              showInlineError={showInlineError}
               {...field}
               {...props}
             />
-
-            {showError && (
-              <FieldErrorMessage
-                errorMessageLowBottom={errorMessageLowBottom}
-                errorMessageLowTop={errorMessageLowTop}
-                error={error}
-                name={name}
-              />
-            )}
           </div>
         );
       }}

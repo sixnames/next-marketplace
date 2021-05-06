@@ -28,13 +28,13 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
   }
 
   return (
-    <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary`}>
+    <div className={`min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
       <CmsNav compact={compact} navItems={me.role?.cmsNavigation || []} />
 
       <main
-        className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${
+        className={`min-h-full-height pt-[36px] wp-desktop:pt-0 ${
           isCompact ? wideContentClass : narrowContentClass
         }`}
       >

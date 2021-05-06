@@ -1,6 +1,5 @@
 import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import classes from './FilterLink.module.css';
 import TagLink, { TagLinkInterface } from './TagLink';
 import Icon from '../Icon/Icon';
 
@@ -28,7 +27,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       href={nextSlug}
       isActive={isSelected}
       prefetch={false}
-      className={`${classes.filterLink} ${disabled ? classes.filterLinkDisabled : ''} ${
+      className={`${disabled ? 'cursor-default pointer-events-none opacity-50' : ''} ${
         className ? className : ''
       }`}
       {...props}
@@ -37,8 +36,10 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
         {name}
         {postfix ? postfix : null}
       </span>
-      {withCross ? <Icon name={'cross'} /> : null}
       {counter ? <span>{counter}</span> : null}
+      {withCross ? (
+        <Icon className='w-2 h-2 ml-2 fill-theme cursor-pointer' name={'cross'} />
+      ) : null}
     </TagLink>
   );
 };

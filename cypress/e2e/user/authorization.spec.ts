@@ -5,7 +5,7 @@ export {};
 
 describe('Authorization', () => {
   beforeEach(() => {
-    // cy.createTestData();
+    cy.createTestData();
     cy.visit(`/`);
   });
 

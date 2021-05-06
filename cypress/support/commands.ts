@@ -138,12 +138,12 @@ Cypress.Commands.add('closeNotification', () => {
 });
 
 Cypress.Commands.add('clearTestData', () => {
-  const clearTestDataURI = `/api/db/clear-test-data?key=${Cypress.env('testDataKey')}`;
+  const clearTestDataURI = `/api/db/clear-test-data`;
   cy.request('GET', clearTestDataURI);
 });
 
 Cypress.Commands.add('createTestData', (callback?: (mocks: any) => void) => {
-  const createTestDataURI = `/api/db/create-test-data?key=${Cypress.env('testDataKey')}`;
+  const createTestDataURI = `/api/db/create-test-data`;
   cy.request('GET', createTestDataURI).then((res) => {
     if (callback) {
       callback(res.body);

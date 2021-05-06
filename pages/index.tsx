@@ -74,24 +74,28 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
           </Link>
         </div>
 
-        <div className='mb-14 sm:mb-20 max-w-[690px]'>
-          <Title>{configTitle}</Title>
-        </div>
-
-        <section className={sectionClassName}>
-          <div className='text-2xl mb-4 font-medium'>
-            <h2>Бестселлеры</h2>
+        {configTitle ? (
+          <div className='mb-14 sm:mb-20 max-w-[690px]'>
+            <Title>{configTitle}</Title>
           </div>
-          <HorizontalScroll>
-            {topProducts.map((product) => {
-              return (
-                <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
-                  <ProductSnippetGrid noAttributes noSecondaryName product={product} />
-                </div>
-              );
-            })}
-          </HorizontalScroll>
-        </section>
+        ) : null}
+
+        {topProducts.length > 0 ? (
+          <section className={sectionClassName}>
+            <div className='text-2xl mb-4 font-medium'>
+              <h2>Бестселлеры</h2>
+            </div>
+            <HorizontalScroll>
+              {topProducts.map((product) => {
+                return (
+                  <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
+                    <ProductSnippetGrid noAttributes noSecondaryName product={product} />
+                  </div>
+                );
+              })}
+            </HorizontalScroll>
+          </section>
+        ) : null}
 
         <section className={sectionClassName}>
           <div className='text-2xl mb-4 font-medium'>
@@ -113,27 +117,31 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
           </HorizontalScroll>
         </section>
 
-        <section className={sectionClassName}>
-          <div className='text-2xl mb-4 font-medium'>
-            <h2>Популярные разделы</h2>
-          </div>
-          <div className='flex flex-wrap gap-3'>
-            {topFilters.map(({ name, href }) => {
-              return (
-                <TagLink href={href} key={href}>
-                  {name}
-                </TagLink>
-              );
-            })}
-          </div>
-        </section>
+        {topFilters.length > 0 ? (
+          <section className={sectionClassName}>
+            <div className='text-2xl mb-4 font-medium'>
+              <h2>Популярные разделы</h2>
+            </div>
+            <div className='flex flex-wrap gap-3'>
+              {topFilters.map(({ name, href }) => {
+                return (
+                  <TagLink href={href} key={href}>
+                    {name}
+                  </TagLink>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
-        <section className={sectionClassName}>
-          <div className='text-2xl mb-4 font-medium'>
-            <h2>Винотеки</h2>
-          </div>
-          <ShopsMap shops={topShops} />
-        </section>
+        {topShops.length > 0 ? (
+          <section className={sectionClassName}>
+            <div className='text-2xl mb-4 font-medium'>
+              <h2>Винотеки</h2>
+            </div>
+            <ShopsMap shops={topShops} />
+          </section>
+        ) : null}
       </Inner>
     </React.Fragment>
   );

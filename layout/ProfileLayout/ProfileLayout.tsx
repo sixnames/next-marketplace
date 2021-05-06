@@ -98,7 +98,11 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
           <div className='relative md:w-[var(--catalogue-filter-width)]'>
             <Title>Личный кабинет</Title>
             <div className='text-5 font-medium mb-8 md:mb-12'>С возвращением, {me?.name}</div>
-            <AsideNav className='sticky left-0 top-6' config={navConfig} testId={'profile-nav'} />
+            <AsideNav
+              className='sticky left-0 top-6 wp-desktop:top-16'
+              config={navConfig}
+              testId={'profile-nav'}
+            />
           </div>
           <div data-cy={testId}>{children}</div>
         </div>

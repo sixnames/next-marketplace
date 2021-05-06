@@ -120,7 +120,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
               logo,
               address: { formattedCoordinates },
             } = shop;
-            console.log(logo.url);
+
             return (
               <Marker
                 key={`${_id}`}

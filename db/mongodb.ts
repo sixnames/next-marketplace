@@ -11,7 +11,6 @@ export async function getDatabase(): Promise<Db> {
   // If the database connection is cached,
   // use it instead of creating a new connection
   if (cachedDb) {
-    // console.log('<<<<<<<<< Cached db returned');
     return cachedDb;
   }
 
@@ -20,7 +19,6 @@ export async function getDatabase(): Promise<Db> {
     throw new Error('Unable to connect to database, no URI provided');
   }
 
-  // console.log('>>>>>>>>>>>>>>>>>>> Connecting to db <<<<<<<<<<<<<<<<<<<<<');
   // If no connection is cached, create a new one
   const client = await MongoClient.connect(
     uri,

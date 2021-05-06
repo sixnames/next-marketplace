@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './RowWithGap.module.css';
 
 interface RowWithGapInterface {
   low?: boolean;
@@ -7,13 +6,7 @@ interface RowWithGapInterface {
 }
 
 const RowWithGap: React.FC<RowWithGapInterface> = ({ low, className, children }) => {
-  return (
-    <div
-      className={`${classes.frame} ${low ? classes.frameLow : ''} ${className ? className : ''}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`${low ? '' : 'mb-8'} ${className ? className : ''}`}>{children}</div>;
 };
 
 export default RowWithGap;

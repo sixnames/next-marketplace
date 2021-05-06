@@ -60,9 +60,7 @@ const Input: React.FC<InputPropsInterface> = ({
 }) => {
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const disabledClassName = disabled ? 'opacity-50 pointer-events-none' : '';
-  const inputBorder = notValid
-    ? 'border-red-500'
-    : `border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
+  const inputBorder = notValid ? 'border-red-500' : `input-border`;
   const inputPaddingLeft = icon ? 'input-with-icon-padding' : 'pl-input-padding-horizontal';
   const inputPaddingRight = onClear ? 'input-with-clear-padding' : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';

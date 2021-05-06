@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .input-border {
+    @apply border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400
+  }
+}
+
 @layer utilities {
   .text-indent-full {
     overflow: hidden;

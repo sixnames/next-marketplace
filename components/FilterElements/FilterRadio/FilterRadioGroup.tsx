@@ -1,6 +1,5 @@
 import * as React from 'react';
 import FilterRadio, { FilterRadioInterface } from './FilterRadio';
-import classes from './FilterRadioGroup.module.css';
 
 interface FilterRadioGroupItem {
   name: string;
@@ -23,8 +22,8 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
   ...props
 }) => {
   return (
-    <div className={`${classes.frame} ${className ? className : ''}`}>
-      {label && <div className={classes.label}>{label}</div>}
+    <div className={`mb-5 ${className ? className : ''}`}>
+      {label ? <div className='mb-3 font-medium text-secondary-text truncate'>{label}</div> : null}
       {radioItems.map(({ name, _id }) => {
         const key = `${queryKey}-${name}`;
         return (
@@ -34,7 +33,7 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
             queryKey={queryKey}
             testId={key}
             key={key}
-            className={`${classes.item} ${radioClassName ? radioClassName : ''}`}
+            className={radioClassName}
             {...props}
           />
         );

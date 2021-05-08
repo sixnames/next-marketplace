@@ -1,5 +1,7 @@
 import { RoleModel } from '../../../../db/dbModels';
-import { getObjectId } from 'mongo-seeding';
+import { getObjectId, getObjectIds } from 'mongo-seeding';
+
+const navItemsDefaultSlug = 'navItem';
 
 const roles: RoleModel[] = [
   {
@@ -39,7 +41,11 @@ const roles: RoleModel[] = [
     slug: 'companyOwner',
     isStaff: false,
     rules: [],
-    allowedAppNavigation: [],
+    allowedAppNavigation: getObjectIds([
+      `${navItemsDefaultSlug} app-orders`,
+      `${navItemsDefaultSlug} app-shops`,
+      `${navItemsDefaultSlug} app-config`,
+    ]),
     createdAt: new Date(),
     updatedAt: new Date(),
   },

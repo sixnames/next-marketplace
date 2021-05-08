@@ -17,7 +17,8 @@
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
-    "test": "yarn cy:start"
+    "test": "yarn cy:start",
+    "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.3.12",
@@ -117,6 +118,7 @@
     "postcss": "^8.2.8",
     "prettier": "^2.2.1",
     "tailwindcss": "^2.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "ts-node": "^9.1.1"
   }
 }

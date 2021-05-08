@@ -138,17 +138,11 @@ Cypress.Commands.add('closeNotification', () => {
 });
 
 Cypress.Commands.add('clearTestData', () => {
-  const clearTestDataURI = `/api/db/clear-test-data`;
-  cy.request('GET', clearTestDataURI);
+  cy.exec(`yarn drop-test-db`);
 });
 
-Cypress.Commands.add('createTestData', (callback?: (mocks: any) => void) => {
-  const createTestDataURI = `/api/db/create-test-data`;
-  cy.request('GET', createTestDataURI).then((res) => {
-    if (callback) {
-      callback(res.body);
-    }
-  });
+Cypress.Commands.add('createTestData', () => {
+  cy.exec(`yarn seed-test-db`);
 });
 
 Cypress.Commands.add(

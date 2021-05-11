@@ -39,23 +39,9 @@ const optionsGroups: OptionsGroupModel[] = [
     variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
   },
   {
-    _id: getObjectId('optionsGroup Сезон'),
-    nameI18n: {
-      ru: 'Сезон',
-    },
-    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
-  },
-  {
     _id: getObjectId('optionsGroup Виноград'),
     nameI18n: {
       ru: 'Виноград',
-    },
-    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
-  },
-  {
-    _id: getObjectId('optionsGroup Глубина цвета'),
-    nameI18n: {
-      ru: 'Глубина цвета',
     },
     variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
   },

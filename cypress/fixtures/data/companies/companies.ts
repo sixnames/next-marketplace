@@ -9,7 +9,7 @@ const cities: CompanyModel[] = [
     name: 'Company A',
     staffIds: getObjectIds(['company manager b']),
     ownerId: getObjectId('company owner a'),
-    shopsIds: [],
+    shopsIds: getObjectIds(['shop Shop A']),
     contacts: {
       phones: ['+71112223344'],
       emails: ['companyA@gmail.com'],
@@ -28,7 +28,7 @@ const cities: CompanyModel[] = [
     name: 'Company B',
     staffIds: [],
     ownerId: getObjectId('company owner b'),
-    shopsIds: [],
+    shopsIds: getObjectIds(['shop Shop B']),
     contacts: {
       phones: ['+72223334455'],
       emails: ['companyB@gmail.com'],

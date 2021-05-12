@@ -152,4 +152,5 @@ const navItems: NavItemModel[] = [
   },
 ];
 
+// @ts-ignore
 export = navItems;

@@ -1,7 +1,7 @@
 import { CartModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
-const cities: CartModel[] = [
+const carts: CartModel[] = [
   {
     _id: getObjectId('defaultCart'),
     cartProducts: [],
@@ -10,4 +10,5 @@ const cities: CartModel[] = [
   },
 ];
 
-export = cities;
+// @ts-ignore
+export = carts;

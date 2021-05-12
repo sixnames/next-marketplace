@@ -61,4 +61,5 @@ const optionsGroups: OptionsGroupModel[] = [
   },
 ];
 
+// @ts-ignore
 export = optionsGroups;

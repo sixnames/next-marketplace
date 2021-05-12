@@ -9,7 +9,7 @@ import {
 } from '../../../../db/collectionNames';
 import { IdCounterModel } from '../../../../db/dbModels';
 
-const cities: IdCounterModel[] = [
+const idCounters: IdCounterModel[] = [
   {
     collection: COL_USERS,
     counter: 999999,
@@ -40,4 +40,5 @@ const cities: IdCounterModel[] = [
   },
 ];
 
-export = cities;
+// @ts-ignore
+export = idCounters;

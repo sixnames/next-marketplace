@@ -2,7 +2,7 @@ import { DEFAULT_COUNTERS_OBJECT } from '../../../../config/common';
 import { BrandCollectionModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
-const cities: BrandCollectionModel[] = [
+const brandCollections: BrandCollectionModel[] = [
   {
     _id: getObjectId('brandCollection Brand collection A'),
     itemId: '000001',
@@ -31,4 +31,5 @@ const cities: BrandCollectionModel[] = [
   },
 ];
 
-export = cities;
+// @ts-ignore
+export = brandCollections;

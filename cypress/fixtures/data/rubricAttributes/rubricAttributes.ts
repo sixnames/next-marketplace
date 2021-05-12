@@ -32,4 +32,5 @@ const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) =>
   return [...acc, ...getRubricAttributes(rubric)];
 }, []);
 
+// @ts-ignore
 export = rubricAttributes;

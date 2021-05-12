@@ -75,4 +75,5 @@ const shops: ShopModel[] = [
   },
 ];
 
+// @ts-ignore
 export = shops;

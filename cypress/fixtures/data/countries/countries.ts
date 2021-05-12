@@ -10,4 +10,5 @@ const countries: CountryModel[] = [
   },
 ];
 
+// @ts-ignore
 export = countries;

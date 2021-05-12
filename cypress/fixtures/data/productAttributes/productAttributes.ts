@@ -83,4 +83,5 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
   [],
 );
 
+// @ts-ignore
 export = productAttributes;

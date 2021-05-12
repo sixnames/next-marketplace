@@ -617,4 +617,5 @@ const companyBConfigs = getConfigTemplates({
   assetsPath: companyBSlug,
 });
 
+// @ts-ignore
 export = [...defaultConfigs, ...companyAConfigs, ...companyBConfigs];

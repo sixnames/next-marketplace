@@ -70,4 +70,5 @@ shops.forEach((shop) => {
   });
 });
 
+// @ts-ignore
 export = shopProducts;

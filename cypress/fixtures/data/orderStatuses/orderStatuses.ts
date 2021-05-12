@@ -50,4 +50,5 @@ const orderStatuses: OrderStatusModel[] = [
   },
 ];
 
+// @ts-ignore
 export = orderStatuses;

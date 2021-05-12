@@ -13,4 +13,5 @@ const cities: CityModel[] = [
   },
 ];
 
+// @ts-ignore
 export = cities;

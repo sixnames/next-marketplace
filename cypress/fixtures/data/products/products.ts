@@ -154,4 +154,5 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   return [...acc, ...rubricProducts];
 }, []);
 
+// @ts-ignore
 export = products;

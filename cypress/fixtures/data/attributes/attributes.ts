@@ -240,4 +240,5 @@ const attributes: AttributeModel[] = [
   },
 ];
 
+// @ts-ignore
 export = attributes;

@@ -65,4 +65,5 @@ const roles: RoleModel[] = [
   },
 ];
 
+// @ts-ignore
 export = roles;

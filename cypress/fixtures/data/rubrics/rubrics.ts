@@ -101,4 +101,5 @@ const rubrics: RubricModel[] = [
   },
 ];
 
+// @ts-ignore
 export = rubrics;

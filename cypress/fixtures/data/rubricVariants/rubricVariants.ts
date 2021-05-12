@@ -10,4 +10,5 @@ const rubricVariants: RubricVariantModel[] = [
   },
 ];
 
+// @ts-ignore
 export = rubricVariants;

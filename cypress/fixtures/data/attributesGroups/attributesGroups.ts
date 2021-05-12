@@ -72,4 +72,5 @@ const attributesGroups: AttributesGroupModel[] = [
   },
 ];
 
+// @ts-ignore
 export = attributesGroups;

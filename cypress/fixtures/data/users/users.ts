@@ -81,4 +81,5 @@ const users: UserModel[] = [
   },
 ];
 
+// @ts-ignore
 export = users;

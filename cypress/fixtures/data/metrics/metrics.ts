@@ -186,4 +186,5 @@ const metrics: MetricModel[] = [
   },
 ];
 
+// @ts-ignore
 export = metrics;

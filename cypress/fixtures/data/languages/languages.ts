@@ -11,4 +11,5 @@ const languages: LanguageModel[] = [
   },
 ];
 
+// @ts-ignore
 export = languages;

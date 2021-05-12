@@ -19,4 +19,5 @@ const productAssets: ProductAssetsModel[] = products.map((product) => {
   };
 });
 
+// @ts-ignore
 export = productAssets;

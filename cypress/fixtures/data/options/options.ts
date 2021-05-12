@@ -313,4 +313,5 @@ const options: OptionModel[] = [
   },
 ];
 
+// @ts-ignore
 export = options;

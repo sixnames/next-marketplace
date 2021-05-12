@@ -36,4 +36,5 @@ productConnections.forEach((connection) => {
   });
 });
 
+// @ts-ignore
 export = productConnectionItems;

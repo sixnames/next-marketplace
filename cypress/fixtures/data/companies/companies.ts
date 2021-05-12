@@ -2,7 +2,7 @@ import { ASSETS_DIST_COMPANIES } from '../../../../config/common';
 import { CompanyModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
-const cities: CompanyModel[] = [
+const companies: CompanyModel[] = [
   {
     _id: getObjectId('company Company A'),
     itemId: '000001',
@@ -43,4 +43,5 @@ const cities: CompanyModel[] = [
   },
 ];
 
-export = cities;
+// @ts-ignore
+export = companies;

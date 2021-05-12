@@ -41,4 +41,5 @@ rubrics.forEach(({ slug }) => {
   });
 });
 
+// @ts-ignore
 export = productConnections;

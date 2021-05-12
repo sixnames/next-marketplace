@@ -4,11 +4,12 @@ import { getObjectId } from 'mongo-seeding';
 import * as products from '../products/products';
 import * as rubrics from '../rubrics/rubrics';
 
+const attributeId = getObjectId(`attribute Объем`);
+const attributeSlug = 'obem';
+
 const productConnections: ProductConnectionModel[] = [];
 
 rubrics.forEach(({ slug }) => {
-  const attributeId = getObjectId(`attribute Объем`);
-  const attributeSlug = 'obem';
   const rubricProducts = products.filter(({ rubricSlug }) => slug === rubricSlug);
   const attributeProducts = rubricProducts.filter(({ selectedAttributesIds }) => {
     return selectedAttributesIds.some((_id) => _id.equals(attributeId));

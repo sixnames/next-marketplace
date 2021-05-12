@@ -52,62 +52,63 @@ const maxProductsCount = 100;
 
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;
-  const selectedAttributesIds: ObjectIdModel[] = [];
-  const selectedOptionsSlugs: string[] = [];
-
-  rubricAttributes.forEach((attribute) => {
-    if (attribute.rubricSlug === rubricSlug && attribute.showInCatalogueFilter) {
-      selectedAttributesIds.push(attribute.attributeId);
-
-      const attributeOptions = options.filter(({ optionsGroupId }) => {
-        return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);
-      });
-
-      if (attribute.slug === 'region') {
-        const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
-        const selectedOption = attributeOptions[randomOptionIndex];
-        if (selectedOption) {
-          const regionOptionsTree = getOptionsTree(selectedOption, [selectedOption]);
-          regionOptionsTree.forEach(({ slug }) => {
-            selectedOptionsSlugs.push(`${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`);
-          });
-        }
-        return;
-      }
-
-      if (attribute.variant === ATTRIBUTE_VARIANT_SELECT) {
-        const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
-        const selectedOption = attributeOptions[randomOptionIndex];
-        if (selectedOption) {
-          selectedOptionsSlugs.push(
-            `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
-          );
-        }
-        return;
-      }
-
-      if (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
-        const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
-        const selectedOption = attributeOptions[randomOptionIndex];
-        const nextSelectedOption = attributeOptions[randomOptionIndex + 1];
-        if (selectedOption) {
-          selectedOptionsSlugs.push(
-            `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
-          );
-        }
-        if (nextSelectedOption) {
-          selectedOptionsSlugs.push(
-            `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${nextSelectedOption.slug}`,
-          );
-        }
-        return;
-      }
-    }
-  });
 
   const rubricProducts: ProductModel[] = [];
 
   for (let i = 1; i <= maxProductsCount; i = i + 1) {
+    const selectedAttributesIds: ObjectIdModel[] = [];
+    const selectedOptionsSlugs: string[] = [];
+
+    rubricAttributes.forEach((attribute) => {
+      if (attribute.rubricSlug === rubricSlug && attribute.showInCatalogueFilter) {
+        selectedAttributesIds.push(attribute.attributeId);
+
+        const attributeOptions = options.filter(({ optionsGroupId }) => {
+          return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);
+        });
+
+        if (attribute.slug === 'region') {
+          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const selectedOption = attributeOptions[randomOptionIndex];
+          if (selectedOption) {
+            const regionOptionsTree = getOptionsTree(selectedOption, [selectedOption]);
+            regionOptionsTree.forEach(({ slug }) => {
+              selectedOptionsSlugs.push(`${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`);
+            });
+          }
+          return;
+        }
+
+        if (attribute.variant === ATTRIBUTE_VARIANT_SELECT) {
+          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const selectedOption = attributeOptions[randomOptionIndex];
+          if (selectedOption) {
+            selectedOptionsSlugs.push(
+              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
+            );
+          }
+          return;
+        }
+
+        if (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
+          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const selectedOption = attributeOptions[randomOptionIndex];
+          const nextSelectedOption = attributeOptions[randomOptionIndex + 1];
+          if (selectedOption) {
+            selectedOptionsSlugs.push(
+              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
+            );
+          }
+          if (nextSelectedOption) {
+            selectedOptionsSlugs.push(
+              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${nextSelectedOption.slug}`,
+            );
+          }
+          return;
+        }
+      }
+    });
+
     const counter = i * (rubricIndex + 1);
     const itemId = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug} ${itemId}`;

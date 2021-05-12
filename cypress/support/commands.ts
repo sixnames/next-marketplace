@@ -1,4 +1,6 @@
 import 'cypress-file-upload';
+import 'cypress-localstorage-commands';
+
 // noinspection ES6PreferShortImport
 import {
   DEFAULT_LOCALE,

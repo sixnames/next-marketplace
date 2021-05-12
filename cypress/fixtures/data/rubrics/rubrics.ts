@@ -1,9 +1,4 @@
-import {
-  DEFAULT_COUNTERS_OBJECT,
-  GENDER_HE,
-  GENDER_IT,
-  GENDER_SHE,
-} from '../../../../config/common';
+import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
 import { GenderModel, RubricModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 

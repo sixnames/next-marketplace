@@ -1002,6 +1002,7 @@ export async function getCatalogueServerSideProps(
       page: 1,
     },
   });
+
   if (!rawCatalogueData) {
     return notFoundResponse;
   }

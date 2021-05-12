@@ -71,7 +71,9 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
                 }
               : undefined,
           number:
-            rubricAttribute.variant === ATTRIBUTE_VARIANT_NUMBER ? Math.random() * 10 : undefined,
+            rubricAttribute.variant === ATTRIBUTE_VARIANT_NUMBER
+              ? Math.round(Math.random() * 10)
+              : undefined,
         };
       },
     );

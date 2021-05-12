@@ -578,6 +578,7 @@ export interface ShopProductModel extends TimestampModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
+  rubricSlug: string;
   selectedOptionsSlugs: string[];
   mainImage: string;
 }

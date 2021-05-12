@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
 } from 'config/common';
 import {
@@ -408,7 +409,7 @@ export async function getCardData({
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
         name: filterNameString,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${firstSelectedOption.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${productAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }
 

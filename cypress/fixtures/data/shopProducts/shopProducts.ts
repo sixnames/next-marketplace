@@ -46,6 +46,7 @@ shops.forEach((shop) => {
           manufacturerSlug: product.manufacturerSlug,
           nameI18n: product.nameI18n,
           rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
           price,
           discountedPercent: withDiscount ? discountedPercent : 0,

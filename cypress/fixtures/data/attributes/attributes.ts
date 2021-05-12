@@ -32,6 +32,7 @@ const attributes: AttributeModel[] = [
     showAsBreadcrumb: false,
     capitalise: false,
     positioningInTitle: null,
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Количество в упаковке`),
@@ -53,6 +54,7 @@ const attributes: AttributeModel[] = [
     showAsBreadcrumb: false,
     capitalise: false,
     positioningInTitle: null,
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Крепость`),
@@ -74,6 +76,7 @@ const attributes: AttributeModel[] = [
     showAsBreadcrumb: false,
     capitalise: false,
     positioningInTitle: null,
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Состав`),
@@ -90,6 +93,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Регион`),
@@ -106,6 +110,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Объем`),
@@ -129,6 +134,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Тип ёмкости`),
@@ -145,6 +151,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Год`),
@@ -161,6 +168,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Виноград`),
@@ -177,6 +185,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Винтаж`),
@@ -193,6 +202,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Сахар`),
@@ -209,6 +219,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
     _id: getObjectId(`attribute Тип вина`),
@@ -225,6 +236,7 @@ const attributes: AttributeModel[] = [
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
     },
+    attributesGroupId: getObjectId('attributesGroup Характеристики вина'),
   },
 ];
 

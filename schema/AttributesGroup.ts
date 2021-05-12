@@ -515,6 +515,7 @@ export const attributesGroupMutations = extendType({
             metric,
             showAsBreadcrumb: false,
             showInCard: true,
+            attributesGroupId,
           });
           const createdAttribute = createdAttributeResult.ops[0];
           if (!createdAttributeResult.result.ok || !createdAttribute) {

@@ -181,6 +181,7 @@ export interface CountersModel {
 export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
+  attributesGroupId?: ObjectIdModel | null;
   nameI18n: TranslationModel;
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
@@ -527,7 +528,6 @@ export interface RubricOptionModel extends OptionModel, CountersModel {
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
-  attributesGroupId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
   showInCatalogueFilter: boolean;

@@ -1,3 +1,4 @@
+import { ASSETS_DIST_COMPANIES } from '../../../../config/common';
 import { CompanyModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
@@ -16,7 +17,7 @@ const cities: CompanyModel[] = [
     },
     logo: {
       index: 1,
-      url: '',
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000001/000001-0.webp`,
     },
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -35,7 +36,7 @@ const cities: CompanyModel[] = [
     },
     logo: {
       index: 1,
-      url: '',
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000002/000002-0.webp`,
     },
     createdAt: new Date(),
     updatedAt: new Date(),

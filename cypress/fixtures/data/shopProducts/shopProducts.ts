@@ -5,7 +5,7 @@ import * as products from '../products/products';
 import * as shops from '../shops/shops';
 import * as rubrics from '../rubrics/rubrics';
 
-const maxProductsCountForShop = 80;
+const maxProductsCountForShop = 50;
 const shopProducts: ShopProductModel[] = [];
 
 const noNaN = (value: any) => {

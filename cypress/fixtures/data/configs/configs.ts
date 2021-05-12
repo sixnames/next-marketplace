@@ -1,6 +1,7 @@
 import { ConfigModel, ConfigVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import {
+  ASSETS_DIST_CONFIGS,
   CONFIG_DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -24,7 +25,7 @@ function getConfigTemplates({
   companySlug,
   foundationYear = `${new Date().getFullYear()}`,
 }: GetConfigTemplatesInterface): ConfigModel[] {
-  const objectStorageDomain = `${process.env.OBJECT_STORAGE_DOMAIN}`;
+  const fullAssetPath = `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_CONFIGS}/${assetsPath}`;
 
   return [
     // Site globals
@@ -140,9 +141,7 @@ function getConfigTemplates({
       acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/siteLogo/siteLogo.svg`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${fullAssetPath}/siteLogo/siteLogo.svg`] : [],
         },
       },
     },
@@ -158,9 +157,7 @@ function getConfigTemplates({
       acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/siteLogoDark/siteLogoDark.svg`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${fullAssetPath}/siteLogoDark/siteLogoDark.svg`] : [],
         },
       },
     },
@@ -327,9 +324,7 @@ function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`,
-              ]
+            ? [`${fullAssetPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`]
             : [],
         },
       },
@@ -347,9 +342,7 @@ function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`,
-              ]
+            ? [`${fullAssetPath}/android-chrome-192x192/android-chrome-192x192.png`]
             : [],
         },
       },
@@ -367,9 +360,7 @@ function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`,
-              ]
+            ? [`${fullAssetPath}/android-chrome-512x512/android-chrome-512x512.png`]
             : [],
         },
       },
@@ -387,7 +378,7 @@ function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
+            ? [`${fullAssetPath}/apple-touch-icon/apple-touch-icon.png`]
             : [],
         },
       },
@@ -404,9 +395,7 @@ function getConfigTemplates({
       acceptedFormats: ['image/x-icon', 'image/vnd.microsoft.icon'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/favicon/favicon.ico`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${fullAssetPath}/favicon/favicon.ico`] : [],
         },
       },
     },
@@ -422,9 +411,7 @@ function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/icon/icon.svg`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${fullAssetPath}/icon/icon.svg`] : [],
         },
       },
     },

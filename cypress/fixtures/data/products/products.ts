@@ -1,4 +1,6 @@
 import {
+  ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_PRODUCTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_OPTION_SEPARATOR,
@@ -48,7 +50,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
   return resultOptions;
 }
 
-const maxProductsCount = 100;
+const maxProductsCount = 70;
 
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;
@@ -139,7 +141,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
       },
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
-      mainImage: '',
+      mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
       selectedAttributesIds,
       brandSlug: brand?.slug,

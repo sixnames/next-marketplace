@@ -1,6 +1,12 @@
-import { DEFAULT_CITY } from '../../../../config/common';
+import {
+  ASSETS_DIST_SHOPS,
+  ASSETS_DIST_SHOPS_LOGOS,
+  DEFAULT_CITY,
+} from '../../../../config/common';
 import { ShopModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+
+require('dotenv').config();
 
 const shops: ShopModel[] = [
   {
@@ -12,13 +18,13 @@ const shops: ShopModel[] = [
     companyId: getObjectId('company Company A'),
     logo: {
       index: 0,
-      url: 'https://winepoint.storage.yandexcloud.net/shop-logos/000001/000001-0.webp',
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
     },
-    mainImage: 'https://winepoint.storage.yandexcloud.net/shops/000001/000001-0.webp',
+    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
     assets: [
       {
         index: 0,
-        url: 'https://winepoint.storage.yandexcloud.net/shops/000001/000001-0.webp',
+        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
       },
     ],
     contacts: {
@@ -43,13 +49,13 @@ const shops: ShopModel[] = [
     citySlug: DEFAULT_CITY,
     logo: {
       index: 0,
-      url: 'https://winepoint.storage.yandexcloud.net/image-fallback.png',
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
     },
-    mainImage: 'https://winepoint.storage.yandexcloud.net/image-fallback.png',
+    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
     assets: [
       {
         index: 0,
-        url: 'https://winepoint.storage.yandexcloud.net/image-fallback.png',
+        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
       },
     ],
     contacts: {

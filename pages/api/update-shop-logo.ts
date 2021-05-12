@@ -1,4 +1,4 @@
-import { ASSETS_DIST_SHOPS } from 'config/common';
+import { ASSETS_DIST_SHOPS_LOGOS } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -63,7 +63,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeRestApiUploads({
     files: formData.files,
     itemId: shop.itemId,
-    dist: ASSETS_DIST_SHOPS,
+    dist: ASSETS_DIST_SHOPS_LOGOS,
     startIndex: 0,
   });
   if (!assets) {

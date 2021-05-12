@@ -22,8 +22,9 @@ shops.forEach((shop) => {
 
     for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
       const product = rubricProducts[i];
+      const available = Math.round(Math.random() * 10);
       const withDiscount = i % 2 === 0;
-      const price = Math.random() * 100;
+      const price = Math.round(Math.random() * 1000);
       const oldPrice = price - Math.round(price / 3);
       const pricePercent = price / 100;
       const discountedPercent = Math.floor(oldPrice / pricePercent);
@@ -50,7 +51,7 @@ shops.forEach((shop) => {
           discountedPercent: withDiscount ? discountedPercent : 0,
           formattedPrice: getCurrencyString(price),
           formattedOldPrice: getCurrencyString(oldPrice),
-          available: Math.random() * 10,
+          available,
           oldPrices: withDiscount
             ? [
                 {

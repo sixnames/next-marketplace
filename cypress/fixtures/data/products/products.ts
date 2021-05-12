@@ -45,7 +45,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
   return resultOptions;
 }
 
-const maxProductsCount = 50;
+const maxProductsCount = 100;
 
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;

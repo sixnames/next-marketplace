@@ -53,7 +53,11 @@ const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({ setIsSear
   );
 };
 
-const HeaderProfileLink: React.FC = () => {
+interface HeaderProfileLinkInterface {
+  testId: string;
+}
+
+const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
   const signOut = useSignOut();
   const { me } = useUserContext();
 
@@ -65,7 +69,7 @@ const HeaderProfileLink: React.FC = () => {
             <React.Fragment>
               <MenuButton
                 className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
-                data-cy={'user-dropdown-trigger'}
+                data-cy={`${testId}-user-dropdown-trigger`}
               >
                 <span className={`relative`}>
                   <Icon name={'user'} className='w-5 h-5' />
@@ -111,7 +115,10 @@ const HeaderProfileLink: React.FC = () => {
                     ) : null}
 
                     <li onClick={signOut}>
-                      <span className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'>
+                      <span
+                        data-cy={`${testId}-sign-out-link`}
+                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
+                      >
                         Выйти из аккаунта
                       </span>
                     </li>
@@ -128,8 +135,8 @@ const HeaderProfileLink: React.FC = () => {
   return (
     <Link
       ariaLabel={'Войти'}
-      testId={me ? `profile-link` : `sign-in-link`}
-      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      testId={`${testId}-sign-in-link`}
+      href={ROUTE_SIGN_IN}
       className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
       <span className={`relative`}>
@@ -375,7 +382,7 @@ const Header: React.FC = () => {
 
             <div className={`${middleSideClassName} justify-end`}>
               <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
-              <HeaderProfileLink />
+              <HeaderProfileLink testId={'header'} />
 
               <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
                 <div className={`relative`}>
@@ -410,7 +417,7 @@ const Header: React.FC = () => {
 
           <div className='flex items-center'>
             <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
-            <HeaderProfileLink />
+            <HeaderProfileLink testId={'mobile-nav'} />
             <HeaderCartLink />
           </div>
         </Inner>

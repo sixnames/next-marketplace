@@ -548,7 +548,7 @@ export async function getAppInitialData({
     };
   }
 
-  if (!sessionUser.role || noNaN(sessionUser.companies?.length) < 1) {
+  if (!sessionUser.role || (!isCms && noNaN(sessionUser.companies?.length) < 1)) {
     return {
       redirect: {
         permanent: false,

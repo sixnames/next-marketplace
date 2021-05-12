@@ -75,8 +75,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
   const { hideModal } = useAppContext();
 
   return (
-    <div className='fixed inset-0 z-[999] w-full h-[var(--fullHeight)] min-w-[320px] backdrop backdrop-blur-[3px]'>
-      <div className='relative flex items-center justify-center z-20 w-full min-h-full px-inner-block-horizontal-padding overflow-x-hidden overflow-y-auto'>
+    <div className='fixed inset-0 z-[999] w-full h-[var(--fullHeight)] min-w-[320px] overflow-x-hidden overflow-y-auto'>
+      <div className='relative flex items-center justify-center z-20 w-full min-h-full p-inner-block-horizontal-padding bg-gray-700 bg-opacity-50'>
         <OutsideClickHandler onOutsideClick={hideModal}>
           <React.Suspense fallback={<Spinner />}>
             {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
@@ -138,7 +138,7 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
         </OutsideClickHandler>
       </div>
 
-      <div className='absolute opacity-50 bg-gray-700 inset-0 z-10' />
+      {/*<div className='absolute opacity-50 bg-gray-700 inset-0 z-10' />*/}
     </div>
   );
 };

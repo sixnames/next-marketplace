@@ -18,12 +18,6 @@
 require('dotenv').config();
 
 export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
-  // env variables
-  config.env.adminEmail = process.env.ADMIN_EMAIL;
-  config.env.adminPassword = process.env.ADMIN_PASSWORD;
-  config.env.testDataKey = process.env.TEST_DATA_KEY;
-  config.env.initialDataKey = process.env.INITIAL_DATA_KEY;
-
   on('task', {
     // Define task functions
   });

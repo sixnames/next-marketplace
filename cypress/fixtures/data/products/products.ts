@@ -11,6 +11,9 @@ const addZero = require('add-zero');
 import * as rubrics from '../rubrics/rubrics';
 import * as options from '../options/options';
 import * as rubricAttributes from '../rubricAttributes/rubricAttributes';
+import * as manufacturers from '../manufacturers/manufacturers';
+import * as brands from '../brands/brands';
+import * as brandCollections from '../brandCollections/brandCollections';
 
 const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();
@@ -109,6 +112,18 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
     const itemId = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug} ${itemId}`;
 
+    const manufacturerIndex = randomNumber(0, manufacturers.length);
+    const brandIndex = randomNumber(0, brands.length);
+
+    const manufacturer = manufacturers[manufacturerIndex];
+    const brand = brands[brandIndex];
+
+    const currentBrandCollections = brandCollections.filter(({ brandSlug }) => {
+      return brand && brand.slug === brandSlug;
+    });
+    const brandCollectionIndex = randomNumber(0, currentBrandCollections.length);
+    const brandCollection = currentBrandCollections[brandCollectionIndex];
+
     rubricProducts.push({
       _id: getObjectId(`${rubricSlug} ${itemId}`),
       active: true,
@@ -126,6 +141,9 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
       mainImage: '',
       selectedOptionsSlugs,
       selectedAttributesIds,
+      brandSlug: brand?.slug,
+      brandCollectionSlug: brandCollection?.slug,
+      manufacturerSlug: manufacturer?.slug,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

@@ -1,60 +1,57 @@
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
-import { CreateTestDataPayloadInterface } from 'tests/createTestData';
+import {
+  ADULT_KEY,
+  ADULT_TRUE,
+  CATALOGUE_DEFAULT_RUBRIC_SLUG,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 
 describe('Cart', () => {
-  let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
-    cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit(`/`);
-    window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
-  });
-
-  after(() => {
-    cy.clearTestData();
+    cy.createTestData();
+    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
+    cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
   });
 
   it('Should CRUD cart items', () => {
-    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
+    cy.get(`[data-cy=catalogue-item-0-name]`).invoke('removeAttr', 'target').click();
 
-    // Add product
-    cy.getByCy(`card-${mockData.productA.slug}`).should('exist');
+    // Add product #1
+    cy.getByCy(`card`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
     cy.getByCy(`card-shops-list`).should('exist');
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-plus`).click();
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-input`).should('have.value', '2');
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
 
     // Add same product
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '1');
 
     // Add second product
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
+    cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
     cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
-    cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
-    cy.getByCy(`connection-${mockData.connectionProductB.slug}`).click();
+    cy.get(`[data-cy=catalogue-item-1-name]`).invoke('removeAttr', 'target').click();
+    cy.getByCy(`card`).should('exist');
+    cy.getByCy(`card-connection`).first().click();
     cy.getByCy(`card-tabs-shops`).click();
-    cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
+    cy.getByCy(`card-shops-list`).should('exist');
+    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
-    cy.getByCy(`cart-counter`).should('contain', '2');
 
     // Add shopless product from catalogue
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
-    cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-counter`).should('contain', '2');
+    cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
+    cy.getByCy(`catalogue-item-2-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
     // Add shopless product from card
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByCy(`catalogue-item-${mockData.connectionProductC.slug}`).click();
-    cy.getByCy(`card-${mockData.connectionProductC.slug}-plus`).click();
-    cy.getByCy(`card-${mockData.connectionProductC.slug}-add-to-cart`).click();
+    cy.get(`[data-cy=catalogue-item-3-name]`).invoke('removeAttr', 'target').click();
+    cy.getByCy(`card-plus`).click();
+    cy.getByCy(`card-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '4');
 
     // Should navigate to cart
@@ -65,36 +62,36 @@ describe('Cart', () => {
     cy.getByCy(`cart-product`).should('have.length', 4);
 
     // Should delete product form cart
-    cy.getByCy(`${mockData.connectionProductC.slug}-remove-from-cart`).click();
+    cy.getByCy(`cart-product-2-remove-from-cart`).click();
     cy.getByCy(`cart-product`).should('have.length', 3);
 
     // Should add shop to the shopless cart product
-    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).click();
+    cy.getByCy(`cart-product-2-show-shops`).click();
     cy.getByCy(`cart-shops-list`).should('exist');
-    cy.getByCy(`cart-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-shops-0-add-to-cart`).click();
     cy.getByCy(`cart-shops-list`).should('not.exist');
-    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).should('not.exist');
+    cy.getByCy(`cart-product-2-show-shops`).should('not.exist');
 
     // Should update product amount
-    cy.getByCy(`${mockData.productA.slug}-plus`).click();
-    cy.getByCy(`${mockData.productA.slug}-amount`).should('have.value', '5');
+    cy.getByCy(`cart-product-0-plus`).click();
+    cy.getByCy(`cart-product-0-amount`).should('have.value', '3');
 
     // Should have cart dropdown
-    cy.visit(`/catalogue/${mockData.rubricA.slug}`);
+    cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
     cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`cart-dropdown-trigger`).click();
+    cy.getByCy(`header-cart-dropdown-trigger`).click();
     cy.getByCy(`cart-dropdown`).should('exist');
 
     // Should update product amount in dropdown
-    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-minus`).click();
-    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-amount`).should('have.value', '4');
+    // TODO remove .first() after reach-ui replacement
+    cy.getByCy(`cart-dropdown-product-0-minus`).first().click();
+    cy.getByCy(`cart-dropdown-product-0-amount`).first().should('have.value', '2');
 
     // Should delete cart product form dropdown
-    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-remove-from-cart`).click();
-    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-remove-from-cart`).should('not.exist');
+    cy.getByCy(`cart-dropdown-product-0-remove-from-cart`).first().click();
 
     // Should remove all cart products
-    cy.getByCy('clear-cart').click();
+    cy.getByCy('clear-cart').first().click();
     cy.getByCy(`cart-dropdown`).should('not.exist');
     cy.getByCy(`cart-counter`).should('not.exist');
     cy.shouldSuccess();

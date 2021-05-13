@@ -31,7 +31,7 @@ interface CartProductFrameInterface {
   mainImage: string;
   originalName: string;
   shopProducts?: ShopProductInterface[];
-  slug: string;
+  testId: number | string;
 }
 
 const CartProductFrame: React.FC<CartProductFrameInterface> = ({
@@ -41,7 +41,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   mainImage,
   originalName,
   shopProducts,
-  slug,
+  testId,
 }) => {
   const { deleteProductFromCart } = useSiteContext();
 
@@ -65,7 +65,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           <div className={classes.productContent}>
             {children}
             <ButtonCross
-              testId={`${slug}-remove-from-cart`}
+              testId={`cart-product-${testId}-remove-from-cart`}
               iconSize={'small'}
               className={classes.productRemove}
               onClick={() => {
@@ -107,9 +107,10 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ itemId, o
 
 interface CartProductPropsInterface {
   cartProduct: CartProductInterface;
+  testId: number | string;
 }
 
-const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
+const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
   const [isShopsVisible, setIsShopsVisible] = React.useState<boolean>(false);
   const { updateProductInCart } = useSiteContext();
   const { product, _id, amount } = cartProduct;
@@ -117,12 +118,12 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct 
     return null;
   }
 
-  const { itemId, originalName, slug, shopProducts, cardPrices, shopsCount, mainImage } = product;
+  const { itemId, originalName, shopProducts, cardPrices, shopsCount, mainImage } = product;
 
   return (
     <CartProductFrame
+      testId={testId}
       cartProductId={`${_id}`}
-      slug={slug}
       mainImage={mainImage}
       originalName={originalName}
       shopProducts={shopProducts}
@@ -143,9 +144,9 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct 
           name={'amount'}
           value={amount}
           min={1}
-          testId={`${product.slug}-amount`}
-          plusTestId={`${product.slug}-plus`}
-          minusTestId={`${product.slug}-minus`}
+          testId={`cart-product-${testId}-amount`}
+          plusTestId={`cart-product-${testId}-plus`}
+          minusTestId={`cart-product-${testId}-minus`}
           frameClassName={`${classes.shoplessFromInput}`}
           className={`${classes.amountInput}`}
           onChange={(e) => {
@@ -159,7 +160,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct 
           onClick={() => {
             setIsShopsVisible(true);
           }}
-          testId={`${product.slug}-show-shops`}
+          testId={`cart-product-${testId}-show-shops`}
         >
           Выбрать винотеку
         </Button>
@@ -168,7 +169,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct 
   );
 };
 
-const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
+const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   if (!shopProduct) {
@@ -183,12 +184,11 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
     shop,
     itemId,
     originalName,
-    slug,
     mainImage,
   } = shopProduct;
   return (
     <CartProductFrame
-      slug={slug}
+      testId={testId}
       cartProductId={`${_id}`}
       mainImage={mainImage}
       originalName={originalName}
@@ -201,9 +201,9 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct }) => {
             value={amount}
             min={1}
             max={available}
-            testId={`${slug}-amount`}
-            plusTestId={`${slug}-plus`}
-            minusTestId={`${slug}-minus`}
+            testId={`cart-product-${testId}-amount`}
+            plusTestId={`cart-product-${testId}-plus`}
+            minusTestId={`cart-product-${testId}-minus`}
             className={classes.amountInput}
             onChange={(e) => {
               updateProductInCart({
@@ -316,14 +316,16 @@ const CartRoute: React.FC = () => {
         </Title>
         <div className={classes.frame}>
           <div data-cy={'cart-products'}>
-            {cartProducts.map((cartProduct) => {
+            {cartProducts.map((cartProduct, index) => {
               const { _id, shopProduct } = cartProduct;
 
               if (!shopProduct) {
-                return <CartShoplessProduct cartProduct={cartProduct} key={`${_id}`} />;
+                return (
+                  <CartShoplessProduct testId={index} cartProduct={cartProduct} key={`${_id}`} />
+                );
               }
 
-              return <CartProduct cartProduct={cartProduct} key={`${_id}`} />;
+              return <CartProduct testId={index} cartProduct={cartProduct} key={`${_id}`} />;
             })}
           </div>
 

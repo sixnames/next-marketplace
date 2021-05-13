@@ -113,7 +113,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
             <ControlButton
               ariaLabel={'Добавить в корзину'}
-              testId={`catalogue-item-${slug}-add-to-cart`}
+              testId={`${testId}-add-to-cart`}
               onClick={() =>
                 addShoplessProductToCart({
                   amount: 1,

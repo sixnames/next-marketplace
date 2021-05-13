@@ -24,7 +24,7 @@ shops.forEach((shop) => {
     for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
       const product = rubricProducts[i];
       const productId = product._id;
-      const available = Math.round(Math.random() * 10);
+      const available = 5;
       const withDiscount = i % 2 === 0;
       const price = Math.round(Math.random() * 1000);
       const oldPrice = price - Math.round(price / 3);

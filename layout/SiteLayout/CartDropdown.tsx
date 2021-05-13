@@ -54,13 +54,17 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
       </div>
       <div className='max-h-[30rem] overflow-y-auto'>
         <div className='pt-[var(--framePadding)]'>
-          {cartProducts.map((cartProduct) => {
+          {cartProducts.map((cartProduct, index) => {
             const { product, shopProduct, _id, amount } = cartProduct;
 
             if (shopProduct) {
-              const { mainImage, originalName, slug } = shopProduct;
+              const { mainImage, originalName } = shopProduct;
               return (
-                <div key={`${_id}`} className={productClassName} data-cy={`cart-dropdown-product`}>
+                <div
+                  key={`${_id}`}
+                  className={productClassName}
+                  data-cy={`cart-dropdown-product-${index}`}
+                >
                   <div className={productImageClassName}>
                     <div className={productImageHolderClassName}>
                       <Image
@@ -94,9 +98,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                         name={'amount'}
                         value={amount}
                         min={1}
-                        testId={`cart-dropdown-${slug}-amount`}
-                        plusTestId={`cart-dropdown-${slug}-plus`}
-                        minusTestId={`cart-dropdown-${slug}-minus`}
+                        testId={`cart-dropdown-product-${index}-amount`}
+                        plusTestId={`cart-dropdown-product-${index}-plus`}
+                        minusTestId={`cart-dropdown-product-${index}-minus`}
                         size={'small'}
                         onChange={(e) => {
                           updateProductInCart({
@@ -109,7 +113,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       <div className='flex items-center justify-end'>
                         <div className='absolute top-0 right-0 z-[5]'>
                           <ButtonCross
-                            testId={`cart-dropdown-${slug}-remove-from-cart`}
+                            testId={`cart-dropdown-product-${index}-remove-from-cart`}
                             iconSize={'smaller'}
                             size={'small'}
                             onClick={() => {
@@ -166,9 +170,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       name={'amount'}
                       value={amount}
                       min={1}
-                      testId={`cart-dropdown-${product.slug}-amount`}
-                      plusTestId={`cart-dropdown-${product.slug}-plus`}
-                      minusTestId={`cart-dropdown-${product.slug}-minus`}
+                      testId={`cart-dropdown-product-${index}-amount`}
+                      plusTestId={`cart-dropdown-product-${index}-plus`}
+                      minusTestId={`cart-dropdown-product-${index}-minus`}
                       size={'small'}
                       onChange={(e) => {
                         updateProductInCart({
@@ -181,7 +185,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     <div className='flex items-center justify-end'>
                       <div className='absolute top-0 right-0 z-[5]'>
                         <ButtonCross
-                          testId={`cart-dropdown-${product.slug}-remove-from-cart`}
+                          testId={`cart-dropdown-product-${index}-remove-from-cart`}
                           iconSize={'smaller'}
                           size={'small'}
                           onClick={() => {

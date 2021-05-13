@@ -264,9 +264,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
-                plusTestId={`card-${cardData.slug}-plus`}
-                minusTestId={`card-${cardData.slug}-minus`}
-                testId={`card-${cardData.slug}-amount`}
+                plusTestId={`card-plus`}
+                minusTestId={`card-minus`}
+                testId={`card-amount`}
                 frameClassName={`${classes.shoplessFromInput}`}
                 min={1}
                 name={'amount'}
@@ -279,7 +279,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                     productId: _id,
                   });
                 }}
-                testId={`card-${cardData.slug}-add-to-cart`}
+                testId={`card-add-to-cart`}
                 className={classes.shoplessFromButton}
               >
                 В корзину

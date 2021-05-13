@@ -182,7 +182,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 disabled={isShopless}
                 theme={'gray'}
                 short
-                testId={`card-shops-${slug}-add-to-cart`}
+                testId={`${testId}-add-to-cart`}
                 ariaLabel={'Добавить в корзину'}
                 onClick={() => {
                   addShoplessProductToCart({

@@ -151,13 +151,20 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
 
 interface HeaderCartDropdownButtonInterface {
   cart: CartInterface;
+  testId: string;
 }
 
-const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {
+const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
+  cart,
+  testId,
+}) => {
   return (
     <React.Fragment>
       <MenuButton>
-        <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+        <span
+          data-cy={`${testId}-cart-dropdown-trigger`}
+          className={`${middleLinkClassName} ml-2 pl-2`}
+        >
           <span className={`relative mr-3`}>
             <Icon name={'cart'} className='w-5 h-5' />
             <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
@@ -172,21 +179,28 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
   );
 };
 
-const HeaderCartLink: React.FC = () => {
+interface HeaderCartLinkInterface {
+  testId: string;
+}
+
+const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
   const { cart } = useSiteContext();
 
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
       <Menu>
         {() => {
-          return <HeaderCartDropdownButton cart={cart} />;
+          return <HeaderCartDropdownButton testId={testId} cart={cart} />;
         }}
       </Menu>
     );
   }
 
   return (
-    <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+    <span
+      data-cy={`${testId}-cart-dropdown-trigger`}
+      className={`${middleLinkClassName} ml-2 pl-2`}
+    >
       <span className={`relative mr-3`}>
         <Icon name={'cart'} className='w-5 h-5' />
       </span>
@@ -399,7 +413,7 @@ const Header: React.FC = () => {
                 </div>
               </div>
 
-              <HeaderCartLink />
+              <HeaderCartLink testId={'header'} />
             </div>
           </div>
         </Inner>
@@ -421,7 +435,7 @@ const Header: React.FC = () => {
           <div className='flex items-center'>
             <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
             <HeaderProfileLink testId={'mobile-nav'} />
-            <HeaderCartLink />
+            <HeaderCartLink testId={'mobile-nav'} />
           </div>
         </Inner>
         <BurgerDropdown

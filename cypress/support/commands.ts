@@ -180,7 +180,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.getByCy(`catalogue-item-`).click();
 
   // Add product #1
-  cy.getByCy(`card-`).should('exist');
+  cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-tabs-shops`).click();
   cy.getByCy(`card-shops`).should('exist');
   cy.getByCy(`card-shops-list`).should('exist');

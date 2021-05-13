@@ -49,7 +49,7 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           _id: getObjectId(`${product.slug} ${rubricAttribute.slug}`),
           productSlug: product.slug,
           productId: product._id,
-          attributeId: rubricAttribute._id,
+          attributeId: rubricAttribute.attributeId,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
           selectedOptionsIds,
           optionsGroupId: rubricAttribute.optionsGroupId,

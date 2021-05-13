@@ -58,6 +58,7 @@ export interface ContactsInterface extends ContactsModel {
 
 export interface AttributeInterface extends AttributeModel {
   name?: string | null;
+  metric?: MetricInterface | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
@@ -136,6 +137,7 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
 }
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
+  shopProduct?: ShopProductInterface;
   product?: ProductInterface;
   option?: OptionInterface | null;
 }
@@ -145,10 +147,12 @@ export interface ProductConnectionInterface extends ProductConnectionModel {
   connectionProducts?: ProductConnectionItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel, AttributeInterface {
+export interface ProductAttributeInterface extends ProductAttributeModel {
   readableValue?: string | null;
   index?: number | null;
   options?: OptionInterface[] | null;
+  name?: string | null;
+  metric?: MetricInterface | null;
 }
 
 export interface RubricAttributesGroupASTInterface {

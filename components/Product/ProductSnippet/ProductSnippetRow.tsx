@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -62,7 +63,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             testId={`${testId}-image`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`/catalogue/${rubricSlug}/product/${slug}`}
+            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {originalName}
           </Link>
@@ -82,7 +83,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 testId={`${testId}-name`}
                 target={'_blank'}
                 className='block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`/catalogue/${rubricSlug}/product/${slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {originalName}
               </Link>

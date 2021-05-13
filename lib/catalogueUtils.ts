@@ -51,6 +51,8 @@ import {
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
+  ProductConnectionInterface,
+  ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricOptionInterface,
 } from 'db/uiInterfaces';
@@ -758,9 +760,29 @@ export const getCatalogueData = async ({
                               },
                             },
                             {
+                              $lookup: {
+                                from: COL_SHOP_PRODUCTS,
+                                as: 'shopProduct',
+                                let: { productId: '$productId' },
+                                pipeline: [
+                                  {
+                                    $match: {
+                                      $expr: {
+                                        $eq: ['$$productId', '$productId'],
+                                      },
+                                      citySlug: city,
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
                               $addFields: {
                                 option: {
                                   $arrayElemAt: ['$option', 0],
+                                },
+                                shopProduct: {
+                                  $arrayElemAt: ['$shopProduct', 0],
                                 },
                               },
                             },
@@ -929,35 +951,62 @@ export const getCatalogueData = async ({
         locale,
       });
 
+      const castedConnections = (connections || []).reduce(
+        (acc: ProductConnectionInterface[], { attribute, ...connection }) => {
+          const connectionProducts = (connection.connectionProducts || []).reduce(
+            (acc: ProductConnectionItemInterface[], connectionProduct) => {
+              if (!connectionProduct.shopProduct) {
+                return acc;
+              }
+
+              return [
+                ...acc,
+                {
+                  ...connectionProduct,
+                  option: connectionProduct.option
+                    ? {
+                        ...connectionProduct.option,
+                        name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
+                      }
+                    : null,
+                },
+              ];
+            },
+            [],
+          );
+
+          if (connectionProducts.length < 1 || !attribute) {
+            return acc;
+          }
+
+          return [
+            ...acc,
+            {
+              ...connection,
+              connectionProducts,
+              attribute: {
+                ...attribute,
+                name: getFieldStringLocale(attribute?.nameI18n, locale),
+                metric: attribute.metric
+                  ? {
+                      ...attribute.metric,
+                      name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+                    }
+                  : null,
+              },
+            },
+          ];
+        },
+        [],
+      );
+
       products.push({
         ...restProduct,
         listFeatures,
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        connections: (connections || []).map(({ attribute, connectionProducts, ...connection }) => {
-          // console.log(JSON.stringify(connectionProducts, null, 2));
-          return {
-            ...connection,
-            connectionProducts: (connectionProducts || []).map((connectionProduct) => {
-              return {
-                ...connectionProduct,
-                option: connectionProduct.option
-                  ? {
-                      ...connectionProduct.option,
-                      name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
-                    }
-                  : null,
-              };
-            }),
-            attribute: attribute
-              ? {
-                  ...(attribute || {}),
-                  name: getFieldStringLocale(attribute?.nameI18n, locale),
-                }
-              : null,
-          };
-        }),
+        connections: castedConnections,
       });
     }
 

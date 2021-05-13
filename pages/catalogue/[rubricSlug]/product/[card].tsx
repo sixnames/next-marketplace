@@ -9,6 +9,7 @@ import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
@@ -56,6 +57,7 @@ interface CardRouteInterface {
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   const {
     _id,
+    rubricSlug,
     mainImage,
     name,
     originalName,
@@ -109,7 +111,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   ];
 
   return (
-    <div className='overflow-hidden pb-20 pt-8 wp-desktop:pt-0' data-cy={`card-${cardData.slug}`}>
+    <div className='overflow-hidden pb-20 pt-8 wp-desktop:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
       <Inner>
@@ -168,6 +170,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                         <div className={classes.connectionsList}>
                           {(connectionProducts || []).map(({ option, productSlug }) => {
                             const isCurrent = productSlug === cardData.slug;
+                            const name = `${option?.name} ${
+                              attribute?.metric ? ` ${attribute.metric.name}` : ''
+                            }`;
 
                             if (isCurrent) {
                               return (
@@ -175,18 +180,18 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                                   className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
                                   key={`${option?.name}`}
                                 >
-                                  {option?.name}
+                                  {name}
                                 </span>
                               );
                             }
                             return (
                               <Link
-                                data-cy={`connection-${productSlug}`}
+                                data-cy={`card-connection`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={`${option?.name}`}
-                                href={`/product/${productSlug}`}
+                                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${productSlug}`}
                               >
-                                {option?.name}
+                                {name}
                               </Link>
                             );
                           })}

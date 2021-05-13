@@ -318,7 +318,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                         <ProductSnippetRow
                           product={product}
                           key={`${product._id}`}
-                          testId={`catalogue-item-${product.slug}`}
+                          testId={`catalogue-item`}
                         />
                       );
                     }
@@ -327,7 +327,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                       <ProductSnippetGrid
                         product={product}
                         key={`${product._id}`}
-                        testId={`catalogue-item-${product.slug}`}
+                        testId={`catalogue-item`}
                       />
                     );
                   })}

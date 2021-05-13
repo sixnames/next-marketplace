@@ -691,7 +691,7 @@ export const getCatalogueData = async ({
                 {
                   $lookup: {
                     from: COL_PRODUCT_CONNECTIONS,
-                    as: 'connection',
+                    as: 'connections',
                     let: {
                       productId: '$_id',
                     },
@@ -888,7 +888,7 @@ export const getCatalogueData = async ({
     });
     for await (const product of shopProductsAggregationResult.docs) {
       // prices
-      const { attributes, ...restProduct } = product;
+      const { attributes, connections, ...restProduct } = product;
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
@@ -935,7 +935,29 @@ export const getCatalogueData = async ({
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        connections: [],
+        connections: (connections || []).map(({ attribute, connectionProducts, ...connection }) => {
+          // console.log(JSON.stringify(connectionProducts, null, 2));
+          return {
+            ...connection,
+            connectionProducts: (connectionProducts || []).map((connectionProduct) => {
+              return {
+                ...connectionProduct,
+                option: connectionProduct.option
+                  ? {
+                      ...connectionProduct.option,
+                      name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
+                    }
+                  : null,
+              };
+            }),
+            attribute: attribute
+              ? {
+                  ...(attribute || {}),
+                  name: getFieldStringLocale(attribute?.nameI18n, locale),
+                }
+              : null,
+          };
+        }),
       });
     }
 

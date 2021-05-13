@@ -5,8 +5,6 @@ import * as products from '../products/products';
 import * as productConnections from '../productConnections/productConnections';
 import * as options from '../options/options';
 
-const attributeSlug = 'obem';
-
 const productConnectionItems: ProductConnectionItemModel[] = [];
 
 productConnections.forEach((connection) => {
@@ -17,7 +15,7 @@ productConnections.forEach((connection) => {
   connectionProducts.forEach((product) => {
     const selectedOptionSlug = product.selectedOptionsSlugs.find((slug) => {
       const slugArray = slug.split(CATALOGUE_OPTION_SEPARATOR);
-      return attributeSlug === slugArray[0];
+      return connection.attributeSlug === slugArray[0];
     });
 
     const optionsSlugArray = `${selectedOptionSlug}`.split(CATALOGUE_OPTION_SEPARATOR);

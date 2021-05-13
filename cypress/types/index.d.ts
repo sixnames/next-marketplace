@@ -15,14 +15,11 @@ declare namespace Cypress {
   }
 
   interface MakeAnOrderPayloadInterface {
-    productA: any;
-    connectionProductA: any;
     orderItemId: string | undefined;
   }
 
   interface MakeAnOrderInterface {
     callback?: (payload: MakeAnOrderPayloadInterface) => void;
-    mockData: any;
     orderFields?: {
       customerName: string;
       customerPhone: string;

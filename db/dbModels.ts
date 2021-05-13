@@ -557,7 +557,7 @@ export interface RubricModel extends CountersModel {
   variantId: ObjectIdModel;
 }
 
-export interface ShopProductModel extends TimestampModel {
+export interface ShopProductModel extends TimestampModel, CountersModel {
   _id: ObjectIdModel;
   active: boolean;
   available: number;

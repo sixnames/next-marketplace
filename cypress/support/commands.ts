@@ -3,8 +3,10 @@ import 'cypress-localstorage-commands';
 
 // noinspection ES6PreferShortImport
 import {
+  CATALOGUE_DEFAULT_RUBRIC_SLUG,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROUTE_CATALOGUE,
   SECONDARY_LOCALE,
 } from '../../config/common';
 import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterface;
@@ -171,61 +173,53 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add(
-  'makeAnOrder',
-  ({ callback, orderFields, mockData }: Cypress.MakeAnOrderInterface) => {
-    const rubricA = mockData.rubricA;
-    const productA = mockData.productA;
-    const connectionProductA = mockData.connectionProductA;
+Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {
+  cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
 
-    cy.visit(`/${rubricA.slug}`);
-    // Should navigate to cart
-    cy.getByCy(`catalogue-item-${productA.slug}`).click();
+  // Should navigate to cart
+  cy.getByCy(`catalogue-item-`).click();
 
-    // Add product #1
-    cy.getByCy(`card-${productA.slug}`).should('exist');
-    cy.getByCy(`card-tabs-shops`).click();
-    cy.getByCy(`card-shops`).should('exist');
-    cy.getByCy(`card-shops-list`).should('exist');
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+  // Add product #1
+  cy.getByCy(`card-`).should('exist');
+  cy.getByCy(`card-tabs-shops`).click();
+  cy.getByCy(`card-shops`).should('exist');
+  cy.getByCy(`card-shops-list`).should('exist');
+  cy.getByCy(`card-shops--add-to-cart`).click();
 
-    // Add second product #2
-    cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${rubricA.slug}`);
-    cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
-    cy.getByCy(`card-${connectionProductA.slug}`).should('exist');
-    cy.getByCy(`card-tabs-shops`).click();
-    cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
-    cy.getByCy(`cart-modal-continue`).click();
+  // Add second product #2
+  cy.getByCy(`cart-modal-close`).click();
+  cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
+  cy.getByCy('catalogue').should('exist');
+  cy.getByCy(`catalogue-item-`).click();
+  cy.getByCy(`card-`).should('exist');
+  cy.getByCy(`card-tabs-shops`).click();
+  cy.getByCy(`card-shops--add-to-cart`).click();
+  cy.getByCy(`cart-modal-continue`).click();
 
-    // Should navigate to cart
-    cy.getByCy(`cart-aside-confirm`).click();
+  // Should navigate to cart
+  cy.getByCy(`cart-aside-confirm`).click();
 
-    // Should navigate to order form
-    cy.getByCy(`order-form`).should('exist');
+  // Should navigate to order form
+  cy.getByCy(`order-form`).should('exist');
 
-    // Should fill all order fields
-    if (orderFields) {
-      cy.getByCy(`order-form-name`).clear().type(orderFields.customerName);
-      cy.getByCy(`order-form-phone`).clear().type(orderFields.customerPhone);
-      cy.getByCy(`order-form-email`).clear().type(orderFields.customerEmail);
+  // Should fill all order fields
+  if (orderFields) {
+    cy.getByCy(`order-form-name`).clear().type(orderFields.customerName);
+    cy.getByCy(`order-form-phone`).clear().type(orderFields.customerPhone);
+    cy.getByCy(`order-form-email`).clear().type(orderFields.customerEmail);
+  }
+  cy.getByCy(`order-form-comment`).type('comment');
+
+  // Should make an order and redirect to the Thank you page
+  cy.getByCy(`cart-aside-confirm`).click();
+  cy.get(`[data-cy="thank-you"]`).then((e) => {
+    // Get created order itemId
+    const orderItemId = e.attr('data-order-item-id');
+
+    if (callback) {
+      callback({
+        orderItemId,
+      });
     }
-    cy.getByCy(`order-form-comment`).type('comment');
-
-    // Should make an order and redirect to the Thank you page
-    cy.getByCy(`cart-aside-confirm`).click();
-    cy.get(`[data-cy="thank-you"]`).then((e) => {
-      // Get created order itemId
-      const orderItemId = e.attr('data-order-item-id');
-
-      if (callback) {
-        callback({
-          orderItemId,
-          productA,
-          connectionProductA,
-        });
-      }
-    });
-  },
-);
+  });
+});

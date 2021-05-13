@@ -2,6 +2,7 @@ import { DEFAULT_CITY, DEFAULT_LOCALE } from '../../../../config/common';
 import { ShopProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import * as products from '../products/products';
+import * as productConnectionItems from '../productConnectionItems/productConnectionItems';
 import * as shops from '../shops/shops';
 import * as rubrics from '../rubrics/rubrics';
 
@@ -22,12 +23,17 @@ shops.forEach((shop) => {
 
     for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
       const product = rubricProducts[i];
+      const productId = product._id;
       const available = Math.round(Math.random() * 10);
       const withDiscount = i % 2 === 0;
       const price = Math.round(Math.random() * 1000);
       const oldPrice = price - Math.round(price / 3);
       const pricePercent = price / 100;
       const discountedPercent = Math.floor(oldPrice / pricePercent);
+
+      const withConnection = productConnectionItems.some((connectionItem) => {
+        return connectionItem.productId.equals(productId);
+      });
 
       if (product) {
         shopProducts.push({
@@ -39,7 +45,7 @@ shops.forEach((shop) => {
           slug: product.slug,
           originalName: product.originalName,
           itemId: product.itemId,
-          productId: product._id,
+          productId,
           active: product.active,
           brandCollectionSlug: product.brandCollectionSlug,
           brandSlug: product.brandSlug,
@@ -64,6 +70,16 @@ shops.forEach((shop) => {
             : [],
           createdAt: new Date(),
           updatedAt: new Date(),
+          views: {
+            default: {
+              msk: withConnection ? i : 1,
+            },
+          },
+          priorities: {
+            default: {
+              msk: withConnection ? i : 1,
+            },
+          },
         });
       }
     }

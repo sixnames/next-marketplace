@@ -18,8 +18,8 @@
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
     "test": "yarn cy:start",
-    "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts",
-    "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts"
+    "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",
+    "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.3.12",

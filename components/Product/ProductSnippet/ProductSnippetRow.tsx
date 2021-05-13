@@ -139,7 +139,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                         if (!option) {
                           return null;
                         }
-                        console.log(option);
                         return (
                           <span
                             key={`${option?.name}`}

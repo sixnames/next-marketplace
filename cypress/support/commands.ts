@@ -177,23 +177,23 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
 
   // Should navigate to cart
-  cy.getByCy(`catalogue-item-`).click();
+  cy.get(`[data-cy=catalogue-item-0-name]`).invoke('removeAttr', 'target').click();
 
   // Add product #1
   cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-tabs-shops`).click();
   cy.getByCy(`card-shops`).should('exist');
   cy.getByCy(`card-shops-list`).should('exist');
-  cy.getByCy(`card-shops--add-to-cart`).click();
+  cy.getByCy(`card-shops-1-0-add-to-cart`).click();
 
   // Add second product #2
   cy.getByCy(`cart-modal-close`).click();
   cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
   cy.getByCy('catalogue').should('exist');
-  cy.getByCy(`catalogue-item-`).click();
-  cy.getByCy(`card-`).should('exist');
+  cy.get(`[data-cy=catalogue-item-1-name]`).invoke('removeAttr', 'target').click();
+  cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-tabs-shops`).click();
-  cy.getByCy(`card-shops--add-to-cart`).click();
+  cy.getByCy(`card-shops-1-1-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 
   // Should navigate to cart

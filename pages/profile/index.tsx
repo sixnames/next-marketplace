@@ -32,15 +32,16 @@ import classes from 'styles/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
   orderProduct: OrderProductInterface;
+  testId: string | number;
 }
 
-const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct }) => {
+const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct, testId }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, shopProduct, itemId, shop, price, amount } = orderProduct;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
-  const productNotExist = !shopProduct || !shopProduct.product;
+  const productNotExist = !shopProduct;
   const isCartButtonDisabled =
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
@@ -101,7 +102,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
                   shopProductId: `${shopProduct?._id}`,
                 });
               }}
-              testId={`profile-order-product-${shopProduct?.product?.slug}-add-to-cart`}
+              testId={`profile-order-product-${testId}-add-to-cart`}
               icon={'cart'}
             />
           </div>
@@ -168,8 +169,14 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
         </div>
 
         <DisclosurePanel data-cy={`profile-order-${itemId}-content`}>
-          {(products || []).map((orderProduct) => {
-            return <ProfileOrderProduct orderProduct={orderProduct} key={`${orderProduct._id}`} />;
+          {(products || []).map((orderProduct, index) => {
+            return (
+              <ProfileOrderProduct
+                testId={index}
+                orderProduct={orderProduct}
+                key={`${orderProduct._id}`}
+              />
+            );
           })}
         </DisclosurePanel>
       </div>

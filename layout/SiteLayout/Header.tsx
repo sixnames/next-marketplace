@@ -84,6 +84,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                   <ul className='divide-y divide-gray-300 dark:divide-gray-600'>
                     <li>
                       <Link
+                        testId={`${testId}-user-dropdown-profile-link`}
                         className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                         href={ROUTE_PROFILE}
                       >
@@ -94,6 +95,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     {me?.role?.slug === ROLE_SLUG_ADMIN ? (
                       <li>
                         <Link
+                          testId={`${testId}-user-dropdown-cms-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CMS}
                         >
@@ -106,6 +108,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li>
                         <Link
+                          testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_APP}
                         >

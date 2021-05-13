@@ -15,9 +15,10 @@ import { noNaN } from 'lib/numbers';
 
 interface CardShopInterface {
   shopProduct: ShopProductInterface;
+  testId: string | number;
 }
 
-const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
+const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
   const { isMobile } = useAppContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const [amount, setAmount] = React.useState<number>(1);
@@ -112,8 +113,8 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           ) : (
             <div className={`${classes.column} ${classes.columnLast}`}>
               <SpinnerInput
-                plusTestId={`card-shops-${slug}-plus`}
-                minusTestId={`card-shops-${slug}-minus`}
+                plusTestId={`card-shops-${testId}-plus`}
+                minusTestId={`card-shops-${testId}-minus`}
                 testId={`card-shops-${slug}-input`}
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
@@ -126,7 +127,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
               />
               <Button
                 disabled={disabled}
-                testId={`card-shops-${slug}-add-to-cart`}
+                testId={`card-shops-${testId}-add-to-cart`}
                 onClick={() => {
                   addProductToCart({
                     amount,

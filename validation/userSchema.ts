@@ -166,7 +166,7 @@ export const createUserSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const signInSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object().shape({
-    username: emailSchema(args),
+    email: emailSchema(args),
     password: passwordSchema(args),
   });
 };

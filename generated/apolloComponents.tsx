@@ -3598,6 +3598,10 @@ export type UpdateMyProfileMutation = (
   & { updateMyProfile: (
     { __typename?: 'UserPayload' }
     & Pick<UserPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'email'>
+    )> }
   ) }
 );
 
@@ -7160,6 +7164,10 @@ export const UpdateMyProfileDocument = gql`
   updateMyProfile(input: $input) {
     success
     message
+    payload {
+      _id
+      email
+    }
   }
 }
     `;

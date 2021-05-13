@@ -1,3 +1,4 @@
+import ModalText from 'components/Modal/ModalText';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -34,6 +35,7 @@ const UpdateMyPasswordModal: React.FC<UpdateMyPasswordModalInterface> = ({ confi
   return (
     <ModalFrame testId={'password-modal'}>
       <ModalTitle>Изменение пароля</ModalTitle>
+      <ModalText>При изменении пароля требуется повторная авторизация.</ModalText>
 
       <Formik
         initialValues={{

@@ -60,6 +60,7 @@
     "nexus": "^1.0.0",
     "nodemailer": "^6.5.0",
     "nookies": "^2.5.2",
+    "node-fetch": "^2.6.1",
     "nprogress": "^0.2.0",
     "qs": "^6.10.0",
     "rc-slider": "^9.7.1",

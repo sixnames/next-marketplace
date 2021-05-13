@@ -14,6 +14,7 @@ module.exports = {
     OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
     NEXT_GOOGLE_MAPS_API_KEY: process.env.NEXT_GOOGLE_MAPS_API_KEY,
     DEFAULT_DOMAIN: process.env.DEFAULT_DOMAIN,
+    NEXTAUTH_KEY: process.env.NEXTAUTH_KEY,
   },
   async headers() {
     return [

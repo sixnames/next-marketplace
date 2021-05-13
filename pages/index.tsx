@@ -60,7 +60,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
 
   return (
     <React.Fragment>
-      <Inner>
+      <Inner testId={'main-page'}>
         <div className='mb-14 sm:mb-20 overflow-hidden rounded-xl'>
           <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
             <img

@@ -149,7 +149,7 @@ Cypress.Commands.add('createTestData', () => {
 
 Cypress.Commands.add(
   'testAuth',
-  (redirect = '/', email = Cypress.env('adminEmail'), password = Cypress.env('adminPassword')) => {
+  (redirect = '/', email = 'admin@gmail.com', password = 'password') => {
     cy.request({
       method: 'GET',
       url: `/api/auth/csrf`,
@@ -160,7 +160,7 @@ Cypress.Commands.add(
         method: 'POST',
         url: `/api/auth/callback/credentials`,
         body: {
-          username: email,
+          email: email,
           password,
           csrfToken,
         },

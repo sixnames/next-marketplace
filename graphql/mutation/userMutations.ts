@@ -5,6 +5,10 @@ export const UPDATE_MY_PROFILE_MUTATION = gql`
     updateMyProfile(input: $input) {
       success
       message
+      payload {
+        _id
+        email
+      }
     }
   }
 `;

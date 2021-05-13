@@ -1,11 +1,12 @@
 import Button from 'components/Buttons/Button';
 import StringButton from 'components/Buttons/StringButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
 import RequestError from 'components/RequestError/RequestError';
 import Title from 'components/Title/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
-import { UPDATE_MY_PASSWORD_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modals';
 import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
 import {
@@ -25,13 +26,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
+import { signOut } from 'next-auth/client';
 
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
-  const { me, setUser } = useUserContext();
+  const { me } = useUserContext();
   const {
     onErrorCallback,
-    onCompleteCallback,
     showModal,
     showLoading,
     showErrorNotification,
@@ -44,17 +45,15 @@ const ProfileDetailsRoute: React.FC = () => {
     onError: onErrorCallback,
     onCompleted: (data) => {
       if (data.updateMyProfile.success) {
-        fetch(`/api/session-user?locale=${router.locale}`)
-          .then((res) => res.json())
-          .then((data) => {
-            hideLoading();
-            hideModal();
-            setUser(data.sessionUser);
+        signOut({
+          redirect: false,
+        })
+          .then(() => {
+            router.push(ROUTE_SIGN_IN).catch((e) => {
+              console.log(e);
+            });
           })
           .catch((e) => {
-            hideLoading();
-            hideModal();
-            showErrorNotification();
             console.log(e);
           });
       } else {
@@ -69,24 +68,22 @@ const ProfileDetailsRoute: React.FC = () => {
   });
   const [updateMyPasswordMutation] = useUpdateMyPasswordMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateMyPassword),
-  });
-
-  function updateMyPasswordHandler() {
-    showModal<UpdateMyPasswordModalInterface>({
-      variant: UPDATE_MY_PASSWORD_MODAL,
-      props: {
-        confirm: async (input) => {
-          showLoading();
-          await updateMyPasswordMutation({
-            variables: {
-              input,
-            },
+    onCompleted: (data) => {
+      if (data.updateMyPassword.success) {
+        signOut({
+          redirect: false,
+        })
+          .then(() => {
+            router.push(ROUTE_SIGN_IN).catch((e) => {
+              console.log(e);
+            });
+          })
+          .catch((e) => {
+            console.log(e);
           });
-        },
-      },
-    });
-  }
+      }
+    },
+  });
 
   if (!me) {
     return <RequestError message={'Пользователь не найден'} />;
@@ -106,12 +103,24 @@ const ProfileDetailsRoute: React.FC = () => {
             email,
             phone,
           }}
-          onSubmit={async (values) => {
-            await updateMyProfileMutation({
-              variables: {
-                input: {
-                  ...values,
-                  phone: phoneToRaw(values.phone),
+          onSubmit={(values) => {
+            showModal<ConfirmModalInterface>({
+              variant: CONFIRM_MODAL,
+              props: {
+                testId: 'update-profile-modal',
+                message: 'При изменении профиля требуется повторная авторизация.',
+                confirm: () => {
+                  showLoading();
+                  updateMyProfileMutation({
+                    variables: {
+                      input: {
+                        ...values,
+                        phone: phoneToRaw(values.phone),
+                      },
+                    },
+                  }).catch((e) => {
+                    console.log(e);
+                  });
                 },
               },
             });
@@ -172,7 +181,26 @@ const ProfileDetailsRoute: React.FC = () => {
                 </RowWithGap>
 
                 <RowWithGap>
-                  <StringButton testId={'update-my-password'} onClick={updateMyPasswordHandler}>
+                  <StringButton
+                    testId={'update-my-password'}
+                    onClick={() => {
+                      showModal<UpdateMyPasswordModalInterface>({
+                        variant: UPDATE_MY_PASSWORD_MODAL,
+                        props: {
+                          confirm: async (input) => {
+                            showLoading();
+                            updateMyPasswordMutation({
+                              variables: {
+                                input,
+                              },
+                            }).catch((e) => {
+                              console.log(e);
+                            });
+                          },
+                        },
+                      });
+                    }}
+                  >
                     Изменить пароль
                   </StringButton>
                 </RowWithGap>

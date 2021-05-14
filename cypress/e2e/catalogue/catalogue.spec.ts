@@ -25,7 +25,6 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-product-name').should(($rubric) => {
       expect($rubric).to.have.length(3);
     });
-    // cy.getByCy('search-close').click();
     cy.get('body').click(0, 0);
     cy.getByCy('search-dropdown').should('not.exist');
 
@@ -39,8 +38,5 @@ describe('Catalogue filter', () => {
     // Should update page title
     cy.getByCy(`catalogue-option-000012`).click();
     cy.getByCy(`catalogue-option-000007`).click();
-    cy.getByCy('catalogue-title').then(($el) => {
-      console.log($el);
-    });
   });
 });

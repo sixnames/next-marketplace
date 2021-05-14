@@ -57,6 +57,8 @@ describe('Companies list', () => {
     cy.getByCy('companies-list').should('contain', newCompanyName);
 
     // Should display company route
+    cy.getByCy(`company_a-update`).click();
+    cy.getByCy('company-details').should('exist');
 
     // Should delete company
     // cy.visit(companiesPath);
@@ -71,10 +73,6 @@ describe('Companies list', () => {
     // const newCompanyName = 'newCompanyName';
     // const newCompanyPhoneA = `79997776655`;
     // const newCompanyPhoneB = `79997776656`;
-    //
-    // cy.getByCy('companies-list').should('exist');
-    // cy.getByCy(`${companyA.slug}-update`).click();
-    // cy.getByCy('company-details').should('exist');
     //
     // company name
     // cy.getByCy('name').should('have.value', companyA.name);

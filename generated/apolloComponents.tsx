@@ -1617,6 +1617,7 @@ export type Product = Base & Timestamp & {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
+  rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
   mainImage: Scalars['String'];
   assets?: Maybe<ProductAssets>;
@@ -4049,7 +4050,7 @@ export type GetAllRubricVariantsQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -4625,6 +4626,7 @@ export const ProductSnippetFragmentDoc = gql`
   name
   originalName
   slug
+  rubricSlug
   mainImage
   shopsCount
   cardPrices {

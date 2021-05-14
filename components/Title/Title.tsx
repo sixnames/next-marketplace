@@ -22,12 +22,11 @@ const Title: React.FC<TitlePropsInterface> = ({
   const TagName = tag;
 
   return (
-    <div
-      className={`flex-shrink-0 ${low ? '' : 'mb-[1.25rem]'} ${className ? className : ''}`}
-      data-cy={testId}
-    >
+    <div className={`flex-shrink-0 ${low ? '' : 'mb-[1.25rem]'} ${className ? className : ''}`}>
       <div className={`flex flex-wrap items-baseline ${textClassName ? textClassName : ''}`}>
-        <TagName className={`font-bold text-2xl wp-desktop:text-4xl`}>{children}</TagName>
+        <TagName data-cy={testId} className={`font-bold text-2xl wp-desktop:text-4xl`}>
+          {children}
+        </TagName>
       </div>
       {subtitle && <div className={`text-secondary-text mt-[0.5rem]`}>{subtitle}</div>}
     </div>

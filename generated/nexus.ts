@@ -1423,6 +1423,7 @@ export interface NexusGenFieldTypes {
     originalName: string; // String!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricSlug: string; // String!
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     shopsCount: number; // Int!
     slug: string; // String!
@@ -2386,6 +2387,7 @@ export interface NexusGenFieldTypeNames {
     originalName: 'String';
     rubric: 'Rubric';
     rubricId: 'ObjectId';
+    rubricSlug: 'String';
     shopProducts: 'ShopProduct';
     shopsCount: 'Int';
     slug: 'String';

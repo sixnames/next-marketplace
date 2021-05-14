@@ -53,7 +53,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 
       <div className={classes.attributeList}>
         {options.map((option) => {
-          const testId = `${option.slug}`;
+          const testId = `catalogue-option-${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}

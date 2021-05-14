@@ -34,15 +34,19 @@ import {
 
 interface HeaderSearchTriggerInterface {
   setIsSearchOpen: (value: boolean) => void;
+  testId: string;
 }
 
 const middleLinkClassName =
   'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';
 
-const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({ setIsSearchOpen }) => {
+const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
+  setIsSearchOpen,
+  testId,
+}) => {
   return (
     <div
-      data-cy={'search-trigger'}
+      data-cy={`${testId}-search-trigger`}
       onClick={() => setIsSearchOpen(true)}
       className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
@@ -398,7 +402,7 @@ const Header: React.FC = () => {
             </Link>
 
             <div className={`${middleSideClassName} justify-end`}>
-              <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
+              <HeaderSearchTrigger testId={'header'} setIsSearchOpen={setIsSearchOpen} />
               <HeaderProfileLink testId={'header'} />
 
               <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
@@ -433,7 +437,7 @@ const Header: React.FC = () => {
           <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
 
           <div className='flex items-center'>
-            <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
+            <HeaderSearchTrigger testId={'mobile-nav'} setIsSearchOpen={setIsSearchOpen} />
             <HeaderProfileLink testId={'mobile-nav'} />
             <HeaderCartLink testId={'mobile-nav'} />
           </div>

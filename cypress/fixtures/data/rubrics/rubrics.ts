@@ -87,7 +87,7 @@ const rubrics: RubricModel[] = [
         ru: 'Вино',
       },
       prefixI18n: {
-        ru: '',
+        ru: 'Купить',
       },
       gender: GENDER_IT as GenderModel,
     },

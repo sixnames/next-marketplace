@@ -1415,6 +1415,7 @@ type Product implements Base & Timestamp {
   originalName: String!
   rubric: Rubric!
   rubricId: ObjectId!
+  rubricSlug: String!
 
   """
   Returns all shop products that product connected to

@@ -16,7 +16,7 @@ describe('Companies list', () => {
     const newCompanyPhoneB = `79997776656`;
 
     cy.getByCy('companies-list').should('exist');
-    cy.getByCy('company-create').click();
+    cy.getByCy('create-company').click();
     cy.getByCy('create-company-content').should('exist');
 
     // company name
@@ -56,12 +56,15 @@ describe('Companies list', () => {
     cy.shouldSuccess();
     cy.getByCy('companies-list').should('contain', newCompanyName);
 
+    // Should display company route
+
     // Should delete company
-    cy.getByCy(`company_a-delete`).click();
-    cy.getByCy(`delete-company-modal`).should('exist');
-    cy.getByCy(`confirm`).click();
-    cy.shouldSuccess();
-    cy.getByCy('companies-list').should('not.contain', '000001');
+    // cy.visit(companiesPath);
+    // cy.getByCy(`company_a-delete`).click();
+    // cy.getByCy(`delete-company-modal`).should('exist');
+    // cy.getByCy(`confirm`).click();
+    // cy.shouldSuccess();
+    // cy.getByCy('companies-list').should('not.contain', '000001');
   });
 
   it.skip('Should display company route', () => {

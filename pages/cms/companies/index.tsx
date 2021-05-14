@@ -24,7 +24,7 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const companiesPageTitle = 'Компании';
+const pageTitle = 'Компании';
 
 interface CompaniesConsumerInterface {
   companies: CompanyInterface[];
@@ -111,10 +111,10 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
   return (
     <AppContentWrapper testId={'companies-list'}>
       <Head>
-        <title>{companiesPageTitle}</title>
+        <title>{pageTitle}</title>
       </Head>
       <Inner>
-        <Title>{companiesPageTitle}</Title>
+        <Title>{pageTitle}</Title>
         <div className='overflow-x-auto'>
           <Table<CompanyInterface> columns={columns} data={companies} testIdKey={'slug'} />
         </div>
@@ -140,7 +140,7 @@ interface CompaniesPageInterface extends PagePropsInterface, CompaniesConsumerIn
 
 const CompaniesPage: NextPage<CompaniesPageInterface> = ({ companies, ...props }) => {
   return (
-    <CmsLayout title={companiesPageTitle} {...props}>
+    <CmsLayout title={pageTitle} {...props}>
       <CompaniesConsumer companies={companies} />
     </CmsLayout>
   );

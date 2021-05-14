@@ -1,4 +1,5 @@
 import * as React from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 import ButtonCross from '../Buttons/ButtonCross';
 import { useAppContext } from 'context/appContext';
 import { ModalSizeType } from 'types/clientTypes';
@@ -27,14 +28,18 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
   return (
     <div
       data-cy={testId}
-      className={`relative z-[2] w-full py-14 mx-auto shadow-xl rounded-lg ${sizeClass} ${
+      className={`relative z-[2] w-full mx-auto shadow-xl rounded-lg ${sizeClass} ${
         warning ? 'bg-red-400' : 'bg-primary'
-      } ${className ? className : ''} ${withInner ? '' : 'px-inner-block-horizontal-padding'}`}
+      } ${className ? className : ''}`}
     >
-      <div>{children}</div>
-      <div className='absolute top-0 right-0 text-secondary-text z-10'>
-        <ButtonCross ariaLabel={'Закрыть окно'} onClick={hideModal} testId={'close-modal'} />
-      </div>
+      <OutsideClickHandler onOutsideClick={hideModal}>
+        <div className={`py-14 ${withInner ? '' : 'px-inner-block-horizontal-padding'}`}>
+          <div>{children}</div>
+          <div className='absolute top-0 right-0 text-secondary-text z-10'>
+            <ButtonCross ariaLabel={'Закрыть окно'} onClick={hideModal} testId={'close-modal'} />
+          </div>
+        </div>
+      </OutsideClickHandler>
     </div>
   );
 };

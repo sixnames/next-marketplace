@@ -1,3 +1,4 @@
+import { SORT_ASC } from 'config/common';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -23,7 +24,6 @@ import {
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { SORT_ASC } from 'config/common';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,

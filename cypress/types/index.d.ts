@@ -1,9 +1,4 @@
 declare namespace Cypress {
-  interface MockGraphqlInterface {
-    schema?: any;
-    operations?: { [key: string]: any };
-  }
-
   interface AttachFileOptionsInterface {
     subjectType?: string;
   }
@@ -42,7 +37,6 @@ declare namespace Cypress {
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;
     createTestData(): void;
-    clearTestData(): void;
     closeNotification(): void;
     visitMoreNavLink(testId: string): void;
     openMoreNav(): void;

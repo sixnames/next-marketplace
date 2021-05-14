@@ -1,34 +1,21 @@
-import Button from 'components/Buttons/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import DataLayout from 'components/DataLayout/DataLayout';
 import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
 import DataLayoutTitle from 'components/DataLayout/DataLayoutTitle';
-import FilterRadioGroup from 'components/FilterElements/FilterRadio/FilterRadioGroup';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal/AttributesGroupModal';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { ATTRIBUTE_IN_GROUP_MODAL, ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modals';
+import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modals';
 import { useLocaleContext } from 'context/localeContext';
 import {
   AddAttributeToGroupInput,
-  AttributeInGroupFragment,
   AttributesGroup,
   UpdateAttributeInGroupInput,
   useAddAttributeToGroupMutation,
-  useCreateAttributesGroupMutation,
   useDeleteAttributeFromGroupMutation,
-  useDeleteAttributesGroupMutation,
-  useGetAllAttributesGroupsQuery,
-  useGetAttributesGroupQuery,
   useUpdateAttributeInGroupMutation,
-  useUpdateAttributesGroupMutation,
 } from 'generated/apolloComponents';
-import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from 'graphql/query/attributesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useRouterQuery from 'hooks/useRouterQuery';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { ParsedUrlQuery } from 'querystring';
@@ -36,158 +23,52 @@ import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const AttributesGroupsFilter: React.FC = () => {
-  const { data, loading, error } = useGetAllAttributesGroupsQuery({
-    fetchPolicy: 'network-only',
-  });
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
-    withModal: true,
-  });
-
-  const [createAttributesGroupMutation] = useCreateAttributesGroupMutation({
-    refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
-    awaitRefetchQueries: true,
-    onCompleted: (data) => onCompleteCallback(data.createAttributesGroup),
-    onError: onErrorCallback,
-  });
-
-  function createAttributesGroupHandler() {
-    showModal<AttributesGroupModalInterface>({
-      variant: ATTRIBUTES_GROUP_MODAL,
-      props: {
-        confirm: (values) => {
-          showLoading();
-          return createAttributesGroupMutation({ variables: { input: values } });
-        },
-      },
-    });
-  }
-
-  if (loading) return <Spinner />;
-  if (error || !data) return <RequestError />;
-
-  const { getAllAttributesGroups } = data;
-
-  return (
-    <React.Fragment>
-      <FilterRadioGroup
-        radioItems={getAllAttributesGroups}
-        queryKey={'attributesGroupId'}
-        label={'Группы'}
-      />
-      <Button
-        size={'small'}
-        onClick={createAttributesGroupHandler}
-        testId={'create-attributes-group'}
-      >
-        Добавить группу
-      </Button>
-    </React.Fragment>
-  );
-};
-
 interface AttributesGroupControlsInterface {
-  group: Pick<AttributesGroup, '_id' | 'nameI18n' | 'name'>;
+  group?: Pick<AttributesGroup, '_id' | 'nameI18n' | 'name'>;
 }
 
 const AttributesGroupControls: React.FC<AttributesGroupControlsInterface> = ({ group }) => {
-  const { _id, name, nameI18n } = group;
-
-  const { removeQuery } = useRouterQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
-  });
-
-  const [updateAttributesGroupMutation] = useUpdateAttributesGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributesGroup),
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { _id } }],
-  });
-
-  const [deleteAttributesGroupMutation] = useDeleteAttributesGroupMutation({
-    refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
-    awaitRefetchQueries: true,
-    update: (_cache, { data }) => {
-      if (data && data.deleteAttributesGroup && data.deleteAttributesGroup.success) {
-        removeQuery({ key: 'group' });
-      }
-    },
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroup),
-    onError: onErrorCallback,
   });
 
   const [addAttributeToGroupMutation] = useAddAttributeToGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributeToGroup),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { _id } }],
   });
 
-  function updateAttributesGroupHandler() {
-    showModal<AttributesGroupModalInterface>({
-      variant: ATTRIBUTES_GROUP_MODAL,
-      props: {
-        nameI18n,
-        confirm: ({ nameI18n }) => {
-          showLoading();
-          return updateAttributesGroupMutation({
-            variables: {
-              input: {
-                attributesGroupId: _id,
-                nameI18n,
-              },
-            },
-          });
-        },
-      },
-    });
-  }
-
-  function deleteAttributesGroupHandler() {
-    showModal({
-      variant: CONFIRM_MODAL,
-      props: {
-        testId: 'delete-attributes-group-modal',
-        message: `Вы уверенны, что хотите удалить группу атрибутов ${name}?`,
-        confirm: () => {
-          showLoading();
-          return deleteAttributesGroupMutation({ variables: { _id } });
-        },
-      },
-    });
+  if (!group) {
+    return null;
   }
 
   function addAttributeToGroupHandler() {
-    const attributesGroupId = _id;
+    if (group) {
+      const attributesGroupId = group._id;
 
-    showModal<AddAttributeToGroupModalInterface>({
-      variant: ATTRIBUTE_IN_GROUP_MODAL,
-      props: {
-        attributesGroupId,
-        confirm: (input: Omit<AddAttributeToGroupInput, 'attributesGroupId'>) => {
-          showLoading();
-          return addAttributeToGroupMutation({
-            variables: {
-              input: {
-                attributesGroupId,
-                ...input,
+      showModal<AddAttributeToGroupModalInterface>({
+        variant: ATTRIBUTE_IN_GROUP_MODAL,
+        props: {
+          attributesGroupId,
+          confirm: (input: Omit<AddAttributeToGroupInput, 'attributesGroupId'>) => {
+            showLoading();
+            return addAttributeToGroupMutation({
+              variables: {
+                input: {
+                  attributesGroupId,
+                  ...input,
+                },
               },
-            },
-          });
+            });
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   return (
     <ContentItemControls
       createTitle={'Добавить атрибут'}
-      updateTitle={'Редактировать название'}
-      deleteTitle={'Удалить группу'}
       createHandler={addAttributeToGroupHandler}
-      updateHandler={updateAttributesGroupHandler}
-      deleteHandler={deleteAttributesGroupHandler}
       size={'small'}
       testId={'attributes-group'}
     />
@@ -205,31 +86,12 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     withModal: true,
   });
 
-  const { data, loading, error } = useGetAttributesGroupQuery({
-    skip: !attributesGroupId,
-    variables: { _id: `${attributesGroupId}` },
-    fetchPolicy: 'network-only',
-  });
-
-  const refetchQueries = [
-    {
-      query: ATTRIBUTES_GROUP_QUERY,
-      variables: {
-        _id: `${attributesGroupId}`,
-      },
-    },
-  ];
-
   const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
-    awaitRefetchQueries: true,
-    refetchQueries,
     onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
     onError: onErrorCallback,
   });
 
   const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
-    awaitRefetchQueries: true,
-    refetchQueries,
     onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
     onError: onErrorCallback,
   });
@@ -238,18 +100,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     return <DataLayoutTitle>Выберите группу</DataLayoutTitle>;
   }
 
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data || !data.getAttributesGroup) {
-    return <RequestError />;
-  }
-
-  const { getAttributesGroup } = data;
-  const { name, attributes } = getAttributesGroup;
-
-  const columns: TableColumn<AttributeInGroupFragment>[] = [
+  const columns: TableColumn<any>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -340,14 +191,12 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   return (
     <React.Fragment>
       <DataLayoutTitle
-        titleRight={<AttributesGroupControls group={getAttributesGroup} />}
+        titleRight={<AttributesGroupControls />}
         testId={'group-title'}
-      >
-        {name}
-      </DataLayoutTitle>
+      ></DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table<AttributeInGroupFragment>
-          data={attributes}
+        <Table<any>
+          data={[]}
           columns={columns}
           emptyMessage={'В группе нет атрибутов'}
           testIdKey={'name'}
@@ -362,13 +211,12 @@ const AttributesGroupsRoute: React.FC = () => {
     <DataLayout
       isFilterVisible
       title={'Группы атрибутов'}
-      filterContent={<AttributesGroupsFilter />}
       filterResult={({ query }) => <AttributesGroupsContent query={query} />}
     />
   );
 };
 
-const AttributesGroups: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const AttributesGroupsOld: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
       <AttributesGroupsRoute />
@@ -380,4 +228,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return getAppInitialData({ context, isCms: true });
 };
 
-export default AttributesGroups;
+export default AttributesGroupsOld;

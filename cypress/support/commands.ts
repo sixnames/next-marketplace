@@ -141,10 +141,6 @@ Cypress.Commands.add('closeNotification', () => {
   });
 });
 
-Cypress.Commands.add('clearTestData', () => {
-  cy.exec(`yarn drop-test-db`);
-});
-
 Cypress.Commands.add('createTestData', () => {
   cy.exec(`yarn seed-test-db`);
 });

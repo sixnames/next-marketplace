@@ -12,11 +12,13 @@ interface ResponseInterface extends Record<string, any> {
 
 interface UseMutationCallbacksInterface {
   withModal?: boolean;
+  reload?: boolean;
 }
 
 const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
-  const { locale } = useRouter();
-  const { withModal } = props || {};
+  const router = useRouter();
+  const { locale } = router;
+  const { withModal, reload } = props || {};
   const { showModal, hideModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
   const defaultErrorMessage = React.useMemo(() => {
@@ -43,12 +45,18 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
         showSuccessNotification({
           title: data.message,
         });
+
+        if (reload) {
+          router.reload();
+        }
       }
     },
     [
       defaultErrorMessage,
       hideLoading,
       hideModal,
+      reload,
+      router,
       showErrorNotification,
       showSuccessNotification,
       withModal,

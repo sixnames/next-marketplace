@@ -46,11 +46,6 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  /*const [updateAttributesGroupMutation] = useUpdateAttributesGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributesGroup),
-    onError: onErrorCallback,
-  });*/
-
   const [deleteAttributesGroupMutation] = useDeleteAttributesGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroup),
     onError: onErrorCallback,

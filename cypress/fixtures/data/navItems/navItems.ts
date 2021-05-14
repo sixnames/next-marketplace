@@ -102,8 +102,8 @@ const navItems: NavItemModel[] = [
       en: 'Attributes groups',
     },
     index: 6,
-    slug: 'cms-attributes-groups',
-    path: '/cms/attributes-groups',
+    slug: 'cms-attributes',
+    path: '/cms/attributes',
     navGroup: 'cms',
   },
   {

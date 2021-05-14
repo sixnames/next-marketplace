@@ -1,4 +1,4 @@
-import { ADULT_KEY, ADULT_TRUE, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, DEFAULT_LOCALE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
 
 describe('Attributes Groups', () => {
   beforeEach(() => {
@@ -9,7 +9,7 @@ describe('Attributes Groups', () => {
 
   it('Should CRUD attributes group', () => {
     const createdGroupName = 'createdGroupName';
-    // const updatedGroupName = 'updatedGroupName';
+    const updatedGroupName = 'updatedGroupName';
     const fakeName = 'f';
 
     cy.getByCy(`create-attributes-group`).click();
@@ -24,25 +24,29 @@ describe('Attributes Groups', () => {
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(createdGroupName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`attributes-group-${createdGroupName}-update`).click();
-    // cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
+    cy.getByCy(`attributes-group-title`).contains(createdGroupName).should('exist');
 
     // Should show validation error on not valid attributes group update
-    // cy.getByCy(`attributes-group-update`).click();
-    // cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
-    /*cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)
+    cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)
       .should('have.value', createdGroupName)
       .clear()
-      .type(fakeName);*/
-    // cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(fakeName);
-    // cy.getByCy(`attributes-group-submit`).click();
-    // cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
+      .type(fakeName);
+    cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(fakeName);
+    cy.getByCy(`attributes-group-submit`).click();
+    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
 
     // Should update attributes group
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedGroupName);
-    // cy.getByCy(`attributes-group-submit`).click();
-    // cy.contains(updatedGroupName).should('exist');
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedGroupName);
+    cy.getByCy(`attributes-group-submit`).click();
+    cy.contains(updatedGroupName).should('exist');
+
+    // Should CRUD attributes
+    cy.getByCy(`sub-nav-attributes`).click();
+    cy.contains(`attributes-list`).should('exist');
 
     // Shouldn't delete attributes group connected to the rubric
+    // cy.visit(`${ROUTE_CMS}/attributes`);
     // cy.getByCy(`attributesGroupId-${mockGroupName}`).click();
     // cy.getByCy(`attributes-group-delete`).click();
     // cy.getByCy(`delete-attributes-group-modal`).should('exist');

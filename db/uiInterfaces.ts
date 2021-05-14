@@ -109,6 +109,8 @@ export interface ConfigInterface extends ConfigModel {
 
 export interface CompanyInterface extends CompanyModel {
   shops?: ShopInterface[];
+  owner?: UserInterface | null;
+  staff?: UserInterface[] | null;
 }
 
 export interface MessageBaseInterface {

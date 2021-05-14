@@ -63,6 +63,7 @@ export interface AttributeInterface extends AttributeModel {
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
   name?: string | null;
+  attributes?: AttributeInterface[] | null;
 }
 
 export interface BrandInterface extends BrandModel {

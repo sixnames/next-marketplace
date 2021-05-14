@@ -6,6 +6,7 @@ input AddAttributeToGroupInput {
   capitalise: Boolean
   metricId: ObjectId
   nameI18n: JSONObject!
+  notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   variant: AttributeVariant!

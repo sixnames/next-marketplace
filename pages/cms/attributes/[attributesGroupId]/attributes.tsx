@@ -1,6 +1,7 @@
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal/AttributeInGroupModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -19,7 +20,7 @@ import * as React from 'react';
 import Button from 'components/Buttons/Button';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -147,9 +148,10 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
             updateHandler={() => updateAttributeHandler(dataItem)}
             deleteTitle={'Удалить атрибут'}
             deleteHandler={() => {
-              showModal({
+              showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
+                  testId: 'delete-attribute-modal',
                   message: `Вы уверенны, что хотите удалить атрибут ${name}?`,
                   confirm: () => {
                     showLoading();
@@ -185,6 +187,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       <Inner>
         <div className='overflow-x-auto'>
           <Table<AttributeInterface>
+            testIdKey={'name'}
             columns={columns}
             data={attributesGroup.attributes || []}
             onRowDoubleClick={(dataItem) => updateAttributeHandler(dataItem)}
@@ -193,6 +196,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
 
         <FixedButtons>
           <Button
+            testId={`create-attribute`}
             size={'small'}
             onClick={() => {
               showModal<AddAttributeToGroupModalInterface>({
@@ -267,6 +271,29 @@ export const getServerSideProps = async (
                 },
               },
             },
+            {
+              $lookup: {
+                from: COL_OPTIONS_GROUPS,
+                as: 'optionsGroup',
+                let: { optionsGroupId: '$optionsGroupId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$_id', '$$optionsGroupId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                optionsGroup: {
+                  $arrayElemAt: ['$optionsGroup', 0],
+                },
+              },
+            },
           ],
         },
       },
@@ -290,6 +317,12 @@ export const getServerSideProps = async (
         attributes: (attributesGroup.attributes || []).map((attribute) => {
           return {
             ...attribute,
+            optionsGroup: attribute.optionsGroup
+              ? {
+                  ...attribute.optionsGroup,
+                  name: getFieldStringLocale(attribute.optionsGroup.nameI18n, props.sessionLocale),
+                }
+              : null,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
           };
         }),

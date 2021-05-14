@@ -110,6 +110,7 @@ export interface NexusGenInputs {
     capitalise?: boolean | null; // Boolean
     metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    notShowAsAlphabet?: boolean | null; // Boolean
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!

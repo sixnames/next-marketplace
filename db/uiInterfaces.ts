@@ -59,6 +59,7 @@ export interface ContactsInterface extends ContactsModel {
 export interface AttributeInterface extends AttributeModel {
   name?: string | null;
   metric?: MetricInterface | null;
+  optionsGroup?: OptionsGroupInterface | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {

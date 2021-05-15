@@ -159,7 +159,7 @@ export const getServerSideProps = async (
           docs: [
             {
               $sort: {
-                _id: SORT_DESC,
+                createdAt: SORT_DESC,
               },
             },
             {

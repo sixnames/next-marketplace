@@ -56,6 +56,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   pagerUrl,
   totalDocs,
   basePath,
+  itemPath,
   docs,
 }) => {
   const isPageLoading = usePageLoadingState();
@@ -122,7 +123,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/shops/${dataItem._id}`).catch((e) => console.log(e));
+              window.open(`${itemPath}/${dataItem._id}`, '_blank');
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
@@ -171,8 +172,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>
             onRowDoubleClick={(dataItem) => {
-              // TODO
-              router.push(`shopPath/${dataItem._id}`).catch((e) => console.log(e));
+              window.open(`${itemPath}/${dataItem._id}`, '_blank');
             }}
             columns={columns}
             data={docs}
@@ -227,6 +227,7 @@ export const getServerSideProps = async (
   const { filters, search } = query;
   const [companyId, ...restFilter] = alwaysArray(filters);
   const basePath = `${ROUTE_CMS}/companies/${companyId}/shops/${companyId}`;
+  const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 
   // Cast filters
   const { pagerUrl, page, skip, limit, clearSlug } = castCatalogueFilters({
@@ -443,6 +444,7 @@ export const getServerSideProps = async (
       ...props,
       currentCompany: castDbData(companyResult),
       basePath,
+      itemPath,
       clearSlug,
       page,
       pagerUrl,

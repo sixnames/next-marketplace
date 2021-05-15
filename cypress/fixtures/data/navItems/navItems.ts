@@ -74,17 +74,6 @@ const navItems: NavItemModel[] = [
     navGroup: 'cms',
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} cms-shops`),
-    nameI18n: {
-      ru: 'Магазины',
-      en: 'Shops',
-    },
-    index: 4,
-    slug: 'cms-shops',
-    path: '/cms/shops',
-    navGroup: 'cms',
-  },
-  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubric-variants`),
     nameI18n: {
       ru: 'Типы рубрик',

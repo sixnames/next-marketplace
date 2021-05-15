@@ -1,8 +1,8 @@
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -19,9 +19,12 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   const router = useRouter();
 
   return (
-    <AppLayout pageUrls={pageUrls}>
-      <ShopAssets basePath={`${ROUTE_APP}/${router.query.companyId}/shops`} shop={shop} />
-    </AppLayout>
+    <CmsLayout pageUrls={pageUrls}>
+      <ShopAssets
+        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        shop={shop}
+      />
+    </CmsLayout>
   );
 };
 
@@ -32,7 +35,7 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context });
+  const initialProps = await getAppInitialData({ context, isCms: true });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

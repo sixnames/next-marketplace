@@ -49,7 +49,6 @@ import * as React from 'react';
 
 interface RubricProductsInterface extends AppPaginationInterface<ProductInterface> {
   rubric: RubricInterface;
-  productPath: string;
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
 }
@@ -65,7 +64,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalPages,
   pagerUrl,
   basePath,
-  productPath,
+  itemPath,
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
@@ -94,7 +93,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return <Link href={`${productPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
+        return <Link href={`${itemPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
       },
     },
     {
@@ -214,7 +213,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));
+                  router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
                 }}
                 columns={columns}
                 data={docs}
@@ -288,7 +287,7 @@ export const getServerSideProps = async (
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context, isCms: true });
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
-  const productPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
+  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -525,7 +524,7 @@ export const getServerSideProps = async (
     attributes: castedAttributes,
     pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
-    productPath,
+    itemPath,
     selectedAttributes,
     page,
     docs,

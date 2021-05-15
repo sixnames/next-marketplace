@@ -1,7 +1,6 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Inner from 'components/Inner/Inner';
 import Table, { TableColumn } from 'components/Table/Table';
-import { ROUTE_APP } from 'config/common';
 import { RubricInterface } from 'db/uiInterfaces';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
 import { useRouter } from 'next/router';
@@ -36,9 +35,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, rubrics, basePath }
             updateTitle={'Просмотреть товары рубрики'}
             updateHandler={() => {
               router
-                .push(
-                  `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
-                )
+                .push(`${basePath}/${shop._id}/products/${dataItem._id}`)
                 .catch((e) => console.log(e));
             }}
           />
@@ -57,9 +54,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, rubrics, basePath }
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
             router
-              .push(
-                `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
-              )
+              .push(`${basePath}/${shop._id}/products/${dataItem._id}`)
               .catch((e) => console.log(e));
           }}
         />

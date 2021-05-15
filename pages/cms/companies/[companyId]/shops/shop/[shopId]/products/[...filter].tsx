@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_APP, SORT_DESC } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
@@ -10,7 +10,7 @@ import {
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -33,13 +33,13 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
 }) => {
   const router = useRouter();
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <ShopRubricProducts
-        layoutBasePath={`${ROUTE_APP}/${router.query.companyId}/shops`}
+        layoutBasePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
         shop={shop}
         {...props}
       />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 
@@ -63,8 +63,8 @@ export const getServerSideProps = async (
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_APP}/${query.companyId}/shops/${shopId}/products/${rubricId}`;
+  const initialProps = await getAppInitialData({ context, isCms: true });
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');

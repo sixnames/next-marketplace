@@ -30,7 +30,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({ company, childr
       {
         name: 'Магазины',
         testId: 'company-shops',
-        path: `${ROUTE_CMS}/companies/${company._id}/shops`,
+        path: `${ROUTE_CMS}/companies/${company._id}/shops/${company._id}`,
         exact: true,
       },
       {

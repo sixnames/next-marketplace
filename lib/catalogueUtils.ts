@@ -26,7 +26,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
-  CATALOGUE_FILTER_PAGE,
+  QUERY_FILTER_PAGE,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
@@ -262,7 +262,7 @@ export async function getCatalogueAttributes({
   const realFilter = filters.filter((filterItem) => {
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
     const filterName = filterItemArr[0];
-    return filterName !== CATALOGUE_FILTER_PAGE;
+    return filterName !== QUERY_FILTER_PAGE;
   });
 
   for await (const attribute of attributes) {
@@ -425,18 +425,22 @@ interface CastCatalogueFiltersPayloadInterface {
   skip: number;
   limit: number;
   pagerUrl: string;
+  clearSlug: string;
+  basePath: string;
 }
 
 interface CastCatalogueFiltersInterface {
   filters: string[];
   initialLimit?: number;
   initialPage?: number;
+  basePath?: string;
 }
 
 export function castCatalogueFilters({
   filters,
   initialPage,
   initialLimit,
+  basePath = '',
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
@@ -462,7 +466,7 @@ export function castCatalogueFilters({
     const filterOptionName = splittedOption[0];
     const filterOptionValue = splittedOption[1];
     if (filterOptionName) {
-      if (filterOptionName === CATALOGUE_FILTER_PAGE) {
+      if (filterOptionName === QUERY_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
       } else {
@@ -500,8 +504,11 @@ export function castCatalogueFilters({
   const noFiltersSelected = realFilterOptions.length < 1;
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
+  const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
   return {
+    clearSlug: `${basePath}${sortPathname}`,
+    basePath,
     minPrice,
     maxPrice,
     realFilterOptions,

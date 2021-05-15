@@ -19,7 +19,6 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateCompanyClientSchema } from 'validation/companySchema';
-// import CompanyShops from 'routes/Company/CompanyShops';
 
 interface CompanyDetailsConsumerInterface {
   currentCompany: CompanyInterface;

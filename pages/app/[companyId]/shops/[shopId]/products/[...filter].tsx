@@ -11,7 +11,7 @@ import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import {
-  CATALOGUE_FILTER_PAGE,
+  QUERY_FILTER_PAGE,
   CATALOGUE_OPTION_SEPARATOR,
   PAGE_DEFAULT,
   ROUTE_APP,
@@ -340,7 +340,7 @@ const ShopProductsListRoute: React.FC<ShopProductsListRouteInterface> = ({
             <Pager
               page={page}
               setPage={(page) => {
-                const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+                const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
                 const prevUrlArray = pagerUrl.split('/').filter((param) => param);
                 const nextUrl = [...prevUrlArray, pageParam].join('/');
                 router.push(`/${nextUrl}`).catch((e) => {

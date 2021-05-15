@@ -255,7 +255,7 @@ export interface ShopProductInterface extends ShopProductModel {
 
 export interface ShopInterface extends ShopModel {
   productsCount?: number | null;
-  city?: CityModel | null;
+  city?: CityInterface | null;
   contacts: ContactsInterface;
   address: AddressInterface;
 }
@@ -379,4 +379,24 @@ export interface OrderInterface extends OrderModel {
 export interface TopFilterInterface {
   name: string;
   href: string;
+}
+
+export interface AppPaginationAggregationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface AppPaginationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  page: number;
+  pagerUrl: string;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  clearSlug: string;
+  basePath: string;
 }

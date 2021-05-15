@@ -261,7 +261,7 @@ export interface ShopInterface extends ShopModel {
 }
 
 export interface UserInterface extends UserModel {
-  role?: RoleInterface;
+  role?: RoleInterface | null;
   fullName?: string;
   shortName?: string;
   companies?: CompanyInterface[];

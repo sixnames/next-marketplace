@@ -60,6 +60,49 @@ describe('Companies list', () => {
     cy.getByCy(`company_a-update`).click();
     cy.getByCy('company-details').should('exist');
 
+    const updatedCompanyName = 'updatedCompanyName';
+    const updatedCompanyPhoneA = `79997776655`;
+    const updatedCompanyPhoneB = `79997776656`;
+
+    // company name
+    cy.getByCy('name').should('have.value', 'Company A');
+    cy.getByCy('name').clear().type(updatedCompanyName);
+
+    // domain
+    cy.getByCy('domain').clear().type('domain.com');
+
+    // company emails
+    cy.getByCy(`email-1-remove`).click();
+    cy.getByCy(`remove-field-confirm`).click();
+    cy.getByCy(`email-1`).should('not.exist');
+
+    // company phones
+    cy.getByCy(`phone-0`).clear().type(updatedCompanyPhoneA);
+    cy.getByCy(`phone-1`).clear().type(updatedCompanyPhoneB);
+
+    // owner
+    cy.getByCy(`add-owner`).click();
+    cy.getByCy(`users-search-modal`).should('exist');
+    cy.getByCy('user-search-input').type('userC@gmail.com');
+    cy.getByCy('user-search-submit').click();
+    cy.getByCy(`000007-create`).click();
+    cy.getByCy('ownerId').should('contain', 'C User');
+
+    // staff
+    cy.getByCy(`add-staff`).click();
+    cy.getByCy('user-search-input').type('userD@gmail.com');
+    cy.getByCy('user-search-submit').click();
+    cy.getByCy(`000008-create`).click();
+    cy.getByCy(`users-search-modal`).should('not.exist');
+    cy.getByCy(`000008-row`).should('exist');
+
+    // submit
+    cy.getByCy(`company-submit`).click();
+
+    // Should update company logo
+    cy.getByCy(`company-assets`).click();
+    cy.getByCy(`company-assets-list`).should('exist');
+
     // Should delete company
     // cy.visit(companiesPath);
     // cy.getByCy(`company_a-delete`).click();
@@ -67,45 +110,6 @@ describe('Companies list', () => {
     // cy.getByCy(`confirm`).click();
     // cy.shouldSuccess();
     // cy.getByCy('companies-list').should('not.contain', '000001');
-  });
-
-  it.skip('Should display company route', () => {
-    // const newCompanyName = 'newCompanyName';
-    // const newCompanyPhoneA = `79997776655`;
-    // const newCompanyPhoneB = `79997776656`;
-    //
-    // company name
-    // cy.getByCy('name').should('have.value', companyA.name);
-    // cy.getByCy('name').clear().type(newCompanyName);
-    //
-    // company emails
-    // cy.getByCy(`email-1-remove`).click();
-    // cy.getByCy(`remove-field-confirm`).click();
-    // cy.getByCy(`email-1`).should('not.exist');
-    //
-    // company phones
-    // cy.getByCy(`phone-0`).clear().type(newCompanyPhoneA);
-    // cy.getByCy(`phone-1`).clear().type(newCompanyPhoneB);
-    //
-    // owner
-    // cy.getByCy(`add-owner`).click();
-    // cy.getByCy(`users-search-modal`).should('exist');
-    // cy.getByCy('user-search-input').type(mockData.sampleUser.email);
-    // cy.getByCy('user-search-submit').click();
-    // cy.getByCy(`${mockData.sampleUser.itemId}-create`).click();
-    // cy.getByCy('ownerId').should('contain', getFullName(mockData.sampleUser));
-    //
-    // staff
-    // cy.getByCy(`add-staff`).click();
-    // cy.getByCy('user-search-input').type(mockData.sampleUserB.email);
-    // cy.getByCy('user-search-submit').click();
-    // cy.getByCy(`${mockData.sampleUserB.itemId}-create`).click();
-    // cy.getByCy(`users-search-modal`).should('not.exist');
-    // cy.getByCy(`${mockData.sampleUserB.itemId}-row`).should('exist');
-    //
-    // submit
-    // cy.getByCy(`company-submit`).click();
-    // cy.shouldSuccess();
   });
 
   it.skip('Should display company shops list', () => {

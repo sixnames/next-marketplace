@@ -12,8 +12,8 @@ const companies: CompanyModel[] = [
     ownerId: getObjectId('company owner a'),
     shopsIds: getObjectIds(['shop Shop A']),
     contacts: {
-      phones: ['+71112223344'],
-      emails: ['companyA@gmail.com'],
+      phones: ['+71112223344', '+71112224444'],
+      emails: ['companyA@gmail.com', 'companyAB@gmail.com'],
     },
     logo: {
       index: 1,
@@ -32,7 +32,7 @@ const companies: CompanyModel[] = [
     shopsIds: getObjectIds(['shop Shop B']),
     contacts: {
       phones: ['+72223334455'],
-      emails: ['companyB@gmail.com'],
+      emails: ['companyB@gmail.com', 'companyBB@gmail.com'],
     },
     logo: {
       index: 1,

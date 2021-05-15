@@ -1,7 +1,7 @@
 import Button from 'components/Buttons/Button';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner/Inner';
-import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -9,6 +9,7 @@ import { useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
@@ -18,7 +19,6 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateCompanyClientSchema } from 'validation/companySchema';
-// import CompanyAssets from 'routes/Company/CompanyAssets';
 // import CompanyShops from 'routes/Company/CompanyShops';
 
 interface CompanyDetailsConsumerInterface {
@@ -135,6 +135,45 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_USERS,
+          as: 'staff',
+          let: { staffIds: '$staffIds' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$_id', '$$staffIds'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ROLES,
+                as: 'role',
+                let: { roleId: '$roleId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$_id', '$$roleId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                role: {
+                  $arrayElemAt: ['$role', 0],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $addFields: {
           owner: {
             $arrayElemAt: ['$owner', 0],
@@ -152,6 +191,19 @@ export const getServerSideProps = async (
 
   const company: CompanyInterface = {
     ...companyResult,
+    staff: (companyResult.staff || []).map((user) => {
+      return {
+        ...user,
+        shortName: getShortName(user),
+        fullName: getFullName(user),
+        role: user.role
+          ? {
+              ...user.role,
+              name: getFieldStringLocale(user.role.nameI18n, props.sessionLocale),
+            }
+          : null,
+      };
+    }),
     owner: companyResult.owner
       ? {
           ...companyResult.owner,

@@ -128,7 +128,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router.push(`${itemPath}/${dataItem._id}`, '_blank').catch((e) => console.log(e));
+              router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
@@ -176,7 +176,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>
             onRowDoubleClick={(dataItem) => {
-              router.push(`${itemPath}/${dataItem._id}`, '_blank').catch((e) => console.log(e));
+              router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
             }}
             columns={columns}
             data={docs}

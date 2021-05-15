@@ -8,7 +8,6 @@ import {
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
 } from 'generated/apolloComponents';
-import { SHOP_QUERY } from 'graphql/query/companiesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
 import { useRouter } from 'next/router';
@@ -18,42 +17,29 @@ export type ShopAssetsInterface = AppShopLayoutInterface;
 
 const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath }) => {
   const router = useRouter();
-  const { _id, slug, logo, name } = shop;
+  const { _id, logo, name } = shop;
   const {
     hideLoading,
     onErrorCallback,
     showErrorNotification,
     onCompleteCallback,
     showLoading,
-  } = useMutationCallbacks({});
-
-  const refetchQueries = [
-    {
-      query: SHOP_QUERY,
-      variables: {
-        _id,
-      },
-    },
-  ];
+  } = useMutationCallbacks({ reload: true });
 
   const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
-    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteShopAsset),
-    refetchQueries,
   });
 
   const [updateShopAssetIndexMutation] = useUpdateShopAssetIndexMutation({
-    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateShopAssetIndex),
-    refetchQueries,
   });
 
   return (
     <AppShopLayout shop={shop} basePath={basePath}>
       <Inner>
-        <div data-cy={'shop-assets'}>
+        <div data-cy={'shop-assets-list'}>
           <Formik
             enableReinitialize
             initialValues={{ logo: [logo.url] }}
@@ -67,7 +53,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath }) => {
                   <FormikImageUpload
                     label={'Логотип магазина'}
                     name={'logo'}
-                    testId={slug}
+                    testId={'logo'}
                     width={'10rem'}
                     height={'10rem'}
                     format={'image/png'}
@@ -177,10 +163,10 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath }) => {
                   <FormikDropZone
                     label={'Добавить изображения'}
                     name={'assets'}
-                    testId={'product-images'}
+                    testId={'assets'}
                   />
 
-                  <Button testId={'submit-product'} type={'submit'}>
+                  <Button testId={'submit-shop-assets'} type={'submit'}>
                     Добавить
                   </Button>
                 </Form>

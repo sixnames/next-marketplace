@@ -49,7 +49,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
   return (
     <AppShopLayout shop={shop} basePath={basePath}>
       <Inner>
-        <div data-cy={'shop-details'}>
+        <div data-cy={'shop-details-page'}>
           <Formik
             enableReinitialize
             validationSchema={validationSchema}

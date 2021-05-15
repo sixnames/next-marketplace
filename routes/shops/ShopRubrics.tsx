@@ -46,7 +46,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, rubrics, basePath }
 
   return (
     <AppShopLayout shop={shop} basePath={basePath}>
-      <Inner>
+      <Inner testId={'shop-rubrics-list'}>
         <Table<RubricInterface>
           columns={columns}
           data={rubrics}

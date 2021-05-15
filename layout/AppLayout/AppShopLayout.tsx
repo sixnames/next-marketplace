@@ -16,18 +16,18 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, basePath, child
     return [
       {
         name: 'Детали',
-        testId: 'details',
+        testId: 'shop-details',
         path: `${basePath}/${shop._id}`,
         exact: true,
       },
       {
         name: 'Товары',
-        testId: 'products',
+        testId: 'shop-products',
         path: `${basePath}/${shop._id}/products`,
       },
       {
         name: 'Изображения',
-        testId: 'assets',
+        testId: 'shop-assets',
         path: `${basePath}/${shop._id}/assets`,
         exact: true,
       },

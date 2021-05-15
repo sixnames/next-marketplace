@@ -38,9 +38,6 @@ declare namespace Cypress {
     selectNthOption(select: string, nth: number): Chainable<Element>;
     createTestData(): void;
     closeNotification(): void;
-    visitMoreNavLink(testId: string): void;
-    openMoreNav(): void;
-    closeMoreNav(): void;
     attachFile(path: string, options?: AttachFileOptionsInterface): Chainable<Element>;
     testAuth(redirect?: string, email?: string, password?: string): Chainable<Element>;
     makeAnOrder(props: MakeAnOrderInterface): Chainable<Element>;

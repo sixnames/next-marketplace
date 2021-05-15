@@ -8,6 +8,7 @@ const companies: CompanyModel[] = [
     itemId: '000001',
     slug: 'company_a',
     name: 'Company A',
+    domain: 'domain.com',
     staffIds: getObjectIds(['company manager b']),
     ownerId: getObjectId('company owner a'),
     shopsIds: getObjectIds(['shop Shop A']),

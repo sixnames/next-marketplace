@@ -1,4 +1,5 @@
-import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, DEFAULT_CITY, ROUTE_CMS } from 'config/common';
+import { MOCK_ADDRESS_A } from 'tests/mocks';
 
 describe('Companies list', () => {
   const companiesPath = `${ROUTE_CMS}/companies`;
@@ -69,7 +70,7 @@ describe('Companies list', () => {
     cy.getByCy('name').clear().type(updatedCompanyName);
 
     // domain
-    cy.getByCy('domain').clear().type('domain.com');
+    cy.getByCy('domain').clear().type('domainB.com');
 
     // company emails
     cy.getByCy(`email-1-remove`).click();
@@ -115,49 +116,48 @@ describe('Companies list', () => {
     cy.getByCy('companies-list').should('not.contain', '000001');
   });
 
-  it.skip('Should display company shops list', () => {
-    // const newShopName = 'newShopName';
-    // const newShopEmailA = 'newShopEmailA@mail.com';
-    // const newShopPhoneA = `77776665544`;
-    // cy.getByCy(`${companyA.slug}-update`).click();
-    // cy.visitMoreNavLink('shops');
-    // cy.getByCy('company-shops-list').should('exist');
-    // cy.getByCy(`${mockData.shopA.slug}-row`).should('exist');
+  it('Should display company shops list', () => {
+    const newShopName = 'newShopName';
+    const newShopEmailA = 'newShopEmailA@mail.com';
+    const newShopPhoneA = `77776665544`;
+
+    cy.getByCy(`company_a-update`).click();
+    cy.getByCy(`company-shops`).click();
+    cy.getByCy('company-shops-list').should('exist');
+
     // Should add shop to the company
-    // cy.getByCy(`create-shop`).click();
-    // cy.getByCy(`create-shop-modal`).should('exist');
-    // add logo
-    // cy.getByCy('logo').attachFile('test-company-logo.png', { subjectType: 'drag-n-drop' });
-    // add assets
-    // cy.getByCy('assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
+    cy.getByCy(`create-shop`).click();
+    cy.getByCy(`create-shop-modal`).should('exist');
+
     // add name
-    // cy.getByCy('name').type(newShopName);
+    cy.getByCy('name').type(newShopName);
+
     // add city
-    // cy.getByCy('citySlug').select(DEFAULT_CITY);
+    cy.getByCy('citySlug').select(DEFAULT_CITY);
+
     // add emails
-    // cy.getByCy(`email-0`).type(newShopEmailA);
+    cy.getByCy(`email-0`).type(newShopEmailA);
+
     // add phones
-    // cy.getByCy(`phone-0`).type(newShopPhoneA);
+    cy.getByCy(`phone-0`).type(newShopPhoneA);
+
     // address
-    // cy.getByCy(`address`).type(MOCK_ADDRESS_A.formattedAddress);
-    // cy.getByCy(`address-result-0`).click();
-    // cy.getByCy(`address`).should('have.value', MOCK_ADDRESS_A.formattedAddress);
+    cy.getByCy(`address`).type(MOCK_ADDRESS_A.formattedAddress);
+    cy.getByCy(`address-result-0`).then(($el: any) => {
+      const value = $el.text();
+      cy.wrap($el).click();
+      cy.getByCy(`address`).should('have.value', value);
+    });
+
     // submit
-    // cy.getByCy(`shop-submit`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`create-shop-modal`).should('not.exist');
-    // cy.getByCy('company-shops-list').should('contain', newShopName);
-    // Should have shop details link
-    // cy.getByCy(`${mockData.shopA.itemId}-update`).click();
-    // cy.getByCy('shop-details').should('exist');
-    // Should delete shop
-    // cy.visit(companiesPath);
-    // cy.getByCy(`${companyA.slug}-update`).click();
-    // cy.visitMoreNavLink('shops');
-    // cy.getByCy(`${mockData.shopA.itemId}-delete`).click();
-    // cy.getByCy(`delete-shop-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`${mockData.shopA.itemId}-row`).should('not.exist');
+    cy.getByCy(`shop-submit`).click();
+    cy.getByCy('company-shops-list').should('contain', newShopName);
+
+    // Should delete shop from company
+    cy.getByCy(`Shop A-delete`).click();
+    cy.getByCy(`confirm`).click();
+    cy.getByCy('company-shops-list').should('not.contain', 'Shop A');
   });
+
+  // Should have shop details
 });

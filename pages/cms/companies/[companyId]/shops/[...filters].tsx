@@ -1,8 +1,11 @@
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
+import { CreateShopModalInterface } from 'components/Modal/CreateShopModal/CreateShopModal';
 import Pager from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
@@ -14,7 +17,7 @@ import {
   SORT_DESC,
   PAGE_DEFAULT,
 } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modals';
 import {
   COL_CITIES,
   COL_COMPANIES,
@@ -69,6 +72,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     showErrorNotification,
   } = useMutationCallbacks({
     reload: true,
+    withModal: true,
   });
 
   const counterString = React.useMemo(() => {
@@ -91,9 +95,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${itemPath}/${dataItem._id}`} target={'_blank'}>
-          {cellData}
-        </Link>
+        <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>
       ),
     },
     {
@@ -122,10 +124,11 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
       render: ({ dataItem }) => {
         return (
           <ContentItemControls
+            testId={dataItem.name}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              window.open(`${itemPath}/${dataItem._id}`, '_blank');
+              router.push(`${itemPath}/${dataItem._id}`, '_blank').catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
@@ -150,7 +153,6 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
                 },
               });
             }}
-            testId={dataItem.itemId}
           />
         );
       },
@@ -174,14 +176,31 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>
             onRowDoubleClick={(dataItem) => {
-              window.open(`${itemPath}/${dataItem._id}`, '_blank');
+              router.push(`${itemPath}/${dataItem._id}`, '_blank').catch((e) => console.log(e));
             }}
             columns={columns}
             data={docs}
             testIdKey={'_id'}
           />
 
-          {isPageLoading ? <Spinner isNestedAbsolute /> : null}
+          {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+
+          <FixedButtons>
+            <Button
+              onClick={() => {
+                showModal<CreateShopModalInterface>({
+                  variant: CREATE_SHOP_MODAL,
+                  props: {
+                    companyId: `${currentCompany._id}`,
+                  },
+                });
+              }}
+              testId={'create-shop'}
+              size={'small'}
+            >
+              Добавить магазин
+            </Button>
+          </FixedButtons>
         </div>
 
         <Pager

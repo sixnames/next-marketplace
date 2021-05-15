@@ -117,19 +117,6 @@ Cypress.Commands.add('selectOptionByTestId', (select, testId) => {
   });
 });
 
-Cypress.Commands.add('openMoreNav', () => {
-  cy.getByCy('more-nav-trigger').click();
-});
-
-Cypress.Commands.add('closeMoreNav', () => {
-  cy.getByCy('more-nav-close').click({ force: true });
-});
-
-Cypress.Commands.add('visitMoreNavLink', (testId) => {
-  cy.getByCy('more-nav-trigger').click();
-  cy.getByCy(`more-nav-item-${testId}`).click();
-});
-
 Cypress.Commands.add('closeNotification', () => {
   cy.getByCy('close-notification').as('close');
   cy.get('@close').then((close) => {

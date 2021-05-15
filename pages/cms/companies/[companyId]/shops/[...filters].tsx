@@ -91,7 +91,9 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${basePath}/shops/${dataItem._id}`}>{cellData}</Link>
+        <Link href={`${itemPath}/${dataItem._id}`} target={'_blank'}>
+          {cellData}
+        </Link>
       ),
     },
     {

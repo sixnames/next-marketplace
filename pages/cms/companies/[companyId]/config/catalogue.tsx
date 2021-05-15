@@ -1,39 +1,52 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner/Inner';
 import { CONFIG_GROUP_CATALOGUE } from 'config/common';
-import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { CompanyInterface } from 'db/uiInterfaces';
+import { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
+import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
-  const router = useRouter();
+interface ConfigConsumerInterface extends ConfigPageInterface {
+  currentCompany: CompanyInterface;
+}
+
+const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
+  assetConfigs,
+  normalConfigs,
+  currentCompany,
+}) => {
   return (
-    <AppConfigsLayout companyId={`${router.query.companyId}`}>
-      <Inner>
+    <CmsCompanyLayout company={currentCompany}>
+      <Inner testId={'company-config-analytics'}>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
-    </AppConfigsLayout>
+    </CmsCompanyLayout>
   );
 };
 
-const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls } = props;
+interface ConfigInterface
+  extends PagePropsInterface,
+    ConfigPageInterface,
+    ConfigConsumerInterface {}
+
+const Config: NextPage<ConfigInterface> = (props) => {
   return (
-    <AppLayout title={'Настройки сайта'} pageUrls={pageUrls}>
+    <CmsLayout title={'Настройки сайта'} {...props}>
       <ConfigConsumer {...props} />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
+): Promise<GetServerSidePropsResult<ConfigInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getAppInitialData({ context, isCms: true });
   if (!props) {
     return {
       notFound: true,
@@ -51,11 +64,20 @@ export const getServerSideProps = async (
     };
   }
 
+  const { assetConfigs, normalConfigs, currentCompany } = configsPayload;
+
+  if (!currentCompany) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
-      assetConfigs: castDbData(configsPayload.assetConfigs),
-      normalConfigs: castDbData(configsPayload.normalConfigs),
+      assetConfigs: castDbData(assetConfigs),
+      normalConfigs: castDbData(normalConfigs),
+      currentCompany: castDbData(currentCompany),
     },
   };
 };

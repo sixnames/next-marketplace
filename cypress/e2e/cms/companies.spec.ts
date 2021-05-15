@@ -102,14 +102,17 @@ describe('Companies list', () => {
     // Should update company logo
     cy.getByCy(`company-assets`).click();
     cy.getByCy(`company-assets-list`).should('exist');
+    cy.getByCy(`logo-remove`).click();
+    cy.getByCy('logo').attachFile('test-company-logo.png', {
+      subjectType: 'drag-n-drop',
+    });
 
     // Should delete company
-    // cy.visit(companiesPath);
-    // cy.getByCy(`company_a-delete`).click();
-    // cy.getByCy(`delete-company-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy('companies-list').should('not.contain', '000001');
+    cy.visit(companiesPath);
+    cy.getByCy(`company_a-delete`).click();
+    cy.getByCy(`delete-company-modal`).should('exist');
+    cy.getByCy(`confirm`).click();
+    cy.getByCy('companies-list').should('not.contain', '000001');
   });
 
   it.skip('Should display company shops list', () => {

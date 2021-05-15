@@ -34,6 +34,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [deleteCompanyMutation] = useDeleteCompanyMutation({
     onError: onErrorCallback,

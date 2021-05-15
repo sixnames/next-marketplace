@@ -74,7 +74,9 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                   }}
                 >
                   {isEmpty ? (
-                    <div className='font-medium text-red-700'>Логотип обязателен к заполнению</div>
+                    <div className='font-medium text-red-500 mt-4'>
+                      Логотип обязателен к заполнению
+                    </div>
                   ) : null}
                 </FormikImageUpload>
               </Form>

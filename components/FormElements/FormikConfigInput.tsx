@@ -130,7 +130,7 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
 
   return (
     <InputLine name={inputName} labelTag={'div'} labelClass='mt-3'>
-      {dbLocales.map((localeSlug) => {
+      {dbLocales.map((localeSlug, index) => {
         const value: string | undefined = currentField[localeSlug];
         const notEmpty = value && value.length;
         const accordionIcon = notEmpty ? 'check' : 'cross';
@@ -139,23 +139,28 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
           ? 'fill-current text-green-700'
           : 'fill-current text-red-700';
         const name = `${inputName}.${localeSlug}`;
+        const isNotLast = index !== dbLocales.length - 1;
 
         return (
-          <Accordion
-            testId={`${testId}-accordion-${localeSlug}`}
-            isOpen={localeSlug === defaultLocale}
-            title={localeSlug}
-            titleRight={
-              <Tooltip title={accordionIconTooltip}>
-                <Icon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
-              </Tooltip>
-            }
-            key={`${inputName}-${localeSlug}`}
-          >
-            <div className='mt-3 mb-6'>
-              <ConfigInput {...props} name={name} testId={`${testId}-${localeSlug}`} />
-            </div>
-          </Accordion>
+          <div className={isNotLast ? 'mb-6' : ''} key={name}>
+            <Accordion
+              testId={`${testId}-accordion-${localeSlug}`}
+              isOpen={localeSlug === defaultLocale}
+              title={localeSlug}
+              titleRight={
+                <Tooltip title={accordionIconTooltip}>
+                  <div>
+                    <Icon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
+                  </div>
+                </Tooltip>
+              }
+              key={`${inputName}-${localeSlug}`}
+            >
+              <div className='mt-3 mb-6'>
+                <ConfigInput {...props} name={name} testId={`${testId}-${localeSlug}`} />
+              </div>
+            </Accordion>
+          </div>
         );
       })}
     </InputLine>
@@ -190,7 +195,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
         data-cy={`${configSlug}-config-name`}
       >
         <span>{name}</span>
-        {description && (
+        {description ? (
           <React.Fragment>
             {' '}
             <Tooltip title={description}>
@@ -199,7 +204,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
               </div>
             </Tooltip>
           </React.Fragment>
-        )}
+        ) : null}
       </div>
       <Formik
         initialValues={{ configId: _id, cities: configCities }}

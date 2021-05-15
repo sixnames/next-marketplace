@@ -1,9 +1,9 @@
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -26,13 +26,13 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   const router = useRouter();
 
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <CmsLayout pageUrls={pageUrls}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${ROUTE_APP}/${router.query.companyId}/shops`}
+        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
       />
-    </AppLayout>
+    </CmsLayout>
   );
 };
 
@@ -44,7 +44,7 @@ export const getServerSideProps = async (
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context });
+  const initialProps = await getAppInitialData({ context, isCms: true });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

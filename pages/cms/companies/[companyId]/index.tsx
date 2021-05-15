@@ -9,10 +9,8 @@ import { useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
-import { removeApolloFields } from 'lib/apolloHelpers';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
-import { omit } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -39,33 +37,28 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
     schema: updateCompanyClientSchema,
   });
 
-  const initialCompany = removeApolloFields(
-    omit(currentCompany, ['itemId', 'slug', '_id', 'logo']),
-  );
-  const initialContacts = removeApolloFields(initialCompany.contacts);
-
   return (
     <CmsCompanyLayout company={currentCompany}>
       <Inner testId={'company-details'}>
         <Formik
           validationSchema={validationSchema}
           initialValues={{
-            ...initialCompany,
+            ...currentCompany,
             contacts: {
-              emails: initialContacts.emails[0] ? initialContacts.emails : [''],
-              phones: initialContacts.phones[0] ? initialContacts.phones : [''],
+              emails: currentCompany.contacts.emails[0] ? currentCompany.contacts.emails : [''],
+              phones: currentCompany.contacts.phones[0] ? currentCompany.contacts.phones : [''],
             },
           }}
           onSubmit={(values) => {
             showLoading();
-            const finalValues = omit(values, ['owner', 'staff']);
             updateCompanyMutation({
               variables: {
                 input: {
-                  ...finalValues,
+                  domain: values.domain,
+                  name: values.name,
                   contacts: {
-                    ...finalValues.contacts,
-                    phones: finalValues.contacts.phones.map((phone) => phoneToRaw(phone)),
+                    emails: values.contacts.emails,
+                    phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
                   },
                   companyId: currentCompany._id,
                   ownerId: `${values.owner?._id}`,

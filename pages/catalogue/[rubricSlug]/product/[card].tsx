@@ -111,7 +111,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   ];
 
   return (
-    <div className='overflow-hidden pb-20 pt-8 wp-desktop:pt-0' data-cy={`card`}>
+    <div className='overflow-hidden pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
       <Inner>

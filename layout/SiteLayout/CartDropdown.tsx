@@ -36,7 +36,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
   return (
     <div
-      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 wp-desktop:relative wp-desktop:rounded-lg wp-desktop:bottom-auto wp-desktop:inset-x-auto wp-desktop:w-[30rem]'
+      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 lg:relative lg:rounded-lg lg:bottom-auto lg:inset-x-auto lg:w-[30rem]'
       style={cartDropdownCssVars}
       data-cy={'cart-dropdown'}
     >
@@ -214,7 +214,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           </div>
         </div>
         <Button
-          className='wp-desktop:w-full'
+          className='lg:w-full'
           onClick={() => {
             router.push(`/cart`).catch(() => {
               showErrorNotification();

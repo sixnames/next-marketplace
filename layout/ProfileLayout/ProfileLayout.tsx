@@ -99,7 +99,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             <Title>Личный кабинет</Title>
             <div className='text-5 font-medium mb-8 md:mb-12'>С возвращением, {me?.name}</div>
             <AsideNav
-              className='sticky left-0 top-6 wp-desktop:top-16'
+              className='sticky left-0 top-6 lg:top-16'
               config={navConfig}
               testId={'profile-nav'}
             />

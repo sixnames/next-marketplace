@@ -332,7 +332,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex';
+const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
@@ -363,12 +363,12 @@ const Header: React.FC = () => {
   return (
     <React.Fragment>
       <header
-        className='relative z-[130] bg-primary shadow-md wp-desktop:shadow-none'
+        className='relative z-[130] bg-primary shadow-md lg:shadow-none'
         style={headerVars}
         ref={headerRef}
       >
         <Inner
-          className='hidden relative z-[10] h-[30px] items-center justify-between wp-desktop:flex'
+          className='hidden relative z-[10] h-[30px] items-center justify-between lg:flex'
           lowBottom
           lowTop
         >
@@ -377,7 +377,7 @@ const Header: React.FC = () => {
         </Inner>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'>
+          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:pt-2 lg:pt-4'>
             <div className={`${middleSideClassName} justify-start`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
@@ -429,7 +429,7 @@ const Header: React.FC = () => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 wp-desktop:hidden'>
+      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 lg:hidden'>
         <Inner
           className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
           lowTop

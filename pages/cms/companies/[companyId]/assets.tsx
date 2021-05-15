@@ -23,7 +23,7 @@ interface CompanyAssetsConsumerInterface {
 const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ currentCompany }) => {
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
-  const { logo, slug } = currentCompany;
+  const { logo } = currentCompany;
 
   return (
     <CmsCompanyLayout company={currentCompany}>
@@ -41,7 +41,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                 <FormikImageUpload
                   label={'Логотип компании'}
                   name={'logo'}
-                  testId={slug}
+                  testId={'logo'}
                   width={'10rem'}
                   height={'10rem'}
                   setImageHandler={(files) => {

@@ -332,12 +332,12 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
   return (
     <React.Fragment>
       <header
-        className='relative z-[130] bg-primary shadow-md wp-desktop:shadow-none'
+        className='relative z-[130] bg-primary shadow-md lg:shadow-none'
         style={headerVars}
         ref={headerRef}
       >
         <Inner
-          className='hidden relative z-[10] h-[30px] items-center justify-between wp-desktop:flex'
+          className='hidden relative z-[10] h-[30px] items-center justify-between lg:flex'
           lowBottom
           lowTop
         >
@@ -353,9 +353,9 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
         </Inner>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'>
+          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:pt-2 lg:pt-4'>
             <div
-              className={`hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex justify-start`}
+              className={`hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex justify-start`}
             >
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
@@ -379,9 +379,7 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
               />
             </Link>
 
-            <div
-              className={`hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex justify-end`}
-            >
+            <div className={`hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex justify-end`}>
               <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
               <HeaderProfileLink />
 
@@ -409,7 +407,7 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-desktop:hidden'>
+      <div className='block fixed z-[200] inset-x-0 bottom-0 lg:hidden'>
         <Inner
           className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
           lowTop

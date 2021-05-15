@@ -140,7 +140,7 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
 
   return (
-    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary wp-desktop:block'>
+    <nav className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary lg:block'>
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {

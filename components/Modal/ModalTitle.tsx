@@ -19,14 +19,14 @@ const ModalTitle: React.FC<ModalTitleInterface> = ({
 }) => {
   return (
     <div
-      className={`wp-desktop:flex wp-desktop:items-center wp-desktop:justify-between ${
-        low ? '' : 'mb-6'
-      } ${className ? className : null}`}
+      className={`lg:flex lg:items-center lg:justify-between ${low ? '' : 'mb-6'} ${
+        className ? className : null
+      }`}
     >
       <div>
         <div
           className={`font-medium ${
-            size === 'small' ? 'text-2xl wp-desktop:text-3xl' : 'text-3xl wp-desktop:text-4xl'
+            size === 'small' ? 'text-2xl lg:text-3xl' : 'text-3xl lg:text-4xl'
           }`}
         >
           {children}
@@ -34,7 +34,7 @@ const ModalTitle: React.FC<ModalTitleInterface> = ({
         {subtitle ? <div className='text-secondary-text mt-4'>{subtitle}</div> : null}
       </div>
 
-      {right && <div className='mt-3 wp-desktop:mt-0'>{right}</div>}
+      {right && <div className='mt-3 lg:mt-0'>{right}</div>}
     </div>
   );
 };

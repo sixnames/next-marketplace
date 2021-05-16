@@ -312,13 +312,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   scrollableTarget={'#catalogue-products'}
                   loader={<span />}
                 >
-                  {state.products.map((product) => {
+                  {state.products.map((product, index) => {
                     if (isRowView && !isMobile) {
                       return (
                         <ProductSnippetRow
                           product={product}
                           key={`${product._id}`}
-                          testId={`catalogue-item-${product.slug}`}
+                          testId={`catalogue-item-${index}`}
                         />
                       );
                     }
@@ -327,7 +327,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                       <ProductSnippetGrid
                         product={product}
                         key={`${product._id}`}
-                        testId={`catalogue-item-${product.slug}`}
+                        testId={`catalogue-item-${index}`}
                       />
                     );
                   })}

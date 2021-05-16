@@ -66,6 +66,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     dist: ASSETS_DIST_COMPANIES,
     startIndex: 0,
   });
+
   if (!uploadedLogo) {
     res.status(500).send({
       success: false,

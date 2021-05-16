@@ -1,454 +1,39 @@
-import Accordion from 'components/Accordion/Accordion';
-import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
-import Button from 'components/Buttons/Button';
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Inner from 'components/Inner/Inner';
-import Link from 'components/Link/Link';
-import Pager from 'components/Pager/Pager';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
-import {
-  CATALOGUE_FILTER_PAGE,
-  CATALOGUE_OPTION_SEPARATOR,
-  PAGE_DEFAULT,
-  ROUTE_APP,
-  SORT_DESC,
-} from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_APP, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
-import { ShopModel, ShopProductModel } from 'db/dbModels';
+import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
-  CatalogueFilterAttributeInterface,
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
   ProductInterface,
   RubricInterface,
+  ShopInterface,
 } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import {
-  AddProductToShopInput,
-  useAddManyProductsToShopMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { addManyProductsToShopSchema } from 'validation/shopSchema';
-
-type StepType = 1 | 2;
-type CreateChosenProduct = (product: ProductInterface) => void;
-type DeleteChosenProduct = (product: ProductInterface) => void;
-type SetStepHandler = (step: StepType) => void;
-
-interface ShopAddProductsListRouteInterface {
-  shop: ShopModel;
-  docs: ProductInterface[];
-  chosen: ProductInterface[];
-  createChosenProduct: CreateChosenProduct;
-  deleteChosenProduct: DeleteChosenProduct;
-  setStepHandler: SetStepHandler;
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  page: number;
-  attributes: CatalogueFilterAttributeInterface[];
-  selectedAttributes: CatalogueFilterAttributeInterface[];
-  clearSlug: string;
-  rubricName: string;
-  rubricId: string;
-  pagerUrl: string;
-  basePath: string;
-}
-
-const ShopAddProductsListRoute: React.FC<ShopAddProductsListRouteInterface> = ({
-  shop,
-  attributes,
-  clearSlug,
-  selectedAttributes,
-  docs,
-  totalDocs,
-  page,
-  totalPages,
-  rubricName,
-  pagerUrl,
-  basePath,
-  chosen,
-  createChosenProduct,
-  deleteChosenProduct,
-  setStepHandler,
-}) => {
-  const router = useRouter();
-  const columns: TableColumn<ProductInterface>[] = [
-    {
-      render: ({ dataItem }) => {
-        const isSelected = chosen.find(({ _id }) => {
-          return _id === dataItem._id;
-        });
-
-        return (
-          <Checkbox
-            name={'chosen'}
-            value={isSelected ? 'true' : ''}
-            checked={Boolean(isSelected)}
-            onChange={() => {
-              if (isSelected) {
-                deleteChosenProduct(dataItem);
-              } else {
-                createChosenProduct(dataItem);
-              }
-            }}
-          />
-        );
-      },
-    },
-    {
-      accessor: 'itemId',
-      headTitle: 'Арт',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      headTitle: 'Фото',
-      render: ({ dataItem }) => {
-        return (
-          <TableRowImage
-            src={`${dataItem.mainImage}`}
-            alt={`${dataItem.originalName}`}
-            title={`${dataItem.originalName}`}
-          />
-        );
-      },
-    },
-    {
-      accessor: 'originalName',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-  ];
-
-  const catalogueCounterString = React.useMemo(() => {
-    const catalogueCounterPostfix = getNumWord(totalDocs, [
-      'наименование',
-      'наименования',
-      'наименований',
-    ]);
-    return `Найдено ${totalDocs} ${catalogueCounterPostfix}`;
-  }, [totalDocs]);
-
-  return (
-    <AppShopLayout shop={shop}>
-      <Inner>
-        <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
-        <div className={`mb-6`}>{catalogueCounterString}</div>
-
-        <FormikIndividualSearch
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
-          }}
-        />
-
-        <div className={`max-w-full`}>
-          <div className={'mb-8'}>
-            <Accordion
-              title={'Фильтр'}
-              titleRight={
-                selectedAttributes.length > 0 ? <Link href={clearSlug}>Очистить фильтр</Link> : null
-              }
-            >
-              <div className={`mt-8`}>
-                <AppContentFilter
-                  attributes={attributes}
-                  selectedAttributes={selectedAttributes}
-                  clearSlug={clearSlug}
-                  className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
-                />
-              </div>
-            </Accordion>
-          </div>
-
-          <div className={'max-w-full'}>
-            <div className={`mb-6 flex`}>
-              <div className={`mr-6`}>
-                <Button
-                  disabled={chosen.length < 1}
-                  onClick={() => setStepHandler(2)}
-                  testId={'next-step-top'}
-                  size={'small'}
-                >
-                  Далее
-                </Button>
-              </div>
-            </div>
-            <div className={`overflow-x-auto`}>
-              <Table<ProductInterface> columns={columns} data={docs} testIdKey={'_id'} />
-            </div>
-            <div className={`mt-6 flex`}>
-              <div className={`mr-6`}>
-                <Button
-                  disabled={chosen.length < 1}
-                  onClick={() => setStepHandler(2)}
-                  testId={'next-step-bottom'}
-                  size={'small'}
-                >
-                  Далее
-                </Button>
-              </div>
-            </div>
-
-            <Pager
-              page={page}
-              setPage={(page) => {
-                const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
-                const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-                const nextUrl = [...prevUrlArray, pageParam].join('/');
-                router.push(`/${nextUrl}`).catch((e) => {
-                  console.log(e);
-                });
-              }}
-              totalPages={totalPages}
-            />
-          </div>
-        </div>
-      </Inner>
-    </AppShopLayout>
-  );
-};
-
-const ShopAddProductsFinalStepRoute: React.FC<ShopAddProductsListRouteInterface> = ({
-  shop,
-  chosen,
-  createChosenProduct,
-  deleteChosenProduct,
-  setStepHandler,
-  rubricId,
-}) => {
-  const router = useRouter();
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({ withModal: true });
-  const [addManyProductsToShopMutation] = useAddManyProductsToShopMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.addManyProductsToShop);
-      if (data.addManyProductsToShop.success) {
-        router
-          .push(`${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${rubricId}`)
-          .catch((e) => console.log(e));
-      }
-    },
-    onError: onErrorCallback,
-  });
-  const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
-
-  const columns: TableColumn<ProductInterface>[] = [
-    {
-      render: ({ dataItem }) => {
-        const isSelected = chosen.find(({ _id }) => {
-          return _id === dataItem._id;
-        });
-
-        return (
-          <Checkbox
-            name={'chosen'}
-            value={isSelected ? 'true' : ''}
-            checked={Boolean(isSelected)}
-            onChange={() => {
-              if (isSelected) {
-                deleteChosenProduct(dataItem);
-              } else {
-                createChosenProduct(dataItem);
-              }
-            }}
-          />
-        );
-      },
-    },
-    {
-      accessor: 'product',
-      headTitle: 'Арт',
-      render: ({ cellData }) => cellData.itemId,
-    },
-    {
-      accessor: 'product',
-      headTitle: 'Фото',
-      render: ({ cellData }) => {
-        return (
-          <TableRowImage
-            src={`${cellData.mainImage}`}
-            alt={`${cellData.originalName}`}
-            title={`${cellData.originalName}`}
-          />
-        );
-      },
-    },
-    {
-      accessor: 'product.originalName',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      headTitle: 'Наличие',
-      render: ({ rowIndex }) => {
-        return (
-          <FormikInput
-            testId={`shop-product-available-${rowIndex}`}
-            name={`input[${rowIndex}].available`}
-            type={'number'}
-            low
-          />
-        );
-      },
-    },
-    {
-      headTitle: 'Цена',
-      render: ({ rowIndex }) => {
-        return (
-          <FormikInput
-            testId={`shop-product-price-${rowIndex}`}
-            name={`input[${rowIndex}].price`}
-            type={'number'}
-            low
-          />
-        );
-      },
-    },
-  ];
-
-  const catalogueCounterString = React.useMemo(() => {
-    const catalogueCounterPostfix = getNumWord(chosen.length, [
-      'наименование',
-      'наименования',
-      'наименований',
-    ]);
-    return `Выбрано ${chosen.length} ${catalogueCounterPostfix}`;
-  }, [chosen]);
-
-  const initialValues = {
-    input: chosen.map((facet) => {
-      return {
-        ...facet,
-        productId: facet._id,
-        shopId: shop._id,
-        available: 0,
-        price: 0,
-      };
-    }),
-  };
-
-  return (
-    <AppShopLayout shop={shop}>
-      <Inner>
-        <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
-        <div className={`mb-6`}>{catalogueCounterString}</div>
-
-        <div className={`max-w-full`}>
-          <div className={'max-w-full'}>
-            <Formik
-              validationSchema={validationSchema}
-              enableReinitialize={true}
-              onSubmit={(values) => {
-                showLoading();
-                const input: AddProductToShopInput[] = values.input.map(
-                  ({ available, price, shopId, productId }) => ({
-                    available,
-                    price,
-                    shopId,
-                    productId,
-                  }),
-                );
-                addManyProductsToShopMutation({
-                  variables: {
-                    input,
-                  },
-                }).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-              initialValues={initialValues}
-            >
-              {() => {
-                return (
-                  <Form>
-                    <div className={`mb-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button
-                          disabled={chosen.length < 1}
-                          testId={'save-shop-products-top'}
-                          type={'submit'}
-                          size={'small'}
-                        >
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => setStepHandler(1)}
-                          testId={'back-top'}
-                          size={'small'}
-                          theme={'secondary'}
-                        >
-                          Назад
-                        </Button>
-                      </div>
-                    </div>
-                    <div className={`overflow-x-auto`}>
-                      <Table<ProductInterface> columns={columns} data={chosen} testIdKey={'_id'} />
-                    </div>
-                    <div className={`mt-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button
-                          disabled={chosen.length < 1}
-                          testId={'save-shop-products-bottom'}
-                          type={'submit'}
-                          size={'small'}
-                        >
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => setStepHandler(1)}
-                          testId={'back-bottom'}
-                          size={'small'}
-                          theme={'secondary'}
-                        >
-                          Назад
-                        </Button>
-                      </div>
-                    </div>
-                  </Form>
-                );
-              }}
-            </Formik>
-          </div>
-        </div>
-      </Inner>
-    </AppShopLayout>
-  );
-};
+import {
+  ShopAddProductsCreateChosenProduct,
+  ShopAddProductsDeleteChosenProduct,
+  ShopAddProductsFinalStep,
+  ShopAddProductsList,
+  ShopAddProductsListInterface,
+  ShopAddProductsSetStepHandler,
+  ShopAddProductsStepType,
+} from 'routes/shops/ShopAddProducts';
 
 type ShopAddProductsListRouteReduced = Omit<
-  ShopAddProductsListRouteInterface,
-  'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler'
+  ShopAddProductsListInterface,
+  'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler' | 'layoutBasePath'
 >;
 
 interface CompanyShopProductsListInterface
@@ -460,30 +45,33 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   shop,
   ...props
 }) => {
+  const router = useRouter();
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
-  const [step, setStep] = React.useState<StepType>(1);
+  const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
+  const layoutBasePath = `${ROUTE_APP}/${router.query.companyId}/shops`;
 
-  const createChosenProduct: CreateChosenProduct = (product) => {
+  const createChosenProduct: ShopAddProductsCreateChosenProduct = (product) => {
     setChosen((prevState) => {
       return [...prevState, product];
     });
   };
 
-  const deleteChosenProduct: DeleteChosenProduct = (product) => {
+  const deleteChosenProduct: ShopAddProductsDeleteChosenProduct = (product) => {
     setChosen((prevState) => {
       const filteredProducts = prevState.filter(({ _id }) => _id !== product._id);
       return filteredProducts;
     });
   };
 
-  const setStepHandler: SetStepHandler = (step) => {
+  const setStepHandler: ShopAddProductsSetStepHandler = (step) => {
     setStep(step);
   };
 
   if (step === 2) {
     return (
       <AppLayout pageUrls={pageUrls}>
-        <ShopAddProductsFinalStepRoute
+        <ShopAddProductsFinalStep
+          layoutBasePath={layoutBasePath}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}
@@ -497,7 +85,8 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopAddProductsListRoute
+      <ShopAddProductsList
+        layoutBasePath={layoutBasePath}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}
         setStepHandler={setStepHandler}
@@ -524,7 +113,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
   const db = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
@@ -600,7 +189,7 @@ export const getServerSideProps = async (
 
   const rubricIdObjectId = new ObjectId(rubricId);
 
-  const shopProductsIdsAggregation = await shopProductsCollection
+  const shopProductsAggregation = await shopProductsCollection
     .aggregate([
       {
         $match: {
@@ -610,12 +199,12 @@ export const getServerSideProps = async (
       },
       {
         $project: {
-          _id: true,
+          productId: true,
         },
       },
     ])
     .toArray();
-  const shopProductsIds = shopProductsIdsAggregation.map(({ _id }) => _id);
+  const excludedProductsIds = shopProductsAggregation.map(({ productId }) => productId);
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 
@@ -624,7 +213,7 @@ export const getServerSideProps = async (
       {
         $match: {
           rubricId: rubricIdObjectId,
-          _id: { $nin: shopProductsIds },
+          _id: { $nin: excludedProductsIds },
           ...searchStage,
           ...optionsStage,
         },

@@ -5,42 +5,33 @@ import path from 'path';
 let cachedDb: Db | undefined;
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
-// A function for connecting to MongoDB,
-// taking a single parameter of the connection string
 export async function getDatabase(): Promise<Db> {
-  // If the database connection is cached,
-  // use it instead of creating a new connection
+  // If the database connection is cached, use it instead of creating a new connection
   if (cachedDb) {
-    // console.log('<<<<<<<<< Cached db returned');
     return cachedDb;
   }
 
   const uri = process.env.MONGO_URL;
-  if (!uri) {
+  const dbName = process.env.MONGO_DB_NAME;
+
+  if (!uri || !dbName) {
     throw new Error('Unable to connect to database, no URI provided');
   }
 
-  // console.log('>>>>>>>>>>>>>>>>>>> Connecting to db <<<<<<<<<<<<<<<<<<<<<');
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    tls: true,
+    tlsCAFile,
+    replicaSet: process.env.MONGO_DB_RS,
+    authSource: process.env.MONGO_DB_NAME,
+  };
+
   // If no connection is cached, create a new one
-  const client = await MongoClient.connect(
-    uri,
-    process.env.NEXT_NODE_ENV === 'production'
-      ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          tls: true,
-          tlsCAFile,
-          replicaSet: process.env.MONGO_DB_RS,
-          authSource: process.env.MONGO_DB_NAME,
-        }
-      : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        },
-  );
+  const client = await MongoClient.connect(uri, options);
 
   // Select the database through the connection
-  const db = await client.db(process.env.MONGO_DB_NAME);
+  const db = await client.db(dbName);
 
   // Cache the database connection and return the connection
   cachedDb = db;

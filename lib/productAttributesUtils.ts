@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
 } from 'config/common';
+import { ObjectIdModel } from 'db/dbModels';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getStringValueFromOptionsList } from 'lib/optionsUtils';
@@ -85,12 +86,14 @@ export function getAttributeReadableValue({
 }
 
 export interface GetProductCurrentViewCastedAttributes {
+  excludedAttributesIds?: ObjectIdModel[];
   attributes: ProductAttributeInterface[];
   viewVariant: string;
   locale: string;
 }
 
 export function getProductCurrentViewCastedAttributes({
+  excludedAttributesIds,
   attributes,
   viewVariant,
   locale,
@@ -98,9 +101,13 @@ export function getProductCurrentViewCastedAttributes({
   return getProductCurrentViewAttributes({
     attributes,
     viewVariant,
-  }).reduce((acc: ProductAttributeInterface[], attribute) => {
+  }).reduce((acc: ProductAttributeInterface[], productAttribute) => {
+    if ((excludedAttributesIds || []).some((_id) => _id.equals(productAttribute.attributeId))) {
+      return acc;
+    }
+
     const readableValue = getAttributeReadableValue({
-      productAttribute: attribute,
+      productAttribute,
       locale,
     });
 
@@ -108,18 +115,18 @@ export function getProductCurrentViewCastedAttributes({
       return acc;
     }
 
-    const metric = attribute.metric
+    const metric = productAttribute.metric
       ? {
-          ...attribute.metric,
-          name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+          ...productAttribute.metric,
+          name: getFieldStringLocale(productAttribute.metric.nameI18n, locale),
         }
       : null;
 
     const castedAttribute: ProductAttributeInterface = {
-      ...attribute,
-      name: getFieldStringLocale(attribute.nameI18n, locale),
+      ...productAttribute,
+      name: getFieldStringLocale(productAttribute.nameI18n, locale),
       metric,
-      options: (attribute.options || []).map((option) => {
+      options: (productAttribute.options || []).map((option) => {
         // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
         return {
           ...option,

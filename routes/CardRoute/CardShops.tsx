@@ -36,6 +36,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   const { isMobile } = useAppContext();
   const [isShopsOpen, setIsShopsOpen] = React.useState<boolean>(false);
 
+  // TODO card shops count config
   const visibleShopsLimit = 4;
   const visibleShops = shops.slice(0, visibleShopsLimit);
   const hiddenShops = shops.slice(visibleShopsLimit);
@@ -98,16 +99,16 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
         </div>
       )}
 
-      {visibleShops.map((shop) => {
-        return <CardShop key={`${shop._id}`} shopProduct={shop} />;
+      {visibleShops.map((shop, index) => {
+        return <CardShop testId={`1-${index}`} key={`${shop._id}`} shopProduct={shop} />;
       })}
 
       {hiddenShops.length > 0 ? (
         <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
           <DisclosurePanel>
             <div>
-              {hiddenShops.map((shop) => {
-                return <CardShop key={`${shop._id}`} shopProduct={shop} />;
+              {hiddenShops.map((shop, index) => {
+                return <CardShop testId={`2-${index}`} key={`${shop._id}`} shopProduct={shop} />;
               })}
             </div>
           </DisclosurePanel>

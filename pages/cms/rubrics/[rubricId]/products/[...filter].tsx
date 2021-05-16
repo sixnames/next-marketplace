@@ -14,7 +14,7 @@ import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import {
-  CATALOGUE_FILTER_PAGE,
+  QUERY_FILTER_PAGE,
   CATALOGUE_OPTION_SEPARATOR,
   PAGE_DEFAULT,
   ROUTE_CMS,
@@ -26,6 +26,7 @@ import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
+  AppPaginationInterface,
   CatalogueFilterAttributeInterface,
   CatalogueProductPricesInterface,
   ProductInterface,
@@ -46,20 +47,10 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface RubricProductsInterface {
+interface RubricProductsInterface extends AppPaginationInterface<ProductInterface> {
   rubric: RubricInterface;
-  docs: ProductInterface[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  page: number;
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  clearSlug: string;
-  pagerUrl: string;
-  basePath: string;
-  productPath: string;
 }
 
 const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
@@ -73,7 +64,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalPages,
   pagerUrl,
   basePath,
-  productPath,
+  itemPath,
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
@@ -102,7 +93,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return <Link href={`${productPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
+        return <Link href={`${itemPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
       },
     },
     {
@@ -219,10 +210,10 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
           </div>
 
           <div className={'max-w-full'}>
-            <div className={`overflow-x-auto`}>
+            <div className={`relative overflow-x-auto overflow-y-hidden`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${productPath}/${dataItem._id}`).catch((e) => console.log(e));
+                  router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
                 }}
                 columns={columns}
                 data={docs}
@@ -235,8 +226,8 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             <Pager
               page={page}
               totalPages={totalPages}
-              setPage={(page) => {
-                const pageParam = `${CATALOGUE_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+              setPage={(newPage) => {
+                const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
                 const prevUrlArray = pagerUrl.split('/').filter((param) => param);
                 const nextUrl = [...prevUrlArray, pageParam].join('/');
                 router.push(`/${nextUrl}`).catch((e) => {
@@ -296,7 +287,7 @@ export const getServerSideProps = async (
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context, isCms: true });
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
-  const productPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
+  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -313,14 +304,15 @@ export const getServerSideProps = async (
   // Cast filters
   const {
     realFilterOptions,
-    sortFilterOptions,
     noFiltersSelected,
     pagerUrl,
     page,
     skip,
     limit,
+    clearSlug,
   } = castCatalogueFilters({
     filters: restFilter,
+    basePath,
   });
 
   // Products stages
@@ -518,14 +510,13 @@ export const getServerSideProps = async (
     });
   }
 
-  const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: RubricProductsInterface = {
     rubric: {
       ...(rubric || {}),
       attributes: [],
       name: getFieldStringLocale(rubric?.nameI18n, locale),
     },
-    clearSlug: `${basePath}${sortPathname}`,
+    clearSlug,
     totalDocs: productsResult.totalDocs,
     totalPages: productsResult.totalPages,
     hasNextPage: productsResult.hasNextPage,
@@ -533,7 +524,7 @@ export const getServerSideProps = async (
     attributes: castedAttributes,
     pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
-    productPath,
+    itemPath,
     selectedAttributes,
     page,
     docs,

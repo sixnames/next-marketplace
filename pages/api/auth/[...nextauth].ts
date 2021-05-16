@@ -18,20 +18,23 @@ const options: NextAuthOptions = {
     Providers.Credentials({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Email', type: 'email', placeholder: 'email' },
+        email: { label: 'Email', type: 'email', placeholder: 'email' },
         password: { label: 'Password', type: 'password' },
+        authKey: { label: 'auto', type: 'string' },
       },
       authorize: async (credentials: Record<string, any>) => {
         try {
           const db = await getDatabase();
           const collection = db.collection<UserModel>(COL_USERS);
-          const user = await collection.findOne({ email: credentials.username });
+          const user = await collection.findOne({ email: credentials.email });
 
           if (user) {
-            const passwordResult = await bcrypt.compare(credentials.password, `${user.password}`);
+            if (credentials.authKey !== process.env.NEXTAUTH_KEY) {
+              const passwordResult = await bcrypt.compare(credentials.password, `${user.password}`);
 
-            if (!passwordResult) {
-              return Promise.resolve(null);
+              if (!passwordResult) {
+                return Promise.resolve(null);
+              }
             }
 
             return Promise.resolve({

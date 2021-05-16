@@ -1,4 +1,5 @@
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
+import { AttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -9,7 +10,6 @@ import Spinner from '../../Spinner/Spinner';
 import Button from '../../Buttons/Button';
 import {
   AddAttributeToGroupInput,
-  AttributeInGroupFragment,
   AttributeVariant,
   AttributeViewVariant,
   UpdateAttributeInGroupInput,
@@ -28,7 +28,7 @@ type AddAttributeToGroupModalValuesType =
   | Omit<UpdateAttributeInGroupInput, 'attributesGroupId' | 'attributeId'>;
 
 export interface AddAttributeToGroupModalInterface {
-  attribute?: AttributeInGroupFragment;
+  attribute?: AttributeInterface;
   attributesGroupId: string;
   confirm: (values: AddAttributeToGroupModalValuesType) => void;
 }
@@ -66,8 +66,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   const initialValues: AddAttributeToGroupModalValuesType = attribute
     ? {
         nameI18n: attribute.nameI18n,
-        variant: attribute.variant,
-        viewVariant: attribute.viewVariant,
+        variant: `${attribute.variant}` as AttributeVariant,
+        viewVariant: `${attribute.viewVariant}` as AttributeViewVariant,
         metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle,

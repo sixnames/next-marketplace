@@ -25,7 +25,7 @@ const SignInRoute: React.FC = () => {
       <Formik
         validationSchema={validationSchema}
         initialValues={{
-          username: '',
+          email: '',
           password: '',
         }}
         onSubmit={(values) => {
@@ -63,7 +63,7 @@ const SignInRoute: React.FC = () => {
 
               <FormikInput
                 label={'Ваш Email'}
-                name={'username'}
+                name={'email'}
                 type={'email'}
                 testId={'sign-in-email'}
               />
@@ -76,7 +76,7 @@ const SignInRoute: React.FC = () => {
               />
 
               <Button
-                // disabled={errors.username || errors.password}
+                // disabled={errors.email || errors.password}
                 type={'submit'}
                 testId={'sign-in-submit'}
               >

@@ -58,10 +58,13 @@ export interface ContactsInterface extends ContactsModel {
 
 export interface AttributeInterface extends AttributeModel {
   name?: string | null;
+  metric?: MetricInterface | null;
+  optionsGroup?: OptionsGroupInterface | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
   name?: string | null;
+  attributes?: AttributeInterface[] | null;
 }
 
 export interface BrandInterface extends BrandModel {
@@ -106,6 +109,8 @@ export interface ConfigInterface extends ConfigModel {
 
 export interface CompanyInterface extends CompanyModel {
   shops?: ShopInterface[];
+  owner?: UserInterface | null;
+  staff?: UserInterface[] | null;
 }
 
 export interface MessageBaseInterface {
@@ -136,6 +141,7 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
 }
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
+  shopProduct?: ShopProductInterface;
   product?: ProductInterface;
   option?: OptionInterface | null;
 }
@@ -145,10 +151,12 @@ export interface ProductConnectionInterface extends ProductConnectionModel {
   connectionProducts?: ProductConnectionItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel, AttributeInterface {
+export interface ProductAttributeInterface extends ProductAttributeModel {
   readableValue?: string | null;
   index?: number | null;
   options?: OptionInterface[] | null;
+  name?: string | null;
+  metric?: MetricInterface | null;
 }
 
 export interface RubricAttributesGroupASTInterface {
@@ -247,13 +255,13 @@ export interface ShopProductInterface extends ShopProductModel {
 
 export interface ShopInterface extends ShopModel {
   productsCount?: number | null;
-  city?: CityModel | null;
+  city?: CityInterface | null;
   contacts: ContactsInterface;
   address: AddressInterface;
 }
 
 export interface UserInterface extends UserModel {
-  role?: RoleInterface;
+  role?: RoleInterface | null;
   fullName?: string;
   shortName?: string;
   companies?: CompanyInterface[];
@@ -371,4 +379,25 @@ export interface OrderInterface extends OrderModel {
 export interface TopFilterInterface {
   name: string;
   href: string;
+}
+
+export interface AppPaginationAggregationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface AppPaginationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  page: number;
+  pagerUrl: string;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  clearSlug: string;
+  basePath: string;
+  itemPath?: string;
 }

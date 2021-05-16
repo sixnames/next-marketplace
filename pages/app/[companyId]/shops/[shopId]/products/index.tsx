@@ -1,13 +1,9 @@
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
 import { ROUTE_APP } from 'config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { RubricInterface, ShopInterface } from 'db/uiInterfaces';
+import { RubricInterface } from 'db/uiInterfaces';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -16,79 +12,26 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import ShopRubrics, { ShopRubricsInterface } from 'routes/shops/ShopRubrics';
 
-interface ShopProductsRouteInterface {
-  shop: ShopInterface;
-  rubrics: RubricInterface[];
-}
-
-const ShopProductsRoute: React.FC<ShopProductsRouteInterface> = ({ shop, rubrics }) => {
-  const router = useRouter();
-
-  const columns: TableColumn<RubricInterface>[] = [
-    {
-      accessor: 'name',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'productsCount',
-      headTitle: 'Всего товаров',
-      render: ({ cellData, dataItem }) => {
-        return <div data-cy={`${dataItem.name}-productsCount`}>{cellData}</div>;
-      },
-    },
-    {
-      render: ({ dataItem }) => {
-        return (
-          <ContentItemControls
-            testId={`${dataItem.name}`}
-            justifyContent={'flex-end'}
-            updateTitle={'Просмотреть товары рубрики'}
-            updateHandler={() => {
-              router
-                .push(
-                  `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
-                )
-                .catch((e) => console.log(e));
-            }}
-          />
-        );
-      },
-    },
-  ];
-
-  return (
-    <AppShopLayout shop={shop}>
-      <Inner>
-        <Table<RubricInterface>
-          columns={columns}
-          data={rubrics}
-          testIdKey={'name'}
-          emptyMessage={'Список пуст'}
-          onRowDoubleClick={(dataItem) => {
-            router
-              .push(
-                `${ROUTE_APP}/${router.query.companyId}/shops/${shop._id}/products/${dataItem._id}`,
-              )
-              .catch((e) => console.log(e));
-          }}
-        />
-      </Inner>
-    </AppShopLayout>
-  );
-};
-
-interface CompanyShopProductsInterface extends PagePropsInterface, ShopProductsRouteInterface {}
+interface CompanyShopProductsInterface
+  extends PagePropsInterface,
+    Omit<ShopRubricsInterface, 'basePath'> {}
 
 const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   pageUrls,
   rubrics,
   shop,
 }) => {
+  const router = useRouter();
+
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopProductsRoute shop={shop} rubrics={rubrics} />
+      <ShopRubrics
+        shop={shop}
+        rubrics={rubrics}
+        basePath={`${ROUTE_APP}/${router.query.companyId}/shops`}
+      />
     </AppLayout>
   );
 };

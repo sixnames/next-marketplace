@@ -16,8 +16,8 @@ interface AppLayoutInterface {
   pageUrls: PageUrlsInterface;
 }
 
-const narrowContentClass = 'wp-desktop:pl-[220px]';
-const wideContentClass = 'wp-desktop:pl-[60px]';
+const narrowContentClass = 'lg:pl-[220px]';
+const wideContentClass = 'lg:pl-[60px]';
 
 const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
       <AppNav compact={compact} navItems={me.role?.appNavigation || []} />
 
       <main
-        className={`relative z-[1] min-h-full-height pt-[36px] wp-desktop:pt-0 ${
+        className={`relative z-[1] min-h-full-height pt-[36px] lg:pt-0 ${
           isCompact ? wideContentClass : narrowContentClass
         }`}
       >

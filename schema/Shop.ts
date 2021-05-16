@@ -1,3 +1,4 @@
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
 import { getCurrencyString } from 'lib/i18n';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
@@ -624,6 +625,7 @@ export const ShopMutations = extendType({
             citySlug: shop.citySlug,
             oldPrices: [],
             rubricId: product.rubricId,
+            rubricSlug: product.rubricSlug,
             companyId: shop.companyId,
             itemId: product.itemId,
             slug: product.slug,
@@ -636,6 +638,7 @@ export const ShopMutations = extendType({
             selectedOptionsSlugs: product.selectedOptionsSlugs,
             updatedAt: new Date(),
             createdAt: new Date(),
+            ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdShopProduct = createdShopProductResult.ops[0];
           if (!createdShopProductResult.result.ok || !createdShopProduct) {
@@ -721,6 +724,7 @@ export const ShopMutations = extendType({
               citySlug: shop.citySlug,
               oldPrices: [],
               rubricId: product.rubricId,
+              rubricSlug: product.rubricSlug,
               companyId: shop.companyId,
               itemId: product.itemId,
               slug: product.slug,
@@ -733,6 +737,7 @@ export const ShopMutations = extendType({
               selectedOptionsSlugs: product.selectedOptionsSlugs,
               updatedAt: new Date(),
               createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
             });
             const createdShopProduct = createdShopProductResult.ops[0];
             if (!createdShopProductResult.result.ok || !createdShopProduct) {

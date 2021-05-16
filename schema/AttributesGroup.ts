@@ -1,3 +1,4 @@
+import { SORT_ASC } from 'config/common';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -6,9 +7,8 @@ import {
   AttributesGroupPayloadModel,
   MetricModel,
   ProductAttributeModel,
-  ProductModel,
+  ProductConnectionModel,
   RubricAttributeModel,
-  RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -16,14 +16,12 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_METRICS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_CONNECTIONS,
   COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { SORT_ASC } from 'config/common';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
@@ -155,6 +153,7 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.objectId('optionsGroupId');
     t.objectId('metricId');
     t.boolean('capitalise');
+    t.boolean('notShowAsAlphabet');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
@@ -363,8 +362,15 @@ export const attributesGroupMutations = extendType({
             COL_ATTRIBUTES_GROUPS,
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+            COL_RUBRIC_ATTRIBUTES,
+          );
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
+          const productConnectionsCollection = db.collection<ProductConnectionModel>(
+            COL_PRODUCT_CONNECTIONS,
+          );
 
           // Check if attributes group exist
           const group = await attributesGroupCollection.findOne({ _id: args._id });
@@ -376,21 +382,17 @@ export const attributesGroupMutations = extendType({
           }
 
           // Check if group attributes is used in product connections and in product attributes
-          const usedInProducts = await productsCollection.findOne({
-            $or: [
-              {
-                'attributes.attributeId': {
-                  $in: group.attributesIds,
-                },
-              },
-              {
-                'connections.attributeId': {
-                  $in: group.attributesIds,
-                },
-              },
-            ],
+          const usedInProductAttributes = await productAttributesCollection.findOne({
+            attributeId: {
+              $in: group.attributesIds,
+            },
           });
-          if (usedInProducts) {
+          const usedInProductCollections = await productConnectionsCollection.findOne({
+            attributeId: {
+              $in: group.attributesIds,
+            },
+          });
+          if (usedInProductAttributes || usedInProductCollections) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.delete.used`),
@@ -398,12 +400,12 @@ export const attributesGroupMutations = extendType({
           }
 
           // Check if used in rubrics
-          const usedInRubrics = await rubricsCollection.findOne({
-            'attributesGroups.attributesGroupId': {
-              $in: [group._id],
+          const usedInRubricAttributes = await rubricAttributesCollection.findOne({
+            _id: {
+              $in: group.attributesIds,
             },
           });
-          if (usedInRubrics) {
+          if (usedInRubricAttributes) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.delete.used`),
@@ -515,6 +517,7 @@ export const attributesGroupMutations = extendType({
             metric,
             showAsBreadcrumb: false,
             showInCard: true,
+            attributesGroupId,
           });
           const createdAttribute = createdAttributeResult.ops[0];
           if (!createdAttributeResult.result.ok || !createdAttribute) {

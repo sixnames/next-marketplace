@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
 } from 'config/common';
 import {
@@ -16,9 +17,14 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
+import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import {
+  ProductConnectionInterface,
+  ProductConnectionItemInterface,
+  ProductInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -87,6 +93,7 @@ export async function getCardData({
             originalName: { $first: `$originalName` },
             nameI18n: { $first: `$nameI18n` },
             rubricId: { $first: `$rubricId` },
+            rubricSlug: { $first: `$rubricSlug` },
             minPrice: {
               $min: '$price',
             },
@@ -116,7 +123,7 @@ export async function getCardData({
         {
           $lookup: {
             from: COL_PRODUCT_CONNECTIONS,
-            as: 'connection',
+            as: 'connections',
             let: {
               productId: '$_id',
             },
@@ -183,9 +190,29 @@ export async function getCardData({
                       },
                     },
                     {
+                      $lookup: {
+                        from: COL_SHOP_PRODUCTS,
+                        as: 'shopProduct',
+                        let: { productId: '$productId' },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$productId', '$productId'],
+                              },
+                              citySlug: city,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
                       $addFields: {
                         option: {
                           $arrayElemAt: ['$option', 0],
+                        },
+                        shopProduct: {
+                          $arrayElemAt: ['$shopProduct', 0],
                         },
                       },
                     },
@@ -302,8 +329,57 @@ export async function getCardData({
       max: getCurrencyString(product.cardPrices?.max),
     };
 
+    // card connections
+    const excludedAttributesIds: ObjectIdModel[] = [];
+    const cardConnections: ProductConnectionInterface[] = [];
+    (product.connections || []).forEach(({ attribute, ...connection }) => {
+      const connectionProducts = (connection.connectionProducts || []).reduce(
+        (acc: ProductConnectionItemInterface[], connectionProduct) => {
+          if (!connectionProduct.shopProduct) {
+            return acc;
+          }
+
+          return [
+            ...acc,
+            {
+              ...connectionProduct,
+              option: connectionProduct.option
+                ? {
+                    ...connectionProduct.option,
+                    name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
+                  }
+                : null,
+            },
+          ];
+        },
+        [],
+      );
+
+      if (connectionProducts.length < 1 || !attribute) {
+        return;
+      }
+
+      excludedAttributesIds.push(attribute._id);
+      cardConnections.push({
+        ...connection,
+        connectionProducts,
+        attribute: {
+          ...attribute,
+          name: getFieldStringLocale(attribute?.nameI18n, locale),
+          metric: attribute.metric
+            ? {
+                ...attribute.metric,
+                name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+              }
+            : null,
+        },
+      });
+    });
+    // console.log(`card connections `, new Date().getTime() - startTime);
+
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
+      excludedAttributesIds,
       attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale,
@@ -312,6 +388,7 @@ export async function getCardData({
 
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
+      excludedAttributesIds,
       attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       locale,
@@ -320,6 +397,7 @@ export async function getCardData({
 
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
+      excludedAttributesIds,
       attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       locale,
@@ -328,6 +406,7 @@ export async function getCardData({
 
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
+      excludedAttributesIds,
       attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       locale,
@@ -336,6 +415,7 @@ export async function getCardData({
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
+      excludedAttributesIds,
       attributes: product.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale,
@@ -408,7 +488,7 @@ export async function getCardData({
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
         name: filterNameString,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${firstSelectedOption.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${productAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }
 
@@ -425,6 +505,7 @@ export async function getCardData({
 
     return {
       ...restProduct,
+      connections: cardConnections,
       name: getFieldStringLocale(product.nameI18n, locale),
       description: getFieldStringLocale(product.descriptionI18n, locale),
       cardPrices,

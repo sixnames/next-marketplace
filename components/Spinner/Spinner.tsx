@@ -21,7 +21,7 @@ const Spinner: React.FC<SpinnerInterface> = ({
         isNested
           ? 'relative h-[200px]'
           : isNestedAbsolute
-          ? 'absolute inset-0 h-full w-full'
+          ? 'absolute inset-0 h-full w-full min-h-[10rem]'
           : 'fixed inset-0 h-full-height'
       }
       } ${className ? className : ''}`}

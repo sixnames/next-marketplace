@@ -175,15 +175,12 @@
 }
 
 .connections {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .connectionsGroup {
   display: flex;
-  margin-right: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .connectionsGroupLabel {

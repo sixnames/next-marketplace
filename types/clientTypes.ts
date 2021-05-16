@@ -31,4 +31,5 @@ export interface NavItemInterface {
   testId?: string;
   shallow?: boolean;
   exact?: boolean;
+  disabled?: boolean;
 }

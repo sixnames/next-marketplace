@@ -110,6 +110,7 @@ export interface NexusGenInputs {
     capitalise?: boolean | null; // Boolean
     metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    notShowAsAlphabet?: boolean | null; // Boolean
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
@@ -1423,6 +1424,7 @@ export interface NexusGenFieldTypes {
     originalName: string; // String!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricSlug: string; // String!
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     shopsCount: number; // Int!
     slug: string; // String!
@@ -2386,6 +2388,7 @@ export interface NexusGenFieldTypeNames {
     originalName: 'String';
     rubric: 'Rubric';
     rubricId: 'ObjectId';
+    rubricSlug: 'String';
     shopProducts: 'ShopProduct';
     shopsCount: 'Int';
     slug: 'String';

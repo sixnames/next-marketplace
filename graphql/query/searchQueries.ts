@@ -7,6 +7,7 @@ export const productSnippedFragment = gql`
     name
     originalName
     slug
+    rubricSlug
     mainImage
     shopsCount
     cardPrices {

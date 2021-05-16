@@ -1,6 +1,4 @@
 import Button from 'components/Buttons/Button';
-import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import { phoneToRaw } from 'lib/phoneUtils';
 import * as React from 'react';
@@ -13,7 +11,6 @@ import {
   AddShopToCompanyInput,
   useAddShopToCompanyMutation,
 } from 'generated/apolloComponents';
-import { COMPANY_SHOPS_QUERY } from 'graphql/query/companiesQueries';
 import { addShopToCompanySchema } from 'validation/companySchema';
 import { Form, Formik } from 'formik';
 
@@ -31,22 +28,10 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
     onErrorCallback,
     showLoading,
     showErrorNotification,
-  } = useMutationCallbacks({ withModal: true });
+  } = useMutationCallbacks({ withModal: true, reload: true });
   const [addShopToCompanyMutation] = useAddShopToCompanyMutation({
     onCompleted: (data) => onCompleteCallback(data.addShopToCompany),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: COMPANY_SHOPS_QUERY,
-        variables: {
-          companyId: `${companyId}`,
-          input: {
-            page: 1,
-          },
-        },
-      },
-    ],
   });
   const validationSchema = useValidationSchema({
     schema: addShopToCompanySchema,
@@ -99,22 +84,6 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
         {() => {
           return (
             <Form>
-              <FormikImageUpload
-                label={'Логотип магазина'}
-                name={'logo'}
-                testId={'logo'}
-                showInlineError
-                isRequired
-              />
-
-              <FormikDropZone
-                label={'Фото магазина'}
-                name={'assets'}
-                testId={'assets'}
-                isRequired
-                showInlineError
-              />
-
               <ShopMainFields />
 
               <Button type={'submit'} testId={'shop-submit'}>

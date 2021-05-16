@@ -34,15 +34,19 @@ import {
 
 interface HeaderSearchTriggerInterface {
   setIsSearchOpen: (value: boolean) => void;
+  testId: string;
 }
 
 const middleLinkClassName =
   'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';
 
-const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({ setIsSearchOpen }) => {
+const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
+  setIsSearchOpen,
+  testId,
+}) => {
   return (
     <div
-      data-cy={'search-trigger'}
+      data-cy={`${testId}-search-trigger`}
       onClick={() => setIsSearchOpen(true)}
       className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
@@ -53,7 +57,11 @@ const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({ setIsSear
   );
 };
 
-const HeaderProfileLink: React.FC = () => {
+interface HeaderProfileLinkInterface {
+  testId: string;
+}
+
+const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
   const signOut = useSignOut();
   const { me } = useUserContext();
 
@@ -65,7 +73,7 @@ const HeaderProfileLink: React.FC = () => {
             <React.Fragment>
               <MenuButton
                 className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
-                data-cy={'user-dropdown-trigger'}
+                data-cy={`${testId}-user-dropdown-trigger`}
               >
                 <span className={`relative`}>
                   <Icon name={'user'} className='w-5 h-5' />
@@ -80,6 +88,7 @@ const HeaderProfileLink: React.FC = () => {
                   <ul className='divide-y divide-gray-300 dark:divide-gray-600'>
                     <li>
                       <Link
+                        testId={`${testId}-user-dropdown-profile-link`}
                         className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                         href={ROUTE_PROFILE}
                       >
@@ -90,6 +99,7 @@ const HeaderProfileLink: React.FC = () => {
                     {me?.role?.slug === ROLE_SLUG_ADMIN ? (
                       <li>
                         <Link
+                          testId={`${testId}-user-dropdown-cms-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CMS}
                         >
@@ -102,6 +112,7 @@ const HeaderProfileLink: React.FC = () => {
                     me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
                       <li>
                         <Link
+                          testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_APP}
                         >
@@ -111,7 +122,10 @@ const HeaderProfileLink: React.FC = () => {
                     ) : null}
 
                     <li onClick={signOut}>
-                      <span className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'>
+                      <span
+                        data-cy={`${testId}-sign-out-link`}
+                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
+                      >
                         Выйти из аккаунта
                       </span>
                     </li>
@@ -128,8 +142,8 @@ const HeaderProfileLink: React.FC = () => {
   return (
     <Link
       ariaLabel={'Войти'}
-      testId={me ? `profile-link` : `sign-in-link`}
-      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      testId={`${testId}-sign-in-link`}
+      href={ROUTE_SIGN_IN}
       className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
     >
       <span className={`relative`}>
@@ -141,13 +155,20 @@ const HeaderProfileLink: React.FC = () => {
 
 interface HeaderCartDropdownButtonInterface {
   cart: CartInterface;
+  testId: string;
 }
 
-const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({ cart }) => {
+const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
+  cart,
+  testId,
+}) => {
   return (
     <React.Fragment>
       <MenuButton>
-        <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+        <span
+          data-cy={`${testId}-cart-dropdown-trigger`}
+          className={`${middleLinkClassName} ml-2 pl-2`}
+        >
           <span className={`relative mr-3`}>
             <Icon name={'cart'} className='w-5 h-5' />
             <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
@@ -162,21 +183,28 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
   );
 };
 
-const HeaderCartLink: React.FC = () => {
+interface HeaderCartLinkInterface {
+  testId: string;
+}
+
+const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
   const { cart } = useSiteContext();
 
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
       <Menu>
         {() => {
-          return <HeaderCartDropdownButton cart={cart} />;
+          return <HeaderCartDropdownButton testId={testId} cart={cart} />;
         }}
       </Menu>
     );
   }
 
   return (
-    <span data-cy={'cart-dropdown-trigger'} className={`${middleLinkClassName} ml-2 pl-2`}>
+    <span
+      data-cy={`${testId}-cart-dropdown-trigger`}
+      className={`${middleLinkClassName} ml-2 pl-2`}
+    >
       <span className={`relative mr-3`}>
         <Icon name={'cart'} className='w-5 h-5' />
       </span>
@@ -304,7 +332,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] wp-desktop:inline-flex';
+const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
 const Header: React.FC = () => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
@@ -335,12 +363,12 @@ const Header: React.FC = () => {
   return (
     <React.Fragment>
       <header
-        className='relative z-[130] bg-primary shadow-md wp-desktop:shadow-none'
+        className='relative z-[130] bg-primary shadow-md lg:shadow-none'
         style={headerVars}
         ref={headerRef}
       >
         <Inner
-          className='hidden relative z-[10] h-[30px] items-center justify-between wp-desktop:flex'
+          className='hidden relative z-[10] h-[30px] items-center justify-between lg:flex'
           lowBottom
           lowTop
         >
@@ -349,7 +377,7 @@ const Header: React.FC = () => {
         </Inner>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 wp-desktop:justify-between wp-desktop:pt-2 wp-desktop:pt-4'>
+          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:pt-2 lg:pt-4'>
             <div className={`${middleSideClassName} justify-start`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
@@ -374,8 +402,8 @@ const Header: React.FC = () => {
             </Link>
 
             <div className={`${middleSideClassName} justify-end`}>
-              <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
-              <HeaderProfileLink />
+              <HeaderSearchTrigger testId={'header'} setIsSearchOpen={setIsSearchOpen} />
+              <HeaderProfileLink testId={'header'} />
 
               <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
                 <div className={`relative`}>
@@ -389,7 +417,7 @@ const Header: React.FC = () => {
                 </div>
               </div>
 
-              <HeaderCartLink />
+              <HeaderCartLink testId={'header'} />
             </div>
           </div>
         </Inner>
@@ -401,7 +429,7 @@ const Header: React.FC = () => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 wp-desktop:hidden'>
+      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 lg:hidden'>
         <Inner
           className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
           lowTop
@@ -409,9 +437,9 @@ const Header: React.FC = () => {
           <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
 
           <div className='flex items-center'>
-            <HeaderSearchTrigger setIsSearchOpen={setIsSearchOpen} />
-            <HeaderProfileLink />
-            <HeaderCartLink />
+            <HeaderSearchTrigger testId={'mobile-nav'} setIsSearchOpen={setIsSearchOpen} />
+            <HeaderProfileLink testId={'mobile-nav'} />
+            <HeaderCartLink testId={'mobile-nav'} />
           </div>
         </Inner>
         <BurgerDropdown

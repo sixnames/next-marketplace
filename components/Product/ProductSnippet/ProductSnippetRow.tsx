@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -44,7 +45,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   return (
     <LayoutCard
       className={`relative grid grid-cols-12 pt-6 pb-6 pr-5 ${className ? className : ''}`}
-      testId={testId}
     >
       <div className='relative flex flex-col items-center justify-center flex-grow pt-4 pl-5 pr-5 col-span-2 snippet-image'>
         <div className='relative flex-grow pb-5 pt-5'>
@@ -60,9 +60,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             quality={50}
           />
           <Link
+            testId={`${testId}-image`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`/catalogue/${rubricSlug}/product/${slug}`}
+            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {originalName}
           </Link>
@@ -79,9 +80,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           <div className='flex flex-col col-span-5'>
             <div className='text-2xl font-medium mb-1'>
               <Link
+                testId={`${testId}-name`}
                 target={'_blank'}
                 className='block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`/catalogue/${rubricSlug}/product/${slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {originalName}
               </Link>
@@ -98,7 +100,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               })}
             </div>
 
-            <div className='flex items-center justify-between min-h-control-button-height'>
+            <div className='flex items-center justify-between min-h-control-button-height mt-auto'>
               <div className='flex flex-wrap items-center min-h-control-button-height'>
                 {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
                   return (
@@ -124,24 +126,29 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
             )}
 
-            <div className='mt-1 mb-8 text-secondary-text'>
+            <div className='mt-2 mb-4 text-secondary-text'>
               {(connections || []).map(({ _id, attribute, connectionProducts }) => {
                 return (
-                  <div key={`${_id}`} className='flex items-center mb-2'>
+                  <div key={`${_id}`} className='mb-4'>
                     <div className='mr-1 whitespace-nowrap'>{`${attribute?.name}:`}</div>
-                    {(connectionProducts || []).map(({ option, _id }, index) => {
-                      const isLast = (connectionProducts || []).length - 1 === index;
-                      const isCurrent = _id === product._id;
+                    <div>
+                      {(connectionProducts || []).map(({ option, _id }, index) => {
+                        const isLast = (connectionProducts || []).length - 1 === index;
+                        const isCurrent = _id === product._id;
 
-                      return (
-                        <span
-                          key={`${option?.name}`}
-                          className={`mr-1 ${isCurrent ? 'text-primary-text' : ''}`}
-                        >
-                          {isLast ? option?.name : `${option?.name}, `}
-                        </span>
-                      );
-                    })}
+                        if (!option) {
+                          return null;
+                        }
+                        return (
+                          <span
+                            key={`${option?.name}`}
+                            className={`mr-1 ${isCurrent ? 'text-primary-text' : ''}`}
+                          >
+                            {isLast ? option?.name : `${option?.name}, `}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
                 );
               })}
@@ -175,7 +182,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 disabled={isShopless}
                 theme={'gray'}
                 short
-                testId={`card-shops-${slug}-add-to-cart`}
+                testId={`${testId}-add-to-cart`}
                 ariaLabel={'Добавить в корзину'}
                 onClick={() => {
                   addShoplessProductToCart({

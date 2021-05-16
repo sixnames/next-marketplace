@@ -1,17 +1,18 @@
 import Button from 'components/Buttons/Button';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
 } from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner/Inner';
+import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -19,6 +20,8 @@ import { PagePropsInterface } from 'pages/_app';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import { createCompanyClientSchema } from 'validation/companySchema';
+
+const pageTitle = 'Создание компании';
 
 export type CreateCompanyFieldsInterface = CompanyFormMainValuesInterface;
 
@@ -60,8 +63,14 @@ const CreateCompanyContent: React.FC = () => {
   };
 
   return (
-    <DataLayoutContentFrame testId={'create-company-content'}>
+    <AppContentWrapper testId={'create-company-content'}>
+      <Head>
+        <title>{pageTitle}</title>
+      </Head>
+
       <Inner>
+        <Title>{pageTitle}</Title>
+
         <Formik<CreateCompanyFieldsInterface>
           enableReinitialize
           validationSchema={validationSchema}
@@ -104,18 +113,14 @@ const CreateCompanyContent: React.FC = () => {
           }}
         </Formik>
       </Inner>
-    </DataLayoutContentFrame>
+    </AppContentWrapper>
   );
-};
-
-const CreateCompanyRoute: React.FC = () => {
-  return <DataLayout title={'Создание компании'} filterResult={() => <CreateCompanyContent />} />;
 };
 
 const CompaniesCreate: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CreateCompanyRoute />
+      <CreateCompanyContent />
     </CmsLayout>
   );
 };

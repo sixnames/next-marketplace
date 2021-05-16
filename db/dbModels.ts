@@ -181,6 +181,7 @@ export interface CountersModel {
 export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
+  attributesGroupId?: ObjectIdModel | null;
   nameI18n: TranslationModel;
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
@@ -527,7 +528,6 @@ export interface RubricOptionModel extends OptionModel, CountersModel {
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
-  attributesGroupId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
   showInCatalogueFilter: boolean;
@@ -557,7 +557,7 @@ export interface RubricModel extends CountersModel {
   variantId: ObjectIdModel;
 }
 
-export interface ShopProductModel extends TimestampModel {
+export interface ShopProductModel extends TimestampModel, CountersModel {
   _id: ObjectIdModel;
   active: boolean;
   available: number;
@@ -578,6 +578,7 @@ export interface ShopProductModel extends TimestampModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
+  rubricSlug: string;
   selectedOptionsSlugs: string[];
   mainImage: string;
 }

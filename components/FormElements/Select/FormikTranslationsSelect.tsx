@@ -67,7 +67,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
       label={label}
       labelClass={classes.listLabel}
     >
-      {dbLocales.map((localeSlug) => {
+      {dbLocales.map((localeSlug, index) => {
         const value: string | undefined = currentField[localeSlug];
 
         const notEmpty = value && value.length;
@@ -76,31 +76,33 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
         const accordionIconClass = notEmpty ? classes.iconDone : classes.iconEmpty;
         const name = `${inputName}.${localeSlug}`;
         const isDefault = defaultLocale === localeSlug;
+        const isNotLast = index !== dbLocales.length - 1;
 
         return (
-          <Accordion
-            testId={`${testId}-accordion-${localeSlug}`}
-            isOpen={isDefault}
-            title={localeSlug}
-            key={name}
-            titleRight={
-              <Tooltip title={accordionIconTooltip}>
-                <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
-                  <Icon name={accordionIcon} />
-                </div>
-              </Tooltip>
-            }
-          >
-            <div className={classes.languageInput}>
-              <FormikSelect
-                {...props}
-                options={options}
-                name={name}
-                testId={`${testId}-${localeSlug}`}
-                low
-              />
-            </div>
-          </Accordion>
+          <div className={isNotLast ? 'mb-6' : ''} key={name}>
+            <Accordion
+              testId={`${testId}-accordion-${localeSlug}`}
+              isOpen={isDefault}
+              title={localeSlug}
+              titleRight={
+                <Tooltip title={accordionIconTooltip}>
+                  <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
+                    <Icon name={accordionIcon} />
+                  </div>
+                </Tooltip>
+              }
+            >
+              <div className={classes.languageInput}>
+                <FormikSelect
+                  {...props}
+                  options={options}
+                  name={name}
+                  testId={`${testId}-${localeSlug}`}
+                  low
+                />
+              </div>
+            </Accordion>
+          </div>
         );
       })}
     </InputLine>

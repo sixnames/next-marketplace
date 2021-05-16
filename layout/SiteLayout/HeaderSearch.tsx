@@ -103,12 +103,12 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
 
   return (
     <div
-      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg wp-desktop:inset-y-auto wp-desktop:top-full wp-desktop:w-full wp-desktop:absolute'
+      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
       data-cy={'search-dropdown'}
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
         <Inner>
-          <div className='flex items-center justify-end pt-8 min-h-8 mb-8 text-xl font-medium wp-desktop:hidden'>
+          <div className='flex items-center justify-end pt-8 min-h-8 mb-8 text-xl font-medium lg:hidden'>
             <div className='search-mobile-title overflow-ellipsis overflow-hidden whitespace-nowrap text-center'>
               Поиск
             </div>

@@ -26,7 +26,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
-  CATALOGUE_FILTER_PAGE,
+  QUERY_FILTER_PAGE,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
@@ -51,6 +51,8 @@ import {
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
+  ProductConnectionInterface,
+  ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricOptionInterface,
 } from 'db/uiInterfaces';
@@ -260,7 +262,7 @@ export async function getCatalogueAttributes({
   const realFilter = filters.filter((filterItem) => {
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
     const filterName = filterItemArr[0];
-    return filterName !== CATALOGUE_FILTER_PAGE;
+    return filterName !== QUERY_FILTER_PAGE;
   });
 
   for await (const attribute of attributes) {
@@ -423,18 +425,22 @@ interface CastCatalogueFiltersPayloadInterface {
   skip: number;
   limit: number;
   pagerUrl: string;
+  clearSlug: string;
+  basePath: string;
 }
 
 interface CastCatalogueFiltersInterface {
   filters: string[];
   initialLimit?: number;
   initialPage?: number;
+  basePath?: string;
 }
 
 export function castCatalogueFilters({
   filters,
   initialPage,
   initialLimit,
+  basePath = '',
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
@@ -460,7 +466,7 @@ export function castCatalogueFilters({
     const filterOptionName = splittedOption[0];
     const filterOptionValue = splittedOption[1];
     if (filterOptionName) {
-      if (filterOptionName === CATALOGUE_FILTER_PAGE) {
+      if (filterOptionName === QUERY_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
       } else {
@@ -498,8 +504,11 @@ export function castCatalogueFilters({
   const noFiltersSelected = realFilterOptions.length < 1;
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
+  const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
   return {
+    clearSlug: `${basePath}${sortPathname}`,
+    basePath,
     minPrice,
     maxPrice,
     realFilterOptions,
@@ -691,7 +700,7 @@ export const getCatalogueData = async ({
                 {
                   $lookup: {
                     from: COL_PRODUCT_CONNECTIONS,
-                    as: 'connection',
+                    as: 'connections',
                     let: {
                       productId: '$_id',
                     },
@@ -758,9 +767,29 @@ export const getCatalogueData = async ({
                               },
                             },
                             {
+                              $lookup: {
+                                from: COL_SHOP_PRODUCTS,
+                                as: 'shopProduct',
+                                let: { productId: '$productId' },
+                                pipeline: [
+                                  {
+                                    $match: {
+                                      $expr: {
+                                        $eq: ['$$productId', '$productId'],
+                                      },
+                                      citySlug: city,
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
                               $addFields: {
                                 option: {
                                   $arrayElemAt: ['$option', 0],
+                                },
+                                shopProduct: {
+                                  $arrayElemAt: ['$shopProduct', 0],
                                 },
                               },
                             },
@@ -888,7 +917,7 @@ export const getCatalogueData = async ({
     });
     for await (const product of shopProductsAggregationResult.docs) {
       // prices
-      const { attributes, ...restProduct } = product;
+      const { attributes, connections, ...restProduct } = product;
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
@@ -929,13 +958,62 @@ export const getCatalogueData = async ({
         locale,
       });
 
+      const castedConnections = (connections || []).reduce(
+        (acc: ProductConnectionInterface[], { attribute, ...connection }) => {
+          const connectionProducts = (connection.connectionProducts || []).reduce(
+            (acc: ProductConnectionItemInterface[], connectionProduct) => {
+              if (!connectionProduct.shopProduct) {
+                return acc;
+              }
+
+              return [
+                ...acc,
+                {
+                  ...connectionProduct,
+                  option: connectionProduct.option
+                    ? {
+                        ...connectionProduct.option,
+                        name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
+                      }
+                    : null,
+                },
+              ];
+            },
+            [],
+          );
+
+          if (connectionProducts.length < 1 || !attribute) {
+            return acc;
+          }
+
+          return [
+            ...acc,
+            {
+              ...connection,
+              connectionProducts,
+              attribute: {
+                ...attribute,
+                name: getFieldStringLocale(attribute?.nameI18n, locale),
+                metric: attribute.metric
+                  ? {
+                      ...attribute.metric,
+                      name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+                    }
+                  : null,
+              },
+            },
+          ];
+        },
+        [],
+      );
+
       products.push({
         ...restProduct,
         listFeatures,
         ratingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
-        connections: [],
+        connections: castedConnections,
       });
     }
 
@@ -1002,6 +1080,7 @@ export async function getCatalogueServerSideProps(
       page: 1,
     },
   });
+
   if (!rawCatalogueData) {
     return notFoundResponse;
   }

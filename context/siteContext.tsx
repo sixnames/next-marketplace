@@ -180,6 +180,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         });
         return;
       }
+      hideLoading();
       showErrorNotification({ title: makeAnOrder.message });
     },
   });

@@ -14,8 +14,8 @@ interface AppLayoutInterface {
   pageUrls: PageUrlsInterface;
 }
 
-const narrowContentClass = 'wp-desktop:pl-[220px]';
-const wideContentClass = 'wp-desktop:pl-[60px]';
+const narrowContentClass = 'lg:pl-[220px]';
+const wideContentClass = 'lg:pl-[60px]';
 
 const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
   const { isLoading, isModal, isMobile } = useAppContext();
@@ -34,7 +34,7 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
       <CmsNav compact={compact} navItems={me.role?.cmsNavigation || []} />
 
       <main
-        className={`min-h-full-height pt-[36px] wp-desktop:pt-0 ${
+        className={`min-h-full-height pt-[36px] lg:pt-0 ${
           isCompact ? wideContentClass : narrowContentClass
         }`}
       >

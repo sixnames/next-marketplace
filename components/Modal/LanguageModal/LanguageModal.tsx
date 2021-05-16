@@ -1,3 +1,4 @@
+import { LanguageModel } from 'db/dbModels';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -5,7 +6,6 @@ import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
 import {
   CreateLanguageInput,
-  LanguageFragment,
   UpdateLanguageInput,
   useGetIsoLanguagesListQuery,
 } from 'generated/apolloComponents';
@@ -21,7 +21,7 @@ export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'languageId'>;
 
 export interface LanguageModalInterface {
   confirm: (values: CreateLanguageInput | UpdateLanguageModalInput) => void;
-  language?: LanguageFragment;
+  language?: LanguageModel;
   testId: string;
 }
 

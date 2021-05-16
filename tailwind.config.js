@@ -56,9 +56,6 @@ module.exports = {
         'control-button-height-xs': 'var(--formInputHeightSmaller)',
       },
       height: {},
-      screens: {
-        'wp-desktop': '1025px',
-      },
       boxShadow: {},
       spacing: {
         'full-height': 'var(--fullHeight, 100vh)',

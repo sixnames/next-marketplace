@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -45,10 +46,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     .join(', ');
 
   return (
-    <LayoutCard
-      className={`relative grid grid-cols-12 ${className ? className : ''}`}
-      testId={testId}
-    >
+    <LayoutCard className={`relative grid grid-cols-12 ${className ? className : ''}`}>
       <div className='relative flex items-center justify-center mb-4 flex-grow pt-4 pl-5 pr-5 col-span-3 snippet-image'>
         <Image
           priority={true}
@@ -62,9 +60,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           quality={50}
         />
         <Link
+          testId={`${testId}-image`}
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
-          href={`/catalogue/${rubricSlug}/product/${slug}`}
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
         >
           {originalName}
         </Link>
@@ -74,9 +73,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         <div className='mb-auto pb-4'>
           <div className='text-lg sm:text-xl font-medium mb-1'>
             <Link
+              testId={`${testId}-name`}
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`/catalogue/${rubricSlug}/product/${slug}`}
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
               {originalName}
             </Link>
@@ -113,7 +113,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
             <ControlButton
               ariaLabel={'Добавить в корзину'}
-              testId={`catalogue-item-${slug}-add-to-cart`}
+              testId={`${testId}-add-to-cart`}
               onClick={() =>
                 addShoplessProductToCart({
                   amount: 1,

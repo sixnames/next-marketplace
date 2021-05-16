@@ -59,6 +59,7 @@ export const Product = objectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
+    t.nonNull.string('rubricSlug');
     t.boolean('available');
     t.nonNull.string('mainImage');
     t.field('assets', {

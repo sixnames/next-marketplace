@@ -1,62 +1,40 @@
 import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import FormikFilter from 'components/FormElements/Filter/FormikFilter';
-import FormikSearch from 'components/FormElements/Search/FormikSearch';
-import HorizontalList from 'components/HorizontalList/HorizontalList';
+import Inner from 'components/Inner/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { ROUTE_CMS } from 'config/common';
+import Title from 'components/Title/Title';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modals';
-import {
-  CompanyInListFragment,
-  useDeleteCompanyMutation,
-  useGetAllCompaniesQuery,
-} from 'generated/apolloComponents';
-import { COMPANIES_LIST_QUERY } from 'graphql/query/companiesQueries';
-import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
+import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface } from 'db/uiInterfaces';
+import { useDeleteCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import { getShortName } from 'lib/nameUtils';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const CompaniesFilter: React.FC = () => {
-  const initialValues = { search: '' };
+const pageTitle = 'Компании';
 
-  return (
-    <FormikFilter initialValues={initialValues}>
-      {({ onResetHandler }) => (
-        <React.Fragment>
-          <FormikSearch testId={'companies'} />
+interface CompaniesConsumerInterface {
+  companies: CompanyInterface[];
+}
 
-          <HorizontalList>
-            <Button type={'submit'} size={'small'}>
-              Применить
-            </Button>
-            <Button onClick={onResetHandler} theme={'secondary'} size={'small'}>
-              Сбросить
-            </Button>
-          </HorizontalList>
-        </React.Fragment>
-      )}
-    </FormikFilter>
-  );
-};
-
-const CompaniesContent: React.FC = () => {
+const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) => {
   const router = useRouter();
-  const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [deleteCompanyMutation] = useDeleteCompanyMutation({
     onError: onErrorCallback,
@@ -64,32 +42,9 @@ const CompaniesContent: React.FC = () => {
     onCompleted: (data) => {
       onCompleteCallback(data.deleteCompany);
     },
-    refetchQueries: [
-      {
-        query: COMPANIES_LIST_QUERY,
-        variables: {
-          input: contentFilters,
-        },
-      },
-    ],
   });
 
-  const { data, loading, error } = useGetAllCompaniesQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: contentFilters,
-    },
-  });
-
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data || !data.getAllCompanies) {
-    return <RequestError />;
-  }
-
-  function deleteCompanyHandler(company: CompanyInListFragment) {
+  function deleteCompanyHandler(company: CompanyInterface) {
     showModal<ConfirmModalInterface>({
       variant: CONFIRM_MODAL,
       props: {
@@ -107,7 +62,7 @@ const CompaniesContent: React.FC = () => {
     });
   }
 
-  const columns: TableColumn<CompanyInListFragment>[] = [
+  const columns: TableColumn<CompanyInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
@@ -133,7 +88,7 @@ const CompaniesContent: React.FC = () => {
       accessor: 'owner',
       headTitle: 'Владелец',
       render: ({ cellData }) => {
-        return cellData.fullName;
+        return cellData.shortName;
       },
     },
     {
@@ -154,44 +109,108 @@ const CompaniesContent: React.FC = () => {
     },
   ];
 
-  const { totalPages, docs } = data.getAllCompanies;
-
   return (
-    <DataLayoutContentFrame testId={'companies-list'}>
-      <Table<CompanyInListFragment> columns={columns} data={docs} testIdKey={'slug'} />
-      <Pager page={page} setPage={setPage} totalPages={totalPages} />
-    </DataLayoutContentFrame>
+    <AppContentWrapper testId={'companies-list'}>
+      <Head>
+        <title>{pageTitle}</title>
+      </Head>
+      <Inner>
+        <Title>{pageTitle}</Title>
+        <div className='overflow-x-auto'>
+          <Table<CompanyInterface> columns={columns} data={companies} testIdKey={'slug'} />
+        </div>
+        <FixedButtons>
+          <Button
+            size={'small'}
+            testId={'create-company'}
+            onClick={() => {
+              router.push(`${ROUTE_CMS}/companies/create`).catch((e) => {
+                console.log(e);
+              });
+            }}
+          >
+            Создать компанию
+          </Button>
+        </FixedButtons>
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
-const CompaniesRoute: React.FC = () => {
-  const router = useRouter();
+interface CompaniesPageInterface extends PagePropsInterface, CompaniesConsumerInterface {}
 
+const CompaniesPage: NextPage<CompaniesPageInterface> = ({ companies, ...props }) => {
   return (
-    <DataLayout
-      isFilterVisible
-      title={'Копании'}
-      filterContent={<CompaniesFilter />}
-      filterResult={() => <CompaniesContent />}
-      contentControlsConfig={{
-        createTitle: 'Создать компанию',
-        createHandler: () => router.push(`${ROUTE_CMS}/companies/create`),
-        testId: 'company',
-      }}
-    />
-  );
-};
-
-const Companies: NextPage<PagePropsInterface> = ({ pageUrls }) => {
-  return (
-    <CmsLayout pageUrls={pageUrls}>
-      <CompaniesRoute />
+    <CmsLayout title={pageTitle} {...props}>
+      <CompaniesConsumer companies={companies} />
     </CmsLayout>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context, isCms: true });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CompaniesPageInterface>> => {
+  const { props } = await getAppInitialData({ context, isCms: true });
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const db = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+
+  const companiesAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $sort: {
+          _id: SORT_DESC,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_USERS,
+          as: 'owner',
+          let: { ownerId: '$ownerId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$ownerId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          owner: {
+            $arrayElemAt: ['$owner', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+
+  const companies = companiesAggregationResult.map((company) => {
+    return {
+      ...company,
+      owner: company.owner
+        ? {
+            ...company.owner,
+            shortName: getShortName(company.owner),
+          }
+        : null,
+    };
+  });
+
+  return {
+    props: {
+      ...props,
+      companies: castDbData(companies),
+    },
+  };
 };
 
-export default Companies;
+export default CompaniesPage;

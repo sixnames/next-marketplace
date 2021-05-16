@@ -14,29 +14,28 @@ export const sendEmail = async ({ content, subject, text, to }: SendEmailInterfa
     // Only needed if you don't have a real mail account for testing
     // const testAccount = await nodemailer.createTestAccount();
 
+    const config =
+      process.env.NODE_ENV === 'development'
+        ? {
+            host: 'localhost',
+            port: 1025,
+            auth: {
+              user: 'project.1',
+              pass: 'secret.1',
+            },
+          }
+        : {
+            host: process.env.EMAIL_HOST,
+            port: 465,
+            secure: true,
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASSWORD,
+            },
+          };
+
     // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-      /*host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },*/
-      host: process.env.EMAIL_HOST,
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-      /*host: 'localhost',
-      port: 1025,
-      auth: {
-        user: 'project.1',
-        pass: 'secret.1',
-      },*/
-    });
+    const transporter = nodemailer.createTransport(config);
 
     // send mail with defined transport object
     await transporter.sendMail({

@@ -12,9 +12,10 @@ import ProductShopPrices from '../../components/Product/ProductShopPrices/Produc
 interface CartShopInterface {
   shopProduct: ShopProductInterface;
   cartProductId: string;
+  testId: string | number;
 }
 
-const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) => {
+const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProductId }) => {
   const { addShopToCartProduct } = useSiteContext();
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   if (!shop) {
@@ -25,7 +26,6 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
     mainImage,
     name,
     productsCount,
-    slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
   } = shop;
@@ -86,7 +86,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
           </div>
 
           <Button
-            testId={`cart-shops-${slug}-add-to-cart`}
+            testId={`cart-shops-${testId}-add-to-cart`}
             onClick={() => {
               addShopToCartProduct({
                 cartProductId,
@@ -110,15 +110,17 @@ interface CartShopsInterface {
 const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProducts }) => {
   const [isShopsOpen, setIsShopsOpen] = React.useState<boolean>(false);
 
+  // TODO cart shops count config
   const visibleShopsLimit = 4;
   const visibleShops = shopProducts.slice(0, visibleShopsLimit);
   const hiddenShops = shopProducts.slice(visibleShopsLimit);
 
   return (
     <div data-cy={`cart-shops-list`}>
-      {visibleShops.map((shopProduct) => {
+      {visibleShops.map((shopProduct, index) => {
         return (
           <CartShop
+            testId={index}
             key={`${shopProduct._id}`}
             shopProduct={shopProduct}
             cartProductId={cartProductId}
@@ -130,9 +132,10 @@ const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProduc
         <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
           <DisclosurePanel>
             <div>
-              {hiddenShops.map((shopProduct) => {
+              {hiddenShops.map((shopProduct, index) => {
                 return (
                   <CartShop
+                    testId={index}
                     key={`${shopProduct._id}`}
                     shopProduct={shopProduct}
                     cartProductId={cartProductId}

@@ -5,8 +5,9 @@ import {
   DEFAULT_LOCALE,
 } from 'config/common';
 import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
-import { CompanyModel, ConfigModel, ConfigVariantModel } from 'db/dbModels';
+import { ConfigModel, ConfigVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 
@@ -621,6 +622,7 @@ interface GetConfigPageDataInterface {
 interface GetConfigPageDataPayloadInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
+  currentCompany?: CompanyInterface | null;
 }
 
 export async function getConfigPageData({
@@ -628,7 +630,7 @@ export async function getConfigPageData({
   group,
 }: GetConfigPageDataInterface): Promise<GetConfigPageDataPayloadInterface | null> {
   const db = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const isDefault = companyId === CONFIG_DEFAULT_COMPANY_SLUG;
 
@@ -636,7 +638,7 @@ export async function getConfigPageData({
     return null;
   }
 
-  let company: CompanyModel | null | undefined = null;
+  let company: CompanyInterface | null | undefined = null;
   if (!isDefault) {
     company = await companiesCollection.findOne({ _id: new ObjectId(companyId) });
   }
@@ -675,5 +677,6 @@ export async function getConfigPageData({
   return {
     assetConfigs: castDbData(assetConfigs),
     normalConfigs: castDbData(notAssetConfigs),
+    currentCompany: company,
   };
 }

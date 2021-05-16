@@ -22,7 +22,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 }) => {
   return (
     <CmsCompanyLayout company={currentCompany}>
-      <Inner testId={'company-config-analytics'}>
+      <Inner testId={'company-config-contacts'}>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
     </CmsCompanyLayout>

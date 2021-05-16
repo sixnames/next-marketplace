@@ -206,7 +206,7 @@ describe('Companies list', () => {
     cy.getByCy(`submit-shop-assets`).click();
   });
 
-  it.only('Should CRUD shop products', () => {
+  it('Should CRUD shop products', () => {
     cy.getByCy(`company_a-update`).click();
     cy.getByCy(`company-shops`).click();
 
@@ -244,5 +244,37 @@ describe('Companies list', () => {
     cy.getByCy('shop-product-price-1').clear().type('5');
     cy.getByCy('save-shop-products').first().click();
     cy.getByCy('shop-rubric-products-list').should('exist');
+  });
+
+  it('Should update company configs', () => {
+    cy.getByCy(`company_a-update`).click();
+    cy.getByCy(`company-global-config`).click();
+    cy.getByCy('company-config-globals').should('exist');
+
+    cy.getByCy(`siteName-msk-accordion-en`).click();
+    cy.getByCy('siteName-msk-en-0').clear().type('updatedCompanyName');
+    cy.getByCy('siteName-msk-ru-0').clear().type('updatedCompanyName');
+    cy.getByCy('siteName-submit').click();
+
+    cy.getByCy('siteFoundationYear-msk-ru-0').clear().type('1999');
+    cy.getByCy('siteFoundationYear-submit').click();
+
+    cy.getByCy('siteLicense-msk-ru-0').clear().type('lorem');
+    cy.getByCy('siteLicense-submit').click();
+
+    cy.getByCy(`company-analytics`).click();
+    cy.getByCy('company-config-analytics').should('exist');
+
+    cy.getByCy(`company-ui`).click();
+    cy.getByCy('company-config-ui').should('exist');
+
+    cy.getByCy(`company-contacts`).click();
+    cy.getByCy('company-config-contacts').should('exist');
+
+    cy.getByCy(`company-seo`).click();
+    cy.getByCy('company-config-seo').should('exist');
+
+    cy.getByCy(`company-catalogue`).click();
+    cy.getByCy('company-config-catalogue').should('exist');
   });
 });

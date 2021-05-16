@@ -1,13 +1,10 @@
-import { ISO_LANGUAGES, ROUTE_CMS } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, ISO_LANGUAGES, ROUTE_CMS } from 'config/common';
 
 describe('Languages', () => {
   beforeEach(() => {
     cy.createTestData();
+    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/languages`);
-  });
-
-  after(() => {
-    cy.clearTestData();
   });
 
   it(`Should CRUD languages`, () => {

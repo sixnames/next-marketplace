@@ -1,7 +1,10 @@
+import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
+
 describe('Site configs', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`/cms/config`);
+    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
+    cy.testAuth(`${ROUTE_CMS}/config`);
   });
 
   it('Should update configs', () => {

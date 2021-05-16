@@ -37,7 +37,7 @@ import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterfa
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('getByCy', (testId) => {
-  cy.wait(650);
+  cy.wait(700);
   cy.get(`[data-cy="${testId}"]`);
 });
 

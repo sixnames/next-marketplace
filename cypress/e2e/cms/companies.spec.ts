@@ -206,13 +206,43 @@ describe('Companies list', () => {
     cy.getByCy(`submit-shop-assets`).click();
   });
 
-  it.only('Should display shop products', () => {
+  it.only('Should CRUD shop products', () => {
     cy.getByCy(`company_a-update`).click();
     cy.getByCy(`company-shops`).click();
+
+    // Should display shop products list
     cy.getByCy('company-shops-list').should('exist');
     cy.getByCy(`Shop A-update`).click();
     cy.getByCy('shop-details-page').should('exist');
     cy.getByCy(`shop-products`).click();
     cy.getByCy('shop-rubrics-list').should('exist');
+    cy.getByCy(`Вино-update`).click();
+    cy.getByCy('shop-rubric-products-list').should('exist');
+
+    // Should delete shop product
+    cy.getByCy('shop-product-0-delete').click();
+    cy.getByCy('delete-shop-product-modal').should('exist');
+    cy.getByCy('confirm').click();
+
+    // Should update shop product
+    cy.wait(1500);
+    cy.getByCy('shop-product-available-1').clear().type('10');
+    cy.getByCy('shop-product-price-1').clear().type('10');
+    cy.getByCy('save-shop-products').first().click();
+    cy.getByCy('shop-rubric-products-list').should('exist');
+
+    // Should create shop product
+    cy.getByCy('add-shop-product').first().click();
+    cy.getByCy('not-in-shop-products-list').should('exist');
+    cy.getByCy('product-0-checkbox').check();
+    cy.getByCy('product-1-checkbox').check();
+    cy.getByCy('next-step').first().click();
+    cy.getByCy('not-in-shop-products-list-step-2').should('exist');
+    cy.getByCy('shop-product-available-0').clear().type('10');
+    cy.getByCy('shop-product-price-0').clear().type('10');
+    cy.getByCy('shop-product-available-1').clear().type('5');
+    cy.getByCy('shop-product-price-1').clear().type('5');
+    cy.getByCy('save-shop-products').first().click();
+    cy.getByCy('shop-rubric-products-list').should('exist');
   });
 });

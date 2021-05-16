@@ -67,11 +67,6 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
     setStep(step);
   };
 
-  console.log({
-    step,
-    chosen,
-  });
-
   if (step === 2) {
     return (
       <CmsLayout pageUrls={pageUrls}>

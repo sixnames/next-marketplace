@@ -70,13 +70,14 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   const router = useRouter();
   const columns: TableColumn<ProductInterface>[] = [
     {
-      render: ({ dataItem }) => {
+      render: ({ dataItem, rowIndex }) => {
         const isSelected = chosen.find(({ _id }) => {
           return _id === dataItem._id;
         });
 
         return (
           <Checkbox
+            testId={`product-${rowIndex}`}
             name={'chosen'}
             value={isSelected ? 'true' : ''}
             checked={Boolean(isSelected)}
@@ -126,7 +127,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 
   return (
     <AppShopLayout shop={shop} basePath={layoutBasePath}>
-      <Inner>
+      <Inner testId={`not-in-shop-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
@@ -165,7 +166,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 <Button
                   disabled={chosen.length < 1}
                   onClick={() => setStepHandler(2)}
-                  testId={'next-step-top'}
+                  testId={'next-step'}
                   size={'small'}
                 >
                   Далее
@@ -180,7 +181,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 <Button
                   disabled={chosen.length < 1}
                   onClick={() => setStepHandler(2)}
-                  testId={'next-step-bottom'}
+                  testId={'next-step'}
                   size={'small'}
                 >
                   Далее
@@ -332,7 +333,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
 
   return (
     <AppShopLayout shop={shop} basePath={layoutBasePath}>
-      <Inner>
+      <Inner testId={'not-in-shop-products-list-step-2'}>
         <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
@@ -368,7 +369,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
                       <div className={`mr-6`}>
                         <Button
                           disabled={chosen.length < 1}
-                          testId={'save-shop-products-top'}
+                          testId={'save-shop-products'}
                           type={'submit'}
                           size={'small'}
                         >
@@ -393,7 +394,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
                       <div className={`mr-6`}>
                         <Button
                           disabled={chosen.length < 1}
-                          testId={'save-shop-products-bottom'}
+                          testId={'save-shop-products'}
                           type={'submit'}
                           size={'small'}
                         >

@@ -132,7 +132,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       },
     },
     {
-      render: ({ dataItem }) => {
+      render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
@@ -141,7 +141,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  testId: 'delete-shop-product-modal',
+                  testId: `delete-shop-product-modal`,
                   message: `Вы уверенны, что хотите удалить ${dataItem.originalName} из магазина?`,
                   confirm: () => {
                     showLoading();
@@ -159,7 +159,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 },
               });
             }}
-            testId={`${dataItem._id}`}
+            testId={`shop-product-${rowIndex}`}
           />
         );
       },
@@ -186,7 +186,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 
   return (
     <AppShopLayout shop={shop} basePath={layoutBasePath}>
-      <Inner>
+      <Inner testId={`shop-rubric-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
@@ -272,7 +272,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                           onClick={() => {
                             router.push(addProductsPath).catch((e) => console.log(e));
                           }}
-                          testId={'add-shop-product-top'}
+                          testId={'add-shop-product'}
                           size={'small'}
                         >
                           Добавить товары
@@ -297,7 +297,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                           onClick={() => {
                             router.push(addProductsPath).catch((e) => console.log(e));
                           }}
-                          testId={'add-shop-product-bottom'}
+                          testId={'add-shop-product'}
                           size={'small'}
                         >
                           Добавить товары

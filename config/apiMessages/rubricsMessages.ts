@@ -87,6 +87,13 @@ export const rubricsMessages: MessageBaseInterface[] = [
     },
   },
   {
+    slug: 'rubrics.addAttributesGroup.noAttributes',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `В выбранной группе нет атрибутов.`,
+      [SECONDARY_LOCALE]: `There is no attributes in selected group.`,
+    },
+  },
+  {
     slug: 'rubrics.addAttributesGroup.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Группа атрибутов добавлена в рубрику.`,

@@ -60,6 +60,7 @@ describe('Rubrics', () => {
     // Should have rubric details tab and should update rubric
     cy.getByCy(`${mainRubricName}-update`).click();
     cy.getByCy(`details`).click();
+    cy.getByCy(`rubric-details`).should('exist');
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).clear().type(updatedRubricName);

@@ -62,7 +62,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   return (
     <CmsRubricLayout rubric={rubric}>
-      <Inner>
+      <Inner testId={'rubric-details'}>
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}

@@ -388,6 +388,13 @@ export const RubricMutations = extendType({
             })
             .toArray();
 
+          if (groupAttributes.length < 1) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.addAttributesGroup.noAttributes'),
+            };
+          }
+
           const rubricAttributes: RubricAttributeModel[] = [];
           for await (const attribute of groupAttributes) {
             const rubricAttribute = await castAttributeForRubric({
@@ -420,6 +427,7 @@ export const RubricMutations = extendType({
             },
             { returnOriginal: false },
           );
+
           const updatedRubric = updatedRubricResult.value;
           if (!updatedRubricResult.ok || !updatedRubric) {
             return {
@@ -647,10 +655,32 @@ export const RubricMutations = extendType({
             };
           }
 
+          // Delete attributes group from rubric
+          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+            {
+              _id: rubricId,
+            },
+            {
+              $pull: {
+                attributesGroupsIds: attributesGroupId,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedRubric = updatedRubricResult.value;
+          if (!updatedRubricResult.ok || !updatedRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-            payload: rubric,
+            payload: updatedRubric,
           };
         } catch (e) {
           return {

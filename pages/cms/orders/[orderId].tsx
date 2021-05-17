@@ -10,7 +10,7 @@ const CmsOrderRoute: React.FC = () => {
   const { query } = useRouter();
   const { orderId } = query;
 
-  return <Inner>Заказ №${orderId}</Inner>;
+  return <Inner testId={`order-details`}>Заказ №{orderId}</Inner>;
 };
 
 const Order: NextPage<PagePropsInterface> = ({ pageUrls }) => {

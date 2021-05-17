@@ -66,6 +66,7 @@ describe('Options Groups', () => {
 
     // Should create top level option
     cy.getByCy(`Регион-update`).click();
+    cy.wait(1500);
     cy.getByCy(`options`).click();
     cy.getByCy(`create-top-level-option`).click();
     cy.getByCy(`option-in-group-modal`).should('exist');
@@ -119,6 +120,7 @@ describe('Options Groups', () => {
     cy.visit(`${ROUTE_CMS}/options`);
     cy.getByCy(`Тип вина-update`).click();
     cy.getByCy(`options`).click();
+    cy.wait(1500);
     cy.getByCy(`Крепленое-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`option-color`).clear().type(optionNewColor);
@@ -133,6 +135,7 @@ describe('Options Groups', () => {
     // Should update icon option
     cy.visit(`${ROUTE_CMS}/options`);
     cy.getByCy(`Сахар-update`).click();
+    cy.wait(1500);
     cy.getByCy(`options`).click();
     cy.getByCy(`Сладкое-update`).click();
     cy.getByCy(`option-icon`).should('have.value', 'burger').select('instagram');

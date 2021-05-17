@@ -12,7 +12,6 @@ import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RoleInterface } from 'db/uiInterfaces';
 import { useCreateRoleMutation, useDeleteRoleMutation } from 'generated/apolloComponents';
-import { GET_ALL_ROLES_QUERY } from 'graphql/query/rolesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -34,26 +33,17 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
-
-  const refetchQueries = [
-    {
-      query: GET_ALL_ROLES_QUERY,
-    },
-  ];
 
   const [deleteRoleMutation] = useDeleteRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteRole),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries,
   });
 
   const [createRoleMutation] = useCreateRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.createRole),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries,
   });
 
   const columns: TableColumn<RoleInterface>[] = [

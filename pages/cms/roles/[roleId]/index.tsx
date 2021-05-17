@@ -9,7 +9,6 @@ import { getDatabase } from 'db/mongodb';
 import { RoleInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateRoleMutation } from 'generated/apolloComponents';
-import { GET_ROLE_QUERY } from 'graphql/query/rolesQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
@@ -30,22 +29,15 @@ interface RoleDetailsConsumerInterface {
 }
 
 const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) => {
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks();
+  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
   const validationSchema = useValidationSchema({
     schema: updateRoleSchema,
   });
   const [updateRoleMutation] = useUpdateRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.updateRole),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: GET_ROLE_QUERY,
-        variables: {
-          _id: role._id,
-        },
-      },
-    ],
   });
 
   const navConfig = React.useMemo<NavItemInterface[]>(() => {

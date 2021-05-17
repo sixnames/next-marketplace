@@ -76,95 +76,108 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
     ];
   }, [optionsGroup._id]);
 
-  const renderOptions = React.useCallback((option: OptionInterface) => {
-    const { name, options } = option;
-    return (
-      <div>
-        <div className='cms-option flex items-center'>
-          <div className='font-medium'>{name}</div>
-          <div className='cms-option__controls ml-4'>
-            <ContentItemControls
-              justifyContent={'flex-end'}
-              createTitle={'Добавить дочернюю опцию'}
-              createHandler={() => {
-                showModal<OptionInGroupModalInterface>({
-                  variant: OPTION_IN_GROUP_MODAL,
-                  props: {
-                    groupVariant: `${variant}` as OptionsGroupVariant,
-                    confirm: (values) => {
-                      showLoading();
-                      return addOptionToGroupMutation({
-                        variables: {
-                          input: {
-                            parentId: option._id,
-                            optionsGroupId: optionsGroup._id,
-                            ...values,
-                            gender: values.gender as Gender,
+  const renderOptions = React.useCallback(
+    (option: OptionInterface) => {
+      const { name, options } = option;
+      return (
+        <div>
+          <div className='cms-option flex items-center'>
+            <div className='font-medium' data-cy={`option-${name}`}>
+              {name}
+            </div>
+            <div className='cms-option__controls ml-4'>
+              <ContentItemControls
+                testId={`${name}`}
+                justifyContent={'flex-end'}
+                createTitle={'Добавить дочернюю опцию'}
+                createHandler={() => {
+                  showModal<OptionInGroupModalInterface>({
+                    variant: OPTION_IN_GROUP_MODAL,
+                    props: {
+                      groupVariant: `${optionsGroup.variant}` as OptionsGroupVariant,
+                      confirm: (values) => {
+                        showLoading();
+                        return addOptionToGroupMutation({
+                          variables: {
+                            input: {
+                              parentId: option._id,
+                              optionsGroupId: optionsGroup._id,
+                              ...values,
+                              gender: values.gender as Gender,
+                            },
                           },
-                        },
-                      });
+                        });
+                      },
                     },
-                  },
-                });
-              }}
-              updateTitle={'Редактировать опцию'}
-              updateHandler={() => {
-                showModal<OptionInGroupModalInterface>({
-                  variant: OPTION_IN_GROUP_MODAL,
-                  props: {
-                    option,
-                    groupVariant: `${variant}` as OptionsGroupVariant,
-                    confirm: (values) => {
-                      showLoading();
-                      return updateOptionInGroupMutation({
-                        variables: {
-                          input: {
-                            ...values,
-                            optionId: option._id,
-                            optionsGroupId: `${optionsGroup._id}`,
+                  });
+                }}
+                updateTitle={'Редактировать опцию'}
+                updateHandler={() => {
+                  showModal<OptionInGroupModalInterface>({
+                    variant: OPTION_IN_GROUP_MODAL,
+                    props: {
+                      option,
+                      groupVariant: `${optionsGroup.variant}` as OptionsGroupVariant,
+                      confirm: (values) => {
+                        showLoading();
+                        return updateOptionInGroupMutation({
+                          variables: {
+                            input: {
+                              ...values,
+                              optionId: option._id,
+                              optionsGroupId: `${optionsGroup._id}`,
+                            },
                           },
-                        },
-                      });
+                        });
+                      },
                     },
-                  },
-                });
-              }}
-              deleteTitle={'Удалить опцию'}
-              deleteHandler={() => {
-                showModal<ConfirmModalInterface>({
-                  variant: CONFIRM_MODAL,
-                  props: {
-                    message: `Вы уверенны, что хотите удалить опцию ${name}?`,
-                    confirm: () => {
-                      showLoading();
-                      return deleteOptionFromGroupMutation({
-                        variables: {
-                          input: {
-                            optionsGroupId: `${optionsGroup._id}`,
-                            optionId: option._id,
+                  });
+                }}
+                deleteTitle={'Удалить опцию'}
+                deleteHandler={() => {
+                  showModal<ConfirmModalInterface>({
+                    variant: CONFIRM_MODAL,
+                    props: {
+                      message: `Вы уверенны, что хотите удалить опцию ${name}?`,
+                      confirm: () => {
+                        showLoading();
+                        return deleteOptionFromGroupMutation({
+                          variables: {
+                            input: {
+                              optionsGroupId: `${optionsGroup._id}`,
+                              optionId: option._id,
+                            },
                           },
-                        },
-                      });
+                        });
+                      },
                     },
-                  },
-                });
-              }}
-              testId={`${name}-option`}
-            />
+                  });
+                }}
+              />
+            </div>
           </div>
+          {options && options.length > 0 ? (
+            <div className='ml-4'>
+              {options.map((option) => (
+                <div className='mt-4' key={`${option._id}`}>
+                  {renderOptions(option)}
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
-        {options && options.length > 0 ? (
-          <div className='ml-4'>
-            {options.map((option) => (
-              <div className='mt-4' key={`${option._id}`}>
-                {renderOptions(option)}
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </div>
-    );
-  }, []);
+      );
+    },
+    [
+      addOptionToGroupMutation,
+      deleteOptionFromGroupMutation,
+      optionsGroup._id,
+      optionsGroup.variant,
+      showLoading,
+      showModal,
+      updateOptionInGroupMutation,
+    ],
+  );
 
   const { options, variant } = optionsGroup;
 
@@ -196,6 +209,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
 
           <FixedButtons>
             <Button
+              testId={'create-top-level-option'}
               size={'small'}
               onClick={() => {
                 showModal<OptionInGroupModalInterface>({

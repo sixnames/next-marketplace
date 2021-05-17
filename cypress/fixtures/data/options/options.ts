@@ -254,6 +254,7 @@ const options: OptionModel[] = [
     slug: '000025',
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
+    icon: 'arrow-left',
     nameI18n: {
       ru: 'Сухое',
     },
@@ -264,6 +265,7 @@ const options: OptionModel[] = [
     slug: '000026',
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
+    icon: 'burger',
     nameI18n: {
       ru: 'Сладкое',
     },
@@ -286,6 +288,7 @@ const options: OptionModel[] = [
     slug: '000028',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
+    color: 'ff0000',
     nameI18n: {
       ru: 'Крепленое',
     },
@@ -296,6 +299,7 @@ const options: OptionModel[] = [
     slug: '000029',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
+    color: '29b77a',
     nameI18n: {
       ru: 'Плодовое',
     },
@@ -306,6 +310,7 @@ const options: OptionModel[] = [
     slug: '000030',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
+    color: 'b09030',
     nameI18n: {
       ru: 'Херес',
     },

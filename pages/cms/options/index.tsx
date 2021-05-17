@@ -71,6 +71,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              testId={`${dataItem.name}`}
               deleteTitle={'Удалить группу опций'}
               updateTitle={'Редактировать группу опций'}
               deleteHandler={() => {
@@ -111,6 +112,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
             <Table<OptionsGroupInterface>
+              testIdKey={'name'}
               columns={columns}
               data={optionsGroups}
               onRowDoubleClick={(dataItem) => {

@@ -86,7 +86,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
   };
 
   return (
-    <ModalFrame>
+    <ModalFrame testId={'option-in-group-modal'}>
       <ModalTitle>{option ? 'Редактирование опции' : 'Создание опции'}</ModalTitle>
 
       <Formik<OptionInGroupModalValuesType>
@@ -116,8 +116,6 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                 options={getGenderOptions}
                 testId={`option-gender`}
                 label={'Род названия'}
-                showInlineError
-                isRequired
               />
 
               <FormikInput

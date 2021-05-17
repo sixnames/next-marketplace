@@ -36,6 +36,6 @@ export async function findDocumentByI18nField<TModel>({
     $or: query,
     ...additionalQuery,
   });
-  console.log('node ', node);
+
   return node;
 }

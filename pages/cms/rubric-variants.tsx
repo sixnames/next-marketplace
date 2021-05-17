@@ -1,33 +1,41 @@
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import DataLayout from 'components/DataLayout/DataLayout';
-import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
-import DataLayoutTitle from 'components/DataLayout/DataLayoutTitle';
+import Inner from 'components/Inner/Inner';
 import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal/RubricVariantModal';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
+import Title from 'components/Title/Title';
+import { SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'config/modals';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { RubricVariantInterface } from 'db/uiInterfaces';
 import {
-  RubricVariantFragment,
   useCreateRubricVariantMutation,
   useDeleteRubricVariantMutation,
-  useGetAllRubricVariantsQuery,
   useUpdateRubricVariantMutation,
 } from 'generated/apolloComponents';
 import { GET_ALL_RUBRIC_VARIANTS } from 'graphql/query/rubricVariantsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const RubricVariantsContent: React.FC = () => {
+interface RubricVariantsConsumerInterface {
+  rubricVariants: RubricVariantInterface[];
+}
+
+const pageTitle = 'Типы рубрик';
+
+const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rubricVariants }) => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     withModal: true,
   });
-
-  const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   const [createRubricVariantMutation] = useCreateRubricVariantMutation({
     refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
@@ -50,71 +58,7 @@ const RubricVariantsContent: React.FC = () => {
     onCompleted: (data) => onCompleteCallback(data.deleteRubricVariant),
   });
 
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data) {
-    return <RequestError />;
-  }
-
-  function createRubricVariantHandler() {
-    showModal<RubricVariantModalInterface>({
-      variant: RUBRIC_VARIANT_MODAL,
-      props: {
-        confirm: (values) => {
-          showLoading();
-          return createRubricVariantMutation({
-            variables: {
-              input: {
-                nameI18n: values.nameI18n,
-              },
-            },
-          });
-        },
-      },
-    });
-  }
-
-  function updateRubricVariantHandler({ nameI18n, _id }: RubricVariantFragment) {
-    showModal<RubricVariantModalInterface>({
-      variant: RUBRIC_VARIANT_MODAL,
-      props: {
-        nameI18n,
-        confirm: (values) => {
-          showLoading();
-          return updateRubricVariantMutation({
-            variables: {
-              input: {
-                nameI18n: values.nameI18n,
-                rubricVariantId: _id,
-              },
-            },
-          });
-        },
-      },
-    });
-  }
-
-  function deleteRubricVariantHandler({ name, _id }: RubricVariantFragment) {
-    showModal({
-      variant: CONFIRM_MODAL,
-      props: {
-        testId: 'rubric-variant-delete-modal',
-        message: `Вы уверенны, что хотите тип рубрик ${name}?`,
-        confirm: () => {
-          showLoading();
-          return deleteRubricVariantMutation({
-            variables: {
-              _id,
-            },
-          });
-        },
-      },
-    });
-  }
-
-  const columns: TableColumn<RubricVariantFragment>[] = [
+  const columns: TableColumn<RubricVariantInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -126,10 +70,44 @@ const RubricVariantsContent: React.FC = () => {
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать тип рубрики'}
-            updateHandler={() => updateRubricVariantHandler(dataItem)}
+            updateHandler={() => {
+              showModal<RubricVariantModalInterface>({
+                variant: RUBRIC_VARIANT_MODAL,
+                props: {
+                  nameI18n: dataItem.nameI18n,
+                  confirm: (values) => {
+                    showLoading();
+                    return updateRubricVariantMutation({
+                      variables: {
+                        input: {
+                          nameI18n: values.nameI18n,
+                          rubricVariantId: dataItem._id,
+                        },
+                      },
+                    });
+                  },
+                },
+              });
+            }}
             deleteTitle={'Удалить тип рубрики'}
-            deleteHandler={() => deleteRubricVariantHandler(dataItem)}
-            testId={dataItem.name}
+            deleteHandler={() => {
+              showModal({
+                variant: CONFIRM_MODAL,
+                props: {
+                  testId: 'rubric-variant-delete-modal',
+                  message: `Вы уверенны, что хотите тип рубрик ${dataItem.name}?`,
+                  confirm: () => {
+                    showLoading();
+                    return deleteRubricVariantMutation({
+                      variables: {
+                        _id: dataItem._id,
+                      },
+                    });
+                  },
+                },
+              });
+            }}
+            testId={`${dataItem.name}`}
           />
         );
       },
@@ -137,43 +115,95 @@ const RubricVariantsContent: React.FC = () => {
   ];
 
   return (
-    <div data-cy={'rubric-variants-list'}>
-      <DataLayoutTitle
-        titleRight={
-          <ContentItemControls
-            justifyContent={'flex-end'}
-            createTitle={'Создать тип рубрики'}
-            createHandler={createRubricVariantHandler}
-            testId={`rubric-variant`}
-          />
-        }
-      />
-      <DataLayoutContentFrame>
-        <Table<RubricVariantFragment>
-          data={data.getAllRubricVariants}
+    <AppContentWrapper>
+      <Head>
+        <title>{pageTitle}</title>
+      </Head>
+      <Inner testId={'rubric-variants-list'}>
+        <Title>{pageTitle}</Title>
+        <Table<RubricVariantInterface>
+          data={rubricVariants}
           columns={columns}
           emptyMessage={'Список пуст'}
           testIdKey={'name'}
         />
-      </DataLayoutContentFrame>
-    </div>
+        <FixedButtons>
+          <Button
+            size={'small'}
+            onClick={() => {
+              showModal<RubricVariantModalInterface>({
+                variant: RUBRIC_VARIANT_MODAL,
+                props: {
+                  confirm: (values) => {
+                    showLoading();
+                    return createRubricVariantMutation({
+                      variables: {
+                        input: {
+                          nameI18n: values.nameI18n,
+                        },
+                      },
+                    });
+                  },
+                },
+              });
+            }}
+          >
+            Добавить тип рубрики
+          </Button>
+        </FixedButtons>
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
-const RubricVariantsRoute: React.FC = () => {
-  return <DataLayout title={'Типы рубрик'} filterResult={() => <RubricVariantsContent />} />;
-};
+interface RubricVariantsPageInterface extends PagePropsInterface, RubricVariantsConsumerInterface {}
 
-const RubricVariants: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const RubricVariantsPage: NextPage<RubricVariantsPageInterface> = ({
+  pageUrls,
+  rubricVariants,
+}) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricVariantsRoute />
+      <RubricVariantsConsumer rubricVariants={rubricVariants} />
     </CmsLayout>
   );
 };
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context, isCms: true });
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<RubricVariantsPageInterface>> => {
+  const { props } = await getAppInitialData({ context, isCms: true });
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const db = await getDatabase();
+  const rubricVariantsCollection = db.collection(COL_RUBRIC_VARIANTS);
+  const rubricVariantsAggregationResult = await rubricVariantsCollection
+    .aggregate([
+      {
+        $sort: {
+          _id: SORT_DESC,
+        },
+      },
+    ])
+    .toArray();
+
+  const rubricVariants = rubricVariantsAggregationResult.map((rubricVariant) => {
+    return {
+      ...rubricVariant,
+      name: getFieldStringLocale(rubricVariant.nameI18n, props.sessionLocale),
+    };
+  });
+
+  return {
+    props: {
+      ...props,
+      rubricVariants: castDbData(rubricVariants),
+    },
+  };
 };
 
-export default RubricVariants;
+export default RubricVariantsPage;

@@ -1,4 +1,5 @@
 import { OptionVariantsModel } from 'db/dbModels';
+import { OptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -11,8 +12,8 @@ import {
   AddOptionToGroupInput,
   useGetGenderOptionsQuery,
   UpdateOptionInGroupInput,
-  OptionInGroupFragment,
   OptionsGroupVariant,
+  Gender,
 } from 'generated/apolloComponents';
 import InputLine from '../../FormElements/Input/InputLine';
 import RequestError from '../../RequestError/RequestError';
@@ -36,7 +37,7 @@ type OptionInGroupModalValuesType =
 
 export interface OptionInGroupModalInterface {
   confirm: (values: OptionInGroupModalValuesType) => void;
-  option?: OptionInGroupFragment;
+  option?: OptionInterface;
   groupVariant: OptionsGroupVariant;
 }
 
@@ -70,7 +71,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
     nameI18n: option?.nameI18n || {},
     color: option?.color || null,
     icon: option?.icon || null,
-    gender: option?.gender || null,
+    gender: (`${option?.gender}` as Gender) || null,
     variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
       const currentOptionVariant = option?.variants[gender];
       if (currentOptionVariant) {

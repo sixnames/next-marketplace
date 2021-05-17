@@ -1,6 +1,0 @@
-.noRubrics {
-  display: flex;
-  padding-right: 5px;
-  justify-content: space-between;
-  margin-bottom: var(--lineGap-200);
-}

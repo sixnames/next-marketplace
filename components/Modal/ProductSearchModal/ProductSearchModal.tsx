@@ -11,7 +11,7 @@ import RequestError from '../../RequestError/RequestError';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
-import RubricsList from 'routes/Rubrics/RubricsList';
+import RubricsList from 'routes/rubrics/RubricsList';
 import useProductsListColumns, {
   ProductColumnsInterface,
 } from '../../../hooks/useProductsListColumns';

@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'styles/ThankYouRoute.module.css';
 
 const ThankYouRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
@@ -16,19 +15,19 @@ const ThankYouRoute: React.FC = () => {
   const { query } = router;
 
   return (
-    <div className={classes.frame} data-cy={'thank-you'} data-order-item-id={query.orderId}>
+    <div className='mb-20' data-cy={'thank-you'} data-order-item-id={query.orderId}>
       <Inner>
-        <Title className={classes.title}>Спасибо за заказ!</Title>
-        <div className={classes.text}>
-          <div className={classes.subtitle}>{`Номер вашего заказа ${query.orderId}`}</div>
+        <Title>Спасибо за заказ!</Title>
+        <div className='mb-4 text-lg font-medium'>{`Номер вашего заказа ${query.orderId}`}</div>
+
+        <div className='prose'>
           <p>
             Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали. Также, мы дарим
             вам дисконтную карту, по которой вы сможете получать скидки на все последующие заказы
           </p>
         </div>
-        <div className={classes.btns}>
+        <div className='flex gap-4 flex-wrap'>
           <Button
-            className={classes.btnsItem}
             theme={'secondary'}
             onClick={() => {
               router.push(`/`).catch(() => {
@@ -44,7 +43,6 @@ const ThankYouRoute: React.FC = () => {
                 showErrorNotification();
               });
             }}
-            className={classes.btnsItem}
             theme={'secondary'}
           >
             каталог вин

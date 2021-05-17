@@ -7,9 +7,7 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from 'context/appContext';
 import {
   CreateOptionsGroupInput,
-  OptionsGroupFragment,
   OptionsGroupVariant,
-  UpdateOptionsGroupInput,
   useOptionsGroupVariantsQuery,
 } from 'generated/apolloComponents';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
@@ -17,30 +15,26 @@ import useValidationSchema from '../../../hooks/useValidationSchema';
 import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
-import { OPTIONS_GROUP_VARIANT_TEXT } from 'config/common';
 import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
 
 export interface OptionsGroupModalInterface {
-  group?: OptionsGroupFragment;
-  confirm: (
-    values: CreateOptionsGroupInput | Omit<UpdateOptionsGroupInput, 'optionsGroupId'>,
-  ) => void;
+  confirm: (values: CreateOptionsGroupInput) => void;
 }
 
-const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ group, confirm }) => {
+const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ confirm }) => {
   const { hideModal } = useAppContext();
   const { data, loading, error } = useOptionsGroupVariantsQuery();
   const validationSchema = useValidationSchema({
     schema: optionsGroupModalSchema,
   });
 
-  const title = group ? 'Изменение названия группы' : 'Введите название группы';
+  const title = 'Создание группы';
 
   if (loading) {
     return (
       <ModalFrame testId={'options-group-modal'}>
         <ModalTitle>{title}</ModalTitle>
-        <Spinner isNested />
+        <Spinner isNested isTransparent />
       </ModalFrame>
     );
   }
@@ -61,8 +55,8 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ group, confir
 
       <Formik
         initialValues={{
-          nameI18n: group?.nameI18n || '',
-          variant: group?.variant || (OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariant),
+          nameI18n: undefined,
+          variant: '' as OptionsGroupVariant,
         }}
         onSubmit={(values) => {
           confirm(values);
@@ -89,7 +83,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ group, confir
 
               <ModalButtons>
                 <Button type={'submit'} testId={'options-group-submit'}>
-                  {group ? 'Изменить' : 'Создать'}
+                  Создать
                 </Button>
 
                 <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>

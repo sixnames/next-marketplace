@@ -61,7 +61,6 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
     showModal<OptionsGroupModalInterface>({
       variant: OPTIONS_GROUP_MODAL,
       props: {
-        group,
         confirm: (values) => {
           showLoading();
           return updateOptionsGroupMutation({

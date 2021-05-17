@@ -103,7 +103,7 @@ const navItems: NavItemModel[] = [
     },
     index: 7,
     slug: 'cms-options-groups',
-    path: '/cms/options-groups',
+    path: '/cms/options',
     navGroup: 'cms',
   },
   {

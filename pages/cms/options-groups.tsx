@@ -1,10 +1,8 @@
-import Button from 'components/Buttons/Button';
 import ColorPreview from 'components/ColorPreview/ColorPreview';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import DataLayout, { FilterResultArgsInterface } from 'components/DataLayout/DataLayout';
 import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
 import DataLayoutTitle from 'components/DataLayout/DataLayoutTitle';
-import FilterRadioGroup from 'components/FilterElements/FilterRadio/FilterRadioGroup';
 import Icon from 'components/Icon/Icon';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal/OptionInGroupModal';
@@ -12,7 +10,7 @@ import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal/O
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
-import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON, ROUTE_CMS } from 'config/common';
+import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from 'config/common';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, OPTIONS_GROUP_MODAL } from 'config/modals';
 import {
   Gender,
@@ -20,10 +18,7 @@ import {
   OptionsGroupFragment,
   OptionsGroupVariant,
   useAddOptionToGroupMutation,
-  useCreateOptionsGroupMutation,
   useDeleteOptionFromGroupMutation,
-  useDeleteOptionsGroupMutation,
-  useGetAllOptionsGroupsQuery,
   useGetOptionsGroupQuery,
   useUpdateOptionInGroupMutation,
   useUpdateOptionsGroupMutation,
@@ -31,7 +26,6 @@ import {
 import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from 'graphql/query/optionsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -44,8 +38,7 @@ interface OptionsGroupControlsInterface {
 }
 
 const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }) => {
-  const router = useRouter();
-  const { _id, name, variant } = group;
+  const { _id, variant } = group;
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -54,16 +47,6 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
     refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
     awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateOptionsGroup),
-    onError: onErrorCallback,
-  });
-
-  const [deleteOptionsGroupMutation] = useDeleteOptionsGroupMutation({
-    refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      onCompleteCallback(data.deleteOptionsGroup);
-      router.replace(`${ROUTE_CMS}/options-groups`).catch((e) => console.log(e));
-    },
     onError: onErrorCallback,
   });
 
@@ -94,20 +77,6 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
     });
   }
 
-  function deleteOptionsGroupHandler() {
-    showModal({
-      variant: CONFIRM_MODAL,
-      props: {
-        testId: 'delete-options-group',
-        message: `Вы уверенны, что хотите удалить группу опций ${name}?`,
-        confirm: () => {
-          showLoading();
-          return deleteOptionsGroupMutation({ variables: { _id } });
-        },
-      },
-    });
-  }
-
   function addOptionToGroupHandler() {
     showModal<OptionInGroupModalInterface>({
       variant: OPTION_IN_GROUP_MODAL,
@@ -133,63 +102,11 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
     <ContentItemControls
       createTitle={'Добавить опцию'}
       updateTitle={'Редактировать название'}
-      deleteTitle={'Удалить группу'}
       createHandler={addOptionToGroupHandler}
       updateHandler={updateOptionsGroupHandler}
-      deleteHandler={deleteOptionsGroupHandler}
       size={'small'}
       testId={'options-group'}
     />
-  );
-};
-
-const OptionsGroupsFilter: React.FC = () => {
-  const { data, loading, error } = useGetAllOptionsGroupsQuery({
-    fetchPolicy: 'network-only',
-  });
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
-    withModal: true,
-  });
-
-  const [createOptionsGroupMutation] = useCreateOptionsGroupMutation({
-    refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
-    awaitRefetchQueries: true,
-    onCompleted: (data) => onCompleteCallback(data.createOptionsGroup),
-    onError: onErrorCallback,
-  });
-
-  function createOptionsGroupHandler() {
-    showModal<OptionsGroupModalInterface>({
-      variant: OPTIONS_GROUP_MODAL,
-      props: {
-        confirm: (values) => {
-          showLoading();
-          return createOptionsGroupMutation({ variables: { input: values } });
-        },
-      },
-    });
-  }
-
-  if (loading) {
-    return <Spinner />;
-  }
-  if (error || !data) {
-    return <RequestError />;
-  }
-
-  const { getAllOptionsGroups } = data;
-
-  return (
-    <React.Fragment>
-      <FilterRadioGroup
-        radioItems={getAllOptionsGroups}
-        queryKey={'optionsGroupId'}
-        label={'Группы'}
-      />
-      <Button size={'small'} onClick={createOptionsGroupHandler} testId={'create-options-group'}>
-        Добавить группу
-      </Button>
-    </React.Fragment>
   );
 };
 
@@ -339,7 +256,6 @@ const OptionsGroupsRoute = () => (
   <DataLayout
     isFilterVisible
     title={'Группы опций'}
-    filterContent={<OptionsGroupsFilter />}
     filterResult={({ query }: FilterResultArgsInterface) => <OptionsGroupsContent query={query} />}
   />
 );

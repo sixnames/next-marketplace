@@ -1,4 +1,4 @@
-import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
 
 describe('Rubric variants', () => {
   beforeEach(() => {
@@ -8,51 +8,48 @@ describe('Rubric variants', () => {
   });
 
   it(`Should CRUD rubric variant`, () => {
-    cy.visit('/');
-    // const mockRubricVariantName = mockData.rubricVariantAlcohol.nameI18n[DEFAULT_LOCALE];
-    // const mockRubricVariantNameForDelete = mockData.rubricVariantJuice.nameI18n[DEFAULT_LOCALE];
-    // const mockNewRubricVariantName = 'mockNewRubricVariantName';
+    const newRubricVariantName = 'mockNewRubricVariantName';
+    const updatedRubricVariantName = 'updatedRubricVariantName';
 
     // Shouldn't create new rubric variant on validation error
-    // cy.getByCy('rubric-variant-create').click();
-    // cy.getByCy('rubric-variant-modal').should('exist');
-    // cy.getByCy('rubric-variant-submit').click();
-    // cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
+    cy.getByCy('create-rubric-variant').click();
+    cy.getByCy('rubric-variant-modal').should('exist');
+    cy.getByCy('rubric-variant-submit').click();
+    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
 
     // Shouldn't create new rubric on duplicate error
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockRubricVariantName);
-    // cy.getByCy('rubric-variant-submit').click();
-    // cy.getByCy('rubric-variant-modal').should('not.exist');
-    // cy.shouldError();
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type('Алкоголь');
+    cy.getByCy('rubric-variant-submit').click();
+    cy.getByCy('rubric-variant-modal').should('not.exist');
+    cy.shouldError();
 
     // Should create new rubric variant
-    // cy.getByCy('rubric-variant-create').click();
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockNewRubricVariantName);
-    // cy.getByCy('rubric-variant-submit').click();
-    // cy.getByCy(`${mockNewRubricVariantName}-row`).should('exist');
-    // cy.shouldSuccess();
+    cy.getByCy('create-rubric-variant').click();
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(newRubricVariantName);
+    cy.getByCy('rubric-variant-submit').click();
+    cy.getByCy(`${newRubricVariantName}-row`).should('exist');
+    cy.wait(1500);
 
     // Should update rubric variant name
-    // const mockUpdatedRubricTypeName = 'updated_variant';
-    // cy.getByCy(`${mockNewRubricVariantName}-update`).click();
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(mockUpdatedRubricTypeName);
-    // cy.getByCy('rubric-variant-submit').click();
-    // cy.getByCy(`${mockNewRubricVariantName}-row`).should('not.exist');
-    // cy.getByCy(`${mockUpdatedRubricTypeName}-row`).should('exist');
-    // cy.shouldSuccess();
+    cy.getByCy(`${newRubricVariantName}-update`).click();
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricVariantName);
+    cy.getByCy('rubric-variant-submit').click();
+    cy.wait(1500);
+    cy.getByCy(`${newRubricVariantName}-row`).should('not.exist');
+    cy.getByCy(`${updatedRubricVariantName}-row`).should('exist');
 
     // Shouldn't delete rubric variant connected to the rubric
-    // cy.getByCy(`${mockRubricVariantName}-delete`).click();
-    // cy.getByCy('rubric-variant-delete-modal').should('exist');
-    // cy.getByCy('confirm').click();
-    // cy.shouldError();
-    // cy.getByCy(`${mockRubricVariantName}-row`).should('exist');
+    cy.getByCy(`Алкоголь-delete`).click();
+    cy.getByCy('rubric-variant-delete-modal').should('exist');
+    cy.getByCy('confirm').click();
+    cy.shouldError();
+    cy.getByCy(`Алкоголь-row`).should('exist');
 
     // Should delete rubric variant
-    // cy.getByCy(`${mockRubricVariantNameForDelete}-delete`).click();
-    // cy.getByCy('rubric-variant-delete-modal').should('exist');
-    // cy.getByCy('confirm').click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`${mockRubricVariantNameForDelete}-row`).should('not.exist');
+    cy.getByCy(`${updatedRubricVariantName}-delete`).click();
+    cy.getByCy('rubric-variant-delete-modal').should('exist');
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
+    cy.getByCy(`${updatedRubricVariantName}-row`).should('not.exist');
   });
 });

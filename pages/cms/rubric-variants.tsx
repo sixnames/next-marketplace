@@ -15,7 +15,6 @@ import {
   useDeleteRubricVariantMutation,
   useUpdateRubricVariantMutation,
 } from 'generated/apolloComponents';
-import { GET_ALL_RUBRIC_VARIANTS } from 'graphql/query/rubricVariantsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -35,25 +34,20 @@ const pageTitle = 'Типы рубрик';
 const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rubricVariants }) => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
 
   const [createRubricVariantMutation] = useCreateRubricVariantMutation({
-    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
-    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.createRubricVariant),
     onError: onErrorCallback,
   });
 
   const [updateRubricVariantMutation] = useUpdateRubricVariantMutation({
-    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
-    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateRubricVariant),
   });
 
   const [deleteRubricVariantMutation] = useDeleteRubricVariantMutation({
-    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
-    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteRubricVariant),
   });
@@ -129,6 +123,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
         />
         <FixedButtons>
           <Button
+            testId={'create-rubric-variant'}
             size={'small'}
             onClick={() => {
               showModal<RubricVariantModalInterface>({

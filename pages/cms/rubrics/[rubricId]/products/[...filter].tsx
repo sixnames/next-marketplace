@@ -238,6 +238,8 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
 
             <FixedButtons>
               <Button
+                testId={'create-rubric-product'}
+                size={'small'}
                 onClick={() => {
                   showModal<CreateNewProductModalInterface>({
                     variant: CREATE_NEW_PRODUCT_MODAL,

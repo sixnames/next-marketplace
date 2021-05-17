@@ -36,7 +36,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -55,53 +54,30 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  const router = useRouter();
   const {
     onErrorCallback,
     onCompleteCallback,
     showLoading,
-    hideLoading,
     showErrorNotification,
     showModal,
-  } = useMutationCallbacks({ withModal: true });
+  } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
+  });
 
   const [updateProductBrandMutation] = useUpdateProductBrandMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductBrand }) => {
-      if (updateProductBrand.success) {
-        onCompleteCallback(updateProductBrand);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductBrand.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductBrand),
   });
 
   const [updateProductBrandCollectionMutation] = useUpdateProductBrandCollectionMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductBrandCollection }) => {
-      if (updateProductBrandCollection.success) {
-        onCompleteCallback(updateProductBrandCollection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductBrandCollection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductBrandCollection),
   });
 
   const [updateProductManufacturerMutation] = useUpdateProductManufacturerMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductManufacturer }) => {
-      if (updateProductManufacturer.success) {
-        onCompleteCallback(updateProductManufacturer);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductManufacturer.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductManufacturer),
   });
 
   return (

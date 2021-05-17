@@ -55,15 +55,10 @@ const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    onCompleteCallback,
-    showErrorNotification,
-    hideLoading,
-    onErrorCallback,
-    showLoading,
-  } = useMutationCallbacks({ withModal: true });
+  const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
+  });
   const { locale } = useRouter();
   const {
     stringAttributesAST,
@@ -74,41 +69,17 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
   const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductSelectAttribute }) => {
-      if (updateProductSelectAttribute.success) {
-        onCompleteCallback(updateProductSelectAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductSelectAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductSelectAttribute),
   });
 
   const [updateProductNumberAttributeMutation] = useUpdateProductNumberAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductNumberAttribute }) => {
-      if (updateProductNumberAttribute.success) {
-        onCompleteCallback(updateProductNumberAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductNumberAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductNumberAttribute),
   });
 
   const [updateProductTextAttributeMutation] = useUpdateProductTextAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductTextAttribute }) => {
-      if (updateProductTextAttribute.success) {
-        onCompleteCallback(updateProductTextAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductTextAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductTextAttribute),
   });
 
   const clearSelectFieldHandler = React.useCallback(

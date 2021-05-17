@@ -13,11 +13,7 @@ import { useLocaleContext } from 'context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  AttributesGroupInterface,
-  RubricAttributeInterface,
-  RubricInterface,
-} from 'db/uiInterfaces';
+import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
@@ -31,7 +27,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -40,91 +35,31 @@ interface RubricAttributesConsumerInterface {
 }
 
 const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({ rubric }) => {
-  const router = useRouter();
   const { locale } = useLocaleContext();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
 
   const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.deleteAttributesGroupFromRubric);
-      if (data.deleteAttributesGroupFromRubric.success) {
-        router.reload();
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromRubric),
     onError: onErrorCallback,
   });
 
   const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.addAttributesGroupToRubric);
-      if (data.addAttributesGroupToRubric.success) {
-        router.reload();
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
     onError: onErrorCallback,
   });
 
   const [toggleAttributeInRubricCatalogueMutation] = useToggleAttributeInRubricCatalogueMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.toggleAttributeInRubricCatalogue);
-      if (data.toggleAttributeInRubricCatalogue.success) {
-        router.reload();
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricCatalogue),
     onError: onErrorCallback,
   });
 
   const [toggleAttributeInRubricNavMutation] = useToggleAttributeInRubricNavMutation({
-    onCompleted: (data) => {
-      onCompleteCallback(data.toggleAttributeInRubricNav);
-      if (data.toggleAttributeInRubricNav.success) {
-        router.reload();
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricNav),
     onError: onErrorCallback,
   });
-
-  function deleteAttributesGroupHandler(attributesGroup: AttributesGroupInterface) {
-    showModal({
-      variant: CONFIRM_MODAL,
-      props: {
-        testId: 'attributes-group-delete-modal',
-        message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
-        confirm: () => {
-          showLoading();
-          return deleteAttributesGroupFromRubricMutation({
-            variables: {
-              input: {
-                rubricId: rubric._id,
-                attributesGroupId: attributesGroup._id,
-              },
-            },
-          });
-        },
-      },
-    });
-  }
-
-  function addAttributesGroupToRubricHandler() {
-    showModal<AddAttributesGroupToRubricModalInterface>({
-      variant: ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
-      props: {
-        testId: 'add-attributes-group-to-rubric-modal',
-        rubricId: `${rubric._id}`,
-        excludedIds: rubric.attributesGroupsIds.map((_id) => `${_id}`),
-        confirm: (values) => {
-          showLoading();
-          return addAttributesGroupToRubricMutation({
-            variables: {
-              input: values,
-            },
-          });
-        },
-      },
-    });
-  }
 
   const columns: TableColumn<RubricAttributeInterface>[] = [
     {
@@ -217,12 +152,31 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   <ContentItemControls
                     justifyContent={'flex-end'}
                     deleteTitle={'Удалить группу атрибутов из рубрики'}
-                    deleteHandler={() => deleteAttributesGroupHandler(attributesGroup)}
+                    deleteHandler={() => {
+                      showModal({
+                        variant: CONFIRM_MODAL,
+                        props: {
+                          testId: 'attributes-group-delete-modal',
+                          message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
+                          confirm: () => {
+                            showLoading();
+                            return deleteAttributesGroupFromRubricMutation({
+                              variables: {
+                                input: {
+                                  rubricId: rubric._id,
+                                  attributesGroupId: attributesGroup._id,
+                                },
+                              },
+                            });
+                          },
+                        },
+                      });
+                    }}
                     testId={`${attributesGroup.name}`}
                   />
                 }
               >
-                <div className={`overflow-x-auto`}>
+                <div className={`overflow-x-auto mt-4`}>
                   <Table<RubricAttributeInterface>
                     data={attributes}
                     columns={columns}
@@ -236,7 +190,30 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
         })}
 
         <FixedButtons>
-          <Button onClick={addAttributesGroupToRubricHandler}>Добавить группу атрибутов</Button>
+          <Button
+            size={'small'}
+            testId={'add-attributes-group'}
+            onClick={() => {
+              showModal<AddAttributesGroupToRubricModalInterface>({
+                variant: ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
+                props: {
+                  testId: 'add-attributes-group-to-rubric-modal',
+                  rubricId: `${rubric._id}`,
+                  excludedIds: rubric.attributesGroupsIds.map((_id) => `${_id}`),
+                  confirm: (values) => {
+                    showLoading();
+                    return addAttributesGroupToRubricMutation({
+                      variables: {
+                        input: values,
+                      },
+                    });
+                  },
+                },
+              });
+            }}
+          >
+            Добавить группу атрибутов
+          </Button>
         </FixedButtons>
       </Inner>
     </CmsRubricLayout>

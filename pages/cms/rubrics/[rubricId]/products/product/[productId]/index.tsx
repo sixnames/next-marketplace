@@ -15,7 +15,6 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -28,27 +27,15 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
-  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
-
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({});
+  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.updateProduct.success) {
-        onCompleteCallback(data.updateProduct);
-        router.reload();
-      } else {
-        showErrorNotification({ title: data.updateProduct.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProduct),
   });
 
   const { nameI18n, originalName, descriptionI18n, active, mainImage } = product;

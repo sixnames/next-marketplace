@@ -17,7 +17,6 @@ import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
-import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -37,28 +36,17 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
 
   const [deleteRubricMutation] = useDeleteRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: ALL_RUBRICS_QUERY,
-      },
-    ],
   });
 
   const [createRubricMutation] = useCreateRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.createRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: ALL_RUBRICS_QUERY,
-      },
-    ],
   });
 
   const columns: TableColumn<RubricInterface>[] = [
@@ -146,6 +134,8 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
 
         <FixedButtons>
           <Button
+            testId={'create-rubric'}
+            size={'small'}
             className={'mt-6 sm:mt-0'}
             onClick={() => {
               showModal<CreateRubricModalInterface>({

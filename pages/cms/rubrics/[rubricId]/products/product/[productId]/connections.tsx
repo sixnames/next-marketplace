@@ -36,7 +36,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -49,28 +48,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   connection,
   product,
 }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [addProductToConnectionMutation] = useAddProductToConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.addProductToConnection.success) {
-        onCompleteCallback(data.addProductToConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.addProductToConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
   });
 
   const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
@@ -116,28 +100,13 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   product,
 }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [deleteProductFromConnectionMutation] = useDeleteProductFromConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.deleteProductFromConnection.success) {
-        onCompleteCallback(data.deleteProductFromConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.deleteProductFromConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
   });
 
   const { connectionProducts } = connection;
@@ -233,28 +202,13 @@ interface ProductConnectionsPropsInterface {
 }
 
 const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
-  const router = useRouter();
-  const {
-    onCompleteCallback,
-    onErrorCallback,
-    showLoading,
-    showModal,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [createProductConnectionMutation] = useCreateProductConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.createProductConnection.success) {
-        onCompleteCallback(data.createProductConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.createProductConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.createProductConnection),
   });
 
   return (

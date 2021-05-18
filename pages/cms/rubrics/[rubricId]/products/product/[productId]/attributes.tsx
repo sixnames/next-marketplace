@@ -56,7 +56,7 @@ const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    withModal: true,
+    // withModal: true,
     reload: true,
   });
   const { locale } = useRouter();
@@ -119,7 +119,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     value={`${attribute.readableValue || ''}`}
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.slug}`}
+                    testId={`${attribute.name}-attribute`}
                     onClear={
                       attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
                     }
@@ -128,6 +128,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
+                            testId: 'select-attribute-options-modal',
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             optionVariant: 'radio',
                             title: `${attribute.name}`,
@@ -170,7 +171,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     value={`${attribute.readableValue || ''}`}
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.slug}`}
+                    testId={`${attribute.name}-attribute`}
                     onClear={
                       attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
                     }
@@ -179,6 +180,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
+                            testId: 'multi-select-attribute-options-modal',
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             title: `${attribute.name}`,
                             onSubmit: (value) => {
@@ -245,14 +247,16 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                               label={`${attribute.name}`}
                               name={`attributes[${index}].number`}
                               key={`${attribute.attributeId}`}
-                              testId={`${attribute.slug}`}
+                              testId={`${attribute.name}-attribute`}
                             />
                           );
                         })}
                       </div>
 
                       <FixedButtons>
-                        <Button type={'submit'}>Сохранить</Button>
+                        <Button testId={'submit-number-attributes'} type={'submit'}>
+                          Сохранить
+                        </Button>
                       </FixedButtons>
                     </div>
                   </div>
@@ -301,13 +305,15 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                             label={`${attribute.name}`}
                             name={`attributes[${index}].textI18n`}
                             key={`${attribute.attributeId}`}
-                            testId={`${attribute.slug}`}
+                            testId={`${attribute.name}-attribute`}
                           />
                         );
                       })}
 
                       <FixedButtons>
-                        <Button type={'submit'}>Сохранить</Button>
+                        <Button testId={'submit-text-attributes'} type={'submit'}>
+                          Сохранить
+                        </Button>
                       </FixedButtons>
                     </div>
                   </div>

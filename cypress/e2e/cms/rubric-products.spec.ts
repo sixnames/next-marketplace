@@ -50,7 +50,7 @@ describe('Rubric products', () => {
     cy.getByCy(`${updatedProductName}-delete`).should('not.exist');
   });
 
-  it.only('Should CRUD product attributes', () => {
+  it('Should CRUD product attributes', () => {
     const mainRubricName = 'Вино';
 
     cy.getByCy(`${mainRubricName}-update`).click();
@@ -59,9 +59,41 @@ describe('Rubric products', () => {
     cy.wait(1500);
     cy.getByCy('attributes').click();
     cy.getByCy('product-attributes-list').should('exist');
+
+    // clear select attribute
+    cy.getByCy('Объем-attribute-clear').click();
+    cy.wait(1500);
+
+    // open options modal
+    cy.getByCy('Объем-attribute').click();
+    cy.getByCy('select-attribute-options-modal').should('exist');
+    cy.getByCy('option-350').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+
+    // clear multi-select attribute
+    cy.getByCy('Виноград-attribute-clear').click();
+    cy.wait(1500);
+
+    // open options modal
+    cy.getByCy('Виноград-attribute').click();
+    cy.getByCy('multi-select-attribute-options-modal').should('exist');
+    cy.getByCy('option-Бага').click();
+    cy.getByCy('option-Бикал').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+
+    // update number attributes
+    cy.getByCy('Крепость-attribute').clear().type('10');
+    cy.getByCy('Количество в упаковке-attribute').clear().type('10');
+    cy.getByCy('submit-number-attributes').click();
+
+    // update text attributes
+    cy.getByCy('Описание-attribute-ru').clear().type('lorem');
+    cy.getByCy('submit-text-attributes').click();
   });
 
-  it('Should CRUD product connections', () => {
+  it.only('Should CRUD product connections', () => {
     cy.visit('/');
   });
 });

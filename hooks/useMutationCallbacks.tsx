@@ -35,20 +35,23 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
         showErrorNotification({
           title: data.message ? data.message : defaultErrorMessage,
         });
+        return;
       }
 
       if (data.success) {
+        if (reload) {
+          router.reload();
+          return;
+        }
+
         if (withModal) {
           hideModal();
         }
+
         hideLoading();
         showSuccessNotification({
           title: data.message,
         });
-
-        if (reload) {
-          router.reload();
-        }
       }
     },
     [

@@ -91,7 +91,7 @@ describe('Rubric products', () => {
     cy.getByCy('submit-text-attributes').click();
   });
 
-  it.only('Should CRUD product connections', () => {
+  it('Should CRUD product connections', () => {
     cy.getByCy(`Вино-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
     cy.getByCy('product-link-0').click();
@@ -112,21 +112,21 @@ describe('Rubric products', () => {
     cy.wait(1500);
 
     // delete first product
-    cy.getByCy('Объем-connection-list-1-row').then(($row: any) => {
+    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
       const button = $row.find('button');
-      // cy.wrap(button).click();
+      cy.wrap(button).click();
     });
-    // cy.getByCy('confirm').click();
-    // cy.wait(1500);
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
 
     // delete second product
     cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
       const button = $row.find('button');
-      // cy.wrap(button).click();
+      cy.wrap(button).click();
     });
-    // cy.getByCy('confirm').click();
-    // cy.wait(1500);
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
 
-    // cy.getByCy('Объем-connection-product-create').should('not.exist');
+    cy.getByCy('Объем-connection-product-create').should('not.exist');
   });
 });

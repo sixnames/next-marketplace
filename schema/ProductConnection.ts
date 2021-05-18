@@ -454,6 +454,25 @@ export const ProductConnectionMutations = extendType({
                 message: errorMessage,
               };
             }
+          } else {
+            // Update connection
+            const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+              {
+                _id: connectionId,
+              },
+              {
+                $pull: {
+                  productsIds: deleteProductId,
+                },
+              },
+            );
+            const updatedConnection = updatedConnectionResult.value;
+            if (!updatedConnectionResult.ok || !updatedConnection) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
+            }
           }
 
           // Remove connection item
@@ -473,25 +492,6 @@ export const ProductConnectionMutations = extendType({
             return {
               success: false,
               message: errorMessage,
-            };
-          }
-
-          // Update connection
-          const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
-            {
-              _id: connectionId,
-            },
-            {
-              $pull: {
-                productsIds: deleteProductId,
-              },
-            },
-          );
-          const updatedConnection = updatedConnectionResult.value;
-          if (!updatedConnectionResult.ok || !updatedConnection) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.createError`),
             };
           }
 

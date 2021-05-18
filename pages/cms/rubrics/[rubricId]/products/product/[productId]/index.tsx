@@ -50,7 +50,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-details'}>
         <Formik
           enableReinitialize
           validationSchema={validationSchema}

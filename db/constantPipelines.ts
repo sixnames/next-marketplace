@@ -56,7 +56,10 @@ export function getCatalogueRubricPipeline(
   return [
     // Get attributes ond options slugs
     {
-      $unwind: '$selectedOptionsSlugs',
+      $unwind: {
+        path: '$selectedOptionsSlugs',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $group: {
@@ -67,7 +70,10 @@ export function getCatalogueRubricPipeline(
       },
     },
     {
-      $unwind: '$selectedOptionsSlugs',
+      $unwind: {
+        path: '$selectedOptionsSlugs',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $addFields: {

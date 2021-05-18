@@ -103,7 +103,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-attributes-list'}>
         {selectAttributesAST ? (
           <div className={attributesGroupClassName}>
             <div className={attributesGroupTitleClassName}>

@@ -60,17 +60,19 @@ const Table = <T extends Record<string, any>>({
   const renderColumns = React.useCallback(
     (columns: TableColumn<T>[], data: T[]) => {
       return data.map((dataItem, rowIndex: number) => {
-        const { hidden, id, isWarning = false } = dataItem;
+        const { hidden, _id, isWarning = false } = dataItem;
         const testId = get(dataItem, testIdKey);
-        const key = id || rowIndex;
-        if (hidden) return null;
+        const key = _id || rowIndex;
+        if (hidden) {
+          return null;
+        }
 
         return (
           <tr
             onClick={() => (onRowClick ? onRowClick(dataItem) : null)}
             onDoubleClick={() => (onRowDoubleClick ? onRowDoubleClick(dataItem) : null)}
             key={key}
-            data-cy={`${testId}-row`}
+            data-cy={`${tableTestId ? `${tableTestId}-` : ''}${testId || rowIndex}-row`}
             className={`${rowClassName} ${
               isWarning ? 'bg-red-500 bg-opacity-20' : 'bg-primary hover:bg-secondary'
             }`}

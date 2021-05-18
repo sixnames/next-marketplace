@@ -425,6 +425,7 @@ export interface NexusGenInputs {
   ProductsPaginationInput: {
     // input type
     attributesIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
+    excludedOptionsSlugs?: string[] | null; // [String!]
     excludedProductsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
     excludedRubricsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
     isWithoutRubrics?: boolean | null; // Boolean

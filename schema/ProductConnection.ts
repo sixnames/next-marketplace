@@ -297,7 +297,7 @@ export const ProductConnectionMutations = extendType({
           // Check attribute existence in added product
           const addProductAttribute = await productsAttributesCollection.findOne({
             productId: addProductId,
-            attributeId: connection?.attributeId,
+            attributeId: connection.attributeId,
           });
           const addProductOptionId = addProductAttribute?.selectedOptionsIds[0];
           if (!addProductAttribute || !addProductOptionId) {
@@ -309,12 +309,13 @@ export const ProductConnectionMutations = extendType({
 
           // Check attribute value in added product
           // it should have attribute value and shouldn't intersect with existing values in connection
-          const connectionValues = connectionItems.reduce((acc: ObjectId[], { optionId }) => {
+          const connectionOptionIds = connectionItems.reduce((acc: ObjectId[], { optionId }) => {
             return [...acc, optionId];
           }, []);
-          const includes = connectionValues.some((_id) => {
+          const includes = connectionOptionIds.some((_id) => {
             return _id.equals(addProductOptionId);
           });
+
           if (includes) {
             return {
               success: false,
@@ -323,7 +324,9 @@ export const ProductConnectionMutations = extendType({
           }
 
           // Find current option
-          const option = await optionsCollection.findOne({ _id: addProductOptionId });
+          const option = await optionsCollection.findOne({
+            _id: addProductOptionId,
+          });
           if (!option) {
             return {
               success: false,
@@ -347,6 +350,25 @@ export const ProductConnectionMutations = extendType({
 
           const createdConnectionItem = createdConnectionItemResult.ops[0];
           if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.connection.createError`),
+            };
+          }
+
+          // Update connection
+          const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+            {
+              _id: connectionId,
+            },
+            {
+              $push: {
+                productsIds: addProductId,
+              },
+            },
+          );
+          const updatedConnection = updatedConnectionResult.value;
+          if (!updatedConnectionResult.ok || !updatedConnection) {
             return {
               success: false,
               message: await getApiMessage(`products.connection.createError`),
@@ -451,6 +473,25 @@ export const ProductConnectionMutations = extendType({
             return {
               success: false,
               message: errorMessage,
+            };
+          }
+
+          // Update connection
+          const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+            {
+              _id: connectionId,
+            },
+            {
+              $pull: {
+                productsIds: deleteProductId,
+              },
+            },
+          );
+          const updatedConnection = updatedConnectionResult.value;
+          if (!updatedConnectionResult.ok || !updatedConnection) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.connection.createError`),
             };
           }
 

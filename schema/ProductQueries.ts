@@ -57,6 +57,9 @@ export const ProductsPaginationInput = inputObjectType({
     t.list.nonNull.objectId('attributesIds', {
       description: 'Filter by current attributes',
     });
+    t.list.nonNull.string('excludedOptionsSlugs', {
+      description: 'Filter by excluded selected options slugs',
+    });
     t.list.nonNull.objectId('excludedRubricsIds', {
       description: 'Exclude products in current rubrics',
     });

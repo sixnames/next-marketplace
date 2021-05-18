@@ -8,6 +8,7 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
+import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
 import {
   COL_ATTRIBUTES,
@@ -58,10 +59,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   });
 
   const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
+  const excludedOptionsSlugs = (connection.connectionProducts || []).map(({ option }) => {
+    return `${connection.attribute?.slug}${CATALOGUE_OPTION_SEPARATOR}${option?.slug}`;
+  });
 
   return (
     <ContentItemControls
-      testId={`${connection.attribute?.name}-connection`}
+      testId={`${connection.attribute?.name}-connection-product`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -83,6 +87,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
             createTitle: 'Добавить товар в связь',
             testId: 'add-product-to-connection-modal',
             excludedProductsIds,
+            excludedOptionsSlugs,
             attributesIds: [`${connection.attributeId}`],
           },
         });
@@ -143,7 +148,15 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     {
       accessor: 'option.name',
       headTitle: 'Значение',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return (
+          <div>
+            {cellData}
+            {' - '}
+            {dataItem.option?.slug}
+          </div>
+        );
+      },
     },
     {
       render: ({ dataItem }) => {
@@ -187,12 +200,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       className='mb-8'
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
-      <Table<ProductConnectionItemModel>
-        columns={columns}
-        data={connectionProducts}
-        tableTestId={`${connection.attribute?.name}-connection-list`}
-        testIdKey={'product.name'}
-      />
+      <div className='mt-4'>
+        <Table<ProductConnectionItemModel>
+          columns={columns}
+          data={connectionProducts}
+          tableTestId={`${connection.attribute?.name}-connection-list`}
+          testIdKey={'product.name'}
+        />
+      </div>
     </Accordion>
   );
 };
@@ -213,7 +228,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-connections-list'}>
         <div className='mb-8'>
           {(product.connections || []).map((connection) => {
             return (
@@ -228,6 +243,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
         <FixedButtons>
           <Button
+            size={'small'}
             testId={`create-connection`}
             onClick={() =>
               showModal<CreateConnectionModalInterface>({
@@ -332,6 +348,11 @@ export const getServerSideProps = async (
                       $expr: {
                         $eq: ['$$connectionId', '$connectionId'],
                       },
+                    },
+                  },
+                  {
+                    $sort: {
+                      _id: SORT_DESC,
                     },
                   },
                   {

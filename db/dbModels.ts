@@ -101,6 +101,7 @@ export interface PaginationInputModel {
 export interface ProductsPaginationInputModel extends PaginationInputModel {
   rubricId?: ObjectIdModel | null;
   attributesIds?: ObjectIdModel[] | null;
+  excludedOptionsSlugs?: string[] | null;
   excludedRubricsIds?: ObjectIdModel[] | null;
   excludedProductsIds?: ObjectIdModel[] | null;
   isWithoutRubrics?: boolean | null;

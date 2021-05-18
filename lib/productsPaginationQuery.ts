@@ -56,6 +56,7 @@ export async function productsPaginationQuery({
     const {
       excludedProductsIds,
       excludedRubricsIds,
+      excludedOptionsSlugs,
       rubricId,
       attributesIds,
       search,
@@ -96,6 +97,16 @@ export async function productsPaginationQuery({
           {
             $match: {
               rubricId: { $nin: excludedRubricsIds },
+            },
+          },
+        ]
+      : [];
+
+    const excludedOptionsSlugsStage = excludedOptionsSlugs
+      ? [
+          {
+            $match: {
+              selectedOptionsSlugs: { $nin: excludedOptionsSlugs },
             },
           },
         ]
@@ -165,6 +176,7 @@ export async function productsPaginationQuery({
       ...excludedProductsStage,
       ...excludedRubricsStage,
       ...attributesStage,
+      ...excludedOptionsSlugsStage,
       ...searchStage,
 
       // filter shop products data

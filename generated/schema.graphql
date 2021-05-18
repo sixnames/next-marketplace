@@ -1488,6 +1488,11 @@ input ProductsPaginationInput {
   attributesIds: [ObjectId!]
 
   """
+  Filter by excluded selected options slugs
+  """
+  excludedOptionsSlugs: [String!]
+
+  """
   Exclude current products
   """
   excludedProductsIds: [ObjectId!]

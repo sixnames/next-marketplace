@@ -21,6 +21,7 @@ interface ProductsListInterface extends ProductColumnsInterface {
   rubricSlug: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
+  excludedOptionsSlugs?: string[] | null;
   search?: string | null;
 }
 
@@ -28,6 +29,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   rubricSlug,
   excludedProductsIds,
   attributesIds,
+  excludedOptionsSlugs,
   search,
   ...props
 }) => {
@@ -45,6 +47,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
         search,
         excludedProductsIds,
         attributesIds,
+        excludedOptionsSlugs,
         page,
       },
     },
@@ -77,7 +80,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
           data={products.docs}
           columns={columns}
           emptyMessage={'Список пуст'}
-          testIdKey={'nameString'}
+          tableTestId={'product-search-list'}
         />
       </div>
       <Pager page={page} setPage={setPage} totalPages={products.totalPages} />
@@ -88,6 +91,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
 interface ProductsSearchListInterface extends ProductColumnsInterface {
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
+  excludedOptionsSlugs?: string[] | null;
   search: string;
   viewRubricSlug?: string;
 }
@@ -96,6 +100,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
   excludedProductsIds,
   attributesIds,
+  excludedOptionsSlugs,
   viewRubricSlug,
   ...props
 }) => {
@@ -114,6 +119,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
         search,
         excludedProductsIds,
         attributesIds,
+        excludedOptionsSlugs,
       },
     },
   });
@@ -145,7 +151,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
           data={docs}
           columns={columns}
           emptyMessage={`По запросу "${search}" товаров не найдено`}
-          testIdKey={'name'}
+          tableTestId={'product-search-list'}
         />
       </div>
       <Pager page={page} setPage={setPage} totalPages={totalPages} />
@@ -156,6 +162,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
 export interface ProductSearchModalInterface extends ProductColumnsInterface {
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
+  excludedOptionsSlugs?: string[] | null;
   testId?: string;
   rubricSlug?: string;
 }
@@ -163,6 +170,7 @@ export interface ProductSearchModalInterface extends ProductColumnsInterface {
 const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   testId,
   excludedProductsIds,
+  excludedOptionsSlugs,
   attributesIds,
   rubricSlug,
   ...props
@@ -187,6 +195,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
           rubricSlug={rubricSlug}
           excludedProductsIds={excludedProductsIds}
           attributesIds={attributesIds}
+          excludedOptionsSlugs={excludedOptionsSlugs}
           {...props}
         />
       </ModalFrame>
@@ -227,6 +236,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
           search={search}
           excludedProductsIds={excludedProductsIds}
           attributesIds={attributesIds}
+          excludedOptionsSlugs={excludedOptionsSlugs}
           {...props}
         />
       ) : (

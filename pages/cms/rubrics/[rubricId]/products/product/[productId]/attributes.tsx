@@ -55,15 +55,10 @@ const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    onCompleteCallback,
-    showErrorNotification,
-    hideLoading,
-    onErrorCallback,
-    showLoading,
-  } = useMutationCallbacks({ withModal: true });
+  const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    // withModal: true,
+    reload: true,
+  });
   const { locale } = useRouter();
   const {
     stringAttributesAST,
@@ -74,41 +69,17 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
   const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductSelectAttribute }) => {
-      if (updateProductSelectAttribute.success) {
-        onCompleteCallback(updateProductSelectAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductSelectAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductSelectAttribute),
   });
 
   const [updateProductNumberAttributeMutation] = useUpdateProductNumberAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductNumberAttribute }) => {
-      if (updateProductNumberAttribute.success) {
-        onCompleteCallback(updateProductNumberAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductNumberAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductNumberAttribute),
   });
 
   const [updateProductTextAttributeMutation] = useUpdateProductTextAttributeMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductTextAttribute }) => {
-      if (updateProductTextAttribute.success) {
-        onCompleteCallback(updateProductTextAttribute);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductTextAttribute.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductTextAttribute),
   });
 
   const clearSelectFieldHandler = React.useCallback(
@@ -132,7 +103,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-attributes-list'}>
         {selectAttributesAST ? (
           <div className={attributesGroupClassName}>
             <div className={attributesGroupTitleClassName}>
@@ -148,7 +119,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     value={`${attribute.readableValue || ''}`}
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.slug}`}
+                    testId={`${attribute.name}-attribute`}
                     onClear={
                       attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
                     }
@@ -157,6 +128,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
+                            testId: 'select-attribute-options-modal',
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             optionVariant: 'radio',
                             title: `${attribute.name}`,
@@ -199,7 +171,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                     value={`${attribute.readableValue || ''}`}
                     label={`${attribute.name}`}
                     key={`${attribute.attributeId}`}
-                    testId={`${attribute.slug}`}
+                    testId={`${attribute.name}-attribute`}
                     onClear={
                       attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
                     }
@@ -208,6 +180,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                         showModal<AttributeOptionsModalInterface>({
                           variant: ATTRIBUTE_OPTIONS_MODAL,
                           props: {
+                            testId: 'multi-select-attribute-options-modal',
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             title: `${attribute.name}`,
                             onSubmit: (value) => {
@@ -274,14 +247,16 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                               label={`${attribute.name}`}
                               name={`attributes[${index}].number`}
                               key={`${attribute.attributeId}`}
-                              testId={`${attribute.slug}`}
+                              testId={`${attribute.name}-attribute`}
                             />
                           );
                         })}
                       </div>
 
                       <FixedButtons>
-                        <Button type={'submit'}>Сохранить</Button>
+                        <Button testId={'submit-number-attributes'} type={'submit'}>
+                          Сохранить
+                        </Button>
                       </FixedButtons>
                     </div>
                   </div>
@@ -330,13 +305,15 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
                             label={`${attribute.name}`}
                             name={`attributes[${index}].textI18n`}
                             key={`${attribute.attributeId}`}
-                            testId={`${attribute.slug}`}
+                            testId={`${attribute.name}-attribute`}
                           />
                         );
                       })}
 
                       <FixedButtons>
-                        <Button type={'submit'}>Сохранить</Button>
+                        <Button testId={'submit-text-attributes'} type={'submit'}>
+                          Сохранить
+                        </Button>
                       </FixedButtons>
                     </div>
                   </div>

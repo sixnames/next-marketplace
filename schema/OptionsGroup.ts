@@ -1,4 +1,5 @@
 import { getNextItemId } from 'lib/itemIdUtils';
+import { deleteOptionsTree } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -457,10 +458,15 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const exist = findDocumentByI18nField({
+          const exist = await findDocumentByI18nField({
             fieldArg: values.nameI18n,
             collectionName: COL_OPTIONS,
             fieldName: 'nameI18n',
+            additionalQuery: parentId
+              ? {
+                  parentId,
+                }
+              : undefined,
           });
 
           if (exist) {
@@ -624,7 +630,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
 
           const db = await getDatabase();
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const productAttributesCollection = db.collection<ProductAttributeModel>(
             COL_PRODUCT_ATTRIBUTES,
@@ -667,10 +672,8 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Update options group options list
-          const removedOptionResult = await optionsCollection.findOneAndDelete({
-            _id: optionId,
-          });
-          if (!removedOptionResult.ok) {
+          const removedOptionResult = await deleteOptionsTree(optionId);
+          if (!removedOptionResult) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.error'),

@@ -35,42 +35,26 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
     showLoading,
     hideLoading,
     showErrorNotification,
-  } = useMutationCallbacks();
+  } = useMutationCallbacks({
+    reload: true,
+  });
   const validationSchema = useValidationSchema({
     schema: addProductAssetsSchema,
   });
 
   const [deleteProductAssetMutation] = useDeleteProductAssetMutation({
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.deleteProductAsset.success) {
-        onCompleteCallback(data.deleteProductAsset);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.deleteProductAsset.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.deleteProductAsset),
   });
 
   const [updateProductAssetIndexMutation] = useUpdateProductAssetIndexMutation({
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.updateProductAssetIndex.success) {
-        onCompleteCallback(data.updateProductAssetIndex);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.updateProductAssetIndex.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductAssetIndex),
   });
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-assets-list'}>
         <AssetsManager
           initialAssets={product.assets?.assets || []}
           assetsTitle={product.originalName}

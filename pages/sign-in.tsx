@@ -9,7 +9,6 @@ import { getSiteInitialData } from 'lib/ssrUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSession, signIn } from 'next-auth/client';
-import classes from 'styles/SignInRoute.module.css';
 import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
 
@@ -58,8 +57,8 @@ const SignInRoute: React.FC = () => {
       >
         {() => {
           return (
-            <Form className={classes.form}>
-              <Title className={classes.title}>Авторизация</Title>
+            <Form className='max-w-[20rem] py-12 mx-auto'>
+              <Title className='justify-center'>Авторизация</Title>
 
               <FormikInput
                 label={'Ваш Email'}
@@ -83,7 +82,7 @@ const SignInRoute: React.FC = () => {
                 Войти
               </Button>
               {isError ? (
-                <div className={classes.error}>
+                <div className='mt-6 font-medium text-red-500'>
                   Пожалуйста проверьте правильность введённых данных
                 </div>
               ) : null}

@@ -7,7 +7,6 @@ import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
 import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
-import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -28,14 +27,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
   const [updateRubricMutation] = useUpdateRubricMutation({
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: ALL_RUBRICS_QUERY,
-      },
-    ],
     onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });
@@ -67,7 +62,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   return (
     <CmsRubricLayout rubric={rubric}>
-      <Inner>
+      <Inner testId={'rubric-details'}>
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}

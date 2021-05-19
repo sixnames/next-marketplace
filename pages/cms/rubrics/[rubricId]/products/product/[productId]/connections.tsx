@@ -8,6 +8,7 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
+import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
 import {
   COL_ATTRIBUTES,
@@ -36,7 +37,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -49,35 +49,23 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   connection,
   product,
 }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [addProductToConnectionMutation] = useAddProductToConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.addProductToConnection.success) {
-        onCompleteCallback(data.addProductToConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.addProductToConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
   });
 
   const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
+  const excludedOptionsSlugs = (connection.connectionProducts || []).map(({ option }) => {
+    return `${connection.attribute?.slug}${CATALOGUE_OPTION_SEPARATOR}${option?.slug}`;
+  });
 
   return (
     <ContentItemControls
-      testId={`${connection.attribute?.name}-connection`}
+      testId={`${connection.attribute?.name}-connection-product`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -99,6 +87,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
             createTitle: 'Добавить товар в связь',
             testId: 'add-product-to-connection-modal',
             excludedProductsIds,
+            excludedOptionsSlugs,
             attributesIds: [`${connection.attributeId}`],
           },
         });
@@ -116,28 +105,13 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   product,
 }) => {
-  const router = useRouter();
-  const {
-    showModal,
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [deleteProductFromConnectionMutation] = useDeleteProductFromConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.deleteProductFromConnection.success) {
-        onCompleteCallback(data.deleteProductFromConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.deleteProductFromConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
   });
 
   const { connectionProducts } = connection;
@@ -174,7 +148,15 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     {
       accessor: 'option.name',
       headTitle: 'Значение',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return (
+          <div>
+            {cellData}
+            {' - '}
+            {dataItem.option?.slug}
+          </div>
+        );
+      },
     },
     {
       render: ({ dataItem }) => {
@@ -218,12 +200,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       className='mb-8'
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
-      <Table<ProductConnectionItemModel>
-        columns={columns}
-        data={connectionProducts}
-        tableTestId={`${connection.attribute?.name}-connection-list`}
-        testIdKey={'product.name'}
-      />
+      <div className='mt-4'>
+        <Table<ProductConnectionItemModel>
+          columns={columns}
+          data={connectionProducts}
+          tableTestId={`${connection.attribute?.name}-connection-list`}
+          testIdKey={'product.name'}
+        />
+      </div>
     </Accordion>
   );
 };
@@ -233,33 +217,18 @@ interface ProductConnectionsPropsInterface {
 }
 
 const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
-  const router = useRouter();
-  const {
-    onCompleteCallback,
-    onErrorCallback,
-    showLoading,
-    showModal,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
+    reload: true,
   });
   const [createProductConnectionMutation] = useCreateProductConnectionMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.createProductConnection.success) {
-        onCompleteCallback(data.createProductConnection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.createProductConnection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.createProductConnection),
   });
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-connections-list'}>
         <div className='mb-8'>
           {(product.connections || []).map((connection) => {
             return (
@@ -274,6 +243,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
         <FixedButtons>
           <Button
+            size={'small'}
             testId={`create-connection`}
             onClick={() =>
               showModal<CreateConnectionModalInterface>({
@@ -378,6 +348,11 @@ export const getServerSideProps = async (
                       $expr: {
                         $eq: ['$$connectionId', '$connectionId'],
                       },
+                    },
+                  },
+                  {
+                    $sort: {
+                      _id: SORT_DESC,
                     },
                   },
                   {

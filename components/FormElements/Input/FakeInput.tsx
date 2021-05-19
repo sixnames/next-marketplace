@@ -52,7 +52,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
         </div>
         {onClear ? (
           <div onClick={onClear} className='absolute right-0 inset-y-0 z-20'>
-            <ControlButton title={'Очистить поле'} icon={'cross'} />
+            <ControlButton testId={`${testId}-clear`} title={'Очистить поле'} icon={'cross'} />
           </div>
         ) : null}
       </div>

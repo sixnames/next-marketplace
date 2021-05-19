@@ -8,42 +8,29 @@ describe('Rubric attributes', () => {
   });
 
   it('Should CRUD rubric attributes list', () => {
-    cy.visit('/');
-    // const rubricAName = mockData.rubricADefaultName;
+    cy.getByCy(`Вино-update`).click();
+    cy.getByCy(`attributes`).click();
+    cy.getByCy(`rubric-attributes`).should('exist');
 
-    // const mockAttributesGroupName = mockData.attributesGroupWineFeatures.nameI18n[DEFAULT_LOCALE];
-    // const mockMultipleSelectAttributeName = mockData.attributeWineColor.nameI18n[DEFAULT_LOCALE];
-    // const mockStringAttributeName = mockData.attributeString.nameI18n[DEFAULT_LOCALE];
-    // const mockAttributesGroupForDeleteName =
-    //   mockData.attributesGroupForDelete.nameI18n[DEFAULT_LOCALE];
-    //
-    // cy.getByCy(`${rubricAName}-update`).click();
-    // cy.visitMoreNavLink('attributes');
-    //
     // Should update attributes group only in one rubric
-    // cy.getByCy(`${mockStringAttributeName}-filter-checkbox`).should('be.disabled');
-    // cy.getByCy(`${mockMultipleSelectAttributeName}-filter-checkbox`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`${mockMultipleSelectAttributeName}-filter-checkbox`).should('not.be.checked');
-    // cy.getByCy(`${mockMultipleSelectAttributeName}-nav-checkbox`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`${mockMultipleSelectAttributeName}-nav-checkbox`).should('not.be.checked');
-    //
+    cy.getByCy(`Состав-filter-checkbox`).should('not.be.disabled');
+    cy.getByCy(`Состав-filter-checkbox`).click();
+    cy.wait(1500);
+    cy.getByCy(`Состав-filter-checkbox`).should('not.be.checked');
+    cy.getByCy(`Крепость-filter-checkbox`).should('be.disabled');
+
     // Should delete attributes group from rubric
-    // cy.getByCy(`${mockAttributesGroupName}-delete`).click();
-    // cy.getByCy(`attributes-group-delete-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.getByCy(`${mockAttributesGroupName}-delete`).should('not.exist');
-    //
-    // Should show validation error on add attributes group to the list
-    // cy.getByCy(`${rubricAName}-create`).click();
-    // cy.getByCy(`add-attributes-group-to-rubric-modal`).should('exist');
-    // cy.getByCy(`attributes-group-submit`).click();
-    // cy.getByCy('attributesGroupId-error').should('exist');
-    //
+    cy.getByCy(`Характеристики вина-delete`).click();
+    cy.getByCy(`attributes-group-delete-modal`).should('exist');
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
+    cy.getByCy(`Характеристики вина-delete`).should('not.exist');
+
     // Should add attributes group to the list
-    // cy.selectOptionByTestId('attributes-groups', mockAttributesGroupForDeleteName);
-    // cy.getByCy(`attributes-group-submit`).click();
-    // cy.getByCy('rubric-attributes').should('contain', mockAttributesGroupForDeleteName);
+    cy.getByCy('add-attributes-group').click();
+    cy.selectOptionByTestId('attributes-groups', 'Характеристики вина');
+    cy.getByCy(`attributes-group-submit`).click();
+    cy.wait(1500);
+    cy.getByCy(`Характеристики вина-delete`).should('exist');
   });
 });

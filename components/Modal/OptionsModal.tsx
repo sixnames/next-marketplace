@@ -27,6 +27,7 @@ export interface OptionsModalCommonPropsInterface {
   optionVariant?: 'checkbox' | 'radio';
   buttonText?: string;
   initialEmptyListMessage?: string;
+  testId?: string;
 }
 
 export interface OptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -51,6 +52,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   buttonText = 'Применить',
   initialEmptyListMessage = defaultEmptyListMessage,
   notShowAsAlphabet,
+  testId,
 }) => {
   const [emptyListMessage, setEmptyListMessage] = React.useState<string | null>(null);
   const [state, setState] = React.useState<OptionsModalLetterInterface[] | null>(null);
@@ -100,6 +102,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
               className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
             >
               <div
+                data-cy={`option-${name}`}
                 className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
                   isCheckbox ? checkboxClassName : radioClassName
                 }`}
@@ -124,6 +127,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
           className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
         >
           <div
+            data-cy={`option-${name}`}
             className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
               isCheckbox ? checkboxClassName : radioClassName
             }`}
@@ -194,7 +198,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   }
 
   return (
-    <ModalFrame size={'midWide'}>
+    <ModalFrame testId={testId} size={'midWide'}>
       {title ? <ModalTitle>{title}</ModalTitle> : null}
 
       <FormikIndividualSearch
@@ -237,7 +241,9 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
       {selectedOptions.length > 0 ? (
         <FixedButtons>
-          <Button onClick={() => onSubmit(selectedOptions)}>{buttonText}</Button>
+          <Button testId={`options-submit`} onClick={() => onSubmit(selectedOptions)}>
+            {buttonText}
+          </Button>
         </FixedButtons>
       ) : null}
     </ModalFrame>

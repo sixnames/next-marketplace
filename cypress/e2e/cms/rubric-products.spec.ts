@@ -7,224 +7,168 @@ describe('Rubric products', () => {
     cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });
 
-  it('Should delete product from rubric', () => {
-    cy.visit('/');
-    // const rubricBName = mockData.rubricBDefaultName;
-    // const mockProductForDeleteName = mockData.productC.nameI18n[DEFAULT_LOCALE];
-    //
+  it('Should CRUD rubric product', () => {
+    const mainRubricName = 'Вино';
+    const newProductName = 'newProductName';
+    const newProductDescription = 'newProductDescription';
+    const updatedProductName = 'updatedProductName';
+    const updatedProductDescription = 'updatedProductDescription';
+
+    // Should add product to rubric
+    cy.getByCy(`${mainRubricName}-update`).click();
+    cy.getByCy('rubric-products-list').should('exist');
+    cy.getByCy(`create-rubric-product`).click();
+    cy.getByCy('create-new-product-modal').should('exist');
+    cy.getByCy('nameI18n-ru').type(newProductName);
+    cy.getByCy('originalName').type(newProductName);
+    cy.getByCy('descriptionI18n-ru').type(newProductDescription);
+    cy.getByCy(`submit-new-product`).click();
+    cy.wait(1500);
+    cy.getByCy('product-details').should('exist');
+
+    // Should update rubric product
+    cy.getByCy(`active-checkbox`).check();
+    cy.getByCy('nameI18n-ru').clear().type(updatedProductName);
+    cy.getByCy('originalName').clear().type(updatedProductName);
+    cy.getByCy('descriptionI18n-ru').clear().type(updatedProductDescription);
+    cy.getByCy(`submit-product`).click();
+    cy.wait(1500);
+    cy.getByCy(`${updatedProductName}-product-title`).should('exist');
+
+    // Should display product assets page
+    cy.getByCy('assets').click();
+    cy.getByCy('product-assets-list').should('exist');
+
     // Should delete product from rubric
-    // cy.getByCy(`${rubricBName}-update`).click();
-    // cy.visitMoreNavLink('products');
-    // cy.getByCy('rubric-products').should('exist');
-    // cy.getByCy(`${mockProductForDeleteName}-delete`).click();
-    // cy.getByCy('delete-product-from-rubric-modal').should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.getByCy('rubric-products').should('not.contain', mockProductForDeleteName);
-    // cy.visit(`${ROUTE_CMS}/rubrics`);
-    // cy.getByCy(`${rubricBName}-productsCount`).should('contain', '0');
+    cy.visit(`${ROUTE_CMS}/rubrics`);
+    cy.getByCy(`${mainRubricName}-update`).click();
+    cy.getByCy('rubric-products-list').should('exist');
+    cy.getByCy('products-search-input').type(updatedProductName);
+    cy.getByCy('products-search-submit').click();
+    cy.wait(1500);
+    cy.getByCy(`${updatedProductName}-delete`).click();
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
+    cy.getByCy('products-search-input').type(updatedProductName);
+    cy.getByCy('products-search-submit').click();
+    cy.getByCy(`${updatedProductName}-delete`).should('not.exist');
   });
 
-  it('Should add product to rubric', () => {
-    cy.visit('/');
-    // const rubricAName = mockData.rubricADefaultName;
-    // const mockProductCreateName = 'mockProductCreateName';
-    // const mockProductCreateCarDescription = 'mockProductCreateCarDescription';
-    // const mockAttributeColorName = mockData.attributeWineColor.nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeMultipleSelects = mockData.optionsColor;
-    // const mockAttributeMultipleSelectValueA =
-    //   mockAttributeMultipleSelects[0].nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeMultipleSelectValueB =
-    //   mockAttributeMultipleSelects[1].nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeSelectName = mockData.attributeWineVariant.nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeSelectValue = `${mockData.attributeWineVariant.slug}-${mockData.optionsWineVariant[0].slug}`;
-    // const mockAttributeStringName = mockData.attributeString.nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeNumberName = mockData.attributeNumber.nameI18n[DEFAULT_LOCALE];
+  it('Should CRUD product attributes', () => {
+    cy.getByCy(`Вино-update`).click();
+    cy.getByCy('rubric-products-list').should('exist');
+    cy.getByCy('product-link-0').click();
+    cy.wait(1500);
+    cy.getByCy('attributes').click();
+    cy.getByCy('product-attributes-list').should('exist');
 
-    // Should add product from tree to the rubric
-    // cy.getByCy(`${rubricAName}-update`).click();
-    // cy.visitMoreNavLink('products');
+    // clear select attribute
+    cy.getByCy('Объем-attribute-clear').click();
+    cy.wait(1500);
 
-    // Should display Create product modal
-    // cy.getByCy('product-create').click();
-    // cy.getByCy('create-new-product-modal').should('exist');
+    // open options modal
+    cy.getByCy('Объем-attribute').click();
+    cy.getByCy('select-attribute-options-modal').should('exist');
+    cy.getByCy('option-350').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
 
-    // Fill assets
-    // cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
-    // cy.getByCy('product-images').attachFile('test-image-2.png', { subjectType: 'drag-n-drop' });
-    // cy.getByCy('file-preview-remove-0').click();
-    // cy.getByCy('remove-image-confirm').click();
+    // clear multi-select attribute
+    cy.getByCy('Виноград-attribute-clear').click();
+    cy.wait(1500);
 
-    // fill inputs
-    // cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(mockProductCreateName);
-    // cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).clear().type(mockProductCreateName);
+    // open options modal
+    cy.getByCy('Виноград-attribute').click();
+    cy.getByCy('multi-select-attribute-options-modal').should('exist');
+    cy.getByCy('option-Бага').click();
+    cy.getByCy('option-Бикал').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
 
-    // cy.getByCy(`descriptionI18n-accordion-${SECONDARY_LOCALE}`).click();
-    // cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(mockProductCreateCarDescription);
-    // cy.getByCy(`descriptionI18n-${SECONDARY_LOCALE}`).clear().type(mockProductCreateCarDescription);
-    //
-    // cy.getByCy(`brandSlug`).select(mockData.brandB.slug);
-    // cy.getByCy(`brandCollectionSlug`).select(mockData.brandCollectionB.slug);
-    // cy.getByCy(`manufacturerSlug`).select(mockData.manufacturerC.slug);
-    //
-    // cy.getByCy(`originalName`).clear().type(mockProductCreateName);
+    // update number attributes
+    cy.getByCy('Крепость-attribute').clear().type('10');
+    cy.getByCy('Количество в упаковке-attribute').clear().type('10');
+    cy.getByCy('submit-number-attributes').click();
 
-    // string attribute
-    // cy.getByCy(`${mockAttributeStringName}-${DEFAULT_LOCALE}`).clear().type('string');
-    // cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
-    // cy.getByCy(`${mockAttributeStringName}-showAsBreadcrumb-checkbox`).check();
-
-    // number attribute
-    // cy.getByCy(`${mockAttributeNumberName}`).clear().type('999');
-    // cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
-    // cy.getByCy(`${mockAttributeNumberName}-showAsBreadcrumb-checkbox`).check();
-
-    // select attribute
-    // cy.getByCy(`${mockAttributeSelectName}`).select(mockAttributeSelectValue);
-    // cy.getByCy(`${mockAttributeSelectName}-showInCard-checkbox`).check();
-    // cy.getByCy(`${mockAttributeSelectName}-showAsBreadcrumb-checkbox`).check();
-
-    // multiple select attribute
-    // cy.getByCy(`${mockAttributeColorName}-${mockAttributeMultipleSelectValueA}-checkbox`).check();
-    // cy.getByCy(`${mockAttributeColorName}-${mockAttributeMultipleSelectValueB}-checkbox`).check();
-
-    // cy.getByCy('submit-new-product').click();
-    // cy.getByCy(`${mockProductCreateName}-row`).should('exist');
-  });
-
-  it('Should CRUD products', () => {
-    cy.visit('/');
-    // const rubricBName = mockData.rubricBDefaultName;
-    // const mockProductCName = mockData.productC.nameI18n[DEFAULT_LOCALE];
-
-    // const mockProductNewName = 'mockProductNewName';
-    // const mockProductNewDescription = 'mockProductNewDescription';
-    // const mockAttributeStringName = mockData.attributeString.nameI18n[DEFAULT_LOCALE];
-    // const mockAttributeNumberName = mockData.attributeNumber.nameI18n[DEFAULT_LOCALE];
-
-    // cy.getByCy(`${rubricBName}-update`).click();
-    // cy.visitMoreNavLink('products');
-
-    // Should open product details
-    // cy.getByCy(`${mockProductCName}-update`).click();
-    // cy.getByCy(`product-details`).should('exist');
-
-    // Should update product assets
-    // cy.visitMoreNavLink('assets');
-    // cy.getByCy('product-assets').should('exist');
-    // cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
-    // cy.getByCy('submit-product').click();
-    // cy.shouldSuccess();
-    // cy.getByCy('asset-preview-remove-1').click();
-    // cy.getByCy('confirm').click();
-    // cy.shouldSuccess();
-
-    // Should update product activity
-    // cy.visitMoreNavLink('details');
-    // cy.getByCy('active-checkbox').check();
-    // cy.getByCy('submit-product').click();
-    // cy.shouldSuccess();
-
-    // Should update product main fields
-    // cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
-    // cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(mockProductNewName);
-    // cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).clear().type(mockProductNewName);
-    //
-    // cy.getByCy(`descriptionI18n-accordion-${SECONDARY_LOCALE}`).click();
-    // cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(mockProductNewDescription);
-    // cy.getByCy(`descriptionI18n-${SECONDARY_LOCALE}`).clear().type(mockProductNewDescription);
-    //
-    // cy.getByCy(`brandSlug`).select(mockData.brandB.slug);
-    // cy.getByCy(`brandCollectionSlug`).select(mockData.brandCollectionB.slug);
-    // cy.getByCy(`manufacturerSlug`).select(mockData.manufacturerC.slug);
-
-    // cy.getByCy(`originalName`).clear().type(mockProductNewName);
-    //
-    // cy.getByCy('submit-product').click();
-    // cy.shouldSuccess();
-    //
-    // string attribute
-    // cy.getByCy(`${mockAttributeStringName}-${DEFAULT_LOCALE}`).clear().type('string');
-    // cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
-    // cy.getByCy(`${mockAttributeStringName}-showAsBreadcrumb-checkbox`).check();
-    //
-    // number attribute
-    // cy.getByCy(`${mockAttributeNumberName}`).clear().type('999');
-    // cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
-    // cy.getByCy(`${mockAttributeNumberName}-showAsBreadcrumb-checkbox`).check();
-    //
-    // cy.getByCy('submit-product').click();
-    // cy.shouldSuccess();
-    //
-    // cy.visit(`${ROUTE_CMS}/rubrics`);
-    // cy.getByCy(`${rubricBName}-update`).click();
-    // cy.visitMoreNavLink('products');
-    // cy.getByCy(`${mockProductNewName}-row`).should('exist');
+    // update text attributes
+    cy.getByCy('Описание-attribute-ru').clear().type('lorem');
+    cy.getByCy('submit-text-attributes').click();
   });
 
   it('Should CRUD product connections', () => {
-    cy.visit('/');
-    // const rubricAName = mockData.rubricADefaultName;
-    // const productName = mockData.productA.nameI18n[DEFAULT_LOCALE];
-    // const addProductName = mockData.productD.nameI18n[DEFAULT_LOCALE];
-    // const connectionAttribute = mockData.attributeWineVariant;
-    // const connectionAttributeId = `${connectionAttribute._id}`;
-    // const connectionAttributeName = connectionAttribute.nameI18n[DEFAULT_LOCALE];
+    cy.getByCy(`Вино-update`).click();
+    cy.getByCy('rubric-products-list').should('exist');
+    cy.getByCy('product-link-0').click();
+    cy.wait(1500);
+    cy.getByCy('connections').click();
+    cy.getByCy('product-connections-list').should('exist');
+    cy.getByCy('create-connection').click();
+    cy.getByCy('create-connection-modal').should('exist');
+    cy.selectOptionByTestId('attributeId', 'Объем');
+    cy.getByCy('create-connection-submit').click();
+    cy.wait(1500);
+    cy.getByCy('Объем-connection-product-create').click();
+    cy.getByCy('add-product-to-connection-modal').should('exist');
+    cy.getByCy('product-search-list-0-row').then(($row: any) => {
+      const button = $row.find('button');
+      cy.wrap(button).click();
+    });
+    cy.wait(1500);
 
-    // cy.getByCy(`${rubricAName}-update`).click();
-    // cy.visitMoreNavLink('products');
+    // delete first product
+    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
+      const button = $row.find('button');
+      cy.wrap(button).click();
+    });
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
 
-    // Should open product details
-    // cy.getByCy(`${productName}-update`).click();
-    // cy.getByCy(`product-details`).should('exist');
-    //
-    // Should add product connection
-    // cy.visitMoreNavLink('connections');
-    // cy.getByCy(`create-connection`).click();
-    // cy.getByCy(`create-connection-modal`).should('exist');
-    // cy.getByCy('attributeId').select(`${connectionAttributeId}`);
-    // cy.getByCy(`create-connection-submit`).click();
-    // cy.getByCy(`create-connection-modal`).should('not.exist');
-    // cy.shouldSuccess();
-    //
-    // cy.getByCy(`${connectionAttributeName}-connection`).should('exist');
-    // cy.getByCy(`${connectionAttributeName}-connection-list`).should('exist');
-    // cy.get(
-    //   `[data-cy="${connectionAttributeName}-connection-list"] [data-cy="${productName}-row"]`,
-    // ).should('exist');
+    // delete second product
+    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
+      const button = $row.find('button');
+      cy.wrap(button).click();
+    });
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
 
-    // Shouldn't create new connection on duplicate error
-    // cy.getByCy(`create-connection`).click();
-    // cy.getByCy(`create-connection-empty-modal`).should('exist');
-    // cy.getByCy(`close-modal`).click();
-    //
-    // Should add product to the new connection
-    // const addProductToConnectionModal = `add-product-to-connection-modal`;
-    // cy.getByCy(`${connectionAttributeName}-connection-create`).click();
-    // cy.getByCy(addProductToConnectionModal).should('exist');
-    //
-    // cy.getByCy(`${addProductName}-create`).click();
-    // cy.getByCy(addProductToConnectionModal).should('not.exist');
-    // cy.get(
-    //   `[data-cy="${connectionAttributeName}-connection-list"] [data-cy="${addProductName}-row"]`,
-    // ).should('exist');
+    cy.getByCy('Объем-connection-product-create').should('not.exist');
+  });
 
-    // Should delete product from connection
-    // cy.getByCy(`${addProductName}-delete`).click();
-    // cy.getByCy(`delete-product-from-connection-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.getByCy(`delete-product-from-connection-modal`).should('not.exist');
-    // cy.get(
-    //   `[data-cy="${connectionAttributeName}-connection-list"] [data-cy="${addProductName}-row"]`,
-    // ).should('not.exist');
-    //
-    // Should delete connection if product is last
-    // cy.get(
-    //   `[data-cy="${connectionAttributeName}-connection-list"] [data-cy="${productName}-delete"]`,
-    // ).click();
-    // cy.getByCy(`delete-product-from-connection-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.getByCy(`delete-product-from-connection-modal`).should('not.exist');
-    // cy.getByCy(`${connectionAttributeName}-connection-list`).should('not.exist');
+  it('Should CRUD product brands', () => {
+    cy.getByCy(`Вино-update`).click();
+    cy.getByCy('rubric-products-list').should('exist');
+    cy.getByCy('product-link-0').click();
+    cy.wait(1500);
+    cy.getByCy('brands').click();
+    cy.getByCy('product-brands-list').should('exist');
+
+    // brand
+    cy.getByCy('clear-brand').click();
+    cy.wait(1500);
+    cy.getByCy('brand-collection-input').should('contain', 'Не назначено');
+    cy.getByCy('brand-input').click();
+    cy.getByCy('brand-options-modal').should('exist');
+    cy.getByCy('option-Brand B').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+    cy.getByCy('brand-input').should('contain', 'Brand B');
+
+    // brand collection
+    cy.getByCy('brand-collection-input').click();
+    cy.getByCy('brand-collection-options-modal').should('exist');
+    cy.getByCy('option-Brand collection B').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+    cy.getByCy('brand-collection-input').should('contain', 'Brand collection B');
+
+    // manufacturer
+    cy.getByCy('clear-manufacturer').click();
+    cy.wait(1500);
+    cy.getByCy('manufacturer-input').click();
+    cy.getByCy('manufacturer-options-modal').should('exist');
+    cy.getByCy('option-Manufacturer B').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+    cy.getByCy('manufacturer-input').should('contain', 'Manufacturer B');
   });
 });

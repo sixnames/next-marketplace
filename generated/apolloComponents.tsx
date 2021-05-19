@@ -32,6 +32,7 @@ export type AddAttributeToGroupInput = {
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
+  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -1704,6 +1705,10 @@ export type ProductsPaginationInput = {
   rubricId?: Maybe<Scalars['ObjectId']>;
   /** Filter by current attributes */
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
+  /** Filter by excluded selected options slugs */
+  excludedOptionsSlugs?: Maybe<Array<Scalars['String']>>;
+  /** Filter by excluded selected options id */
+  excludedOptionsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude products in current rubrics */
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude current products */

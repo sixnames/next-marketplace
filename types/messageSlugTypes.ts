@@ -329,6 +329,7 @@ export type MessageSlug =
   | 'rubrics.delete.error'
   | 'rubrics.delete.success'
   | 'rubrics.addAttributesGroup.notFound'
+  | 'rubrics.addAttributesGroup.noAttributes'
   | 'rubrics.addAttributesGroup.error'
   | 'rubrics.addAttributesGroup.success'
   | 'rubrics.updateAttributesGroup.notFound'

@@ -6,7 +6,7 @@ import {
   DEFAULT_LOCALE,
   GENDER_HE,
 } from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES, COL_OPTIONS } from 'db/collectionNames';
 import {
   AlphabetListModelType,
   AttributeModel,
@@ -14,6 +14,7 @@ import {
   GenderModel,
   LanguageModel,
   ObjectIdModel,
+  OptionModel,
   RubricAttributeModel,
   RubricOptionModel,
 } from 'db/dbModels';
@@ -23,17 +24,23 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 
 interface GetOptionsTreeInterface {
-  options: OptionInterface[];
+  options?: OptionInterface[] | null;
   parentId?: ObjectId | null;
+  locale?: string;
 }
 
-export function getOptionsTree({ options, parentId }: GetOptionsTreeInterface): OptionInterface[] {
-  const parentOptions = options.filter((option) =>
+export function getOptionsTree({
+  options,
+  parentId,
+  locale,
+}: GetOptionsTreeInterface): OptionInterface[] {
+  const parentOptions = (options || []).filter((option) =>
     parentId ? option.parentId?.equals(parentId) : !option.parentId,
   );
   return parentOptions.map((parentOption) => {
     return {
       ...parentOption,
+      name: getFieldStringLocale(parentOption.nameI18n, locale),
       options: getOptionsTree({ options, parentId: parentOption._id }),
     };
   });
@@ -165,4 +172,32 @@ export async function getAlphabetList<TModel extends Record<string, any>>(entity
   });
 
   return payload;
+}
+
+export async function deleteOptionsTree(optionId: ObjectIdModel): Promise<boolean> {
+  const db = await getDatabase();
+  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const removedOptionResult = await optionsCollection.findOneAndDelete({
+    _id: optionId,
+  });
+
+  if (!removedOptionResult.ok) {
+    return false;
+  }
+
+  // Delete tree
+  const children = await optionsCollection.find({ parentId: optionId }).toArray();
+  const removedChildrenResults = [];
+  for await (const option of children) {
+    const removedChild = await deleteOptionsTree(option._id);
+    if (removedChild) {
+      removedChildrenResults.push(removedChild);
+    }
+  }
+
+  if (removedChildrenResults.length < children.length) {
+    return false;
+  }
+
+  return true;
 }

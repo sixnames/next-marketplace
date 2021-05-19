@@ -1,4 +1,8 @@
-import { OPTIONS_GROUP_VARIANT_TEXT } from '../../../../config/common';
+import {
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+  OPTIONS_GROUP_VARIANT_TEXT,
+} from '../../../../config/common';
 import { OptionsGroupModel, OptionsGroupVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -50,14 +54,14 @@ const optionsGroups: OptionsGroupModel[] = [
     nameI18n: {
       ru: 'Сахар',
     },
-    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
+    variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantModel,
   },
   {
     _id: getObjectId('optionsGroup Тип вина'),
     nameI18n: {
       ru: 'Тип вина',
     },
-    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
+    variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantModel,
   },
 ];
 

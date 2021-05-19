@@ -40,6 +40,7 @@ import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -68,32 +69,25 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    hideLoading,
-    showModal,
-    showErrorNotification,
-  } = useMutationCallbacks({ withModal: true });
+  const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
+  });
+
   const [deleteProductFromRubricMutation] = useDeleteProductFromRubricMutation({
     onError: onErrorCallback,
-    onCompleted: ({ deleteProductFromRubric }) => {
-      if (deleteProductFromRubric.success) {
-        hideLoading();
-        onCompleteCallback(deleteProductFromRubric);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: deleteProductFromRubric.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.deleteProductFromRubric),
   });
+
   const columns: TableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
-      render: ({ dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{dataItem.itemId}</Link>;
+      render: ({ dataItem, rowIndex }) => {
+        return (
+          <Link testId={`product-link-${rowIndex}`} href={`${itemPath}/${dataItem._id}`}>
+            {dataItem.itemId}
+          </Link>
+        );
       },
     },
     {
@@ -137,50 +131,64 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     {
       render: ({ dataItem }) => {
         return (
-          <ContentItemControls
-            deleteTitle={'Удалить товар из рубрики'}
-            justifyContent={'flex-end'}
-            deleteHandler={() => {
-              showModal<ConfirmModalInterface>({
-                variant: CONFIRM_MODAL,
-                props: {
-                  testId: 'delete-product-modal',
-                  message: `Вы уверенны, что хотите удалить товар ${dataItem.originalName}?`,
-                  confirm: () => {
-                    showLoading();
-                    deleteProductFromRubricMutation({
-                      variables: {
-                        input: {
-                          rubricId: rubric._id,
-                          productId: dataItem._id,
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={`${dataItem.originalName}`}
+              updateTitle={'Редактировать товар'}
+              updateHandler={() => {
+                router.push(`${itemPath}/${dataItem._id}`).catch((e) => {
+                  console.log(e);
+                });
+              }}
+              deleteTitle={'Удалить товар из рубрики'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-product-modal',
+                    message: `Вы уверенны, что хотите удалить товар ${dataItem.originalName}?`,
+                    confirm: () => {
+                      showLoading();
+                      deleteProductFromRubricMutation({
+                        variables: {
+                          input: {
+                            rubricId: rubric._id,
+                            productId: dataItem._id,
+                          },
                         },
-                      },
-                    }).catch((e) => console.log(e));
+                      }).catch((e) => console.log(e));
+                    },
                   },
-                },
-              });
-            }}
-          />
+                });
+              }}
+            />
+          </div>
         );
       },
     },
   ];
 
   const catalogueCounterString = React.useMemo(() => {
+    const counter = noNaN(totalDocs);
+
+    if (counter < 1) {
+      return `Найдено ${counter} наименований`;
+    }
     const catalogueCounterPostfix = getNumWord(totalDocs, [
       'наименование',
       'наименования',
       'наименований',
     ]);
-    return `Найдено ${totalDocs} ${catalogueCounterPostfix}`;
+    return `Найдено ${counter} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
   return (
     <CmsRubricLayout rubric={rubric}>
-      <Inner>
+      <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
         <FormikIndividualSearch
+          testId={'products'}
           withReset
           onReset={() => {
             router.push(basePath).catch((e) => console.log(e));
@@ -238,6 +246,8 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
 
             <FixedButtons>
               <Button
+                testId={'create-rubric-product'}
+                size={'small'}
                 onClick={() => {
                   showModal<CreateNewProductModalInterface>({
                     variant: CREATE_NEW_PRODUCT_MODAL,

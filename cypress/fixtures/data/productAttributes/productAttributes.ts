@@ -38,19 +38,23 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           [],
         );
 
-        const selectedOptionsIds = rubricAttributeOptions.reduce((acc: ObjectIdModel[], option) => {
+        const selectedOptionsIds: ObjectIdModel[] = [];
+        const selectedOptionsSlugs: string[] = [];
+        rubricAttributeOptions.forEach((option) => {
           if (cleanOptionSlugs.includes(option.slug)) {
-            return [...acc, option._id];
+            selectedOptionsIds.push(option._id);
+            selectedOptionsSlugs.push(
+              `${rubricAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`,
+            );
           }
-          return acc;
-        }, []);
+        });
 
         return {
           _id: getObjectId(`${product.slug} ${rubricAttribute.slug}`),
           productSlug: product.slug,
           productId: product._id,
           attributeId: rubricAttribute.attributeId,
-          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          selectedOptionsSlugs,
           selectedOptionsIds,
           optionsGroupId: rubricAttribute.optionsGroupId,
           slug: rubricAttribute.slug,

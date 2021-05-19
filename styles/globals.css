@@ -52,6 +52,7 @@
 }
 
 @layer base {
+  /* Form elements */
   .form-select,
   .form-input {
     transition: all 0.2s;
@@ -73,6 +74,17 @@
     padding-right: calc(var(--controlButtonHeight) + 0.5rem);
   }
 
+  /* Snippets */
+  .snippet-image img {
+    filter: drop-shadow(var(--wp-shadow-25));
+  }
+
+  /* Footer */
+  .footer {
+    box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
+  }
+
+  /* Header nav */
   .header-aside {
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
   }
@@ -81,29 +93,29 @@
     clip: rect(0 0 0 0);
   }
 
-  .burger-dropdown {
-    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
-  }
-
-  .snippet-image img {
-    filter: drop-shadow(var(--wp-shadow-25));
-  }
-
-
-  .footer {
-    box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
-  }
-
+  /* Header search */
   .search-mobile-title {
     width: calc(100% - (var(--formInputHeightSmall) * 2));
   }
 
+  /* Table */
   .table-image img {
     height: 40px;
     width: 40px;
     object-fit: contain;
   }
 
+  /* Cms options */
+  .cms-option__controls {
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .cms-option:hover .cms-option__controls {
+    opacity: 1;
+  }
+
+  /* Spinner */
   .spinner-circular {
     animation: rotate 1.5s linear infinite;
     height: 100px;

@@ -36,7 +36,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -55,66 +54,45 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  const router = useRouter();
   const {
     onErrorCallback,
     onCompleteCallback,
     showLoading,
-    hideLoading,
     showErrorNotification,
     showModal,
-  } = useMutationCallbacks({ withModal: true });
+  } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
+  });
 
   const [updateProductBrandMutation] = useUpdateProductBrandMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductBrand }) => {
-      if (updateProductBrand.success) {
-        onCompleteCallback(updateProductBrand);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductBrand.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductBrand),
   });
 
   const [updateProductBrandCollectionMutation] = useUpdateProductBrandCollectionMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductBrandCollection }) => {
-      if (updateProductBrandCollection.success) {
-        onCompleteCallback(updateProductBrandCollection);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductBrandCollection.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductBrandCollection),
   });
 
   const [updateProductManufacturerMutation] = useUpdateProductManufacturerMutation({
     onError: onErrorCallback,
-    onCompleted: ({ updateProductManufacturer }) => {
-      if (updateProductManufacturer.success) {
-        onCompleteCallback(updateProductManufacturer);
-        router.reload();
-      } else {
-        hideLoading();
-        showErrorNotification({ title: updateProductManufacturer.message });
-      }
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateProductManufacturer),
   });
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-brands-list'}>
         <InputLine label={'Бренд'}>
           <FakeInput
             low
+            testId={'brand-input'}
             value={brand ? `${brand.name}` : emptyValue}
             onClick={() => {
               showModal<BrandOptionsModalInterface>({
                 variant: BRAND_OPTIONS_MODAL,
                 props: {
+                  testId: 'brand-options-modal',
                   optionVariant: 'radio',
                   onSubmit: (selectedOptions) => {
                     const brand = selectedOptions[0];
@@ -141,6 +119,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
           {product.brandSlug ? (
             <div className='mt-4'>
               <Button
+                testId={'clear-brand'}
                 onClick={() => {
                   updateProductBrandMutation({
                     variables: {
@@ -163,12 +142,14 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
         <InputLine label={!product.brandSlug ? 'Бренд не назначен' : 'Коллекция бренда'}>
           <FakeInput
             low
+            testId={'brand-collection-input'}
             disabled={!product.brandSlug}
             value={brandCollection ? `${brandCollection.name}` : emptyValue}
             onClick={() => {
               showModal<BrandCollectionOptionsModalInterface>({
                 variant: BRAND_COLLECTION_OPTIONS_MODAL,
                 props: {
+                  testId: 'brand-collection-options-modal',
                   brandSlug: `${product.brandSlug}`,
                   optionVariant: 'radio',
                   onSubmit: (selectedOptions) => {
@@ -196,6 +177,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
           {product.brandCollectionSlug ? (
             <div className='mt-4'>
               <Button
+                testId={'clear-brand-collection'}
                 onClick={() => {
                   updateProductBrandCollectionMutation({
                     variables: {
@@ -218,11 +200,13 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
         <InputLine label={'Производитель'}>
           <FakeInput
             low
+            testId={'manufacturer-input'}
             value={manufacturer ? `${manufacturer.name}` : emptyValue}
             onClick={() => {
               showModal<ManufacturerOptionsModalInterface>({
                 variant: MANUFACTURER_OPTIONS_MODAL,
                 props: {
+                  testId: 'manufacturer-options-modal',
                   optionVariant: 'radio',
                   onSubmit: (selectedOptions) => {
                     const manufacturer = selectedOptions[0];
@@ -244,6 +228,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
           {product.manufacturerSlug ? (
             <div className='mt-4'>
               <Button
+                testId={'clear-manufacturer'}
                 onClick={() => {
                   updateProductManufacturerMutation({
                     variables: {

@@ -27,10 +27,6 @@ const generateSlug = (name: string) => {
   return translit.transform(cleanString, '_');
 };
 
-function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
   if (option.parentId) {
@@ -51,10 +47,66 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
 
 const maxProductsCount = 70;
 
+const manufacturersAttributeSlug = 'manufacturers';
+const brandsAttributeSlug = 'brands';
+const brandCollectionsAttributeSlug = 'brandCollections';
+
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;
 
+  interface AddedAttributeInterface {
+    attributeSlug: string;
+    optionIndex: number;
+  }
+
+  let addedAttributes: AddedAttributeInterface[] = [];
   const rubricProducts: ProductModel[] = [];
+
+  interface GetAddedAttributeInterface {
+    attributeSlug: string;
+  }
+
+  function getAddedAttributeOptionIndex({ attributeSlug }: GetAddedAttributeInterface): number {
+    const addedAttribute = addedAttributes.find((addedAttributeItem) => {
+      return addedAttributeItem.attributeSlug === attributeSlug;
+    });
+
+    if (addedAttribute) {
+      return addedAttribute.optionIndex + 1;
+    }
+    return 0;
+  }
+
+  interface GetNextOptionIndexInterface extends GetAddedAttributeInterface {
+    optionsLength: number;
+  }
+
+  function getNextOptionIndex({ optionsLength, ...props }: GetNextOptionIndexInterface): number {
+    const currentIndex = getAddedAttributeOptionIndex(props);
+    if (optionsLength === currentIndex) {
+      return 0;
+    }
+
+    return currentIndex;
+  }
+
+  function setAddedOptionIndex({ attributeSlug, optionIndex }: AddedAttributeInterface) {
+    const addedAttributeIndex = addedAttributes.findIndex((addedAttribute) => {
+      return addedAttribute.attributeSlug === attributeSlug;
+    });
+
+    if (addedAttributeIndex > -1) {
+      addedAttributes[addedAttributeIndex] = {
+        attributeSlug,
+        optionIndex,
+      };
+    } else {
+      addedAttributes.push({
+        attributeSlug,
+        optionIndex,
+      });
+    }
+  }
 
   for (let i = 1; i <= maxProductsCount; i = i + 1) {
     const selectedAttributesIds: ObjectIdModel[] = [];
@@ -69,7 +121,14 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
         });
 
         if (attribute.slug === 'region') {
-          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const randomOptionIndex = getNextOptionIndex({
+            optionsLength: attributeOptions.length,
+            attributeSlug: attribute.slug,
+          });
+          setAddedOptionIndex({
+            attributeSlug: attribute.slug,
+            optionIndex: randomOptionIndex,
+          });
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
             const regionOptionsTree = getOptionsTree(selectedOption, [selectedOption]);
@@ -81,7 +140,15 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
         }
 
         if (attribute.variant === ATTRIBUTE_VARIANT_SELECT) {
-          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const randomOptionIndex = getNextOptionIndex({
+            optionsLength: attributeOptions.length,
+            attributeSlug: attribute.slug,
+          });
+
+          setAddedOptionIndex({
+            attributeSlug: attribute.slug,
+            optionIndex: randomOptionIndex,
+          });
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
             selectedOptionsSlugs.push(
@@ -92,14 +159,30 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
         }
 
         if (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
-          const randomOptionIndex = randomNumber(0, attributeOptions.length - 1);
+          const randomOptionIndex = getNextOptionIndex({
+            optionsLength: attributeOptions.length,
+            attributeSlug: attribute.slug,
+          });
+          setAddedOptionIndex({
+            attributeSlug: attribute.slug,
+            optionIndex: randomOptionIndex,
+          });
           const selectedOption = attributeOptions[randomOptionIndex];
-          const nextSelectedOption = attributeOptions[randomOptionIndex + 1];
           if (selectedOption) {
             selectedOptionsSlugs.push(
               `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
             );
           }
+
+          const randomOptionIndexB = getNextOptionIndex({
+            optionsLength: attributeOptions.length,
+            attributeSlug: attribute.slug,
+          });
+          setAddedOptionIndex({
+            attributeSlug: attribute.slug,
+            optionIndex: randomOptionIndexB,
+          });
+          const nextSelectedOption = attributeOptions[randomOptionIndexB];
           if (nextSelectedOption) {
             selectedOptionsSlugs.push(
               `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${nextSelectedOption.slug}`,
@@ -114,16 +197,40 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
     const itemId = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug} ${itemId}`;
 
-    const manufacturerIndex = randomNumber(0, manufacturers.length);
-    const brandIndex = randomNumber(0, brands.length);
-
+    // manufacturer
+    const manufacturerIndex = getNextOptionIndex({
+      optionsLength: manufacturers.length,
+      attributeSlug: manufacturersAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: manufacturersAttributeSlug,
+      optionIndex: manufacturerIndex,
+    });
     const manufacturer = manufacturers[manufacturerIndex];
+
+    // brand
+    const brandIndex = getNextOptionIndex({
+      optionsLength: brands.length,
+      attributeSlug: brandsAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: brandsAttributeSlug,
+      optionIndex: brandIndex,
+    });
     const brand = brands[brandIndex];
 
+    // brand collection
     const currentBrandCollections = brandCollections.filter(({ brandSlug }) => {
       return brand && brand.slug === brandSlug;
     });
-    const brandCollectionIndex = randomNumber(0, currentBrandCollections.length);
+    const brandCollectionIndex = getNextOptionIndex({
+      optionsLength: currentBrandCollections.length,
+      attributeSlug: brandCollectionsAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: brandCollectionsAttributeSlug,
+      optionIndex: brandCollectionIndex,
+    });
     const brandCollection = currentBrandCollections[brandCollectionIndex];
 
     rubricProducts.push({

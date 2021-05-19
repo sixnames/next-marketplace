@@ -138,6 +138,9 @@ export interface OptionInterface extends OptionModel {
 
 export interface OptionsGroupInterface extends OptionsGroupModel {
   name?: string | null;
+  variantName?: string | null;
+  optionsCount?: number | null;
+  options?: OptionInterface[] | null;
 }
 
 export interface ProductConnectionItemInterface extends ProductConnectionItemModel {

@@ -17,7 +17,7 @@ describe('Admin orders', () => {
     cy.makeAnOrder({
       // mockData,
       orderFields,
-      /*callback: ({ orderItemId }) => {
+      callback: ({ orderItemId }) => {
         // Should display all orders list
         cy.testAuth(`/cms/orders`);
         cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerName);
@@ -26,7 +26,7 @@ describe('Admin orders', () => {
         // Should navigate to the order details
         cy.getByCy(`order-${orderItemId}-link`).click();
         cy.getByCy(`order-details`).should('exist');
-      },*/
+      },
     });
   });
 });

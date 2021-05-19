@@ -5,8 +5,6 @@ import {
   objectIdSchema,
   requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
-import { GENDER_ENUMS } from 'config/common';
-import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
 
 // Options group schemas
 export const optionsGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
@@ -49,9 +47,6 @@ export const optionInGroupCommonSchema = (args: ValidationSchemaArgsInterface) =
     slug: 'validation.option.name',
   }),
   color: colorSchema(args),
-  gender: Yup.mixed()
-    .oneOf(GENDER_ENUMS)
-    .required(getFieldValidationMessage({ ...args, slug: 'validation.option.gender' })),
 });
 
 export const addOptionToGroupSchema = (args: ValidationSchemaArgsInterface) => {

@@ -63,9 +63,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
         <TagName
           {...labelTagProps}
           className={`flex items-start min-h-[1.3rem] mb-2 font-medium text-secondary-text ${
-            isHorizontal
-              ? 'md:w-[220px] pt-1 flex-shrink-0'
-              : 'whitespace-nowrap overflow-hidden whitespace-nowrap overflow-ellipsis'
+            isHorizontal ? 'md:w-[220px] pt-1 flex-shrink-0' : 'truncate'
           } ${labelClass ? labelClass : ''}`}
         >
           {label}

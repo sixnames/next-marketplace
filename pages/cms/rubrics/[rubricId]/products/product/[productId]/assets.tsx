@@ -54,7 +54,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
 
   return (
     <CmsProductLayout product={product}>
-      <Inner>
+      <Inner testId={'product-assets-list'}>
         <AssetsManager
           initialAssets={product.assets?.assets || []}
           assetsTitle={product.originalName}

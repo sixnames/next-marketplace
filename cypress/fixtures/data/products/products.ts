@@ -27,10 +27,6 @@ const generateSlug = (name: string) => {
   return translit.transform(cleanString, '_');
 };
 
-function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
   if (option.parentId) {
@@ -50,6 +46,10 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
 }
 
 const maxProductsCount = 70;
+
+const manufacturersAttributeSlug = 'manufacturers';
+const brandsAttributeSlug = 'brands';
+const brandCollectionsAttributeSlug = 'brandCollections';
 
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;
@@ -197,16 +197,40 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
     const itemId = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug} ${itemId}`;
 
-    const manufacturerIndex = randomNumber(0, manufacturers.length);
-    const brandIndex = randomNumber(0, brands.length);
-
+    // manufacturer
+    const manufacturerIndex = getNextOptionIndex({
+      optionsLength: manufacturers.length,
+      attributeSlug: manufacturersAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: manufacturersAttributeSlug,
+      optionIndex: manufacturerIndex,
+    });
     const manufacturer = manufacturers[manufacturerIndex];
+
+    // brand
+    const brandIndex = getNextOptionIndex({
+      optionsLength: brands.length,
+      attributeSlug: brandsAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: brandsAttributeSlug,
+      optionIndex: brandIndex,
+    });
     const brand = brands[brandIndex];
 
+    // brand collection
     const currentBrandCollections = brandCollections.filter(({ brandSlug }) => {
       return brand && brand.slug === brandSlug;
     });
-    const brandCollectionIndex = randomNumber(0, currentBrandCollections.length);
+    const brandCollectionIndex = getNextOptionIndex({
+      optionsLength: currentBrandCollections.length,
+      attributeSlug: brandCollectionsAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: brandCollectionsAttributeSlug,
+      optionIndex: brandCollectionIndex,
+    });
     const brandCollection = currentBrandCollections[brandCollectionIndex];
 
     rubricProducts.push({

@@ -32,6 +32,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   RoleModel,
+  RoleRuleModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricCatalogueTitleModel,
@@ -198,11 +199,19 @@ export interface ProductInterface extends ProductModel {
   selectAttributesAST?: ProductAttributesGroupASTInterface | null;
 }
 
-export interface RoleInterface extends RoleModel {
+export interface RoleRuleInterface extends RoleRuleModel {
   name?: string | null;
-  navItems?: NavItemModel[];
-  appNavigation?: NavItemModel[];
-  cmsNavigation?: NavItemModel[];
+  description?: string | null;
+  role?: RoleInterface | null;
+}
+
+export interface RoleInterface extends RoleModel {
+  rules?: RoleRuleInterface[] | null;
+  name?: string | null;
+  description?: string | null;
+  navItems?: NavItemInterface[];
+  appNavigation?: NavItemInterface[];
+  cmsNavigation?: NavItemInterface[];
 }
 
 export interface RubricVariantInterface extends RubricVariantModel {

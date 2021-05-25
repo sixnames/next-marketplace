@@ -499,21 +499,20 @@ export interface ProductCardBreadcrumbModel {
 }
 
 export interface RoleRuleModel {
-  operationName: string;
+  _id: ObjectIdModel;
+  slug: string;
   allow: boolean;
-  customFilter?: string | null;
+  nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel;
+  roleId: ObjectIdModel;
 }
 
-export interface RoleBase {
+export interface RoleModel extends TimestampModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  description?: string | null;
+  descriptionI18n?: TranslationModel;
   slug: string;
   isStaff: boolean;
-}
-
-export interface RoleModel extends RoleBase, TimestampModel {
-  rules: RoleRuleModel[];
   allowedAppNavigation: ObjectIdModel[];
 }
 
@@ -627,6 +626,7 @@ export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
+export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;

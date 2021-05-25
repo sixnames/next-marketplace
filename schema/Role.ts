@@ -13,7 +13,19 @@ export const Role = objectType({
     t.nonNull.string('slug');
     t.nonNull.boolean('isStaff');
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
+    t.nonNull.list.nonNull.field('roles', {
+      type: 'RoleRule',
+    });
+
+    // Role description field resolver
+    t.nonNull.field('description', {
+      type: 'String',
+      resolve: async (source, _args, context): Promise<string> => {
+        const { getFieldLocale } = await getRequestParams(context);
+        return getFieldLocale(source.descriptionI18n);
+      },
+    });
 
     // Role name field resolver
     t.nonNull.field('name', {

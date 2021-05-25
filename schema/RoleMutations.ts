@@ -23,7 +23,7 @@ export const CreateRoleInput = inputObjectType({
   name: 'CreateRoleInput',
   definition(t) {
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
   },
 });
@@ -33,7 +33,7 @@ export const UpdateRoleInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('roleId');
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
   },
 });
@@ -86,7 +86,6 @@ export const RoleMutations = extendType({
             allowedAppNavigation: [],
             updatedAt: new Date(),
             createdAt: new Date(),
-            rules: [],
           });
           const createdRole = createdRoleResult.ops[0];
           if (!createdRoleResult.result.ok || !createdRole) {

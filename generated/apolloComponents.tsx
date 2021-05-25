@@ -1707,8 +1707,6 @@ export type ProductsPaginationInput = {
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Filter by excluded selected options slugs */
   excludedOptionsSlugs?: Maybe<Array<Scalars['String']>>;
-  /** Filter by excluded selected options id */
-  excludedOptionsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude products in current rubrics */
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude current products */
@@ -3965,35 +3963,6 @@ export type GetOptionsGroupQuery = (
   ) }
 );
 
-export type CmsRoleFragment = (
-  { __typename?: 'Role' }
-  & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff' | 'description' | 'nameI18n'>
-);
-
-export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllRolesQuery = (
-  { __typename?: 'Query' }
-  & { getAllRoles: Array<(
-    { __typename?: 'Role' }
-    & CmsRoleFragment
-  )> }
-);
-
-export type GetRoleQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetRoleQuery = (
-  { __typename?: 'Query' }
-  & { getRole?: Maybe<(
-    { __typename?: 'Role' }
-    & CmsRoleFragment
-  )> }
-);
-
 export type RubricVariantFragment = (
   { __typename?: 'RubricVariant' }
   & Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>
@@ -4546,16 +4515,6 @@ export const OptionsGroupFragmentDoc = gql`
   }
 }
     ${OptionInGroupFragmentDoc}`;
-export const CmsRoleFragmentDoc = gql`
-    fragment CmsRole on Role {
-  _id
-  name
-  slug
-  isStaff
-  description
-  nameI18n
-}
-    `;
 export const RubricVariantFragmentDoc = gql`
     fragment RubricVariant on RubricVariant {
   _id
@@ -7730,75 +7689,6 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetAllRolesDocument = gql`
-    query GetAllRoles {
-  getAllRoles {
-    ...CmsRole
-  }
-}
-    ${CmsRoleFragmentDoc}`;
-
-/**
- * __useGetAllRolesQuery__
- *
- * To run a query within a React component, call `useGetAllRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllRolesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllRolesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, options);
-      }
-export function useGetAllRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, options);
-        }
-export type GetAllRolesQueryHookResult = ReturnType<typeof useGetAllRolesQuery>;
-export type GetAllRolesLazyQueryHookResult = ReturnType<typeof useGetAllRolesLazyQuery>;
-export type GetAllRolesQueryResult = Apollo.QueryResult<GetAllRolesQuery, GetAllRolesQueryVariables>;
-export const GetRoleDocument = gql`
-    query GetRole($_id: ObjectId!) {
-  getRole(_id: $_id) {
-    ...CmsRole
-  }
-}
-    ${CmsRoleFragmentDoc}`;
-
-/**
- * __useGetRoleQuery__
- *
- * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRoleQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetRoleQuery(baseOptions: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-      }
-export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-        }
-export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
-export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
-export type GetRoleQueryResult = Apollo.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

@@ -665,6 +665,15 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateRoleRuleInput: {
+    // input type
+    allow: boolean; // Boolean!
+    description?: string | null; // String
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    roleId: NexusGenScalars['ObjectId']; // ObjectId!
+    roleRuleId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+  };
   UpdateRubricInput: {
     // input type
     active: boolean; // Boolean!
@@ -808,6 +817,13 @@ export interface NexusGenObjects {
   Query: {};
   Role: dbModels.RoleModel;
   RolePayload: dbModels.RolePayloadModel;
+  RoleRule: dbModels.RoleRuleModel;
+  RoleRulePayload: {
+    // root type
+    message: string; // String!
+    payload?: NexusGenRootTypes['RoleRule'] | null; // RoleRule
+    success: boolean; // Boolean!
+  };
   Rubric: dbModels.RubricModel;
   RubricAttribute: dbModels.RubricAttributeModel;
   RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
@@ -1567,6 +1583,22 @@ export interface NexusGenFieldTypes {
     // field return type
     message: string; // String!
     payload: NexusGenRootTypes['Role'] | null; // Role
+    success: boolean; // Boolean!
+  };
+  RoleRule: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    allow: boolean; // Boolean!
+    description: string | null; // String
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    roleId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+  };
+  RoleRulePayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['RoleRule'] | null; // RoleRule
     success: boolean; // Boolean!
   };
   Rubric: {
@@ -2533,6 +2565,22 @@ export interface NexusGenFieldTypeNames {
     payload: 'Role';
     success: 'Boolean';
   };
+  RoleRule: {
+    // field return type name
+    _id: 'ObjectId';
+    allow: 'Boolean';
+    description: 'String';
+    name: 'String';
+    nameI18n: 'JSONObject';
+    roleId: 'ObjectId';
+    slug: 'String';
+  };
+  RoleRulePayload: {
+    // field return type name
+    message: 'String';
+    payload: 'RoleRule';
+    success: 'Boolean';
+  };
   Rubric: {
     // field return type name
     _id: 'ObjectId';
@@ -3355,6 +3403,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'OptionsGroupPayload'
     | 'ProductPayload'
     | 'RolePayload'
+    | 'RoleRulePayload'
     | 'RubricPayload'
     | 'RubricVariantPayload'
     | 'ShopPayload'
@@ -3410,6 +3459,7 @@ export interface NexusGenTypeInterfaces {
   ProductPayload: 'Payload';
   Role: 'Timestamp';
   RolePayload: 'Payload';
+  RoleRulePayload: 'Payload';
   RubricPayload: 'Payload';
   RubricVariantPayload: 'Payload';
   Shop: 'Base' | 'Timestamp';

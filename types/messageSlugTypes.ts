@@ -131,16 +131,28 @@ export type MessageSlug =
   | 'roles.delete.usersUpdateError'
   | 'roles.delete.error'
   | 'roles.delete.success'
-  | 'roles.permissions.notFound'
-  | 'roles.permissions.error'
-  | 'roles.permissions.success'
   // Roles validation
   | 'validation.roles.id'
   | 'validation.roles.name'
   | 'validation.roles.description'
   | 'validation.roles.ruleId'
   | 'validation.roles.navItemId'
-  | 'validation.roles.operationId'
+
+  // Role rules ----------
+  | 'roleRules.create.duplicate'
+  | 'roleRules.create.error'
+  | 'roleRules.create.success'
+  | 'roleRules.update.duplicate'
+  | 'roleRules.update.error'
+  | 'roleRules.update.success'
+  | 'roleRules.delete.notFound'
+  | 'roleRules.delete.error'
+  | 'roleRules.delete.success'
+  // Role rules validation
+  | 'validation.roleRules.id'
+  | 'validation.roleRules.name'
+  | 'validation.roleRules.description'
+  | 'validation.roleRules.roleId'
 
   // Users ----------
   | 'users.create.duplicate'

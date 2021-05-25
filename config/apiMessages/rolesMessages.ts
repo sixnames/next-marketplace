@@ -93,27 +93,8 @@ export const rolesMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Role removed.`,
     },
   },
-  {
-    slug: 'roles.permissions.notFound',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Роль не найдена.`,
-      [SECONDARY_LOCALE]: `Role not found.`,
-    },
-  },
-  {
-    slug: 'roles.permissions.error',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Ошибка обновления прав доступа роли.`,
-      [SECONDARY_LOCALE]: `Role permissions update error.`,
-    },
-  },
-  {
-    slug: 'roles.permissions.success',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Права доступа обновлены.`,
-      [SECONDARY_LOCALE]: `Role permissions updated.`,
-    },
-  },
+
+  // role validation
   {
     slug: 'validation.roles.id',
     messageI18n: {
@@ -149,11 +130,69 @@ export const rolesMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Nav item ID is required.`,
     },
   },
+
+  // role rule
   {
-    slug: 'validation.roles.operationId',
+    slug: 'roleRules.create.duplicate',
     messageI18n: {
-      [DEFAULT_LOCALE]: `ID операции обязательно к заполнению.`,
-      [SECONDARY_LOCALE]: `Role rule operation ID is required.`,
+      [DEFAULT_LOCALE]: `Правило роли с данным названием или slug уже существует`,
+      [SECONDARY_LOCALE]: `Role rule with the same name or slug already exist`,
+    },
+  },
+  {
+    slug: 'roleRules.create.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка создания правила роли`,
+      [SECONDARY_LOCALE]: `Role rule create error`,
+    },
+  },
+  {
+    slug: 'roleRules.create.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Правило роли создано`,
+      [SECONDARY_LOCALE]: `Role rule created`,
+    },
+  },
+  {
+    slug: 'roleRules.update.duplicate',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Правило роли с данным названием или slug уже существует`,
+      [SECONDARY_LOCALE]: `Role rule with the same name or slug already exist`,
+    },
+  },
+  {
+    slug: 'roleRules.update.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка обновления правила роли`,
+      [SECONDARY_LOCALE]: `Role rule update error`,
+    },
+  },
+  {
+    slug: 'roleRules.update.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Правило роли обновлено`,
+      [SECONDARY_LOCALE]: `Role rule updated`,
+    },
+  },
+  {
+    slug: 'roleRules.delete.notFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Правило роли не нейдено`,
+      [SECONDARY_LOCALE]: `Role rule not found`,
+    },
+  },
+  {
+    slug: 'roleRules.delete.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка удаления правила роли`,
+      [SECONDARY_LOCALE]: `Role rule delete error`,
+    },
+  },
+  {
+    slug: 'roleRules.delete.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Правило роли удалено`,
+      [SECONDARY_LOCALE]: `Role rule removed`,
     },
   },
 ];

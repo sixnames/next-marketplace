@@ -1,6 +1,11 @@
+import { COL_ROLE_RULES } from 'db/collectionNames';
 import { RoleRulePayloadModel } from 'db/dbModels';
+import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { getDatabase } from 'db/mongodb';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import { updateRoleRuleSchema } from 'validation/roleSchema';
 
 export const RoleRule = objectType({
   name: 'RoleRule',
@@ -68,11 +73,69 @@ export const RoleRuleMutations = extendType({
           }),
         ),
       },
-      resolve: async (): Promise<RoleRulePayloadModel> => {
-        return {
-          success: false,
-          message: '',
-        };
+      resolve: async (_root, args, context): Promise<RoleRulePayloadModel> => {
+        try {
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updateRoleRuleSchema,
+          });
+          await validationSchema.validate(args.input);
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const roleRulesCollection = db.collection(COL_ROLE_RULES);
+
+          // Check if role already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_ROLE_RULES,
+            fieldName: 'nameI18n',
+            fieldArg: args.input.nameI18n,
+            additionalQuery: {
+              _id: {
+                $ne: args.input._id,
+                roleId: args.input.roleId,
+              },
+            },
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('roleRules.update.duplicate'),
+            };
+          }
+
+          const { _id, ...values } = args.input;
+
+          const updatedRoleRuleResult = await roleRulesCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              ...values,
+            },
+            {
+              returnOriginal: false,
+              upsert: true,
+            },
+          );
+          const updatedRoleRule = updatedRoleRuleResult.value;
+          if (!updatedRoleRuleResult.ok || !updatedRoleRule) {
+            return {
+              success: false,
+              message: await getApiMessage('roleRules.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('roleRules.update.success'),
+            payload: updatedRoleRule,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
       },
     });
   },

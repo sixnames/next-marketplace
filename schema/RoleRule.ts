@@ -92,8 +92,8 @@ export const RoleRuleMutations = extendType({
             additionalQuery: {
               _id: {
                 $ne: args.input._id,
-                roleId: args.input.roleId,
               },
+              roleId: args.input.roleId,
             },
           });
           if (exist) {

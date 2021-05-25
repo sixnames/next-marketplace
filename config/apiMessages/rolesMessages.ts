@@ -110,20 +110,6 @@ export const rolesMessages: MessageBaseInterface[] = [
     },
   },
   {
-    slug: 'validation.roles.description',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Описание роли обязательно к заполнению.`,
-      [SECONDARY_LOCALE]: `Role description is required.`,
-    },
-  },
-  {
-    slug: 'validation.roles.ruleId',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `ID правила роли обязательно к заполнению.`,
-      [SECONDARY_LOCALE]: `Role rule ID is required.`,
-    },
-  },
-  {
     slug: 'validation.roles.navItemId',
     messageI18n: {
       [DEFAULT_LOCALE]: `ID навигации обязательно к заполнению.`,
@@ -193,6 +179,36 @@ export const rolesMessages: MessageBaseInterface[] = [
     messageI18n: {
       [DEFAULT_LOCALE]: `Правило роли удалено`,
       [SECONDARY_LOCALE]: `Role rule removed`,
+    },
+  },
+
+  // role rule validation
+  {
+    slug: 'validation.roleRules.id',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `ID правила роли обязательно к заполнению.`,
+      [SECONDARY_LOCALE]: `Role rule ID is required.`,
+    },
+  },
+  {
+    slug: 'validation.roleRules.name',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Название роли обязательно к заполнению.`,
+      [SECONDARY_LOCALE]: `Role rule name is required.`,
+    },
+  },
+  {
+    slug: 'validation.roleRules.roleId',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `ID роли обязательно к заполнению.`,
+      [SECONDARY_LOCALE]: `Role ID is required.`,
+    },
+  },
+  {
+    slug: 'validation.rolesRule.slug',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Slug правила роли обязателен к заполнению.`,
+      [SECONDARY_LOCALE]: `Role rule slug is required.`,
     },
   },
 ];

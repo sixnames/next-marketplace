@@ -134,8 +134,6 @@ export type MessageSlug =
   // Roles validation
   | 'validation.roles.id'
   | 'validation.roles.name'
-  | 'validation.roles.description'
-  | 'validation.roles.ruleId'
   | 'validation.roles.navItemId'
 
   // Role rules ----------
@@ -151,7 +149,7 @@ export type MessageSlug =
   // Role rules validation
   | 'validation.roleRules.id'
   | 'validation.roleRules.name'
-  | 'validation.roleRules.description'
+  | 'validation.rolesRule.slug'
   | 'validation.roleRules.roleId'
 
   // Users ----------

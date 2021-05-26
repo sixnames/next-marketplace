@@ -718,7 +718,6 @@ type MessagesGroup {
   Returns all messages for current current group
   """
   messages: [Message!]!
-  messagesIds: [ObjectId!]!
   name: String!
 }
 
@@ -1826,7 +1825,6 @@ type Role implements Timestamp {
   isStaff: Boolean!
   name: String!
   nameI18n: JSONObject!
-  roles: [RoleRule!]!
   slug: String!
   updatedAt: Date!
 }

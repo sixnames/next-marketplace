@@ -110,7 +110,7 @@ export const RoleRuleMutations = extendType({
               _id,
             },
             {
-              ...values,
+              $set: values,
             },
             {
               returnOriginal: false,

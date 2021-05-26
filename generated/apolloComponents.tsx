@@ -537,7 +537,7 @@ export type CreateProductInput = {
 
 export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
 };
 
@@ -750,7 +750,6 @@ export type MessagesGroup = {
   __typename?: 'MessagesGroup';
   _id: Scalars['ObjectId'];
   name: Scalars['String'];
-  messagesIds: Array<Scalars['ObjectId']>;
   /** Returns all messages for current current group */
   messages: Array<Message>;
 };
@@ -823,6 +822,8 @@ export type Mutation = {
   deleteCityFromCountry: CountryPayload;
   /** Should update config */
   updateConfig: ConfigPayload;
+  /** Should update role rule */
+  updateRoleRule: RoleRulePayload;
   /** Should create role */
   createRole: RolePayload;
   /** Should update role */
@@ -1064,6 +1065,11 @@ export type MutationDeleteCityFromCountryArgs = {
 
 export type MutationUpdateConfigArgs = {
   input: UpdateConfigInput;
+};
+
+
+export type MutationUpdateRoleRuleArgs = {
+  input: UpdateRoleRuleInput;
 };
 
 
@@ -2042,7 +2048,8 @@ export type Role = Timestamp & {
   slug: Scalars['String'];
   isStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  description: Scalars['String'];
   name: Scalars['String'];
   appNavigation: Array<NavItem>;
   cmsNavigation: Array<NavItem>;
@@ -2053,6 +2060,25 @@ export type RolePayload = Payload & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Role>;
+};
+
+export type RoleRule = {
+  __typename?: 'RoleRule';
+  _id: Scalars['ObjectId'];
+  slug: Scalars['String'];
+  allow: Scalars['Boolean'];
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  roleId: Scalars['ObjectId'];
+  description: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type RoleRulePayload = Payload & {
+  __typename?: 'RoleRulePayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<RoleRule>;
 };
 
 export type Rubric = {
@@ -2484,8 +2510,17 @@ export type UpdateProductTextAttributeItemInput = {
 export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
+};
+
+export type UpdateRoleRuleInput = {
+  _id: Scalars['ObjectId'];
+  slug: Scalars['String'];
+  allow: Scalars['Boolean'];
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  roleId: Scalars['ObjectId'];
 };
 
 export type UpdateRubricInput = {
@@ -3446,6 +3481,19 @@ export type DeleteRoleMutation = (
   & { deleteRole: (
     { __typename?: 'RolePayload' }
     & Pick<RolePayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateRoleRuleMutationVariables = Exact<{
+  input: UpdateRoleRuleInput;
+}>;
+
+
+export type UpdateRoleRuleMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRoleRule: (
+    { __typename?: 'RoleRulePayload' }
+    & Pick<RoleRulePayload, 'success' | 'message'>
   ) }
 );
 
@@ -6690,6 +6738,40 @@ export function useDeleteRoleMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
 export type DeleteRoleMutationResult = Apollo.MutationResult<DeleteRoleMutation>;
 export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
+export const UpdateRoleRuleDocument = gql`
+    mutation UpdateRoleRule($input: UpdateRoleRuleInput!) {
+  updateRoleRule(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleRuleMutationFn = Apollo.MutationFunction<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+
+/**
+ * __useUpdateRoleRuleMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleRuleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleRuleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleRuleMutation, { data, loading, error }] = useUpdateRoleRuleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleRuleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>(UpdateRoleRuleDocument, options);
+      }
+export type UpdateRoleRuleMutationHookResult = ReturnType<typeof useUpdateRoleRuleMutation>;
+export type UpdateRoleRuleMutationResult = Apollo.MutationResult<UpdateRoleRuleMutation>;
+export type UpdateRoleRuleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {

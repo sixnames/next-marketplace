@@ -84,6 +84,7 @@ export async function getRoleRulesAst({
         _id: existingRule._id,
         name: getFieldStringLocale(base.nameI18n, locale),
         description: getFieldStringLocale(base.descriptionI18n, locale),
+        allow: existingRule.allow,
       },
     ];
   }, []);

@@ -1174,7 +1174,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     messages: NexusGenRootTypes['Message'][]; // [Message!]!
-    messagesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     name: string; // String!
   };
   Metric: {
@@ -1573,7 +1572,6 @@ export interface NexusGenFieldTypes {
     isStaff: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    roles: NexusGenRootTypes['RoleRule'][]; // [RoleRule!]!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
@@ -2158,7 +2156,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     messages: 'Message';
-    messagesIds: 'ObjectId';
     name: 'String';
   };
   Metric: {
@@ -2557,7 +2554,6 @@ export interface NexusGenFieldTypeNames {
     isStaff: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';
-    roles: 'RoleRule';
     slug: 'String';
     updatedAt: 'Date';
   };

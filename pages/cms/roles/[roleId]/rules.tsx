@@ -6,6 +6,8 @@ import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
+import { useUpdateRoleRuleMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -24,6 +26,15 @@ interface RoleRulesConsumerInterface {
 }
 
 const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+
+  const [updateRoleRuleMutation] = useUpdateRoleRuleMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.updateRoleRule),
+  });
+
   const navConfig = React.useMemo<NavItemInterface[]>(() => {
     return [
       {
@@ -50,13 +61,25 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     {
       headTitle: 'Разрешено',
       accessor: 'allow',
-      render: ({ cellData }) => {
+      render: ({ cellData, dataItem }) => {
         return (
           <Checkbox
-            value={cellData}
+            checked={cellData}
             name={'allow'}
             onChange={(e: React.ChangeEvent<any>) => {
-              console.log(e.target.checked);
+              showLoading();
+              updateRoleRuleMutation({
+                variables: {
+                  input: {
+                    _id: dataItem._id,
+                    allow: e.target.checked,
+                    slug: dataItem.slug,
+                    descriptionI18n: dataItem.descriptionI18n,
+                    nameI18n: dataItem.nameI18n,
+                    roleId: dataItem.roleId,
+                  },
+                },
+              }).catch(console.log);
             }}
           />
         );

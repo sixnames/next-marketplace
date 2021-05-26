@@ -125,13 +125,15 @@ export const ConfigMutations = extendType({
           const db = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
-          const { _id } = input;
+          const { _id, ...values } = input;
 
           // Update config
           const updatedConfigResult = await configsCollection.findOneAndUpdate(
-            { _id },
             {
-              $set: input,
+              _id,
+            },
+            {
+              $set: values,
             },
             {
               returnOriginal: false,

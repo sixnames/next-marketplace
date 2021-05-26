@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
-import { MessageBaseInterface } from 'db/uiInterfaces';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../../config/common';
+import { MessageBaseInterface } from '../../../db/uiInterfaces';
 
 export const currenciesMessages: MessageBaseInterface[] = [
   {
@@ -59,7 +59,7 @@ export const currenciesMessages: MessageBaseInterface[] = [
     },
   },
   {
-    slug: 'currencies.delete.error',
+    slug: 'currencies.delete.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Валюта удалена.`,
       [SECONDARY_LOCALE]: `Currency removed.`,

@@ -314,12 +314,12 @@ export interface MessageBase {
 
 export interface MessageModel extends MessageBase {
   _id: ObjectIdModel;
+  messagesGroupId: ObjectIdModel;
 }
 
 export interface MessagesGroupModel {
   _id: ObjectIdModel;
-  name: string;
-  messagesIds: ObjectIdModel[];
+  nameI18n: TranslationModel;
 }
 
 export interface MetricModel {

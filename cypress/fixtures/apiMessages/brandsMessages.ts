@@ -1,5 +1,5 @@
-import { MessageBaseInterface } from 'db/uiInterfaces';
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../common';
+import { MessageBaseInterface } from '../../../db/uiInterfaces';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../../config/common';
 
 export const brandsMessages: MessageBaseInterface[] = [
   {

@@ -5,13 +5,42 @@ import { RoleRuleInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 
-const baseRoleRules: RoleRuleBase[] = [
+export type RoleRuleSlugType =
+  | 'createUser'
+  | 'updateUser'
+  | 'updateUserRole'
+  | 'deleteUser'
+  | 'createProduct'
+  | 'updateProduct'
+  | 'deleteProduct';
+
+interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
+  slug: RoleRuleSlugType;
+}
+
+const baseRoleRules: RoleRuleBaseExtended[] = [
   {
     allow: false,
     slug: 'createProduct',
     descriptionI18n: {},
     nameI18n: {
       ru: 'Создание товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление товара',
     },
   },
 ];

@@ -291,7 +291,7 @@ export interface NexusGenInputs {
   };
   CreateRoleInput: {
     // input type
-    description?: string | null; // String
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -660,18 +660,18 @@ export interface NexusGenInputs {
   };
   UpdateRoleInput: {
     // input type
-    description?: string | null; // String
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRoleRuleInput: {
     // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     allow: boolean; // Boolean!
-    description?: string | null; // String
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
-    roleRuleId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
   };
   UpdateRubricInput: {
@@ -818,12 +818,7 @@ export interface NexusGenObjects {
   Role: dbModels.RoleModel;
   RolePayload: dbModels.RolePayloadModel;
   RoleRule: dbModels.RoleRuleModel;
-  RoleRulePayload: {
-    // root type
-    message: string; // String!
-    payload?: NexusGenRootTypes['RoleRule'] | null; // RoleRule
-    success: boolean; // Boolean!
-  };
+  RoleRulePayload: dbModels.RoleRulePayloadModel;
   Rubric: dbModels.RubricModel;
   RubricAttribute: dbModels.RubricAttributeModel;
   RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
@@ -1295,6 +1290,7 @@ export interface NexusGenFieldTypes {
     updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
+    updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -1572,10 +1568,12 @@ export interface NexusGenFieldTypes {
     appNavigation: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     cmsNavigation: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     createdAt: NexusGenScalars['Date']; // Date!
-    description: string | null; // String
+    description: string; // String!
+    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     isStaff: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    roles: NexusGenRootTypes['RoleRule'][]; // [RoleRule!]!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
@@ -1589,7 +1587,8 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     allow: boolean; // Boolean!
-    description: string | null; // String
+    description: string; // String!
+    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -2275,6 +2274,7 @@ export interface NexusGenFieldTypeNames {
     updateProductSelectAttribute: 'ProductPayload';
     updateProductTextAttribute: 'ProductPayload';
     updateRole: 'RolePayload';
+    updateRoleRule: 'RoleRulePayload';
     updateRubric: 'RubricPayload';
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
@@ -2553,9 +2553,11 @@ export interface NexusGenFieldTypeNames {
     cmsNavigation: 'NavItem';
     createdAt: 'Date';
     description: 'String';
+    descriptionI18n: 'JSONObject';
     isStaff: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';
+    roles: 'RoleRule';
     slug: 'String';
     updatedAt: 'Date';
   };
@@ -2570,6 +2572,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     allow: 'Boolean';
     description: 'String';
+    descriptionI18n: 'JSONObject';
     name: 'String';
     nameI18n: 'JSONObject';
     roleId: 'ObjectId';
@@ -3172,6 +3175,10 @@ export interface NexusGenArgTypes {
     updateRole: {
       // args
       input: NexusGenInputs['UpdateRoleInput']; // UpdateRoleInput!
+    };
+    updateRoleRule: {
+      // args
+      input: NexusGenInputs['UpdateRoleRuleInput']; // UpdateRoleRuleInput!
     };
     updateRubric: {
       // args

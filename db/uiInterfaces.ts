@@ -206,12 +206,12 @@ export interface RoleRuleInterface extends RoleRuleModel {
 }
 
 export interface RoleInterface extends RoleModel {
-  rules?: RoleRuleInterface[] | null;
   name?: string | null;
   description?: string | null;
   navItems?: NavItemInterface[];
   appNavigation?: NavItemInterface[];
   cmsNavigation?: NavItemInterface[];
+  rules?: RoleRuleInterface[] | null;
 }
 
 export interface RubricVariantInterface extends RubricVariantModel {

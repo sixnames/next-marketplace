@@ -498,12 +498,15 @@ export interface ProductCardBreadcrumbModel {
   href: string;
 }
 
-export interface RoleRuleModel {
-  _id: ObjectIdModel;
+export interface RoleRuleBase {
   slug: string;
   allow: boolean;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
+}
+
+export interface RoleRuleModel extends RoleRuleBase {
+  _id: ObjectIdModel;
   roleId: ObjectIdModel;
 }
 

@@ -1,19 +1,15 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
-import RoleMainFields from 'components/FormTemplates/RoleMainFields';
+import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner/Inner';
+import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { RoleInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useUpdateRoleMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
+import { RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getRoleRulesAst } from 'lib/roleUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
@@ -22,24 +18,12 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { NavItemInterface } from 'types/clientTypes';
-import { updateRoleSchema } from 'validation/roleSchema';
 
-interface RoleDetailsConsumerInterface {
+interface RoleRulesConsumerInterface {
   role: RoleInterface;
 }
 
-const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) => {
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const validationSchema = useValidationSchema({
-    schema: updateRoleSchema,
-  });
-  const [updateRoleMutation] = useUpdateRoleMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRole),
-    onError: onErrorCallback,
-  });
-
+const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
   const navConfig = React.useMemo<NavItemInterface[]>(() => {
     return [
       {
@@ -57,6 +41,29 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
     ];
   }, [role._id]);
 
+  const columns: TableColumn<RoleRuleInterface>[] = [
+    {
+      headTitle: 'Действие',
+      accessor: 'name',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Разрешено',
+      accessor: 'allow',
+      render: ({ cellData }) => {
+        return (
+          <Checkbox
+            value={cellData}
+            name={'allow'}
+            onChange={(e: React.ChangeEvent<any>) => {
+              console.log(e.target.checked);
+            }}
+          />
+        );
+      },
+    },
+  ];
+
   return (
     <AppContentWrapper>
       <Head>
@@ -67,56 +74,28 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
       </Inner>
       <AppSubNav navConfig={navConfig} />
 
-      <Inner testId={'role-details-list'}>
-        <Formik
-          validationSchema={validationSchema}
-          initialValues={{
-            roleId: role._id,
-            nameI18n: role.nameI18n,
-            description: role.description,
-            isStaff: role.isStaff,
-          }}
-          onSubmit={(values) => {
-            showLoading();
-            updateRoleMutation({
-              variables: {
-                input: values,
-              },
-            }).catch((e) => console.log(e));
-          }}
-        >
-          {() => {
-            return (
-              <Form>
-                <RoleMainFields />
-
-                <FixedButtons>
-                  <Button size={'small'} type={'submit'} testId={'role-submit'}>
-                    Сохранить
-                  </Button>
-                </FixedButtons>
-              </Form>
-            );
-          }}
-        </Formik>
+      <Inner testId={'role-rules-list'}>
+        <div className='overflow-x-auto overflow-y-hidden'>
+          <Table<RoleRuleInterface> columns={columns} data={role.rules || []} />
+        </div>
       </Inner>
     </AppContentWrapper>
   );
 };
 
-interface RoleDetailsInterface extends PagePropsInterface, RoleDetailsConsumerInterface {}
+interface RoleRulesPageInterface extends PagePropsInterface, RoleRulesConsumerInterface {}
 
-const RoleDetails: NextPage<RoleDetailsInterface> = ({ pageUrls, role }) => {
+const RoleRules: NextPage<RoleRulesPageInterface> = ({ pageUrls, role }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RoleDetailsConsumer role={role} />
+      <RoleRulesConsumer role={role} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RoleDetailsInterface>> => {
+): Promise<GetServerSidePropsResult<RoleRulesPageInterface>> => {
   const { props } = await getAppInitialData({ context, isCms: true });
   if (!props || !context.query.roleId) {
     return {
@@ -136,9 +115,15 @@ export const getServerSideProps = async (
     };
   }
 
+  const rules = await getRoleRulesAst({
+    roleId: roleQueryResult._id,
+    locale: props.sessionLocale,
+  });
+
   const role: RoleInterface = {
     ...roleQueryResult,
     name: getFieldStringLocale(roleQueryResult.nameI18n, props.sessionLocale),
+    rules,
   };
 
   return {
@@ -149,4 +134,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default RoleDetails;
+export default RoleRules;

@@ -495,7 +495,7 @@ input CreateProductInput {
 }
 
 input CreateRoleInput {
-  description: String
+  descriptionI18n: JSONObject
   isStaff: Boolean!
   nameI18n: JSONObject!
 }
@@ -1179,6 +1179,11 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayload!
 
   """
+  Should update role rule
+  """
+  updateRoleRule(input: UpdateRoleRuleInput!): RoleRulePayload!
+
+  """
   Should update rubric
   """
   updateRubric(input: UpdateRubricInput!): RubricPayload!
@@ -1816,10 +1821,12 @@ type Role implements Timestamp {
   appNavigation: [NavItem!]!
   cmsNavigation: [NavItem!]!
   createdAt: Date!
-  description: String
+  description: String!
+  descriptionI18n: JSONObject
   isStaff: Boolean!
   name: String!
   nameI18n: JSONObject!
+  roles: [RoleRule!]!
   slug: String!
   updatedAt: Date!
 }
@@ -1833,7 +1840,8 @@ type RolePayload implements Payload {
 type RoleRule {
   _id: ObjectId!
   allow: Boolean!
-  description: String
+  description: String!
+  descriptionI18n: JSONObject
   name: String!
   nameI18n: JSONObject!
   roleId: ObjectId!
@@ -2260,18 +2268,18 @@ input UpdateProductTextAttributeItemInput {
 }
 
 input UpdateRoleInput {
-  description: String
+  descriptionI18n: JSONObject
   isStaff: Boolean!
   nameI18n: JSONObject!
   roleId: ObjectId!
 }
 
 input UpdateRoleRuleInput {
+  _id: ObjectId!
   allow: Boolean!
-  description: String
+  descriptionI18n: JSONObject
   nameI18n: JSONObject!
   roleId: ObjectId!
-  roleRuleId: ObjectId!
   slug: String!
 }
 

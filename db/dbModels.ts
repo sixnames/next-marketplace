@@ -513,7 +513,7 @@ export interface RoleRuleModel extends RoleRuleBase {
 export interface RoleModel extends TimestampModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  descriptionI18n?: TranslationModel;
+  descriptionI18n?: TranslationModel | null;
   slug: string;
   isStaff: boolean;
   allowedAppNavigation: ObjectIdModel[];

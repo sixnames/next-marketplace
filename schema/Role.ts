@@ -14,9 +14,6 @@ export const Role = objectType({
     t.nonNull.boolean('isStaff');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
-    t.nonNull.list.nonNull.field('roles', {
-      type: 'RoleRule',
-    });
 
     // Role description field resolver
     t.nonNull.field('description', {

@@ -85,7 +85,6 @@ export type RoleRuleSlugType =
   | 'deleteOption'
 
   // Order
-  | 'updateOrder'
   | 'deleteOrder'
 
   // Product
@@ -131,37 +130,441 @@ interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
 }
 
 const baseRoleRules: RoleRuleBaseExtended[] = [
-  // User
+  // Attributes
   {
     allow: false,
-    slug: 'createUser',
+    slug: 'createAttributesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Создание пользователя',
+      ru: 'Создание группы атрибутов',
     },
   },
   {
     allow: false,
-    slug: 'updateUser',
+    slug: 'updateAttributesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновление пользователя',
+      ru: 'Обновление группы атрибутов',
     },
   },
   {
     allow: false,
-    slug: 'deleteUser',
+    slug: 'deleteAttributesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Удаление пользователя',
+      ru: 'Удаление группы атрибутов',
     },
   },
   {
     allow: false,
-    slug: 'updateUserRole',
+    slug: 'createAttribute',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновление роли пользователя',
+      ru: 'Создание атрибута',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateAttribute',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление атрибута',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteAttribute',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление атрибута',
+    },
+  },
+
+  // Brand
+  {
+    allow: false,
+    slug: 'createBrand',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание бренда',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateBrand',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление бренда',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteBrand',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление бренда',
+    },
+  },
+
+  // Brand collection
+  {
+    allow: false,
+    slug: 'createBrandCollection',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание линейки бренда',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateBrandCollection',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление линейки бренда',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteBrandCollection',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление линейки бренда',
+    },
+  },
+
+  // City
+  {
+    allow: false,
+    slug: 'createCity',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание города',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCity',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление города',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteCity',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление города',
+    },
+  },
+
+  // Company
+  {
+    allow: false,
+    slug: 'createCompany',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание компании',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCompany',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление компании',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteCompany',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление компании',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCompanyConfig',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление настроек компании',
+    },
+  },
+
+  // Config
+  {
+    allow: false,
+    slug: 'updateConfig',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление настроек сайта',
+    },
+  },
+
+  // Country
+  {
+    allow: false,
+    slug: 'createCountry',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание страны',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCountry',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление страны',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteCountry',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление страны',
+    },
+  },
+
+  // Currency
+  {
+    allow: false,
+    slug: 'createCurrency',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание валюты',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCurrency',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление валюты',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteCurrency',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление валюты',
+    },
+  },
+
+  // Language
+  {
+    allow: false,
+    slug: 'createLanguage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание языка',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateLanguage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление языка',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteLanguage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление языка',
+    },
+  },
+
+  // Manufacturer
+  {
+    allow: false,
+    slug: 'createManufacturer',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание производителя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateManufacturer',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление производителя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteManufacturer',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление производителя',
+    },
+  },
+
+  // Message
+  {
+    allow: false,
+    slug: 'createMessagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание группы сообщений',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateMessagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление группы сообщений',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteMessagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление группы сообщений',
+    },
+  },
+  {
+    allow: false,
+    slug: 'createMessage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание API сообщения',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateMessage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление API сообщения',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteMessage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление API сообщения',
+    },
+  },
+
+  // Metric
+  {
+    allow: false,
+    slug: 'createMetric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание еденицы измерения',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateMetric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление еденицы измерения',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteMetric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление еденицы измерения',
+    },
+  },
+
+  // NavItem
+  {
+    allow: false,
+    slug: 'createNavItem',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание навигации в кабинете',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateNavItem',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление навигации в кабинете',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteNavItem',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление навигации в кабинете',
+    },
+  },
+
+  // Option
+  {
+    allow: false,
+    slug: 'createOptionsGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание группы опций',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateOptionsGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление группы опций',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteOptionsGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление группы опций',
+    },
+  },
+  {
+    allow: false,
+    slug: 'createOption',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание опции',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateOption',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление опции',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteOption',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление опции',
+    },
+  },
+
+  // Order
+  {
+    allow: false,
+    slug: 'deleteOrder',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление каказа',
     },
   },
 
@@ -196,6 +599,178 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление товара',
+    },
+  },
+
+  // Role
+  {
+    allow: false,
+    slug: 'createRole',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание роли',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateRole',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление роли',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteRole',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление роли',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateRoleRule',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление правила роли',
+    },
+  },
+
+  // Rubric
+  {
+    allow: false,
+    slug: 'createRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание рубрики',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновлениеубрикили',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление рубрики',
+    },
+  },
+
+  // RubricVariant
+  {
+    allow: false,
+    slug: 'createRubricVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание типа рубрики',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateRubricVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление типа рубрикили',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteRubricVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление типа рубрики',
+    },
+  },
+
+  // Shop
+  {
+    allow: false,
+    slug: 'createShop',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание магазина',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateShop',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление магазина',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteShop',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление магазина',
+    },
+  },
+
+  // ShopProduct
+  {
+    allow: false,
+    slug: 'createShopProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание товара магазина',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateShopProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление товара магазина',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteShopProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление товара магазина',
+    },
+  },
+
+  // User
+  {
+    allow: false,
+    slug: 'createUser',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateUser',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteUser',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateUserRole',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление роли пользователя',
     },
   },
 ];

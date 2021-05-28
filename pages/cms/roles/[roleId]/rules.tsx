@@ -115,7 +115,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
           onSubmit={(value) => {
             const filteredRules = (role.rules || []).filter((rule) => {
               const finalName = `${rule.name}`.toLowerCase();
-              const finalValue = value;
+              const finalValue = value.toLowerCase();
               const reg = RegExp(finalValue, 'g');
               return finalName.search(reg) > -1;
             });

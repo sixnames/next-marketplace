@@ -1,4 +1,5 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
+import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
@@ -26,9 +27,14 @@ interface RoleRulesConsumerInterface {
 }
 
 const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
+  const [rules, setRules] = React.useState<RoleRuleInterface[]>([]);
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
+
+  React.useEffect(() => {
+    setRules(role.rules || []);
+  }, [role.rules]);
 
   const [updateRoleRuleMutation] = useUpdateRoleRuleMutation({
     onError: onErrorCallback,
@@ -104,8 +110,24 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
       <AppSubNav navConfig={navConfig} />
 
       <Inner testId={'role-rules-list'}>
+        <FormikIndividualSearch
+          withReset
+          onSubmit={(value) => {
+            const filteredRules = (role.rules || []).filter((rule) => {
+              const finalName = `${rule.name}`.toLowerCase();
+              const finalValue = value;
+              const reg = RegExp(finalValue, 'g');
+              return finalName.search(reg) > -1;
+            });
+            setRules(filteredRules);
+          }}
+          onReset={() => {
+            setRules(role.rules || []);
+          }}
+        />
+
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<RoleRuleInterface> columns={columns} data={role.rules || []} />
+          <Table<RoleRuleInterface> columns={columns} data={rules} />
         </div>
       </Inner>
     </AppContentWrapper>

@@ -54,6 +54,12 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
         path: `${ROUTE_CMS}/roles/${role._id}/rules`,
         exact: true,
       },
+      {
+        name: 'Навигация',
+        testId: 'role-nav',
+        path: `${ROUTE_CMS}/roles/${role._id}/nav`,
+        exact: true,
+      },
     ];
   }, [role._id]);
 

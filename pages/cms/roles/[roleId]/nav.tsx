@@ -1,17 +1,12 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
-import { useUpdateRoleRuleMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { RoleInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRoleRulesAst } from 'lib/roleUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
@@ -21,20 +16,11 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { NavItemInterface } from 'types/clientTypes';
 
-interface RoleRulesConsumerInterface {
+interface RoleNavConsumerInterface {
   role: RoleInterface;
 }
 
-const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-
-  const [updateRoleRuleMutation] = useUpdateRoleRuleMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateRoleRule),
-  });
-
+const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role }) => {
   const navConfig = React.useMemo<NavItemInterface[]>(() => {
     return [
       {
@@ -58,41 +44,6 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     ];
   }, [role._id]);
 
-  const columns: TableColumn<RoleRuleInterface>[] = [
-    {
-      headTitle: 'Действие',
-      accessor: 'name',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      headTitle: 'Разрешено',
-      accessor: 'allow',
-      render: ({ cellData, dataItem }) => {
-        return (
-          <Checkbox
-            checked={cellData}
-            name={'allow'}
-            onChange={(e: React.ChangeEvent<any>) => {
-              showLoading();
-              updateRoleRuleMutation({
-                variables: {
-                  input: {
-                    _id: dataItem._id,
-                    allow: e.target.checked,
-                    slug: dataItem.slug,
-                    descriptionI18n: dataItem.descriptionI18n,
-                    nameI18n: dataItem.nameI18n,
-                    roleId: dataItem.roleId,
-                  },
-                },
-              }).catch(console.log);
-            }}
-          />
-        );
-      },
-    },
-  ];
-
   return (
     <AppContentWrapper>
       <Head>
@@ -103,28 +54,28 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
       </Inner>
       <AppSubNav navConfig={navConfig} />
 
-      <Inner testId={'role-rules-list'}>
-        <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<RoleRuleInterface> columns={columns} data={role.rules || []} />
-        </div>
+      <Inner testId={'role-nav-list'}>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, alias, aspernatur at
+        atque corporis dignissimos ex id illum inventore obcaecati perspiciatis, quos repellendus
+        reprehenderit repudiandae sapiente sequi sunt tenetur velit?
       </Inner>
     </AppContentWrapper>
   );
 };
 
-interface RoleRulesPageInterface extends PagePropsInterface, RoleRulesConsumerInterface {}
+interface RoleNavPageInterface extends PagePropsInterface, RoleNavConsumerInterface {}
 
-const RoleRules: NextPage<RoleRulesPageInterface> = ({ pageUrls, role }) => {
+const RoleNav: NextPage<RoleNavPageInterface> = ({ pageUrls, role }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RoleRulesConsumer role={role} />
+      <RoleNavConsumer role={role} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RoleRulesPageInterface>> => {
+): Promise<GetServerSidePropsResult<RoleNavPageInterface>> => {
   const { props } = await getAppInitialData({ context, isCms: true });
   if (!props || !context.query.roleId) {
     return {
@@ -144,15 +95,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const rules = await getRoleRulesAst({
-    roleId: roleQueryResult._id,
-    locale: props.sessionLocale,
-  });
-
   const role: RoleInterface = {
     ...roleQueryResult,
     name: getFieldStringLocale(roleQueryResult.nameI18n, props.sessionLocale),
-    rules,
   };
 
   return {
@@ -163,4 +108,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default RoleRules;
+export default RoleNav;

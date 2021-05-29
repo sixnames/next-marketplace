@@ -1,9 +1,22 @@
-import { arg, inputObjectType, mutationType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
+import { aggregatePagination } from 'db/aggregatePagination';
+import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
+import {
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionRole,
+  getSessionUser,
+} from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
-import { FormattedPhoneModel, RoleModel, UserModel, UserPayloadModel } from 'db/dbModels';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { ROLE_SLUG_GUEST } from 'config/common';
+import {
+  CompanyModel,
+  FormattedPhoneModel,
+  RoleModel,
+  UserModel,
+  UserPayloadModel,
+  UsersPaginationPayloadModel,
+} from 'db/dbModels';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { ROLE_SLUG_COMPANY_MANAGER, ROLE_SLUG_COMPANY_OWNER, ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -84,6 +97,129 @@ export const User = objectType({
           return guestRole;
         }
         return role;
+      },
+    });
+  },
+});
+
+export const UsersPaginationPayload = objectType({
+  name: 'UsersPaginationPayload',
+  definition(t) {
+    t.implements('PaginationPayload');
+    t.nonNull.list.nonNull.field('docs', {
+      type: 'User',
+    });
+  },
+});
+
+// User Queries
+export const UserQuery = queryType({
+  definition(t) {
+    // Should return user by _id
+    t.nonNull.field('getUser', {
+      type: 'User',
+      description: 'Should return user by _id',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_source, args): Promise<UserModel> => {
+        const db = await getDatabase();
+        const collection = db.collection<UserModel>(COL_USERS);
+        const user = await collection.findOne({ _id: args._id });
+        if (!user) {
+          throw Error('User not found by given id');
+        }
+        return user;
+      },
+    });
+
+    // Should return paginated users
+    t.nonNull.field('getAllUsers', {
+      type: 'UsersPaginationPayload',
+      description: 'Should return paginated users',
+      args: {
+        input: arg({
+          type: 'PaginationInput',
+        }),
+      },
+      resolve: async (_source, args, context): Promise<UsersPaginationPayloadModel> => {
+        const { city } = await getRequestParams(context);
+        const { input } = args;
+        const { search } = input || { search: null };
+
+        const regexSearch = {
+          $regex: search,
+          $options: 'i',
+        };
+
+        const searchStage = search
+          ? [
+              {
+                $match: {
+                  $or: [
+                    {
+                      email: regexSearch,
+                    },
+                    {
+                      name: regexSearch,
+                    },
+                    {
+                      lastName: regexSearch,
+                    },
+                    {
+                      secondName: regexSearch,
+                    },
+                    {
+                      phone: regexSearch,
+                    },
+                    {
+                      itemId: regexSearch,
+                    },
+                  ],
+                },
+              },
+            ]
+          : [];
+
+        const paginationResult = await aggregatePagination<UserModel>({
+          input: args.input,
+          collectionName: COL_USERS,
+          pipeline: searchStage,
+          city,
+        });
+        return paginationResult;
+      },
+    });
+
+    // Should return user company
+    t.field('getUserCompany', {
+      type: 'Company',
+      description: 'Should return user company',
+      resolve: async (_source, _args, context): Promise<CompanyModel | null> => {
+        try {
+          const db = await getDatabase();
+          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const { user, role } = await getSessionRole(context);
+
+          if (user && role.slug === ROLE_SLUG_COMPANY_OWNER) {
+            const company = await companiesCollection.findOne({ ownerId: user._id });
+            return company;
+          }
+
+          if (user && role.slug === ROLE_SLUG_COMPANY_MANAGER) {
+            const company = await companiesCollection.findOne({ staffIds: user._id });
+            return company;
+          }
+
+          return null;
+        } catch (e) {
+          console.log(e);
+          return null;
+        }
       },
     });
   },
@@ -549,6 +685,57 @@ export const UserMutations = mutationType({
             payload: createdUser,
           };
         } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should delete user
+    t.nonNull.field('deleteUser', {
+      type: 'UserPayload',
+      description: 'Should delete user',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<UserPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const usersCollection = db.collection<UserModel>(COL_USERS);
+          const { _id } = args;
+
+          // Check user availability
+          const user = await usersCollection.findOne({ _id });
+          if (!user) {
+            return {
+              success: false,
+              message: await getApiMessage('users.delete.error'),
+            };
+          }
+
+          // TODO check user companies and shops
+
+          const removedUserResult = await usersCollection.findOneAndDelete({ _id });
+          if (!removedUserResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('users.delete.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('users.delete.success'),
+          };
+        } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

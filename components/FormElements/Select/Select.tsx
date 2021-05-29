@@ -4,10 +4,10 @@ import Icon from '../../Icon/Icon';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 
 export interface SelectOptionInterface {
-  _id: string | null;
+  _id: any;
   slug?: string | null;
-  name?: string;
-  lastName?: string;
+  name?: string | null;
+  lastName?: string | null;
   [key: string]: any;
 }
 
@@ -73,7 +73,7 @@ const Select: React.FC<SelectInterface> = ({
     : `border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
   const selectClassName = `relative z-20 block form-select pl-input-padding-horizontal input-with-clear-padding w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] rounded-lg cursor-pointer bg-transparent border outline-none ${disabledClass} ${inputBorder} ${additionalClassName}`;
 
-  const getOptionName = React.useCallback((name = '', lastName?: string) => {
+  const getOptionName = React.useCallback((name = '', lastName?: string | null) => {
     const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
     // const optionTestIdName = name.split(' ').join('_');
 

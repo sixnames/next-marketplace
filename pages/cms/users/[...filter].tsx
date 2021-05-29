@@ -283,6 +283,8 @@ export const getServerSideProps = async (
 
   const db = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+
   const usersAggregationResult = await usersCollection
     .aggregate<UsersAggregationInterface>(
       [
@@ -401,7 +403,23 @@ export const getServerSideProps = async (
     });
   }
 
-  // console.log(users);
+  const rolesQueryResult = await rolesCollection
+    .find(
+      {},
+      {
+        sort: {
+          _id: SORT_DESC,
+        },
+      },
+    )
+    .toArray();
+
+  const roles = rolesQueryResult.map((role) => {
+    return {
+      ...role,
+      name: getFieldStringLocale(role.nameI18n, locale),
+    };
+  });
 
   const payload: UsersConsumerInterface = {
     clearSlug,
@@ -414,7 +432,7 @@ export const getServerSideProps = async (
     page,
     docs,
     filters: {
-      roles: [],
+      roles,
     },
   };
   const castedPayload = castDbData(payload);

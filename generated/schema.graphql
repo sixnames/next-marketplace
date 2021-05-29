@@ -1008,6 +1008,11 @@ type Mutation {
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayload!
 
   """
+  Should delete user
+  """
+  deleteUser(_id: ObjectId!): UserPayload!
+
+  """
   Should create order from session cart
   """
   makeAnOrder(input: MakeAnOrderInput!): MakeAnOrderPayload!
@@ -1622,6 +1627,11 @@ type Query {
   getAllShops(input: PaginationInput): ShopsPaginationPayload!
 
   """
+  Should return paginated users
+  """
+  getAllUsers(input: PaginationInput): UsersPaginationPayload!
+
+  """
   Should return attribute positioning options
   """
   getAttributePositioningOptions: [SelectOption!]!
@@ -1794,6 +1804,16 @@ type Query {
   Should return shop by given slug
   """
   getShopBySlug(slug: String!): Shop!
+
+  """
+  Should return user by _id
+  """
+  getUser(_id: ObjectId!): User!
+
+  """
+  Should return user company
+  """
+  getUserCompany: Company
 
   """
   Should return validation messages list
@@ -2344,4 +2364,17 @@ type UserPayload implements Payload {
   message: String!
   payload: User
   success: Boolean!
+}
+
+type UsersPaginationPayload implements PaginationPayload {
+  docs: [User!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Int!
+  page: Int!
+  sortBy: String!
+  sortDir: SortDirection!
+  totalActiveDocs: Int!
+  totalDocs: Int!
+  totalPages: Int!
 }

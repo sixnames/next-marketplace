@@ -3,6 +3,7 @@ import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
+import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal/CreateRoleModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
@@ -26,6 +27,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -78,6 +80,16 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       headTitle: 'Имя',
       accessor: 'fullName',
       render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Email',
+      accessor: 'email',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      accessor: 'formattedPhone',
+      headTitle: 'Телефон',
+      render: ({ cellData }) => <LinkPhone value={cellData} />,
     },
     {
       headTitle: 'Роль',
@@ -231,7 +243,6 @@ export const getServerSideProps = async (
     limit,
     clearSlug,
   } = castCatalogueFilters({
-    initialLimit: 3,
     filters: alwaysArray(filter),
     basePath,
   });
@@ -377,6 +388,10 @@ export const getServerSideProps = async (
     docs.push({
       ...user,
       fullName: getFullName(user),
+      formattedPhone: {
+        raw: phoneToRaw(user.phone),
+        readable: phoneToReadable(user.phone),
+      },
       role: user.role
         ? {
             ...user.role,

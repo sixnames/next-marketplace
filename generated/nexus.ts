@@ -843,7 +843,6 @@ export interface NexusGenObjects {
   ShopsPaginationPayload: dbModels.ShopsPaginationPayloadModel;
   User: dbModels.UserModel;
   UserPayload: dbModels.UserPayloadModel;
-  UsersPaginationPayload: dbModels.UsersPaginationPayloadModel;
 }
 
 export interface NexusGenInterfaces {
@@ -1527,7 +1526,6 @@ export interface NexusGenFieldTypes {
     getAllRubricVariants: NexusGenRootTypes['RubricVariant'][]; // [RubricVariant!]!
     getAllRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
-    getAllUsers: NexusGenRootTypes['UsersPaginationPayload']; // UsersPaginationPayload!
     getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributeVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributeViewVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -1564,8 +1562,6 @@ export interface NexusGenFieldTypes {
     getSessionCurrency: string; // String!
     getShop: NexusGenRootTypes['Shop']; // Shop!
     getShopBySlug: NexusGenRootTypes['Shop']; // Shop!
-    getUser: NexusGenRootTypes['User']; // User!
-    getUserCompany: NexusGenRootTypes['Company'] | null; // Company
     getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
   };
   Role: {
@@ -1796,19 +1792,6 @@ export interface NexusGenFieldTypes {
     message: string; // String!
     payload: NexusGenRootTypes['User'] | null; // User
     success: boolean; // Boolean!
-  };
-  UsersPaginationPayload: {
-    // field return type
-    docs: NexusGenRootTypes['User'][]; // [User!]!
-    hasNextPage: boolean; // Boolean!
-    hasPrevPage: boolean; // Boolean!
-    limit: number; // Int!
-    page: number; // Int!
-    sortBy: string; // String!
-    sortDir: NexusGenEnums['SortDirection']; // SortDirection!
-    totalActiveDocs: number; // Int!
-    totalDocs: number; // Int!
-    totalPages: number; // Int!
   };
   AlphabetList: {
     // field return type
@@ -2510,7 +2493,6 @@ export interface NexusGenFieldTypeNames {
     getAllRubricVariants: 'RubricVariant';
     getAllRubrics: 'Rubric';
     getAllShops: 'ShopsPaginationPayload';
-    getAllUsers: 'UsersPaginationPayload';
     getAttributePositioningOptions: 'SelectOption';
     getAttributeVariantsOptions: 'SelectOption';
     getAttributeViewVariantsOptions: 'SelectOption';
@@ -2547,8 +2529,6 @@ export interface NexusGenFieldTypeNames {
     getSessionCurrency: 'String';
     getShop: 'Shop';
     getShopBySlug: 'Shop';
-    getUser: 'User';
-    getUserCompany: 'Company';
     getValidationMessages: 'Message';
   };
   Role: {
@@ -2779,19 +2759,6 @@ export interface NexusGenFieldTypeNames {
     message: 'String';
     payload: 'User';
     success: 'Boolean';
-  };
-  UsersPaginationPayload: {
-    // field return type name
-    docs: 'User';
-    hasNextPage: 'Boolean';
-    hasPrevPage: 'Boolean';
-    limit: 'Int';
-    page: 'Int';
-    sortBy: 'String';
-    sortDir: 'SortDirection';
-    totalActiveDocs: 'Int';
-    totalDocs: 'Int';
-    totalPages: 'Int';
   };
   AlphabetList: {
     // field return type name
@@ -3246,10 +3213,6 @@ export interface NexusGenArgTypes {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
-    getAllUsers: {
-      // args
-      input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
-    };
     getAttributesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3359,10 +3322,6 @@ export interface NexusGenArgTypes {
       // args
       slug: string; // String!
     };
-    getUser: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
   };
   Rubric: {
     products: {
@@ -3402,8 +3361,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'ManufacturersPaginationPayload'
     | 'MetricsPaginationPayload'
     | 'ShopProductsPaginationPayload'
-    | 'ShopsPaginationPayload'
-    | 'UsersPaginationPayload';
+    | 'ShopsPaginationPayload';
   Payload:
     | 'AttributesGroupPayload'
     | 'BrandPayload'
@@ -3486,7 +3444,6 @@ export interface NexusGenTypeInterfaces {
   ShopsPaginationPayload: 'PaginationPayload';
   User: 'Base' | 'Timestamp';
   UserPayload: 'Payload';
-  UsersPaginationPayload: 'PaginationPayload';
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;

@@ -22,12 +22,12 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateUserSchema } from 'validation/userSchema';
 
-interface UserDetailsInterface {
+interface UserDetailsConsumerInterface {
   user: UserInterface;
   roles: RoleInterface[];
 }
 
-const UserDetails: React.FC<UserDetailsInterface> = ({ user, roles }) => {
+const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, roles }) => {
   const validationSchema = useValidationSchema({
     schema: updateUserSchema,
   });
@@ -51,7 +51,7 @@ const UserDetails: React.FC<UserDetailsInterface> = ({ user, roles }) => {
 
   return (
     <CmsUserLayout user={user}>
-      <Inner testId={'user-details'}>
+      <Inner testId={'user-details-page'}>
         <Formik
           enableReinitialize
           validationSchema={validationSchema}
@@ -87,19 +87,19 @@ const UserDetails: React.FC<UserDetailsInterface> = ({ user, roles }) => {
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, UserDetailsInterface {}
+interface UserDetailsPageInterface extends PagePropsInterface, UserDetailsConsumerInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <UserDetails {...props} />
+      <UserDetailsConsumer {...props} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<UserDetailsPageInterface>> => {
   const { query } = context;
   const { userId } = query;
   const db = await getDatabase();
@@ -195,4 +195,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default Product;
+export default UserDetailsPage;

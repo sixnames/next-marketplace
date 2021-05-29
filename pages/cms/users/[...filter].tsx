@@ -20,7 +20,7 @@ import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modals';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
-import { useDeleteRoleMutation } from 'generated/apolloComponents';
+import { useDeleteUserMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -56,13 +56,12 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
-  const { onCompleteCallback, onErrorCallback, showModal } = useMutationCallbacks({
-    withModal: true,
+  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deleteRoleMutation] = useDeleteRoleMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteRole),
+  const [deleteUserMutation] = useDeleteUserMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteUser),
     onError: onErrorCallback,
   });
 
@@ -113,12 +112,14 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
                   variant: CONFIRM_MODAL,
                   props: {
                     testId: 'delete-user-modal',
-                    message:
-                      'Вы уверены, что хотите удалить роль? Всем пользователям с данной ролью будет назначена роль Гость.',
+                    message: `Вы уверены, что хотите удалить пользователя ${dataItem.fullName}?`,
                     confirm: () => {
-                      deleteRoleMutation({
-                        variables: { _id: dataItem._id },
-                      }).catch((e) => console.log(e));
+                      showLoading();
+                      deleteUserMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
                     },
                   },
                 });

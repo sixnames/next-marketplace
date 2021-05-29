@@ -26,6 +26,7 @@ import {
   MANUFACTURER_OPTIONS_MODAL,
   ATTRIBUTE_OPTIONS_MODAL,
   CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+  CREATE_USER_MODAL,
 } from 'config/modals';
 
 const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
@@ -41,6 +42,7 @@ const AttributesGroupModal = dynamic(() => import('./AttributesGroupModal/Attrib
 const RubricVariantModal = dynamic(() => import('./RubricVariantModal/RubricVariantModal'));
 const OptionInGroupModal = dynamic(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = dynamic(() => import('./CreateRubricModal/CreateRubricModal'));
+const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
 );
@@ -113,6 +115,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CART_MODAL && <CartModal {...modalProps} />}
 
           {modalType === CREATE_ROLE_MODAL && <CreateRoleModal {...modalProps} />}
+
+          {modalType === CREATE_USER_MODAL && <CreateUserModal {...modalProps} />}
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 

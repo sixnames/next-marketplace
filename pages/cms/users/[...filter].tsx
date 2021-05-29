@@ -5,7 +5,7 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import Inner from 'components/Inner/Inner';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal/CreateRoleModal';
+import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
@@ -16,11 +16,11 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
-import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modals';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
-import { useCreateRoleMutation, useDeleteRoleMutation } from 'generated/apolloComponents';
+import { useDeleteRoleMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -52,6 +52,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   totalPages,
   basePath,
   itemPath,
+  filters: { roles },
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -62,11 +63,6 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
   const [deleteRoleMutation] = useDeleteRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteRole),
-    onError: onErrorCallback,
-  });
-
-  const [createRoleMutation] = useCreateRoleMutation({
-    onCompleted: (data) => onCompleteCallback(data.createRole),
     onError: onErrorCallback,
   });
 
@@ -176,16 +172,10 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
             <Button
               size={'small'}
               onClick={() => {
-                showModal<CreateRoleModalInterface>({
-                  variant: CREATE_ROLE_MODAL,
+                showModal<CreateUserModalInterface>({
+                  variant: CREATE_USER_MODAL,
                   props: {
-                    confirm: (values) => {
-                      createRoleMutation({
-                        variables: {
-                          input: values,
-                        },
-                      }).catch((e) => console.log(e));
-                    },
+                    roles,
                   },
                 });
               }}
@@ -407,6 +397,9 @@ export const getServerSideProps = async (
     .find(
       {},
       {
+        projection: {
+          slug: false,
+        },
         sort: {
           _id: SORT_DESC,
         },

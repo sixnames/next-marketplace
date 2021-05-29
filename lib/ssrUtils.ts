@@ -324,6 +324,11 @@ export async function getPageSessionUser({
                     },
                   },
                   {
+                    $sort: {
+                      index: SORT_ASC,
+                    },
+                  },
+                  {
                     $addFields: {
                       name: `$nameI18n.${locale}`,
                     },

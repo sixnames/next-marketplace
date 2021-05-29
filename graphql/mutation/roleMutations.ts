@@ -35,3 +35,12 @@ export const UPDATE_ROLE_RULE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_ROLE_NAV_MUTATION = gql`
+  mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
+    updateRoleNav(input: $input) {
+      success
+      message
+    }
+  }
+`;

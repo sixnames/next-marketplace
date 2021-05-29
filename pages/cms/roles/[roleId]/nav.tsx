@@ -7,6 +7,8 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, RoleInterface, NavItemInterface } from 'db/uiInterfaces';
+import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -25,6 +27,15 @@ interface RoleNavConsumerInterface {
 }
 
 const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGroups }) => {
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+
+  const [updateRoleNavMutation] = useUpdateRoleNavMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateRoleNav),
+    onError: onErrorCallback,
+  });
+
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
@@ -66,7 +77,16 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
             checked={checked}
             name={'allow'}
             onChange={(e: React.ChangeEvent<any>) => {
-              console.log(e.target.checked);
+              showLoading();
+              updateRoleNavMutation({
+                variables: {
+                  input: {
+                    roleId: role._id,
+                    navItemId: dataItem._id,
+                    checked: e.target.checked,
+                  },
+                },
+              }).catch(console.log);
             }}
           />
         );

@@ -1178,6 +1178,11 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayload!
 
   """
+  Should update role nav
+  """
+  updateRoleNav(input: UpdateRoleNavInput!): RolePayload!
+
+  """
   Should update role rule
   """
   updateRoleRule(input: UpdateRoleRuleInput!): RoleRulePayload!
@@ -2269,6 +2274,12 @@ input UpdateRoleInput {
   descriptionI18n: JSONObject
   isStaff: Boolean!
   nameI18n: JSONObject!
+  roleId: ObjectId!
+}
+
+input UpdateRoleNavInput {
+  checked: Boolean!
+  navItemId: ObjectId!
   roleId: ObjectId!
 }
 

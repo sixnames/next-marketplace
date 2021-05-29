@@ -665,6 +665,12 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateRoleNavInput: {
+    // input type
+    checked: boolean; // Boolean!
+    navItemId: NexusGenScalars['ObjectId']; // ObjectId!
+    roleId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateRoleRuleInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1289,6 +1295,7 @@ export interface NexusGenFieldTypes {
     updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
+    updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
@@ -2271,6 +2278,7 @@ export interface NexusGenFieldTypeNames {
     updateProductSelectAttribute: 'ProductPayload';
     updateProductTextAttribute: 'ProductPayload';
     updateRole: 'RolePayload';
+    updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
     updateRubric: 'RubricPayload';
     updateRubricVariant: 'RubricVariantPayload';
@@ -3171,6 +3179,10 @@ export interface NexusGenArgTypes {
     updateRole: {
       // args
       input: NexusGenInputs['UpdateRoleInput']; // UpdateRoleInput!
+    };
+    updateRoleNav: {
+      // args
+      input: NexusGenInputs['UpdateRoleNavInput']; // UpdateRoleNavInput!
     };
     updateRoleRule: {
       // args

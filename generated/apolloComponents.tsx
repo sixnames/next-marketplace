@@ -830,6 +830,8 @@ export type Mutation = {
   updateRole: RolePayload;
   /** Should delete role */
   deleteRole: RolePayload;
+  /** Should update role nav */
+  updateRoleNav: RolePayload;
   /** Should create metric */
   createMetric: MetricPayload;
   /** Should update metric */
@@ -1085,6 +1087,11 @@ export type MutationUpdateRoleArgs = {
 
 export type MutationDeleteRoleArgs = {
   _id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateRoleNavArgs = {
+  input: UpdateRoleNavInput;
 };
 
 
@@ -2514,6 +2521,12 @@ export type UpdateRoleInput = {
   isStaff: Scalars['Boolean'];
 };
 
+export type UpdateRoleNavInput = {
+  roleId: Scalars['ObjectId'];
+  navItemId: Scalars['ObjectId'];
+  checked: Scalars['Boolean'];
+};
+
 export type UpdateRoleRuleInput = {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
@@ -3494,6 +3507,19 @@ export type UpdateRoleRuleMutation = (
   & { updateRoleRule: (
     { __typename?: 'RoleRulePayload' }
     & Pick<RoleRulePayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateRoleNavMutationVariables = Exact<{
+  input: UpdateRoleNavInput;
+}>;
+
+
+export type UpdateRoleNavMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRoleNav: (
+    { __typename?: 'RolePayload' }
+    & Pick<RolePayload, 'success' | 'message'>
   ) }
 );
 
@@ -6772,6 +6798,40 @@ export function useUpdateRoleRuleMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateRoleRuleMutationHookResult = ReturnType<typeof useUpdateRoleRuleMutation>;
 export type UpdateRoleRuleMutationResult = Apollo.MutationResult<UpdateRoleRuleMutation>;
 export type UpdateRoleRuleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+export const UpdateRoleNavDocument = gql`
+    mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
+  updateRoleNav(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleNavMutationFn = Apollo.MutationFunction<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
+
+/**
+ * __useUpdateRoleNavMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleNavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleNavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleNavMutation, { data, loading, error }] = useUpdateRoleNavMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleNavMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>(UpdateRoleNavDocument, options);
+      }
+export type UpdateRoleNavMutationHookResult = ReturnType<typeof useUpdateRoleNavMutation>;
+export type UpdateRoleNavMutationResult = Apollo.MutationResult<UpdateRoleNavMutation>;
+export type UpdateRoleNavMutationOptions = Apollo.BaseMutationOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {

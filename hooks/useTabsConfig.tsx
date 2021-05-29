@@ -1,17 +1,17 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ParsedUrlQuery } from 'querystring';
-import { NavItemInterface } from 'types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 import qs from 'qs';
 
 interface UseTabsConfigInterface {
-  config: Omit<NavItemInterface, 'to'>[];
+  config: Omit<ClientNavItemInterface, 'to'>[];
 }
 
 interface UseTabsConfigReturnInterface {
   pathname: string;
   query: ParsedUrlQuery;
-  generateTabsConfig: (args: UseTabsConfigInterface) => NavItemInterface[];
+  generateTabsConfig: (args: UseTabsConfigInterface) => ClientNavItemInterface[];
 }
 
 const useTabsConfig = (): UseTabsConfigReturnInterface => {
@@ -23,7 +23,7 @@ const useTabsConfig = (): UseTabsConfigReturnInterface => {
   }, [asPathArray]);
 
   const generateTabsConfig = React.useCallback(
-    ({ config }: UseTabsConfigInterface): NavItemInterface[] => {
+    ({ config }: UseTabsConfigInterface): ClientNavItemInterface[] => {
       return config.map((item, index) => {
         return {
           name: item.name,

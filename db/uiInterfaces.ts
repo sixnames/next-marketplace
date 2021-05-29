@@ -124,17 +124,18 @@ export interface MessageInterface extends MessageModel {
 }
 
 export interface MetricInterface extends MetricModel {
-  name?: string;
+  name?: string | null;
 }
 
 export interface NavItemInterface extends NavItemModel {
-  name?: string;
+  name?: string | null;
   children?: NavItemInterface[];
 }
 
 export interface NavGroupInterface {
   _id: string;
-  children?: NavItemInterface[];
+  name?: string | null;
+  children?: NavItemInterface[] | null;
 }
 
 export interface OptionInterface extends OptionModel {

@@ -22,6 +22,8 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VARIANT_NUMBER,
+  ROUTE_CMS_NAV_GROUP,
+  ROUTE_APP_NAV_GROUP,
 } from './common';
 
 export const constantTranslations = {
@@ -57,6 +59,16 @@ export const constantTranslations = {
     manufacturers: {
       [DEFAULT_LOCALE]: 'Производители',
       [SECONDARY_LOCALE]: 'Manufacturers',
+    },
+  },
+  navGroups: {
+    [ROUTE_CMS_NAV_GROUP]: {
+      [DEFAULT_LOCALE]: 'CMS',
+      [SECONDARY_LOCALE]: 'CMS',
+    },
+    [ROUTE_APP_NAV_GROUP]: {
+      [DEFAULT_LOCALE]: 'Панель управления компании',
+      [SECONDARY_LOCALE]: 'Company console',
     },
   },
   selectsOptions: {

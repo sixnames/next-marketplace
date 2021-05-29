@@ -21,7 +21,7 @@ import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { NavItemInterface } from 'types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 import { updateRoleSchema } from 'validation/roleSchema';
 
 interface RoleDetailsConsumerInterface {
@@ -40,7 +40,7 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
     onError: onErrorCallback,
   });
 
-  const navConfig = React.useMemo<NavItemInterface[]>(() => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Детали',

@@ -6,10 +6,9 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
-import Pager from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { CATALOGUE_OPTION_SEPARATOR, QUERY_FILTER_PAGE } from 'config/common';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
@@ -45,7 +44,6 @@ export interface ShopAddProductsListInterface extends AppPaginationInterface<Pro
   clearSlug: string;
   rubricName: string;
   rubricId: string;
-  pagerUrl: string;
   layoutBasePath: string;
 }
 
@@ -59,7 +57,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   page,
   totalPages,
   rubricName,
-  pagerUrl,
   basePath,
   chosen,
   createChosenProduct,
@@ -68,6 +65,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   layoutBasePath,
 }) => {
   const router = useRouter();
+  const setPageHandler = useNavigateToPageHandler();
   const columns: TableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem, rowIndex }) => {
@@ -191,15 +189,10 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 
             <Pager
               page={page}
-              setPage={(page) => {
-                const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
-                const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-                const nextUrl = [...prevUrlArray, pageParam].join('/');
-                router.push(`/${nextUrl}`).catch((e) => {
-                  console.log(e);
-                });
-              }}
               totalPages={totalPages}
+              setPage={(newPage) => {
+                setPageHandler(newPage);
+              }}
             />
           </div>
         </div>

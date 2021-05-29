@@ -6,17 +6,11 @@ import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreateShopModalInterface } from 'components/Modal/CreateShopModal/CreateShopModal';
-import Pager from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import {
-  QUERY_FILTER_PAGE,
-  CATALOGUE_OPTION_SEPARATOR,
-  ROUTE_CMS,
-  SORT_DESC,
-  PAGE_DEFAULT,
-} from 'config/common';
+import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modals';
 import {
   COL_CITIES,
@@ -56,13 +50,13 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   currentCompany,
   page,
   totalPages,
-  pagerUrl,
   totalDocs,
   basePath,
   itemPath,
   docs,
 }) => {
   const isPageLoading = usePageLoadingState();
+  const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
   const {
     showModal,
@@ -207,12 +201,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
           page={page}
           totalPages={totalPages}
           setPage={(newPage) => {
-            const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
-            const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-            const nextUrl = [...prevUrlArray, pageParam].join('/');
-            router.push(`/${nextUrl}`).catch((e) => {
-              console.log(e);
-            });
+            setPageHandler(newPage);
           }}
         />
       </Inner>
@@ -251,7 +240,7 @@ export const getServerSideProps = async (
   const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 
   // Cast filters
-  const { pagerUrl, page, skip, limit, clearSlug } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = castCatalogueFilters({
     filters: restFilter,
     basePath,
   });
@@ -468,7 +457,6 @@ export const getServerSideProps = async (
       itemPath,
       clearSlug,
       page,
-      pagerUrl,
       hasPrevPage: shopsAggregation.hasPrevPage,
       hasNextPage: shopsAggregation.hasNextPage,
       totalPages: noNaN(shopsAggregation.totalPages),

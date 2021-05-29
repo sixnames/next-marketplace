@@ -412,7 +412,6 @@ export interface AppPaginationInterface<Model> {
   totalDocs: number;
   totalPages: number;
   page: number;
-  pagerUrl: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   clearSlug: string;

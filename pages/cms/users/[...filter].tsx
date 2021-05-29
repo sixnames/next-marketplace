@@ -5,7 +5,7 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import Inner from 'components/Inner/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal/CreateRoleModal';
-import Pager from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import {
@@ -50,9 +50,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   totalPages,
   basePath,
   itemPath,
-  pagerUrl,
 }) => {
   const router = useRouter();
+  const setPageHandler = useNavigateToPageHandler();
   const { onCompleteCallback, onErrorCallback, showModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
@@ -156,12 +156,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
             page={page}
             totalPages={totalPages}
             setPage={(newPage) => {
-              const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
-              const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-              const nextUrl = [...prevUrlArray, pageParam].join('/');
-              router.push(`/${nextUrl}`).catch((e) => {
-                console.log(e);
-              });
+              setPageHandler(newPage);
             }}
           />
 
@@ -231,12 +226,12 @@ export const getServerSideProps = async (
   const {
     // realFilterOptions,
     // noFiltersSelected,
-    pagerUrl,
     page,
     skip,
     limit,
     clearSlug,
   } = castCatalogueFilters({
+    initialLimit: 3,
     filters: alwaysArray(filter),
     basePath,
   });
@@ -399,7 +394,6 @@ export const getServerSideProps = async (
     totalPages: usersResult.totalPages,
     hasNextPage: usersResult.hasNextPage,
     hasPrevPage: usersResult.hasPrevPage,
-    pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
     itemPath,
     page,

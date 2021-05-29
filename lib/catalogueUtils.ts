@@ -425,7 +425,6 @@ interface CastCatalogueFiltersPayloadInterface {
   page: number;
   skip: number;
   limit: number;
-  pagerUrl: string;
   clearSlug: string;
   basePath: string;
 }
@@ -448,7 +447,6 @@ export function castCatalogueFilters({
   let sortDir: string | null = null;
 
   // pagination
-  const pagerUrlParts: string[] = [];
   const defaultPage = initialPage || PAGE_DEFAULT;
   let page = defaultPage;
 
@@ -470,8 +468,6 @@ export function castCatalogueFilters({
       if (filterOptionName === QUERY_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
-      } else {
-        pagerUrlParts.push(filterOption);
       }
 
       if (filterOptionName === CATALOGUE_FILTER_LIMIT) {
@@ -520,7 +516,6 @@ export function castCatalogueFilters({
     page,
     limit,
     skip,
-    pagerUrl: `/${pagerUrlParts.join('/')}`,
   };
 }
 

@@ -132,6 +132,11 @@ export interface NavItemInterface extends NavItemModel {
   children?: NavItemInterface[];
 }
 
+export interface NavGroupInterface {
+  _id: string;
+  children?: NavItemInterface[];
+}
+
 export interface OptionInterface extends OptionModel {
   name?: string | null;
   options?: OptionInterface[] | null;

@@ -1,6 +1,5 @@
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import * as React from 'react';
 
 const RoleMainFields: React.FC = () => {
@@ -14,12 +13,13 @@ const RoleMainFields: React.FC = () => {
         isRequired
       />
 
-      <FormikTextarea
-        testId={'description'}
-        name={'description'}
+      <FormikTranslationsInput
         label={'Описание'}
-        isRequired
+        name={'descriptionI18n'}
+        testId={'descriptionI18n'}
+        type={'text'}
         showInlineError
+        isRequired
       />
 
       <FormikCheckboxLine testId={'isStaff'} label={'Является персоналом'} name={'isStaff'} />

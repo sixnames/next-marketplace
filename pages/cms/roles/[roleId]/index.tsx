@@ -79,7 +79,7 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
           initialValues={{
             roleId: role._id,
             nameI18n: role.nameI18n,
-            description: role.description,
+            descriptionI18n: role.descriptionI18n,
             isStaff: role.isStaff,
           }}
           onSubmit={(values) => {

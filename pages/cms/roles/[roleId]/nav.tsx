@@ -1,9 +1,9 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_CMS } from 'config/common';
-import { COL_ROLES } from 'db/collectionNames';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { RoleInterface } from 'db/uiInterfaces';
+import { NavGroupInterface, RoleInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -85,6 +85,7 @@ export const getServerSideProps = async (
 
   const db = await getDatabase();
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+  const navItemsCollection = db.collection<NavGroupInterface>(COL_NAV_ITEMS);
   const roleQueryResult = await rolesCollection.findOne({
     _id: new ObjectId(`${context.query.roleId}`),
   });
@@ -94,6 +95,33 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+
+  // get grouped nav items ast
+  const navItemGroupsAggregationResult = await navItemsCollection
+    .aggregate([
+      {
+        $sort: {
+          index: SORT_DESC,
+        },
+      },
+      {
+        $group: {
+          _id: '$navGroup',
+          children: {
+            $push: {
+              _id: '$_id',
+              nameI18n: '$nameI18n',
+              slug: '$slug',
+              path: '$path',
+              index: '$index',
+              parentId: '$parentId',
+            },
+          },
+        },
+      },
+    ])
+    .toArray();
+  console.log(JSON.stringify(navItemGroupsAggregationResult, null, 2));
 
   const role: RoleInterface = {
     ...roleQueryResult,

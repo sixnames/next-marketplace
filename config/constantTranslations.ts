@@ -36,6 +36,10 @@ export const constantTranslations = {
       [DEFAULT_LOCALE]: 'Ошибка загрузки данных.',
       [SECONDARY_LOCALE]: 'Data loading error.',
     },
+    permissionError: {
+      [DEFAULT_LOCALE]: 'У вас нет прав доступа к данной операции.',
+      [SECONDARY_LOCALE]: `You don't have permission to access this operation.`,
+    },
   },
   breadcrumbs: {
     main: {

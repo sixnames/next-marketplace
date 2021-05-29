@@ -297,7 +297,7 @@ export async function getPageSessionUser({
       {
         $lookup: {
           from: COL_ROLES,
-          as: 'roles',
+          as: 'role',
           let: { roleId: '$roleId' },
           pipeline: [
             {
@@ -372,13 +372,12 @@ export async function getPageSessionUser({
       },
       {
         $addFields: {
-          role: { $arrayElemAt: ['$roles', 0] },
+          role: { $arrayElemAt: ['$role', 0] },
         },
       },
       {
         $project: {
           password: false,
-          roles: false,
           createdAt: false,
           updatedAt: false,
         },

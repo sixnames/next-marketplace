@@ -43,6 +43,7 @@ import {
   SORT_DESC,
   SORT_DESC_STR,
   SORT_DIR_KEY,
+  PAGE_DEFAULT,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -448,7 +449,7 @@ export function castCatalogueFilters({
 
   // pagination
   const pagerUrlParts: string[] = [];
-  const defaultPage = initialPage || 1;
+  const defaultPage = initialPage || PAGE_DEFAULT;
   let page = defaultPage;
 
   const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;

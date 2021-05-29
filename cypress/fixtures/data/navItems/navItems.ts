@@ -1,3 +1,4 @@
+import { ROUTE_APP_NAV_GROUP, ROUTE_CMS_NAV_GROUP } from '../../../../config/common';
 import { NavItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -14,7 +15,7 @@ const navItems: NavItemModel[] = [
     index: 0,
     icon: 'cart',
     path: '/orders',
-    navGroup: 'app',
+    navGroup: ROUTE_APP_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} app-shops`),
@@ -26,7 +27,7 @@ const navItems: NavItemModel[] = [
     index: 1,
     icon: 'pageProps',
     path: '/shops',
-    navGroup: 'app',
+    navGroup: ROUTE_APP_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} app-config`),
@@ -38,7 +39,7 @@ const navItems: NavItemModel[] = [
     index: 99,
     icon: 'gear',
     path: '/config',
-    navGroup: 'app',
+    navGroup: ROUTE_APP_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-orders`),
@@ -49,7 +50,7 @@ const navItems: NavItemModel[] = [
     index: 0,
     slug: 'cms-orders',
     path: '/cms/orders',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubrics`),
@@ -60,7 +61,7 @@ const navItems: NavItemModel[] = [
     index: 2,
     slug: 'cms-rubrics',
     path: '/cms/rubrics',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-companies`),
@@ -71,7 +72,7 @@ const navItems: NavItemModel[] = [
     index: 3,
     slug: 'cms-companies',
     path: '/cms/companies',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubric-variants`),
@@ -82,7 +83,7 @@ const navItems: NavItemModel[] = [
     index: 5,
     slug: 'cms-rubric-variants',
     path: '/cms/rubric-variants',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-attributes-groups`),
@@ -93,7 +94,7 @@ const navItems: NavItemModel[] = [
     index: 6,
     slug: 'cms-attributes',
     path: '/cms/attributes',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-options-groups`),
@@ -104,7 +105,7 @@ const navItems: NavItemModel[] = [
     index: 7,
     slug: 'cms-options-groups',
     path: '/cms/options',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-languages`),
@@ -115,7 +116,18 @@ const navItems: NavItemModel[] = [
     index: 8,
     slug: 'cms-languages',
     path: '/cms/languages',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-users`),
+    nameI18n: {
+      ru: 'Пользователи',
+      en: 'Users',
+    },
+    index: 9,
+    slug: 'cms-users',
+    path: '/cms/users',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-config`),
@@ -126,7 +138,7 @@ const navItems: NavItemModel[] = [
     index: 98,
     slug: 'cms-config',
     path: '/cms/config',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-roles`),
@@ -137,7 +149,7 @@ const navItems: NavItemModel[] = [
     index: 99,
     slug: 'cms-roles',
     path: '/cms/roles',
-    navGroup: 'cms',
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
 ];
 

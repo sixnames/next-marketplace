@@ -25,7 +25,7 @@ const navItems: NavItemModel[] = [
       en: 'Shops',
     },
     index: 1,
-    icon: 'pageProps',
+    icon: 'marker',
     path: '/shops',
     navGroup: ROUTE_APP_NAV_GROUP,
   },
@@ -127,6 +127,17 @@ const navItems: NavItemModel[] = [
     index: 9,
     slug: 'cms-users',
     path: '/cms/users',
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-nav-items`),
+    nameI18n: {
+      ru: 'Навигация',
+      en: 'Navigation',
+    },
+    index: 10,
+    slug: 'cms-nav-items',
+    path: '/cms/nav',
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {

@@ -2,7 +2,7 @@ import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner/Inner';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
-import { ROUTE_CMS, SORT_ASC } from 'config/common';
+import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -174,6 +174,11 @@ export const getServerSideProps = async (
               parentId: '$parentId',
             },
           },
+        },
+      },
+      {
+        $sort: {
+          _id: SORT_DESC,
         },
       },
     ])

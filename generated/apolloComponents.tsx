@@ -1465,7 +1465,6 @@ export type NavItem = {
   parentId?: Maybe<Scalars['ObjectId']>;
   name: Scalars['String'];
   children: Array<NavItem>;
-  appNavigationChildren: Array<NavItem>;
 };
 
 
@@ -1795,10 +1794,6 @@ export type Query = {
   getAllMetrics: PaginationPayload;
   /** Should return all metrics list */
   getAllMetricsOptions: Array<Metric>;
-  /** Should return all app nav items */
-  getAllAppNavItems: Array<NavItem>;
-  /** Should return all cms nav items */
-  getAllCmsNavItems: Array<NavItem>;
   /** Should return options grouped by alphabet */
   getOptionAlphabetLists: Array<OptionsAlphabetList>;
   /** Should return options group by given id */

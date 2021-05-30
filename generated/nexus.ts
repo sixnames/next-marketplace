@@ -1314,7 +1314,6 @@ export interface NexusGenFieldTypes {
   NavItem: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    appNavigationChildren: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     children: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     icon: string | null; // String
     index: number; // Int!
@@ -1516,11 +1515,9 @@ export interface NexusGenFieldTypes {
   };
   Query: {
     // field return type
-    getAllAppNavItems: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     getAllAttributesGroups: NexusGenRootTypes['AttributesGroup'][]; // [AttributesGroup!]!
     getAllBrands: NexusGenRootTypes['BrandsPaginationPayload'] | null; // BrandsPaginationPayload
     getAllCities: NexusGenRootTypes['CitiesPaginationPayload']; // CitiesPaginationPayload!
-    getAllCmsNavItems: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     getAllCompanies: NexusGenRootTypes['CompaniesPaginationPayload'] | null; // CompaniesPaginationPayload
     getAllConfigs: NexusGenRootTypes['Config'][]; // [Config!]!
     getAllCountries: NexusGenRootTypes['Country'][]; // [Country!]!
@@ -2299,7 +2296,6 @@ export interface NexusGenFieldTypeNames {
   NavItem: {
     // field return type name
     _id: 'ObjectId';
-    appNavigationChildren: 'NavItem';
     children: 'NavItem';
     icon: 'String';
     index: 'Int';
@@ -2501,11 +2497,9 @@ export interface NexusGenFieldTypeNames {
   };
   Query: {
     // field return type name
-    getAllAppNavItems: 'NavItem';
     getAllAttributesGroups: 'AttributesGroup';
     getAllBrands: 'BrandsPaginationPayload';
     getAllCities: 'CitiesPaginationPayload';
-    getAllCmsNavItems: 'NavItem';
     getAllCompanies: 'CompaniesPaginationPayload';
     getAllConfigs: 'Config';
     getAllCountries: 'Country';

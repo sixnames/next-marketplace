@@ -1230,7 +1230,6 @@ type Mutation {
 
 type NavItem {
   _id: ObjectId!
-  appNavigationChildren: [NavItem!]!
   children: [NavItem!]!
   icon: String
   index: Int!
@@ -1553,10 +1552,6 @@ type ProductsPaginationPayload {
 }
 
 type Query {
-  """
-  Should return all app nav items
-  """
-  getAllAppNavItems: [NavItem!]!
   getAllAttributesGroups(excludedIds: [ObjectId!] = []): [AttributesGroup!]!
 
   """
@@ -1568,11 +1563,6 @@ type Query {
   Should return paginated cities
   """
   getAllCities(input: PaginationInput): CitiesPaginationPayload!
-
-  """
-  Should return all cms nav items
-  """
-  getAllCmsNavItems: [NavItem!]!
 
   """
   Should return paginated companies

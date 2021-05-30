@@ -1,5 +1,5 @@
 import { ADULT_KEY, ADULT_TRUE, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
-// 10.1.3
+
 describe('User roles', () => {
   beforeEach(() => {
     cy.createTestData();

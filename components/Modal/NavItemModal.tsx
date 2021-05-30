@@ -52,19 +52,27 @@ const NavItemModal = <TArgs extends Record<any, any>>({
         {() => {
           return (
             <Form>
-              <FormikTranslationsInput name={'nameI18n'} label={'Название'} showInlineError />
-              <FormikInput name={'slug'} label={'Slug'} showInlineError />
-              <FormikInput name={'path'} label={'Путь'} showInlineError />
+              <FormikTranslationsInput
+                testId={'nameI18n'}
+                name={'nameI18n'}
+                label={'Название'}
+                showInlineError
+              />
+              <FormikInput testId={'slug'} name={'slug'} label={'Slug'} showInlineError />
+              <FormikInput testId={'path'} name={'path'} label={'Путь'} showInlineError />
               <FormikInput
+                testId={'index'}
                 name={'index'}
                 type={'number'}
                 label={'Порядковый номер'}
                 showInlineError
               />
-              <FormikIconSelect name={'icon'} label={'Иконка'} showInlineError />
+              <FormikIconSelect testId={'icon'} name={'icon'} label={'Иконка'} showInlineError />
 
               <ModalButtons>
-                <Button type={'submit'}>{buttonLabel}</Button>
+                <Button testId={'nav-item-submit'} type={'submit'}>
+                  {buttonLabel}
+                </Button>
                 <Button theme={'secondary'}>Отмена</Button>
               </ModalButtons>
             </Form>

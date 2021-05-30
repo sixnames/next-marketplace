@@ -69,8 +69,9 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
     },
     {
       headTitle: 'Название',
-      accessor: 'name',
-      render: ({ cellData }) => cellData,
+      render: ({ dataItem }) => {
+        return <div data-cy={`${dataItem.navGroup}-${dataItem.name}`}>{dataItem.name}</div>;
+      },
     },
     {
       headTitle: 'slug',
@@ -92,6 +93,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              testId={`${dataItem.navGroup}-${dataItem.name}`}
               deleteTitle={'Удфлить страницу'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
@@ -158,6 +160,8 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
               </div>
               <FixedButtons>
                 <Button
+                  testId={`${navGroup._id}-create-nav-item`}
+                  size={'small'}
                   onClick={() => {
                     showModal<NavItemModalInterface<CreateNavItemInput>>({
                       variant: NAV_ITEM_MODAL,
@@ -175,7 +179,6 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
                       },
                     });
                   }}
-                  size={'small'}
                 >
                   Добавить страницу
                 </Button>

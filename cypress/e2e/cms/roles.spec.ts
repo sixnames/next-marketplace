@@ -15,13 +15,13 @@ describe('User roles', () => {
     cy.getByCy('create-role').click();
     cy.getByCy('create-role-modal').should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type('f');
-    cy.getByCy('description').type('b');
+    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type('b');
     cy.getByCy('role-submit').click();
     cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
 
     // Should create role
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
-    cy.getByCy('description').clear().type(newRoleDescription);
+    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRoleDescription);
     cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
     cy.getByCy('role-modal').should('not.exist');
@@ -38,10 +38,31 @@ describe('User roles', () => {
     cy.getByCy(`Гость-update`).click();
     cy.wait(1500);
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
-    cy.getByCy('description').clear().type(newRoleDescription);
+    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRoleDescription);
     cy.getByCy('isStaff-checkbox').check();
     cy.getByCy('role-submit').click();
+
+    // Should display updated role in list
     cy.visit(`${ROUTE_CMS}/roles`);
     cy.getByCy(`${newRoleName}-row`).should('exist');
+
+    // Should display role rules
+    cy.getByCy(`admin-update`).click();
+    cy.wait(1500);
+    cy.getByCy('role-rules').click();
+    cy.getByCy('role-rules-list').should('exist');
+    cy.getByCy('Создание группы атрибутов-checkbox').check();
+    cy.wait(1500);
+    cy.getByCy('Создание группы атрибутов-checkbox').should('be.checked');
+    // TODO test rules
+
+    // Should display role nav
+    cy.wait(1500);
+    cy.getByCy('role-nav').click();
+    cy.getByCy('role-nav-list').should('exist');
+    cy.getByCy('cms-Заказы-checkbox').check();
+    cy.wait(1500);
+    cy.getByCy('cms-Заказы-checkbox').should('be.checked');
+    // TODO test nav
   });
 });

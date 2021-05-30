@@ -74,6 +74,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
 
         return (
           <Checkbox
+            testId={`${dataItem.navGroup}-${dataItem.name}`}
             checked={checked}
             name={'allow'}
             onChange={(e: React.ChangeEvent<any>) => {
@@ -172,6 +173,7 @@ export const getServerSideProps = async (
               path: '$path',
               index: '$index',
               parentId: '$parentId',
+              navGroup: '$navGroup',
             },
           },
         },

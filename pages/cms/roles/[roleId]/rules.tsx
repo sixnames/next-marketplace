@@ -76,6 +76,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
       render: ({ cellData, dataItem }) => {
         return (
           <Checkbox
+            testId={`${dataItem.name}`}
             checked={cellData}
             name={'allow'}
             onChange={(e: React.ChangeEvent<any>) => {

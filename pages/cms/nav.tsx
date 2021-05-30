@@ -1,13 +1,18 @@
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
+import { NavItemModalInterface } from 'components/Modal/NavItemModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { NAV_ITEM_MODAL } from 'config/modals';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, NavItemInterface } from 'db/uiInterfaces';
-// import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { CreateNavItemInput, useCreateNavItemMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
@@ -24,9 +29,14 @@ interface NavItemsPageConsumerInterface {
 }
 
 const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItemGroups }) => {
-  /*const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     reload: true,
-  });*/
+  });
+
+  const [createNavItemMutation] = useCreateNavItemMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.createNavItem),
+  });
 
   const columns: TableColumn<NavItemInterface>[] = [
     {
@@ -73,11 +83,35 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
       <Inner testId={'nav-items-page'}>
         {navItemGroups.map((navGroup) => {
           return (
-            <div key={navGroup._id} className='mb-8'>
+            <div key={navGroup._id} className='relative mb-8'>
               <div className='mb-4 font-medium text-lg'>{navGroup.name}</div>
               <div className='overflow-x-auto overflow-y-hidden'>
                 <Table<NavItemInterface> columns={columns} data={navGroup.children || []} />
               </div>
+              <FixedButtons>
+                <Button
+                  onClick={() => {
+                    showModal<NavItemModalInterface<CreateNavItemInput>>({
+                      variant: NAV_ITEM_MODAL,
+                      props: {
+                        testId: 'create-nav-item-modal',
+                        navGroup: navGroup._id,
+                        confirm: (input) => {
+                          showLoading();
+                          createNavItemMutation({
+                            variables: {
+                              input,
+                            },
+                          }).catch(console.log);
+                        },
+                      },
+                    });
+                  }}
+                  size={'small'}
+                >
+                  Добавить страницу
+                </Button>
+              </FixedButtons>
             </div>
           );
         })}

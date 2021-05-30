@@ -1,17 +1,25 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
+import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { NavItemModalInterface } from 'components/Modal/NavItemModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { NAV_ITEM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, NAV_ITEM_MODAL } from 'config/modals';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, NavItemInterface } from 'db/uiInterfaces';
-import { CreateNavItemInput, useCreateNavItemMutation } from 'generated/apolloComponents';
+import {
+  CreateNavItemInput,
+  UpdateNavItemInput,
+  useCreateNavItemMutation,
+  useDeleteNavItemMutation,
+  useUpdateNavItemMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -36,6 +44,16 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
   const [createNavItemMutation] = useCreateNavItemMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.createNavItem),
+  });
+
+  const [updateNavItemMutation] = useUpdateNavItemMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.updateNavItem),
+  });
+
+  const [deleteNavItemMutation] = useDeleteNavItemMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.deleteNavItem),
   });
 
   const columns: TableColumn<NavItemInterface>[] = [
@@ -68,6 +86,56 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
       headTitle: 'Порядковый номер',
       accessor: 'index',
       render: ({ cellData }) => cellData,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              deleteTitle={'Удфлить страницу'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-nav-item-modal',
+                    message: `Вы уверенны, что хотите удалить страницу ${dataItem.name}?`,
+                    confirm: () => {
+                      showLoading();
+                      deleteNavItemMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+              updateTitle={'Обновить страницу'}
+              updateHandler={() => {
+                showModal<NavItemModalInterface<UpdateNavItemInput>>({
+                  variant: NAV_ITEM_MODAL,
+                  props: {
+                    testId: 'update-nav-item-modal',
+                    navGroup: dataItem.navGroup,
+                    navItem: dataItem,
+                    confirm: (values) => {
+                      showLoading();
+                      updateNavItemMutation({
+                        variables: {
+                          input: {
+                            ...values,
+                            _id: dataItem._id,
+                          },
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -163,6 +231,7 @@ export const getServerSideProps = async (
               index: '$index',
               parentId: '$parentId',
               icon: '$icon',
+              navGroup: '$navGroup',
             },
           },
         },

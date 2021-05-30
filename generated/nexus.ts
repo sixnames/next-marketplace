@@ -726,6 +726,11 @@ export interface NexusGenInputs {
     secondName?: string | null; // String
     userId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateUserPasswordInput: {
+    // input type
+    newPassword: string; // String!
+    userId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
 }
 
 export interface NexusGenEnums {
@@ -1304,6 +1309,7 @@ export interface NexusGenFieldTypes {
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopProduct: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateUser: NexusGenRootTypes['UserPayload']; // UserPayload!
+    updateUserPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
   };
   NavItem: {
     // field return type
@@ -2288,6 +2294,7 @@ export interface NexusGenFieldTypeNames {
     updateShopAssetIndex: 'ShopPayload';
     updateShopProduct: 'ShopProductPayload';
     updateUser: 'UserPayload';
+    updateUserPassword: 'UserPayload';
   };
   NavItem: {
     // field return type name
@@ -3217,6 +3224,10 @@ export interface NexusGenArgTypes {
     updateUser: {
       // args
       input: NexusGenInputs['UpdateUserInput']; // UpdateUserInput!
+    };
+    updateUserPassword: {
+      // args
+      input: NexusGenInputs['UpdateUserPasswordInput']; // UpdateUserPasswordInput!
     };
   };
   Query: {

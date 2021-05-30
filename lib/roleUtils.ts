@@ -122,7 +122,7 @@ export type RoleRuleSlugType =
   // User
   | 'createUser'
   | 'updateUser'
-  | 'updateUserRole'
+  | 'updateUserPassword'
   | 'deleteUser';
 
 interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
@@ -767,10 +767,10 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
   },
   {
     allow: false,
-    slug: 'updateUserRole',
+    slug: 'updateUserPassword',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновление роли пользователя',
+      ru: 'Обновление пароля пользователя',
     },
   },
 ];

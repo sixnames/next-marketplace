@@ -260,6 +260,14 @@ export const UpdateUserInput = inputObjectType({
   },
 });
 
+export const UpdateUserPasswordInput = inputObjectType({
+  name: 'UpdateUserPasswordInput',
+  definition(t) {
+    t.nonNull.objectId('userId');
+    t.nonNull.string('newPassword');
+  },
+});
+
 export const UpdateMyProfileInput = inputObjectType({
   name: 'UpdateMyProfileInput',
   definition(t) {
@@ -415,6 +423,59 @@ export const UserMutations = mutationType({
               $set: {
                 ...values,
                 phone: phoneToRaw(input.phone),
+                updatedAt: new Date(),
+              },
+            },
+            { returnOriginal: false },
+          );
+          const updatedUser = updatedUserResult.value;
+          if (!updatedUserResult.ok || !updatedUser) {
+            return {
+              success: false,
+              message: await getApiMessage('users.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('users.update.success'),
+            payload: updatedUser,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update user password
+    t.nonNull.field('updateUserPassword', {
+      type: 'UserPayload',
+      description: 'Should update user password',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateUserPasswordInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<UserPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const usersCollection = db.collection<UserModel>(COL_USERS);
+          const { input } = args;
+          const { userId, newPassword } = input;
+
+          // Update user
+          const password = await hash(newPassword, 10);
+          const updatedUserResult = await usersCollection.findOneAndUpdate(
+            { _id: userId },
+            {
+              $set: {
+                password,
                 updatedAt: new Date(),
               },
             },

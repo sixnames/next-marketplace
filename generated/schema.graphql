@@ -1221,6 +1221,11 @@ type Mutation {
   Should update user
   """
   updateUser(input: UpdateUserInput!): UserPayload!
+
+  """
+  Should update user password
+  """
+  updateUserPassword(input: UpdateUserPasswordInput!): UserPayload!
 }
 
 type NavItem {
@@ -2340,6 +2345,11 @@ input UpdateUserInput {
   phone: PhoneNumber!
   roleId: ObjectId!
   secondName: String
+  userId: ObjectId!
+}
+
+input UpdateUserPasswordInput {
+  newPassword: String!
   userId: ObjectId!
 }
 

@@ -517,6 +517,15 @@ export type CreateMetricInput = {
   nameI18n: Scalars['JSONObject'];
 };
 
+export type CreateNavItemInput = {
+  nameI18n: Scalars['JSONObject'];
+  slug: Scalars['String'];
+  path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
+  index: Scalars['Int'];
+  icon?: Maybe<Scalars['String']>;
+};
+
 export type CreateOptionsGroupInput = {
   nameI18n: Scalars['JSONObject'];
   variant: OptionsGroupVariant;
@@ -842,6 +851,12 @@ export type Mutation = {
   updateMetric: MetricPayload;
   /** Should delete metric */
   deleteMetric: MetricPayload;
+  /** Should create nav item */
+  createNavItem: NavItemPayload;
+  /** Should update nav item */
+  updateNavItem: NavItemPayload;
+  /** Should delete nav item */
+  deleteNavItem: NavItemPayload;
   /** Should create options group */
   createOptionsGroup: OptionsGroupPayload;
   /** Should update options group */
@@ -1120,6 +1135,21 @@ export type MutationUpdateMetricArgs = {
 
 
 export type MutationDeleteMetricArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreateNavItemArgs = {
+  input: CreateNavItemInput;
+};
+
+
+export type MutationUpdateNavItemArgs = {
+  input: UpdateNavItemInput;
+};
+
+
+export type MutationDeleteNavItemArgs = {
   _id: Scalars['ObjectId'];
 };
 
@@ -1465,6 +1495,13 @@ export type NavItem = {
   parentId?: Maybe<Scalars['ObjectId']>;
   name: Scalars['String'];
   children: Array<NavItem>;
+};
+
+export type NavItemPayload = Payload & {
+  __typename?: 'NavItemPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<NavItem>;
 };
 
 
@@ -2438,6 +2475,16 @@ export type UpdateMyProfileInput = {
   phone: Scalars['PhoneNumber'];
 };
 
+export type UpdateNavItemInput = {
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  slug: Scalars['String'];
+  path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
+  index: Scalars['Int'];
+  icon?: Maybe<Scalars['String']>;
+};
+
 export type UpdateOptionInGroupInput = {
   optionId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
@@ -3218,6 +3265,45 @@ export type DeleteLanguageMutation = (
   & { deleteLanguage: (
     { __typename?: 'LanguagePayload' }
     & Pick<LanguagePayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreateNavItemMutationVariables = Exact<{
+  input: CreateNavItemInput;
+}>;
+
+
+export type CreateNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { createNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateNavItemMutationVariables = Exact<{
+  input: UpdateNavItemInput;
+}>;
+
+
+export type UpdateNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteNavItemMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
   ) }
 );
 
@@ -6079,6 +6165,108 @@ export function useDeleteLanguageMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
 export type DeleteLanguageMutationResult = Apollo.MutationResult<DeleteLanguageMutation>;
 export type DeleteLanguageMutationOptions = Apollo.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export const CreateNavItemDocument = gql`
+    mutation CreateNavItem($input: CreateNavItemInput!) {
+  createNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateNavItemMutationFn = Apollo.MutationFunction<CreateNavItemMutation, CreateNavItemMutationVariables>;
+
+/**
+ * __useCreateNavItemMutation__
+ *
+ * To run a mutation, you first call `useCreateNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNavItemMutation, { data, loading, error }] = useCreateNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateNavItemMutation, CreateNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNavItemMutation, CreateNavItemMutationVariables>(CreateNavItemDocument, options);
+      }
+export type CreateNavItemMutationHookResult = ReturnType<typeof useCreateNavItemMutation>;
+export type CreateNavItemMutationResult = Apollo.MutationResult<CreateNavItemMutation>;
+export type CreateNavItemMutationOptions = Apollo.BaseMutationOptions<CreateNavItemMutation, CreateNavItemMutationVariables>;
+export const UpdateNavItemDocument = gql`
+    mutation UpdateNavItem($input: UpdateNavItemInput!) {
+  updateNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateNavItemMutationFn = Apollo.MutationFunction<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+
+/**
+ * __useUpdateNavItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNavItemMutation, { data, loading, error }] = useUpdateNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNavItemMutation, UpdateNavItemMutationVariables>(UpdateNavItemDocument, options);
+      }
+export type UpdateNavItemMutationHookResult = ReturnType<typeof useUpdateNavItemMutation>;
+export type UpdateNavItemMutationResult = Apollo.MutationResult<UpdateNavItemMutation>;
+export type UpdateNavItemMutationOptions = Apollo.BaseMutationOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+export const DeleteNavItemDocument = gql`
+    mutation DeleteNavItem($_id: ObjectId!) {
+  deleteNavItem(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteNavItemMutationFn = Apollo.MutationFunction<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
+
+/**
+ * __useDeleteNavItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteNavItemMutation, { data, loading, error }] = useDeleteNavItemMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteNavItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteNavItemMutation, DeleteNavItemMutationVariables>(DeleteNavItemDocument, options);
+      }
+export type DeleteNavItemMutationHookResult = ReturnType<typeof useDeleteNavItemMutation>;
+export type DeleteNavItemMutationResult = Apollo.MutationResult<DeleteNavItemMutation>;
+export type DeleteNavItemMutationOptions = Apollo.BaseMutationOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
 export const CreateOptionsGroupDocument = gql`
     mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
   createOptionsGroup(input: $input) {

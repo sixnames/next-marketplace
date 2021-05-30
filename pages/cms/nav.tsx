@@ -30,11 +30,6 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
 
   const columns: TableColumn<NavItemInterface>[] = [
     {
-      headTitle: 'slug',
-      accessor: 'slug',
-      render: ({ cellData }) => cellData,
-    },
-    {
       headTitle: 'Иконка',
       accessor: 'icon',
       render: ({ cellData }) => {
@@ -48,6 +43,11 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
     {
       headTitle: 'Название',
       accessor: 'name',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'slug',
+      accessor: 'slug',
       render: ({ cellData }) => cellData,
     },
     {

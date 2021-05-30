@@ -13,6 +13,7 @@ import { configsMessages } from '../../apiMessages/configsMessages';
 import { countriesMessages } from '../../apiMessages/countriesMessages';
 import { currenciesMessages } from '../../apiMessages/currenciesMessages';
 import { languagesMessages } from '../../apiMessages/languagesMessages';
+import { navItemsMessages } from '../../apiMessages/navItemsMessages';
 import { manufacturersMessages } from '../../apiMessages/manufacturersMessages';
 import { metricsMessages } from '../../apiMessages/metricsMessages';
 import { optionsGroupsMessages } from '../../apiMessages/optionsGroupsMessages';
@@ -65,6 +66,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: languagesMessages,
     groupName: 'Языки',
+  },
+  {
+    initialMessages: navItemsMessages,
+    groupName: 'Навигация',
   },
   {
     initialMessages: citiesMessages,

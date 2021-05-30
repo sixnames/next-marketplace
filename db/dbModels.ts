@@ -629,6 +629,7 @@ export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
+export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;

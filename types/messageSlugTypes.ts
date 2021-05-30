@@ -94,6 +94,24 @@ export type MessageSlug =
   | 'validation.languages.slug'
   | 'validation.languages.nativeName'
 
+  // Nav items ----------
+  | 'navItems.create.duplicate'
+  | 'navItems.create.error'
+  | 'navItems.create.success'
+  | 'navItems.update.duplicate'
+  | 'navItems.update.error'
+  | 'navItems.update.success'
+  | 'navItems.delete.error'
+  | 'navItems.delete.success'
+  // Nav items validation
+  | 'validation.navItems.id'
+  | 'validation.navItems.name'
+  | 'validation.navItems.slug'
+  | 'validation.navItems.path'
+  | 'validation.navItems.navGroup'
+  | 'validation.navItems.index'
+  | 'validation.navItems.icon'
+
   // Carts ----------
   | 'carts.addProduct.cartNotFound'
   | 'carts.addProduct.error'

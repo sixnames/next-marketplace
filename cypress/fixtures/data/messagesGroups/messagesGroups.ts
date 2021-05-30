@@ -27,6 +27,12 @@ const messagesGroups: MessagesGroupModel[] = [
     },
   },
   {
+    _id: getObjectId('messagesGroups Навигация'),
+    nameI18n: {
+      ru: 'Навигация',
+    },
+  },
+  {
     _id: getObjectId('messagesGroups Города'),
     nameI18n: {
       ru: 'Города',

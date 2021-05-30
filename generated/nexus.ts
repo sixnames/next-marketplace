@@ -271,6 +271,15 @@ export interface NexusGenInputs {
     // input type
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
+  CreateNavItemInput: {
+    // input type
+    icon?: string | null; // String
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    navGroup: string; // String!
+    path?: string | null; // String
+    slug: string; // String!
+  };
   CreateOptionsGroupInput: {
     // input type
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -573,6 +582,16 @@ export interface NexusGenInputs {
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
     secondName?: string | null; // String
   };
+  UpdateNavItemInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    icon?: string | null; // String
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    navGroup: string; // String!
+    path?: string | null; // String
+    slug: string; // String!
+  };
   UpdateOptionInGroupInput: {
     // input type
     color?: string | null; // String
@@ -803,6 +822,7 @@ export interface NexusGenObjects {
   MetricsPaginationPayload: dbModels.MetricsPaginationPayloadModel;
   Mutation: {};
   NavItem: dbModels.NavItemModel;
+  NavItemPayload: dbModels.NavItemPayloadModel;
   Option: dbModels.OptionModel;
   OptionsAlphabetList: {
     // root type
@@ -1235,6 +1255,7 @@ export interface NexusGenFieldTypes {
     createLanguage: NexusGenRootTypes['LanguagePayload']; // LanguagePayload!
     createManufacturer: NexusGenRootTypes['ManufacturerPayload']; // ManufacturerPayload!
     createMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
+    createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1323,6 +1344,12 @@ export interface NexusGenFieldTypes {
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
     path: string | null; // String
     slug: string; // String!
+  };
+  NavItemPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['NavItem'] | null; // NavItem
+    success: boolean; // Boolean!
   };
   Option: {
     // field return type
@@ -2217,6 +2244,7 @@ export interface NexusGenFieldTypeNames {
     createLanguage: 'LanguagePayload';
     createManufacturer: 'ManufacturerPayload';
     createMetric: 'MetricPayload';
+    createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
@@ -2305,6 +2333,12 @@ export interface NexusGenFieldTypeNames {
     parentId: 'ObjectId';
     path: 'String';
     slug: 'String';
+  };
+  NavItemPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'NavItem';
+    success: 'Boolean';
   };
   Option: {
     // field return type name
@@ -2923,6 +2957,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateMetricInput']; // CreateMetricInput!
     };
+    createNavItem: {
+      // args
+      input: NexusGenInputs['CreateNavItemInput']; // CreateNavItemInput!
+    };
     createOptionsGroup: {
       // args
       input: NexusGenInputs['CreateOptionsGroupInput']; // CreateOptionsGroupInput!
@@ -3426,6 +3464,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'MakeAnOrderPayload'
     | 'ManufacturerPayload'
     | 'MetricPayload'
+    | 'NavItemPayload'
     | 'OptionsGroupPayload'
     | 'ProductPayload'
     | 'RolePayload'
@@ -3476,6 +3515,7 @@ export interface NexusGenTypeInterfaces {
   ManufacturersPaginationPayload: 'PaginationPayload';
   MetricPayload: 'Payload';
   MetricsPaginationPayload: 'PaginationPayload';
+  NavItemPayload: 'Payload';
   OptionsAlphabetList: 'AlphabetList';
   OptionsGroupPayload: 'Payload';
   Order: 'Base' | 'Timestamp';

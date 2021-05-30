@@ -476,6 +476,15 @@ input CreateMetricInput {
   nameI18n: JSONObject!
 }
 
+input CreateNavItemInput {
+  icon: String
+  index: Int!
+  nameI18n: JSONObject!
+  navGroup: String!
+  path: String
+  slug: String!
+}
+
 input CreateOptionsGroupInput {
   nameI18n: JSONObject!
   variant: OptionsGroupVariant!
@@ -851,6 +860,11 @@ type Mutation {
   Should create metric
   """
   createMetric(input: CreateMetricInput!): MetricPayload!
+
+  """
+  Should create nav item
+  """
+  createNavItem(input: CreateNavItemInput!): NavItemPayload!
 
   """
   Should create options group
@@ -1239,6 +1253,12 @@ type NavItem {
   parentId: ObjectId
   path: String
   slug: String!
+}
+
+type NavItemPayload implements Payload {
+  message: String!
+  payload: NavItem
+  success: Boolean!
 }
 
 """
@@ -2183,6 +2203,16 @@ input UpdateMyProfileInput {
   name: String!
   phone: PhoneNumber!
   secondName: String
+}
+
+input UpdateNavItemInput {
+  _id: ObjectId!
+  icon: String
+  index: Int!
+  nameI18n: JSONObject!
+  navGroup: String!
+  path: String
+  slug: String!
 }
 
 input UpdateOptionInGroupInput {

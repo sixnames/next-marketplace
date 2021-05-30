@@ -1275,6 +1275,7 @@ export interface NexusGenFieldTypes {
     deleteLanguage: NexusGenRootTypes['LanguagePayload']; // LanguagePayload!
     deleteManufacturer: NexusGenRootTypes['ManufacturerPayload']; // ManufacturerPayload!
     deleteMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
+    deleteNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1309,6 +1310,7 @@ export interface NexusGenFieldTypes {
     updateMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     updateMyPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateMyProfile: NexusGenRootTypes['UserPayload']; // UserPayload!
+    updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2264,6 +2266,7 @@ export interface NexusGenFieldTypeNames {
     deleteLanguage: 'LanguagePayload';
     deleteManufacturer: 'ManufacturerPayload';
     deleteMetric: 'MetricPayload';
+    deleteNavItem: 'NavItemPayload';
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
     deleteProductAsset: 'ProductPayload';
@@ -2298,6 +2301,7 @@ export interface NexusGenFieldTypeNames {
     updateMetric: 'MetricPayload';
     updateMyPassword: 'UserPayload';
     updateMyProfile: 'UserPayload';
+    updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
     updateProduct: 'ProductPayload';
@@ -3037,6 +3041,10 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    deleteNavItem: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
     deleteOptionFromGroup: {
       // args
       input: NexusGenInputs['DeleteOptionFromGroupInput']; // DeleteOptionFromGroupInput!
@@ -3172,6 +3180,10 @@ export interface NexusGenArgTypes {
     updateMyProfile: {
       // args
       input: NexusGenInputs['UpdateMyProfileInput']; // UpdateMyProfileInput!
+    };
+    updateNavItem: {
+      // args
+      input: NexusGenInputs['UpdateNavItemInput']; // UpdateNavItemInput!
     };
     updateOptionInGroup: {
       // args

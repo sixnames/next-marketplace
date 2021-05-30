@@ -962,6 +962,11 @@ type Mutation {
   deleteMetric(_id: ObjectId!): MetricPayload!
 
   """
+  Should delete nav item
+  """
+  deleteNavItem(_id: ObjectId!): NavItemPayload!
+
+  """
   Should delete option from the group
   """
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayload!
@@ -1130,6 +1135,11 @@ type Mutation {
   Should update session user profile
   """
   updateMyProfile(input: UpdateMyProfileInput!): UserPayload!
+
+  """
+  Should update nav item
+  """
+  updateNavItem(input: UpdateNavItemInput!): NavItemPayload!
 
   """
   Should update option in the group

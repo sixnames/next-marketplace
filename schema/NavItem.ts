@@ -252,5 +252,47 @@ export const NavItemMutations = extendType({
         }
       },
     });
+
+    // Should delete nav item
+    t.nonNull.field('deleteNavItem', {
+      type: 'NavItemPayload',
+      description: 'Should delete nav item',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<NavItemPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const { _id } = args;
+
+          // Delete nav item
+          const removedNavItemResult = await navItemsCollection.findOneAndDelete({
+            _id,
+          });
+          if (!removedNavItemResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('navItems.delete.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('navItems.delete.success'),
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
   },
 });

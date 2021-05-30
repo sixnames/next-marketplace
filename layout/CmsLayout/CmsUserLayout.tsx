@@ -24,7 +24,6 @@ const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children }) => 
         name: 'Заказы',
         testId: 'user-orders',
         path: `${ROUTE_CMS}/users/user/${user._id}/orders`,
-        exact: true,
       },
       {
         name: 'Изображения',

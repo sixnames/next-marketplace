@@ -1,7 +1,10 @@
+import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
 import Inner from 'components/Inner/Inner';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import Table, { TableColumn } from 'components/Table/Table';
+import { SORT_DESC } from 'config/common';
+import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { UserInterface } from 'db/uiInterfaces';
+import { OrderInterface, UserInterface } from 'db/uiInterfaces';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -17,9 +20,49 @@ interface UserOrdersInterface {
 }
 
 const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
+  const columns: TableColumn<OrderInterface>[] = [
+    {
+      accessor: 'itemId',
+      headTitle: 'ID',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      accessor: 'status',
+      headTitle: 'Статус',
+      render: ({ cellData }) => {
+        return `${cellData.name}`;
+      },
+    },
+    {
+      accessor: 'createdAt',
+      headTitle: 'Дата заказа',
+      render: ({ cellData }) => {
+        return <FormattedDateTime value={cellData} />;
+      },
+    },
+    {
+      accessor: 'productsCount',
+      headTitle: 'Товаров',
+      render: ({ cellData }) => {
+        return cellData;
+      },
+    },
+    {
+      accessor: 'shopsCount',
+      headTitle: 'Магазины',
+      render: ({ cellData }) => {
+        return cellData;
+      },
+    },
+  ];
+
   return (
     <CmsUserLayout user={user}>
-      <Inner testId={'user-orders-list'}>Orders</Inner>
+      <Inner testId={'user-orders-list'}>
+        <div className='overflow-x-auto'>
+          <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
+        </div>
+      </Inner>
     </CmsUserLayout>
   );
 };
@@ -77,6 +120,48 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_ORDERS,
+          as: 'orders',
+          let: { customerId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$customerId', '$$customerId'],
+                },
+              },
+            },
+            {
+              $sort: {
+                createdAt: SORT_DESC,
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ORDER_STATUSES,
+                as: 'status',
+                localField: 'statusId',
+                foreignField: '_id',
+              },
+            },
+            {
+              $addFields: {
+                status: {
+                  $arrayElemAt: ['$status', 0],
+                },
+                shopsCount: {
+                  $size: '$shopIds',
+                },
+                productsCount: {
+                  $size: '$shopProductIds',
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $project: {
           password: false,
         },
@@ -99,6 +184,20 @@ export const getServerSideProps = async (
           name: getFieldStringLocale(userResult.role.nameI18n, props.sessionLocale),
         }
       : null,
+    orders: (userResult.orders || []).map((order) => {
+      return {
+        ...order,
+        totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
+          return acc + amount * price;
+        }, 0),
+        status: order.status
+          ? {
+              ...order.status,
+              name: getFieldStringLocale(order.status.nameI18n, props.sessionLocale),
+            }
+          : null,
+      };
+    }),
   };
 
   return {

@@ -284,6 +284,7 @@ export interface UserInterface extends UserModel {
   shortName?: string;
   companies?: CompanyInterface[];
   formattedPhone?: FormattedPhoneModel | null;
+  orders?: OrderInterface[] | null;
 }
 
 export interface CatalogueDataInterface {

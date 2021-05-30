@@ -6,7 +6,7 @@ import { NavItemModel, NavItemPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
 import { SORT_ASC } from 'config/common';
-import { createNavItemSchema } from 'validation/navItemSchema';
+import { createNavItemSchema, updateNavItemSchema } from 'validation/navItemSchema';
 
 export const NavItem = objectType({
   name: 'NavItem',
@@ -89,6 +89,7 @@ export const NavItemPayload = objectType({
 export const NavItemMutations = extendType({
   type: 'Mutation',
   definition(t) {
+    // Should create nav item
     t.nonNull.field('createNavItem', {
       type: 'NavItemPayload',
       description: 'Should create nav item',
@@ -152,6 +153,95 @@ export const NavItemMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('navItems.create.success'),
+            payload: createdNavItem,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update nav item
+    t.nonNull.field('updateNavItem', {
+      type: 'NavItemPayload',
+      description: 'Should update nav item',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateNavItemInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<NavItemPayloadModel> => {
+        try {
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updateNavItemSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const { input } = args;
+          const { _id, ...values } = input;
+
+          // Check if nav item already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_NAV_ITEMS,
+            fieldName: 'nameI18n',
+            fieldArg: values.nameI18n,
+            additionalQuery: {
+              navGroup: values.navGroup,
+              _id: {
+                $ne: _id,
+              },
+            },
+            additionalOrQuery: [
+              {
+                slug: values.slug,
+              },
+              {
+                index: values.index,
+              },
+            ],
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('navItems.update.duplicate'),
+            };
+          }
+
+          // Update nav item
+          const createdNavItemResult = await navItemsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const createdNavItem = createdNavItemResult.value;
+          if (!createdNavItemResult.ok || !createdNavItem) {
+            return {
+              success: false,
+              message: await getApiMessage('navItems.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('navItems.update.success'),
             payload: createdNavItem,
           };
         } catch (e) {

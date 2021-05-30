@@ -33,7 +33,6 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
       headTitle: 'Иконка',
       accessor: 'icon',
       render: ({ cellData }) => {
-        console.log(cellData);
         if (!cellData) {
           return null;
         }

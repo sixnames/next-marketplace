@@ -1,7 +1,12 @@
+import Button from 'components/Buttons/Button';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner/Inner';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { useUpdateUserPasswordMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -17,9 +22,58 @@ interface UserPasswordInterface {
 }
 
 const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
+  const {
+    onCompleteCallback,
+    onErrorCallback,
+    showLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({
+    reload: true,
+  });
+  const [updateUserPasswordMutation] = useUpdateUserPasswordMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateUserPassword),
+    onError: onErrorCallback,
+  });
+
   return (
     <CmsUserLayout user={user}>
-      <Inner testId={'user-password-page'}>Password</Inner>
+      <Inner testId={'user-password-page'}>
+        <Formik
+          initialValues={{
+            newPassword: '',
+            repeatPassword: '',
+          }}
+          onSubmit={({ newPassword, repeatPassword }) => {
+            if (newPassword === repeatPassword) {
+              showLoading();
+              updateUserPasswordMutation({
+                variables: {
+                  input: {
+                    userId: user._id,
+                    newPassword,
+                  },
+                },
+              }).catch(console.log);
+            } else {
+              showErrorNotification({
+                title: 'Введённые пароли не совпадают',
+              });
+            }
+          }}
+        >
+          {() => {
+            return (
+              <Form>
+                <FormikInput name={'newPassword'} type={'password'} label={'Новый пароль'} />
+                <FormikInput name={'repeatPassword'} type={'password'} label={'Повторите пароль'} />
+                <Button size={'small'} type={'submit'}>
+                  Сохранить
+                </Button>
+              </Form>
+            );
+          }}
+        </Formik>
+      </Inner>
     </CmsUserLayout>
   );
 };

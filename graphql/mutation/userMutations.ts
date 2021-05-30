@@ -40,6 +40,15 @@ export const UPDATE_USER_MUTATION = gql`
   }
 `;
 
+export const UPDATE_USER__PASSWORD_MUTATION = gql`
+  mutation UpdateUserPassword($input: UpdateUserPasswordInput!) {
+    updateUserPassword(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const DELETE_USER_MUTATION = gql`
   mutation DeleteUser($_id: ObjectId!) {
     deleteUser(_id: $_id) {

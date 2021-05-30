@@ -42,11 +42,12 @@ export async function storeRestApiUploads({
     }
 
     for await (const [index, file] of uploads.entries()) {
+      const currentTimeStamp = new Date().getTime();
       const fileIndex = index + 1;
       const finalStartIndex = startIndex + 1;
       const finalIndex = finalStartIndex + fileIndex;
       const { buffer, ext } = file;
-      const fileName = `${itemId}-${finalIndex}${ext ? `.${ext}` : ''}`;
+      const fileName = `${currentTimeStamp}-${finalIndex}${ext ? `.${ext}` : ''}`;
 
       if (!buffer) {
         return null;

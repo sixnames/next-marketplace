@@ -257,6 +257,7 @@ export const ISO_LANGUAGES = [
 ];
 
 // ASSETS
+export const ASSETS_DIST_USERS = 'users';
 export const ASSETS_DIST_PRODUCTS = 'products';
 export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';

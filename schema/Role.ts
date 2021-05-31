@@ -44,7 +44,7 @@ export const Role = objectType({
           source.slug === ROLE_SLUG_ADMIN
             ? {}
             : {
-                _id: { $in: source.allowedAppNavigation },
+                path: { $in: source.allowedAppNavigation },
               };
 
         const navItems = await navItemsCollection
@@ -76,7 +76,7 @@ export const Role = objectType({
           source.slug === ROLE_SLUG_ADMIN
             ? {}
             : {
-                _id: { $in: source.allowedAppNavigation },
+                path: { $in: source.allowedAppNavigation },
               };
 
         const navItems = await navItemsCollection

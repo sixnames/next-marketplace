@@ -481,7 +481,7 @@ input CreateNavItemInput {
   index: Int!
   nameI18n: JSONObject!
   navGroup: String!
-  path: String
+  path: String!
   slug: String!
 }
 
@@ -1261,7 +1261,7 @@ type NavItem {
   nameI18n: JSONObject!
   navGroup: String!
   parentId: ObjectId
-  path: String
+  path: String!
   slug: String!
 }
 
@@ -2221,7 +2221,7 @@ input UpdateNavItemInput {
   index: Int!
   nameI18n: JSONObject!
   navGroup: String!
-  path: String
+  path: String!
   slug: String!
 }
 

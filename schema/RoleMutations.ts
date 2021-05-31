@@ -319,7 +319,7 @@ export const RoleMutations = extendType({
               },
               {
                 $addToSet: {
-                  allowedAppNavigation: navItemId,
+                  allowedAppNavigation: navItem.path,
                 },
               },
               {
@@ -346,7 +346,7 @@ export const RoleMutations = extendType({
             },
             {
               $pull: {
-                allowedAppNavigation: navItemId,
+                allowedAppNavigation: navItem.path,
               },
             },
             {

@@ -14,7 +14,7 @@ export const NavItem = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.string('slug');
-    t.string('path');
+    t.nonNull.string('path');
     t.nonNull.string('navGroup');
     t.nonNull.int('index');
     t.string('icon');
@@ -56,7 +56,7 @@ export const CreateNavItemInput = inputObjectType({
   definition(t) {
     t.nonNull.json('nameI18n');
     t.nonNull.string('slug');
-    t.string('path');
+    t.nonNull.string('path');
     t.nonNull.string('navGroup');
     t.nonNull.int('index');
     t.string('icon');
@@ -69,7 +69,7 @@ export const UpdateNavItemInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.string('slug');
-    t.string('path');
+    t.nonNull.string('path');
     t.nonNull.string('navGroup');
     t.nonNull.int('index');
     t.string('icon');

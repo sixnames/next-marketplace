@@ -68,8 +68,8 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
     {
       headTitle: 'Разрешено',
       render: ({ dataItem }) => {
-        const checked = role.allowedAppNavigation.some((navId) => {
-          return navId === dataItem._id;
+        const checked = role.allowedAppNavigation.some((navPath) => {
+          return navPath === dataItem.path;
         });
 
         return (

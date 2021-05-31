@@ -277,7 +277,7 @@ export interface NexusGenInputs {
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     navGroup: string; // String!
-    path?: string | null; // String
+    path: string; // String!
     slug: string; // String!
   };
   CreateOptionsGroupInput: {
@@ -589,7 +589,7 @@ export interface NexusGenInputs {
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     navGroup: string; // String!
-    path?: string | null; // String
+    path: string; // String!
     slug: string; // String!
   };
   UpdateOptionInGroupInput: {
@@ -1344,7 +1344,7 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     navGroup: string; // String!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
-    path: string | null; // String
+    path: string; // String!
     slug: string; // String!
   };
   NavItemPayload: {

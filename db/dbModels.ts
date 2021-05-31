@@ -331,7 +331,7 @@ export interface NavItemModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   slug: string;
-  path?: string | null;
+  path: string;
   navGroup: string;
   index: number;
   icon?: IconType | null;
@@ -516,7 +516,7 @@ export interface RoleModel extends TimestampModel {
   descriptionI18n?: TranslationModel | null;
   slug: string;
   isStaff: boolean;
-  allowedAppNavigation: ObjectIdModel[];
+  allowedAppNavigation: string[];
 }
 
 export interface RubricVariantModel {

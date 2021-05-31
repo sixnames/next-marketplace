@@ -58,11 +58,7 @@ const roles: RoleModel[] = [
     },
     slug: 'companyOwner',
     isStaff: false,
-    allowedAppNavigation: getObjectIds([
-      `${navItemsDefaultSlug} app-orders`,
-      `${navItemsDefaultSlug} app-shops`,
-      `${navItemsDefaultSlug} app-config`,
-    ]),
+    allowedAppNavigation: [`/orders`, `/shops`, `/config`],
     createdAt: new Date(),
     updatedAt: new Date(),
   },

@@ -519,8 +519,17 @@ interface CheckPagePermissionInterface {
   url?: string | null;
 }
 function checkPagePermission({ allowedAppNavItems, url }: CheckPagePermissionInterface): boolean {
+  const excludedExtension = '.json';
+  const cmsRootUrlList = `${url}`.split(ROUTE_CMS);
+  console.log({ url, cmsRootUrlList });
+
+  if (!cmsRootUrlList[0] || cmsRootUrlList[0] === excludedExtension) {
+    return true;
+  }
+
   return (allowedAppNavItems || []).some((path) => {
     const reg = RegExp(path);
+    // console.log({ url, path });
     return reg.test(`${url}`);
   });
 }

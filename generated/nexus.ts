@@ -301,6 +301,7 @@ export interface NexusGenInputs {
   CreateRoleInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    isCompanyStaff: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -680,6 +681,7 @@ export interface NexusGenInputs {
   UpdateRoleInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    isCompanyStaff: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1609,6 +1611,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    isCompanyStaff: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2600,6 +2603,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
+    isCompanyStaff: 'Boolean';
     isStaff: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';

@@ -22,7 +22,13 @@ const RoleMainFields: React.FC = () => {
         isRequired
       />
 
-      <FormikCheckboxLine testId={'isStaff'} label={'Является персоналом'} name={'isStaff'} />
+      <FormikCheckboxLine testId={'isStaff'} label={'Сотрудник сайта'} name={'isStaff'} />
+
+      <FormikCheckboxLine
+        testId={'isCompanyStaff'}
+        label={'Сотрудник компании'}
+        name={'isCompanyStaff'}
+      />
     </React.Fragment>
   );
 };

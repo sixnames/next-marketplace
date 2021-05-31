@@ -25,6 +25,7 @@ export const CreateRoleInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
+    t.nonNull.boolean('isCompanyStaff');
   },
 });
 
@@ -35,6 +36,7 @@ export const UpdateRoleInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
+    t.nonNull.boolean('isCompanyStaff');
   },
 });
 
@@ -91,6 +93,8 @@ export const RoleMutations = extendType({
           const slug = await generateDefaultLangSlug(args.input.nameI18n);
           const createdRoleResult = await rolesCollection.insertOne({
             ...args.input,
+            isCompanyStaff: Boolean(args.input.isCompanyStaff),
+            isStaff: Boolean(args.input.isStaff),
             slug,
             allowedAppNavigation: [],
             updatedAt: new Date(),

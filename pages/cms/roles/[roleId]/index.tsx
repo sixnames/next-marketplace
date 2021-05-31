@@ -81,6 +81,7 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
             nameI18n: role.nameI18n,
             descriptionI18n: role.descriptionI18n,
             isStaff: role.isStaff,
+            isCompanyStaff: role.isCompanyStaff,
           }}
           onSubmit={(values) => {
             showLoading();

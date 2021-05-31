@@ -8,6 +8,7 @@ import {
   DEFAULT_LOCALE,
   LOCALE_HEADER,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
 } from 'config/common';
@@ -108,6 +109,14 @@ export const getOperationPermission = async ({
   const db = await getDatabase();
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
   const { role } = await getSessionRole(context);
+
+  if (role.slug === ROLE_SLUG_ADMIN) {
+    return {
+      allow: true,
+      message: '',
+    };
+  }
+
   const rule = await roleRulesCollection.findOne({
     slug,
     roleId: role._id,

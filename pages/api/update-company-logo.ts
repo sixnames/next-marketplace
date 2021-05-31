@@ -5,6 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
 import { deleteUpload, storeRestApiUploads } from 'lib/assets';
 import { parseRestApiFormData } from 'lib/restApi';
+import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -15,6 +16,22 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // Permission
+  const { allow, message } = await getOperationPermission({
+    context: {
+      req,
+      res,
+    },
+    slug: 'updateCompany',
+  });
+  if (!allow) {
+    res.status(500).send({
+      success: false,
+      message: message,
+    });
+    return;
+  }
+
   const db = await getDatabase();
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const formData = await parseRestApiFormData(req);

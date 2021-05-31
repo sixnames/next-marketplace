@@ -140,7 +140,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
         <Title>{pageTitle}</Title>
         <div className='relative'>
           <FormikIndividualSearch
-            testId={'products'}
+            testId={'users'}
             withReset
             onReset={() => {
               router.push(basePath).catch((e) => console.log(e));
@@ -171,6 +171,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
           <FixedButtons>
             <Button
+              testId={'create-user'}
               size={'small'}
               onClick={() => {
                 showModal<CreateUserModalInterface>({
@@ -180,7 +181,6 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
                   },
                 });
               }}
-              testId={'create-user'}
             >
               Добавить пользователя
             </Button>

@@ -64,9 +64,19 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
           {() => {
             return (
               <Form>
-                <FormikInput name={'newPassword'} type={'password'} label={'Новый пароль'} />
-                <FormikInput name={'repeatPassword'} type={'password'} label={'Повторите пароль'} />
-                <Button size={'small'} type={'submit'}>
+                <FormikInput
+                  name={'newPassword'}
+                  testId={'newPassword'}
+                  type={'password'}
+                  label={'Новый пароль'}
+                />
+                <FormikInput
+                  name={'repeatPassword'}
+                  testId={'repeatPassword'}
+                  type={'password'}
+                  label={'Повторите пароль'}
+                />
+                <Button testId={'submit-password'} size={'small'} type={'submit'}>
                   Сохранить
                 </Button>
               </Form>

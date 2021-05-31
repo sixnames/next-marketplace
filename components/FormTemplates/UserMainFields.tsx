@@ -16,6 +16,7 @@ const UserMainFields: React.FC<UserMainFieldsInterface> = ({ roles }) => {
       <FormikInput name={'email'} label={'Email'} testId={'email'} type={'email'} showInlineError />
       <FormikInput name={'phone'} label={'Телефон'} testId={'phone'} type={'tel'} showInlineError />
       <FormikSelect
+        testId={'role'}
         name={'roleId'}
         label={'Роль'}
         firstOption={'Не назначена'}

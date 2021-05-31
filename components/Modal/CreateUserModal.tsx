@@ -30,7 +30,7 @@ const CreateUserModal: React.FC<CreateUserModalInterface> = ({ roles }) => {
   });
 
   return (
-    <ModalFrame testId={'create-rubric-modal'}>
+    <ModalFrame testId={'create-user-modal'}>
       <ModalTitle>Добавление рубрики</ModalTitle>
 
       <Formik<CreateUserInput>
@@ -61,7 +61,7 @@ const CreateUserModal: React.FC<CreateUserModalInterface> = ({ roles }) => {
               <UserMainFields roles={roles} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'user-submit'}>
+                <Button type={'submit'} testId={'submit-user'}>
                   Создать
                 </Button>
                 <Button theme={'secondary'} onClick={hideModal}>

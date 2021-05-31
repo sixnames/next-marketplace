@@ -58,7 +58,7 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
 
   return (
     <CmsUserLayout user={user}>
-      <Inner testId={'user-orders-list'}>
+      <Inner testId={'user-orders-page'}>
         <div className='overflow-x-auto'>
           <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
         </div>

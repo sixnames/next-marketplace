@@ -517,19 +517,39 @@ export async function getPageInitialState({
 interface CheckPagePermissionInterface {
   allowedAppNavItems?: string[];
   url?: string | null;
+  isCms: boolean;
 }
-function checkPagePermission({ allowedAppNavItems, url }: CheckPagePermissionInterface): boolean {
+function checkPagePermission({
+  allowedAppNavItems,
+  url,
+  isCms,
+}: CheckPagePermissionInterface): boolean {
   const excludedExtension = '.json';
-  const cmsRootUrlList = `${url}`.split(ROUTE_CMS);
-  console.log({ url, cmsRootUrlList });
+  const initialAllowedAppNavItems = allowedAppNavItems || [];
 
-  if (!cmsRootUrlList[0] || cmsRootUrlList[0] === excludedExtension) {
-    return true;
+  // Check cms root url
+  if (isCms) {
+    const cmsRootUrlList = `${url}`.split(ROUTE_CMS);
+    if (!cmsRootUrlList[1] || cmsRootUrlList[1] === excludedExtension) {
+      return initialAllowedAppNavItems.includes(ROUTE_CMS);
+    }
   }
 
-  return (allowedAppNavItems || []).some((path) => {
+  // Check app root url
+  if (!isCms) {
+    const appRootUrlList = `${url}`.split(ROUTE_APP);
+    if (!appRootUrlList[1] || appRootUrlList[1] === excludedExtension) {
+      return initialAllowedAppNavItems.includes(ROUTE_APP);
+    }
+  }
+
+  // Check nested urls
+  const finalAllowedAppNavItems = initialAllowedAppNavItems.filter((path) => {
+    return path !== ROUTE_CMS && path !== ROUTE_APP;
+  });
+
+  return finalAllowedAppNavItems.some((path) => {
     const reg = RegExp(path);
-    // console.log({ url, path });
     return reg.test(`${url}`);
   });
 }
@@ -574,14 +594,12 @@ export async function getCompanyAppInitialData({
   const isAllowed = checkPagePermission({
     allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
     url: context.req.url,
+    isCms: false,
   });
 
   if (!isAllowed || !sessionUser.role || !sessionUser.role.isCompanyStaff) {
     return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
+      notFound: true,
     };
   }
 
@@ -636,22 +654,17 @@ export async function getAppInitialData({
   const isAllowed = checkPagePermission({
     allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
     url: context.req.url,
+    isCms: true,
   });
   if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {
     return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
+      notFound: true,
     };
   }
 
   if (!sessionUser.role?.isStaff) {
     return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
+      notFound: true,
     };
   }
 

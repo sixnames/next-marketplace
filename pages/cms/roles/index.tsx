@@ -58,6 +58,11 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
+      headTitle: 'Сотрудник компании',
+      accessor: 'isCompanyStaff',
+      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>

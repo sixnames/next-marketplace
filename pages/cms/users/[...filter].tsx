@@ -132,7 +132,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'users-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>

@@ -510,6 +510,73 @@ export async function getPageInitialState({
   };
 }
 
+interface GetCompanyAppInitialDataInterface {
+  context: GetServerSidePropsContext;
+}
+
+interface GetCompanyAppInitialDataPayloadInterface<T> {
+  props?: T;
+  redirect?: Redirect;
+  notFound?: true;
+}
+
+export async function getCompanyAppInitialData({
+  context,
+}: GetCompanyAppInitialDataInterface): Promise<
+  GetCompanyAppInitialDataPayloadInterface<PagePropsInterface>
+> {
+  const {
+    sessionUser,
+    pageUrls,
+    currentCity,
+    sessionCity,
+    sessionLocale,
+    initialData,
+    companySlug,
+    session,
+  } = await getPageInitialState({ context });
+
+  // Check if user authenticated
+  if (!session?.user || !sessionUser) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  const notAllowedRedirect = {
+    redirect: {
+      permanent: false,
+      destination: `/`,
+    },
+  };
+
+  // Check if page is allowed
+  const allowedAppNavItems = sessionUser.role?.allowedAppNavigation || [];
+  const isAllowed = allowedAppNavItems.some((path) => {
+    const reg = RegExp(path);
+    return reg.test(`${context.req.url}`);
+  });
+
+  if (!isAllowed || !sessionUser.role || !sessionUser.role.isCompanyStaff) {
+    return notAllowedRedirect;
+  }
+
+  return {
+    props: {
+      companySlug,
+      initialData,
+      currentCity,
+      sessionCity,
+      sessionUser: castDbData(sessionUser),
+      sessionLocale,
+      pageUrls,
+    },
+  };
+}
+
 interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
   isCms?: boolean;
@@ -551,6 +618,21 @@ export async function getAppInitialData({
       redirect: {
         permanent: false,
         destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  // Check if page is allowed
+  const allowedAppNavItems = sessionUser.role?.allowedAppNavigation || [];
+  const isAllowed = allowedAppNavItems.some((path) => {
+    const reg = RegExp(path);
+    return reg.test(`${context.req.url}`);
+  });
+  if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
       },
     };
   }

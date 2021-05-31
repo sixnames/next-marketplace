@@ -21,7 +21,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
 
 interface OrdersRouteInterface {
   orders: OrderInterface[];
@@ -138,7 +138,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const db = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getCompanyAppInitialData({ context });
   if (!props || !props.sessionUser) {
     return {
       notFound: true,

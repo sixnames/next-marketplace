@@ -4,7 +4,7 @@ import { CONFIG_GROUP_UI } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -33,7 +33,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getCompanyAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

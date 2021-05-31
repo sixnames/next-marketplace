@@ -14,7 +14,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -63,7 +63,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context });
+  const initialProps = await getCompanyAppInitialData({ context });
   const basePath = `${ROUTE_APP}/${query.companyId}/shops/${shopId}/products/${rubricId}`;
 
   // console.log(' ');

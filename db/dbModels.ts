@@ -516,6 +516,7 @@ export interface RoleModel extends TimestampModel {
   descriptionI18n?: TranslationModel | null;
   slug: string;
   isStaff: boolean;
+  isCompanyStaff?: boolean;
   allowedAppNavigation: string[];
 }
 

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { getCompanyAppInitialData } from 'lib/ssrUtils';
 
 interface OrderRouteInterface {
   [key: string]: any;
@@ -41,7 +41,7 @@ const Order: NextPage<OrdersInterface> = ({ pageUrls }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> => {
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getCompanyAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { getCompanyAppInitialData } from 'lib/ssrUtils';
 
 const ShopsRoute: React.FC = () => {
   const router = useRouter();
@@ -108,7 +108,7 @@ const CompanyShops: NextPage<PagePropsInterface> = ({ pageUrls }) => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context });
+  return getCompanyAppInitialData({ context });
 };
 
 export default CompanyShops;

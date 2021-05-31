@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
 import ShopDetails, { ShopDetailsInterface } from 'routes/shops/ShopDetails';
 
 interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
@@ -29,7 +29,7 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context });
+  const initialProps = await getCompanyAppInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

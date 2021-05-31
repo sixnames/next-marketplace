@@ -1,6 +1,7 @@
 import { aggregatePagination } from 'db/aggregatePagination';
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
 import {
+  getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
   getSessionRole,
@@ -316,6 +317,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -391,6 +404,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -463,6 +488,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateUserPassword',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -767,6 +804,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);

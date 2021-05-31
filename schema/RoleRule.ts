@@ -4,7 +4,11 @@ import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { updateRoleRuleSchema } from 'validation/roleSchema';
 
 export const RoleRule = objectType({
@@ -75,6 +79,18 @@ export const RoleRuleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RoleRulePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const validationSchema = await getResolverValidationSchema({
             context,
             schema: updateRoleRuleSchema,

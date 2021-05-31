@@ -4,7 +4,12 @@ import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nex
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
-import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionCart,
+} from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
@@ -122,6 +127,18 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateShopProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -229,6 +246,18 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateShopProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,

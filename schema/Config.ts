@@ -1,6 +1,6 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { CONFIG_DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
 import { COL_CONFIGS } from 'db/collectionNames';
@@ -120,6 +120,21 @@ export const ConfigMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug:
+              args.input.companySlug === CONFIG_DEFAULT_COMPANY_SLUG
+                ? 'updateConfig'
+                : 'updateCompanyConfig',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();

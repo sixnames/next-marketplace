@@ -15,48 +15,48 @@ export type RoleRuleSlugType =
   | 'deleteAttribute' // done
 
   // Brand
-  | 'createBrand'
-  | 'updateBrand'
-  | 'deleteBrand'
+  | 'createBrand' // done
+  | 'updateBrand' // done
+  | 'deleteBrand' // done
 
   // Brand collection
-  | 'createBrandCollection'
-  | 'updateBrandCollection'
-  | 'deleteBrandCollection'
+  | 'createBrandCollection' // done
+  | 'updateBrandCollection' // done
+  | 'deleteBrandCollection' // done
 
   // City
-  | 'createCity'
-  | 'updateCity'
-  | 'deleteCity'
+  | 'createCity' // done
+  | 'updateCity' // done
+  | 'deleteCity' // done
 
   // Company
-  | 'createCompany'
-  | 'updateCompany'
-  | 'deleteCompany'
-  | 'updateCompanyConfig'
+  | 'createCompany' // done
+  | 'updateCompany' // done
+  | 'deleteCompany' // done
+  | 'updateCompanyConfig' // done
 
   // Config
-  | 'updateConfig'
+  | 'updateConfig' // done
 
   // Country
-  | 'createCountry'
-  | 'updateCountry'
-  | 'deleteCountry'
+  | 'createCountry' // done
+  | 'updateCountry' // done
+  | 'deleteCountry' // done
 
   // Currency
-  | 'createCurrency'
-  | 'updateCurrency'
-  | 'deleteCurrency'
+  | 'createCurrency' // done
+  | 'updateCurrency' // done
+  | 'deleteCurrency' // done
 
   // Language
-  | 'createLanguage'
-  | 'updateLanguage'
-  | 'deleteLanguage'
+  | 'createLanguage' // done
+  | 'updateLanguage' // done
+  | 'deleteLanguage' // done
 
   // Manufacturer
-  | 'createManufacturer'
-  | 'updateManufacturer'
-  | 'deleteManufacturer'
+  | 'createManufacturer' // done
+  | 'updateManufacturer' // done
+  | 'deleteManufacturer' // done
 
   // Message
   | 'createMessagesGroup'
@@ -67,63 +67,61 @@ export type RoleRuleSlugType =
   | 'deleteMessage'
 
   // Metric
-  | 'createMetric'
-  | 'updateMetric'
-  | 'deleteMetric'
+  | 'createMetric' // done
+  | 'updateMetric' // done
+  | 'deleteMetric' // done
 
   // NavItem
-  | 'createNavItem'
-  | 'updateNavItem'
-  | 'deleteNavItem'
+  | 'createNavItem' // done
+  | 'updateNavItem' // done
+  | 'deleteNavItem' // done
 
   // Option
-  | 'createOptionsGroup'
-  | 'updateOptionsGroup'
-  | 'deleteOptionsGroup'
-  | 'createOption'
-  | 'updateOption'
-  | 'deleteOption'
+  | 'createOptionsGroup' // done
+  | 'updateOptionsGroup' // done
+  | 'deleteOptionsGroup' // done
+  | 'createOption' // done
+  | 'updateOption' // done
+  | 'deleteOption' // done
 
   // Order
   | 'deleteOrder'
 
   // Product
-  | 'createProduct'
-  | 'updateProduct'
-  | 'updateProductAssets'
-  | 'deleteProduct'
+  | 'createProduct' // done
+  | 'updateProduct' // done
+  | 'deleteProduct' // done
 
   // Role
-  | 'createRole'
-  | 'updateRole'
-  | 'deleteRole'
-  | 'updateRoleRule'
+  | 'createRole' // done
+  | 'updateRole' // done
+  | 'deleteRole' // done
 
   // Rubric
-  | 'createRubric'
-  | 'updateRubric'
-  | 'deleteRubric'
+  | 'createRubric' // done
+  | 'updateRubric' // done
+  | 'deleteRubric' // done
 
   // RubricVariant
-  | 'createRubricVariant'
-  | 'updateRubricVariant'
-  | 'deleteRubricVariant'
+  | 'createRubricVariant' // done
+  | 'updateRubricVariant' // done
+  | 'deleteRubricVariant' // done
 
   // Shop
-  | 'createShop'
-  | 'updateShop'
-  | 'deleteShop'
+  | 'createShop' // done
+  | 'updateShop' // done
+  | 'deleteShop' // done
 
   // ShopProduct
-  | 'createShopProduct'
-  | 'updateShopProduct'
-  | 'deleteShopProduct'
+  | 'createShopProduct' // done
+  | 'updateShopProduct' // done
+  | 'deleteShopProduct' // done
 
   // User
-  | 'createUser'
-  | 'updateUser'
-  | 'updateUserPassword'
-  | 'deleteUser';
+  | 'createUser' // done
+  | 'updateUser' // done
+  | 'updateUserPassword' // done
+  | 'deleteUser'; // done
 
 interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
   slug: RoleRuleSlugType;
@@ -587,14 +585,6 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
   },
   {
     allow: false,
-    slug: 'updateProductAssets',
-    descriptionI18n: {},
-    nameI18n: {
-      ru: 'Обновление изображений товара',
-    },
-  },
-  {
-    allow: false,
     slug: 'deleteProduct',
     descriptionI18n: {},
     nameI18n: {
@@ -625,14 +615,6 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление роли',
-    },
-  },
-  {
-    allow: false,
-    slug: 'updateRoleRule',
-    descriptionI18n: {},
-    nameI18n: {
-      ru: 'Обновление правила роли',
     },
   },
 

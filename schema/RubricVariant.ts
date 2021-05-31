@@ -1,5 +1,9 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { RubricModel, RubricVariantModel, RubricVariantPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_RUBRIC_VARIANTS, COL_RUBRICS } from 'db/collectionNames';
@@ -109,6 +113,18 @@ export const RubricVariantMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricVariantPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createRubricVariant',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -173,6 +189,18 @@ export const RubricVariantMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricVariantPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubricVariant',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -247,6 +275,18 @@ export const RubricVariantMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricVariantPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteRubricVariant',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);

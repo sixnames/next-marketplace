@@ -1,7 +1,11 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   BrandCollectionModel,
   BrandCollectionsPaginationPayloadModel,
@@ -303,6 +307,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -374,6 +390,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -459,6 +487,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
@@ -518,6 +558,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -629,6 +681,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -742,6 +806,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,

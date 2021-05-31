@@ -1,5 +1,9 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   AttributeModel,
   MetricModel,
@@ -122,6 +126,18 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -186,6 +202,18 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -305,6 +333,18 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);

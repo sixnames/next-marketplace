@@ -3,7 +3,11 @@ import { getDatabase } from 'db/mongodb';
 import { COL_CITIES, COL_COUNTRIES } from 'db/collectionNames';
 import { CityModel, CountryModel, CountryPayloadModel } from 'db/dbModels';
 import { SORT_ASC } from 'config/common';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import {
@@ -132,6 +136,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -193,6 +209,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -274,6 +302,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
@@ -335,6 +375,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -436,6 +488,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -531,6 +595,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,

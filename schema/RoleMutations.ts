@@ -4,7 +4,11 @@ import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from 'db/dbModel
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { createRoleSchema, updateRoleSchema } from 'validation/roleSchema';
@@ -65,6 +69,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -135,6 +151,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -221,6 +249,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -290,6 +330,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);

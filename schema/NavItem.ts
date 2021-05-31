@@ -1,7 +1,11 @@
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { NavItemModel, NavItemPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
@@ -102,6 +106,18 @@ export const NavItemMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<NavItemPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createNavItem',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -177,6 +193,18 @@ export const NavItemMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<NavItemPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateNavItem',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -266,6 +294,18 @@ export const NavItemMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<NavItemPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteNavItem',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);

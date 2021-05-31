@@ -4,7 +4,11 @@ import { getDatabase } from 'db/mongodb';
 import { COL_LANGUAGES } from 'db/collectionNames';
 import { SORT_ASC } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { createLanguageSchema, updateLanguageSchema } from 'validation/languageSchema';
 
 export const Language = objectType({
@@ -90,6 +94,18 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate input
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -152,6 +168,18 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate input
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -235,6 +263,18 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);

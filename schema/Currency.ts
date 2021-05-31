@@ -4,7 +4,11 @@ import { getDatabase } from 'db/mongodb';
 import { COL_COUNTRIES, COL_CURRENCIES } from 'db/collectionNames';
 import { SORT_ASC } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { createCurrencySchema, updateCurrencySchema } from 'validation/currencySchema';
 
 export const Currency = objectType({
@@ -82,6 +86,18 @@ export const CurrencyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CurrencyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCurrency',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validation
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -142,6 +158,18 @@ export const CurrencyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CurrencyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCurrency',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validation
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -220,6 +248,18 @@ export const CurrencyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CurrencyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCurrency',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);

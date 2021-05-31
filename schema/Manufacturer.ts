@@ -1,7 +1,11 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,
@@ -227,6 +231,18 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -298,6 +314,18 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -382,6 +410,18 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);

@@ -22,7 +22,6 @@ import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
-  ROLE_SLUG_ADMIN,
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,
   ROUTE_APP,
@@ -96,7 +95,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </Link>
                     </li>
 
-                    {me?.role?.slug === ROLE_SLUG_ADMIN ? (
+                    {me?.role?.isStaff ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}

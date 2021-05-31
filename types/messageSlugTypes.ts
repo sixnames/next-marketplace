@@ -1,5 +1,6 @@
 export type MessageSlug =
   // Common validation ----------
+  | 'permission.error'
   | 'validation.string.min'
   | 'validation.string.max'
   | 'validation.number.min'

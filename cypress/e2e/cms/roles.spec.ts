@@ -54,7 +54,6 @@ describe('User roles', () => {
     cy.getByCy('Создание группы атрибутов-checkbox').check();
     cy.wait(1500);
     cy.getByCy('Создание группы атрибутов-checkbox').should('be.checked');
-    // TODO test rules
 
     // Should display role nav
     cy.wait(1500);
@@ -63,6 +62,8 @@ describe('User roles', () => {
     cy.getByCy('cms-Заказы-checkbox').check();
     cy.wait(1500);
     cy.getByCy('cms-Заказы-checkbox').should('be.checked');
-    // TODO test nav
   });
+
+  // TODO test rules
+  // TODO test nav
 });

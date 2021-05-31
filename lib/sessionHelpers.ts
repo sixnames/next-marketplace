@@ -1,5 +1,6 @@
+import { RoleRuleSlugType } from 'lib/roleUtils';
 import { getSession } from 'next-auth/client';
-import { CartModel, RoleModel, UserModel } from 'db/dbModels';
+import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CART_COOKIE_KEY,
@@ -12,7 +13,7 @@ import {
 } from 'config/common';
 import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
-import { COL_CARTS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_CARTS, COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
 import { MessageSlug } from 'types/messageSlugTypes';
 import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
@@ -88,6 +89,46 @@ export const getSessionCity = (context: NexusContext): string => {
   // populated with Apollo client
   const cookies = nookies.get(context);
   return cookies?.city || context?.city || DEFAULT_CITY;
+};
+
+interface GetOperationPermissionInterface {
+  context: any;
+  slug: RoleRuleSlugType;
+}
+
+interface GetOperationPermissionPayloadInterface {
+  allow: boolean;
+  message: string;
+}
+
+export const getOperationPermission = async ({
+  context,
+  slug,
+}: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
+  const db = await getDatabase();
+  const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+  const { role } = await getSessionRole(context);
+  const rule = await roleRulesCollection.findOne({
+    slug,
+    roleId: role._id,
+  });
+
+  if (!rule?.allow) {
+    const locale = getSessionLocale(context);
+
+    return {
+      allow: false,
+      message: await getApiMessageValue({
+        slug: 'permission.error',
+        locale,
+      }),
+    };
+  }
+
+  return {
+    allow: rule.allow,
+    message: '',
+  };
 };
 
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {

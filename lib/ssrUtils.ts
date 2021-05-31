@@ -561,7 +561,7 @@ export async function getAppInitialData({
     };
   }
 
-  if (sessionUser.role.slug !== ROLE_SLUG_ADMIN && isCms) {
+  if (!sessionUser.role.isStaff && isCms) {
     return {
       redirect: {
         permanent: false,

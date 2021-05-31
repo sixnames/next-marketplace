@@ -7,12 +7,12 @@ import { ObjectId } from 'mongodb';
 
 export type RoleRuleSlugType =
   // Attributes
-  | 'createAttributesGroup'
-  | 'updateAttributesGroup'
-  | 'deleteAttributesGroup'
-  | 'createAttribute'
-  | 'updateAttribute'
-  | 'deleteAttribute'
+  | 'createAttributesGroup' // done
+  | 'updateAttributesGroup' // done
+  | 'deleteAttributesGroup' // done
+  | 'createAttribute' // done
+  | 'updateAttribute' // done
+  | 'deleteAttribute' // done
 
   // Brand
   | 'createBrand'

@@ -3,6 +3,13 @@ import { MessageBaseInterface } from '../../../db/uiInterfaces';
 
 export const commonMessages: MessageBaseInterface[] = [
   {
+    slug: 'permission.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `У вас не достаточно прав на выполнение данной операции`,
+      [SECONDARY_LOCALE]: `You don't have permission for this operation`,
+    },
+  },
+  {
     slug: 'validation.string.min',
     messageI18n: {
       [DEFAULT_LOCALE]: `Минимальное количество символов`,

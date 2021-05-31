@@ -1,6 +1,10 @@
 import { SORT_ASC } from 'config/common';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   AttributeModel,
   AttributesGroupModel,
@@ -209,6 +213,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -277,6 +293,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -356,6 +384,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
@@ -458,6 +498,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -573,6 +625,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -723,6 +787,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,

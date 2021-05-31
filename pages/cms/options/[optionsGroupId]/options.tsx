@@ -259,7 +259,7 @@ const OptionsGroupOptionsPage: NextPage<OptionsGroupOptionsPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OptionsGroupOptionsPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !context.query.optionsGroupId) {
     return {

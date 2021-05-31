@@ -37,7 +37,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       render: ({ cellData, dataItem }) => (
         <Link
           testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_APP}/${router.query.companyId}/orders/${dataItem._id}`}
+          href={`${ROUTE_APP}/orders/${router.query.companyId}/${dataItem._id}`}
         >
           {cellData}
         </Link>
@@ -109,7 +109,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router
-                .push(`${ROUTE_APP}/${router.query.companyId}/orders/${dataItem._id}`)
+                .push(`${ROUTE_APP}/orders/${router.query.companyId}/${dataItem._id}`)
                 .catch((e) => {
                   console.log(e);
                 });

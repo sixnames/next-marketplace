@@ -1,12 +1,13 @@
 import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_APP, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CatalogueProductOptionInterface,
   CatalogueProductPricesInterface,
+  ProductInterface,
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
@@ -20,22 +21,76 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ShopRubricProducts, { ShopRubricProductsInterface } from 'routes/shops/ShopRubricProducts';
+import {
+  ShopAddProductsCreateChosenProduct,
+  ShopAddProductsDeleteChosenProduct,
+  ShopAddProductsFinalStep,
+  ShopAddProductsList,
+  ShopAddProductsListInterface,
+  ShopAddProductsSetStepHandler,
+  ShopAddProductsStepType,
+} from 'routes/shops/ShopAddProducts';
+
+type ShopAddProductsListRouteReduced = Omit<
+  ShopAddProductsListInterface,
+  'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler' | 'layoutBasePath'
+>;
 
 interface CompanyShopProductsListInterface
   extends PagePropsInterface,
-    Omit<ShopRubricProductsInterface, 'layoutBasePath'> {}
+    ShopAddProductsListRouteReduced {}
 
-const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
+const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
   ...props
 }) => {
   const router = useRouter();
+  const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
+  const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
+  const layoutBasePath = `${ROUTE_APP}/shops/${router.query.companyId}`;
+
+  const createChosenProduct: ShopAddProductsCreateChosenProduct = (product) => {
+    setChosen((prevState) => {
+      return [...prevState, product];
+    });
+  };
+
+  const deleteChosenProduct: ShopAddProductsDeleteChosenProduct = (product) => {
+    setChosen((prevState) => {
+      const filteredProducts = prevState.filter(({ _id }) => _id !== product._id);
+      return filteredProducts;
+    });
+  };
+
+  const setStepHandler: ShopAddProductsSetStepHandler = (step) => {
+    setStep(step);
+  };
+
+  if (step === 2) {
+    return (
+      <AppLayout pageUrls={pageUrls}>
+        <ShopAddProductsFinalStep
+          layoutBasePath={layoutBasePath}
+          createChosenProduct={createChosenProduct}
+          deleteChosenProduct={deleteChosenProduct}
+          setStepHandler={setStepHandler}
+          chosen={chosen}
+          shop={shop}
+          {...props}
+        />
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopRubricProducts
-        layoutBasePath={`${ROUTE_APP}/${router.query.companyId}/shops`}
+      <ShopAddProductsList
+        layoutBasePath={layoutBasePath}
+        createChosenProduct={createChosenProduct}
+        deleteChosenProduct={deleteChosenProduct}
+        setStepHandler={setStepHandler}
+        chosen={chosen}
         shop={shop}
         {...props}
       />
@@ -43,8 +98,8 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   );
 };
 
-interface ShopProductsAggregationInterface {
-  docs: ShopProductModel[];
+interface ProductsAggregationInterface {
+  docs: ProductInterface[];
   rubric: RubricInterface;
   totalDocs: number;
   totalPages: number;
@@ -60,11 +115,12 @@ export const getServerSideProps = async (
   const db = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getCompanyAppInitialData({ context });
-  const basePath = `${ROUTE_APP}/${query.companyId}/shops/${shopId}/products/${rubricId}`;
+  const basePath = `${ROUTE_APP}/shops/${query.companyId}/${shopId}/products/add/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -77,11 +133,11 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+  const locale = initialProps.props.sessionLocale;
+  // const city = shop.citySlug;
 
   // Cast filters
   const {
-    minPrice,
-    maxPrice,
     realFilterOptions,
     sortFilterOptions,
     noFiltersSelected,
@@ -93,16 +149,6 @@ export const getServerSideProps = async (
   });
 
   // Products stages
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          price: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
-
   const optionsStage = noFiltersSelected
     ? {}
     : {
@@ -140,16 +186,34 @@ export const getServerSideProps = async (
       }
     : {};
 
-  const rubricsPipeline = getCatalogueRubricPipeline();
+  const rubricIdObjectId = new ObjectId(rubricId);
 
   const shopProductsAggregation = await shopProductsCollection
-    .aggregate<ShopProductsAggregationInterface>([
+    .aggregate([
       {
         $match: {
+          rubricId: rubricIdObjectId,
           shopId: shop._id,
-          rubricId: new ObjectId(rubricId),
+        },
+      },
+      {
+        $project: {
+          productId: true,
+        },
+      },
+    ])
+    .toArray();
+  const excludedProductsIds = shopProductsAggregation.map(({ productId }) => productId);
+
+  const rubricsPipeline = getCatalogueRubricPipeline();
+
+  const productsAggregation = await productsCollection
+    .aggregate<ProductsAggregationInterface>([
+      {
+        $match: {
+          rubricId: rubricIdObjectId,
+          _id: { $nin: excludedProductsIds },
           ...searchStage,
-          ...pricesStage,
           ...optionsStage,
         },
       },
@@ -158,7 +222,7 @@ export const getServerSideProps = async (
           docs: [
             {
               $sort: {
-                createdAt: SORT_DESC,
+                _id: SORT_DESC,
               },
             },
             {
@@ -202,18 +266,6 @@ export const getServerSideProps = async (
                 optionsSlugs: {
                   $addToSet: '$_id',
                 },
-              },
-            },
-          ],
-          prices: [
-            {
-              $project: {
-                price: 1,
-              },
-            },
-            {
-              $group: {
-                _id: '$price',
               },
             },
           ],
@@ -268,53 +320,50 @@ export const getServerSideProps = async (
       },
     ])
     .toArray();
-  const shopProductsResult = shopProductsAggregation[0];
-  if (!shopProductsResult) {
+  const productsResult = productsAggregation[0];
+  if (!productsResult) {
     return {
       notFound: true,
     };
   }
-  // console.log(shopProductsResult.docs[0]);
+  // console.log(productsResult);
   // console.log('After products ', new Date().getTime() - startTime);
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const { rubric } = shopProductsResult;
+  const { rubric } = productsResult;
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
-    productsPrices: shopProductsResult.prices,
+    productsPrices: [],
     basePath,
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
+  const docs: ProductInterface[] = [];
+  for await (const facet of productsResult.docs) {
+    docs.push({
+      ...facet,
+      name: getFieldStringLocale(facet.nameI18n, locale),
+    });
+  }
+
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-  const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
+  const payload: ShopAddProductsListRouteReduced = {
     shop,
     rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
     clearSlug: `${basePath}${sortPathname}`,
-    totalDocs: shopProductsResult.totalDocs,
-    totalPages: shopProductsResult.totalPages,
-    hasNextPage: shopProductsResult.hasNextPage,
-    hasPrevPage: shopProductsResult.hasPrevPage,
+    totalDocs: productsResult.totalDocs,
+    totalPages: productsResult.totalPages,
+    hasNextPage: productsResult.hasNextPage,
+    hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
     basePath,
     selectedAttributes,
     page,
-    docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
-      const { nameI18n, ...restShopProduct } = shopProduct;
-
-      return [
-        ...acc,
-        {
-          ...restShopProduct,
-          nameI18n,
-          name: getFieldStringLocale(nameI18n, initialProps.props?.sessionLocale),
-        },
-      ];
-    }, []),
+    docs,
   };
 
   const castedPayload = castDbData(payload);
@@ -327,4 +376,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default CompanyShopProductsList;
+export default CompanyShopAddProductsList;

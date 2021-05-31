@@ -283,7 +283,7 @@ export const getServerSideProps = async (
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !productId) {
     return {
       notFound: true,

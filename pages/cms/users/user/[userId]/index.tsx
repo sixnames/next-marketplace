@@ -106,7 +106,7 @@ export const getServerSideProps = async (
   const usersCollection = db.collection<UserInterface>(COL_USERS);
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
 
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !userId) {
     return {
       notFound: true,

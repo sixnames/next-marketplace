@@ -21,7 +21,14 @@ import CounterSticker from 'components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
-import { ROUTE_APP, ROUTE_CATALOGUE, ROUTE_CMS, ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
+import {
+  ROLE_SLUG_ADMIN,
+  ROUTE_APP,
+  ROUTE_CATALOGUE,
+  ROUTE_CMS,
+  ROUTE_PROFILE,
+  ROUTE_SIGN_IN,
+} from 'config/common';
 
 interface HeaderSearchTriggerInterface {
   setIsSearchOpen: (value: boolean) => void;
@@ -87,7 +94,8 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </Link>
                     </li>
 
-                    {me?.role?.isStaff && me?.role?.allowedAppNavigation.length > 0 ? (
+                    {me?.role?.slug === ROLE_SLUG_ADMIN ||
+                    (me?.role?.isStaff && me?.role?.allowedAppNavigation.length > 0) ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}

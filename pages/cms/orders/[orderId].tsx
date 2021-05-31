@@ -22,7 +22,7 @@ const Order: NextPage<PagePropsInterface> = ({ pageUrls }) => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  return getAppInitialData({ context, isCms: true });
+  return getAppInitialData({ context });
 };
 
 export default Order;

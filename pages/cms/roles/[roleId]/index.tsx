@@ -123,7 +123,7 @@ const RoleDetails: NextPage<RoleDetailsInterface> = ({ pageUrls, role }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RoleDetailsInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !context.query.roleId) {
     return {
       notFound: true,

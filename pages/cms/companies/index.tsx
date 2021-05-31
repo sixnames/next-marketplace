@@ -150,7 +150,7 @@ const CompaniesPage: NextPage<CompaniesPageInterface> = ({ companies, ...props }
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompaniesPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

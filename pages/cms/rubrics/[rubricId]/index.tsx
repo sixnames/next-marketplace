@@ -112,7 +112,7 @@ export const getServerSideProps = async (
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId) {
     return {
       notFound: true,

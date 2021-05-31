@@ -63,7 +63,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');

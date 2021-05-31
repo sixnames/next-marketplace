@@ -1,10 +1,27 @@
-import { ROUTE_APP_NAV_GROUP, ROUTE_CMS_NAV_GROUP } from '../../../../config/common';
+import {
+  ROUTE_APP,
+  ROUTE_APP_NAV_GROUP,
+  ROUTE_CMS,
+  ROUTE_CMS_NAV_GROUP,
+} from '../../../../config/common';
 import { NavItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const navItemsDefaultSlug = 'navItem';
 
 const navItems: NavItemModel[] = [
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} app-base`),
+    slug: 'app-orders',
+    nameI18n: {
+      ru: 'Панель управления',
+      en: 'Console',
+    },
+    index: 0,
+    icon: 'cart',
+    path: ROUTE_APP,
+    navGroup: ROUTE_APP_NAV_GROUP,
+  },
   {
     _id: getObjectId(`${navItemsDefaultSlug} app-orders`),
     slug: 'app-orders',
@@ -14,7 +31,7 @@ const navItems: NavItemModel[] = [
     },
     index: 0,
     icon: 'cart',
-    path: '/orders',
+    path: `${ROUTE_APP}/orders`,
     navGroup: ROUTE_APP_NAV_GROUP,
   },
   {
@@ -26,7 +43,7 @@ const navItems: NavItemModel[] = [
     },
     index: 1,
     icon: 'marker',
-    path: '/shops',
+    path: `${ROUTE_APP}/shops`,
     navGroup: ROUTE_APP_NAV_GROUP,
   },
   {
@@ -38,8 +55,20 @@ const navItems: NavItemModel[] = [
     },
     index: 99,
     icon: 'gear',
-    path: '/config',
+    path: `${ROUTE_APP}/config`,
     navGroup: ROUTE_APP_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-base`),
+    slug: 'app-orders',
+    nameI18n: {
+      ru: 'CMS',
+      en: 'CMS',
+    },
+    index: 0,
+    icon: 'cart',
+    path: ROUTE_CMS,
+    navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-orders`),

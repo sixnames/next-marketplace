@@ -132,7 +132,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
   const db = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

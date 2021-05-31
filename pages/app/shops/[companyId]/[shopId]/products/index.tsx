@@ -30,7 +30,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${ROUTE_APP}/${router.query.companyId}/shops`}
+        basePath={`${ROUTE_APP}/shops/${router.query.companyId}`}
       />
     </AppLayout>
   );

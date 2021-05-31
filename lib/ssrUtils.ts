@@ -9,9 +9,9 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
-  ROLE_SLUG_COMPANY_MANAGER,
-  ROLE_SLUG_COMPANY_OWNER,
+  ROUTE_APP,
   ROUTE_APP_NAV_GROUP,
+  ROUTE_CMS,
   ROUTE_CMS_NAV_GROUP,
   ROUTE_SIGN_IN,
   SORT_ASC,
@@ -324,6 +324,10 @@ export async function getPageSessionUser({
                           { $eq: ['$$slug', ROLE_SLUG_ADMIN] },
                         ],
                       },
+                      // exclude base paths
+                      path: {
+                        $nin: [ROUTE_CMS, ROUTE_APP],
+                      },
                     },
                   },
                   {
@@ -510,6 +514,17 @@ export async function getPageInitialState({
   };
 }
 
+interface CheckPagePermissionInterface {
+  allowedAppNavItems?: string[];
+  url?: string | null;
+}
+function checkPagePermission({ allowedAppNavItems, url }: CheckPagePermissionInterface): boolean {
+  return (allowedAppNavItems || []).some((path) => {
+    const reg = RegExp(path);
+    return reg.test(`${url}`);
+  });
+}
+
 interface GetCompanyAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
@@ -546,22 +561,19 @@ export async function getCompanyAppInitialData({
     };
   }
 
-  const notAllowedRedirect = {
-    redirect: {
-      permanent: false,
-      destination: `/`,
-    },
-  };
-
   // Check if page is allowed
-  const allowedAppNavItems = sessionUser.role?.allowedAppNavigation || [];
-  const isAllowed = allowedAppNavItems.some((path) => {
-    const reg = RegExp(path);
-    return reg.test(`${context.req.url}`);
+  const isAllowed = checkPagePermission({
+    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    url: context.req.url,
   });
 
   if (!isAllowed || !sessionUser.role || !sessionUser.role.isCompanyStaff) {
-    return notAllowedRedirect;
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/`,
+      },
+    };
   }
 
   return {
@@ -579,7 +591,6 @@ export async function getCompanyAppInitialData({
 
 interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
-  isCms?: boolean;
 }
 
 interface GetAppInitialDataPayloadInterface<T> {
@@ -590,7 +601,6 @@ interface GetAppInitialDataPayloadInterface<T> {
 
 export async function getAppInitialData({
   context,
-  isCms,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
   const {
     sessionUser,
@@ -604,16 +614,7 @@ export async function getAppInitialData({
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
-  if (!session?.user) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: ROUTE_SIGN_IN,
-      },
-    };
-  }
-
-  if (!sessionUser) {
+  if (!session?.user || !sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -623,10 +624,9 @@ export async function getAppInitialData({
   }
 
   // Check if page is allowed
-  const allowedAppNavItems = sessionUser.role?.allowedAppNavigation || [];
-  const isAllowed = allowedAppNavItems.some((path) => {
-    const reg = RegExp(path);
-    return reg.test(`${context.req.url}`);
+  const isAllowed = checkPagePermission({
+    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    url: context.req.url,
   });
   if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {
     return {
@@ -637,29 +637,7 @@ export async function getAppInitialData({
     };
   }
 
-  if (!sessionUser.role || (!isCms && noNaN(sessionUser.companies?.length) < 1)) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
-    };
-  }
-
-  if (!sessionUser.role.isStaff && isCms) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
-    };
-  }
-
-  if (
-    sessionUser.role.slug !== ROLE_SLUG_COMPANY_MANAGER &&
-    sessionUser.role.slug !== ROLE_SLUG_COMPANY_OWNER &&
-    !isCms
-  ) {
+  if (!sessionUser.role?.isStaff) {
     return {
       redirect: {
         permanent: false,

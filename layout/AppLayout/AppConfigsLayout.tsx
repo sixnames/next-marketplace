@@ -24,41 +24,41 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
       {
         name: 'Общие',
         testId: 'globals',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${companyId ? `/${companyId}` : ''}/config`,
+        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_APP}/config/${companyId}`,
         exact: true,
       },
       {
         name: 'Аналитика',
         testId: 'analytics',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${
-          companyId ? `/${companyId}` : ''
-        }/config/analytics`,
+        path: isCms
+          ? `${ROUTE_CMS}/config/analytics`
+          : `${ROUTE_APP}/config/${companyId}/analytics`,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'ui',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${companyId ? `/${companyId}` : ''}/config/ui`,
+        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_APP}/config/${companyId}/ui`,
         exact: true,
       },
       {
         name: 'Контактные данные',
         testId: 'contacts',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${companyId ? `/${companyId}` : ''}/config/contacts`,
+        path: isCms ? `${ROUTE_CMS}/config/contacts` : `${ROUTE_APP}/config/${companyId}/contacts`,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'seo',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${companyId ? `/${companyId}` : ''}/config/seo`,
+        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_APP}/config/${companyId}/seo`,
         exact: true,
       },
       {
         name: 'Каталог',
         testId: 'catalogue',
-        path: `${isCms ? ROUTE_CMS : ROUTE_APP}${
-          companyId ? `/${companyId}` : ''
-        }/config/catalogue`,
+        path: isCms
+          ? `${ROUTE_CMS}/config/catalogue`
+          : `${ROUTE_APP}/config/${companyId}/catalogue`,
         exact: true,
       },
     ];

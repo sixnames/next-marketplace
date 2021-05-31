@@ -44,7 +44,7 @@ export const getServerSideProps = async (
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

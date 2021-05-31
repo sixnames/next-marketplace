@@ -212,7 +212,7 @@ interface UsersAggregationInterface {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

@@ -85,7 +85,7 @@ export const getServerSideProps = async (
   const db = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
 
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !userId) {
     return {
       notFound: true,

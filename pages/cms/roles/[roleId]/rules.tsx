@@ -148,7 +148,7 @@ const RoleRules: NextPage<RoleRulesPageInterface> = ({ pageUrls, role }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RoleRulesPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !context.query.roleId) {
     return {
       notFound: true,

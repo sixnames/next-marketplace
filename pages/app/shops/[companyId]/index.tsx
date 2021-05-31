@@ -1,5 +1,6 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Inner from 'components/Inner/Inner';
+import Link from 'components/Link/Link';
 import Pager from 'components/Pager/Pager';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
@@ -10,7 +11,6 @@ import { ROUTE_APP } from 'config/common';
 import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -43,8 +43,8 @@ const ShopsRoute: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_APP}/${router.query.companyId}/shops/${dataItem._id}`}>
-          <a>{cellData}</a>
+        <Link href={`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`}>
+          {cellData}
         </Link>
       ),
     },
@@ -73,8 +73,8 @@ const ShopsRoute: React.FC = () => {
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_APP}/${router.query.companyId}/shops/${dataItem._id}`)
-                .catch((e) => console.log(e));
+                .push(`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`)
+                .catch(console.log);
             }}
             testId={dataItem.name}
           />
@@ -92,6 +92,11 @@ const ShopsRoute: React.FC = () => {
           columns={columns}
           data={data.getCompanyShops.docs}
           testIdKey={'name'}
+          onRowDoubleClick={(dataItem) => {
+            router
+              .push(`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`)
+              .catch(console.log);
+          }}
         />
         <Pager page={page} setPage={setPage} totalPages={data.getCompanyShops.totalPages} />
       </div>

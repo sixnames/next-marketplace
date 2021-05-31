@@ -22,7 +22,7 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
               className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
               key={`${company._id}`}
               onClick={() => {
-                router.push(`${ROUTE_APP}/${company._id}/shops`).catch((e) => console.log(e));
+                router.push(`${ROUTE_APP}/shops/${company._id}`).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>
@@ -72,7 +72,7 @@ export const getServerSideProps = async (
     const company = props?.sessionUser?.companies[0];
     return {
       redirect: {
-        destination: `${ROUTE_APP}/${company?._id}/shops`,
+        destination: `${ROUTE_APP}/shops/${company?._id}`,
         permanent: false,
       },
     };

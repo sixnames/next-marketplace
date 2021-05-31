@@ -100,7 +100,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyDetailsPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !query.companyId) {
     return {

@@ -134,7 +134,7 @@ const RoleNav: NextPage<RoleNavPageInterface> = ({ pageUrls, role, navItemGroups
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RoleNavPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !context.query.roleId) {
     return {
       notFound: true,

@@ -204,7 +204,7 @@ const NavItemsPage: NextPage<NavItemsPagePageInterface> = ({ pageUrls, navItemGr
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<NavItemsPagePageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

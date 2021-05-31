@@ -1,3 +1,4 @@
+import { ROUTE_APP } from '../../../../config/common';
 import { RoleModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
@@ -59,7 +60,12 @@ const roles: RoleModel[] = [
     slug: 'companyOwner',
     isStaff: false,
     isCompanyStaff: true,
-    allowedAppNavigation: [`/orders`, `/shops`, `/config`],
+    allowedAppNavigation: [
+      ROUTE_APP,
+      `${ROUTE_APP}/orders`,
+      `${ROUTE_APP}/shops`,
+      `${ROUTE_APP}/config`,
+    ],
     createdAt: new Date(),
     updatedAt: new Date(),
   },

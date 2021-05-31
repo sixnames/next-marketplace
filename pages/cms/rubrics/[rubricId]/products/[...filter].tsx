@@ -284,7 +284,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 

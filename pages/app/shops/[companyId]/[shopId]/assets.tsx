@@ -3,28 +3,31 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import AppLayout from 'layout/AppLayout/AppLayout';
+import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
-import ShopDetails, { ShopDetailsInterface } from 'routes/shops/ShopDetails';
+import ShopAssets, { ShopAssetsInterface } from 'routes/shops/ShopAssets';
 
-interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
+interface CompanyShopAssetsInterface
+  extends PagePropsInterface,
+    Omit<ShopAssetsInterface, 'basePath'> {}
 
-const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
   const router = useRouter();
+
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopDetails basePath={`${ROUTE_APP}/${router.query.companyId}/shops`} shop={shop} />
+      <ShopAssets basePath={`${ROUTE_APP}/shops/${router.query.companyId}`} shop={shop} />
     </AppLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyShopInterface>> => {
+): Promise<GetServerSidePropsResult<CompanyShopAssetsInterface>> => {
   const db = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
@@ -47,4 +50,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default CompanyShop;
+export default CompanyShopAssets;

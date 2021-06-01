@@ -99,7 +99,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'attribute-groups-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>

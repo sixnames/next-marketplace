@@ -37,9 +37,11 @@ describe('Attributes Groups', () => {
     // Should create a new attributes group
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(createdGroupName);
     cy.getByCy(`attributes-group-submit`).click();
+    cy.wait(1500);
 
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-${createdGroupName}-update`).click();
+    cy.wait(1500);
     cy.getByCy(`attributes-group-title`).contains(createdGroupName).should('exist');
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)

@@ -62,13 +62,6 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       },
     },
     {
-      accessor: 'shopsCount',
-      headTitle: 'Магазины',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-    },
-    {
       accessor: 'customer.shortName',
       headTitle: 'Заказчик',
       render: ({ cellData }) => {
@@ -165,9 +158,6 @@ export const getServerSideProps = async (
           customer: {
             $arrayElemAt: ['$customer', 0],
           },
-          shopsCount: {
-            $size: '$shopIds',
-          },
           productsCount: {
             $size: '$shopProductIds',
           },
@@ -185,8 +175,8 @@ export const getServerSideProps = async (
   initialOrders.forEach((order) => {
     orders.push({
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
-        return acc + amount * price;
+      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+        return acc + totalPrice;
       }, 0),
       status: order.status
         ? {

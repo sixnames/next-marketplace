@@ -663,9 +663,7 @@ input MakeAnOrderInput {
 }
 
 type MakeAnOrderPayload implements Payload {
-  cart: Cart
   message: String!
-  order: Order
   success: Boolean!
 }
 

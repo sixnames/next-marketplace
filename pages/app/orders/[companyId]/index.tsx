@@ -16,6 +16,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -60,13 +61,6 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
     {
       accessor: 'productsCount',
       headTitle: 'Товаров',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-    },
-    {
-      accessor: 'shopsCount',
-      headTitle: 'Магазины',
       render: ({ cellData }) => {
         return cellData;
       },
@@ -159,7 +153,7 @@ export const getServerSideProps = async (
     .aggregate<OrderInterface>([
       {
         $match: {
-          companySlug: company.slug,
+          companyId: new ObjectId(company._id),
         },
       },
       {
@@ -185,9 +179,6 @@ export const getServerSideProps = async (
           },
           customer: {
             $arrayElemAt: ['$customer', 0],
-          },
-          shopsCount: {
-            $size: '$shopIds',
           },
           productsCount: {
             $size: '$shopProductIds',

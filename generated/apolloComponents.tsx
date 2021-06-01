@@ -520,7 +520,7 @@ export type CreateMetricInput = {
 export type CreateNavItemInput = {
   nameI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
-  path?: Maybe<Scalars['String']>;
+  path: Scalars['String'];
   navGroup: Scalars['String'];
   index: Scalars['Int'];
   icon?: Maybe<Scalars['String']>;
@@ -548,6 +548,7 @@ export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
 };
 
 export type CreateRubricInput = {
@@ -697,8 +698,6 @@ export type MakeAnOrderPayload = Payload & {
   __typename?: 'MakeAnOrderPayload';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  order?: Maybe<Order>;
-  cart?: Maybe<Cart>;
 };
 
 export type Manufacturer = Base & Timestamp & {
@@ -1488,7 +1487,7 @@ export type NavItem = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
-  path?: Maybe<Scalars['String']>;
+  path: Scalars['String'];
   navGroup: Scalars['String'];
   index: Scalars['Int'];
   icon?: Maybe<Scalars['String']>;
@@ -2100,6 +2099,7 @@ export type Role = Timestamp & {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   description: Scalars['String'];
@@ -2479,7 +2479,7 @@ export type UpdateNavItemInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
-  path?: Maybe<Scalars['String']>;
+  path: Scalars['String'];
   navGroup: Scalars['String'];
   index: Scalars['Int'];
   icon?: Maybe<Scalars['String']>;
@@ -2575,6 +2575,7 @@ export type UpdateRoleInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
 };
 
 export type UpdateRoleNavInput = {
@@ -3010,11 +3011,6 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
-export type OrderInCartFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId'>
-);
-
 export type CartPayloadFragment = (
   { __typename?: 'CartPayload' }
   & Pick<CartPayload, 'success' | 'message'>
@@ -3023,10 +3019,6 @@ export type CartPayloadFragment = (
 export type MakeAnOrderPayloadFragment = (
   { __typename?: 'MakeAnOrderPayload' }
   & Pick<MakeAnOrderPayload, 'success' | 'message'>
-  & { order?: Maybe<(
-    { __typename?: 'Order' }
-    & OrderInCartFragment
-  )> }
 );
 
 export type AddProductToCartMutationVariables = Exact<{
@@ -4537,21 +4529,12 @@ export const CartPayloadFragmentDoc = gql`
   message
 }
     `;
-export const OrderInCartFragmentDoc = gql`
-    fragment OrderInCart on Order {
-  _id
-  itemId
-}
-    `;
 export const MakeAnOrderPayloadFragmentDoc = gql`
     fragment MakeAnOrderPayload on MakeAnOrderPayload {
   success
   message
-  order {
-    ...OrderInCart
-  }
 }
-    ${OrderInCartFragmentDoc}`;
+    `;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id

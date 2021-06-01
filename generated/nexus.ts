@@ -1154,9 +1154,7 @@ export interface NexusGenFieldTypes {
   };
   MakeAnOrderPayload: {
     // field return type
-    cart: NexusGenRootTypes['Cart'] | null; // Cart
     message: string; // String!
-    order: NexusGenRootTypes['Order'] | null; // Order
     success: boolean; // Boolean!
   };
   Manufacturer: {
@@ -2146,9 +2144,7 @@ export interface NexusGenFieldTypeNames {
   };
   MakeAnOrderPayload: {
     // field return type name
-    cart: 'Cart';
     message: 'String';
-    order: 'Order';
     success: 'Boolean';
   };
   Manufacturer: {

@@ -400,6 +400,7 @@ export interface OrderProductModel extends TimestampModel {
   itemId: string;
   price: number;
   amount: number;
+  totalPrice: number;
   slug: string;
   originalName: string;
   nameI18n: TranslationModel;
@@ -422,15 +423,17 @@ export interface OrderCustomerModel extends TimestampModel {
   orderId: ObjectIdModel;
 }
 
-export interface OrderModel extends BaseModel, TimestampModel {
+export interface OrderModel extends TimestampModel, BaseModel {
   statusId: ObjectIdModel;
   comment?: string | null;
   customerId: ObjectIdModel;
-  companySlug: string;
+  companySiteSlug: string;
   productIds: ObjectIdModel[];
   shopProductIds: ObjectIdModel[];
-  shopIds: ObjectIdModel[];
-  companyIds: ObjectIdModel[];
+  shopId: ObjectIdModel;
+  shopItemId: string;
+  companyId: ObjectIdModel;
+  companyItemId: string;
 }
 
 export interface ProductConnectionItemModel {
@@ -635,7 +638,6 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;
-  order?: OrderModel;
 }
 
 export interface CartPayloadModel {

@@ -378,7 +378,6 @@ export interface OrderProductInterface extends OrderProductModel {
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
   formattedPrice?: string | null;
-  totalPrice?: number | null;
   formattedTotalPrice?: string | null;
   name?: string | null;
 }

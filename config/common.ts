@@ -61,14 +61,15 @@ export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 // Routes
-export const ROUTE_APP = '/app';
+export const ROUTE_CONSOLE = '/console';
 export const ROUTE_CMS = `/cms`;
-export const ROUTE_APP_NAV_GROUP = 'app';
+export const ROUTE_CONSOLE_NAV_GROUP = 'console';
 export const ROUTE_CMS_NAV_GROUP = 'cms';
 export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;
 export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
+export const ROUTE_THANK_YOU = `/thank-you`;
 export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
 
 // query params
@@ -257,6 +258,7 @@ export const ISO_LANGUAGES = [
 ];
 
 // ASSETS
+export const ASSETS_DIST_USERS = 'users';
 export const ASSETS_DIST_PRODUCTS = 'products';
 export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';

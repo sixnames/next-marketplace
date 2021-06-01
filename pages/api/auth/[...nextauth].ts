@@ -24,7 +24,7 @@ const options: NextAuthOptions = {
       },
       authorize: async (credentials: Record<string, any>) => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const collection = db.collection<UserModel>(COL_USERS);
           const user = await collection.findOne({ email: credentials.email });
 

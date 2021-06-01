@@ -57,13 +57,13 @@ interface ShopProductsAggregationInterface {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
@@ -85,7 +85,6 @@ export const getServerSideProps = async (
     realFilterOptions,
     sortFilterOptions,
     noFiltersSelected,
-    pagerUrl,
     page,
     skip,
     limit,
@@ -301,7 +300,6 @@ export const getServerSideProps = async (
     hasNextPage: shopProductsResult.hasNextPage,
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
-    pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
     selectedAttributes,
     page,

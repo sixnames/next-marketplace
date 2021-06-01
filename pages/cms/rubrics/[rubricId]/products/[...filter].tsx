@@ -9,17 +9,11 @@ import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal/CreateNewProductModal';
-import Pager from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import {
-  QUERY_FILTER_PAGE,
-  CATALOGUE_OPTION_SEPARATOR,
-  PAGE_DEFAULT,
-  ROUTE_CMS,
-  SORT_DESC,
-} from 'config/common';
+import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
@@ -63,11 +57,11 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  pagerUrl,
   basePath,
   itemPath,
 }) => {
   const router = useRouter();
+  const setPageHandler = useNavigateToPageHandler();
   const isPageLoading = usePageLoadingState();
   const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
@@ -235,12 +229,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
               page={page}
               totalPages={totalPages}
               setPage={(newPage) => {
-                const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
-                const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-                const nextUrl = [...prevUrlArray, pageParam].join('/');
-                router.push(`/${nextUrl}`).catch((e) => {
-                  console.log(e);
-                });
+                setPageHandler(newPage);
               }}
             />
 
@@ -290,12 +279,12 @@ interface ProductsAggregationInterface {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
@@ -315,7 +304,6 @@ export const getServerSideProps = async (
   const {
     realFilterOptions,
     noFiltersSelected,
-    pagerUrl,
     page,
     skip,
     limit,
@@ -532,7 +520,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    pagerUrl: `${basePath}${pagerUrl}`,
     basePath,
     itemPath,
     selectedAttributes,

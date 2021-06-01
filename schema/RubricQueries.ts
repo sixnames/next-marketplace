@@ -28,7 +28,7 @@ export const RubricQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<RubricModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const rubric = await rubricsCollection.findOne({ _id: args._id });
         if (!rubric) {
@@ -46,7 +46,7 @@ export const RubricQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<RubricModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const rubric = await rubricsCollection.findOne({ slug: args.slug });
         if (!rubric) {
@@ -64,7 +64,7 @@ export const RubricQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<RubricModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const rubric = await rubricsCollection.findOne({ slug: args.slug });
         if (!rubric) {
@@ -85,7 +85,7 @@ export const RubricQueries = extendType({
       },
       description: 'Should return rubrics tree',
       resolve: async (_root, args): Promise<RubricModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const { input } = args;
         const excludedIds = input?.excludedRubricsIds || [];

@@ -3,7 +3,12 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { NavItemModel } from 'db/dbModels';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
-import { ROLE_SLUG_ADMIN, ROUTE_APP_NAV_GROUP, ROUTE_CMS_NAV_GROUP, SORT_ASC } from 'config/common';
+import {
+  ROLE_SLUG_ADMIN,
+  ROUTE_CONSOLE_NAV_GROUP,
+  ROUTE_CMS_NAV_GROUP,
+  SORT_ASC,
+} from 'config/common';
 
 export const Role = objectType({
   name: 'Role',
@@ -12,8 +17,18 @@ export const Role = objectType({
     t.implements('Timestamp');
     t.nonNull.string('slug');
     t.nonNull.boolean('isStaff');
+    t.nonNull.boolean('isCompanyStaff');
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
+
+    // Role description field resolver
+    t.nonNull.field('description', {
+      type: 'String',
+      resolve: async (source, _args, context): Promise<string> => {
+        const { getFieldLocale } = await getRequestParams(context);
+        return getFieldLocale(source.descriptionI18n);
+      },
+    });
 
     // Role name field resolver
     t.nonNull.field('name', {
@@ -28,14 +43,14 @@ export const Role = objectType({
     t.nonNull.list.nonNull.field('appNavigation', {
       type: 'NavItem',
       resolve: async (source, _args): Promise<NavItemModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const navItemsCollection = await db.collection<NavItemModel>(COL_NAV_ITEMS);
 
         const roleNavQuery =
           source.slug === ROLE_SLUG_ADMIN
             ? {}
             : {
-                _id: { $in: source.allowedAppNavigation },
+                path: { $in: source.allowedAppNavigation },
               };
 
         const navItems = await navItemsCollection
@@ -43,7 +58,7 @@ export const Role = objectType({
             {
               ...roleNavQuery,
               parentId: null,
-              navGroup: ROUTE_APP_NAV_GROUP,
+              navGroup: ROUTE_CONSOLE_NAV_GROUP,
             },
             {
               sort: {
@@ -60,14 +75,14 @@ export const Role = objectType({
     t.nonNull.list.nonNull.field('cmsNavigation', {
       type: 'NavItem',
       resolve: async (source, _args): Promise<NavItemModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const navItemsCollection = await db.collection<NavItemModel>(COL_NAV_ITEMS);
 
         const roleNavQuery =
           source.slug === ROLE_SLUG_ADMIN
             ? {}
             : {
-                _id: { $in: source.allowedAppNavigation },
+                path: { $in: source.allowedAppNavigation },
               };
 
         const navItems = await navItemsCollection

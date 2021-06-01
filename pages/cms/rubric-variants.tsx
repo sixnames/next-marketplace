@@ -167,14 +167,14 @@ const RubricVariantsPage: NextPage<RubricVariantsPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricVariantsPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rubricVariantsCollection = db.collection(COL_RUBRIC_VARIANTS);
   const rubricVariantsAggregationResult = await rubricVariantsCollection
     .aggregate([

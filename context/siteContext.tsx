@@ -1,4 +1,5 @@
 import { CartModalInterface } from 'components/Modal/CartModal/CartModal';
+import { ROUTE_THANK_YOU } from 'config/common';
 import { CART_MODAL } from 'config/modals';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
@@ -174,7 +175,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       if (makeAnOrder.success) {
         showLoading();
         refetchCartHandler(() => {
-          router.push(`/thank-you?orderId=${makeAnOrder.order?.itemId}`).catch(() => {
+          router.push(ROUTE_THANK_YOU).catch(() => {
             showErrorNotification();
           });
         });

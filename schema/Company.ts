@@ -20,7 +20,11 @@ import {
 } from 'db/collectionNames';
 import { aggregatePagination } from 'db/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { generateCompanySlug, generateShopSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
@@ -52,7 +56,7 @@ export const Company = objectType({
     t.nonNull.field('owner', {
       type: 'User',
       resolve: async (source): Promise<UserModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const usersCollection = db.collection<UserModel>(COL_USERS);
         const user = await usersCollection.findOne({ _id: source.ownerId });
         if (!user) {
@@ -66,7 +70,7 @@ export const Company = objectType({
     t.nonNull.list.nonNull.field('staff', {
       type: 'User',
       resolve: async (source): Promise<UserModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const usersCollection = db.collection<UserModel>(COL_USERS);
         const users = await usersCollection.find({ _id: { $in: source.staffIds } }).toArray();
         return users;
@@ -121,7 +125,7 @@ export const CompanyQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<CompanyModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
         const company = await companiesCollection.findOne({ _id: args._id });
         if (!company) {
@@ -230,6 +234,18 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCompany',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -238,7 +254,7 @@ export const CompanyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
@@ -325,6 +341,18 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCompany',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -333,7 +361,7 @@ export const CompanyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const { input } = args;
           const { companyId, ...values } = input;
@@ -409,8 +437,20 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCompany',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -492,6 +532,18 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createShop',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -500,7 +552,7 @@ export const CompanyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const { input } = args;
@@ -616,6 +668,18 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteShop',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -624,7 +688,7 @@ export const CompanyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const shopProductsCollection = db.collection<CompanyModel>(COL_SHOP_PRODUCTS);

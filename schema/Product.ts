@@ -65,7 +65,7 @@ export const Product = objectType({
     t.field('assets', {
       type: 'ProductAssets',
       resolve: async (source): Promise<ProductAssetsModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
         const assets = await productAssetsCollection.findOne({ productId: source._id });
         return assets;
@@ -74,7 +74,7 @@ export const Product = objectType({
     t.nonNull.list.nonNull.field('attributes', {
       type: 'ProductAttribute',
       resolve: async (source): Promise<ProductAttributeModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productAttributesCollection = db.collection<ProductAttributeModel>(
           COL_PRODUCT_ATTRIBUTES,
         );
@@ -87,7 +87,7 @@ export const Product = objectType({
     t.nonNull.list.nonNull.field('connections', {
       type: 'ProductConnection',
       resolve: async (source): Promise<ProductConnectionModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productConnectionsCollection = db.collection<ProductConnectionModel>(
           COL_PRODUCT_CONNECTIONS,
         );
@@ -161,7 +161,7 @@ export const Product = objectType({
     t.nonNull.field('rubric', {
       type: 'Rubric',
       resolve: async (source): Promise<RubricModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const rubric = await rubricsCollection.findOne({ _id: source.rubricId });
         if (!rubric) {
@@ -178,7 +178,7 @@ export const Product = objectType({
         if (!source.brandSlug) {
           return null;
         }
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
         const brand = await brandsCollection.findOne({ slug: source.brandSlug });
         return brand;
@@ -192,7 +192,7 @@ export const Product = objectType({
         if (!source.brandCollectionSlug) {
           return null;
         }
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandCollectionsCollection = db.collection<BrandCollectionModel>(
           COL_BRAND_COLLECTIONS,
         );
@@ -210,7 +210,7 @@ export const Product = objectType({
         if (!source.manufacturerSlug) {
           return null;
         }
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturer = await manufacturersCollection.findOne({
           slug: source.manufacturerSlug,
@@ -224,7 +224,7 @@ export const Product = objectType({
       type: 'ShopProduct',
       description: 'Returns all shop products that product connected to',
       resolve: async (source, _args): Promise<ShopProductModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const shopsProducts = await shopProductsCollection
           .find({

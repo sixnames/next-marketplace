@@ -9,9 +9,9 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
-  ROLE_SLUG_COMPANY_MANAGER,
-  ROLE_SLUG_COMPANY_OWNER,
-  ROUTE_APP_NAV_GROUP,
+  ROUTE_CONSOLE,
+  ROUTE_CONSOLE_NAV_GROUP,
+  ROUTE_CMS,
   ROUTE_CMS_NAV_GROUP,
   ROUTE_SIGN_IN,
   SORT_ASC,
@@ -68,7 +68,7 @@ export const getCatalogueNavRubrics = async ({
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
@@ -181,7 +181,7 @@ export const getPageInitialData = async ({
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
   // const timeStart = new Date().getTime();
-  const db = await getDatabase();
+  const { db } = await getDatabase();
 
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -262,7 +262,7 @@ export async function getPageSessionUser({
     return null;
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const userAggregation = await usersCollection
     .aggregate([
@@ -297,7 +297,7 @@ export async function getPageSessionUser({
       {
         $lookup: {
           from: COL_ROLES,
-          as: 'roles',
+          as: 'role',
           let: { roleId: '$roleId' },
           pipeline: [
             {
@@ -311,16 +311,28 @@ export async function getPageSessionUser({
               $lookup: {
                 from: COL_NAV_ITEMS,
                 as: 'navItems',
-                let: { allowedAppNavigation: '$allowedAppNavigation', slug: '$slug' },
+                let: {
+                  allowedAppNavigation: '$allowedAppNavigation',
+                  slug: '$slug',
+                },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
                         $or: [
-                          { $in: ['$_id', '$$allowedAppNavigation'] },
+                          { $in: ['$path', '$$allowedAppNavigation'] },
                           { $eq: ['$$slug', ROLE_SLUG_ADMIN] },
                         ],
                       },
+                      // exclude base paths
+                      path: {
+                        $nin: [ROUTE_CMS, ROUTE_CONSOLE],
+                      },
+                    },
+                  },
+                  {
+                    $sort: {
+                      index: SORT_ASC,
                     },
                   },
                   {
@@ -339,7 +351,7 @@ export async function getPageSessionUser({
                     input: '$navItems',
                     as: 'navItem',
                     cond: {
-                      $eq: ['$$navItem.navGroup', ROUTE_APP_NAV_GROUP],
+                      $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
                     },
                   },
                 },
@@ -367,13 +379,12 @@ export async function getPageSessionUser({
       },
       {
         $addFields: {
-          role: { $arrayElemAt: ['$roles', 0] },
+          role: { $arrayElemAt: ['$role', 0] },
         },
       },
       {
         $project: {
           password: false,
-          roles: false,
           createdAt: false,
           updatedAt: false,
         },
@@ -407,7 +418,7 @@ export async function getPageInitialState({
   context,
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
   const { locale, resolvedUrl } = context;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
 
@@ -503,9 +514,110 @@ export async function getPageInitialState({
   };
 }
 
+interface CheckPagePermissionInterface {
+  allowedAppNavItems?: string[];
+  url?: string | null;
+  isCms: boolean;
+}
+function checkPagePermission({
+  allowedAppNavItems,
+  url,
+  isCms,
+}: CheckPagePermissionInterface): boolean {
+  const excludedExtension = '.json';
+  const initialAllowedAppNavItems = allowedAppNavItems || [];
+
+  // Check cms root url
+  if (isCms) {
+    const cmsRootUrlList = `${url}`.split(ROUTE_CMS);
+    if (!cmsRootUrlList[1] || cmsRootUrlList[1] === excludedExtension) {
+      return initialAllowedAppNavItems.includes(ROUTE_CMS);
+    }
+  }
+
+  // Check console root url
+  if (!isCms) {
+    const appRootUrlList = `${url}`.split(ROUTE_CONSOLE);
+    if (!appRootUrlList[1] || appRootUrlList[1] === excludedExtension) {
+      return initialAllowedAppNavItems.includes(ROUTE_CONSOLE);
+    }
+  }
+
+  // Check nested urls
+  const finalAllowedAppNavItems = initialAllowedAppNavItems.filter((path) => {
+    return path !== ROUTE_CMS && path !== ROUTE_CONSOLE;
+  });
+
+  return finalAllowedAppNavItems.some((path) => {
+    const reg = RegExp(path);
+    return reg.test(`${url}`);
+  });
+}
+
+interface GetCompanyAppInitialDataInterface {
+  context: GetServerSidePropsContext;
+}
+
+interface GetCompanyAppInitialDataPayloadInterface<T> {
+  props?: T;
+  redirect?: Redirect;
+  notFound?: true;
+}
+
+export async function getCompanyAppInitialData({
+  context,
+}: GetCompanyAppInitialDataInterface): Promise<
+  GetCompanyAppInitialDataPayloadInterface<PagePropsInterface>
+> {
+  const {
+    sessionUser,
+    pageUrls,
+    currentCity,
+    sessionCity,
+    sessionLocale,
+    initialData,
+    companySlug,
+    session,
+  } = await getPageInitialState({ context });
+
+  // Check if user authenticated
+  if (!session?.user || !sessionUser) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  // Check if page is allowed
+  const isAllowed = checkPagePermission({
+    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    url: context.req.url,
+    isCms: false,
+  });
+
+  if (!isAllowed || !sessionUser.role || !sessionUser.role.isCompanyStaff) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      companySlug,
+      initialData,
+      currentCity,
+      sessionCity,
+      sessionUser: castDbData(sessionUser),
+      sessionLocale,
+      pageUrls,
+    },
+  };
+}
+
 interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
-  isCms?: boolean;
 }
 
 interface GetAppInitialDataPayloadInterface<T> {
@@ -516,7 +628,6 @@ interface GetAppInitialDataPayloadInterface<T> {
 
 export async function getAppInitialData({
   context,
-  isCms,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
   const {
     sessionUser,
@@ -530,7 +641,7 @@ export async function getAppInitialData({
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
-  if (!session?.user) {
+  if (!session?.user || !sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -539,43 +650,21 @@ export async function getAppInitialData({
     };
   }
 
-  if (!sessionUser) {
+  // Check if page is allowed
+  const isAllowed = checkPagePermission({
+    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    url: context.req.url,
+    isCms: true,
+  });
+  if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {
     return {
-      redirect: {
-        permanent: false,
-        destination: ROUTE_SIGN_IN,
-      },
+      notFound: true,
     };
   }
 
-  if (!sessionUser.role || (!isCms && noNaN(sessionUser.companies?.length) < 1)) {
+  if (!sessionUser.role?.isStaff) {
     return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
-    };
-  }
-
-  if (sessionUser.role.slug !== ROLE_SLUG_ADMIN && isCms) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
-    };
-  }
-
-  if (
-    sessionUser.role.slug !== ROLE_SLUG_COMPANY_MANAGER &&
-    sessionUser.role.slug !== ROLE_SLUG_COMPANY_OWNER &&
-    !isCms
-  ) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: `/`,
-      },
+      notFound: true,
     };
   }
 

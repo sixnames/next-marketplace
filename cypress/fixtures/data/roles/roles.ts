@@ -1,3 +1,4 @@
+import { ROUTE_CONSOLE } from '../../../../config/common';
 import { RoleModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
@@ -9,10 +10,27 @@ const roles: RoleModel[] = [
     nameI18n: {
       ru: 'admin',
     },
-    description: 'Администратор сайта',
+    descriptionI18n: {
+      ru: 'Администратор сайта',
+    },
     slug: 'admin',
     isStaff: true,
-    rules: [],
+    isCompanyStaff: false,
+    allowedAppNavigation: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    _id: getObjectId('contentManagerRole'),
+    nameI18n: {
+      ru: 'Контент менеджер',
+    },
+    descriptionI18n: {
+      ru: 'Контент менеджер',
+    },
+    slug: 'contentManager',
+    isStaff: true,
+    isCompanyStaff: false,
     allowedAppNavigation: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -23,10 +41,12 @@ const roles: RoleModel[] = [
       ru: 'Гость',
       en: 'Guest',
     },
-    description: 'Роль назначается новым или не авторизованным пользователям',
+    descriptionI18n: {
+      ru: 'Роль назначается новым или не авторизованным пользователям',
+    },
     slug: 'guest',
     isStaff: false,
-    rules: [],
+    isCompanyStaff: false,
     allowedAppNavigation: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -37,15 +57,18 @@ const roles: RoleModel[] = [
       ru: 'Владелец компании',
       en: 'Company owner',
     },
-    description: 'Владелец компании',
+    descriptionI18n: {
+      ru: 'Владелец компании',
+    },
     slug: 'companyOwner',
     isStaff: false,
-    rules: [],
-    allowedAppNavigation: getObjectIds([
-      `${navItemsDefaultSlug} app-orders`,
-      `${navItemsDefaultSlug} app-shops`,
-      `${navItemsDefaultSlug} app-config`,
-    ]),
+    isCompanyStaff: true,
+    allowedAppNavigation: [
+      ROUTE_CONSOLE,
+      `${ROUTE_CONSOLE}/orders`,
+      `${ROUTE_CONSOLE}/shops`,
+      `${ROUTE_CONSOLE}/config`,
+    ],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -55,10 +78,12 @@ const roles: RoleModel[] = [
       ru: 'Сотрудник компании',
       en: 'Company manager',
     },
-    description: 'Сотрудник компании',
+    descriptionI18n: {
+      ru: 'Сотрудник компании',
+    },
     slug: 'companyManager',
     isStaff: false,
-    rules: [],
+    isCompanyStaff: true,
     allowedAppNavigation: [],
     createdAt: new Date(),
     updatedAt: new Date(),

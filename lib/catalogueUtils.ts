@@ -43,6 +43,7 @@ import {
   SORT_DESC,
   SORT_DESC_STR,
   SORT_DIR_KEY,
+  PAGE_DEFAULT,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -389,7 +390,7 @@ export async function getCatalogueConfigs({
   companySlug,
   city,
 }: GetCatalogueConfigsInterface): Promise<GetCatalogueConfigsPayloadInterface> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
     slug: 'catalogueFilterVisibleOptionsCount',
@@ -424,7 +425,6 @@ interface CastCatalogueFiltersPayloadInterface {
   page: number;
   skip: number;
   limit: number;
-  pagerUrl: string;
   clearSlug: string;
   basePath: string;
 }
@@ -447,8 +447,7 @@ export function castCatalogueFilters({
   let sortDir: string | null = null;
 
   // pagination
-  const pagerUrlParts: string[] = [];
-  const defaultPage = initialPage || 1;
+  const defaultPage = initialPage || PAGE_DEFAULT;
   let page = defaultPage;
 
   const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;
@@ -469,8 +468,6 @@ export function castCatalogueFilters({
       if (filterOptionName === QUERY_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
-      } else {
-        pagerUrlParts.push(filterOption);
       }
 
       if (filterOptionName === CATALOGUE_FILTER_LIMIT) {
@@ -519,7 +516,6 @@ export function castCatalogueFilters({
     page,
     limit,
     skip,
-    pagerUrl: `/${pagerUrlParts.join('/')}`,
   };
 }
 
@@ -546,7 +542,7 @@ export const getCatalogueData = async ({
     // console.log(' ');
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args

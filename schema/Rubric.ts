@@ -64,7 +64,7 @@ export const Rubric = objectType({
     t.nonNull.field('variant', {
       type: 'RubricVariant',
       resolve: async (source): Promise<RubricVariantModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
         const variant = await rubricVariantsCollection.findOne({ _id: source.variantId });
         if (!variant) {

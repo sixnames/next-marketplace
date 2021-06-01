@@ -9,7 +9,7 @@ import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductS
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
-import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_PROFILE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -276,9 +276,8 @@ const CartRoute: React.FC = () => {
 
         <Inner lowTop testId={'cart'}>
           <Title className={classes.cartTitle}>Корзина пуста</Title>
-          <div className={classes.emptyBtns}>
+          <div className='flex gap-4 flex-wrap'>
             <Button
-              className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
                 router.push(`/`).catch(() => {
@@ -286,18 +285,17 @@ const CartRoute: React.FC = () => {
                 });
               }}
             >
-              на главную
+              Продолжить покупки
             </Button>
             <Button
-              className={classes.emptyBtnsItem}
-              theme={'secondary'}
               onClick={() => {
-                router.push(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).catch(() => {
+                router.push(ROUTE_PROFILE).catch(() => {
                   showErrorNotification();
                 });
               }}
+              theme={'secondary'}
             >
-              каталог вин
+              Мои заказы
             </Button>
           </div>
         </Inner>

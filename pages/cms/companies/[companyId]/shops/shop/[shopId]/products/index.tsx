@@ -39,12 +39,12 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

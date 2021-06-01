@@ -127,7 +127,7 @@ export const CartMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { shopProductId, amount } = input;
@@ -231,7 +231,7 @@ export const CartMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { productId, amount } = input;
@@ -334,7 +334,7 @@ export const CartMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { shopProductId, cartProductId } = input;
@@ -397,7 +397,7 @@ export const CartMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { cartProductId, amount } = input;
@@ -459,7 +459,7 @@ export const CartMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { cartProductId } = input;
@@ -510,7 +510,7 @@ export const CartMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
 
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
@@ -562,7 +562,7 @@ export const CartMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const cart = await getSessionCart(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);

@@ -195,14 +195,9 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
 
   // Should make an order and redirect to the Thank you page
   cy.getByCy(`cart-aside-confirm`).click();
-  cy.get(`[data-cy="thank-you"]`).then((e) => {
-    // Get created order itemId
-    const orderItemId = e.attr('data-order-item-id');
-
+  cy.get(`[data-cy="thank-you"]`).then(() => {
     if (callback) {
-      callback({
-        orderItemId,
-      });
+      callback();
     }
   });
 });

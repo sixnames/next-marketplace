@@ -21,3 +21,39 @@ export const UPDATE_MY_PASSWORD_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_USER_MUTATION = gql`
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_USER__PASSWORD_MUTATION = gql`
+  mutation UpdateUserPassword($input: UpdateUserPasswordInput!) {
+    updateUserPassword(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($_id: ObjectId!) {
+    deleteUser(_id: $_id) {
+      success
+      message
+    }
+  }
+`;

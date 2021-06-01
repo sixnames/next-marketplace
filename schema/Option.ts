@@ -68,7 +68,7 @@ export const OptionQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<OptionAlphabetListModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
         const { input } = args;
         const { optionsGroupId, slugs, parentId } = input;

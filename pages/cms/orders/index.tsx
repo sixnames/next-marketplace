@@ -62,13 +62,6 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       },
     },
     {
-      accessor: 'shopsCount',
-      headTitle: 'Магазины',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-    },
-    {
       accessor: 'customer.shortName',
       headTitle: 'Заказчик',
       render: ({ cellData }) => {
@@ -130,9 +123,9 @@ const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -165,9 +158,6 @@ export const getServerSideProps = async (
           customer: {
             $arrayElemAt: ['$customer', 0],
           },
-          shopsCount: {
-            $size: '$shopIds',
-          },
           productsCount: {
             $size: '$shopProductIds',
           },
@@ -185,8 +175,8 @@ export const getServerSideProps = async (
   initialOrders.forEach((order) => {
     orders.push({
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
-        return acc + amount * price;
+      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+        return acc + totalPrice;
       }, 0),
       status: order.status
         ? {

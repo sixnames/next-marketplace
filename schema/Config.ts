@@ -1,6 +1,6 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { CONFIG_DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
 import { COL_CONFIGS } from 'db/collectionNames';
@@ -66,7 +66,7 @@ export const ConfigQueries = extendType({
     t.nonNull.list.nonNull.field('getAllConfigs', {
       type: 'Config',
       resolve: async (): Promise<ConfigModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
         const configs = await configsCollection.find({}, { sort: { index: SORT_ASC } }).toArray();
         return configs;
@@ -120,18 +120,35 @@ export const ConfigMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug:
+              args.input.companySlug === CONFIG_DEFAULT_COMPANY_SLUG
+                ? 'updateConfig'
+                : 'updateCompanyConfig',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
-          const { _id } = input;
+          const { _id, ...values } = input;
 
           // Update config
           const updatedConfigResult = await configsCollection.findOneAndUpdate(
-            { _id },
             {
-              $set: input,
+              _id,
+            },
+            {
+              $set: values,
             },
             {
               returnOriginal: false,

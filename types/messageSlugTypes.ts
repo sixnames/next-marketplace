@@ -1,5 +1,6 @@
 export type MessageSlug =
   // Common validation ----------
+  | 'permission.error'
   | 'validation.string.min'
   | 'validation.string.max'
   | 'validation.number.min'
@@ -94,6 +95,24 @@ export type MessageSlug =
   | 'validation.languages.slug'
   | 'validation.languages.nativeName'
 
+  // Nav items ----------
+  | 'navItems.create.duplicate'
+  | 'navItems.create.error'
+  | 'navItems.create.success'
+  | 'navItems.update.duplicate'
+  | 'navItems.update.error'
+  | 'navItems.update.success'
+  | 'navItems.delete.error'
+  | 'navItems.delete.success'
+  // Nav items validation
+  | 'validation.navItems.id'
+  | 'validation.navItems.name'
+  | 'validation.navItems.slug'
+  | 'validation.navItems.path'
+  | 'validation.navItems.navGroup'
+  | 'validation.navItems.index'
+  | 'validation.navItems.icon'
+
   // Carts ----------
   | 'carts.addProduct.cartNotFound'
   | 'carts.addProduct.error'
@@ -131,16 +150,26 @@ export type MessageSlug =
   | 'roles.delete.usersUpdateError'
   | 'roles.delete.error'
   | 'roles.delete.success'
-  | 'roles.permissions.notFound'
-  | 'roles.permissions.error'
-  | 'roles.permissions.success'
   // Roles validation
   | 'validation.roles.id'
   | 'validation.roles.name'
-  | 'validation.roles.description'
-  | 'validation.roles.ruleId'
   | 'validation.roles.navItemId'
-  | 'validation.roles.operationId'
+
+  // Role rules ----------
+  | 'roleRules.create.duplicate'
+  | 'roleRules.create.error'
+  | 'roleRules.create.success'
+  | 'roleRules.update.duplicate'
+  | 'roleRules.update.error'
+  | 'roleRules.update.success'
+  | 'roleRules.delete.notFound'
+  | 'roleRules.delete.error'
+  | 'roleRules.delete.success'
+  // Role rules validation
+  | 'validation.roleRules.id'
+  | 'validation.roleRules.name'
+  | 'validation.rolesRule.slug'
+  | 'validation.roleRules.roleId'
 
   // Users ----------
   | 'users.create.duplicate'

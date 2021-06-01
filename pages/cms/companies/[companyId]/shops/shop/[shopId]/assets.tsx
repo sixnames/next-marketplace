@@ -31,11 +31,11 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopAssetsInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getAppInitialData({ context, isCms: true });
+  const initialProps = await getAppInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

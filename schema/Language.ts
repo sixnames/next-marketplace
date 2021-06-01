@@ -4,7 +4,11 @@ import { getDatabase } from 'db/mongodb';
 import { COL_LANGUAGES } from 'db/collectionNames';
 import { SORT_ASC } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { createLanguageSchema, updateLanguageSchema } from 'validation/languageSchema';
 
 export const Language = objectType({
@@ -26,7 +30,7 @@ export const LanguageQueries = extendType({
       type: 'Language',
       description: 'Should all languages list',
       resolve: async (): Promise<LanguageModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
         const languages = await languagesCollection
           .find(
@@ -90,6 +94,18 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate input
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -98,7 +114,7 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { input } = args;
 
@@ -152,6 +168,18 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate input
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -160,7 +188,7 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { input } = args;
           const { languageId, ...values } = input;
@@ -235,8 +263,20 @@ export const LanguageMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<LanguagePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteLanguage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { _id } = args;
 

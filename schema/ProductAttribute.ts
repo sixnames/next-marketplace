@@ -49,7 +49,7 @@ export const ProductAttribute = objectType({
     t.nonNull.field('attribute', {
       type: 'Attribute',
       resolve: async (source): Promise<AttributeModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const attribute = await attributesCollection.findOne({ _id: source.attributeId });
         if (!attribute) {
@@ -146,7 +146,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, brandSlug } = input;
@@ -206,7 +206,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, brandCollectionSlug } = input;
@@ -265,7 +265,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, manufacturerSlug } = input;
@@ -328,7 +328,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection = db.collection<ProductAttributeModel>(
@@ -474,7 +474,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection = db.collection<ProductAttributeModel>(
@@ -579,7 +579,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection = db.collection<ProductAttributeModel>(

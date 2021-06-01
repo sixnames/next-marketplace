@@ -1,5 +1,9 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   AttributeModel,
   MetricModel,
@@ -71,7 +75,7 @@ export const MetricQueries = extendType({
       type: 'Metric',
       description: 'Should return all metrics list',
       resolve: async (): Promise<MetricModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
         const metrics = await metricsCollection.find({}, { sort: { itemId: SORT_ASC } }).toArray();
         return metrics;
@@ -122,6 +126,18 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -130,7 +146,7 @@ export const MetricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const { input } = args;
 
@@ -186,6 +202,18 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -194,7 +222,7 @@ export const MetricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
@@ -305,8 +333,20 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteMetric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { _id } = args;

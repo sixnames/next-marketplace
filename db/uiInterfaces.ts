@@ -32,6 +32,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   RoleModel,
+  RoleRuleModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricCatalogueTitleModel,
@@ -123,12 +124,18 @@ export interface MessageInterface extends MessageModel {
 }
 
 export interface MetricInterface extends MetricModel {
-  name?: string;
+  name?: string | null;
 }
 
 export interface NavItemInterface extends NavItemModel {
-  name?: string;
+  name?: string | null;
   children?: NavItemInterface[];
+}
+
+export interface NavGroupInterface {
+  _id: string;
+  name?: string | null;
+  children?: NavItemInterface[] | null;
 }
 
 export interface OptionInterface extends OptionModel {
@@ -198,11 +205,19 @@ export interface ProductInterface extends ProductModel {
   selectAttributesAST?: ProductAttributesGroupASTInterface | null;
 }
 
+export interface RoleRuleInterface extends RoleRuleModel {
+  name?: string | null;
+  description?: string | null;
+  role?: RoleInterface | null;
+}
+
 export interface RoleInterface extends RoleModel {
   name?: string | null;
-  navItems?: NavItemModel[];
-  appNavigation?: NavItemModel[];
-  cmsNavigation?: NavItemModel[];
+  description?: string | null;
+  navItems?: NavItemInterface[];
+  appNavigation?: NavItemInterface[];
+  cmsNavigation?: NavItemInterface[];
+  rules?: RoleRuleInterface[] | null;
 }
 
 export interface RubricVariantInterface extends RubricVariantModel {
@@ -269,6 +284,7 @@ export interface UserInterface extends UserModel {
   shortName?: string;
   companies?: CompanyInterface[];
   formattedPhone?: FormattedPhoneModel | null;
+  orders?: OrderInterface[] | null;
 }
 
 export interface CatalogueDataInterface {
@@ -362,7 +378,6 @@ export interface OrderProductInterface extends OrderProductModel {
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
   formattedPrice?: string | null;
-  totalPrice?: number | null;
   formattedTotalPrice?: string | null;
   name?: string | null;
 }
@@ -397,7 +412,6 @@ export interface AppPaginationInterface<Model> {
   totalDocs: number;
   totalPages: number;
   page: number;
-  pagerUrl: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   clearSlug: string;

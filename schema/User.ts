@@ -1,5 +1,7 @@
+import { aggregatePagination } from 'db/aggregatePagination';
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
 import {
+  getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
   getSessionRole,
@@ -18,8 +20,6 @@ import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { ROLE_SLUG_COMPANY_MANAGER, ROLE_SLUG_COMPANY_OWNER, ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { aggregatePagination } from 'db/aggregatePagination';
-import { noNaN } from 'lib/numbers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import generator from 'generate-password';
 import { compare, hash } from 'bcryptjs';
@@ -86,7 +86,7 @@ export const User = objectType({
     t.nonNull.field('role', {
       type: 'Role',
       resolve: async (source): Promise<RoleModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rolesCollection = db.collection<RoleModel>(COL_ROLES);
         const role = await rolesCollection.findOne({ _id: source.roleId });
         if (!role) {
@@ -128,7 +128,7 @@ export const UserQuery = queryType({
         ),
       },
       resolve: async (_source, args): Promise<UserModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const collection = db.collection<UserModel>(COL_USERS);
         const user = await collection.findOne({ _id: args._id });
         if (!user) {
@@ -152,28 +152,33 @@ export const UserQuery = queryType({
         const { input } = args;
         const { search } = input || { search: null };
 
-        const searchPipeline = search
+        const regexSearch = {
+          $regex: search,
+          $options: 'i',
+        };
+
+        const searchStage = search
           ? [
               {
                 $match: {
                   $or: [
                     {
-                      email: search,
+                      email: regexSearch,
                     },
                     {
-                      name: search,
+                      name: regexSearch,
                     },
                     {
-                      lastName: search,
+                      lastName: regexSearch,
                     },
                     {
-                      secondName: search,
+                      secondName: regexSearch,
                     },
                     {
-                      phone: search,
+                      phone: regexSearch,
                     },
                     {
-                      itemId: noNaN(search),
+                      itemId: regexSearch,
                     },
                   ],
                 },
@@ -184,7 +189,7 @@ export const UserQuery = queryType({
         const paginationResult = await aggregatePagination<UserModel>({
           input: args.input,
           collectionName: COL_USERS,
-          pipeline: searchPipeline,
+          pipeline: searchStage,
           city,
         });
         return paginationResult;
@@ -197,7 +202,7 @@ export const UserQuery = queryType({
       description: 'Should return user company',
       resolve: async (_source, _args, context): Promise<CompanyModel | null> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const { user, role } = await getSessionRole(context);
 
@@ -256,6 +261,14 @@ export const UpdateUserInput = inputObjectType({
   },
 });
 
+export const UpdateUserPasswordInput = inputObjectType({
+  name: 'UpdateUserPasswordInput',
+  definition(t) {
+    t.nonNull.objectId('userId');
+    t.nonNull.string('newPassword');
+  },
+});
+
 export const UpdateMyProfileInput = inputObjectType({
   name: 'UpdateMyProfileInput',
   definition(t) {
@@ -304,6 +317,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -312,7 +337,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
 
@@ -379,6 +404,18 @@ export const UserMutations = mutationType({
       },
       resolve: async (_root, args, context): Promise<UserPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -387,7 +424,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
           const { userId, ...values } = input;
@@ -438,6 +475,71 @@ export const UserMutations = mutationType({
       },
     });
 
+    // Should update user password
+    t.nonNull.field('updateUserPassword', {
+      type: 'UserPayload',
+      description: 'Should update user password',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateUserPasswordInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<UserPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateUserPassword',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const usersCollection = db.collection<UserModel>(COL_USERS);
+          const { input } = args;
+          const { userId, newPassword } = input;
+
+          // Update user
+          const password = await hash(newPassword, 10);
+          const updatedUserResult = await usersCollection.findOneAndUpdate(
+            { _id: userId },
+            {
+              $set: {
+                password,
+                updatedAt: new Date(),
+              },
+            },
+            { returnOriginal: false },
+          );
+          const updatedUser = updatedUserResult.value;
+          if (!updatedUserResult.ok || !updatedUser) {
+            return {
+              success: false,
+              message: await getApiMessage('users.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('users.update.success'),
+            payload: updatedUser,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
     // Should update session user profile
     t.nonNull.field('updateMyProfile', {
       type: 'UserPayload',
@@ -460,7 +562,7 @@ export const UserMutations = mutationType({
 
           const { getApiMessage } = await getRequestParams(context);
           const sessionUser = await getSessionUser(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
 
@@ -540,7 +642,7 @@ export const UserMutations = mutationType({
 
           const { getApiMessage } = await getRequestParams(context);
           const sessionUser = await getSessionUser(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
           const { oldPassword, newPassword } = input;
@@ -623,7 +725,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const { input } = args;
@@ -681,6 +783,69 @@ export const UserMutations = mutationType({
             payload: createdUser,
           };
         } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should delete user
+    t.nonNull.field('deleteUser', {
+      type: 'UserPayload',
+      description: 'Should delete user',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<UserPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteUser',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const usersCollection = db.collection<UserModel>(COL_USERS);
+          const { _id } = args;
+
+          // Check user availability
+          const user = await usersCollection.findOne({ _id });
+          if (!user) {
+            return {
+              success: false,
+              message: await getApiMessage('users.delete.error'),
+            };
+          }
+
+          // TODO check user companies and shops
+
+          const removedUserResult = await usersCollection.findOneAndDelete({ _id });
+          if (!removedUserResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('users.delete.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('users.delete.success'),
+          };
+        } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

@@ -89,6 +89,7 @@ describe('Rubric products', () => {
     cy.getByCy('Крепость-attribute').clear().type('10');
     cy.getByCy('Количество в упаковке-attribute').clear().type('10');
     cy.getByCy('submit-number-attributes').click();
+    cy.wait(1500);
 
     // update text attributes
     cy.getByCy('Описание-attribute-ru').clear().type('lorem');

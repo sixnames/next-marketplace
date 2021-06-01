@@ -1,3 +1,5 @@
+import { CATALOGUE_OPTION_SEPARATOR, QUERY_FILTER_PAGE } from 'config/common';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import ReactPaginate from 'react-paginate';
 import Icon from '../Icon/Icon';
@@ -12,6 +14,28 @@ interface PagerInterface {
 const pageStep = 1;
 const minimalPagesCount = 2;
 const marginPagesDisplayed = 2;
+
+export const useNavigateToPageHandler = () => {
+  const router = useRouter();
+  return React.useCallback(
+    (newPage: number) => {
+      const { asPath } = router;
+      const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
+      const prevUrlArray = asPath.split('/').filter((param) => {
+        if (!param) {
+          return false;
+        }
+        const paramParts = param.split(CATALOGUE_OPTION_SEPARATOR);
+        return paramParts[0] !== QUERY_FILTER_PAGE;
+      });
+      const nextUrl = [...prevUrlArray, pageParam].join('/');
+      router.push(`/${nextUrl}/`).catch((e) => {
+        console.log(e);
+      });
+    },
+    [router],
+  );
+};
 
 const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
   if (totalPages < minimalPagesCount) {

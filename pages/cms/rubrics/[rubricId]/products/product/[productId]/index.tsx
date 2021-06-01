@@ -113,9 +113,9 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props || !productId) {
     return {
       notFound: true,

@@ -124,6 +124,21 @@ const users: UserModel[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    _id: getObjectId('content manager'),
+    itemId: '000009',
+    name: 'Content',
+    lastName: 'Manager',
+    secondName: '',
+    email: 'contentManager@gmail.com',
+    phone: '+75556668811',
+    password,
+    avatar: null,
+    cartId: null,
+    roleId: getObjectId('contentManagerRole'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 // @ts-ignore

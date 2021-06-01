@@ -1,8 +1,14 @@
 import * as React from 'react';
-import Image, { ImageProps } from 'next/image';
+import Image from 'next/image';
 import { TABLE_IMAGE_WIDTH } from 'config/common';
 
-const TableRowImage: React.FC<Omit<ImageProps, 'height' | 'width'>> = (props) => {
+interface TableRowImageInterface {
+  src: string;
+  alt: string;
+  title: string;
+}
+
+const TableRowImage: React.FC<TableRowImageInterface> = (props) => {
   return (
     <div className='table-image w-[40px] h-[50px] pt-[5px] pb-[5px]'>
       <Image {...props} width={TABLE_IMAGE_WIDTH} height={TABLE_IMAGE_WIDTH} quality={20} />

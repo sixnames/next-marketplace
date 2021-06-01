@@ -58,6 +58,11 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
+      headTitle: 'Сотрудник компании',
+      accessor: 'isCompanyStaff',
+      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -149,14 +154,14 @@ const RolesPage: NextPage<RolesPageInterface> = ({ pageUrls, roles }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RolesPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
   const rolesAggregationResult = await rolesCollection
     .aggregate([

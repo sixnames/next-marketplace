@@ -1,7 +1,11 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteOptionsTree } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
@@ -62,7 +66,7 @@ export const OptionsGroup = objectType({
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',
       resolve: async (source): Promise<OptionModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
         const options = optionsCollection.find({ optionsGroupId: source._id }).toArray();
         return options;
@@ -87,7 +91,7 @@ export const OptionsGroupQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<OptionsGroupModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroup = await optionsGroupsCollection.findOne({ _id: args._id });
         if (!optionsGroup) {
@@ -102,7 +106,7 @@ export const OptionsGroupQueries = extendType({
       type: 'OptionsGroup',
       description: 'Should return options groups list',
       resolve: async (): Promise<OptionsGroupModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroups = await optionsGroupsCollection
           .find(
@@ -217,6 +221,18 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createOptionsGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -225,7 +241,7 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const { input } = args;
 
@@ -279,6 +295,18 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateOptionsGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -287,7 +315,7 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const { input } = args;
           const { optionsGroupId, ...values } = input;
@@ -353,8 +381,20 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteOptionsGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
@@ -420,6 +460,18 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createOption',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -428,7 +480,7 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
@@ -522,6 +574,18 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateOption',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -530,7 +594,7 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
@@ -621,6 +685,18 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteOption',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -629,7 +705,7 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
           const { getApiMessage } = await getRequestParams(context);
 
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const productAttributesCollection = db.collection<ProductAttributeModel>(
             COL_PRODUCT_ATTRIBUTES,

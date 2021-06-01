@@ -30,7 +30,7 @@ interface ShopProductPipelineInterface {
 
 async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const { query } = req;

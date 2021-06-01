@@ -126,15 +126,15 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
             )}
 
-            <div className='mt-2 mb-4 text-secondary-text'>
+            <div className='mt-2 mb-4'>
               {(connections || []).map(({ _id, attribute, connectionProducts }) => {
                 return (
                   <div key={`${_id}`} className='mb-4'>
                     <div className='mr-1 whitespace-nowrap'>{`${attribute?.name}:`}</div>
                     <div>
-                      {(connectionProducts || []).map(({ option, _id }, index) => {
+                      {(connectionProducts || []).map(({ option, productId }, index) => {
                         const isLast = (connectionProducts || []).length - 1 === index;
-                        const isCurrent = _id === product._id;
+                        const isCurrent = productId === product._id;
 
                         if (!option) {
                           return null;
@@ -142,7 +142,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                         return (
                           <span
                             key={`${option?.name}`}
-                            className={`mr-1 ${isCurrent ? 'text-primary-text' : ''}`}
+                            className={`mr-1 ${
+                              isCurrent ? 'text-primary-text' : 'text-secondary-text'
+                            }`}
                           >
                             {isLast ? option?.name : `${option?.name}, `}
                           </span>

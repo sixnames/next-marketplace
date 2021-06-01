@@ -56,12 +56,6 @@ export const MakeAnOrderPayload = objectType({
   name: 'MakeAnOrderPayload',
   definition(t) {
     t.implements('Payload');
-    t.field('order', {
-      type: 'Order',
-    });
-    t.field('cart', {
-      type: 'Cart',
-    });
   },
 });
 
@@ -103,7 +97,7 @@ export const OrderMutations = extendType({
           const sessionUser = await getSessionUser(context);
           const cart = await getSessionCart(context);
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
@@ -201,81 +195,73 @@ export const OrderMutations = extendType({
             };
           }
 
-          // Create order
-          const orderItemId = await getNextItemId(COL_ORDERS);
-          const orderId = new ObjectId();
-          const order: OrderModel = {
-            _id: orderId,
-            itemId: orderItemId,
-            statusId: initialStatus._id,
-            customerId: user._id,
-            companySlug: `${input.companySlug}`,
-            comment: input.comment,
-            productIds: [],
-            shopProductIds: [],
-            shopIds: [],
-            companyIds: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
+          // create orders for all shops in cart
+          const ordersInCart: OrderModel[] = [];
 
           // Cast cart products to order products
           const castedOrderProducts: OrderProductModel[] = [];
           for await (const cartProduct of cart.cartProducts) {
-            const { amount } = cartProduct;
-            if (!cartProduct.shopProductId) {
+            const { amount, shopProductId } = cartProduct;
+
+            // get shop product
+            if (!shopProductId) {
               break;
             }
             const shopProduct = await shopProductsCollection.findOne({
-              _id: cartProduct.shopProductId,
+              _id: shopProductId,
             });
             if (!shopProduct) {
               break;
             }
-            const { price } = shopProduct;
+            const { price, itemId, nameI18n, originalName, slug, shopId, companyId } = shopProduct;
 
+            // check shop availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            if (!shop) {
+              break;
+            }
+
+            // check shop company availability
+            const company = await companiesCollection.findOne({ _id: companyId });
+            if (!company) {
+              break;
+            }
+
+            // check product availability
             const product = await productsCollection.findOne({
               _id: shopProduct.productId,
             });
             if (!product) {
               break;
             }
-            const { itemId, nameI18n, originalName, slug } = product;
 
-            const shop = await shopsCollection.findOne({ _id: shopProduct.shopId });
-            if (!shop) {
-              break;
-            }
+            let existingOrder = ordersInCart.find((order) => {
+              return order.shopId.equals(shopProduct.shopId);
+            });
 
-            const company = await companiesCollection.findOne({ _id: shop.companyId });
-            if (!company) {
-              break;
-            }
-
-            // Add product id to the order
-            const productIdExist = order.productIds.some((_id) => _id.equals(product._id));
-            if (!productIdExist) {
-              order.productIds.push(product._id);
-            }
-
-            // Add shop product id to the order
-            const shopProductIdExist = order.shopProductIds.some((_id) =>
-              _id.equals(shopProduct._id),
-            );
-            if (!shopProductIdExist) {
-              order.shopProductIds.push(shopProduct._id);
-            }
-
-            // Add shop id to the order
-            const shopIdExist = order.shopIds.some((_id) => _id.equals(shop._id));
-            if (!shopIdExist) {
-              order.shopIds.push(shop._id);
-            }
-
-            // Add company id to the order
-            const companyIdExist = order.companyIds.some((_id) => _id.equals(company._id));
-            if (!companyIdExist) {
-              order.companyIds.push(company._id);
+            if (!existingOrder) {
+              // create new order
+              existingOrder = {
+                _id: new ObjectId(),
+                itemId: await getNextItemId(COL_ORDERS),
+                statusId: initialStatus._id,
+                customerId: user._id,
+                companySiteSlug: `${input.companySlug}`,
+                comment: input.comment,
+                productIds: [product._id],
+                shopProductIds: [shopProduct._id],
+                shopId,
+                shopItemId: shop.itemId,
+                companyId,
+                companyItemId: company.itemId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              };
+              ordersInCart.push(existingOrder);
+            } else {
+              // add product ids to the created order
+              existingOrder.productIds.push(product._id);
+              existingOrder.shopProductIds.push(shopProduct._id);
             }
 
             castedOrderProducts.push({
@@ -283,6 +269,7 @@ export const OrderMutations = extendType({
               itemId,
               price,
               amount,
+              totalPrice: price * amount,
               slug,
               originalName,
               nameI18n,
@@ -290,12 +277,16 @@ export const OrderMutations = extendType({
               shopProductId: shopProduct._id,
               shopId: shop._id,
               companyId: company._id,
-              orderId,
+              orderId: existingOrder._id,
               createdAt: new Date(),
               updatedAt: new Date(),
             });
           }
 
+          console.log({
+            casted: castedOrderProducts.length,
+            cart: cart.cartProducts.length,
+          });
           // Return error if not all products are casted
           if (castedOrderProducts.length !== cart.cartProducts.length) {
             return {
@@ -313,37 +304,39 @@ export const OrderMutations = extendType({
             };
           }
 
-          // Create order customer
-          const customer: OrderCustomerModel = {
-            _id: new ObjectId(),
-            orderId,
-            phone: phoneToRaw(input.phone),
-            name: input.name,
-            email: input.email,
-            secondName: user.secondName,
-            lastName: user.lastName,
-            itemId: user.itemId,
-            userId: user._id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-          await orderCustomersCollection.insertOne(customer);
+          // Create order customer and order log for each order in cart
+          for await (const order of ordersInCart) {
+            // create order customer
+            const customer: OrderCustomerModel = {
+              _id: new ObjectId(),
+              orderId: order._id,
+              phone: phoneToRaw(input.phone),
+              name: input.name,
+              email: input.email,
+              secondName: user.secondName,
+              lastName: user.lastName,
+              itemId: user.itemId,
+              userId: user._id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
+            await orderCustomersCollection.insertOne(customer);
 
-          // Create order log
-          const orderLog: OrderLogModel = {
-            _id: new ObjectId(),
-            orderId,
-            userId: user._id,
-            statusId: initialStatus._id,
-            variant: ORDER_LOG_VARIANT_STATUS as OrderLogVariantModel,
-            createdAt: new Date(),
-          };
-          await orderLogsCollection.insertOne(orderLog);
+            // create order log
+            const orderLog: OrderLogModel = {
+              _id: new ObjectId(),
+              orderId: order._id,
+              userId: user._id,
+              statusId: initialStatus._id,
+              variant: ORDER_LOG_VARIANT_STATUS as OrderLogVariantModel,
+              createdAt: new Date(),
+            };
+            await orderLogsCollection.insertOne(orderLog);
+          }
 
-          // Insert order
-          const createdOrderResult = await ordersCollection.insertOne(order);
-          const createdOrder = createdOrderResult.ops[0];
-          if (!createdOrderResult.result.ok || !createdOrder) {
+          // Insert orders
+          const createdOrdersResult = await ordersCollection.insertMany(ordersInCart);
+          if (!createdOrdersResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('orders.makeAnOrder.error'),
@@ -372,16 +365,17 @@ export const OrderMutations = extendType({
           }
 
           // Send order confirmation email to the user
-          await sendOrderCreatedEmail({
-            to: user.email,
-            userName: user.name,
-            orderItemId: createdOrder.itemId,
-          });
+          for await (const order of ordersInCart) {
+            await sendOrderCreatedEmail({
+              to: user.email,
+              userName: user.name,
+              orderItemId: order.itemId,
+            });
+          }
 
           return {
             success: true,
             message: await getApiMessage('orders.makeAnOrder.success'),
-            order: createdOrder,
           };
         } catch (e) {
           return {

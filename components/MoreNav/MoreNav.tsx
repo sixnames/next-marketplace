@@ -3,10 +3,10 @@ import Link from '../Link/Link';
 import Icon from '../Icon/Icon';
 import classes from './MoreNav.module.css';
 import Backdrop from '../Backdrop/Backdrop';
-import { NavItemInterface } from 'types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface MoreNavInterface {
-  navConfig: NavItemInterface[];
+  navConfig: ClientNavItemInterface[];
   className?: string;
   isTab?: boolean;
 }

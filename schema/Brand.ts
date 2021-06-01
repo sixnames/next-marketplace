@@ -1,7 +1,11 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   BrandCollectionModel,
   BrandCollectionsPaginationPayloadModel,
@@ -92,7 +96,7 @@ export const Brand = objectType({
     t.nonNull.list.nonNull.field('collectionsList', {
       type: 'BrandCollection',
       resolve: async (source): Promise<BrandCollectionModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandCollectionsCollection = db.collection<BrandCollectionModel>(
           COL_BRAND_COLLECTIONS,
         );
@@ -146,7 +150,7 @@ export const BrandQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<BrandModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandCollections = db.collection<BrandModel>(COL_BRANDS);
         const brand = await brandCollections.findOne({ _id: args._id });
         if (!brand) {
@@ -164,7 +168,7 @@ export const BrandQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<BrandModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandCollections = db.collection<BrandModel>(COL_BRANDS);
         const brand = await brandCollections.findOne({ slug: args.slug });
         return brand;
@@ -201,7 +205,7 @@ export const BrandQueries = extendType({
         }),
       },
       resolve: async (_root, args): Promise<BrandsAlphabetListModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
         const { input } = args;
         let query: Record<string, any> = {};
@@ -303,6 +307,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -311,7 +327,7 @@ export const BrandMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
 
           // Check if brand already exist
@@ -374,6 +390,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -384,7 +412,7 @@ export const BrandMutations = extendType({
           const { input } = args;
           const { brandId, ...values } = input;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
 
           // Check brand availability
@@ -459,8 +487,20 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteBrand',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
@@ -518,6 +558,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -528,7 +580,7 @@ export const BrandMutations = extendType({
           const { input } = args;
           const { brandId, ...values } = input;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandsCollectionsCollection = db.collection<BrandCollectionModel>(
             COL_BRAND_COLLECTIONS,
@@ -629,6 +681,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -639,7 +703,7 @@ export const BrandMutations = extendType({
           const { input } = args;
           const { brandId, brandCollectionId, ...values } = input;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
             COL_BRAND_COLLECTIONS,
@@ -742,6 +806,18 @@ export const BrandMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteBrandCollection',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -752,7 +828,7 @@ export const BrandMutations = extendType({
           const { input } = args;
           const { brandId, brandCollectionId } = input;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
             COL_BRAND_COLLECTIONS,

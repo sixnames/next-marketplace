@@ -9,12 +9,8 @@ declare namespace Cypress {
     cyPrefix?: string;
   }
 
-  interface MakeAnOrderPayloadInterface {
-    orderItemId: string | undefined;
-  }
-
   interface MakeAnOrderInterface {
-    callback?: (payload: MakeAnOrderPayloadInterface) => void;
+    callback?: () => void;
     orderFields?: {
       customerName: string;
       customerPhone: string;

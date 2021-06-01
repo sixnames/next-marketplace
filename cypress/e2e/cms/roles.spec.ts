@@ -9,7 +9,7 @@ describe('User roles', () => {
 
   it('Should CRUD role', () => {
     const newRoleName = 'newRoleName';
-    const newRoleDescription = 'newRoleName vary long description';
+    const newRoleDescription = 'newRoleName very long description';
 
     // Shouldn't create role on validation error
     cy.getByCy('create-role').click();

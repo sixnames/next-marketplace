@@ -31,7 +31,7 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
   }
 
   // Get session user from db
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const user = await usersCollection.findOne({ email: session.user.email });
 
@@ -49,7 +49,7 @@ export const getSessionRole = async (
   // Get session user
   const user = await getSessionUser(context);
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
 
   // Get guest role if user is unauthenticated
@@ -106,7 +106,7 @@ export const getOperationPermission = async ({
   context,
   slug,
 }: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
   const { role } = await getSessionRole(context);
 
@@ -144,7 +144,7 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
   // Get session user
   const user = await getSessionUser(context);
   const userCartId = user ? user.cartId : null;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
   const usersCollection = db.collection<UserModel>(COL_USERS);
 

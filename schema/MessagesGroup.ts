@@ -23,7 +23,7 @@ export const MessagesGroup = objectType({
       type: 'Message',
       description: 'Returns all messages for current current group',
       resolve: async (source): Promise<MessageModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const messagesCollection = db.collection<MessageModel>(COL_MESSAGES_GROUPS);
         const messages = await messagesCollection
           .find({

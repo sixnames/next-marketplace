@@ -211,7 +211,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const navItemsCollection = db.collection<NavGroupInterface>(COL_NAV_ITEMS);
 
   // get grouped nav items ast

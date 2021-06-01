@@ -109,7 +109,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricInterface>> => {
   const { query } = context;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const { props } = await getAppInitialData({ context });

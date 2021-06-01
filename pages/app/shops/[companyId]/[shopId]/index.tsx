@@ -25,7 +25,7 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;

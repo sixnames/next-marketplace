@@ -390,7 +390,7 @@ export async function getCatalogueConfigs({
   companySlug,
   city,
 }: GetCatalogueConfigsInterface): Promise<GetCatalogueConfigsPayloadInterface> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
     slug: 'catalogueFilterVisibleOptionsCount',
@@ -542,7 +542,7 @@ export const getCatalogueData = async ({
     // console.log(' ');
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // Args

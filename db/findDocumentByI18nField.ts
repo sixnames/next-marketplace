@@ -17,7 +17,7 @@ export async function findDocumentByI18nField<TModel>({
   additionalQuery = {},
   additionalOrQuery = [],
 }: FindDocumentByI18nFieldInterface<TModel>): Promise<TModel | null> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const collection = db.collection(collectionName);
 
   const query = LOCALES.reduce((acc: Record<string, string>[], locale) => {

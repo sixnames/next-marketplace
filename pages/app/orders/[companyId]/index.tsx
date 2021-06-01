@@ -136,7 +136,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
   const { query } = context;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getCompanyAppInitialData({ context });
   if (!props || !props.sessionUser) {

@@ -96,7 +96,7 @@ export const Shop = objectType({
     t.nonNull.field('city', {
       type: 'City',
       resolve: async (source): Promise<CityModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const city = await citiesCollection.findOne({ slug: source.citySlug });
         if (!city) {
@@ -110,7 +110,7 @@ export const Shop = objectType({
     t.nonNull.field('company', {
       type: 'Company',
       resolve: async (source): Promise<CompanyModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
         const company = await companiesCollection.findOne({ shopsIds: source._id });
         if (!company) {
@@ -124,7 +124,7 @@ export const Shop = objectType({
     t.nonNull.field('productsCount', {
       type: 'Int',
       resolve: async (source): Promise<number> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const count = await shopProductsCollection.find({ shopId: source._id }).count();
         return count;
@@ -159,7 +159,7 @@ export const ShopQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<ShopModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
         const shop = await shopsCollection.findOne({ _id: args._id });
         if (!shop) {
@@ -177,7 +177,7 @@ export const ShopQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<ShopModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
         const shop = await shopsCollection.findOne({ slug: args.slug });
         if (!shop) {
@@ -338,7 +338,7 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const { input } = args;
           const { shopId, ...values } = input;
@@ -429,7 +429,7 @@ export const ShopMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const { input } = args;
           const { shopId, assetIndex } = input;
@@ -539,7 +539,7 @@ export const ShopMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const { input } = args;
           const { shopId, assetNewIndex, assetUrl } = input;
@@ -636,7 +636,7 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -751,7 +751,7 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -864,7 +864,7 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;

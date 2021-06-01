@@ -97,7 +97,7 @@ export const RoleRuleMutations = extendType({
           });
           await validationSchema.validate(args.input);
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const roleRulesCollection = db.collection(COL_ROLE_RULES);
 
           // Check if role already exist

@@ -50,7 +50,7 @@ export async function productsPaginationQuery({
   try {
     // const timeStart = new Date().getTime();
 
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const productsCollection = db.collection(COL_PRODUCTS);
     const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
     const {

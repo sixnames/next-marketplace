@@ -86,7 +86,7 @@ export const User = objectType({
     t.nonNull.field('role', {
       type: 'Role',
       resolve: async (source): Promise<RoleModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rolesCollection = db.collection<RoleModel>(COL_ROLES);
         const role = await rolesCollection.findOne({ _id: source.roleId });
         if (!role) {
@@ -128,7 +128,7 @@ export const UserQuery = queryType({
         ),
       },
       resolve: async (_source, args): Promise<UserModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const collection = db.collection<UserModel>(COL_USERS);
         const user = await collection.findOne({ _id: args._id });
         if (!user) {
@@ -202,7 +202,7 @@ export const UserQuery = queryType({
       description: 'Should return user company',
       resolve: async (_source, _args, context): Promise<CompanyModel | null> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const { user, role } = await getSessionRole(context);
 
@@ -337,7 +337,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
 
@@ -424,7 +424,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
           const { userId, ...values } = input;
@@ -501,7 +501,7 @@ export const UserMutations = mutationType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
           const { userId, newPassword } = input;
@@ -562,7 +562,7 @@ export const UserMutations = mutationType({
 
           const { getApiMessage } = await getRequestParams(context);
           const sessionUser = await getSessionUser(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
 
@@ -642,7 +642,7 @@ export const UserMutations = mutationType({
 
           const { getApiMessage } = await getRequestParams(context);
           const sessionUser = await getSessionUser(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { input } = args;
           const { oldPassword, newPassword } = input;
@@ -725,7 +725,7 @@ export const UserMutations = mutationType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const { input } = args;
@@ -817,7 +817,7 @@ export const UserMutations = mutationType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { _id } = args;
 

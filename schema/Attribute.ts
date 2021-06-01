@@ -63,7 +63,7 @@ export const Attribute = objectType({
         if (!source.optionsGroupId) {
           return null;
         }
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
         return optionsGroup;

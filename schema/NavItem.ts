@@ -37,7 +37,7 @@ export const NavItem = objectType({
     t.nonNull.list.nonNull.field('children', {
       type: 'NavItem',
       resolve: async (source): Promise<NavItemModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
         const children = await navItemsCollection
           .find(
@@ -126,7 +126,7 @@ export const NavItemMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
           const { input } = args;
 
@@ -213,7 +213,7 @@ export const NavItemMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
           const { input } = args;
           const { _id, ...values } = input;
@@ -307,7 +307,7 @@ export const NavItemMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
           const { _id } = args;
 

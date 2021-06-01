@@ -18,7 +18,7 @@ export const RoleQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<RoleModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rolesCollection = db.collection<RoleModel>(COL_ROLES);
         const role = await rolesCollection.findOne({ _id: args._id });
         return role;
@@ -30,7 +30,7 @@ export const RoleQueries = extendType({
       type: 'Role',
       description: 'Should return all roles list',
       resolve: async (): Promise<RoleModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rolesCollection = db.collection<RoleModel>(COL_ROLES);
         const role = await rolesCollection.find({}).toArray();
         return role;

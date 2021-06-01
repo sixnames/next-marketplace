@@ -272,7 +272,7 @@ export const getServerSideProps = async (
       ]
     : [];
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
 

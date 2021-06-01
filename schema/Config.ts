@@ -66,7 +66,7 @@ export const ConfigQueries = extendType({
     t.nonNull.list.nonNull.field('getAllConfigs', {
       type: 'Config',
       resolve: async (): Promise<ConfigModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
         const configs = await configsCollection.find({}, { sort: { index: SORT_ASC } }).toArray();
         return configs;
@@ -137,7 +137,7 @@ export const ConfigMutations = extendType({
 
           // Validate
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const { input } = args;
           const { _id, ...values } = input;

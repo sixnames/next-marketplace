@@ -130,7 +130,7 @@ const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getAppInitialData({ context });
   if (!props) {

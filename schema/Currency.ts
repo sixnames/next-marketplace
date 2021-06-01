@@ -26,7 +26,7 @@ export const CurrencyQueries = extendType({
     t.nonNull.list.nonNull.field('getAllCurrencies', {
       type: 'Currency',
       resolve: async (): Promise<CurrencyModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
         const currencies = await currenciesCollection
           .find(
@@ -106,7 +106,7 @@ export const CurrencyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
           const { input } = args;
 
@@ -178,7 +178,7 @@ export const CurrencyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
           const { input } = args;
           const { currencyId, ...values } = input;
@@ -261,7 +261,7 @@ export const CurrencyMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const { _id } = args;

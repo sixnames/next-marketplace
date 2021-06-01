@@ -766,7 +766,7 @@ export async function getRoleRulesAst({
   roleId,
   locale,
 }: GetRoleRulesAstInterface): Promise<RoleRuleInterface[]> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const roleRulesCollection = db.collection<RoleRuleInterface>(COL_ROLE_RULES);
   const initialRoleRules = await roleRulesCollection
     .find({

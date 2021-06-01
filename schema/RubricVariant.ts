@@ -47,7 +47,7 @@ export const RubricVariantQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<RubricVariantModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
         const rubricVariant = await rubricVariantsCollection.findOne({ _id: args._id });
         if (!rubricVariant) {
@@ -62,7 +62,7 @@ export const RubricVariantQueries = extendType({
       type: 'RubricVariant',
       description: 'Should return rubric variants list',
       resolve: async (): Promise<RubricVariantModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
         const rubricVariants = await rubricVariantsCollection.find({}).toArray();
         return rubricVariants;
@@ -133,7 +133,7 @@ export const RubricVariantMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
           const { input } = args;
 
@@ -209,7 +209,7 @@ export const RubricVariantMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
           const { input } = args;
           const { rubricVariantId, ...values } = input;
@@ -288,7 +288,7 @@ export const RubricVariantMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { _id } = args;

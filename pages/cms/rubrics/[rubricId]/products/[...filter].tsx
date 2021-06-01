@@ -279,7 +279,7 @@ interface ProductsAggregationInterface {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const { query } = context;
   const { filter, search } = query;

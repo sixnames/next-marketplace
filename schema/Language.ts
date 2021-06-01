@@ -30,7 +30,7 @@ export const LanguageQueries = extendType({
       type: 'Language',
       description: 'Should all languages list',
       resolve: async (): Promise<LanguageModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
         const languages = await languagesCollection
           .find(
@@ -114,7 +114,7 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { input } = args;
 
@@ -188,7 +188,7 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { input } = args;
           const { languageId, ...values } = input;
@@ -276,7 +276,7 @@ export const LanguageMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
           const { _id } = args;
 

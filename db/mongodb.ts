@@ -1,11 +1,16 @@
 import { MongoClient, Db } from 'mongodb';
 import path from 'path';
 
+interface GetDbPayloadInterface {
+  db: Db;
+  client: MongoClient;
+}
+
 // Create cached connection variable
-let cachedDb: Db | undefined;
+let cachedDb: GetDbPayloadInterface | undefined;
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
-export async function getDatabase(): Promise<Db> {
+export async function getDatabase(): Promise<GetDbPayloadInterface> {
   // If the database connection is cached, use it instead of creating a new connection
   if (cachedDb) {
     return cachedDb;
@@ -33,7 +38,12 @@ export async function getDatabase(): Promise<Db> {
   // Select the database through the connection
   const db = await client.db(dbName);
 
+  const payload: GetDbPayloadInterface = {
+    db,
+    client,
+  };
+
   // Cache the database connection and return the connection
-  cachedDb = db;
-  return db;
+  cachedDb = payload;
+  return payload;
 }

@@ -174,7 +174,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rubricVariantsCollection = db.collection(COL_RUBRIC_VARIANTS);
   const rubricVariantsAggregationResult = await rubricVariantsCollection
     .aggregate([

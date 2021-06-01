@@ -141,7 +141,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
   const navItemsCollection = db.collection<NavGroupInterface>(COL_NAV_ITEMS);
   const roleQueryResult = await rolesCollection.findOne({

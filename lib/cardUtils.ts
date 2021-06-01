@@ -45,7 +45,7 @@ export async function getCardData({
 }: GetCardDataInterface): Promise<ProductInterface | null> {
   try {
     // const startTime = new Date().getTime();
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 

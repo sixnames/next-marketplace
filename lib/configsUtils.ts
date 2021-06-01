@@ -629,7 +629,7 @@ export async function getConfigPageData({
   companyId,
   group,
 }: GetConfigPageDataInterface): Promise<GetConfigPageDataPayloadInterface | null> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const isDefault = companyId === CONFIG_DEFAULT_COMPANY_SLUG;

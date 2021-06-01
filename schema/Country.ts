@@ -30,7 +30,7 @@ export const Country = objectType({
     t.nonNull.list.nonNull.field('cities', {
       type: 'City',
       resolve: async (source) => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         return citiesCollection.find({ _id: { $in: source.citiesIds } }).toArray();
       },
@@ -47,7 +47,7 @@ export const CountryQueries = extendType({
       type: 'Country',
       description: 'Should return countries list',
       resolve: async (): Promise<CountryModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
         const countries = await countriesCollection
           .find(
@@ -156,7 +156,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const { input } = args;
 
@@ -229,7 +229,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const { input } = args;
           const { countryId, ...values } = input;
@@ -315,7 +315,7 @@ export const CountryMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { _id } = args;
@@ -395,7 +395,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;
@@ -508,7 +508,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;
@@ -615,7 +615,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;

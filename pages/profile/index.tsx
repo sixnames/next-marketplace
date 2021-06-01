@@ -221,7 +221,7 @@ const Profile: NextPage<ProfileInterface> = ({ orders, ...props }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProfileInterface>> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getSiteInitialData({
     context,

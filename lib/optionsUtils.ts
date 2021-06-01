@@ -114,7 +114,7 @@ export async function castAttributeForRubric({
   rubricId,
   rubricSlug,
 }: CastAttributeForRubricInterface): Promise<RubricAttributeModel> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
 
   const attributesGroup = await attributesGroupsCollection.findOne({
@@ -139,7 +139,7 @@ export async function castAttributeForRubric({
 }
 
 export async function getAlphabetList<TModel extends Record<string, any>>(entityList: TModel[]) {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
 
@@ -175,7 +175,7 @@ export async function getAlphabetList<TModel extends Record<string, any>>(entity
 }
 
 export async function deleteOptionsTree(optionId: ObjectIdModel): Promise<boolean> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
   const removedOptionResult = await optionsCollection.findOneAndDelete({
     _id: optionId,

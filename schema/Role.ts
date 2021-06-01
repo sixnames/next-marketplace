@@ -38,7 +38,7 @@ export const Role = objectType({
     t.nonNull.list.nonNull.field('appNavigation', {
       type: 'NavItem',
       resolve: async (source, _args): Promise<NavItemModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const navItemsCollection = await db.collection<NavItemModel>(COL_NAV_ITEMS);
 
         const roleNavQuery =
@@ -70,7 +70,7 @@ export const Role = objectType({
     t.nonNull.list.nonNull.field('cmsNavigation', {
       type: 'NavItem',
       resolve: async (source, _args): Promise<NavItemModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const navItemsCollection = await db.collection<NavItemModel>(COL_NAV_ITEMS);
 
         const roleNavQuery =

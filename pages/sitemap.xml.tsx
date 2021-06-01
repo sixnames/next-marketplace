@@ -43,7 +43,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res, req, defaultLocale } = context;
   const slugsWithLocales: string[] = [];
   const initialSlugs: string[] = [];
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const host = `${context.req.headers.host}`;
@@ -52,7 +52,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
 

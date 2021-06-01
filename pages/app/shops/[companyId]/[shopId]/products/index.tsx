@@ -39,7 +39,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { query } = context;

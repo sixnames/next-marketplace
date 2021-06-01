@@ -21,7 +21,7 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;

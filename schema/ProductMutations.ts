@@ -121,7 +121,7 @@ export const ProductMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -232,7 +232,7 @@ export const ProductMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -352,7 +352,7 @@ export const ProductMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -487,7 +487,7 @@ export const ProductMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -609,7 +609,7 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);

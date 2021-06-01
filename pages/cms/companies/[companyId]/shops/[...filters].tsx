@@ -230,7 +230,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
 

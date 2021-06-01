@@ -155,7 +155,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
   const roleQueryResult = await rolesCollection.findOne({
     _id: new ObjectId(`${context.query.roleId}`),

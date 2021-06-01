@@ -89,7 +89,7 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
 
           // Check if role already exist
@@ -171,7 +171,7 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const { input } = args;
           const { roleId, ...values } = input;
@@ -262,7 +262,7 @@ export const RoleMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { _id } = args;
@@ -343,7 +343,7 @@ export const RoleMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
           const {

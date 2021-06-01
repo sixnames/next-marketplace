@@ -32,7 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;

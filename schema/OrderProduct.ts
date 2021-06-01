@@ -34,7 +34,7 @@ export const OrderProduct = objectType({
     t.field('product', {
       type: 'Product',
       resolve: async (source): Promise<ProductModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ _id: source.productId });
         return product;
@@ -45,7 +45,7 @@ export const OrderProduct = objectType({
     t.field('shopProduct', {
       type: 'ShopProduct',
       resolve: async (source): Promise<ShopProductModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const shopProduct = await shopProductsCollection.findOne({ _id: source.shopProductId });
         return shopProduct;
@@ -56,7 +56,7 @@ export const OrderProduct = objectType({
     t.field('shop', {
       type: 'Shop',
       resolve: async (source): Promise<ShopModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
         const shop = await shopsCollection.findOne({ _id: source.shopId });
         return shop;

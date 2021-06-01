@@ -82,7 +82,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { userId } = query;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
 
   const { props } = await getAppInitialData({ context });

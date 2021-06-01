@@ -75,7 +75,7 @@ export const MetricQueries = extendType({
       type: 'Metric',
       description: 'Should return all metrics list',
       resolve: async (): Promise<MetricModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
         const metrics = await metricsCollection.find({}, { sort: { itemId: SORT_ASC } }).toArray();
         return metrics;
@@ -146,7 +146,7 @@ export const MetricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const { input } = args;
 
@@ -222,7 +222,7 @@ export const MetricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
@@ -346,7 +346,7 @@ export const MetricMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { _id } = args;

@@ -68,7 +68,7 @@ export const getCatalogueNavRubrics = async ({
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
@@ -181,7 +181,7 @@ export const getPageInitialData = async ({
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
   // const timeStart = new Date().getTime();
-  const db = await getDatabase();
+  const { db } = await getDatabase();
 
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -262,7 +262,7 @@ export async function getPageSessionUser({
     return null;
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const userAggregation = await usersCollection
     .aggregate([
@@ -418,7 +418,7 @@ export async function getPageInitialState({
   context,
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
   const { locale, resolvedUrl } = context;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
 

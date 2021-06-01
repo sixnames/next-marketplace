@@ -98,7 +98,7 @@ export const ManufacturerQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturer = await manufacturersCollection.findOne({ _id: args._id });
         if (!manufacturer) {
@@ -116,7 +116,7 @@ export const ManufacturerQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturer = await manufacturersCollection.findOne({ slug: args.slug });
         if (!manufacturer) {
@@ -156,7 +156,7 @@ export const ManufacturerQueries = extendType({
         }),
       },
       resolve: async (_root, args): Promise<ManufacturersAlphabetListModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const { input } = args;
         let query: Record<string, any> = {};
@@ -251,7 +251,7 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const { input } = args;
 
@@ -334,7 +334,7 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const { input } = args;
           const { manufacturerId, ...values } = input;
@@ -423,7 +423,7 @@ export const ManufacturerMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { _id } = args;

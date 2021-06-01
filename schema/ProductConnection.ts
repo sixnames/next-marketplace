@@ -33,7 +33,7 @@ export const ProductConnectionItem = objectType({
     t.nonNull.field('product', {
       type: 'Product',
       resolve: async (source): Promise<ProductModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ _id: source.productId });
         if (!product) {
@@ -105,7 +105,7 @@ export const ProductConnectionMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productsAttributesCollection = db.collection<ProductAttributeModel>(
             COL_PRODUCT_ATTRIBUTES,
@@ -263,7 +263,7 @@ export const ProductConnectionMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productsAttributesCollection = db.collection<ProductAttributeModel>(
             COL_PRODUCT_ATTRIBUTES,
@@ -412,7 +412,7 @@ export const ProductConnectionMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,

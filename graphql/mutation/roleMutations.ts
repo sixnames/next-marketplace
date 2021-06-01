@@ -26,3 +26,21 @@ export const DELETE_ROLE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_ROLE_RULE_MUTATION = gql`
+  mutation UpdateRoleRule($input: UpdateRoleRuleInput!) {
+    updateRoleRule(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_ROLE_NAV_MUTATION = gql`
+  mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
+    updateRoleNav(input: $input) {
+      success
+      message
+    }
+  }
+`;

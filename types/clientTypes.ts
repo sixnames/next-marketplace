@@ -14,19 +14,19 @@ export type ConfigGroupType = 'globals' | 'analytics' | 'ui' | 'contacts' | 'seo
 
 export type ObjectType = Record<string, any>;
 
-export interface NavItemChildInterface {
+export interface ClientNavItemChildInterface {
   name: string;
   path: string;
   hidden?: boolean;
   testId?: string;
 }
 
-export interface NavItemInterface {
+export interface ClientNavItemInterface {
   name: string;
   path?: string;
   icon?: IconType;
   counter?: number;
-  children?: NavItemChildInterface[];
+  children?: ClientNavItemChildInterface[];
   hidden?: boolean;
   testId?: string;
   shallow?: boolean;

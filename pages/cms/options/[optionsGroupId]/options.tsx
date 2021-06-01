@@ -259,7 +259,7 @@ const OptionsGroupOptionsPage: NextPage<OptionsGroupOptionsPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OptionsGroupOptionsPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !context.query.optionsGroupId) {
     return {
@@ -267,7 +267,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const optionsGroupAggregationResult = await optionsGroupsCollection

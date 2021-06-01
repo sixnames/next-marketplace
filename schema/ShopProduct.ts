@@ -4,7 +4,12 @@ import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nex
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
-import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionCart,
+} from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
 
@@ -43,7 +48,7 @@ export const ShopProduct = objectType({
     t.nonNull.field('product', {
       type: 'Product',
       resolve: async (source): Promise<ProductModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ _id: source.productId });
         if (!product) {
@@ -57,7 +62,7 @@ export const ShopProduct = objectType({
     t.nonNull.field('shop', {
       type: 'Shop',
       resolve: async (source): Promise<ShopModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
         const shop = await shopsCollection.findOne({ _id: source.shopId });
         if (!shop) {
@@ -122,6 +127,18 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateShopProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -130,7 +147,7 @@ export const ShopProductMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, ...values } = input;
@@ -229,6 +246,18 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateShopProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -237,7 +266,7 @@ export const ShopProductMutations = extendType({
           await validationSchema.validate(args);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
 

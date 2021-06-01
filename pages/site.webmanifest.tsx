@@ -13,7 +13,7 @@ const SiteWebmanifest: React.FC = () => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const { locale, res } = context;
   const host = `${context.req.headers.host}`;
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
@@ -23,7 +23,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
   const companySlug = company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG;

@@ -170,10 +170,10 @@ const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, rubrics }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,

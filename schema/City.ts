@@ -45,7 +45,7 @@ export const CityQueries = extendType({
         _id: nonNull(arg({ type: 'ObjectId' })),
       },
       resolve: async (_root, args): Promise<CityModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const city = await citiesCollection.findOne({ _id: args._id });
         if (!city) {
@@ -63,7 +63,7 @@ export const CityQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<CityModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const city = await citiesCollection.findOne({ slug: args.slug });
         if (!city) {
@@ -98,7 +98,7 @@ export const CityQueries = extendType({
       type: 'City',
       description: 'Should return cities list',
       resolve: async (_root): Promise<CityModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const cities = await citiesCollection.find({}, { sort: { itemId: SORT_DESC } }).toArray();
         return cities;
@@ -111,7 +111,7 @@ export const CityQueries = extendType({
       description: 'Should return currency for session locale',
       resolve: async (_root, _args, context): Promise<string> => {
         const citySlug = getSessionCity(context);
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
         const city = await citiesCollection.findOne({ slug: citySlug });

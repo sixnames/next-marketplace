@@ -9,7 +9,11 @@ import {
   RubricPayloadModel,
   ShopProductModel,
 } from 'db/dbModels';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
@@ -130,6 +134,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -138,7 +154,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
 
@@ -199,6 +215,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -207,7 +235,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { rubricId, ...values } = input;
@@ -286,8 +314,20 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const productsCollection = db.collection(COL_PRODUCTS);
           const { _id } = args;
@@ -349,6 +389,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -357,7 +409,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
@@ -463,6 +515,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -471,7 +535,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
@@ -538,6 +602,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -546,7 +622,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
@@ -613,6 +689,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -621,7 +709,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const attributesGroupsCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
@@ -704,6 +792,18 @@ export const RubricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -712,7 +812,7 @@ export const RubricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);

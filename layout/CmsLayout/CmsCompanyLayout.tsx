@@ -6,14 +6,14 @@ import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
-import { NavItemInterface } from 'types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsCompanyLayoutInterface {
   company: CompanyInterface;
 }
 
 const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({ company, children }) => {
-  const navConfig = React.useMemo<NavItemInterface[]>(() => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Детали',

@@ -8,7 +8,12 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionRole,
+} from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_PRODUCT_ASSETS,
@@ -96,6 +101,18 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -104,7 +121,7 @@ export const ProductMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -195,6 +212,18 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -203,7 +232,7 @@ export const ProductMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -310,8 +339,20 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -433,8 +474,20 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateProduct',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -556,7 +609,7 @@ export const ProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);

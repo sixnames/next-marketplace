@@ -146,7 +146,7 @@ const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ pageUrls, optio
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OptionsGroupPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !context.query.optionsGroupId) {
     return {
@@ -154,7 +154,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const optionsGroupResult = await optionsGroupsCollection.findOne({

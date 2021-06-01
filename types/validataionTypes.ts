@@ -1,6 +1,10 @@
-import { MessageModel } from 'db/dbModels';
+import { MessageBase } from 'db/dbModels';
+
+interface ValidationMessageInterface extends MessageBase {
+  [key: string]: any;
+}
 
 export interface ValidationSchemaArgsInterface {
   locale: string;
-  messages: MessageModel[];
+  messages: ValidationMessageInterface[];
 }

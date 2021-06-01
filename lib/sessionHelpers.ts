@@ -1,5 +1,6 @@
+import { RoleRuleSlugType } from 'lib/roleUtils';
 import { getSession } from 'next-auth/client';
-import { CartModel, RoleModel, UserModel } from 'db/dbModels';
+import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CART_COOKIE_KEY,
@@ -7,12 +8,13 @@ import {
   DEFAULT_LOCALE,
   LOCALE_HEADER,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
 } from 'config/common';
 import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
-import { COL_CARTS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_CARTS, COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
 import { MessageSlug } from 'types/messageSlugTypes';
 import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
@@ -29,7 +31,7 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
   }
 
   // Get session user from db
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const user = await usersCollection.findOne({ email: session.user.email });
 
@@ -47,7 +49,7 @@ export const getSessionRole = async (
   // Get session user
   const user = await getSessionUser(context);
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
 
   // Get guest role if user is unauthenticated
@@ -90,11 +92,59 @@ export const getSessionCity = (context: NexusContext): string => {
   return cookies?.city || context?.city || DEFAULT_CITY;
 };
 
+interface GetOperationPermissionInterface {
+  context: any;
+  slug: RoleRuleSlugType;
+}
+
+interface GetOperationPermissionPayloadInterface {
+  allow: boolean;
+  message: string;
+}
+
+export const getOperationPermission = async ({
+  context,
+  slug,
+}: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
+  const { db } = await getDatabase();
+  const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+  const { role } = await getSessionRole(context);
+
+  if (role.slug === ROLE_SLUG_ADMIN) {
+    return {
+      allow: true,
+      message: '',
+    };
+  }
+
+  const rule = await roleRulesCollection.findOne({
+    slug,
+    roleId: role._id,
+  });
+
+  if (!rule?.allow) {
+    const locale = getSessionLocale(context);
+
+    return {
+      allow: false,
+      message: await getApiMessageValue({
+        slug: 'permission.error',
+        locale,
+      }),
+    };
+  }
+
+  return {
+    allow: rule.allow,
+    message: '',
+  };
+};
+
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {
   // Get session user
   const user = await getSessionUser(context);
   const userCartId = user ? user.cartId : null;
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
   const usersCollection = db.collection<UserModel>(COL_USERS);
 

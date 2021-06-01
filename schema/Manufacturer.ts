@@ -1,7 +1,11 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,
@@ -94,7 +98,7 @@ export const ManufacturerQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturer = await manufacturersCollection.findOne({ _id: args._id });
         if (!manufacturer) {
@@ -112,7 +116,7 @@ export const ManufacturerQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const manufacturer = await manufacturersCollection.findOne({ slug: args.slug });
         if (!manufacturer) {
@@ -152,7 +156,7 @@ export const ManufacturerQueries = extendType({
         }),
       },
       resolve: async (_root, args): Promise<ManufacturersAlphabetListModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const { input } = args;
         let query: Record<string, any> = {};
@@ -227,6 +231,18 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -235,7 +251,7 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const { input } = args;
 
@@ -298,6 +314,18 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -306,7 +334,7 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const { input } = args;
           const { manufacturerId, ...values } = input;
@@ -382,8 +410,20 @@ export const ManufacturerMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturerPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteManufacturer',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { _id } = args;

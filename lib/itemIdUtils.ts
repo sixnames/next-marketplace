@@ -5,7 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import addZero from 'add-zero';
 
 export async function updateCollectionItemId(collectionName: string) {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const entityCollection = db.collection(collectionName);
   const idCountersCollection = db.collection(COL_ID_COUNTERS);
   const counter = await entityCollection.countDocuments();
@@ -24,7 +24,7 @@ export async function updateCollectionItemId(collectionName: string) {
 }
 
 export async function setCollectionItemId(collectionName: string, counter: number) {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const idCountersCollection = db.collection(COL_ID_COUNTERS);
   await idCountersCollection.findOneAndUpdate(
     { collection: collectionName },
@@ -40,7 +40,7 @@ export async function setCollectionItemId(collectionName: string, counter: numbe
 }
 
 export async function getNextItemId(collectionName: string): Promise<string> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
 
   const updatedCounter = await idCountersCollection.findOneAndUpdate(

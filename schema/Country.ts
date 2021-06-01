@@ -3,7 +3,11 @@ import { getDatabase } from 'db/mongodb';
 import { COL_CITIES, COL_COUNTRIES } from 'db/collectionNames';
 import { CityModel, CountryModel, CountryPayloadModel } from 'db/dbModels';
 import { SORT_ASC } from 'config/common';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import {
@@ -26,7 +30,7 @@ export const Country = objectType({
     t.nonNull.list.nonNull.field('cities', {
       type: 'City',
       resolve: async (source) => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         return citiesCollection.find({ _id: { $in: source.citiesIds } }).toArray();
       },
@@ -43,7 +47,7 @@ export const CountryQueries = extendType({
       type: 'Country',
       description: 'Should return countries list',
       resolve: async (): Promise<CountryModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
         const countries = await countriesCollection
           .find(
@@ -132,6 +136,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -140,7 +156,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const { input } = args;
 
@@ -193,6 +209,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -201,7 +229,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const { input } = args;
           const { countryId, ...values } = input;
@@ -274,8 +302,20 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCountry',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { _id } = args;
@@ -335,6 +375,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -343,7 +395,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;
@@ -436,6 +488,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -444,7 +508,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;
@@ -531,6 +595,18 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteCity',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -539,7 +615,7 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
           const citiesCollection = db.collection<CityModel>(COL_CITIES);
           const { input } = args;

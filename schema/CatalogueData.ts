@@ -95,7 +95,7 @@ export const CatalogueQueries = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<OptionAlphabetListModel[] | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const { city } = await getRequestParams(context);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const { companyId, filter, attributeSlug, rubricSlug } = args.input;
@@ -215,7 +215,7 @@ export const CatalogueQueries = extendType({
       resolve: async (_root, args, context): Promise<CatalogueSearchResultModel> => {
         try {
           const { city } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { companyId, companySlug } = args.input;
@@ -387,7 +387,7 @@ export const CatalogueQueries = extendType({
       resolve: async (_root, args, context): Promise<CatalogueSearchResultModel> => {
         try {
           const { city } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
@@ -592,7 +592,7 @@ export const CatalogueMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);

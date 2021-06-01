@@ -54,11 +54,12 @@ describe('Companies list', () => {
 
     // submit
     cy.getByCy(`company-submit`).click();
-    cy.shouldSuccess();
+    cy.wait(1500);
     cy.getByCy('companies-list').should('contain', newCompanyName);
 
     // Should display company route
     cy.getByCy(`company_a-update`).click();
+    cy.wait(1500);
     cy.getByCy('company-details').should('exist');
 
     const updatedCompanyName = 'updatedCompanyName';
@@ -99,20 +100,24 @@ describe('Companies list', () => {
 
     // submit
     cy.getByCy(`company-submit`).click();
+    cy.wait(1500);
 
     // Should update company logo
     cy.getByCy(`company-assets`).click();
+    cy.wait(1500);
     cy.getByCy(`company-assets-list`).should('exist');
     cy.getByCy(`logo-remove`).click();
     cy.getByCy('logo').attachFile('test-company-logo.png', {
       subjectType: 'drag-n-drop',
     });
+    cy.wait(1500);
 
     // Should delete company
     cy.visit(companiesPath);
     cy.getByCy(`company_a-delete`).click();
     cy.getByCy(`delete-company-modal`).should('exist');
     cy.getByCy(`confirm`).click();
+    cy.wait(1500);
     cy.getByCy('companies-list').should('not.contain', '000001');
   });
 
@@ -122,6 +127,7 @@ describe('Companies list', () => {
     const newShopPhoneA = `77776665544`;
 
     cy.getByCy(`company_a-update`).click();
+    cy.wait(1500);
     cy.getByCy(`company-shops`).click();
     cy.getByCy('company-shops-list').should('exist');
 
@@ -151,19 +157,23 @@ describe('Companies list', () => {
 
     // submit
     cy.getByCy(`shop-submit`).click();
+    cy.wait(1500);
     cy.getByCy('company-shops-list').should('contain', newShopName);
 
     // Should delete shop from company
     cy.getByCy(`Shop A-delete`).click();
     cy.getByCy(`confirm`).click();
+    cy.wait(1500);
     cy.getByCy('company-shops-list').should('not.contain', 'Shop A');
   });
 
   it('Should display shop details', () => {
     cy.getByCy(`company_a-update`).click();
     cy.getByCy(`company-shops`).click();
+    cy.wait(1500);
     cy.getByCy('company-shops-list').should('exist');
     cy.getByCy(`Shop A-update`).click();
+    cy.wait(1500);
     cy.getByCy('shop-details-page').should('exist');
 
     const newShopName = 'newShopName';
@@ -193,13 +203,16 @@ describe('Companies list', () => {
 
     // submit
     cy.getByCy(`shop-submit`).click();
+    cy.wait(1500);
     cy.getByCy('shop-details-page').should('exist');
 
     // add logo
     cy.getByCy(`shop-assets`).click();
+    cy.wait(1500);
     cy.getByCy('shop-assets-list').should('exist');
     cy.getByCy(`logo-remove`).click();
     cy.getByCy('logo').attachFile('test-company-logo.png', { subjectType: 'drag-n-drop' });
+    cy.wait(1500);
 
     // add assets
     cy.getByCy('assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
@@ -208,15 +221,18 @@ describe('Companies list', () => {
 
   it('Should CRUD shop products', () => {
     cy.getByCy(`company_a-update`).click();
+    cy.wait(1500);
     cy.getByCy(`company-shops`).click();
+    cy.wait(1500);
 
     // Should display shop products list
-    cy.getByCy('company-shops-list').should('exist');
     cy.getByCy(`Shop A-update`).click();
-    cy.getByCy('shop-details-page').should('exist');
+    cy.wait(1500);
     cy.getByCy(`shop-products`).click();
+    cy.wait(1500);
     cy.getByCy('shop-rubrics-list').should('exist');
     cy.getByCy(`Вино-update`).click();
+    cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
 
     // Should delete shop product
@@ -229,52 +245,65 @@ describe('Companies list', () => {
     cy.getByCy('shop-product-available-1').clear().type('10');
     cy.getByCy('shop-product-price-1').clear().type('10');
     cy.getByCy('save-shop-products').first().click();
-    cy.getByCy('shop-rubric-products-list').should('exist');
+    cy.wait(1500);
 
     // Should create shop product
     cy.getByCy('add-shop-product').first().click();
+    cy.wait(1500);
     cy.getByCy('not-in-shop-products-list').should('exist');
     cy.getByCy('product-0-checkbox').check();
     cy.getByCy('product-1-checkbox').check();
     cy.getByCy('next-step').first().click();
+    cy.wait(1500);
     cy.getByCy('not-in-shop-products-list-step-2').should('exist');
     cy.getByCy('shop-product-available-0').clear().type('10');
     cy.getByCy('shop-product-price-0').clear().type('10');
     cy.getByCy('shop-product-available-1').clear().type('5');
     cy.getByCy('shop-product-price-1').clear().type('5');
     cy.getByCy('save-shop-products').first().click();
+    cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
   });
 
   it('Should update company configs', () => {
     cy.getByCy(`company_a-update`).click();
+    cy.wait(1500);
     cy.getByCy(`company-global-config`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-globals').should('exist');
 
     cy.getByCy(`siteName-msk-accordion-en`).click();
     cy.getByCy('siteName-msk-en-0').clear().type('updatedCompanyName');
     cy.getByCy('siteName-msk-ru-0').clear().type('updatedCompanyName');
     cy.getByCy('siteName-submit').click();
+    cy.wait(1500);
 
     cy.getByCy('siteFoundationYear-msk-ru-0').clear().type('1999');
     cy.getByCy('siteFoundationYear-submit').click();
+    cy.wait(1500);
 
     cy.getByCy('siteLicense-msk-ru-0').clear().type('lorem');
     cy.getByCy('siteLicense-submit').click();
+    cy.wait(1500);
 
     cy.getByCy(`company-analytics`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-analytics').should('exist');
 
     cy.getByCy(`company-ui`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-ui').should('exist');
 
     cy.getByCy(`company-contacts`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-contacts').should('exist');
 
     cy.getByCy(`company-seo`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-seo').should('exist');
 
     cy.getByCy(`company-catalogue`).click();
+    cy.wait(1500);
     cy.getByCy('company-config-catalogue').should('exist');
   });
 });

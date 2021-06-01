@@ -3,14 +3,16 @@ import { getObjectId } from 'mongo-seeding';
 
 const carts: OrderModel[] = [
   {
-    _id: getObjectId('defaultOrder'),
+    _id: getObjectId('fakeOrder'),
     itemId: '000001',
-    companyIds: [],
+    companyId: getObjectId('fake'),
     productIds: [],
-    shopIds: [],
+    shopId: getObjectId('fake'),
+    shopItemId: '',
     shopProductIds: [],
-    customerId: getObjectId('admin'),
-    companySlug: 'default',
+    customerId: getObjectId('fake'),
+    companyItemId: '',
+    companySiteSlug: 'fake',
     comment: '',
     statusId: getObjectId(`orderStatus new`),
     updatedAt: new Date(),

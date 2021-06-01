@@ -99,7 +99,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'attribute-groups-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
@@ -154,14 +154,14 @@ const AttributesGroups: NextPage<AttributesGroupsInterface> = ({ attributesGroup
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<AttributesGroupsInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
 
   const attributesGroupsAggregationResult = await attributesGroupsCollection

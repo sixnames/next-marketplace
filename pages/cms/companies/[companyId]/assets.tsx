@@ -102,7 +102,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyAssetsPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !query.companyId) {
     return {
@@ -110,7 +110,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const companyAggregationResult = await companiesCollection
     .aggregate([

@@ -14,7 +14,7 @@ export async function getApiMessageValue({
   slug,
   locale,
 }: GetApiMessageInterface): Promise<string> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
   const messageEntity = await messagesCollection.findOne({ slug });
 
@@ -26,7 +26,7 @@ export async function getApiMessageValue({
 }
 
 export async function getValidationMessages(): Promise<MessageModel[]> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
   const messages = await messagesCollection
     .find({

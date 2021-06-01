@@ -1,6 +1,10 @@
 import { SORT_ASC } from 'config/common';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import {
   AttributeModel,
   AttributesGroupModel,
@@ -50,7 +54,7 @@ export const AttributesGroup = objectType({
     t.nonNull.list.nonNull.field('attributes', {
       type: 'Attribute',
       resolve: async (source): Promise<AttributeModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const attributes = await attributesCollection
           .find({ _id: { $in: source.attributesIds } })
@@ -76,7 +80,7 @@ export const AttributesGroupQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<AttributesGroupModel> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const attributesGroupCollection = db.collection<AttributesGroupModel>(
           COL_ATTRIBUTES_GROUPS,
         );
@@ -100,7 +104,7 @@ export const AttributesGroupQueries = extendType({
         }),
       },
       resolve: async (_root, args): Promise<AttributesGroupModel[]> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const attributesGroupCollection = db.collection<AttributesGroupModel>(
           COL_ATTRIBUTES_GROUPS,
         );
@@ -209,6 +213,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -217,7 +233,7 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -277,6 +293,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -285,7 +313,7 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -356,8 +384,20 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteAttributesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -458,6 +498,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -469,7 +521,7 @@ export const attributesGroupMutations = extendType({
             input: { attributesGroupId, metricId, ...values },
           } = args;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -573,6 +625,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -584,7 +648,7 @@ export const attributesGroupMutations = extendType({
             input: { attributesGroupId, attributeId, metricId, ...values },
           } = args;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const attributesGroupCollection = db.collection<AttributesGroupModel>(
             COL_ATTRIBUTES_GROUPS,
           );
@@ -723,6 +787,18 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteAttribute',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -734,7 +810,7 @@ export const attributesGroupMutations = extendType({
             input: { attributesGroupId, attributeId },
           } = args;
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
           );

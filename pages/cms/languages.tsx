@@ -184,14 +184,14 @@ const LanguagesPage: NextPage<LanguagesPageInterface> = ({ pageUrls, languages }
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<LanguagesPageInterface>> => {
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection
     .aggregate([

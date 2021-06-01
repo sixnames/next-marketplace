@@ -517,6 +517,15 @@ export type CreateMetricInput = {
   nameI18n: Scalars['JSONObject'];
 };
 
+export type CreateNavItemInput = {
+  nameI18n: Scalars['JSONObject'];
+  slug: Scalars['String'];
+  path: Scalars['String'];
+  navGroup: Scalars['String'];
+  index: Scalars['Int'];
+  icon?: Maybe<Scalars['String']>;
+};
+
 export type CreateOptionsGroupInput = {
   nameI18n: Scalars['JSONObject'];
   variant: OptionsGroupVariant;
@@ -537,8 +546,9 @@ export type CreateProductInput = {
 
 export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
 };
 
 export type CreateRubricInput = {
@@ -688,8 +698,6 @@ export type MakeAnOrderPayload = Payload & {
   __typename?: 'MakeAnOrderPayload';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  order?: Maybe<Order>;
-  cart?: Maybe<Cart>;
 };
 
 export type Manufacturer = Base & Timestamp & {
@@ -750,7 +758,6 @@ export type MessagesGroup = {
   __typename?: 'MessagesGroup';
   _id: Scalars['ObjectId'];
   name: Scalars['String'];
-  messagesIds: Array<Scalars['ObjectId']>;
   /** Returns all messages for current current group */
   messages: Array<Message>;
 };
@@ -789,12 +796,16 @@ export type Mutation = {
   createUser: UserPayload;
   /** Should update user */
   updateUser: UserPayload;
+  /** Should update user password */
+  updateUserPassword: UserPayload;
   /** Should update session user profile */
   updateMyProfile: UserPayload;
   /** Should update session user password */
   updateMyPassword: UserPayload;
   /** Should sign up user */
   signUp: UserPayload;
+  /** Should delete user */
+  deleteUser: UserPayload;
   /** Should create currency */
   createCurrency: CurrencyPayload;
   /** Should update currency */
@@ -823,18 +834,28 @@ export type Mutation = {
   deleteCityFromCountry: CountryPayload;
   /** Should update config */
   updateConfig: ConfigPayload;
+  /** Should update role rule */
+  updateRoleRule: RoleRulePayload;
   /** Should create role */
   createRole: RolePayload;
   /** Should update role */
   updateRole: RolePayload;
   /** Should delete role */
   deleteRole: RolePayload;
+  /** Should update role nav */
+  updateRoleNav: RolePayload;
   /** Should create metric */
   createMetric: MetricPayload;
   /** Should update metric */
   updateMetric: MetricPayload;
   /** Should delete metric */
   deleteMetric: MetricPayload;
+  /** Should create nav item */
+  createNavItem: NavItemPayload;
+  /** Should update nav item */
+  updateNavItem: NavItemPayload;
+  /** Should delete nav item */
+  deleteNavItem: NavItemPayload;
   /** Should create options group */
   createOptionsGroup: OptionsGroupPayload;
   /** Should update options group */
@@ -982,6 +1003,11 @@ export type MutationUpdateUserArgs = {
 };
 
 
+export type MutationUpdateUserPasswordArgs = {
+  input: UpdateUserPasswordInput;
+};
+
+
 export type MutationUpdateMyProfileArgs = {
   input: UpdateMyProfileInput;
 };
@@ -994,6 +1020,11 @@ export type MutationUpdateMyPasswordArgs = {
 
 export type MutationSignUpArgs = {
   input: SignUpInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  _id: Scalars['ObjectId'];
 };
 
 
@@ -1067,6 +1098,11 @@ export type MutationUpdateConfigArgs = {
 };
 
 
+export type MutationUpdateRoleRuleArgs = {
+  input: UpdateRoleRuleInput;
+};
+
+
 export type MutationCreateRoleArgs = {
   input: CreateRoleInput;
 };
@@ -1082,6 +1118,11 @@ export type MutationDeleteRoleArgs = {
 };
 
 
+export type MutationUpdateRoleNavArgs = {
+  input: UpdateRoleNavInput;
+};
+
+
 export type MutationCreateMetricArgs = {
   input: CreateMetricInput;
 };
@@ -1093,6 +1134,21 @@ export type MutationUpdateMetricArgs = {
 
 
 export type MutationDeleteMetricArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreateNavItemArgs = {
+  input: CreateNavItemInput;
+};
+
+
+export type MutationUpdateNavItemArgs = {
+  input: UpdateNavItemInput;
+};
+
+
+export type MutationDeleteNavItemArgs = {
   _id: Scalars['ObjectId'];
 };
 
@@ -1431,14 +1487,20 @@ export type NavItem = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
-  path?: Maybe<Scalars['String']>;
+  path: Scalars['String'];
   navGroup: Scalars['String'];
   index: Scalars['Int'];
   icon?: Maybe<Scalars['String']>;
   parentId?: Maybe<Scalars['ObjectId']>;
   name: Scalars['String'];
   children: Array<NavItem>;
-  appNavigationChildren: Array<NavItem>;
+};
+
+export type NavItemPayload = Payload & {
+  __typename?: 'NavItemPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<NavItem>;
 };
 
 
@@ -1707,8 +1769,6 @@ export type ProductsPaginationInput = {
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Filter by excluded selected options slugs */
   excludedOptionsSlugs?: Maybe<Array<Scalars['String']>>;
-  /** Filter by excluded selected options id */
-  excludedOptionsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude products in current rubrics */
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude current products */
@@ -1770,10 +1830,6 @@ export type Query = {
   getAllMetrics: PaginationPayload;
   /** Should return all metrics list */
   getAllMetricsOptions: Array<Metric>;
-  /** Should return all app nav items */
-  getAllAppNavItems: Array<NavItem>;
-  /** Should return all cms nav items */
-  getAllCmsNavItems: Array<NavItem>;
   /** Should return options grouped by alphabet */
   getOptionAlphabetLists: Array<OptionsAlphabetList>;
   /** Should return options group by given id */
@@ -2043,8 +2099,10 @@ export type Role = Timestamp & {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  description: Scalars['String'];
   name: Scalars['String'];
   appNavigation: Array<NavItem>;
   cmsNavigation: Array<NavItem>;
@@ -2055,6 +2113,25 @@ export type RolePayload = Payload & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Role>;
+};
+
+export type RoleRule = {
+  __typename?: 'RoleRule';
+  _id: Scalars['ObjectId'];
+  slug: Scalars['String'];
+  allow: Scalars['Boolean'];
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  roleId: Scalars['ObjectId'];
+  description: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type RoleRulePayload = Payload & {
+  __typename?: 'RoleRulePayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<RoleRule>;
 };
 
 export type Rubric = {
@@ -2398,6 +2475,16 @@ export type UpdateMyProfileInput = {
   phone: Scalars['PhoneNumber'];
 };
 
+export type UpdateNavItemInput = {
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  slug: Scalars['String'];
+  path: Scalars['String'];
+  navGroup: Scalars['String'];
+  index: Scalars['Int'];
+  icon?: Maybe<Scalars['String']>;
+};
+
 export type UpdateOptionInGroupInput = {
   optionId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
@@ -2486,8 +2573,24 @@ export type UpdateProductTextAttributeItemInput = {
 export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  description?: Maybe<Scalars['String']>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
+  isCompanyStaff: Scalars['Boolean'];
+};
+
+export type UpdateRoleNavInput = {
+  roleId: Scalars['ObjectId'];
+  navItemId: Scalars['ObjectId'];
+  checked: Scalars['Boolean'];
+};
+
+export type UpdateRoleRuleInput = {
+  _id: Scalars['ObjectId'];
+  slug: Scalars['String'];
+  allow: Scalars['Boolean'];
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  roleId: Scalars['ObjectId'];
 };
 
 export type UpdateRubricInput = {
@@ -2534,6 +2637,11 @@ export type UpdateUserInput = {
   email: Scalars['EmailAddress'];
   phone: Scalars['PhoneNumber'];
   roleId: Scalars['ObjectId'];
+};
+
+export type UpdateUserPasswordInput = {
+  userId: Scalars['ObjectId'];
+  newPassword: Scalars['String'];
 };
 
 export type User = Base & Timestamp & {
@@ -2903,11 +3011,6 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
-export type OrderInCartFragment = (
-  { __typename?: 'Order' }
-  & Pick<Order, '_id' | 'itemId'>
-);
-
 export type CartPayloadFragment = (
   { __typename?: 'CartPayload' }
   & Pick<CartPayload, 'success' | 'message'>
@@ -2916,10 +3019,6 @@ export type CartPayloadFragment = (
 export type MakeAnOrderPayloadFragment = (
   { __typename?: 'MakeAnOrderPayload' }
   & Pick<MakeAnOrderPayload, 'success' | 'message'>
-  & { order?: Maybe<(
-    { __typename?: 'Order' }
-    & OrderInCartFragment
-  )> }
 );
 
 export type AddProductToCartMutationVariables = Exact<{
@@ -3158,6 +3257,45 @@ export type DeleteLanguageMutation = (
   & { deleteLanguage: (
     { __typename?: 'LanguagePayload' }
     & Pick<LanguagePayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreateNavItemMutationVariables = Exact<{
+  input: CreateNavItemInput;
+}>;
+
+
+export type CreateNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { createNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateNavItemMutationVariables = Exact<{
+  input: UpdateNavItemInput;
+}>;
+
+
+export type UpdateNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteNavItemMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteNavItem: (
+    { __typename?: 'NavItemPayload' }
+    & Pick<NavItemPayload, 'success' | 'message'>
   ) }
 );
 
@@ -3451,6 +3589,32 @@ export type DeleteRoleMutation = (
   ) }
 );
 
+export type UpdateRoleRuleMutationVariables = Exact<{
+  input: UpdateRoleRuleInput;
+}>;
+
+
+export type UpdateRoleRuleMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRoleRule: (
+    { __typename?: 'RoleRulePayload' }
+    & Pick<RoleRulePayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateRoleNavMutationVariables = Exact<{
+  input: UpdateRoleNavInput;
+}>;
+
+
+export type UpdateRoleNavMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRoleNav: (
+    { __typename?: 'RolePayload' }
+    & Pick<RolePayload, 'success' | 'message'>
+  ) }
+);
+
 export type CreateRubricVariantMutationVariables = Exact<{
   input: CreateRubricVariantInput;
 }>;
@@ -3619,6 +3783,58 @@ export type UpdateMyPasswordMutationVariables = Exact<{
 export type UpdateMyPasswordMutation = (
   { __typename?: 'Mutation' }
   & { updateMyPassword: (
+    { __typename?: 'UserPayload' }
+    & Pick<UserPayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreateUserMutationVariables = Exact<{
+  input: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = (
+  { __typename?: 'Mutation' }
+  & { createUser: (
+    { __typename?: 'UserPayload' }
+    & Pick<UserPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateUserMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+
+export type UpdateUserMutation = (
+  { __typename?: 'Mutation' }
+  & { updateUser: (
+    { __typename?: 'UserPayload' }
+    & Pick<UserPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateUserPasswordMutationVariables = Exact<{
+  input: UpdateUserPasswordInput;
+}>;
+
+
+export type UpdateUserPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { updateUserPassword: (
+    { __typename?: 'UserPayload' }
+    & Pick<UserPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteUserMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteUserMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteUser: (
     { __typename?: 'UserPayload' }
     & Pick<UserPayload, 'success' | 'message'>
   ) }
@@ -3963,35 +4179,6 @@ export type GetOptionsGroupQuery = (
     { __typename?: 'OptionsGroup' }
     & OptionsGroupFragment
   ) }
-);
-
-export type CmsRoleFragment = (
-  { __typename?: 'Role' }
-  & Pick<Role, '_id' | 'name' | 'slug' | 'isStaff' | 'description' | 'nameI18n'>
-);
-
-export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllRolesQuery = (
-  { __typename?: 'Query' }
-  & { getAllRoles: Array<(
-    { __typename?: 'Role' }
-    & CmsRoleFragment
-  )> }
-);
-
-export type GetRoleQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetRoleQuery = (
-  { __typename?: 'Query' }
-  & { getRole?: Maybe<(
-    { __typename?: 'Role' }
-    & CmsRoleFragment
-  )> }
 );
 
 export type RubricVariantFragment = (
@@ -4342,21 +4529,12 @@ export const CartPayloadFragmentDoc = gql`
   message
 }
     `;
-export const OrderInCartFragmentDoc = gql`
-    fragment OrderInCart on Order {
-  _id
-  itemId
-}
-    `;
 export const MakeAnOrderPayloadFragmentDoc = gql`
     fragment MakeAnOrderPayload on MakeAnOrderPayload {
   success
   message
-  order {
-    ...OrderInCart
-  }
 }
-    ${OrderInCartFragmentDoc}`;
+    `;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id
@@ -4546,16 +4724,6 @@ export const OptionsGroupFragmentDoc = gql`
   }
 }
     ${OptionInGroupFragmentDoc}`;
-export const CmsRoleFragmentDoc = gql`
-    fragment CmsRole on Role {
-  _id
-  name
-  slug
-  isStaff
-  description
-  nameI18n
-}
-    `;
 export const RubricVariantFragmentDoc = gql`
     fragment RubricVariant on RubricVariant {
   _id
@@ -5980,6 +6148,108 @@ export function useDeleteLanguageMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
 export type DeleteLanguageMutationResult = Apollo.MutationResult<DeleteLanguageMutation>;
 export type DeleteLanguageMutationOptions = Apollo.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export const CreateNavItemDocument = gql`
+    mutation CreateNavItem($input: CreateNavItemInput!) {
+  createNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateNavItemMutationFn = Apollo.MutationFunction<CreateNavItemMutation, CreateNavItemMutationVariables>;
+
+/**
+ * __useCreateNavItemMutation__
+ *
+ * To run a mutation, you first call `useCreateNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNavItemMutation, { data, loading, error }] = useCreateNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateNavItemMutation, CreateNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNavItemMutation, CreateNavItemMutationVariables>(CreateNavItemDocument, options);
+      }
+export type CreateNavItemMutationHookResult = ReturnType<typeof useCreateNavItemMutation>;
+export type CreateNavItemMutationResult = Apollo.MutationResult<CreateNavItemMutation>;
+export type CreateNavItemMutationOptions = Apollo.BaseMutationOptions<CreateNavItemMutation, CreateNavItemMutationVariables>;
+export const UpdateNavItemDocument = gql`
+    mutation UpdateNavItem($input: UpdateNavItemInput!) {
+  updateNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateNavItemMutationFn = Apollo.MutationFunction<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+
+/**
+ * __useUpdateNavItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNavItemMutation, { data, loading, error }] = useUpdateNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNavItemMutation, UpdateNavItemMutationVariables>(UpdateNavItemDocument, options);
+      }
+export type UpdateNavItemMutationHookResult = ReturnType<typeof useUpdateNavItemMutation>;
+export type UpdateNavItemMutationResult = Apollo.MutationResult<UpdateNavItemMutation>;
+export type UpdateNavItemMutationOptions = Apollo.BaseMutationOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+export const DeleteNavItemDocument = gql`
+    mutation DeleteNavItem($_id: ObjectId!) {
+  deleteNavItem(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteNavItemMutationFn = Apollo.MutationFunction<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
+
+/**
+ * __useDeleteNavItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteNavItemMutation, { data, loading, error }] = useDeleteNavItemMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteNavItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteNavItemMutation, DeleteNavItemMutationVariables>(DeleteNavItemDocument, options);
+      }
+export type DeleteNavItemMutationHookResult = ReturnType<typeof useDeleteNavItemMutation>;
+export type DeleteNavItemMutationResult = Apollo.MutationResult<DeleteNavItemMutation>;
+export type DeleteNavItemMutationOptions = Apollo.BaseMutationOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
 export const CreateOptionsGroupDocument = gql`
     mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
   createOptionsGroup(input: $input) {
@@ -6731,6 +7001,74 @@ export function useDeleteRoleMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
 export type DeleteRoleMutationResult = Apollo.MutationResult<DeleteRoleMutation>;
 export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
+export const UpdateRoleRuleDocument = gql`
+    mutation UpdateRoleRule($input: UpdateRoleRuleInput!) {
+  updateRoleRule(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleRuleMutationFn = Apollo.MutationFunction<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+
+/**
+ * __useUpdateRoleRuleMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleRuleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleRuleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleRuleMutation, { data, loading, error }] = useUpdateRoleRuleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleRuleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>(UpdateRoleRuleDocument, options);
+      }
+export type UpdateRoleRuleMutationHookResult = ReturnType<typeof useUpdateRoleRuleMutation>;
+export type UpdateRoleRuleMutationResult = Apollo.MutationResult<UpdateRoleRuleMutation>;
+export type UpdateRoleRuleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+export const UpdateRoleNavDocument = gql`
+    mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
+  updateRoleNav(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleNavMutationFn = Apollo.MutationFunction<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
+
+/**
+ * __useUpdateRoleNavMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleNavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleNavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleNavMutation, { data, loading, error }] = useUpdateRoleNavMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleNavMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>(UpdateRoleNavDocument, options);
+      }
+export type UpdateRoleNavMutationHookResult = ReturnType<typeof useUpdateRoleNavMutation>;
+export type UpdateRoleNavMutationResult = Apollo.MutationResult<UpdateRoleNavMutation>;
+export type UpdateRoleNavMutationOptions = Apollo.BaseMutationOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {
@@ -7177,6 +7515,142 @@ export function useUpdateMyPasswordMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateMyPasswordMutationHookResult = ReturnType<typeof useUpdateMyPasswordMutation>;
 export type UpdateMyPasswordMutationResult = Apollo.MutationResult<UpdateMyPasswordMutation>;
 export type UpdateMyPasswordMutationOptions = Apollo.BaseMutationOptions<UpdateMyPasswordMutation, UpdateMyPasswordMutationVariables>;
+export const CreateUserDocument = gql`
+    mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const UpdateUserPasswordDocument = gql`
+    mutation UpdateUserPassword($input: UpdateUserPasswordInput!) {
+  updateUserPassword(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateUserPasswordMutationFn = Apollo.MutationFunction<UpdateUserPasswordMutation, UpdateUserPasswordMutationVariables>;
+
+/**
+ * __useUpdateUserPasswordMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserPasswordMutation, { data, loading, error }] = useUpdateUserPasswordMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserPasswordMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserPasswordMutation, UpdateUserPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserPasswordMutation, UpdateUserPasswordMutationVariables>(UpdateUserPasswordDocument, options);
+      }
+export type UpdateUserPasswordMutationHookResult = ReturnType<typeof useUpdateUserPasswordMutation>;
+export type UpdateUserPasswordMutationResult = Apollo.MutationResult<UpdateUserPasswordMutation>;
+export type UpdateUserPasswordMutationOptions = Apollo.BaseMutationOptions<UpdateUserPasswordMutation, UpdateUserPasswordMutationVariables>;
+export const DeleteUserDocument = gql`
+    mutation DeleteUser($_id: ObjectId!) {
+  deleteUser(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+      }
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const GetAttributesGroupsForRubricDocument = gql`
     query GetAttributesGroupsForRubric($excludedIds: [ObjectId!]) {
   getAllAttributesGroups(excludedIds: $excludedIds) {
@@ -7730,75 +8204,6 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetAllRolesDocument = gql`
-    query GetAllRoles {
-  getAllRoles {
-    ...CmsRole
-  }
-}
-    ${CmsRoleFragmentDoc}`;
-
-/**
- * __useGetAllRolesQuery__
- *
- * To run a query within a React component, call `useGetAllRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllRolesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllRolesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, options);
-      }
-export function useGetAllRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, options);
-        }
-export type GetAllRolesQueryHookResult = ReturnType<typeof useGetAllRolesQuery>;
-export type GetAllRolesLazyQueryHookResult = ReturnType<typeof useGetAllRolesLazyQuery>;
-export type GetAllRolesQueryResult = Apollo.QueryResult<GetAllRolesQuery, GetAllRolesQueryVariables>;
-export const GetRoleDocument = gql`
-    query GetRole($_id: ObjectId!) {
-  getRole(_id: $_id) {
-    ...CmsRole
-  }
-}
-    ${CmsRoleFragmentDoc}`;
-
-/**
- * __useGetRoleQuery__
- *
- * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRoleQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetRoleQuery(baseOptions: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-      }
-export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-        }
-export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
-export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
-export type GetRoleQueryResult = Apollo.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

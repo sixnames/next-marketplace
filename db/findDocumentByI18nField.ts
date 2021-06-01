@@ -7,6 +7,7 @@ export interface FindDocumentByI18nFieldInterface<TModel> {
   fieldArg: Record<string, any>;
   collectionName: string;
   additionalQuery?: FilterQuery<TModel>;
+  additionalOrQuery?: any[];
 }
 
 export async function findDocumentByI18nField<TModel>({
@@ -14,8 +15,9 @@ export async function findDocumentByI18nField<TModel>({
   fieldArg,
   fieldName,
   additionalQuery = {},
+  additionalOrQuery = [],
 }: FindDocumentByI18nFieldInterface<TModel>): Promise<TModel | null> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const collection = db.collection(collectionName);
 
   const query = LOCALES.reduce((acc: Record<string, string>[], locale) => {
@@ -33,7 +35,7 @@ export async function findDocumentByI18nField<TModel>({
   }, []);
 
   const node = await collection.findOne({
-    $or: query,
+    $or: [...query, ...additionalOrQuery],
     ...additionalQuery,
   });
 

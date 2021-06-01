@@ -77,6 +77,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
               <li className={`${classes.bottom} ${classes.bottom}`}>
                 <Tooltip title={isCompact ? 'Выйти из аккаунта' : null}>
                   <div
+                    data-cy={'sign-out'}
                     onClick={signOut}
                     className={`${classes.bottomLink} ${
                       isCompact ? classes.bottomLinkCompact : ''

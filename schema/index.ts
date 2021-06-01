@@ -9,6 +9,7 @@ export * from './Message';
 export * from './MessagesGroup';
 export * from './User';
 export * from './Role';
+export * from './RoleRule';
 export * from './RoleQueries';
 export * from './RoleMutations';
 export * from './OrderLog';

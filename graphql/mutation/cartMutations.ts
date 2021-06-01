@@ -1,12 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const orderInCartFragment = gql`
-  fragment OrderInCart on Order {
-    _id
-    itemId
-  }
-`;
-
 export const cartPayloadFragment = gql`
   fragment CartPayload on CartPayload {
     success
@@ -18,11 +11,7 @@ export const makeAnOrderPayloadFragment = gql`
   fragment MakeAnOrderPayload on MakeAnOrderPayload {
     success
     message
-    order {
-      ...OrderInCart
-    }
   }
-  ${orderInCartFragment}
 `;
 
 export const ADD_PRODUCT_TO_CART_MUTATION = gql`

@@ -110,7 +110,7 @@ export const ProductQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<ProductModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ _id: args._id });
         return product;
@@ -125,7 +125,7 @@ export const ProductQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<ProductModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const product = await productsCollection.findOne({ slug: args.slug });
         return product;
@@ -145,7 +145,7 @@ export const ProductQueries = extendType({
       },
       resolve: async (_root, args): Promise<ShopProductModel[]> => {
         try {
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId, sortDir, sortBy } = input;

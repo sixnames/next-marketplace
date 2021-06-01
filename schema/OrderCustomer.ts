@@ -21,7 +21,7 @@ export const OrderCustomer = objectType({
     t.field('user', {
       type: 'User',
       resolve: async (source): Promise<UserModel | null> => {
-        const db = await getDatabase();
+        const { db } = await getDatabase();
         const usersCollection = db.collection<UserModel>(COL_USERS);
         const user = await usersCollection.findOne({ _id: source.userId });
         return user;

@@ -314,12 +314,12 @@ export interface MessageBase {
 
 export interface MessageModel extends MessageBase {
   _id: ObjectIdModel;
+  messagesGroupId: ObjectIdModel;
 }
 
 export interface MessagesGroupModel {
   _id: ObjectIdModel;
-  name: string;
-  messagesIds: ObjectIdModel[];
+  nameI18n: TranslationModel;
 }
 
 export interface MetricModel {
@@ -331,7 +331,7 @@ export interface NavItemModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   slug: string;
-  path?: string | null;
+  path: string;
   navGroup: string;
   index: number;
   icon?: IconType | null;
@@ -400,6 +400,7 @@ export interface OrderProductModel extends TimestampModel {
   itemId: string;
   price: number;
   amount: number;
+  totalPrice: number;
   slug: string;
   originalName: string;
   nameI18n: TranslationModel;
@@ -422,15 +423,17 @@ export interface OrderCustomerModel extends TimestampModel {
   orderId: ObjectIdModel;
 }
 
-export interface OrderModel extends BaseModel, TimestampModel {
+export interface OrderModel extends TimestampModel, BaseModel {
   statusId: ObjectIdModel;
   comment?: string | null;
   customerId: ObjectIdModel;
-  companySlug: string;
+  companySiteSlug: string;
   productIds: ObjectIdModel[];
   shopProductIds: ObjectIdModel[];
-  shopIds: ObjectIdModel[];
-  companyIds: ObjectIdModel[];
+  shopId: ObjectIdModel;
+  shopItemId: string;
+  companyId: ObjectIdModel;
+  companyItemId: string;
 }
 
 export interface ProductConnectionItemModel {
@@ -498,23 +501,26 @@ export interface ProductCardBreadcrumbModel {
   href: string;
 }
 
-export interface RoleRuleModel {
-  operationName: string;
+export interface RoleRuleBase {
+  slug: string;
   allow: boolean;
-  customFilter?: string | null;
+  nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel;
 }
 
-export interface RoleBase {
+export interface RoleRuleModel extends RoleRuleBase {
+  _id: ObjectIdModel;
+  roleId: ObjectIdModel;
+}
+
+export interface RoleModel extends TimestampModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  description?: string | null;
+  descriptionI18n?: TranslationModel | null;
   slug: string;
   isStaff: boolean;
-}
-
-export interface RoleModel extends RoleBase, TimestampModel {
-  rules: RoleRuleModel[];
-  allowedAppNavigation: ObjectIdModel[];
+  isCompanyStaff?: boolean;
+  allowedAppNavigation: string[];
 }
 
 export interface RubricVariantModel {
@@ -627,10 +633,11 @@ export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
+export type NavItemPayloadModel = PayloadType<NavItemModel>;
+export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;
-  order?: OrderModel;
 }
 
 export interface CartPayloadModel {

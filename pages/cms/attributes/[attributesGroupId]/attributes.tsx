@@ -240,7 +240,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<AttributesPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context, isCms: true });
+  const { props } = await getAppInitialData({ context });
 
   if (!props || !query.attributesGroupId) {
     return {
@@ -248,7 +248,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
 
   const attributesGroupAggregationResult = await attributesGroupsCollection

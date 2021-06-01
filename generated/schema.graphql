@@ -476,6 +476,15 @@ input CreateMetricInput {
   nameI18n: JSONObject!
 }
 
+input CreateNavItemInput {
+  icon: String
+  index: Int!
+  nameI18n: JSONObject!
+  navGroup: String!
+  path: String!
+  slug: String!
+}
+
 input CreateOptionsGroupInput {
   nameI18n: JSONObject!
   variant: OptionsGroupVariant!
@@ -495,7 +504,8 @@ input CreateProductInput {
 }
 
 input CreateRoleInput {
-  description: String
+  descriptionI18n: JSONObject
+  isCompanyStaff: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!
 }
@@ -653,9 +663,7 @@ input MakeAnOrderInput {
 }
 
 type MakeAnOrderPayload implements Payload {
-  cart: Cart
   message: String!
-  order: Order
   success: Boolean!
 }
 
@@ -718,7 +726,6 @@ type MessagesGroup {
   Returns all messages for current current group
   """
   messages: [Message!]!
-  messagesIds: [ObjectId!]!
   name: String!
 }
 
@@ -854,6 +861,11 @@ type Mutation {
   createMetric(input: CreateMetricInput!): MetricPayload!
 
   """
+  Should create nav item
+  """
+  createNavItem(input: CreateNavItemInput!): NavItemPayload!
+
+  """
   Should create options group
   """
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayload!
@@ -949,6 +961,11 @@ type Mutation {
   deleteMetric(_id: ObjectId!): MetricPayload!
 
   """
+  Should delete nav item
+  """
+  deleteNavItem(_id: ObjectId!): NavItemPayload!
+
+  """
   Should delete option from the group
   """
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayload!
@@ -1007,6 +1024,11 @@ type Mutation {
   Should delete shop from company and db
   """
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayload!
+
+  """
+  Should delete user
+  """
+  deleteUser(_id: ObjectId!): UserPayload!
 
   """
   Should create order from session cart
@@ -1114,6 +1136,11 @@ type Mutation {
   updateMyProfile(input: UpdateMyProfileInput!): UserPayload!
 
   """
+  Should update nav item
+  """
+  updateNavItem(input: UpdateNavItemInput!): NavItemPayload!
+
+  """
   Should update option in the group
   """
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayload!
@@ -1179,6 +1206,16 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayload!
 
   """
+  Should update role nav
+  """
+  updateRoleNav(input: UpdateRoleNavInput!): RolePayload!
+
+  """
+  Should update role rule
+  """
+  updateRoleRule(input: UpdateRoleRuleInput!): RoleRulePayload!
+
+  """
   Should update rubric
   """
   updateRubric(input: UpdateRubricInput!): RubricPayload!
@@ -1207,11 +1244,15 @@ type Mutation {
   Should update user
   """
   updateUser(input: UpdateUserInput!): UserPayload!
+
+  """
+  Should update user password
+  """
+  updateUserPassword(input: UpdateUserPasswordInput!): UserPayload!
 }
 
 type NavItem {
   _id: ObjectId!
-  appNavigationChildren: [NavItem!]!
   children: [NavItem!]!
   icon: String
   index: Int!
@@ -1219,8 +1260,14 @@ type NavItem {
   nameI18n: JSONObject!
   navGroup: String!
   parentId: ObjectId
-  path: String
+  path: String!
   slug: String!
+}
+
+type NavItemPayload implements Payload {
+  message: String!
+  payload: NavItem
+  success: Boolean!
 }
 
 """
@@ -1534,10 +1581,6 @@ type ProductsPaginationPayload {
 }
 
 type Query {
-  """
-  Should return all app nav items
-  """
-  getAllAppNavItems: [NavItem!]!
   getAllAttributesGroups(excludedIds: [ObjectId!] = []): [AttributesGroup!]!
 
   """
@@ -1549,11 +1592,6 @@ type Query {
   Should return paginated cities
   """
   getAllCities(input: PaginationInput): CitiesPaginationPayload!
-
-  """
-  Should return all cms nav items
-  """
-  getAllCmsNavItems: [NavItem!]!
 
   """
   Should return paginated companies
@@ -1816,7 +1854,9 @@ type Role implements Timestamp {
   appNavigation: [NavItem!]!
   cmsNavigation: [NavItem!]!
   createdAt: Date!
-  description: String
+  description: String!
+  descriptionI18n: JSONObject
+  isCompanyStaff: Boolean!
   isStaff: Boolean!
   name: String!
   nameI18n: JSONObject!
@@ -1827,6 +1867,23 @@ type Role implements Timestamp {
 type RolePayload implements Payload {
   message: String!
   payload: Role
+  success: Boolean!
+}
+
+type RoleRule {
+  _id: ObjectId!
+  allow: Boolean!
+  description: String!
+  descriptionI18n: JSONObject
+  name: String!
+  nameI18n: JSONObject!
+  roleId: ObjectId!
+  slug: String!
+}
+
+type RoleRulePayload implements Payload {
+  message: String!
+  payload: RoleRule
   success: Boolean!
 }
 
@@ -2158,6 +2215,16 @@ input UpdateMyProfileInput {
   secondName: String
 }
 
+input UpdateNavItemInput {
+  _id: ObjectId!
+  icon: String
+  index: Int!
+  nameI18n: JSONObject!
+  navGroup: String!
+  path: String!
+  slug: String!
+}
+
 input UpdateOptionInGroupInput {
   color: String
   gender: Gender
@@ -2244,10 +2311,26 @@ input UpdateProductTextAttributeItemInput {
 }
 
 input UpdateRoleInput {
-  description: String
+  descriptionI18n: JSONObject
+  isCompanyStaff: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!
   roleId: ObjectId!
+}
+
+input UpdateRoleNavInput {
+  checked: Boolean!
+  navItemId: ObjectId!
+  roleId: ObjectId!
+}
+
+input UpdateRoleRuleInput {
+  _id: ObjectId!
+  allow: Boolean!
+  descriptionI18n: JSONObject
+  nameI18n: JSONObject!
+  roleId: ObjectId!
+  slug: String!
 }
 
 input UpdateRubricInput {
@@ -2293,6 +2376,11 @@ input UpdateUserInput {
   phone: PhoneNumber!
   roleId: ObjectId!
   secondName: String
+  userId: ObjectId!
+}
+
+input UpdateUserPasswordInput {
+  newPassword: String!
   userId: ObjectId!
 }
 

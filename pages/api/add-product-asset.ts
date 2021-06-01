@@ -6,6 +6,7 @@ import { getApiMessageValue } from 'lib/apiMessageUtils';
 import { getMainImage, storeRestApiUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
+import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -16,7 +17,23 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const db = await getDatabase();
+  // Permission
+  const { allow, message } = await getOperationPermission({
+    context: {
+      req,
+      res,
+    },
+    slug: 'updateProduct',
+  });
+  if (!allow) {
+    res.status(500).send({
+      success: false,
+      message: message,
+    });
+    return;
+  }
+
+  const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -61,7 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeRestApiUploads({
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,
-    itemId: `${fields.slug}`,
+    itemId: product.itemId,
     startIndex,
   });
   if (!assets) {

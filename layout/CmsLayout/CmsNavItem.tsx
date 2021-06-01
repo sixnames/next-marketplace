@@ -20,7 +20,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
   const { asPath } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
-  const { name, icon, path, children, _id } = item;
+  const { name, icon, path, children, slug } = item;
   const iconType = icon as IconType;
 
   React.useEffect(() => {
@@ -58,7 +58,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   if (children && children.length) {
     return (
-      <li className={classes.item} data-cy={`app-nav-item-${_id}`}>
+      <li className={classes.item} data-cy={`app-nav-item-${slug}`}>
         <Tooltip title={compact ? name : null}>
           <div
             className={`${classes.complexItem} ${compact ? classes.complexItemCompact : ''} ${
@@ -83,11 +83,11 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
           }`}
         >
           {children.map((dropdownItem) => {
-            const { name, path, _id } = dropdownItem;
+            const { name, path } = dropdownItem;
             const isCurrent = checkIsCurrent(`${path}`);
 
             return (
-              <li className={classes.item} key={name} data-cy={`app-nav-item-${_id}`}>
+              <li className={classes.item} key={name} data-cy={`app-nav-item-${slug}`}>
                 <Link
                   href={`${path}`}
                   className={`${classes.complexLink} ${isCurrent ? classes.linkActive : ''}`}
@@ -106,7 +106,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   const isCurrent = checkIsCurrent(`${path}`);
   return (
-    <li className={classes.item} data-cy={`app-nav-item-${name}`}>
+    <li className={classes.item} data-cy={`app-nav-item-${slug}`}>
       <Tooltip title={compact ? name : ''}>
         <div>
           <Link

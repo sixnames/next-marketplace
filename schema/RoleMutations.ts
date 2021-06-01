@@ -1,10 +1,14 @@
 import { ROLE_SLUG_GUEST } from 'config/common';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { RoleModel, RolePayloadModel, UserModel } from 'db/dbModels';
+import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { createRoleSchema, updateRoleSchema } from 'validation/roleSchema';
@@ -23,8 +27,9 @@ export const CreateRoleInput = inputObjectType({
   name: 'CreateRoleInput',
   definition(t) {
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
+    t.nonNull.boolean('isCompanyStaff');
   },
 });
 
@@ -33,8 +38,18 @@ export const UpdateRoleInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('roleId');
     t.nonNull.json('nameI18n');
-    t.string('description');
+    t.json('descriptionI18n');
     t.nonNull.boolean('isStaff');
+    t.nonNull.boolean('isCompanyStaff');
+  },
+});
+
+export const UpdateRoleNavInput = inputObjectType({
+  name: 'UpdateRoleNavInput',
+  definition(t) {
+    t.nonNull.objectId('roleId');
+    t.nonNull.objectId('navItemId');
+    t.nonNull.boolean('checked');
   },
 });
 
@@ -54,6 +69,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -62,7 +89,7 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
 
           // Check if role already exist
@@ -82,11 +109,12 @@ export const RoleMutations = extendType({
           const slug = await generateDefaultLangSlug(args.input.nameI18n);
           const createdRoleResult = await rolesCollection.insertOne({
             ...args.input,
+            isCompanyStaff: Boolean(args.input.isCompanyStaff),
+            isStaff: Boolean(args.input.isStaff),
             slug,
             allowedAppNavigation: [],
             updatedAt: new Date(),
             createdAt: new Date(),
-            rules: [],
           });
           const createdRole = createdRoleResult.ops[0];
           if (!createdRoleResult.result.ok || !createdRole) {
@@ -123,6 +151,18 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
@@ -131,7 +171,7 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const { input } = args;
           const { roleId, ...values } = input;
@@ -209,8 +249,20 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deleteRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
           const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
+          const { db } = await getDatabase();
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const { _id } = args;
@@ -255,6 +307,119 @@ export const RoleMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('roles.delete.success'),
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update role nav
+    t.nonNull.field('updateRoleNav', {
+      type: 'RolePayload',
+      description: 'Should update role nav',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateRoleNavInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<RolePayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRole',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const {
+            input: { roleId, navItemId, checked },
+          } = args;
+
+          // Check role availability
+          const role = await rolesCollection.findOne({ _id: roleId });
+          if (!role) {
+            return {
+              success: false,
+              message: await getApiMessage('roles.update.error'),
+            };
+          }
+
+          // Check nav item availability
+          const navItem = await navItemsCollection.findOne({ _id: navItemId });
+          if (!navItem) {
+            return {
+              success: false,
+              message: await getApiMessage('roles.update.error'),
+            };
+          }
+
+          if (checked) {
+            const updatedRoleResult = await rolesCollection.findOneAndUpdate(
+              {
+                _id: roleId,
+              },
+              {
+                $addToSet: {
+                  allowedAppNavigation: navItem.path,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedRole = updatedRoleResult.value;
+            if (!updatedRoleResult.ok || !updatedRole) {
+              return {
+                success: false,
+                message: await getApiMessage('roles.update.error'),
+              };
+            }
+
+            return {
+              success: true,
+              message: await getApiMessage('roles.update.success'),
+            };
+          }
+
+          const updatedRoleResult = await rolesCollection.findOneAndUpdate(
+            {
+              _id: roleId,
+            },
+            {
+              $pull: {
+                allowedAppNavigation: navItem.path,
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedRole = updatedRoleResult.value;
+          if (!updatedRoleResult.ok || !updatedRole) {
+            return {
+              success: false,
+              message: await getApiMessage('roles.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('roles.update.success'),
           };
         } catch (e) {
           return {

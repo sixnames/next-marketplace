@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Link from '../Link/Link';
 import classes from './TabsNav.module.css';
-import { NavItemInterface } from 'types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
-export interface TabsNavItemInterface extends NavItemInterface {
+export interface TabsNavItemInterface extends ClientNavItemInterface {
   path: string;
 }
 

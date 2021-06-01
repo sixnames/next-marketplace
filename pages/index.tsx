@@ -160,7 +160,7 @@ const Home: NextPage<HomeInterface> = ({ topProducts, topShops, topFilters, ...p
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<HomeInterface>> {
-  const db = await getDatabase();
+  const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const { props } = await getSiteInitialData({
     context,

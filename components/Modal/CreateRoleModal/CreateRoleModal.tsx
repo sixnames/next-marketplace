@@ -28,8 +28,9 @@ const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
         validationSchema={validationSchema}
         initialValues={{
           nameI18n: null,
-          description: '',
+          descriptionI18n: null,
           isStaff: false,
+          isCompanyStaff: false,
         }}
         onSubmit={(values) => {
           confirm(values);

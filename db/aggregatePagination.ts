@@ -50,7 +50,7 @@ export async function aggregatePagination<TModel>({
     const realSortDir = sortDir || SORT_DESC;
     const realSortBy = sortBy || SORT_BY_CREATED_AT;
 
-    const db = await getDatabase();
+    const { db } = await getDatabase();
     const skip = realPage ? (realPage - 1) * realLimit : 0;
 
     const aggregated = await db

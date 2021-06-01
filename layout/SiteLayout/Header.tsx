@@ -22,10 +22,7 @@ import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
-  ROLE_SLUG_ADMIN,
-  ROLE_SLUG_COMPANY_MANAGER,
-  ROLE_SLUG_COMPANY_OWNER,
-  ROUTE_APP,
+  ROUTE_CONSOLE,
   ROUTE_CATALOGUE,
   ROUTE_CMS,
   ROUTE_PROFILE,
@@ -96,7 +93,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </Link>
                     </li>
 
-                    {me?.role?.slug === ROLE_SLUG_ADMIN ? (
+                    {me?.role?.isStaff && (me?.role?.cmsNavigation || []).length > 0 ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}
@@ -108,13 +105,12 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </li>
                     ) : null}
 
-                    {me?.role?.slug === ROLE_SLUG_COMPANY_MANAGER ||
-                    me?.role?.slug === ROLE_SLUG_COMPANY_OWNER ? (
+                    {me?.role?.isCompanyStaff && (me?.role?.appNavigation || []).length > 0 ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_APP}
+                          href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
                         </Link>

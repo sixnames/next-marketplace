@@ -22,6 +22,8 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VARIANT_NUMBER,
+  ROUTE_CMS_NAV_GROUP,
+  ROUTE_CONSOLE_NAV_GROUP,
 } from './common';
 
 export const constantTranslations = {
@@ -33,6 +35,10 @@ export const constantTranslations = {
     dataError: {
       [DEFAULT_LOCALE]: 'Ошибка загрузки данных.',
       [SECONDARY_LOCALE]: 'Data loading error.',
+    },
+    permissionError: {
+      [DEFAULT_LOCALE]: 'У вас нет прав доступа к данной операции.',
+      [SECONDARY_LOCALE]: `You don't have permission to access this operation.`,
     },
   },
   breadcrumbs: {
@@ -57,6 +63,16 @@ export const constantTranslations = {
     manufacturers: {
       [DEFAULT_LOCALE]: 'Производители',
       [SECONDARY_LOCALE]: 'Manufacturers',
+    },
+  },
+  navGroups: {
+    [ROUTE_CMS_NAV_GROUP]: {
+      [DEFAULT_LOCALE]: 'CMS',
+      [SECONDARY_LOCALE]: 'CMS',
+    },
+    [ROUTE_CONSOLE_NAV_GROUP]: {
+      [DEFAULT_LOCALE]: 'Панель управления компании',
+      [SECONDARY_LOCALE]: 'Company console',
     },
   },
   selectsOptions: {

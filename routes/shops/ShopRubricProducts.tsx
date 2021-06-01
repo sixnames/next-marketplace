@@ -7,10 +7,9 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import Pager from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { CATALOGUE_OPTION_SEPARATOR, QUERY_FILTER_PAGE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modals';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -55,12 +54,12 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   page,
   totalPages,
   rubricName,
-  pagerUrl,
   basePath,
   rubricId,
   layoutBasePath,
 }) => {
   const router = useRouter();
+  const setPageHandler = useNavigateToPageHandler();
   const {
     showModal,
     onErrorCallback,
@@ -311,15 +310,10 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 
             <Pager
               page={page}
-              setPage={(page) => {
-                const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
-                const prevUrlArray = pagerUrl.split('/').filter((param) => param);
-                const nextUrl = [...prevUrlArray, pageParam].join('/');
-                router.push(`/${nextUrl}`).catch((e) => {
-                  console.log(e);
-                });
-              }}
               totalPages={totalPages}
+              setPage={(newPage) => {
+                setPageHandler(newPage);
+              }}
             />
           </div>
         </div>

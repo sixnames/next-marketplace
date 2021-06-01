@@ -1,6 +1,6 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_APP, ROUTE_CMS } from 'config/common';
+import { ROUTE_CONSOLE, ROUTE_CMS } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
@@ -24,7 +24,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
       {
         name: 'Общие',
         testId: 'globals',
-        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_APP}/config/${companyId}`,
+        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_CONSOLE}/config/${companyId}`,
         exact: true,
       },
       {
@@ -32,25 +32,27 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
         testId: 'analytics',
         path: isCms
           ? `${ROUTE_CMS}/config/analytics`
-          : `${ROUTE_APP}/config/${companyId}/analytics`,
+          : `${ROUTE_CONSOLE}/config/${companyId}/analytics`,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'ui',
-        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_APP}/config/${companyId}/ui`,
+        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_CONSOLE}/config/${companyId}/ui`,
         exact: true,
       },
       {
         name: 'Контактные данные',
         testId: 'contacts',
-        path: isCms ? `${ROUTE_CMS}/config/contacts` : `${ROUTE_APP}/config/${companyId}/contacts`,
+        path: isCms
+          ? `${ROUTE_CMS}/config/contacts`
+          : `${ROUTE_CONSOLE}/config/${companyId}/contacts`,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'seo',
-        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_APP}/config/${companyId}/seo`,
+        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_CONSOLE}/config/${companyId}/seo`,
         exact: true,
       },
       {
@@ -58,7 +60,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
         testId: 'catalogue',
         path: isCms
           ? `${ROUTE_CMS}/config/catalogue`
-          : `${ROUTE_APP}/config/${companyId}/catalogue`,
+          : `${ROUTE_CONSOLE}/config/${companyId}/catalogue`,
         exact: true,
       },
     ];

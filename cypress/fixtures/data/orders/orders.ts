@@ -10,7 +10,7 @@ const carts: OrderModel[] = [
     shopId: getObjectId('fake'),
     shopItemId: '',
     shopProductIds: [],
-    customerId: getObjectId('admin'),
+    customerId: getObjectId('fake'),
     companyItemId: '',
     companySiteSlug: 'fake',
     comment: '',

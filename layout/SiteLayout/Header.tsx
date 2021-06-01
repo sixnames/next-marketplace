@@ -21,7 +21,13 @@ import CounterSticker from 'components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
-import { ROUTE_APP, ROUTE_CATALOGUE, ROUTE_CMS, ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
+import {
+  ROUTE_CONSOLE,
+  ROUTE_CATALOGUE,
+  ROUTE_CMS,
+  ROUTE_PROFILE,
+  ROUTE_SIGN_IN,
+} from 'config/common';
 
 interface HeaderSearchTriggerInterface {
   setIsSearchOpen: (value: boolean) => void;
@@ -104,7 +110,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                         <Link
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_APP}
+                          href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
                         </Link>

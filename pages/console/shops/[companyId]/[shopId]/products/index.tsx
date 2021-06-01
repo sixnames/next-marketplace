@@ -1,4 +1,4 @@
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -30,7 +30,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${ROUTE_APP}/shops/${router.query.companyId}`}
+        basePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`}
       />
     </AppLayout>
   );

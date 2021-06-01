@@ -61,9 +61,9 @@ export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 // Routes
-export const ROUTE_APP = '/app';
+export const ROUTE_CONSOLE = '/console';
 export const ROUTE_CMS = `/cms`;
-export const ROUTE_APP_NAV_GROUP = 'app';
+export const ROUTE_CONSOLE_NAV_GROUP = 'console';
 export const ROUTE_CMS_NAV_GROUP = 'cms';
 export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;

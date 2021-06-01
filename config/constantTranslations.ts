@@ -23,7 +23,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VARIANT_NUMBER,
   ROUTE_CMS_NAV_GROUP,
-  ROUTE_APP_NAV_GROUP,
+  ROUTE_CONSOLE_NAV_GROUP,
 } from './common';
 
 export const constantTranslations = {
@@ -70,7 +70,7 @@ export const constantTranslations = {
       [DEFAULT_LOCALE]: 'CMS',
       [SECONDARY_LOCALE]: 'CMS',
     },
-    [ROUTE_APP_NAV_GROUP]: {
+    [ROUTE_CONSOLE_NAV_GROUP]: {
       [DEFAULT_LOCALE]: 'Панель управления компании',
       [SECONDARY_LOCALE]: 'Company console',
     },

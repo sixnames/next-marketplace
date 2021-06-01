@@ -7,7 +7,7 @@ import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import Title from 'components/Title/Title';
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
 import AppLayout from 'layout/AppLayout/AppLayout';
@@ -43,7 +43,7 @@ const ShopsRoute: React.FC = () => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`}>
+        <Link href={`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`}>
           {cellData}
         </Link>
       ),
@@ -73,7 +73,7 @@ const ShopsRoute: React.FC = () => {
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`)
+                .push(`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`)
                 .catch(console.log);
             }}
             testId={dataItem.name}
@@ -94,7 +94,7 @@ const ShopsRoute: React.FC = () => {
           testIdKey={'name'}
           onRowDoubleClick={(dataItem) => {
             router
-              .push(`${ROUTE_APP}/shops/${router.query.companyId}/${dataItem._id}`)
+              .push(`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`)
               .catch(console.log);
           }}
         />

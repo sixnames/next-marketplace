@@ -9,8 +9,8 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
-  ROUTE_APP,
-  ROUTE_APP_NAV_GROUP,
+  ROUTE_CONSOLE,
+  ROUTE_CONSOLE_NAV_GROUP,
   ROUTE_CMS,
   ROUTE_CMS_NAV_GROUP,
   ROUTE_SIGN_IN,
@@ -326,7 +326,7 @@ export async function getPageSessionUser({
                       },
                       // exclude base paths
                       path: {
-                        $nin: [ROUTE_CMS, ROUTE_APP],
+                        $nin: [ROUTE_CMS, ROUTE_CONSOLE],
                       },
                     },
                   },
@@ -351,7 +351,7 @@ export async function getPageSessionUser({
                     input: '$navItems',
                     as: 'navItem',
                     cond: {
-                      $eq: ['$$navItem.navGroup', ROUTE_APP_NAV_GROUP],
+                      $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
                     },
                   },
                 },
@@ -535,17 +535,17 @@ function checkPagePermission({
     }
   }
 
-  // Check app root url
+  // Check console root url
   if (!isCms) {
-    const appRootUrlList = `${url}`.split(ROUTE_APP);
+    const appRootUrlList = `${url}`.split(ROUTE_CONSOLE);
     if (!appRootUrlList[1] || appRootUrlList[1] === excludedExtension) {
-      return initialAllowedAppNavItems.includes(ROUTE_APP);
+      return initialAllowedAppNavItems.includes(ROUTE_CONSOLE);
     }
   }
 
   // Check nested urls
   const finalAllowedAppNavItems = initialAllowedAppNavItems.filter((path) => {
-    return path !== ROUTE_CMS && path !== ROUTE_APP;
+    return path !== ROUTE_CMS && path !== ROUTE_CONSOLE;
   });
 
   return finalAllowedAppNavItems.some((path) => {

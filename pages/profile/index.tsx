@@ -31,11 +31,16 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
+  orderIndex: number;
   orderProduct: OrderProductInterface;
   testId: string | number;
 }
 
-const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct, testId }) => {
+const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
+  orderProduct,
+  orderIndex,
+  testId,
+}) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, shopProduct, itemId, shop, price, amount } = orderProduct;
 
@@ -102,7 +107,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
                   shopProductId: `${shopProduct?._id}`,
                 });
               }}
-              testId={`profile-order-product-${testId}-add-to-cart`}
+              testId={`profile-order-${orderIndex}-product-${testId}-add-to-cart`}
               icon={'cart'}
             />
           </div>
@@ -114,9 +119,10 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
 
 interface ProfileOrderInterface {
   order: OrderInterface;
+  orderIndex: number;
 }
 
-const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
+const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const { itemId, createdAt, totalPrice, status, products } = order;
   const { repeatAnOrder } = useSiteContext();
@@ -173,6 +179,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
             return (
               <ProfileOrderProduct
                 testId={index}
+                orderIndex={orderIndex}
                 orderProduct={orderProduct}
                 key={`${orderProduct._id}`}
               />
@@ -197,8 +204,8 @@ const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) =
         </div>
       ) : (
         <React.Fragment>
-          {orders.map((order) => {
-            return <ProfileOrder key={`${order._id}`} order={order} />;
+          {orders.map((order, orderIndex) => {
+            return <ProfileOrder key={`${order._id}`} orderIndex={orderIndex} order={order} />;
           })}
         </React.Fragment>
       )}

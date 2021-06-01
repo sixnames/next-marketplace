@@ -9,7 +9,7 @@ import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import {
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,
-  ROUTE_APP,
+  ROUTE_CONSOLE,
   ROUTE_CATALOGUE,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
@@ -92,7 +92,7 @@ const HeaderProfileLink: React.FC = () => {
                         <a
                           target={'_blank'}
                           className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={`https://${process.env.DEFAULT_DOMAIN}${ROUTE_APP}`}
+                          href={`https://${process.env.DEFAULT_DOMAIN}${ROUTE_CONSOLE}`}
                           rel='noreferrer'
                         >
                           <span>Панель управления</span>

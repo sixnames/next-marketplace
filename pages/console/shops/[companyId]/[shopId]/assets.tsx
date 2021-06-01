@@ -1,4 +1,4 @@
-import { ROUTE_APP } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -20,7 +20,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
 
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopAssets basePath={`${ROUTE_APP}/shops/${router.query.companyId}`} shop={shop} />
+      <ShopAssets basePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`} shop={shop} />
     </AppLayout>
   );
 };

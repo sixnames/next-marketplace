@@ -13,7 +13,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   res.write(
     `User-agent:*
 Disallow: /api/*
-Disallow: /app/*
+Disallow: /console/*
 Disallow: /cms/*
 Disallow: /profile/*
 Disallow: /cart

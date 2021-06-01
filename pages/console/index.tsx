@@ -1,6 +1,6 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_APP, ROUTE_SIGN_IN } from 'config/common';
+import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -22,7 +22,7 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
               className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
               key={`${company._id}`}
               onClick={() => {
-                router.push(`${ROUTE_APP}/shops/${company._id}`).catch((e) => console.log(e));
+                router.push(`${ROUTE_CONSOLE}/shops/${company._id}`).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>
@@ -72,7 +72,7 @@ export const getServerSideProps = async (
     const company = props?.sessionUser?.companies[0];
     return {
       redirect: {
-        destination: `${ROUTE_APP}/shops/${company?._id}`,
+        destination: `${ROUTE_CONSOLE}/shops/${company?._id}`,
         permanent: false,
       },
     };

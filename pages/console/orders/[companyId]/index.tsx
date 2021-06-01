@@ -6,7 +6,7 @@ import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
-import { ROUTE_APP, SORT_DESC } from 'config/common';
+import { ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -38,7 +38,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       render: ({ cellData, dataItem }) => (
         <Link
           testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_APP}/orders/${router.query.companyId}/${dataItem._id}`}
+          href={`${ROUTE_CONSOLE}/orders/${router.query.companyId}/${dataItem._id}`}
         >
           {cellData}
         </Link>
@@ -103,7 +103,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router
-                .push(`${ROUTE_APP}/orders/${router.query.companyId}/${dataItem._id}`)
+                .push(`${ROUTE_CONSOLE}/orders/${router.query.companyId}/${dataItem._id}`)
                 .catch((e) => {
                   console.log(e);
                 });

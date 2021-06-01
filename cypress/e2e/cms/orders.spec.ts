@@ -1,4 +1,4 @@
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
 
 describe('Admin orders', () => {
   beforeEach(() => {
@@ -17,14 +17,17 @@ describe('Admin orders', () => {
     cy.makeAnOrder({
       // mockData,
       orderFields,
-      callback: ({ orderItemId }) => {
+      callback: () => {
+        const orderItemIdA = '1000000';
+        const orderItemIdB = '1000001';
+
         // Should display all orders list
-        cy.testAuth(`/cms/orders`);
-        cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerName);
-        cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerEmail);
+        cy.testAuth(`${ROUTE_CMS}/orders`);
+        cy.getByCy(`${orderItemIdA}-row`).should('contain', orderFields.customerName);
+        cy.getByCy(`${orderItemIdB}-row`).should('contain', orderFields.customerEmail);
 
         // Should navigate to the order details
-        cy.getByCy(`order-${orderItemId}-link`).click();
+        cy.getByCy(`order-${orderItemIdA}-link`).click();
         cy.getByCy(`order-details`).should('exist');
       },
     });

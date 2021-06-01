@@ -3,7 +3,12 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { NavItemModel } from 'db/dbModels';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
-import { ROLE_SLUG_ADMIN, ROUTE_APP_NAV_GROUP, ROUTE_CMS_NAV_GROUP, SORT_ASC } from 'config/common';
+import {
+  ROLE_SLUG_ADMIN,
+  ROUTE_CONSOLE_NAV_GROUP,
+  ROUTE_CMS_NAV_GROUP,
+  SORT_ASC,
+} from 'config/common';
 
 export const Role = objectType({
   name: 'Role',
@@ -53,7 +58,7 @@ export const Role = objectType({
             {
               ...roleNavQuery,
               parentId: null,
-              navGroup: ROUTE_APP_NAV_GROUP,
+              navGroup: ROUTE_CONSOLE_NAV_GROUP,
             },
             {
               sort: {

@@ -1,6 +1,6 @@
 import {
-  ROUTE_APP,
-  ROUTE_APP_NAV_GROUP,
+  ROUTE_CONSOLE,
+  ROUTE_CONSOLE_NAV_GROUP,
   ROUTE_CMS,
   ROUTE_CMS_NAV_GROUP,
 } from '../../../../config/common';
@@ -11,61 +11,61 @@ const navItemsDefaultSlug = 'navItem';
 
 const navItems: NavItemModel[] = [
   {
-    _id: getObjectId(`${navItemsDefaultSlug} app-base`),
-    slug: 'app-orders',
+    _id: getObjectId(`${navItemsDefaultSlug} console-base`),
+    slug: 'console-orders',
     nameI18n: {
       ru: 'Панель управления',
       en: 'Console',
     },
     index: 0,
     icon: 'cart',
-    path: ROUTE_APP,
-    navGroup: ROUTE_APP_NAV_GROUP,
+    path: ROUTE_CONSOLE,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} app-orders`),
-    slug: 'app-orders',
+    _id: getObjectId(`${navItemsDefaultSlug} console-orders`),
+    slug: 'console-orders',
     nameI18n: {
       ru: 'Заказы',
       en: 'Orders',
     },
-    index: 0,
+    index: 1,
     icon: 'cart',
-    path: `${ROUTE_APP}/orders`,
-    navGroup: ROUTE_APP_NAV_GROUP,
+    path: `${ROUTE_CONSOLE}/orders`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} app-shops`),
-    slug: 'app-shops',
+    _id: getObjectId(`${navItemsDefaultSlug} console-shops`),
+    slug: 'console-shops',
     nameI18n: {
       ru: 'Магазины',
       en: 'Shops',
     },
-    index: 1,
+    index: 2,
     icon: 'marker',
-    path: `${ROUTE_APP}/shops`,
-    navGroup: ROUTE_APP_NAV_GROUP,
+    path: `${ROUTE_CONSOLE}/shops`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} app-config`),
-    slug: 'app-config',
+    _id: getObjectId(`${navItemsDefaultSlug} console-config`),
+    slug: 'console-config',
     nameI18n: {
       ru: 'Настройки сайта',
       en: 'Site settings',
     },
     index: 99,
     icon: 'gear',
-    path: `${ROUTE_APP}/config`,
-    navGroup: ROUTE_APP_NAV_GROUP,
+    path: `${ROUTE_CONSOLE}/config`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-base`),
-    slug: 'app-orders',
     nameI18n: {
       ru: 'CMS',
       en: 'CMS',
     },
     index: 0,
+    slug: 'cms-base',
     icon: 'cart',
     path: ROUTE_CMS,
     navGroup: ROUTE_CMS_NAV_GROUP,
@@ -76,7 +76,7 @@ const navItems: NavItemModel[] = [
       ru: 'Заказы',
       en: 'Orders',
     },
-    index: 0,
+    index: 1,
     slug: 'cms-orders',
     path: '/cms/orders',
     navGroup: ROUTE_CMS_NAV_GROUP,
@@ -89,7 +89,7 @@ const navItems: NavItemModel[] = [
     },
     index: 2,
     slug: 'cms-rubrics',
-    path: '/cms/rubrics',
+    path: `${ROUTE_CMS}/rubrics`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -100,7 +100,7 @@ const navItems: NavItemModel[] = [
     },
     index: 3,
     slug: 'cms-companies',
-    path: '/cms/companies',
+    path: `${ROUTE_CMS}/companies`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -111,7 +111,7 @@ const navItems: NavItemModel[] = [
     },
     index: 5,
     slug: 'cms-rubric-variants',
-    path: '/cms/rubric-variants',
+    path: `${ROUTE_CMS}/rubric-variants`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -122,7 +122,7 @@ const navItems: NavItemModel[] = [
     },
     index: 6,
     slug: 'cms-attributes',
-    path: '/cms/attributes',
+    path: `${ROUTE_CMS}/attributes`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -133,7 +133,7 @@ const navItems: NavItemModel[] = [
     },
     index: 7,
     slug: 'cms-options-groups',
-    path: '/cms/options',
+    path: `${ROUTE_CMS}/options`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -144,7 +144,7 @@ const navItems: NavItemModel[] = [
     },
     index: 8,
     slug: 'cms-languages',
-    path: '/cms/languages',
+    path: `${ROUTE_CMS}/languages`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -155,7 +155,7 @@ const navItems: NavItemModel[] = [
     },
     index: 9,
     slug: 'cms-users',
-    path: '/cms/users',
+    path: `${ROUTE_CMS}/users`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -166,7 +166,7 @@ const navItems: NavItemModel[] = [
     },
     index: 10,
     slug: 'cms-nav-items',
-    path: '/cms/nav',
+    path: `${ROUTE_CMS}/nav`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -177,7 +177,7 @@ const navItems: NavItemModel[] = [
     },
     index: 98,
     slug: 'cms-config',
-    path: '/cms/config',
+    path: `${ROUTE_CMS}/config`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -188,7 +188,7 @@ const navItems: NavItemModel[] = [
     },
     index: 99,
     slug: 'cms-roles',
-    path: '/cms/roles',
+    path: `${ROUTE_CMS}/roles`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
 ];

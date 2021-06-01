@@ -29,12 +29,10 @@ const options: NextAuthOptions = {
           const user = await collection.findOne({ email: credentials.email });
 
           if (user) {
-            if (credentials.authKey !== process.env.NEXTAUTH_KEY) {
-              const passwordResult = await bcrypt.compare(credentials.password, `${user.password}`);
+            const passwordResult = await bcrypt.compare(credentials.password, `${user.password}`);
 
-              if (!passwordResult) {
-                return Promise.resolve(null);
-              }
+            if (!passwordResult) {
+              return Promise.resolve(null);
             }
 
             return Promise.resolve({

@@ -1,3 +1,4 @@
+import Button from 'components/Buttons/Button';
 import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
@@ -29,6 +30,7 @@ import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
+import dynamic from 'next/dynamic';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Title from 'components/Title/Title';
@@ -53,13 +55,32 @@ const bannersConfig = [
   },
 ];
 
+const BarcodeReader = dynamic(() => import('../components/BarcodeReader/BarcodeReader'), {
+  ssr: false,
+});
+
 const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilters }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   const sectionClassName = `mb-14 sm:mb-28`;
+  const [isVisible, setIsVisible] = React.useState(false);
 
   return (
     <React.Fragment>
+      <BarcodeReader
+        setValue={(code) => {
+          console.log(code);
+        }}
+        isVisible={isVisible}
+      />
+      <Button
+        onClick={() => {
+          setIsVisible(true);
+        }}
+      >
+        Show
+      </Button>
+
       <Inner testId={'main-page'}>
         <div className='mb-14 sm:mb-20 overflow-hidden rounded-xl'>
           <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>

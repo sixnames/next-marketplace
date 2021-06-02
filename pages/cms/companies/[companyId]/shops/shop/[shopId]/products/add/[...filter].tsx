@@ -49,7 +49,6 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
   const layoutBasePath = `${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`;
-  console.log(router.query);
 
   const createChosenProduct: ShopAddProductsCreateChosenProduct = (product) => {
     setChosen((prevState) => {
@@ -179,6 +178,12 @@ export const getServerSideProps = async (
           },
           {
             itemId: {
+              $regex: search,
+              $options: 'i',
+            },
+          },
+          {
+            barcode: {
               $regex: search,
               $options: 'i',
             },

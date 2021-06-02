@@ -11,6 +11,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
+import { useUserContext } from 'context/userContext';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
@@ -68,6 +69,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   layoutBasePath,
 }) => {
   useReloadListener();
+  const { me } = useUserContext();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
 
@@ -98,13 +100,15 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return (
+        return me?.role?.isStaff ? (
           <Link
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
           </Link>
+        ) : (
+          dataItem.itemId
         );
       },
     },
@@ -126,6 +130,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       render: ({ cellData }) => cellData,
     },
     {
+      accessor: 'barcode',
+      headTitle: 'Штрих-код',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      isHidden: !me?.role?.isStaff,
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -205,10 +215,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
             <div className={`overflow-x-auto`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  window.open(
-                    `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
-                    '_blank',
-                  );
+                  if (me?.role?.isStaff) {
+                    window.open(
+                      `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
+                      '_blank',
+                    );
+                  }
                 }}
                 columns={columns}
                 data={docs}
@@ -341,6 +353,11 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
           />
         );
       },
+    },
+    {
+      accessor: 'barcode',
+      headTitle: 'Штрих-код',
+      render: ({ cellData }) => cellData,
     },
   ];
 

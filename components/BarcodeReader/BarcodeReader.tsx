@@ -25,7 +25,7 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
       if (window.matchMedia(`(max-width: ${640}px)`).matches) {
         setVideoSize({
           width: 328,
-          height: 500,
+          height: 200,
         });
       } else {
         setVideoSize({
@@ -50,20 +50,22 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
   }
 
   return (
-    <React.Fragment>
-      <BarcodeScannerComponent
-        width={videoSize.width}
-        height={videoSize.height}
-        onUpdate={(err, result) => {
-          if (!err && result) {
-            const resultCode = result.getText();
-            setCode(resultCode);
-          }
-        }}
-      />
+    <div>
+      <div>
+        <BarcodeScannerComponent
+          width={videoSize.width}
+          height={videoSize.height}
+          onUpdate={(err, result) => {
+            if (!err && result) {
+              const resultCode = result.getText();
+              setCode(resultCode);
+            }
+          }}
+        />
+      </div>
 
       {code ? (
-        <div className='flex gap-6 mt-6'>
+        <div className='flex flex-col sm:flex-row gap-6 mt-6'>
           <Button
             onClick={() => {
               setValue(code);
@@ -77,7 +79,7 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
           </Button>
         </div>
       ) : null}
-    </React.Fragment>
+    </div>
   );
 };
 

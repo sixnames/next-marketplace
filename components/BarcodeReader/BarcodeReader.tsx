@@ -51,18 +51,21 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
 
   return (
     <div>
-      <div>
-        <BarcodeScannerComponent
-          width={videoSize.width}
-          height={videoSize.height}
-          onUpdate={(err, result) => {
-            if (!err && result) {
-              const resultCode = result.getText();
-              setCode(resultCode);
-            }
-          }}
-        />
-      </div>
+      {code ? null : (
+        <div className='relative'>
+          <BarcodeScannerComponent
+            width={videoSize.width}
+            height={videoSize.height}
+            onUpdate={(err, result) => {
+              if (!err && result) {
+                const resultCode = result.getText();
+                setCode(resultCode);
+              }
+            }}
+          />
+          <div className='barcode-line' />
+        </div>
+      )}
 
       {code ? (
         <div className='flex flex-col sm:flex-row gap-6 mt-6'>

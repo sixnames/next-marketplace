@@ -1,6 +1,7 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
+import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
@@ -9,6 +10,7 @@ import Link from 'components/Link/Link';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
+import { ROUTE_CMS } from 'config/common';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
@@ -21,6 +23,7 @@ import {
   useAddManyProductsToShopMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { getNumWord } from 'lib/i18n';
@@ -64,8 +67,10 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   setStepHandler,
   layoutBasePath,
 }) => {
+  useReloadListener();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
+
   const columns: TableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem, rowIndex }) => {
@@ -91,9 +96,17 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       },
     },
     {
-      accessor: 'itemId',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData,
+      render: ({ dataItem }) => {
+        return (
+          <Link
+            href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
+            target={'_blank'}
+          >
+            {dataItem.itemId}
+          </Link>
+        );
+      },
     },
     {
       headTitle: 'Фото',
@@ -111,6 +124,24 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       accessor: 'originalName',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={`${dataItem.name}`}
+              updateTitle={'Редактировать товар'}
+              updateHandler={() => {
+                window.open(
+                  `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
+                  '_blank',
+                );
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -172,7 +203,17 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               </div>
             </div>
             <div className={`overflow-x-auto`}>
-              <Table<ProductInterface> columns={columns} data={docs} testIdKey={'_id'} />
+              <Table<ProductInterface>
+                onRowDoubleClick={(dataItem) => {
+                  window.open(
+                    `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
+                    '_blank',
+                  );
+                }}
+                columns={columns}
+                data={docs}
+                testIdKey={'_id'}
+              />
             </div>
             <div className={`mt-6 flex`}>
               <div className={`mr-6`}>

@@ -11,6 +11,7 @@ import { getDatabase } from 'db/mongodb';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { ObjectId } from 'mongodb';
@@ -27,6 +28,7 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
+  const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
@@ -35,7 +37,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   });
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProduct),
+    onCompleted: (data) => {
+      setReloadToTrue();
+      onCompleteCallback(data.updateProduct);
+    },
   });
 
   const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode } = product;

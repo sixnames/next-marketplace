@@ -123,6 +123,11 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       },
     },
     {
+      accessor: 'barcode',
+      headTitle: 'Штрих-код',
+      render: ({ cellData }) => cellData,
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>

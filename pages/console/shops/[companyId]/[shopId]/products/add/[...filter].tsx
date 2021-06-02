@@ -182,6 +182,12 @@ export const getServerSideProps = async (
               $options: 'i',
             },
           },
+          {
+            barcode: {
+              $regex: search,
+              $options: 'i',
+            },
+          },
         ],
       }
     : {};

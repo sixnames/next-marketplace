@@ -131,6 +131,11 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       },
     },
     {
+      accessor: 'barcode',
+      headTitle: 'Штрих-код',
+      render: ({ cellData }) => cellData,
+    },
+    {
       render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls

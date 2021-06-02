@@ -1,3 +1,4 @@
+import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -29,7 +30,7 @@ const ProductMainFields: React.FC = () => {
         showInlineError
       />
 
-      <FormikInput label={'Штрих-код'} name={'barcode'} testId={'barcode'} />
+      <FormikBarcodeInput label={'Штрих-код'} name={'barcode'} testId={'barcode'} />
 
       <FormikTranslationsInput
         label={'Описание'}

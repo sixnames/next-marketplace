@@ -4,6 +4,8 @@ export const iconTypesList = [
   'burger',
   'burger-active',
   'cart',
+  'camera',
+  'camera-off',
   'chevron-down',
   'chevron-left',
   'chevron-left-thin',

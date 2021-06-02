@@ -38,7 +38,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     onCompleted: (data) => onCompleteCallback(data.updateProduct),
   });
 
-  const { nameI18n, originalName, descriptionI18n, active, mainImage } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode } = product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
@@ -46,6 +46,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     originalName,
     descriptionI18n,
     active,
+    barcode,
   };
 
   return (

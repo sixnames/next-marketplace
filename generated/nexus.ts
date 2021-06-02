@@ -293,6 +293,7 @@ export interface NexusGenInputs {
   CreateProductInput: {
     // input type
     active: boolean; // Boolean!
+    barcode?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
@@ -639,6 +640,7 @@ export interface NexusGenInputs {
   UpdateProductInput: {
     // input type
     active: boolean; // Boolean!
+    barcode?: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
@@ -1460,6 +1462,7 @@ export interface NexusGenFieldTypes {
     assets: NexusGenRootTypes['ProductAssets'] | null; // ProductAssets
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     available: boolean | null; // Boolean
+    barcode: string | null; // String
     brand: NexusGenRootTypes['Brand'] | null; // Brand
     brandCollection: NexusGenRootTypes['BrandCollection'] | null; // BrandCollection
     brandCollectionSlug: string | null; // String
@@ -2450,6 +2453,7 @@ export interface NexusGenFieldTypeNames {
     assets: 'ProductAssets';
     attributes: 'ProductAttribute';
     available: 'Boolean';
+    barcode: 'String';
     brand: 'Brand';
     brandCollection: 'BrandCollection';
     brandCollectionSlug: 'String';

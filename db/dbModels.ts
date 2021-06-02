@@ -476,6 +476,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
+  barcode?: string | null;
 
   // types for aggregation
   shopsCount?: number;
@@ -588,6 +589,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   rubricSlug: string;
   selectedOptionsSlugs: string[];
   mainImage: string;
+  barcode?: string | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

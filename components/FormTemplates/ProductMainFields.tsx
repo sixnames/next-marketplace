@@ -29,6 +29,8 @@ const ProductMainFields: React.FC = () => {
         showInlineError
       />
 
+      <FormikInput label={'Штрих-код'} name={'barcode'} testId={'barcode'} />
+
       <FormikTranslationsInput
         label={'Описание'}
         name={'descriptionI18n'}

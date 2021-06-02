@@ -538,6 +538,7 @@ export type CreateProductConnectionInput = {
 
 export type CreateProductInput = {
   active: Scalars['Boolean'];
+  barcode?: Maybe<Scalars['String']>;
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
@@ -1674,6 +1675,7 @@ export type Product = Base & Timestamp & {
   active: Scalars['Boolean'];
   slug: Scalars['String'];
   originalName: Scalars['String'];
+  barcode?: Maybe<Scalars['String']>;
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2530,6 +2532,7 @@ export type UpdateProductInCartInput = {
 
 export type UpdateProductInput = {
   productId: Scalars['ObjectId'];
+  barcode?: Maybe<Scalars['String']>;
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];

@@ -632,7 +632,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'updateRubric',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновлениеубрикили',
+      ru: 'Обновление рубрики',
     },
   },
   {

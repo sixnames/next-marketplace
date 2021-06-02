@@ -497,6 +497,7 @@ input CreateProductConnectionInput {
 
 input CreateProductInput {
   active: Boolean!
+  barcode: String
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -1445,6 +1446,7 @@ type Product implements Base & Timestamp {
   assets: ProductAssets
   attributes: [ProductAttribute!]!
   available: Boolean
+  barcode: String
   brand: Brand
   brandCollection: BrandCollection
   brandCollectionSlug: String
@@ -2270,6 +2272,7 @@ input UpdateProductInCartInput {
 
 input UpdateProductInput {
   active: Boolean!
+  barcode: String
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!

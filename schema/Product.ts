@@ -53,6 +53,7 @@ export const Product = objectType({
     t.nonNull.boolean('active');
     t.nonNull.string('slug');
     t.nonNull.string('originalName');
+    t.string('barcode');
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');

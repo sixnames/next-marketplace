@@ -22,6 +22,10 @@
     left: 50%;
   }
 
+  .half-column {
+    width: calc(50% - 1rem);
+  }
+
   .wp-shadow-25 {
     box-shadow: 0 0 5px rgba(9, 9, 9, 0.25);
   }
@@ -329,7 +333,7 @@
   --formInputHeightSmall: 2.5rem;
   --formInputHeightSmaller: 2rem;
   --formLineHeight: 2rem;
-  --buttonMinWidth: 14rem;
+  --buttonMinWidth: 12rem;
   --buttonMinWidthSmall: 9rem;
   --controlButtonHeight: var(--formInputHeight);
   --controlButtonHeightSmall: var(--formInputHeightSmall);
@@ -426,7 +430,7 @@
 
 @media only screen and (max-width: 1180px) {
   :root {
-    --buttonMinWidth: 12rem;
+    --buttonMinWidth: 10rem;
   }
 }
 

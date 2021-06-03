@@ -165,7 +165,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
               <div className='mb-4'>
                 <SpinnerInput
-                  isShort
                   plusTestId={`card-shops-${slug}-plus`}
                   minusTestId={`card-shops-${slug}-minus`}
                   testId={`card-shops-${slug}-input`}

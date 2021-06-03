@@ -44,8 +44,8 @@ const Button: React.FC<ButtonPropsInterface> = ({
       ? 'text-theme bg-secondary-b-button-background'
       : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100';
 
-  const isSmall = size === 'small';
   const noChildren = !children;
+  const isSmall = size === 'small';
   const sizeClass = isSmall ? 'h-[var(--smallButtonHeight)]' : 'h-[var(--formInputHeight)]';
   const widthClass = short ? '' : 'min-w-[var(--buttonMinWidth)]';
   const childrenClass = noChildren

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ArrowTrigger.module.css';
 import Icon from '../Icon/Icon';
 
 interface ArrowTriggerInterface {
@@ -13,12 +12,19 @@ const ArrowTrigger: React.FC<ArrowTriggerInterface> = ({
   onClick,
   arrowPosition = 'right',
 }) => {
+  const iconClassName = 'w-5 h-5';
+
   return (
-    <div className={classes.frame} onClick={onClick}>
-      {arrowPosition === 'left' ? <Icon className={classes.iconLeft} name={'arrow-left'} /> : null}
+    <div
+      className='flex items-center whitespace-nowrap text-theme cursor-pointer'
+      onClick={onClick}
+    >
+      {arrowPosition === 'left' ? (
+        <Icon className={`${iconClassName} mr-4`} name={'arrow-left'} />
+      ) : null}
       {name}
       {arrowPosition === 'right' ? (
-        <Icon className={classes.iconRight} name={'arrow-right'} />
+        <Icon className={`${iconClassName} ml-4`} name={'arrow-right'} />
       ) : null}
     </div>
   );

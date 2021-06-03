@@ -1,10 +1,13 @@
+import Icon from 'components/Icon/Icon';
 import * as React from 'react';
+import { IconType } from 'types/iconTypes';
 import Link, { LinkInterface } from './Link';
 
-export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName'> {
+export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' | 'href'> {
   theme?: 'primary' | 'secondary';
   isActive?: boolean;
-  asLink?: boolean;
+  href?: string;
+  icon?: IconType | null;
 }
 
 const TagLink: React.FC<TagLinkInterface> = ({
@@ -14,9 +17,9 @@ const TagLink: React.FC<TagLinkInterface> = ({
   href,
   testId,
   isActive,
-  asLink = true,
   prefetch,
   shallow,
+  icon,
   ...props
 }) => {
   const borderClassName = isActive
@@ -25,8 +28,11 @@ const TagLink: React.FC<TagLinkInterface> = ({
     ? `border-secondary`
     : `border-primary`;
   const variantClassName = theme === 'secondary' ? `bg-secondary` : `bg-primary`;
-  const tagClassName = `flex items-center h-10 px-4 border rounded-2xl text-secondary-text ${variantClassName} ${borderClassName}`;
-  if (asLink) {
+  const tagSizeClassName = icon ? `h-16 rounded-3xl px-6 text-lg` : `h-9 rounded-2xl px-4`;
+  const tagClassName = `flex items-center border text-secondary-text whitespace-nowrap ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
+  const iconClassName = `w-10 h-10 mr-6`;
+
+  if (href) {
     return (
       <Link
         href={href}
@@ -38,13 +44,15 @@ const TagLink: React.FC<TagLinkInterface> = ({
         }`}
         {...props}
       >
+        {icon ? <Icon className={iconClassName} name={icon} /> : null}
         {children}
       </Link>
     );
   }
 
   return (
-    <div className={`${tagClassName} ${className ? className : ''}`} {...props}>
+    <div data-cy={testId} className={`${tagClassName} ${className ? className : ''}`} {...props}>
+      {icon ? <Icon className={iconClassName} name={icon} /> : null}
       {children}
     </div>
   );

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { ConfigModel, ConfigVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import {
@@ -553,6 +554,22 @@ function getConfigTemplates({
       variant: 'number' as ConfigVariantModel,
       slug: 'snippetAttributesCount',
       name: 'Количество видимых атрибутов в сниппете товара каталога.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['5'],
+        },
+      },
+    },
+    {
+      _id: getObjectId(`${companySlug} cardListFeaturesCount`),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'cardListFeaturesCount',
+      name: 'Количество видимых атрибутов в карточке товара.',
       description: '',
       multi: false,
       acceptedFormats: [],

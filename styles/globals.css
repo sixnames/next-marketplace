@@ -46,6 +46,10 @@
     box-shadow: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
   }
 
+  .wp-shadow-bottom-right-100 {
+    box-shadow: 20px 15px 15px -15px rgba(9, 9, 9, 0.2);
+  }
+
   .wp-shadow-bottom-100 {
     box-shadow: 0 20px 15px -15px rgba(9, 9, 9, 0.2);
   }

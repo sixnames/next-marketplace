@@ -12,14 +12,8 @@ import Title from 'components/Title/Title';
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import {
-  ProductAttributeInterface,
-  ProductInterface,
-  ShopInterface,
-  ShopProductInterface,
-} from 'db/uiInterfaces';
+import { ProductInterface, ShopInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
-import LayoutCard from 'layout/LayoutCard';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
@@ -79,29 +73,6 @@ export const CardShops: React.FC<CardShopsInterface> = ({ shopProducts }) => {
   );
 };
 
-interface CardRouteFeaturesInterface {
-  features: ProductAttributeInterface[];
-}
-
-const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
-  return features.length > 0 ? (
-    <div className='mb-8'>
-      {features.map(({ showInCard, _id, name, readableValue }) => {
-        if (!showInCard) {
-          return null;
-        }
-
-        return (
-          <div key={`${_id}`} className='mb-6'>
-            <div className='text-secondary-text mb-1 font-medium'>{name}</div>
-            <div>{readableValue}</div>
-          </div>
-        );
-      })}
-    </div>
-  ) : null;
-};
-
 interface CardRouteInterface {
   cardData: ProductInterface;
   companySlug?: string;
@@ -147,29 +118,15 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
-      <Inner lowTop>
-        <div className='mb-12 flex justify-between'>
-          <div>
-            <Title className='mb-1' low>
-              {originalName}
-            </Title>
-            <div className='text-secondary-text mb-1'>{name}</div>
-            <div className=''>Артикул: {itemId}</div>
-          </div>
-
-          <div className='flex'>
-            <ControlButton icon={'compare'} iconSize={'mid'} ariaLabel={'Добавить в сравнение'} />
-            <ControlButton icon={'heart'} iconSize={'mid'} ariaLabel={'Добавить в избранное'} />
-            <ControlButton icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
-          </div>
-        </div>
-
-        <div className='grid gap-8 lg:grid-cols-5 mb-16'>
-          {/*Card left column*/}
-          <div className='relative lg:col-span-3'>
-            <div className='sticky top-20 left-0 grid gap-8 sm:grid-cols-5'>
-              <div className='sm:col-span-3 sm:order-2'>
-                <div className='relative h-[400px] md:h-[500px] lg:h-[600px]'>
+      <div className='mb-12 relative'>
+        <Inner className='relative z-20' lowBottom lowTop>
+          {/*content holder*/}
+          <div className='relative'>
+            {/*content*/}
+            <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
+              {/*image*/}
+              <div className='md:col-span-1 md:order-2 lg:col-span-3 lg:flex lg:justify-center'>
+                <div className='relative h-[300px] w-[160px] md:h-[500px] lg:h-[600px]'>
                   <Image
                     src={`${mainImage}`}
                     alt={originalName}
@@ -180,120 +137,167 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
                 </div>
               </div>
 
-              <div className='sm:col-span-2 sm:order-1'>
-                <CardRouteListFeatures features={listFeatures || []} />
-              </div>
-            </div>
-          </div>
+              {/*main data*/}
+              <div className='flex flex-col md:col-span-2 md:order-3 lg:col-span-7'>
+                {/*title*/}
+                <div className='mb-6'>
+                  <div className='mb-4 text-secondary-text text-sm'>Артикул: {itemId}</div>
+                  <Title className='mb-1' low>
+                    {originalName}
+                  </Title>
+                  <div className='text-secondary-text'>{name}</div>
+                </div>
 
-          {/*Card right column*/}
-          <div className='lg:col-span-2'>
-            <LayoutCard className='px-6 py-8 mb-8'>
-              {/*price*/}
-              <div className='flex items-baseline mb-6'>
-                {isShopless ? null : noNaN(shopsCount) > 1 ? (
-                  <React.Fragment>
-                    <div className='mr-2'>Цена от</div>
-                    <div className='flex items-baseline text-3xl sm:text-4xl'>
-                      <Currency className='' value={cardPrices?.min} />
-                      <div className='text-lg mx-2'>до</div>
-                      <Currency className='' value={cardPrices?.max} />
-                    </div>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <div className='mr-2'>Цена</div>
-                    <div className=''>
-                      <Currency className='' value={cardPrices?.min} />
-                    </div>
-                  </React.Fragment>
-                )}
-              </div>
+                {/*connections*/}
+                {(connections || []).length > 0 ? (
+                  <div className='mb-8'>
+                    {(connections || []).map(({ _id, attribute, connectionProducts }) => {
+                      return (
+                        <div key={`${_id}`} className='mb-8'>
+                          <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
+                          <div className='flex flex-wrap gap-2'>
+                            {(connectionProducts || []).map(({ option, productSlug }) => {
+                              const isCurrent = productSlug === cardData.slug;
+                              const name = `${option?.name} ${
+                                attribute?.metric ? ` ${attribute.metric.name}` : ''
+                              }`;
 
-              {/*cart action elements*/}
-              <div className='flex flex-col sm:flex-row gap-6 mb-4'>
-                <SpinnerInput
-                  onChange={(e) => {
-                    setAmount(noNaN(e.target.value));
-                  }}
-                  plusTestId={`card-plus`}
-                  minusTestId={`card-minus`}
-                  testId={`card-amount`}
-                  frameClassName='w-full sm:half-column'
-                  min={1}
-                  name={'amount'}
-                  value={amount}
-                />
-                <Button
-                  onClick={() => {
-                    addShoplessProductToCart({
-                      amount,
-                      productId: _id,
-                    });
-                  }}
-                  testId={`card-add-to-cart`}
-                  className='w-full sm:half-column'
-                >
-                  В корзину
-                </Button>
-              </div>
+                              return (
+                                <TagLink
+                                  theme={'primary'}
+                                  data-cy={`card-connection`}
+                                  className={isCurrent ? `pointer-events-none` : ``}
+                                  key={`${option?.name}`}
+                                  isActive={isCurrent}
+                                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${productSlug}`}
+                                >
+                                  {name}
+                                </TagLink>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
 
-              {/*availability*/}
-              <a
-                href={`#card-shops`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const target = e.target as Element;
-                  const distId = target.getAttribute('href');
-                  const distElement = document.querySelector(`${distId}`);
-                  if (distElement) {
-                    window.scrollTo({
-                      top: noNaN(distElement.getBoundingClientRect().top),
-                      left: 0,
-                      behavior: 'smooth',
-                    });
-                  }
-                }}
-              >
-                {isShopless ? 'Нет в наличии' : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
-              </a>
-            </LayoutCard>
-
-            {/*Connections*/}
-            {(connections || []).length > 0 ? (
-              <div className=''>
-                {(connections || []).map(({ _id, attribute, connectionProducts }) => {
-                  return (
-                    <div key={`${_id}`} className='mb-8'>
-                      <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
-                      <div className='flex flex-wrap gap-4'>
-                        {(connectionProducts || []).map(({ option, productSlug }) => {
-                          const isCurrent = productSlug === cardData.slug;
-                          const name = `${option?.name} ${
-                            attribute?.metric ? ` ${attribute.metric.name}` : ''
-                          }`;
-
-                          return (
-                            <TagLink
-                              data-cy={`card-connection`}
-                              className={isCurrent ? `pointer-events-none` : ``}
-                              key={`${option?.name}`}
-                              isActive={isCurrent}
-                              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${productSlug}`}
-                            >
-                              {name}
-                            </TagLink>
-                          );
-                        })}
+                {/*price*/}
+                <div className='flex items-baseline mb-6 mt-auto'>
+                  {isShopless ? null : noNaN(shopsCount) > 1 ? (
+                    <React.Fragment>
+                      <div className='mr-2'>Цена от</div>
+                      <div className='flex items-baseline text-3xl sm:text-4xl'>
+                        <Currency className='' value={cardPrices?.min} />
+                        <div className='text-lg mx-2'>до</div>
+                        <Currency className='' value={cardPrices?.max} />
                       </div>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <div className='mr-2'>Цена</div>
+                      <div className=''>
+                        <Currency className='' value={cardPrices?.min} />
+                      </div>
+                    </React.Fragment>
+                  )}
+                </div>
+
+                {/*cart action elements*/}
+                <div className='flex flex-wrap gap-4 mb-8'>
+                  <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
+                    <SpinnerInput
+                      onChange={(e) => {
+                        setAmount(noNaN(e.target.value));
+                      }}
+                      plusTestId={`card-plus`}
+                      minusTestId={`card-minus`}
+                      testId={`card-amount`}
+                      frameClassName='w-full sm:half-column'
+                      min={1}
+                      name={'amount'}
+                      value={amount}
+                    />
+                    <Button
+                      onClick={() => {
+                        addShoplessProductToCart({
+                          amount,
+                          productId: _id,
+                        });
+                      }}
+                      testId={`card-add-to-cart`}
+                      className='w-full sm:half-column'
+                    >
+                      В корзину
+                    </Button>
+                  </div>
+
+                  {/*controls*/}
+                  <div className='flex'>
+                    <ControlButton
+                      icon={'compare'}
+                      iconSize={'mid'}
+                      ariaLabel={'Добавить в сравнение'}
+                    />
+                    <ControlButton
+                      icon={'heart'}
+                      iconSize={'mid'}
+                      ariaLabel={'Добавить в избранное'}
+                    />
+                    <ControlButton icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
+                  </div>
+                </div>
+
+                {/*availability*/}
+                <a
+                  href={`#card-shops`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const target = e.target as Element;
+                    const distId = target.getAttribute('href');
+                    const distElement = document.querySelector(`${distId}`);
+                    if (distElement) {
+                      window.scrollTo({
+                        top: noNaN(distElement.getBoundingClientRect().top),
+                        left: 0,
+                        behavior: 'smooth',
+                      });
+                    }
+                  }}
+                >
+                  {isShopless
+                    ? 'Нет в наличии'
+                    : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
+                </a>
+              </div>
+
+              {/*list features*/}
+              <div className='md:col-span-1 md:order-1 lg:col-span-2'>
+                {(listFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
+                  if (!showInCard) {
+                    return null;
+                  }
+
+                  return (
+                    <div key={`${_id}`} className='mb-6'>
+                      <div className='text-secondary-text mb-1 font-medium'>{name}</div>
+                      <div>{readableValue}</div>
                     </div>
                   );
                 })}
               </div>
-            ) : null}
-          </div>
-        </div>
+            </div>
 
+            {/*bg*/}
+            <div className='absolute inset-x-0 inset-y-0 --xl:top-[10%] --xl:h-[80%] z-10 bg-secondary rounded-tr-xl rounded-br-xl wp-shadow-bottom-right-100' />
+          </div>
+        </Inner>
+
+        {/*bg left patch*/}
+        <div className='absolute z-10 inset-x-0 inset-y-0 --xl:top-[10%] --xl:h-[80%] left-0 w-[50%] bg-secondary' />
+      </div>
+
+      <Inner lowTop>
         {/* Features */}
         <section id={`card-features mb-4`}>
           <div className='grid gap-8 md:grid-cols-7 mb-12'>

@@ -100,7 +100,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
   const { addShoplessProductToCart } = useSiteContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
   const [amount, setAmount] = React.useState<number>(1);
+
+  // list features visible slice
+  const visibleListFeaturesCount = noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
+  const visibleListFeatures = React.useMemo(() => {
+    return (listFeatures || []).slice(0, visibleListFeaturesCount);
+  }, [listFeatures, visibleListFeaturesCount]);
 
   const [updateProductCounterMutation] = useUpdateProductCounterMutation();
   React.useEffect(() => {
@@ -273,7 +280,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
 
               {/*list features*/}
               <div className='md:col-span-1 md:order-1 lg:col-span-2'>
-                {(listFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
+                {(visibleListFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
                   if (!showInCard) {
                     return null;
                   }

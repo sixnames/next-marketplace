@@ -863,108 +863,136 @@ export const BrandMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
+        const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
+          COL_BRAND_COLLECTIONS,
+        );
+        const dbProductsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: BrandPayloadModel = {
+          success: false,
+          message: await getApiMessage('brandCollections.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteBrandCollection',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteBrandCollection',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteCollectionFromBrandSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteCollectionFromBrandSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { input } = args;
-          const { brandId, brandCollectionId } = input;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
-            COL_BRAND_COLLECTIONS,
-          );
-          const dbProductsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+            const { input } = args;
+            const { brandId, brandCollectionId } = input;
 
-          // Check brand availability
-          const brand = await dbBrandsCollection.findOne({ _id: brandId });
-          if (!brand) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.notFound'),
-            };
-          }
+            // Check brand availability
+            const brand = await dbBrandsCollection.findOne({ _id: brandId });
+            if (!brand) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check brand collection availability
-          const brandCollection = await dbBrandsCollection.findOne({ _id: brandId });
-          if (!brandCollection) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.delete.notFound'),
-            };
-          }
+            // Check brand collection availability
+            const brandCollection = await dbBrandsCollection.findOne({ _id: brandId });
+            if (!brandCollection) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if brand collection is used in products
-          const used = await dbProductsCollection.findOne({
-            brandCollectionSlug: brandCollection.slug,
-          });
-          if (used) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.delete.used'),
-            };
-          }
+            // Check if brand collection is used in products
+            const used = await dbProductsCollection.findOne({
+              brandCollectionSlug: brandCollection.slug,
+            });
+            if (used) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.delete.used'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Delete brand collection
-          const removedBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndDelete(
-            { _id: brandCollectionId },
-          );
-          if (!removedBrandCollectionResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.delete.error'),
-            };
-          }
+            // Delete brand collection
+            const removedBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndDelete(
+              { _id: brandCollectionId },
+            );
+            if (!removedBrandCollectionResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update brand timestamps and pull removed collection _id
-          const updatedBrandResult = await dbBrandsCollection.findOneAndUpdate(
-            { _id: brandId },
-            {
-              $pull: {
-                collectionsIds: brandCollectionId,
+            // Update brand timestamps and pull removed collection _id
+            const updatedBrandResult = await dbBrandsCollection.findOneAndUpdate(
+              { _id: brandId },
+              {
+                $pull: {
+                  collectionsIds: brandCollectionId,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
               },
-              $set: {
-                updatedAt: new Date(),
+              {
+                returnOriginal: false,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          if (!updatedBrandResult.ok || !updatedBrandResult.value) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.error'),
-            };
-          }
+            );
+            const updatedBrand = updatedBrandResult.value;
+            if (!updatedBrandResult.ok || !updatedBrand) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('brandCollections.delete.success'),
-            payload: updatedBrandResult.value,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('brandCollections.delete.success'),
+              payload: updatedBrand,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

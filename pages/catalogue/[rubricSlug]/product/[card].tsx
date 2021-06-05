@@ -81,6 +81,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
         }
       })
       .catch(console.log);
+
+    return () => {
+      setSimilarProducts([]);
+    };
   }, [_id, companyId]);
 
   // list features visible slice

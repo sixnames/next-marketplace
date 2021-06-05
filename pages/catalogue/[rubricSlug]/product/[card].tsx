@@ -8,6 +8,7 @@ import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
 import Inner from 'components/Inner/Inner';
 import TagLink from 'components/Link/TagLink';
+import OrderStepsDescription from 'components/OrderStepsDescription';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap/ShopsMap';
 import Title from 'components/Title/Title';
@@ -109,7 +110,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
-      <div className='mb-20 relative'>
+      <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
@@ -290,7 +291,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
 
       <Inner lowTop lowBottom>
         {/* Features */}
-        <section className='mb-20' id={`card-features`}>
+        <section className='mb-28' id={`card-features`}>
           <div className='grid gap-8 md:grid-cols-7 mb-12'>
             <div className='md:col-span-2'>
               {(iconFeatures || []).map((attribute) => {
@@ -381,7 +382,8 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
           </div>
         </section>
 
-        <section id={`card-shops`} className='mb-20'>
+        {/*shops*/}
+        <section id={`card-shops`} className='mb-28'>
           <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
             <h2 className='text-2xl font-medium'>Наличие в винотеках</h2>
 
@@ -413,9 +415,15 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
           </div>
         </section>
 
+        {/*order description*/}
+        <div className='mb-28'>
+          <OrderStepsDescription />
+        </div>
+
+        {/*similar products*/}
         {similarProducts.length > 0 ? (
-          <section>
-            <h2 className='text-2xl font-medium mb-4'>Вам может понравиться</h2>
+          <section className='mb-28'>
+            <h2 className='text-2xl font-medium mb-6'>Вам может понравиться</h2>
 
             <HorizontalScroll>
               {similarProducts.map((product) => {

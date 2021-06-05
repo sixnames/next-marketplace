@@ -664,7 +664,8 @@ export const BrandMutations = extendType({
                 returnOriginal: false,
               },
             );
-            if (!updatedBrandResult.ok || !updatedBrandResult.value) {
+            const updatedBrand = updatedBrandResult.value;
+            if (!updatedBrandResult.ok || !updatedBrand) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('brands.update.error'),
@@ -676,7 +677,7 @@ export const BrandMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('brandCollections.create.success'),
-              payload: updatedBrandResult.value,
+              payload: updatedBrand,
             };
           });
 
@@ -705,115 +706,147 @@ export const BrandMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
+        const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
+          COL_BRAND_COLLECTIONS,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: BrandPayloadModel = {
+          success: false,
+          message: await getApiMessage('brands.update.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateBrandCollection',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateBrandCollection',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateCollectionInBrandSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateCollectionInBrandSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { input } = args;
-          const { brandId, brandCollectionId, ...values } = input;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
-            COL_BRAND_COLLECTIONS,
-          );
+            const { input } = args;
+            const { brandId, brandCollectionId, ...values } = input;
 
-          // Check brand availability
-          const brand = await dbBrandsCollection.findOne({ _id: brandId });
-          if (!brand) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.notFound'),
-            };
-          }
+            // Check brand availability
+            const brand = await dbBrandsCollection.findOne({ _id: brandId });
+            if (!brand) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check brand collection availability
-          const brandCollection = await dbBrandsCollection.findOne({ _id: brandId });
-          if (!brandCollection) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.update.notFound'),
-            };
-          }
+            // Check brand collection availability
+            const brandCollection = await dbBrandsCollection.findOne({ _id: brandId });
+            if (!brandCollection) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if brand collection name already exist in brand
-          const exist = await findDocumentByI18nField<BrandModel>({
-            collectionName: COL_BRAND_COLLECTIONS,
-            fieldName: 'nameI18n',
-            fieldArg: values.nameI18n,
-            additionalQuery: {
-              $and: [{ brandId: brand._id }, { _id: { $ne: brandCollectionId } }],
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.update.duplicate'),
-            };
-          }
-
-          // Update brand collection
-          const createdBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndUpdate(
-            { _id: brandCollectionId },
-            {
-              $set: {
-                ...values,
-                updatedAt: new Date(),
+            // Check if brand collection name already exist in brand
+            const exist = await findDocumentByI18nField<BrandModel>({
+              collectionName: COL_BRAND_COLLECTIONS,
+              fieldName: 'nameI18n',
+              fieldArg: values.nameI18n,
+              additionalQuery: {
+                $and: [{ brandId: brand._id }, { _id: { $ne: brandCollectionId } }],
               },
-            },
-          );
-          if (!createdBrandCollectionResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.update.error'),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.update.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update brand timestamps
-          const updatedBrandResult = await dbBrandsCollection.findOneAndUpdate(
-            { _id: brandId },
-            {
-              $set: {
-                updatedAt: new Date(),
+            // Update brand collection
+            const updatedBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndUpdate(
+              { _id: brandCollectionId },
+              {
+                $set: {
+                  ...values,
+                  updatedAt: new Date(),
+                },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          if (!updatedBrandResult.ok || !updatedBrandResult.value) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.error'),
-            };
-          }
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedBrandCollection = updatedBrandCollectionResult.value;
+            if (!updatedBrandCollectionResult.ok || !updatedBrandCollection) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('brandCollections.update.success'),
-            payload: updatedBrandResult.value,
-          };
+            // Update brand timestamps
+            const updatedBrandResult = await dbBrandsCollection.findOneAndUpdate(
+              { _id: brandId },
+              {
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedBrand = updatedBrandResult.value;
+            if (!updatedBrandResult.ok || !updatedBrand) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('brandCollections.update.success'),
+              payload: updatedBrand,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

@@ -9,7 +9,7 @@ const HorizontalScroll: React.FC = ({ children }) => {
           <div className='h-1 min-w-[3rem] sm:min-w-[7rem]' />
         </div>
       </div>
-      <div className='z-30 absolute inset-y-0 right-0 h-full w-[10%] bg-gradient-to-l from-primary to-transparent' />
+      <div className='z-30 absolute inset-y-0 right-0 h-full w-[10%] bg-gradient-to-l from-primary' />
     </div>
   );
 };

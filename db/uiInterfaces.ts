@@ -203,6 +203,7 @@ export interface ProductInterface extends ProductModel {
   numberAttributesAST?: ProductAttributesGroupASTInterface | null;
   multipleSelectAttributesAST?: ProductAttributesGroupASTInterface | null;
   selectAttributesAST?: ProductAttributesGroupASTInterface | null;
+  similarProducts?: ProductInterface[] | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

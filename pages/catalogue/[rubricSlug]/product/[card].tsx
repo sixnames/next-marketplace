@@ -5,14 +5,16 @@ import ControlButton from 'components/Buttons/ControlButton';
 import Currency from 'components/Currency/Currency';
 import ErrorBoundaryFallback from 'components/ErrorBoundary/ErrorBoundaryFallback';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
 import Inner from 'components/Inner/Inner';
 import TagLink from 'components/Link/TagLink';
+import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap/ShopsMap';
 import Title from 'components/Title/Title';
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { ProductInterface, ShopInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { ProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -24,61 +26,13 @@ import Image from 'next/image';
 import * as React from 'react';
 import CardShop from 'routes/CardRoute/CardShop';
 
-interface CardShopsInterface {
-  shopProducts: ShopProductInterface[];
-}
-
-export const CardShops: React.FC<CardShopsInterface> = ({ shopProducts }) => {
-  const [isMap, setIsMap] = React.useState<boolean>(false);
-
-  const shopsSnippets = shopProducts.reduce((acc: ShopInterface[], { shop }) => {
-    if (!shop) {
-      return acc;
-    }
-    return [...acc, shop];
-  }, []);
-
-  return (
-    <section id={`card-shops`}>
-      <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
-        <h2 className='text-2xl'>Наличие в винотеках</h2>
-
-        <ArrowTrigger
-          arrowPosition={isMap ? 'left' : 'right'}
-          name={isMap ? 'К списку магазинов' : 'Показать на карте'}
-          onClick={() => setIsMap((prevState) => !prevState)}
-        />
-      </div>
-
-      <div data-cy={`card-shops`}>
-        {isMap ? (
-          <div data-cy={`card-shops-map`}>
-            <ShopsMap shops={shopsSnippets} />
-          </div>
-        ) : (
-          <div data-cy={`card-shops-list`}>
-            {shopProducts.map((shopProduct, index) => {
-              return (
-                <CardShop
-                  testId={`1-${index}`}
-                  key={`${shopProduct._id}`}
-                  shopProduct={shopProduct}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-};
-
 interface CardRouteInterface {
   cardData: ProductInterface;
   companySlug?: string;
+  companyId?: string | null;
 }
 
-const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
+const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, companyId }) => {
   const {
     _id,
     rubricSlug,
@@ -102,6 +56,32 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
   const { addShoplessProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [amount, setAmount] = React.useState<number>(1);
+  const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
+  const [isMap, setIsMap] = React.useState<boolean>(false);
+
+  const shopsSnippets = React.useMemo(() => {
+    return (cardShopProducts || []).reduce((acc: ShopInterface[], { shop }) => {
+      if (!shop) {
+        return acc;
+      }
+      return [...acc, shop];
+    }, []);
+  }, [cardShopProducts]);
+
+  React.useEffect(() => {
+    fetch(
+      `/api/catalogue/get-product-similar-items?productId=${_id}${
+        companyId ? `&companyId=${companyId}` : ''
+      }`,
+    )
+      .then((res) => res.json())
+      .then((res: ProductInterface[]) => {
+        if (res && res.length > 0) {
+          setSimilarProducts(res);
+        }
+      })
+      .catch(console.log);
+  }, [_id, companyId]);
 
   // list features visible slice
   const visibleListFeaturesCount = noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
@@ -125,7 +105,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
-      <div className='mb-12 relative'>
+      <div className='mb-20 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
@@ -304,9 +284,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
         <div className='absolute z-10 inset-x-0 inset-y-0 --xl:top-[10%] --xl:h-[80%] left-0 w-[50%] bg-secondary' />
       </div>
 
-      <Inner lowTop>
+      <Inner lowTop lowBottom>
         {/* Features */}
-        <section id={`card-features mb-4`}>
+        <section className='mb-20' id={`card-features`}>
           <div className='grid gap-8 md:grid-cols-7 mb-12'>
             <div className='md:col-span-2'>
               {(iconFeatures || []).map((attribute) => {
@@ -397,7 +377,53 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug }) => {
           </div>
         </section>
 
-        <CardShops shopProducts={cardShopProducts || []} />
+        <section id={`card-shops`} className='mb-20'>
+          <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
+            <h2 className='text-2xl font-medium'>Наличие в винотеках</h2>
+
+            <ArrowTrigger
+              arrowPosition={isMap ? 'left' : 'right'}
+              name={isMap ? 'К списку магазинов' : 'Показать на карте'}
+              onClick={() => setIsMap((prevState) => !prevState)}
+            />
+          </div>
+
+          <div data-cy={`card-shops`}>
+            {isMap ? (
+              <div data-cy={`card-shops-map`}>
+                <ShopsMap shops={shopsSnippets} />
+              </div>
+            ) : (
+              <div data-cy={`card-shops-list`}>
+                {(cardShopProducts || []).map((shopProduct, index) => {
+                  return (
+                    <CardShop
+                      testId={`1-${index}`}
+                      key={`${shopProduct._id}`}
+                      shopProduct={shopProduct}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {similarProducts.length > 0 ? (
+          <section>
+            <h2 className='text-2xl font-medium mb-4'>Вам может понравиться</h2>
+
+            <HorizontalScroll>
+              {similarProducts.map((product) => {
+                return (
+                  <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
+                    <ProductSnippetGrid noAttributes noSecondaryName product={product} />
+                  </div>
+                );
+              })}
+            </HorizontalScroll>
+          </section>
+        ) : null}
       </Inner>
     </article>
   );
@@ -430,7 +456,11 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
       company={company}
       {...props}
     >
-      <CardRoute cardData={cardData} companySlug={company?.slug} />
+      <CardRoute
+        cardData={cardData}
+        companySlug={company?.slug}
+        companyId={company ? `${company._id}` : null}
+      />
     </SiteLayoutProvider>
   );
 };

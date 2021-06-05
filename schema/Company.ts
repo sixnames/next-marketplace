@@ -560,126 +560,149 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShop',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShop',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addShopToCompanySchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addShopToCompanySchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const { input } = args;
-          const { companyId, ...values } = input;
+            const { input } = args;
+            const { companyId, ...values } = input;
 
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id: companyId });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.notFound'),
-            };
-          }
+            // Check company availability
+            const company = await companiesCollection.findOne({ _id: companyId });
+            if (!company) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if shop already exist in the company
-          const exist = await shopsCollection.findOne({ name: values.name });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.duplicate'),
-            };
-          }
+            // Check if shop already exist in the company
+            const exist = await shopsCollection.findOne({ name: values.name });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Store shop assets
-          const itemId = await getNextItemId(COL_SHOPS);
+            // Store shop assets
+            const itemId = await getNextItemId(COL_SHOPS);
 
-          // Create shop
-          const slug = generateShopSlug({
-            name: values.name,
-            itemId,
-          });
+            // Create shop
+            const slug = generateShopSlug({
+              name: values.name,
+              itemId,
+            });
 
-          const createdShopResult = await shopsCollection.insertOne({
-            ...values,
-            slug,
-            itemId,
-            logo: {
-              index: 1,
-              url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
-            },
-            assets: [],
-            mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
-            companyId: companyId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            address: {
-              formattedAddress: values.address.formattedAddress,
-              point: {
-                type: 'Point',
-                coordinates: [values.address.point.lng, values.address.point.lat],
+            const createdShopResult = await shopsCollection.insertOne({
+              ...values,
+              slug,
+              itemId,
+              logo: {
+                index: 1,
+                url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               },
-            },
+              assets: [],
+              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              companyId: companyId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              address: {
+                formattedAddress: values.address.formattedAddress,
+                point: {
+                  type: 'Point',
+                  coordinates: [values.address.point.lng, values.address.point.lat],
+                },
+              },
+            });
+            const createdShop = createdShopResult.ops[0];
+            if (!createdShopResult.result.ok || !createdShop) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update company shops list and update timestamps
+            const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
+              {
+                _id: companyId,
+              },
+              {
+                $push: {
+                  shopsIds: createdShop._id,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCompany = updatedCompanyResult.value;
+            if (!updatedCompanyResult.ok || !updatedCompany) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.create.success'),
+              payload: updatedCompany,
+            };
           });
-          const createdShop = createdShopResult.ops[0];
-          if (!createdShopResult.result.ok || !createdShop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.error'),
-            };
-          }
 
-          // Update company shops list and update timestamps
-          const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
-            {
-              _id: companyId,
-            },
-            {
-              $push: {
-                shopsIds: createdShop._id,
-              },
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCompany = updatedCompanyResult.value;
-          if (!updatedCompanyResult.ok || !updatedCompany) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.create.success'),
-            payload: updatedCompany,
-          };
+          return mutationPayload;
         } catch (e) {
           console.log(e);
-          console.log(JSON.stringify(e, null, 2));
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

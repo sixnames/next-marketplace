@@ -101,6 +101,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                         testId={`cart-dropdown-product-${index}-amount`}
                         plusTestId={`cart-dropdown-product-${index}-plus`}
                         minusTestId={`cart-dropdown-product-${index}-minus`}
+                        frameClassName='w-[var(--buttonMinWidth)]'
                         size={'small'}
                         onChange={(e) => {
                           updateProductInCart({

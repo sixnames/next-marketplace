@@ -35,10 +35,6 @@
   grid-template-columns: 7rem 1fr;
 }
 
-.product .amountInput {
-  background-color: var(--secondaryBackground);
-}
-
 .productContent {
   position: relative;
   padding-top: var(--productContentPaddingTop);
@@ -137,15 +133,6 @@
 .shopMap {
   color: var(--theme);
   margin-top: 1rem;
-}
-
-.shoplessFrom {
-  display: flex;
-  align-items: center;
-}
-
-.shoplessFrom .shoplessFromInput {
-  margin-right: 2rem;
 }
 
 .emptyBtns {

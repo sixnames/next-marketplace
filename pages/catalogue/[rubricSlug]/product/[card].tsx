@@ -180,16 +180,16 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                     <React.Fragment>
                       <div className='mr-2'>Цена от</div>
                       <div className='flex items-baseline text-3xl sm:text-4xl'>
-                        <Currency className='' value={cardPrices?.min} />
+                        <Currency value={cardPrices?.min} />
                         <div className='text-lg mx-2'>до</div>
-                        <Currency className='' value={cardPrices?.max} />
+                        <Currency value={cardPrices?.max} />
                       </div>
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
                       <div className='mr-2'>Цена</div>
-                      <div className=''>
-                        <Currency className='' value={cardPrices?.min} />
+                      <div className='flex items-baseline text-3xl sm:text-4xl'>
+                        <Currency value={cardPrices?.min} />
                       </div>
                     </React.Fragment>
                   )}

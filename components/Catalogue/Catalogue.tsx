@@ -30,6 +30,7 @@ import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayo
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getNumWord } from 'lib/i18n';
+import { debounce } from 'lodash';
 import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -53,11 +54,31 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const [loading, setLoading] = React.useState<boolean>(false);
   const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
+  const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_ROW);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
+
+  React.useEffect(() => {
+    function scrollHandler() {
+      if (window.scrollY > 1000) {
+        setIsUpButtonVisible(true);
+      } else {
+        setIsUpButtonVisible(false);
+      }
+    }
+
+    const debouncedResizeHandler = debounce(scrollHandler, 500);
+    scrollHandler();
+
+    window.addEventListener('scroll', debouncedResizeHandler);
+
+    return () => {
+      window.removeEventListener('scroll', debouncedResizeHandler);
+    };
+  }, []);
 
   React.useEffect(() => {
     const storageValue = window.localStorage.getItem(CATALOGUE_VIEW_STORAGE_KEY);
@@ -338,6 +359,22 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
           </div>
         </div>
       </Inner>
+
+      {isUpButtonVisible ? (
+        <Button
+          onClick={() => {
+            window.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth',
+            });
+          }}
+          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-30'
+          icon={'chevron-up'}
+          // theme={'secondary'}
+          circle
+        />
+      ) : null}
     </div>
   );
 };

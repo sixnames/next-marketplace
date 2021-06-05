@@ -164,9 +164,6 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
 
   // Add product #1
   cy.getByCy(`card`).should('exist');
-  cy.getByCy(`card-tabs-shops`).click();
-  cy.getByCy(`card-shops`).should('exist');
-  cy.getByCy(`card-shops-list`).should('exist');
   cy.getByCy(`card-shops-1-0-add-to-cart`).click();
 
   // Add second product #2
@@ -175,7 +172,6 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.getByCy('catalogue').should('exist');
   cy.get(`[data-cy=catalogue-item-1-name]`).invoke('removeAttr', 'target').click();
   cy.getByCy(`card`).should('exist');
-  cy.getByCy(`card-tabs-shops`).click();
   cy.getByCy(`card-shops-1-1-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 

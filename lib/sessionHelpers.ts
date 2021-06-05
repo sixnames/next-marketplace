@@ -4,8 +4,11 @@ import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CART_COOKIE_KEY,
+  CITY_COOKIE_KEY,
+  COMPANY_SLUG_COOKIE_KEY,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
+  LOCALE_COOKIE_KEY,
   LOCALE_HEADER,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROLE_SLUG_ADMIN,
@@ -74,22 +77,27 @@ export const getSessionRole = async (
   };
 };
 
+// Get locale slug form cookies
 export const getSessionLocale = (context: NexusContext): string => {
-  // Get locale form context if request form server
-  // Otherwise get locale from Content-Language header
-  // populated with Apollo client
   const cookies = nookies.get(context);
   return (
-    cookies?.locale || context?.locale || context?.req?.headers[LOCALE_HEADER] || DEFAULT_LOCALE
+    cookies?.[LOCALE_COOKIE_KEY] ||
+    context?.[LOCALE_COOKIE_KEY] ||
+    context?.req?.headers[LOCALE_HEADER] ||
+    DEFAULT_LOCALE
   );
 };
 
+// Get city slug form cookies
 export const getSessionCity = (context: NexusContext): string => {
-  // Get city form context if request form server
-  // Otherwise get city from x-city header
-  // populated with Apollo client
   const cookies = nookies.get(context);
-  return cookies?.city || context?.city || DEFAULT_CITY;
+  return cookies?.[CITY_COOKIE_KEY] || context?.[CITY_COOKIE_KEY] || DEFAULT_CITY;
+};
+
+// Get company slug form cookies
+export const getSessionCompanySlug = (context: NexusContext): string => {
+  const cookies = nookies.get(context);
+  return cookies?.[COMPANY_SLUG_COOKIE_KEY] || DEFAULT_CITY;
 };
 
 interface GetOperationPermissionInterface {

@@ -1,7 +1,6 @@
 import * as React from 'react';
-import classes from './SpinnerInput.module.css';
 import Icon from '../../Icon/Icon';
-import { OnOffType } from 'types/clientTypes';
+import { InputTheme, OnOffType } from 'types/clientTypes';
 import { noNaN } from 'lib/numbers';
 
 export interface SpinnerInterface {
@@ -18,8 +17,9 @@ export interface SpinnerInterface {
   max?: number;
   placeholder?: string;
   disabled?: boolean;
+  readOnly?: boolean;
   size?: 'small' | 'normal';
-  isShort?: boolean;
+  theme?: InputTheme;
   onChange?: (e: {
     target: {
       id?: string;
@@ -43,28 +43,34 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
   minusTestId,
   size = 'normal',
   max,
-  isShort,
+  readOnly,
+  theme = 'primary',
   ...props
 }) => {
-  const sizeClass = classes[size];
-  const notValidClass = notValid ? classes.error : '';
+  const isSmall = size === 'small';
+  const heightClass = isSmall ? 'h-[var(--smallButtonHeight)]' : 'h-[var(--formInputHeight)]';
+  const paddingClass = isSmall ? `px-[var(--formInputHeightSmall)]` : `px-[var(--formInputHeight)]`;
+  const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
+  const notValidClass = notValid ? 'border-red-500' : 'input-border';
   const additionalClass = className ? className : '';
-  const inputClassName = `${classes.input} ${notValidClass} ${additionalClass}`;
+  const disabledClass = readOnly || disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
+  const inputClassName = `relative form-input block w-full text-[var(--inputTextColor)] outline-none rounded-lg border text-center ${inputTheme} ${notValidClass} ${disabledClass} ${additionalClass} ${heightClass} ${paddingClass}`;
+
+  const buttonWidthClass = isSmall ? 'w-[var(--smallButtonHeight)]' : 'w-[var(--formInputHeight)]';
+  const buttonClassName = `absolute z-10 top-0 bottom-0 flex items-center justify-center p-0 m-0 h-full cursor-pointer outline-none ${buttonWidthClass}`;
+
+  const iconClassName = `w-3 h-3 fill-primary-text`;
+
   const currentValue = value ? noNaN(value) : noNaN(min);
   const counterStep = 1;
-  const isSmall = size === 'small';
 
   return (
-    <div
-      className={`${classes.frame} ${
-        isSmall ? (isShort ? '' : classes.shorterWidth) : isShort ? '' : classes.normalWidth
-      } ${frameClassName ? frameClassName : ''}`}
-    >
+    <div className={`relative ${frameClassName ? frameClassName : ''}`}>
       <button
         aria-label={'Уменьшить количество'}
         data-cy={minusTestId}
         disabled={disabled}
-        className={`${classes.butn}`}
+        className={`${buttonClassName} left-0`}
         onClick={() => {
           if (onChange && (min ? min <= currentValue : true)) {
             onChange({
@@ -76,11 +82,11 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
           }
         }}
       >
-        <Icon name={'dash'} />
+        <Icon className={iconClassName} name={'dash'} />
       </button>
       <input
         aria-label={'Количество'}
-        className={`${inputClassName} ${sizeClass}`}
+        className={inputClassName}
         value={currentValue}
         name={name}
         type={'number'}
@@ -101,7 +107,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         aria-label={'Увеличить количество'}
         data-cy={plusTestId}
         disabled={disabled}
-        className={`${classes.butn} ${classes.butnPlus}`}
+        className={`${buttonClassName} right-0`}
         onClick={() => {
           if (onChange && (max ? currentValue + counterStep <= max : true)) {
             onChange({
@@ -113,7 +119,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
           }
         }}
       >
-        <Icon name={'plus'} />
+        <Icon className={iconClassName} name={'plus'} />
       </button>
     </div>
   );

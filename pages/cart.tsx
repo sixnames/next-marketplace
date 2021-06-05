@@ -139,7 +139,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
         </div>
       </div>
 
-      <div className={`${classes.shoplessFrom}`}>
+      <div className='flex gap-6'>
         <SpinnerInput
           name={'amount'}
           value={amount}
@@ -147,8 +147,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
           testId={`cart-product-${testId}-amount`}
           plusTestId={`cart-product-${testId}-plus`}
           minusTestId={`cart-product-${testId}-minus`}
-          frameClassName={`${classes.shoplessFromInput}`}
-          className={`${classes.amountInput}`}
+          frameClassName='w-[var(--buttonMinWidth)]'
           onChange={(e) => {
             updateProductInCart({
               amount: noNaN(e.target.value),
@@ -204,7 +203,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
             testId={`cart-product-${testId}-amount`}
             plusTestId={`cart-product-${testId}-plus`}
             minusTestId={`cart-product-${testId}-minus`}
-            className={classes.amountInput}
+            frameClassName='w-[var(--buttonMinWidth)]'
             onChange={(e) => {
               updateProductInCart({
                 amount: noNaN(e.target.value),

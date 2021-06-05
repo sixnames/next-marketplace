@@ -18,9 +18,6 @@ describe('Cart', () => {
 
     // Add product #1
     cy.getByCy(`card`).should('exist');
-    cy.getByCy(`card-tabs-shops`).click();
-    cy.getByCy(`card-shops`).should('exist');
-    cy.getByCy(`card-shops-list`).should('exist');
     cy.getByCy(`card-shops-1-0-add-to-cart`).click();
 
     // Add same product
@@ -35,8 +32,7 @@ describe('Cart', () => {
     cy.get(`[data-cy=catalogue-item-1-name]`).invoke('removeAttr', 'target').click();
     cy.getByCy(`card`).should('exist');
     cy.getByCy(`card-connection`).first().click();
-    cy.getByCy(`card-tabs-shops`).click();
-    cy.getByCy(`card-shops-list`).should('exist');
+    cy.wait(1500);
     cy.getByCy(`card-shops-1-0-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
 

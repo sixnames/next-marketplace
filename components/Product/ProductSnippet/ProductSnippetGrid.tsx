@@ -36,14 +36,9 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     shopsCount,
     mainImage,
     rubricSlug,
+    itemId,
   } = product;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
-
-  const listFeaturesString = (listFeatures || [])
-    .map(({ readableValue }) => {
-      return readableValue;
-    })
-    .join(', ');
 
   return (
     <LayoutCard className={`relative grid grid-cols-12 ${className ? className : ''}`}>
@@ -82,8 +77,22 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             </Link>
           </div>
           {noSecondaryName ? null : <div className='text-sm text-secondary-text mb-3'>{name}</div>}
+          <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
           {noAttributes ? null : (
-            <div className='text-sm text-secondary-text'>{listFeaturesString}</div>
+            <div className='text-sm text-secondary-text'>
+              {(listFeatures || []).map(({ readableValue }, index) => {
+                if (!readableValue) {
+                  return null;
+                }
+
+                const isLast = index === (listFeatures || []).length - 1;
+                return (
+                  <span className='inline-block mr-1' key={`${readableValue}-${index}`}>
+                    {isLast ? readableValue : `${readableValue},`}
+                  </span>
+                );
+              })}
+            </div>
           )}
         </div>
         <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />

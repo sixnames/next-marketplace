@@ -1,6 +1,7 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal/OptionInGroupModal';
@@ -82,6 +83,11 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       return (
         <div>
           <div className='cms-option flex items-center'>
+            {option.icon ? (
+              <div className='mr-4'>
+                <Icon name={option.icon} className='w-6 h-6' />
+              </div>
+            ) : null}
             <div className='font-medium' data-cy={`option-${name}`}>
               {name}
             </div>

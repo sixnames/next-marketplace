@@ -583,6 +583,22 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'cardListFeaturesCount',
+      name: 'Количество видимых атрибутов в карточке товара.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['5'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
       variant: 'string' as ConfigVariantModel,
       slug: 'catalogueMetaPrefix',
       name: 'Префикс в метатегах каталога',

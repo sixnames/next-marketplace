@@ -557,113 +557,138 @@ export const BrandMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<BrandPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+        const brandsCollectionsCollection = db.collection<BrandCollectionModel>(
+          COL_BRAND_COLLECTIONS,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: BrandPayloadModel = {
+          success: false,
+          message: await getApiMessage('brandCollections.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createBrandCollection',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createBrandCollection',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addCollectionToBrandSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addCollectionToBrandSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { input } = args;
-          const { brandId, ...values } = input;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const brandsCollectionsCollection = db.collection<BrandCollectionModel>(
-            COL_BRAND_COLLECTIONS,
-          );
+            const { input } = args;
+            const { brandId, ...values } = input;
 
-          // Check brand availability
-          const brand = await brandsCollection.findOne({ _id: brandId });
-          if (!brand) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.notFound'),
-            };
-          }
+            // Check brand availability
+            const brand = await brandsCollection.findOne({ _id: brandId });
+            if (!brand) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if brand collection name already exist in brand
-          const exist = await findDocumentByI18nField<BrandModel>({
-            collectionName: COL_BRAND_COLLECTIONS,
-            fieldName: 'nameI18n',
-            fieldArg: values.nameI18n,
-            additionalQuery: {
+            // Check if brand collection name already exist in brand
+            const exist = await findDocumentByI18nField<BrandModel>({
+              collectionName: COL_BRAND_COLLECTIONS,
+              fieldName: 'nameI18n',
+              fieldArg: values.nameI18n,
+              additionalQuery: {
+                brandId: brand._id,
+              },
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create brand collection
+            const itemId = await getNextItemId(COL_BRAND_COLLECTIONS);
+            const slug = await generateDefaultLangSlug(values.nameI18n);
+            const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
+              ...values,
+              itemId,
+              slug,
               brandId: brand._id,
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.create.duplicate'),
-            };
-          }
+              brandSlug: brand.slug,
+              ...DEFAULT_COUNTERS_OBJECT,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+            const createdBrandCollection = createdBrandCollectionResult.ops[0];
+            if (!createdBrandCollectionResult.result.ok || !createdBrandCollection) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brandCollections.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Create brand collection
-          const itemId = await getNextItemId(COL_BRAND_COLLECTIONS);
-          const slug = await generateDefaultLangSlug(values.nameI18n);
-          const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
-            ...values,
-            itemId,
-            slug,
-            brandId: brand._id,
-            brandSlug: brand.slug,
-            ...DEFAULT_COUNTERS_OBJECT,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-          const createdBrandCollection = createdBrandCollectionResult.ops[0];
-          if (!createdBrandCollectionResult.result.ok || !createdBrandCollection) {
-            return {
-              success: false,
-              message: await getApiMessage('brandCollections.create.error'),
-            };
-          }
-
-          // Update brand collections list
-          const updatedBrandResult = await brandsCollection.findOneAndUpdate(
-            { _id: brandId },
-            {
-              $push: {
-                collectionsIds: createdBrandCollection._id,
+            // Update brand collections list
+            const updatedBrandResult = await brandsCollection.findOneAndUpdate(
+              { _id: brandId },
+              {
+                $push: {
+                  collectionsIds: createdBrandCollection._id,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
               },
-              $set: {
-                updatedAt: new Date(),
+              {
+                returnOriginal: false,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          if (!updatedBrandResult.ok || !updatedBrandResult.value) {
-            return {
-              success: false,
-              message: await getApiMessage('brands.update.error'),
-            };
-          }
+            );
+            if (!updatedBrandResult.ok || !updatedBrandResult.value) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('brands.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('brandCollections.create.success'),
-            payload: updatedBrandResult.value,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('brandCollections.create.success'),
+              payload: updatedBrandResult.value,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

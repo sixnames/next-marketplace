@@ -626,7 +626,7 @@ export const attributesGroupMutations = extendType({
             }
 
             // Add attribute _id to the attributes group
-            const updatedGroup = await attributesGroupCollection.findOneAndUpdate(
+            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
               { _id: attributesGroup._id },
               {
                 $push: {
@@ -637,7 +637,8 @@ export const attributesGroupMutations = extendType({
                 returnOriginal: false,
               },
             );
-            if (!updatedGroup.ok || !updatedGroup.value) {
+            const updatedGroup = updatedGroupResult.value;
+            if (!updatedGroupResult.ok || !updatedGroup) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
@@ -649,7 +650,7 @@ export const attributesGroupMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('attributesGroups.addAttribute.success'),
-              payload: updatedGroup.value,
+              payload: updatedGroup,
             };
           });
 
@@ -868,89 +869,133 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteAttribute',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteAttributeFromGroupSchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const {
+              input: { attributesGroupId, attributeId },
+            } = args;
+
+            // Check if attributes group exist
+            const attributesGroup = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete attribute form rubrics and products
+            const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
+              attributeId,
+            });
+            const removedProductAttributes = await productAttributesCollection.deleteMany({
+              attributeId,
+            });
+            if (!removedRubricAttributes.result.ok || !removedProductAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Remove attribute
+            const removedAttributeResult = await attributesCollection.findOneAndDelete({
+              _id: attributeId,
+            });
+            if (!removedAttributeResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Remove attribute _id from attributes group
+            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
+              { _id: attributesGroup._id },
+              {
+                $pull: {
+                  attributesIds: attributeId,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedGroup = updatedGroupResult.value;
+            if (!updatedGroupResult.ok || !updatedGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.deleteAttribute.success'),
+              payload: updatedGroup,
             };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteAttributeFromGroupSchema,
           });
-          await validationSchema.validate(args.input);
 
-          const {
-            input: { attributesGroupId, attributeId },
-          } = args;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-
-          // Check if attributes group exist
-          const attributesGroup = await attributesGroupCollection.findOne({
-            _id: attributesGroupId,
-          });
-          if (!attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-            };
-          }
-
-          // Delete attribute form rubrics and products
-          const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
-            attributeId,
-          });
-          const removedProductAttributes = await productAttributesCollection.deleteMany({
-            attributeId,
-          });
-          if (!removedRubricAttributes.result.ok || !removedProductAttributes.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-            };
-          }
-
-          // Remove attribute
-          const removedAttributeResult = await attributesCollection.findOneAndDelete({
-            _id: attributeId,
-          });
-          if (!removedAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.deleteAttribute.success'),
-            payload: attributesGroup,
-          };
+          return mutationPayload;
         } catch (e) {
           console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

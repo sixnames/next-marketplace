@@ -436,85 +436,114 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('companies.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteCompany',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteCompany',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check company availability
+            const company = await companiesCollection.findOne({ _id });
+            if (!company) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete company configs
+            const removedConfigs = await configsCollection.deleteMany({
+              companySlug: company.slug,
+            });
+            if (!removedConfigs.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('configs.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete shop products
+            const removedShopsProducts = await shopProductsCollection.deleteMany({
+              shopsId: { $in: company.shopsIds },
+            });
+            if (!removedShopsProducts.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete shops
+            const removedShops = await shopsCollection.deleteMany({
+              _id: { $in: company.shopsIds },
+            });
+            if (!removedShops.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.shopsDelete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Set company as archived
+            const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
+            if (!removedCompanyResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('companies.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const { _id } = args;
-
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.delete.notFound'),
-            };
-          }
-
-          // Delete company configs
-          const removedConfigs = await configsCollection.deleteMany({
-            companySlug: company.slug,
-          });
-          if (!removedConfigs.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.delete.error'),
-            };
-          }
-
-          // Delete shop products
-          const removedShopsProducts = await shopProductsCollection.deleteMany({
-            shopsId: { $in: company.shopsIds },
-          });
-          if (!removedShopsProducts.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.delete.error'),
-            };
-          }
-
-          // Delete shops
-          const removedShops = await shopsCollection.deleteMany({ _id: { $in: company.shopsIds } });
-          if (!removedShops.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.shopsDelete.error'),
-            };
-          }
-
-          // Set company as archived
-          const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
-          if (!removedCompanyResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('companies.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

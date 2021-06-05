@@ -384,18 +384,6 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
-        // Permission
-        const { allow, message } = await getOperationPermission({
-          context,
-          slug: 'deleteAttributesGroup',
-        });
-        if (!allow) {
-          return {
-            success: false,
-            message,
-          };
-        }
-
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const attributesGroupCollection = db.collection<AttributesGroupModel>(
@@ -421,6 +409,20 @@ export const attributesGroupMutations = extendType({
 
         try {
           await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteAttributesGroup',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             // Check if attributes group exist
             const group = await attributesGroupCollection.findOne({ _id: args._id });
             if (!group) {
@@ -497,7 +499,6 @@ export const attributesGroupMutations = extendType({
               success: true,
               message: await getApiMessage('attributesGroups.delete.success'),
             };
-            return;
           });
 
           return mutationPayload;
@@ -525,117 +526,142 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage('attributesGroups.addAttribute.success'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createAttribute',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addAttributeToGroupSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addAttributeToGroupSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const {
-            input: { attributesGroupId, metricId, ...values },
-          } = args;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+            const {
+              input: { attributesGroupId, metricId, ...values },
+            } = args;
 
-          // Check if attributes group exist
-          const attributesGroup = await attributesGroupCollection.findOne({
-            _id: attributesGroupId,
-          });
-          if (!attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-            };
-          }
+            // Check if attributes group exist
+            const attributesGroup = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if attribute already exist in the group
-          const exist = await findDocumentByI18nField({
-            fieldArg: values.nameI18n,
-            collectionName: COL_ATTRIBUTES,
-            fieldName: 'nameI18n',
-            additionalQuery: {
-              _id: { $in: attributesGroup.attributesIds },
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.duplicate`),
-            };
-          }
-
-          // Get metric
-          let metric = null;
-          if (metricId) {
-            metric = await metricsCollection.findOne({ _id: metricId });
-          }
-
-          // Create attribute
-          const slug = generateDefaultLangSlug(values.nameI18n);
-          const createdAttributeResult = await attributesCollection.insertOne({
-            ...values,
-            slug,
-            metric,
-            showAsBreadcrumb: false,
-            showInCard: true,
-            attributesGroupId,
-          });
-          const createdAttribute = createdAttributeResult.ops[0];
-          if (!createdAttributeResult.result.ok || !createdAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
-            };
-          }
-
-          // Add attribute _id to the attributes group
-          const updatedGroup = await attributesGroupCollection.findOneAndUpdate(
-            { _id: attributesGroup._id },
-            {
-              $push: {
-                attributesIds: createdAttribute._id,
+            // Check if attribute already exist in the group
+            const exist = await findDocumentByI18nField({
+              fieldArg: values.nameI18n,
+              collectionName: COL_ATTRIBUTES,
+              fieldName: 'nameI18n',
+              additionalQuery: {
+                _id: { $in: attributesGroup.attributesIds },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          if (!updatedGroup.ok || !updatedGroup.value) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.duplicate`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.addAttribute.success'),
-            payload: updatedGroup.value,
-          };
+            // Get metric
+            let metric = null;
+            if (metricId) {
+              metric = await metricsCollection.findOne({ _id: metricId });
+            }
+
+            // Create attribute
+            const slug = generateDefaultLangSlug(values.nameI18n);
+            const createdAttributeResult = await attributesCollection.insertOne({
+              ...values,
+              slug,
+              metric,
+              showAsBreadcrumb: false,
+              showInCard: true,
+              attributesGroupId,
+            });
+            const createdAttribute = createdAttributeResult.ops[0];
+            if (!createdAttributeResult.result.ok || !createdAttribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add attribute _id to the attributes group
+            const updatedGroup = await attributesGroupCollection.findOneAndUpdate(
+              { _id: attributesGroup._id },
+              {
+                $push: {
+                  attributesIds: createdAttribute._id,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            if (!updatedGroup.ok || !updatedGroup.value) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.addAttribute.success'),
+              payload: updatedGroup.value,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

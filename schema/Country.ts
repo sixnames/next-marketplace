@@ -301,63 +301,86 @@ export const CountryMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CountryPayloadModel = {
+          success: false,
+          message: await getApiMessage('cities.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteCountry',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteCountry',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check country availability
+            const country = await countriesCollection.findOne({ _id });
+            if (!country) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('countries.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete country
+            const removedCountryResult = await countriesCollection.findOneAndDelete({ _id });
+            if (!removedCountryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('countries.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete all country cities
+            const removedCitiesResult = await citiesCollection.deleteMany({
+              _id: { $in: country.citiesIds },
+            });
+            if (!removedCitiesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('countries.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
-          const { _id } = args;
-
-          // Check country availability
-          const country = await countriesCollection.findOne({ _id });
-          if (!country) {
-            return {
-              success: false,
-              message: await getApiMessage('countries.delete.notFound'),
-            };
-          }
-
-          // Delete country
-          const removedCountryResult = await countriesCollection.findOneAndDelete({ _id });
-          if (!removedCountryResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('countries.delete.error'),
-            };
-          }
-
-          // Delete all country cities
-          const removedCitiesResult = await citiesCollection.deleteMany({
-            _id: { $in: country.citiesIds },
-          });
-          if (!removedCitiesResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('countries.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

@@ -754,104 +754,122 @@ export const ShopMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.addProduct.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addManyProductsToShopSchema,
-          });
-          await validationSchema.validate(args);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-          let doneCount = 0;
-          for await (const shopProductInput of args.input) {
-            const { shopId, productId, ...values } = shopProductInput;
-
-            // Check shop and product availability
-            const shop = await shopsCollection.findOne({ _id: shopId });
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!shop || !product) {
-              break;
-            }
-
-            // Check if product already exist in the shop
-            const exist = await shopProductsCollection.findOne({
-              productId,
-              shopId: shop._id,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShopProduct',
             });
-            if (exist) {
-              break;
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
             }
 
-            // Create shop product
-            const createdShopProductResult = await shopProductsCollection.insertOne({
-              ...values,
-              active: true,
-              formattedPrice: getCurrencyString(values.price),
-              formattedOldPrice: '',
-              discountedPercent: 0,
-              productId,
-              shopId: shop._id,
-              citySlug: shop.citySlug,
-              oldPrices: [],
-              rubricId: product.rubricId,
-              rubricSlug: product.rubricSlug,
-              companyId: shop.companyId,
-              itemId: product.itemId,
-              slug: product.slug,
-              originalName: product.originalName,
-              nameI18n: product.nameI18n,
-              brandSlug: product.brandSlug,
-              brandCollectionSlug: product.brandCollectionSlug,
-              manufacturerSlug: product.manufacturerSlug,
-              mainImage: product.mainImage,
-              selectedOptionsSlugs: product.selectedOptionsSlugs,
-              barcode: product.barcode,
-              updatedAt: new Date(),
-              createdAt: new Date(),
-              ...DEFAULT_COUNTERS_OBJECT,
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addManyProductsToShopSchema,
             });
-            const createdShopProduct = createdShopProductResult.ops[0];
-            if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              break;
+            await validationSchema.validate(args);
+
+            let doneCount = 0;
+            for await (const shopProductInput of args.input) {
+              const { shopId, productId, ...values } = shopProductInput;
+
+              // Check shop and product availability
+              const shop = await shopsCollection.findOne({ _id: shopId });
+              const product = await productsCollection.findOne({ _id: productId });
+              if (!shop || !product) {
+                break;
+              }
+
+              // Check if product already exist in the shop
+              const exist = await shopProductsCollection.findOne({
+                productId,
+                shopId: shop._id,
+              });
+              if (exist) {
+                break;
+              }
+
+              // Create shop product
+              const createdShopProductResult = await shopProductsCollection.insertOne({
+                ...values,
+                active: true,
+                formattedPrice: getCurrencyString(values.price),
+                formattedOldPrice: '',
+                discountedPercent: 0,
+                productId,
+                shopId: shop._id,
+                citySlug: shop.citySlug,
+                oldPrices: [],
+                rubricId: product.rubricId,
+                rubricSlug: product.rubricSlug,
+                companyId: shop.companyId,
+                itemId: product.itemId,
+                slug: product.slug,
+                originalName: product.originalName,
+                nameI18n: product.nameI18n,
+                brandSlug: product.brandSlug,
+                brandCollectionSlug: product.brandCollectionSlug,
+                manufacturerSlug: product.manufacturerSlug,
+                mainImage: product.mainImage,
+                selectedOptionsSlugs: product.selectedOptionsSlugs,
+                barcode: product.barcode,
+                updatedAt: new Date(),
+                createdAt: new Date(),
+                ...DEFAULT_COUNTERS_OBJECT,
+              });
+              const createdShopProduct = createdShopProductResult.ops[0];
+              if (!createdShopProductResult.result.ok || !createdShopProduct) {
+                break;
+              }
+
+              doneCount = doneCount + 1;
             }
 
-            doneCount = doneCount + 1;
-          }
+            if (doneCount !== args.input.length) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          if (doneCount !== args.input.length) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.addProduct.success'),
             };
-          }
+          });
 
-          return {
-            success: true,
-            message: await getApiMessage('shops.addProduct.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

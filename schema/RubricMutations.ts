@@ -313,65 +313,92 @@ export const RubricMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: RubricPayloadModel = {
+          success: false,
+          message: await getApiMessage('rubrics.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteRubric',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteRubric',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check rubric availability
+            const rubric = await rubricsCollection.findOne({ _id });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete rubric products
+            const removedShopProductsResult = await shopProductsCollection.deleteMany({
+              rubricId: _id,
+            });
+            const removedProductsResult = await productsCollection.deleteMany({
+              rubricId: _id,
+            });
+            if (!removedProductsResult.result.ok || !removedShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.deleteProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete rubric
+            const removedRubricsResult = await rubricsCollection.deleteOne({
+              _id,
+            });
+            if (!removedRubricsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('rubrics.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const productsCollection = db.collection(COL_PRODUCTS);
-          const { _id } = args;
-
-          // Check rubric availability
-          const rubric = await rubricsCollection.findOne({ _id });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.delete.notFound'),
-            };
-          }
-
-          // Remove rubric and child rubrics ids from all connected products
-          const updatedProductsResult = await productsCollection.deleteMany({
-            rubricId: _id,
-          });
-          if (!updatedProductsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.deleteProduct.error'),
-            };
-          }
-
-          // Delete rubric
-          const removedRubricsResult = await rubricsCollection.deleteOne({
-            _id,
-          });
-          if (!removedRubricsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

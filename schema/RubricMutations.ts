@@ -415,116 +415,141 @@ export const RubricMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+        const session = client.startSession();
+
+        let mutationPayload: RubricPayloadModel = {
+          success: false,
+          message: await getApiMessage('rubrics.addAttributesGroup.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addAttributesGroupToRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const { input } = args;
-          const { rubricId, attributesGroupId } = input;
-
-          // Check rubric and attributes group availability
-          const attributesGroup = await attributesGroupsCollection.findOne({
-            _id: attributesGroupId,
-          });
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric || !attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addAttributesGroup.notFound'),
-            };
-          }
-
-          // Create attributes
-          const groupAttributes = await attributesCollection
-            .find({
-              _id: { $in: attributesGroup.attributesIds },
-            })
-            .toArray();
-
-          if (groupAttributes.length < 1) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addAttributesGroup.noAttributes'),
-            };
-          }
-
-          const rubricAttributes: RubricAttributeModel[] = [];
-          for await (const attribute of groupAttributes) {
-            const rubricAttribute = await castAttributeForRubric({
-              attribute,
-              rubricSlug: rubric.slug,
-              rubricId,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateRubric',
             });
-            rubricAttributes.push(rubricAttribute);
-          }
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          const createdAttributesResult = await rubricAttributesCollection.insertMany(
-            rubricAttributes,
-          );
-          if (!createdAttributesResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addAttributesGroup.error'),
-            };
-          }
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addAttributesGroupToRubricSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          // Update rubric
-          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-            {
-              _id: rubricId,
-            },
-            {
-              $push: {
-                attributesGroupsIds: attributesGroup._id,
+            const { input } = args;
+            const { rubricId, attributesGroupId } = input;
+
+            // Check rubric and attributes group availability
+            const attributesGroup = await attributesGroupsCollection.findOne({
+              _id: attributesGroupId,
+            });
+            const rubric = await rubricsCollection.findOne({ _id: rubricId });
+            if (!rubric || !attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.addAttributesGroup.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create attributes
+            const groupAttributes = await attributesCollection
+              .find({
+                _id: { $in: attributesGroup.attributesIds },
+              })
+              .toArray();
+
+            if (groupAttributes.length < 1) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.addAttributesGroup.noAttributes'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const rubricAttributes: RubricAttributeModel[] = [];
+            for await (const attribute of groupAttributes) {
+              const rubricAttribute = await castAttributeForRubric({
+                attribute,
+                rubricSlug: rubric.slug,
+                rubricId,
+              });
+              rubricAttributes.push(rubricAttribute);
+            }
+
+            const createdAttributesResult = await rubricAttributesCollection.insertMany(
+              rubricAttributes,
+            );
+            if (!createdAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.addAttributesGroup.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update rubric
+            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+              {
+                _id: rubricId,
               },
-            },
-            { returnOriginal: false },
-          );
+              {
+                $push: {
+                  attributesGroupsIds: attributesGroup._id,
+                },
+              },
+              { returnOriginal: false },
+            );
 
-          const updatedRubric = updatedRubricResult.value;
-          if (!updatedRubricResult.ok || !updatedRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addAttributesGroup.error'),
+            const updatedRubric = updatedRubricResult.value;
+            if (!updatedRubricResult.ok || !updatedRubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.addAttributesGroup.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('rubrics.addAttributesGroup.success'),
+              payload: updatedRubric,
             };
-          }
+          });
 
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.addAttributesGroup.success'),
-            payload: updatedRubric,
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

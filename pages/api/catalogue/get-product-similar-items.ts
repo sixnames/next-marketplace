@@ -9,6 +9,9 @@ import { getSessionCity, getSessionCompanySlug, getSessionLocale } from 'lib/ses
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+const fullPercentage = 100;
+const filterPercentage = 50;
+
 export interface CatalogueQueryInterface {
   productId: string;
   companyId?: string;
@@ -58,6 +61,40 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             },
           },
         },
+        {
+          $addFields: {
+            minPercent: {
+              $ceil: {
+                $divide: ['$minPrice', fullPercentage],
+              },
+            },
+            maxPercent: {
+              $ceil: {
+                $divide: ['$maxPrice', fullPercentage],
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
+            minFilterPart: {
+              $multiply: ['$minPercent', filterPercentage],
+            },
+            maxFilterPart: {
+              $multiply: ['$maxPercent', filterPercentage],
+            },
+          },
+        },
+        {
+          $addFields: {
+            minFilterPrice: {
+              $subtract: ['$minPrice', '$minFilterPart'],
+            },
+            maxFilterPrice: {
+              $add: ['$maxPrice', '$maxFilterPart'],
+            },
+          },
+        },
 
         // Lookup similar products
         {
@@ -70,7 +107,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             let: {
               rubricSlug: '$rubricSlug',
               selectedOptionsSlugs: '$selectedOptionsSlugs',
-              minPrice: '$minPrice',
+              minFilterPrice: '$minFilterPrice',
+              maxFilterPrice: '$maxFilterPrice',
             },
             pipeline: [
               {
@@ -79,7 +117,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   citySlug: city,
                   $expr: {
                     $and: [
-                      { $gte: ['$price', '$$minPrice'] },
+                      { $gte: ['$price', '$$minFilterPrice'] },
+                      { $lte: ['$price', '$$maxFilterPrice'] },
                       { $eq: ['$$rubricSlug', '$rubricSlug'] },
                       { $in: ['$$selectedOptionsSlugs', '$selectedOptionsSlugs'] },
                     ],
@@ -192,11 +231,19 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             similarProducts: {
               $addToSet: '$similarProducts',
             },
+            minFilterPrice: {
+              $first: '$minFilterPrice',
+            },
+            maxFilterPrice: {
+              $first: '$maxFilterPrice',
+            },
           },
         },
       ])
       .toArray();
     const product = shopProductsAggregation[0];
+
+    console.log(product.similarProducts?.length);
 
     if (!product || !product.similarProducts) {
       res.statusCode = 500;

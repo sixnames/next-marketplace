@@ -38,13 +38,13 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   const onLoad = React.useCallback(
     (map) => {
       mapRef.current = map;
+      mapRef.current.setZoom(13);
 
       // Fit all markers in map window
       const bounds = new window.google.maps.LatLngBounds();
       shops.forEach(({ address }) => {
         bounds.extend(address.formattedCoordinates);
       });
-      mapRef.current.setZoom(10);
     },
     [shops],
   );

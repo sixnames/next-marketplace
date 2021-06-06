@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -368,12 +368,15 @@ export const ProductAttributeMutations = extendType({
               attributeId,
               productId: product._id,
               productSlug: product.slug,
+              rubricId: product.rubricId,
+              rubricSlug: product.rubricSlug,
               selectedOptionsIds: [],
               selectedOptionsSlugs: [],
               number: undefined,
               textI18n: {},
               showAsBreadcrumb: false,
               showInCard: true,
+              ...DEFAULT_COUNTERS_OBJECT,
             };
           }
 
@@ -522,12 +525,15 @@ export const ProductAttributeMutations = extendType({
                 attributeId,
                 productId: product._id,
                 productSlug: product.slug,
+                rubricId: product.rubricId,
+                rubricSlug: product.rubricSlug,
                 selectedOptionsIds: [],
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
                 showAsBreadcrumb: false,
                 showInCard: true,
+                ...DEFAULT_COUNTERS_OBJECT,
               };
             }
 
@@ -627,12 +633,15 @@ export const ProductAttributeMutations = extendType({
                 attributeId,
                 productId: product._id,
                 productSlug: product.slug,
+                rubricId: product.rubricId,
+                rubricSlug: product.rubricSlug,
                 selectedOptionsIds: [],
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
                 showAsBreadcrumb: false,
                 showInCard: true,
+                ...DEFAULT_COUNTERS_OBJECT,
               };
             }
 

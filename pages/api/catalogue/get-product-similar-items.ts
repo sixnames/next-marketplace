@@ -243,8 +243,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       .toArray();
     const product = shopProductsAggregation[0];
 
-    console.log(product.similarProducts?.length);
-
     if (!product || !product.similarProducts) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');

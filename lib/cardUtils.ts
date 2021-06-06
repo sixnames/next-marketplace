@@ -6,6 +6,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
+  SORT_DESC,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -274,6 +275,12 @@ export async function getCardData({
                   ],
                 },
               },
+              {
+                $sort: {
+                  views: SORT_DESC,
+                },
+              },
+
               // get attribute selected options
               {
                 $lookup: {
@@ -288,6 +295,11 @@ export async function getCardData({
                         $expr: {
                           $in: ['$_id', '$$selectedOptionsIds'],
                         },
+                      },
+                    },
+                    {
+                      $sort: {
+                        views: SORT_DESC,
                       },
                     },
                   ],

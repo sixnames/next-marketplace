@@ -1,6 +1,10 @@
 import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -96,148 +100,192 @@ export const ProductConnectionMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const productConnectionsCollection = db.collection<ProductConnectionModel>(
+          COL_PRODUCT_CONNECTIONS,
+        );
+        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+          COL_PRODUCT_CONNECTION_ITEMS,
+        );
+        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+
+        const session = client.startSession();
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.connection.createError`),
+        };
+
         try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: createProductConnectionSchema,
-          });
-          await validationSchema.validate(args.input);
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productsAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
-          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-            COL_PRODUCT_CONNECTION_ITEMS,
-          );
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const { input } = args;
-          const { productId, attributeId } = input;
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: createProductConnectionSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          // Check all entities availability
-          const product = await productsCollection.findOne({ _id: productId });
-          const productConnections = await productConnectionsCollection
-            .aggregate([
+            const { input } = args;
+            const { productId, attributeId } = input;
+
+            // Check all entities availability
+            const product = await productsCollection.findOne({ _id: productId });
+            const productConnections = await productConnectionsCollection
+              .aggregate([
+                {
+                  $match: { productIds: productId },
+                },
+              ])
+              .toArray();
+            const productAttribute = await productsAttributesCollection.findOne({
+              productId,
+              attributeId,
+            });
+
+            // Find current attribute in product
+            if (!product || !productAttribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check attribute variant. Must be as Select
+            if (productAttribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.attributeVariantError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if connection already exist
+            const exist = productConnections.some((connection) => {
+              return connection.attributeId.equals(attributeId);
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.connection.exist`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Find current option
+            const optionId = productAttribute.selectedOptionsIds[0];
+            if (!optionId) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.connection.createError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const option = await optionsCollection.findOne({ _id: optionId });
+            if (!option) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.connection.createError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create connection
+            const createdConnectionResult = await productConnectionsCollection.insertOne({
+              attributeId: productAttribute.attributeId,
+              attributeSlug: productAttribute.slug,
+              productsIds: [productId],
+            });
+            const createdConnection = createdConnectionResult.ops[0];
+            if (!createdConnectionResult.result.ok || !createdConnection) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.connection.createError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create connection item
+            const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
+              optionId,
+              productId,
+              productSlug: product.slug,
+              connectionId: createdConnection._id,
+            });
+            const createdConnectionItem = createdConnectionItemResult.ops[0];
+            if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.connection.createError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
               {
-                $match: { productIds: productId },
+                _id: productId,
               },
-            ])
-            .toArray();
-          const productAttribute = await productsAttributesCollection.findOne({
-            productId,
-            attributeId,
-          });
-
-          // Find current attribute in product
-          if (!product || !productAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.notFound`),
-            };
-          }
-
-          // Check attribute variant. Must be as Select
-          if (productAttribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.attributeVariantError`),
-            };
-          }
-
-          // Check if connection already exist
-          const exist = productConnections.some((connection) => {
-            return connection.attributeId.equals(attributeId);
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.exist`),
-            };
-          }
-
-          // Find current option
-          const optionId = productAttribute.selectedOptionsIds[0];
-          if (!optionId) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.createError`),
-            };
-          }
-          const option = await optionsCollection.findOne({ _id: optionId });
-          if (!option) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.createError`),
-            };
-          }
-
-          // Create connection
-          const createdConnectionResult = await productConnectionsCollection.insertOne({
-            attributeId: productAttribute.attributeId,
-            attributeSlug: productAttribute.slug,
-            productsIds: [productId],
-          });
-          const createdConnection = createdConnectionResult.ops[0];
-          if (!createdConnectionResult.result.ok || !createdConnection) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.createError`),
-            };
-          }
-
-          // Create connection item
-          const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
-            optionId,
-            productId,
-            productSlug: product.slug,
-            connectionId: createdConnection._id,
-          });
-          const createdConnectionItem = createdConnectionItemResult.ops[0];
-          if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.connection.createError`),
-            };
-          }
-
-          // Update product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                updatedAt: new Date(),
+              {
+                $set: {
+                  updatedAt: new Date(),
+                },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('products.connection.createSuccess'),
-            payload: updatedProduct,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.connection.createSuccess'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

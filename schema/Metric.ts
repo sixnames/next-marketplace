@@ -9,10 +9,16 @@ import {
   MetricModel,
   MetricsPaginationPayloadModel,
   MetricPayloadModel,
-  ProductModel,
+  ProductAttributeModel,
+  RubricAttributeModel,
 } from 'db/dbModels';
 import { aggregatePagination } from 'db/aggregatePagination';
-import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_METRICS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_ATTRIBUTES,
+} from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { SORT_ASC } from 'config/common';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
@@ -201,121 +207,157 @@ export const MetricMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: MetricPayloadModel = {
+          success: false,
+          message: await getApiMessage('metrics.update.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateMetric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateMetric',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateMetricSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateMetricSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const { input } = args;
-          const { metricId, ...values } = input;
+            const { input } = args;
+            const { metricId, ...values } = input;
 
-          // Check metric availability
-          const metric = await metricsCollection.findOne({ _id: metricId });
-          if (!metric) {
-            return {
-              success: false,
-              message: await getApiMessage('metrics.update.error'),
-            };
-          }
+            // Check metric availability
+            const metric = await metricsCollection.findOne({ _id: metricId });
+            if (!metric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('metrics.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if metric is already exist
-          const exist = await findDocumentByI18nField({
-            fieldName: 'nameI18n',
-            collectionName: COL_METRICS,
-            fieldArg: input.nameI18n,
-            additionalQuery: { _id: { $ne: metricId } },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('metrics.update.duplicate'),
-            };
-          }
+            // Check if metric is already exist
+            const exist = await findDocumentByI18nField({
+              fieldName: 'nameI18n',
+              collectionName: COL_METRICS,
+              fieldArg: input.nameI18n,
+              additionalQuery: { _id: { $ne: metricId } },
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('metrics.update.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update metric
-          const updatedMetricResult = await metricsCollection.findOneAndUpdate(
-            { _id: metricId },
-            {
-              $set: {
-                ...values,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedMetric = updatedMetricResult.value;
-          if (!updatedMetricResult.ok || !updatedMetric) {
-            return {
-              success: false,
-              message: await getApiMessage('metrics.update.error'),
-            };
-          }
-
-          // Update attributes metric
-          await attributesCollection.updateMany(
-            { 'metric._id': metricId },
-            {
-              $set: {
-                metric: updatedMetric,
-              },
-            },
-          );
-          const updatedAttributes = await attributesCollection
-            .find(
-              { 'metric._id': metricId },
+            // Update metric
+            const updatedMetricResult = await metricsCollection.findOneAndUpdate(
+              { _id: metricId },
               {
-                projection: {
-                  _id: true,
+                $set: {
+                  ...values,
                 },
               },
-            )
-            .toArray();
-          const updatedAttributesIds = updatedAttributes.map(({ _id }) => _id);
-
-          // Update products metric
-          await productsCollection.updateMany(
-            { 'attributes.attributeId': { $in: updatedAttributesIds } },
-            {
-              $set: {
-                'attributes.$[attribute].metric': updatedMetric,
+              {
+                returnOriginal: false,
               },
-            },
-            {
-              arrayFilters: [{ 'attribute.attributeId': { $in: updatedAttributesIds } }],
-            },
-          );
+            );
+            const updatedMetric = updatedMetricResult.value;
+            if (!updatedMetricResult.ok || !updatedMetric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('metrics.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('metrics.update.success'),
-            payload: updatedMetric,
-          };
+            // Update attributes metric
+            const updatedAttributesResult = await attributesCollection.updateMany(
+              { 'metric._id': metricId },
+              {
+                $set: {
+                  metric: updatedMetric,
+                },
+              },
+            );
+
+            // Update product attributes metric
+            const updatedProductAttributesResult = await productAttributesCollection.updateMany(
+              { 'metric._id': metricId },
+              {
+                $set: {
+                  metric: updatedMetric,
+                },
+              },
+            );
+
+            // Update rubric attributes metric
+            const updatedRubricAttributesResult = await rubricAttributesCollection.updateMany(
+              { 'metric._id': metricId },
+              {
+                $set: {
+                  metric: updatedMetric,
+                },
+              },
+            );
+            if (
+              !updatedAttributesResult.result.ok ||
+              !updatedProductAttributesResult.result.ok ||
+              !updatedRubricAttributesResult.result.ok
+            ) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('metrics.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('metrics.update.success'),
+              payload: updatedMetric,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

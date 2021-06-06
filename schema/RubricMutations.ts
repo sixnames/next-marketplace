@@ -740,93 +740,116 @@ export const RubricMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: RubricPayloadModel = {
+          success: false,
+          message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateRubric',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteAttributesGroupFromRubricSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteAttributesGroupFromRubricSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const { input } = args;
-          const { rubricId, attributesGroupId } = input;
+            const { input } = args;
+            const { rubricId, attributesGroupId } = input;
 
-          // Check rubric and attributes group availability
-          const attributesGroup = await attributesGroupsCollection.findOne({
-            _id: attributesGroupId,
-          });
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric || !attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.deleteAttributesGroup.notFound'),
-            };
-          }
+            // Check rubric and attributes group availability
+            const attributesGroup = await attributesGroupsCollection.findOne({
+              _id: attributesGroupId,
+            });
+            const rubric = await rubricsCollection.findOne({ _id: rubricId });
+            if (!rubric || !attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.deleteAttributesGroup.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Delete rubric attributes
-          const removedRubricAttributesResult = await rubricAttributesCollection.deleteMany({
-            attributesGroupId,
-          });
-          if (!removedRubricAttributesResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
-            };
-          }
+            // Delete rubric attributes
+            const removedRubricAttributesResult = await rubricAttributesCollection.deleteMany({
+              attributesGroupId,
+            });
+            if (!removedRubricAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Delete attributes group from rubric
-          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-            {
-              _id: rubricId,
-            },
-            {
-              $pull: {
-                attributesGroupsIds: attributesGroupId,
+            // Delete attributes group from rubric
+            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+              {
+                _id: rubricId,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedRubric = updatedRubricResult.value;
-          if (!updatedRubricResult.ok || !updatedRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
-            };
-          }
+              {
+                $pull: {
+                  attributesGroupsIds: attributesGroupId,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedRubric = updatedRubricResult.value;
+            if (!updatedRubricResult.ok || !updatedRubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-            payload: updatedRubric,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
+              payload: updatedRubric,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

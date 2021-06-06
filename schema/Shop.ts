@@ -443,7 +443,7 @@ export const ShopMutations = extendType({
             };
           }
 
-          // Delete product asset
+          // Delete shop asset
           const currentAsset = shop.assets.find(({ index }) => index === assetIndex);
           const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
           if (!removedAsset) {
@@ -615,102 +615,125 @@ export const ShopMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.addProduct.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addProductToShopSchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const { input } = args;
+            const { shopId, productId, ...values } = input;
+
+            // Check shop and product availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!shop || !product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if product already exist in the shop
+            const exist = await shopProductsCollection.findOne({
+              productId,
+              shopId: shop._id,
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create shop product
+            const createdShopProductResult = await shopProductsCollection.insertOne({
+              ...values,
+              active: true,
+              formattedPrice: getCurrencyString(values.price),
+              formattedOldPrice: '',
+              discountedPercent: 0,
+              productId,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: product.rubricId,
+              rubricSlug: product.rubricSlug,
+              companyId: shop.companyId,
+              itemId: product.itemId,
+              slug: product.slug,
+              originalName: product.originalName,
+              nameI18n: product.nameI18n,
+              brandSlug: product.brandSlug,
+              brandCollectionSlug: product.brandCollectionSlug,
+              manufacturerSlug: product.manufacturerSlug,
+              mainImage: product.mainImage,
+              selectedOptionsSlugs: product.selectedOptionsSlugs,
+              barcode: product.barcode,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
+            });
+            const createdShopProduct = createdShopProductResult.ops[0];
+            if (!createdShopProductResult.result.ok || !createdShopProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.addProduct.success'),
+              payload: shop,
             };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addProductToShopSchema,
           });
-          await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-          const { shopId, productId, ...values } = input;
-
-          // Check shop and product availability
-          const shop = await shopsCollection.findOne({ _id: shopId });
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!shop || !product) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.notFound'),
-            };
-          }
-
-          // Check if product already exist in the shop
-          const exist = await shopProductsCollection.findOne({
-            productId,
-            shopId: shop._id,
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.duplicate'),
-            };
-          }
-
-          // Create shop product
-          const createdShopProductResult = await shopProductsCollection.insertOne({
-            ...values,
-            active: true,
-            formattedPrice: getCurrencyString(values.price),
-            formattedOldPrice: '',
-            discountedPercent: 0,
-            productId,
-            shopId: shop._id,
-            citySlug: shop.citySlug,
-            oldPrices: [],
-            rubricId: product.rubricId,
-            rubricSlug: product.rubricSlug,
-            companyId: shop.companyId,
-            itemId: product.itemId,
-            slug: product.slug,
-            originalName: product.originalName,
-            nameI18n: product.nameI18n,
-            brandSlug: product.brandSlug,
-            brandCollectionSlug: product.brandCollectionSlug,
-            manufacturerSlug: product.manufacturerSlug,
-            mainImage: product.mainImage,
-            selectedOptionsSlugs: product.selectedOptionsSlugs,
-            barcode: product.barcode,
-            updatedAt: new Date(),
-            createdAt: new Date(),
-            ...DEFAULT_COUNTERS_OBJECT,
-          });
-          const createdShopProduct = createdShopProductResult.ops[0];
-          if (!createdShopProductResult.result.ok || !createdShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.addProduct.success'),
-            payload: shop,
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

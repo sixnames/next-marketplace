@@ -297,7 +297,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
               </div>
 
               {/*list features*/}
-              <div className='md:col-span-1 md:order-1 lg:col-span-2'>
+              <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
                 {(visibleListFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
                   if (!showInCard) {
                     return null;
@@ -324,7 +324,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
 
       <Inner lowTop lowBottom>
         {/* Features */}
-        <section className='mb-28' id={`card-features`}>
+        <div className='mb-28' id={`card-features`}>
           <div className='grid gap-8 md:grid-cols-7 mb-12'>
             <div className='md:col-span-2'>
               {(iconFeatures || []).map((attribute) => {
@@ -413,7 +413,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
               })}
             </div>
           </div>
-        </section>
+        </div>
 
         {/*shops*/}
         <section id={`card-shops`} className='mb-28'>

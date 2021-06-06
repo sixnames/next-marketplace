@@ -397,103 +397,128 @@ export const CountryMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CountryPayloadModel = {
+          success: false,
+          message: await getApiMessage('cities.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createCity',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createCity',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addCityToCountrySchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addCityToCountrySchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
-          const { input } = args;
-          const { countryId, ...values } = input;
+            const { input } = args;
+            const { countryId, ...values } = input;
 
-          // Check country availability
-          const country = await countriesCollection.findOne({ _id: countryId });
-          if (!country) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.notFound'),
-            };
-          }
+            // Check country availability
+            const country = await countriesCollection.findOne({ _id: countryId });
+            if (!country) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if city already exist
-          const exist = await findDocumentByI18nField({
-            fieldName: 'nameI18n',
-            fieldArg: values.nameI18n,
-            collectionName: COL_CITIES,
-            additionalQuery: {
-              _id: { $in: country.citiesIds },
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.duplicate'),
-            };
-          }
-
-          // Create city
-          const createdCityResult = await citiesCollection.insertOne({
-            ...values,
-          });
-          const createdCity = createdCityResult.ops[0];
-          if (!createdCityResult.result.ok || !createdCity) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.error'),
-            };
-          }
-
-          // Add created city to the country
-          const updatedCountryResult = await countriesCollection.findOneAndUpdate(
-            { _id: countryId },
-            {
-              $push: {
-                citiesIds: createdCity._id,
+            // Check if city already exist
+            const exist = await findDocumentByI18nField({
+              fieldName: 'nameI18n',
+              fieldArg: values.nameI18n,
+              collectionName: COL_CITIES,
+              additionalQuery: {
+                _id: { $in: country.citiesIds },
               },
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCountry = updatedCountryResult.value;
-          if (!updatedCountryResult.ok || !updatedCountry) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.error'),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('cities.create.success'),
-            payload: updatedCountry,
-          };
+            // Create city
+            const createdCityResult = await citiesCollection.insertOne({
+              ...values,
+            });
+            const createdCity = createdCityResult.ops[0];
+            if (!createdCityResult.result.ok || !createdCity) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add created city to the country
+            const updatedCountryResult = await countriesCollection.findOneAndUpdate(
+              { _id: countryId },
+              {
+                $push: {
+                  citiesIds: createdCity._id,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCountry = updatedCountryResult.value;
+            if (!updatedCountryResult.ok || !updatedCountry) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('cities.create.success'),
+              payload: updatedCountry,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

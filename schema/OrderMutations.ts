@@ -295,6 +295,7 @@ export const OrderMutations = extendType({
 
               castedOrderProducts.push({
                 _id: new ObjectId(),
+                statusId: initialStatus._id,
                 itemId,
                 price,
                 amount,

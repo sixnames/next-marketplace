@@ -409,6 +409,7 @@ export interface OrderProductModel extends TimestampModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
+  statusId: ObjectIdModel;
 }
 
 export interface OrderCustomerModel extends TimestampModel {

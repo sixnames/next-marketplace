@@ -605,6 +605,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   mainImage: string;
+  token?: string;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {

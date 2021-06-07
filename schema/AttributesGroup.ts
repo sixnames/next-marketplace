@@ -336,7 +336,7 @@ export const attributesGroupMutations = extendType({
           }
 
           // Update attributes group
-          const createdAttributesGroup = await attributesGroupCollection.findOneAndUpdate(
+          const updatedAttributesGroupResult = await attributesGroupCollection.findOneAndUpdate(
             {
               _id: args.input.attributesGroupId,
             },
@@ -350,7 +350,8 @@ export const attributesGroupMutations = extendType({
             },
           );
 
-          if (!createdAttributesGroup.ok || !createdAttributesGroup.value) {
+          const updatedAttributesGroup = updatedAttributesGroupResult.value;
+          if (!updatedAttributesGroupResult.ok || !updatedAttributesGroup) {
             return {
               success: false,
               message: await getApiMessage('attributesGroups.update.error'),
@@ -360,7 +361,7 @@ export const attributesGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('attributesGroups.update.success'),
-            payload: createdAttributesGroup.value,
+            payload: updatedAttributesGroup,
           };
         } catch (e) {
           return {
@@ -383,104 +384,132 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const productConnectionsCollection = db.collection<ProductConnectionModel>(
+          COL_PRODUCT_CONNECTIONS,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel | null = {
+          success: false,
+          message: await getApiMessage(`attributesGroups.delete.error`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteAttributesGroup',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteAttributesGroup',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if attributes group exist
+            const group = await attributesGroupCollection.findOne({ _id: args._id });
+            if (!group) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.delete.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if group attributes is used in product connections and in product attributes
+            const usedInProductAttributes = await productAttributesCollection.findOne({
+              attributeId: {
+                $in: group.attributesIds,
+              },
+            });
+            const usedInProductCollections = await productConnectionsCollection.findOne({
+              attributeId: {
+                $in: group.attributesIds,
+              },
+            });
+            if (usedInProductAttributes || usedInProductCollections) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.delete.used`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if used in rubrics
+            const usedInRubricAttributes = await rubricAttributesCollection.findOne({
+              _id: {
+                $in: group.attributesIds,
+              },
+            });
+            if (usedInRubricAttributes) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.delete.used`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete all nested attributes
+            const removedAttributes = await attributesCollection.deleteMany({
+              _id: { $in: group.attributesIds },
+            });
+            if (!removedAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.delete.attributesError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete attributes group
+            const removedGroup = await attributesGroupCollection.findOneAndDelete({
+              _id: group._id,
+            });
+            if (!removedGroup.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.delete.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
-
-          // Check if attributes group exist
-          const group = await attributesGroupCollection.findOne({ _id: args._id });
-          if (!group) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.delete.notFound`),
-            };
-          }
-
-          // Check if group attributes is used in product connections and in product attributes
-          const usedInProductAttributes = await productAttributesCollection.findOne({
-            attributeId: {
-              $in: group.attributesIds,
-            },
-          });
-          const usedInProductCollections = await productConnectionsCollection.findOne({
-            attributeId: {
-              $in: group.attributesIds,
-            },
-          });
-          if (usedInProductAttributes || usedInProductCollections) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.delete.used`),
-            };
-          }
-
-          // Check if used in rubrics
-          const usedInRubricAttributes = await rubricAttributesCollection.findOne({
-            _id: {
-              $in: group.attributesIds,
-            },
-          });
-          if (usedInRubricAttributes) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.delete.used`),
-            };
-          }
-
-          // Delete all nested attributes
-          const removedAttributes = await attributesCollection.deleteMany({
-            _id: { $in: group.attributesIds },
-          });
-          if (!removedAttributes.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.delete.attributesError`),
-            };
-          }
-
-          // Delete attributes group
-          const removedGroup = await attributesGroupCollection.findOneAndDelete({ _id: group._id });
-          if (!removedGroup.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.delete.error`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -497,117 +526,143 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage('attributesGroups.addAttribute.success'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createAttribute',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addAttributeToGroupSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addAttributeToGroupSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const {
-            input: { attributesGroupId, metricId, ...values },
-          } = args;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+            const {
+              input: { attributesGroupId, metricId, ...values },
+            } = args;
 
-          // Check if attributes group exist
-          const attributesGroup = await attributesGroupCollection.findOne({
-            _id: attributesGroupId,
-          });
-          if (!attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-            };
-          }
+            // Check if attributes group exist
+            const attributesGroup = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if attribute already exist in the group
-          const exist = await findDocumentByI18nField({
-            fieldArg: values.nameI18n,
-            collectionName: COL_ATTRIBUTES,
-            fieldName: 'nameI18n',
-            additionalQuery: {
-              _id: { $in: attributesGroup.attributesIds },
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.duplicate`),
-            };
-          }
-
-          // Get metric
-          let metric = null;
-          if (metricId) {
-            metric = await metricsCollection.findOne({ _id: metricId });
-          }
-
-          // Create attribute
-          const slug = generateDefaultLangSlug(values.nameI18n);
-          const createdAttributeResult = await attributesCollection.insertOne({
-            ...values,
-            slug,
-            metric,
-            showAsBreadcrumb: false,
-            showInCard: true,
-            attributesGroupId,
-          });
-          const createdAttribute = createdAttributeResult.ops[0];
-          if (!createdAttributeResult.result.ok || !createdAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
-            };
-          }
-
-          // Add attribute _id to the attributes group
-          const updatedGroup = await attributesGroupCollection.findOneAndUpdate(
-            { _id: attributesGroup._id },
-            {
-              $push: {
-                attributesIds: createdAttribute._id,
+            // Check if attribute already exist in the group
+            const exist = await findDocumentByI18nField({
+              fieldArg: values.nameI18n,
+              collectionName: COL_ATTRIBUTES,
+              fieldName: 'nameI18n',
+              additionalQuery: {
+                _id: { $in: attributesGroup.attributesIds },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          if (!updatedGroup.ok || !updatedGroup.value) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.duplicate`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.addAttribute.success'),
-            payload: updatedGroup.value,
-          };
+            // Get metric
+            let metric = null;
+            if (metricId) {
+              metric = await metricsCollection.findOne({ _id: metricId });
+            }
+
+            // Create attribute
+            const slug = generateDefaultLangSlug(values.nameI18n);
+            const createdAttributeResult = await attributesCollection.insertOne({
+              ...values,
+              slug,
+              metric,
+              showAsBreadcrumb: false,
+              showInCard: true,
+              attributesGroupId,
+            });
+            const createdAttribute = createdAttributeResult.ops[0];
+            if (!createdAttributeResult.result.ok || !createdAttribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add attribute _id to the attributes group
+            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
+              { _id: attributesGroup._id },
+              {
+                $push: {
+                  attributesIds: createdAttribute._id,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedGroup = updatedGroupResult.value;
+            if (!updatedGroupResult.ok || !updatedGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.addAttribute.success'),
+              payload: updatedGroup,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -624,152 +679,180 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateAttribute',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributeInGroupSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateAttributeInGroupSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const {
-            input: { attributesGroupId, attributeId, metricId, ...values },
-          } = args;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+            const {
+              input: { attributesGroupId, attributeId, metricId, ...values },
+            } = args;
 
-          // Check if attributes group exist
-          const group = await attributesGroupCollection.findOne({
-            _id: attributesGroupId,
-          });
-          if (!group) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-            };
-          }
+            // Check attributes group availability
+            const group = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!group) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if attribute exist
-          const attribute = await attributesCollection.findOne({
-            _id: attributeId,
-          });
-          if (!attribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-            };
-          }
+            // Check attribute availability
+            const attribute = await attributesCollection.findOne({
+              _id: attributeId,
+            });
+            if (!attribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check attribute duplicate
-          const exist = await findDocumentByI18nField({
-            fieldArg: values.nameI18n,
-            collectionName: COL_ATTRIBUTES,
-            fieldName: 'nameI18n',
-            additionalQuery: {
-              $and: [{ _id: { $in: group.attributesIds } }, { _id: { $ne: attributeId } }],
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.duplicate`),
-            };
-          }
-
-          // Get metric
-          let metric = null;
-          if (metricId) {
-            metric = await metricsCollection.findOne({ _id: metricId });
-          }
-
-          // Update attribute
-          const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
-            { _id: attributeId },
-            {
-              $set: {
-                ...values,
-                metric,
+            // Check if attribute exist
+            const exist = await findDocumentByI18nField({
+              fieldArg: values.nameI18n,
+              collectionName: COL_ATTRIBUTES,
+              fieldName: 'nameI18n',
+              additionalQuery: {
+                $and: [{ _id: { $in: group.attributesIds } }, { _id: { $ne: attributeId } }],
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedAttribute = updatedAttributeResult.value;
-          if (!updatedAttributeResult.ok || !updatedAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.duplicate`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update rubric attribute
-          const updatedRubricAttributeResult = await rubricAttributesCollection.updateMany(
-            { attributeId },
-            {
-              $set: {
-                ...values,
-                metric,
+            // Get metric
+            let metric = null;
+            if (metricId) {
+              metric = await metricsCollection.findOne({ _id: metricId });
+            }
+
+            // Update attribute
+            const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
+              { _id: attributeId },
+              {
+                $set: {
+                  ...values,
+                  metric,
+                },
               },
-            },
-          );
-          if (!updatedRubricAttributeResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
-
-          // Update product attribute
-          const updatedProductAttributeResult = await productAttributesCollection.updateMany(
-            { attributeId },
-            {
-              $set: {
-                ...values,
-                metric,
+              {
+                returnOriginal: false,
               },
-            },
-          );
-          if (!updatedProductAttributeResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-            };
-          }
+            );
+            const updatedAttribute = updatedAttributeResult.value;
+            if (!updatedAttributeResult.ok || !updatedAttribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.updateAttribute.success'),
-            payload: group,
-          };
+            // Update rubric attribute
+            const updatedRubricAttributeResult = await rubricAttributesCollection.updateMany(
+              { attributeId },
+              {
+                $set: {
+                  ...values,
+                  metric,
+                },
+              },
+            );
+            if (!updatedRubricAttributeResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update product attribute
+            const updatedProductAttributeResult = await productAttributesCollection.updateMany(
+              { attributeId },
+              {
+                $set: {
+                  ...values,
+                  metric,
+                },
+              },
+            );
+            if (!updatedProductAttributeResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.updateAttribute.success'),
+              payload: group,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          session.endSession();
         }
       },
     });
@@ -786,89 +869,133 @@ export const attributesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
+          COL_RUBRIC_ATTRIBUTES,
+        );
+        const productAttributesCollection = db.collection<ProductAttributeModel>(
+          COL_PRODUCT_ATTRIBUTES,
+        );
+        const attributesGroupCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteAttribute',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteAttributeFromGroupSchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const {
+              input: { attributesGroupId, attributeId },
+            } = args;
+
+            // Check if attributes group exist
+            const attributesGroup = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!attributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete attribute form rubrics and products
+            const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
+              attributeId,
+            });
+            const removedProductAttributes = await productAttributesCollection.deleteMany({
+              attributeId,
+            });
+            if (!removedRubricAttributes.result.ok || !removedProductAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Remove attribute
+            const removedAttributeResult = await attributesCollection.findOneAndDelete({
+              _id: attributeId,
+            });
+            if (!removedAttributeResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Remove attribute _id from attributes group
+            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
+              { _id: attributesGroup._id },
+              {
+                $pull: {
+                  attributesIds: attributeId,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedGroup = updatedGroupResult.value;
+            if (!updatedGroupResult.ok || !updatedGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.deleteAttribute.success'),
+              payload: updatedGroup,
             };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteAttributeFromGroupSchema,
           });
-          await validationSchema.validate(args.input);
 
-          const {
-            input: { attributesGroupId, attributeId },
-          } = args;
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-
-          // Check if attributes group exist
-          const attributesGroup = await attributesGroupCollection.findOne({
-            _id: attributesGroupId,
-          });
-          if (!attributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-            };
-          }
-
-          // Delete attribute form rubrics and products
-          const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
-            attributeId,
-          });
-          const removedProductAttributes = await productAttributesCollection.deleteMany({
-            attributeId,
-          });
-          if (!removedRubricAttributes.result.ok || !removedProductAttributes.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-            };
-          }
-
-          // Remove attribute
-          const removedAttributeResult = await attributesCollection.findOneAndDelete({
-            _id: attributeId,
-          });
-          if (!removedAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('attributesGroups.deleteAttribute.success'),
-            payload: attributesGroup,
-          };
+          return mutationPayload;
         } catch (e) {
           console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

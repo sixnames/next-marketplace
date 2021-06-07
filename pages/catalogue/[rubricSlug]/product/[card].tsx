@@ -27,6 +27,46 @@ import Image from 'next/image';
 import * as React from 'react';
 import CardShop from 'routes/CardRoute/CardShop';
 
+interface CardTitleInterface {
+  productId: any;
+  originalName: string;
+  name?: string | null;
+  itemId: string;
+  tag?: keyof JSX.IntrinsicElements;
+}
+
+const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId }) => {
+  return (
+    <div className='mb-6'>
+      <Title className='mb-1' low>
+        {originalName}
+      </Title>
+      {name ? <div className='text-secondary-text mb-4'>{name}</div> : null}
+
+      <div className='flex justify-between items-center'>
+        <div className='text-secondary-text text-sm'>Арт: {itemId}</div>
+
+        {/*controls*/}
+        <div className='flex'>
+          <ControlButton
+            size={'small'}
+            icon={'compare'}
+            iconSize={'mid'}
+            ariaLabel={'Добавить в сравнение'}
+          />
+          <ControlButton
+            size={'small'}
+            icon={'heart'}
+            iconSize={'mid'}
+            ariaLabel={'Добавить в избранное'}
+          />
+          <ControlButton size={'small'} icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface CardRouteInterface {
   cardData: ProductInterface;
   companySlug?: string;
@@ -114,6 +154,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
+            {/*desktop title*/}
+            <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
+              <CardTitle productId={_id} originalName={originalName} itemId={itemId} name={name} />
+            </div>
+
             {/*content*/}
             <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
               {/*image*/}
@@ -131,13 +176,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
 
               {/*main data*/}
               <div className='flex flex-col md:col-span-2 md:order-3 lg:col-span-7'>
-                {/*title*/}
-                <div className='mb-6'>
-                  <div className='mb-4 text-secondary-text text-sm'>Артикул: {itemId}</div>
-                  <Title className='mb-1' low>
-                    {originalName}
-                  </Title>
-                  <div className='text-secondary-text'>{name}</div>
+                {/*desktop title*/}
+                <div className='hidden lg:block'>
+                  <CardTitle
+                    productId={_id}
+                    originalName={originalName}
+                    itemId={itemId}
+                    name={name}
+                  />
                 </div>
 
                 {/*connections*/}
@@ -175,24 +221,48 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                 ) : null}
 
                 {/*price*/}
-                <div className='flex items-baseline mb-6 mt-auto'>
-                  {isShopless ? null : noNaN(shopsCount) > 1 ? (
-                    <React.Fragment>
-                      <div className='mr-2'>Цена от</div>
-                      <div className='flex items-baseline text-3xl sm:text-4xl'>
-                        <Currency className='' value={cardPrices?.min} />
-                        <div className='text-lg mx-2'>до</div>
-                        <Currency className='' value={cardPrices?.max} />
-                      </div>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <div className='mr-2'>Цена</div>
-                      <div className=''>
-                        <Currency className='' value={cardPrices?.min} />
-                      </div>
-                    </React.Fragment>
-                  )}
+                <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
+                  <div className='flex items-baseline'>
+                    {isShopless ? null : noNaN(shopsCount) > 1 ? (
+                      <React.Fragment>
+                        <div className='mr-2'>Цена от</div>
+                        <div className='flex items-baseline text-3xl sm:text-4xl'>
+                          <Currency value={cardPrices?.min} />
+                          <div className='text-lg mx-2'>до</div>
+                          <Currency value={cardPrices?.max} />
+                        </div>
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment>
+                        <div className='mr-2'>Цена</div>
+                        <div className='flex items-baseline text-3xl sm:text-4xl'>
+                          <Currency value={cardPrices?.min} />
+                        </div>
+                      </React.Fragment>
+                    )}
+                  </div>
+
+                  {/*availability*/}
+                  <a
+                    href={`#card-shops`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const target = e.target as Element;
+                      const distId = target.getAttribute('href');
+                      const distElement = document.querySelector(`${distId}`);
+                      if (distElement) {
+                        window.scrollTo({
+                          top: noNaN(distElement.getBoundingClientRect().top),
+                          left: 0,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                  >
+                    {isShopless
+                      ? 'Нет в наличии'
+                      : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
+                  </a>
                 </div>
 
                 {/*cart action elements*/}
@@ -223,48 +293,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                       В корзину
                     </Button>
                   </div>
-
-                  {/*controls*/}
-                  <div className='flex'>
-                    <ControlButton
-                      icon={'compare'}
-                      iconSize={'mid'}
-                      ariaLabel={'Добавить в сравнение'}
-                    />
-                    <ControlButton
-                      icon={'heart'}
-                      iconSize={'mid'}
-                      ariaLabel={'Добавить в избранное'}
-                    />
-                    <ControlButton icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
-                  </div>
                 </div>
-
-                {/*availability*/}
-                <a
-                  href={`#card-shops`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const target = e.target as Element;
-                    const distId = target.getAttribute('href');
-                    const distElement = document.querySelector(`${distId}`);
-                    if (distElement) {
-                      window.scrollTo({
-                        top: noNaN(distElement.getBoundingClientRect().top),
-                        left: 0,
-                        behavior: 'smooth',
-                      });
-                    }
-                  }}
-                >
-                  {isShopless
-                    ? 'Нет в наличии'
-                    : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
-                </a>
               </div>
 
               {/*list features*/}
-              <div className='md:col-span-1 md:order-1 lg:col-span-2'>
+              <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
                 {(visibleListFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
                   if (!showInCard) {
                     return null;
@@ -291,7 +324,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
 
       <Inner lowTop lowBottom>
         {/* Features */}
-        <section className='mb-28' id={`card-features`}>
+        <div className='mb-28' id={`card-features`}>
           <div className='grid gap-8 md:grid-cols-7 mb-12'>
             <div className='md:col-span-2'>
               {(iconFeatures || []).map((attribute) => {
@@ -380,7 +413,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
               })}
             </div>
           </div>
-        </section>
+        </div>
 
         {/*shops*/}
         <section id={`card-shops`} className='mb-28'>

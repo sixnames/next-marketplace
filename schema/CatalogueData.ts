@@ -11,6 +11,7 @@ import {
   ManufacturerModel,
   OptionAlphabetListModel,
   OptionModel,
+  ProductAttributeModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -24,6 +25,7 @@ import {
   COL_LANGUAGES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -599,6 +601,9 @@ export const CatalogueMutations = extendType({
           const rubricAttributesCollection = db.collection<RubricAttributeModel>(
             COL_RUBRIC_ATTRIBUTES,
           );
+          const productAttributesCollection = db.collection<ProductAttributeModel>(
+            COL_PRODUCT_ATTRIBUTES,
+          );
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<BrandCollectionModel>(
@@ -684,7 +689,7 @@ export const CatalogueMutations = extendType({
               counterUpdater,
             );
 
-            // Update rubric attributes counters
+            // Update attributes counters
             if (selectedAttributesSlugs.length > 0) {
               await rubricAttributesCollection.updateMany(
                 {
@@ -695,6 +700,19 @@ export const CatalogueMutations = extendType({
                 },
                 counterUpdater,
               );
+
+              const res = await productAttributesCollection.updateMany(
+                {
+                  rubricId: rubric._id,
+                  slug: {
+                    $in: selectedAttributesSlugs,
+                  },
+                },
+                counterUpdater,
+              );
+
+              console.log(JSON.stringify(res, null, 2));
+              console.log(selectedAttributesSlugs);
 
               const selectedRubricAttributes = await rubricAttributesCollection
                 .find({

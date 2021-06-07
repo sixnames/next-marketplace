@@ -248,71 +248,96 @@ export const RoleMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+        const usersCollection = db.collection<UserModel>(COL_USERS);
+
+        const session = client.startSession();
+
+        let mutationPayload: RolePayloadModel = {
+          success: false,
+          message: await getApiMessage('roles.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteRole',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteRole',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check role availability
+            const role = await rolesCollection.findOne({ _id });
+            if (!role) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('roles.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update users with guest role
+            const guestRole = await rolesCollection.findOne({ slug: ROLE_SLUG_GUEST });
+            if (!guestRole) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('roles.delete.guestRoleNotFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const updatedUsers = await usersCollection.updateMany(
+              { roleId: _id },
+              { $set: { roleId: guestRole._id } },
+            );
+            if (!updatedUsers.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('roles.delete.usersUpdateError'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete role
+            const removedRoleResult = await rolesCollection.findOneAndDelete({ _id });
+            if (!removedRoleResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('roles.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('roles.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rolesCollection = db.collection<RoleModel>(COL_ROLES);
-          const usersCollection = db.collection<UserModel>(COL_USERS);
-          const { _id } = args;
-
-          // Check role availability
-          const role = await rolesCollection.findOne({ _id });
-          if (!role) {
-            return {
-              success: false,
-              message: await getApiMessage('roles.delete.notFound'),
-            };
-          }
-
-          // Update users with guest role
-          const guestRole = await rolesCollection.findOne({ slug: ROLE_SLUG_GUEST });
-          if (!guestRole) {
-            return {
-              success: false,
-              message: await getApiMessage('roles.delete.guestRoleNotFound'),
-            };
-          }
-          const updatedUsers = await usersCollection.updateMany(
-            { roleId: _id },
-            { $set: { roleId: guestRole._id } },
-          );
-          if (!updatedUsers.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('roles.delete.usersUpdateError'),
-            };
-          }
-
-          // Delete role
-          const removedRoleResult = await rolesCollection.findOneAndDelete({ _id });
-          if (!removedRoleResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('roles.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('roles.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

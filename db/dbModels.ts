@@ -451,8 +451,10 @@ export interface ProductConnectionModel {
   productsIds: ObjectIdModel[];
 }
 
-export interface ProductAttributeModel extends AttributeModel {
+export interface ProductAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
   productSlug: string;
   productId: ObjectIdModel;
   attributeId: ObjectIdModel;

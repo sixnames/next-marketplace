@@ -625,7 +625,7 @@ export const CartMutations = extendType({
           // Cast order products for cart
           const cartNewProducts: CartProductModel[] = [];
           for await (const orderProduct of order.products || []) {
-            const { amount, shopProduct, shopProductId } = orderProduct;
+            const { amount, shopProduct, shopProductId, productId } = orderProduct;
             if (!shopProduct) {
               break;
             }
@@ -643,27 +643,46 @@ export const CartMutations = extendType({
               break;
             }
 
-            if (shopProduct.available < amount) {
+            const cartProduct = cart.cartProducts.find((cartProduct) => {
+              const byShopProduct = cartProduct.shopProductId
+                ? cartProduct.shopProductId.equals(shopProductId)
+                : false;
+              const byProduct = cartProduct.productId
+                ? cartProduct.productId.equals(productId)
+                : false;
+              return byProduct || byShopProduct;
+            });
+
+            if (cartProduct) {
+              finalAmount = cartProduct.amount + amount;
+            }
+
+            if (shopProduct.available < finalAmount) {
               finalAmount = shopProduct.available;
             }
 
             cartNewProducts.push({
-              _id: new ObjectId(),
+              _id: cartProduct ? cartProduct._id : new ObjectId(),
               amount: finalAmount,
               shopProductId,
             });
           }
 
+          cart.cartProducts.forEach((cartProduct) => {
+            const exist = cartNewProducts.some(({ _id }) => {
+              return _id.equals(cartProduct._id);
+            });
+            if (!exist) {
+              cartNewProducts.push(cartProduct);
+            }
+          });
+
           // Update cart with order products
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
             { _id: cart._id },
             {
-              $push: {
-                cartProducts: {
-                  $each: cartNewProducts,
-                },
-              },
               $set: {
+                cartProducts: cartNewProducts,
                 updatedAt: new Date(),
               },
             },

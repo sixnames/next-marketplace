@@ -2,6 +2,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_STRING,
   CATALOGUE_OPTION_SEPARATOR,
+  DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
 import { ObjectIdModel, ProductAttributeModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -56,6 +57,8 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           attributeId: rubricAttribute.attributeId,
           selectedOptionsSlugs,
           selectedOptionsIds,
+          rubricId: rubricAttribute.rubricId,
+          rubricSlug: rubricAttribute.rubricSlug,
           optionsGroupId: rubricAttribute.optionsGroupId,
           slug: rubricAttribute.slug,
           variant: rubricAttribute.variant,
@@ -66,8 +69,8 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           metric: rubricAttribute.metric,
           notShowAsAlphabet: rubricAttribute.notShowAsAlphabet,
           positioningInTitle: rubricAttribute.positioningInTitle,
-          showInCard: true,
-          showAsBreadcrumb: true,
+          showInCard: rubricAttribute.showInCard,
+          showAsBreadcrumb: rubricAttribute.showAsBreadcrumb,
           textI18n:
             rubricAttribute.variant === ATTRIBUTE_VARIANT_STRING
               ? {
@@ -78,6 +81,7 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
             rubricAttribute.variant === ATTRIBUTE_VARIANT_NUMBER
               ? Math.round(Math.random() * 10)
               : undefined,
+          ...DEFAULT_COUNTERS_OBJECT,
         };
       },
     );

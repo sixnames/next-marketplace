@@ -436,85 +436,114 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('companies.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteCompany',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteCompany',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check company availability
+            const company = await companiesCollection.findOne({ _id });
+            if (!company) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete company configs
+            const removedConfigs = await configsCollection.deleteMany({
+              companySlug: company.slug,
+            });
+            if (!removedConfigs.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('configs.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete shop products
+            const removedShopsProducts = await shopProductsCollection.deleteMany({
+              shopsId: { $in: company.shopsIds },
+            });
+            if (!removedShopsProducts.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete shops
+            const removedShops = await shopsCollection.deleteMany({
+              _id: { $in: company.shopsIds },
+            });
+            if (!removedShops.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.shopsDelete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Set company as archived
+            const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
+            if (!removedCompanyResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('companies.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const { _id } = args;
-
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.delete.notFound'),
-            };
-          }
-
-          // Delete company configs
-          const removedConfigs = await configsCollection.deleteMany({
-            companySlug: company.slug,
-          });
-          if (!removedConfigs.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('configs.delete.error'),
-            };
-          }
-
-          // Delete shop products
-          const removedShopsProducts = await shopProductsCollection.deleteMany({
-            shopsId: { $in: company.shopsIds },
-          });
-          if (!removedShopsProducts.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.delete.error'),
-            };
-          }
-
-          // Delete shops
-          const removedShops = await shopsCollection.deleteMany({ _id: { $in: company.shopsIds } });
-          if (!removedShops.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.shopsDelete.error'),
-            };
-          }
-
-          // Set company as archived
-          const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
-          if (!removedCompanyResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('companies.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -531,126 +560,149 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShop',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShop',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addShopToCompanySchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addShopToCompanySchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const { input } = args;
-          const { companyId, ...values } = input;
+            const { input } = args;
+            const { companyId, ...values } = input;
 
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id: companyId });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.notFound'),
-            };
-          }
+            // Check company availability
+            const company = await companiesCollection.findOne({ _id: companyId });
+            if (!company) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if shop already exist in the company
-          const exist = await shopsCollection.findOne({ name: values.name });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.duplicate'),
-            };
-          }
+            // Check if shop already exist in the company
+            const exist = await shopsCollection.findOne({ name: values.name });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Store shop assets
-          const itemId = await getNextItemId(COL_SHOPS);
+            // Store shop assets
+            const itemId = await getNextItemId(COL_SHOPS);
 
-          // Create shop
-          const slug = generateShopSlug({
-            name: values.name,
-            itemId,
-          });
+            // Create shop
+            const slug = generateShopSlug({
+              name: values.name,
+              itemId,
+            });
 
-          const createdShopResult = await shopsCollection.insertOne({
-            ...values,
-            slug,
-            itemId,
-            logo: {
-              index: 1,
-              url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
-            },
-            assets: [],
-            mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
-            companyId: companyId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            address: {
-              formattedAddress: values.address.formattedAddress,
-              point: {
-                type: 'Point',
-                coordinates: [values.address.point.lng, values.address.point.lat],
+            const createdShopResult = await shopsCollection.insertOne({
+              ...values,
+              slug,
+              itemId,
+              logo: {
+                index: 1,
+                url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               },
-            },
+              assets: [],
+              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              companyId: companyId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              address: {
+                formattedAddress: values.address.formattedAddress,
+                point: {
+                  type: 'Point',
+                  coordinates: [values.address.point.lng, values.address.point.lat],
+                },
+              },
+            });
+            const createdShop = createdShopResult.ops[0];
+            if (!createdShopResult.result.ok || !createdShop) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update company shops list and update timestamps
+            const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
+              {
+                _id: companyId,
+              },
+              {
+                $push: {
+                  shopsIds: createdShop._id,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCompany = updatedCompanyResult.value;
+            if (!updatedCompanyResult.ok || !updatedCompany) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.create.success'),
+              payload: updatedCompany,
+            };
           });
-          const createdShop = createdShopResult.ops[0];
-          if (!createdShopResult.result.ok || !createdShop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.create.error'),
-            };
-          }
 
-          // Update company shops list and update timestamps
-          const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
-            {
-              _id: companyId,
-            },
-            {
-              $push: {
-                shopsIds: createdShop._id,
-              },
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCompany = updatedCompanyResult.value;
-          if (!updatedCompanyResult.ok || !updatedCompany) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.create.success'),
-            payload: updatedCompany,
-          };
+          return mutationPayload;
         } catch (e) {
           console.log(e);
-          console.log(JSON.stringify(e, null, 2));
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -667,82 +719,121 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const shopProductsCollection = db.collection<CompanyModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('companies.shopsDelete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteShop',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteShop',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteShopFromCompanySchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const { input } = args;
+            const { companyId, shopId } = input;
+
+            // Check company availability
+            const updatedCompanyResult = await companiesCollection.findOneAndUpdate(
+              { _id: companyId },
+              {
+                $pull: {
+                  shopsIds: shopId,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCompany = updatedCompanyResult.value;
+            if (!updatedCompanyResult.ok || !updatedCompany) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check shop availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            if (!shop) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Set shop products as archived
+            const removedShopProducts = await shopProductsCollection.deleteMany({
+              shopId: shop._id,
+            });
+            if (!removedShopProducts.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Set shop as archived
+            const removedShopResult = await shopsCollection.findOneAndDelete({ _id: shopId });
+            if (!removedShopResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.shopsDelete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.delete.success'),
+              payload: updatedCompany,
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteShopFromCompanySchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const shopProductsCollection = db.collection<CompanyModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-          const { companyId, shopId } = input;
-
-          // Check company availability
-          const company = await companiesCollection.findOne({ _id: companyId });
-          if (!company) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.update.notFound'),
-            };
-          }
-
-          // Check shop availability
-          const shop = await shopsCollection.findOne({ _id: shopId });
-          if (!shop) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.delete.notFound'),
-            };
-          }
-
-          // Set shop products as archived
-          const removedShopProducts = await shopProductsCollection.deleteMany({
-            shopId: shop._id,
-          });
-          if (!removedShopProducts.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.delete.error'),
-            };
-          }
-
-          // Set shop as archived
-          const removedShopResult = await shopsCollection.findOneAndDelete({ _id: shopId });
-          if (!removedShopResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.shopsDelete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.delete.success'),
-            payload: company,
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

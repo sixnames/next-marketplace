@@ -380,69 +380,98 @@ export const OptionsGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+        const session = client.startSession();
+
+        let mutationPayload: OptionsGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage('optionsGroups.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteOptionsGroup',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteOptionsGroup',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check options group availability
+            const optionsGroup = await optionsGroupsCollection.findOne({ _id });
+            if (!optionsGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('optionsGroups.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if options group is used in attributes
+            const used = await attributesCollection.findOne({ optionsGroupId: _id });
+            if (used) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('optionsGroups.delete.used'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete options group
+            const removedOptionsGroupResult = await optionsGroupsCollection.findOneAndDelete({
+              _id,
+            });
+            if (!removedOptionsGroupResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('optionsGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const removedOptionsResult = await optionsCollection.deleteMany({
+              optionsGroupId: _id,
+            });
+            if (!removedOptionsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('optionsGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('optionsGroups.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const { _id } = args;
-
-          // Check options group availability
-          const optionsGroup = await optionsGroupsCollection.findOne({ _id });
-          if (!optionsGroup) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.delete.notFound'),
-            };
-          }
-
-          // Check if options group is used in attributes
-          const used = await attributesCollection.findOne({ optionsGroupId: _id });
-          if (used) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.delete.used'),
-            };
-          }
-
-          // Delete options group
-          const removedOptionsGroupResult = await optionsGroupsCollection.findOneAndDelete({ _id });
-          if (!removedOptionsGroupResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.delete.error'),
-            };
-          }
-          const removedOptionsResult = await optionsCollection.deleteMany({ optionsGroupId: _id });
-          if (!removedOptionsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('optionsGroups.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

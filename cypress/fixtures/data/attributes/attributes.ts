@@ -6,6 +6,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
@@ -50,6 +51,21 @@ const attributes: AttributeModel[] = [
         en: 'units',
       },
     },
+    showInCard: true,
+    showAsBreadcrumb: false,
+    capitalise: false,
+    positioningInTitle: null,
+    attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
+  },
+  {
+    _id: getObjectId(`attribute Сочетание`),
+    slug: 'sochetanie',
+    nameI18n: {
+      ru: 'Сочетание',
+    },
+    variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as AttributeViewVariantModel,
+    optionsGroupId: getObjectId('optionsGroup Сочетание'),
     showInCard: true,
     showAsBreadcrumb: false,
     capitalise: false,
@@ -105,7 +121,7 @@ const attributes: AttributeModel[] = [
     viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     optionsGroupId: getObjectId('optionsGroup Регион'),
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: true,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
@@ -129,7 +145,7 @@ const attributes: AttributeModel[] = [
       },
     },
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: false,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
@@ -146,7 +162,7 @@ const attributes: AttributeModel[] = [
     viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     optionsGroupId: getObjectId('optionsGroup Тип ёмкости'),
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: false,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
@@ -163,7 +179,7 @@ const attributes: AttributeModel[] = [
     viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     optionsGroupId: getObjectId('optionsGroup Год'),
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: false,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_END as AttributePositionInTitleModel,
@@ -214,7 +230,7 @@ const attributes: AttributeModel[] = [
     viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: false,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
@@ -231,7 +247,7 @@ const attributes: AttributeModel[] = [
     viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     showInCard: true,
-    showAsBreadcrumb: false,
+    showAsBreadcrumb: true,
     capitalise: false,
     positioningInTitle: {
       ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,

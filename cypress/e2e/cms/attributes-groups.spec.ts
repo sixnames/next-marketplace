@@ -118,14 +118,5 @@ describe('Attributes Groups', () => {
     cy.getByCy(`delete-attributes-group-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.getByCy(`attributes-group-Общие характеристики-delete`).should('exist');
-
-    // Shouldn't delete attribute connected to the rubric
-    // cy.getByCy(`attributes-group-Общие характеристики-update`).click();
-    // cy.getByCy(`sub-nav-attributes`).click();
-    // cy.getByCy(`attributes-list`).should('exist');
-    // cy.getByCy(`Регион-attribute-delete`).click();
-    // cy.getByCy(`delete-attribute-modal`).should('exist');
-    // cy.getByCy(`confirm`).click();
-    // cy.getByCy(`Регион-attribute-delete`).should('exist');
   });
 });

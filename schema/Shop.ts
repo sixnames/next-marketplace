@@ -443,7 +443,7 @@ export const ShopMutations = extendType({
             };
           }
 
-          // Delete product asset
+          // Delete shop asset
           const currentAsset = shop.assets.find(({ index }) => index === assetIndex);
           const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
           if (!removedAsset) {
@@ -615,157 +615,55 @@ export const ShopMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.addProduct.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addProductToShopSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addProductToShopSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-          const { shopId, productId, ...values } = input;
-
-          // Check shop and product availability
-          const shop = await shopsCollection.findOne({ _id: shopId });
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!shop || !product) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.notFound'),
-            };
-          }
-
-          // Check if product already exist in the shop
-          const exist = await shopProductsCollection.findOne({
-            productId,
-            shopId: shop._id,
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.duplicate'),
-            };
-          }
-
-          // Create shop product
-          const createdShopProductResult = await shopProductsCollection.insertOne({
-            ...values,
-            active: true,
-            formattedPrice: getCurrencyString(values.price),
-            formattedOldPrice: '',
-            discountedPercent: 0,
-            productId,
-            shopId: shop._id,
-            citySlug: shop.citySlug,
-            oldPrices: [],
-            rubricId: product.rubricId,
-            rubricSlug: product.rubricSlug,
-            companyId: shop.companyId,
-            itemId: product.itemId,
-            slug: product.slug,
-            originalName: product.originalName,
-            nameI18n: product.nameI18n,
-            brandSlug: product.brandSlug,
-            brandCollectionSlug: product.brandCollectionSlug,
-            manufacturerSlug: product.manufacturerSlug,
-            mainImage: product.mainImage,
-            selectedOptionsSlugs: product.selectedOptionsSlugs,
-            barcode: product.barcode,
-            updatedAt: new Date(),
-            createdAt: new Date(),
-            ...DEFAULT_COUNTERS_OBJECT,
-          });
-          const createdShopProduct = createdShopProductResult.ops[0];
-          if (!createdShopProductResult.result.ok || !createdShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shops.addProduct.success'),
-            payload: shop,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should add many products to the shop
-    t.nonNull.field('addManyProductsToShop', {
-      type: 'ShopPayload',
-      description: 'Should add many products to the shop',
-      args: {
-        input: nonNull(
-          list(
-            nonNull(
-              arg({
-                type: 'AddProductToShopInput',
-              }),
-            ),
-          ),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addManyProductsToShopSchema,
-          });
-          await validationSchema.validate(args);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-          let doneCount = 0;
-          for await (const shopProductInput of args.input) {
-            const { shopId, productId, ...values } = shopProductInput;
+            const { input } = args;
+            const { shopId, productId, ...values } = input;
 
             // Check shop and product availability
             const shop = await shopsCollection.findOne({ _id: shopId });
             const product = await productsCollection.findOne({ _id: productId });
             if (!shop || !product) {
-              break;
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.notFound'),
+              };
+              await session.abortTransaction();
+              return;
             }
 
             // Check if product already exist in the shop
@@ -774,7 +672,12 @@ export const ShopMutations = extendType({
               shopId: shop._id,
             });
             if (exist) {
-              break;
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
             }
 
             // Create shop product
@@ -807,28 +710,166 @@ export const ShopMutations = extendType({
             });
             const createdShopProduct = createdShopProductResult.ops[0];
             if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              break;
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
             }
 
-            doneCount = doneCount + 1;
-          }
-
-          if (doneCount !== args.input.length) {
-            return {
-              success: false,
-              message: await getApiMessage('shops.addProduct.error'),
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.addProduct.success'),
+              payload: shop,
             };
-          }
+          });
 
-          return {
-            success: true,
-            message: await getApiMessage('shops.addProduct.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should add many products to the shop
+    t.nonNull.field('addManyProductsToShop', {
+      type: 'ShopPayload',
+      description: 'Should add many products to the shop',
+      args: {
+        input: nonNull(
+          list(
+            nonNull(
+              arg({
+                type: 'AddProductToShopInput',
+              }),
+            ),
+          ),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopPayloadModel = {
+          success: false,
+          message: await getApiMessage('shops.addProduct.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addManyProductsToShopSchema,
+            });
+            await validationSchema.validate(args);
+
+            let doneCount = 0;
+            for await (const shopProductInput of args.input) {
+              const { shopId, productId, ...values } = shopProductInput;
+
+              // Check shop and product availability
+              const shop = await shopsCollection.findOne({ _id: shopId });
+              const product = await productsCollection.findOne({ _id: productId });
+              if (!shop || !product) {
+                break;
+              }
+
+              // Check if product already exist in the shop
+              const exist = await shopProductsCollection.findOne({
+                productId,
+                shopId: shop._id,
+              });
+              if (exist) {
+                break;
+              }
+
+              // Create shop product
+              const createdShopProductResult = await shopProductsCollection.insertOne({
+                ...values,
+                active: true,
+                formattedPrice: getCurrencyString(values.price),
+                formattedOldPrice: '',
+                discountedPercent: 0,
+                productId,
+                shopId: shop._id,
+                citySlug: shop.citySlug,
+                oldPrices: [],
+                rubricId: product.rubricId,
+                rubricSlug: product.rubricSlug,
+                companyId: shop.companyId,
+                itemId: product.itemId,
+                slug: product.slug,
+                originalName: product.originalName,
+                nameI18n: product.nameI18n,
+                brandSlug: product.brandSlug,
+                brandCollectionSlug: product.brandCollectionSlug,
+                manufacturerSlug: product.manufacturerSlug,
+                mainImage: product.mainImage,
+                selectedOptionsSlugs: product.selectedOptionsSlugs,
+                barcode: product.barcode,
+                updatedAt: new Date(),
+                createdAt: new Date(),
+                ...DEFAULT_COUNTERS_OBJECT,
+              });
+              const createdShopProduct = createdShopProductResult.ops[0];
+              if (!createdShopProductResult.result.ok || !createdShopProduct) {
+                break;
+              }
+
+              doneCount = doneCount + 1;
+            }
+
+            if (doneCount !== args.input.length) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shops.addProduct.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
         }
       },
     });

@@ -301,63 +301,86 @@ export const CountryMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CountryPayloadModel = {
+          success: false,
+          message: await getApiMessage('cities.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteCountry',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteCountry',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Check country availability
+            const country = await countriesCollection.findOne({ _id });
+            if (!country) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('countries.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete country
+            const removedCountryResult = await countriesCollection.findOneAndDelete({ _id });
+            if (!removedCountryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('countries.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete all country cities
+            const removedCitiesResult = await citiesCollection.deleteMany({
+              _id: { $in: country.citiesIds },
+            });
+            if (!removedCitiesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('countries.delete.success'),
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
-          const { _id } = args;
-
-          // Check country availability
-          const country = await countriesCollection.findOne({ _id });
-          if (!country) {
-            return {
-              success: false,
-              message: await getApiMessage('countries.delete.notFound'),
-            };
-          }
-
-          // Delete country
-          const removedCountryResult = await countriesCollection.findOneAndDelete({ _id });
-          if (!removedCountryResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('countries.delete.error'),
-            };
-          }
-
-          // Delete all country cities
-          const removedCitiesResult = await citiesCollection.deleteMany({
-            _id: { $in: country.citiesIds },
-          });
-          if (!removedCitiesResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('countries.delete.success'),
-          };
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -374,103 +397,128 @@ export const CountryMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CountryPayloadModel = {
+          success: false,
+          message: await getApiMessage('cities.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createCity',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createCity',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addCityToCountrySchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: addCityToCountrySchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
-          const { input } = args;
-          const { countryId, ...values } = input;
+            const { input } = args;
+            const { countryId, ...values } = input;
 
-          // Check country availability
-          const country = await countriesCollection.findOne({ _id: countryId });
-          if (!country) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.notFound'),
-            };
-          }
+            // Check country availability
+            const country = await countriesCollection.findOne({ _id: countryId });
+            if (!country) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check if city already exist
-          const exist = await findDocumentByI18nField({
-            fieldName: 'nameI18n',
-            fieldArg: values.nameI18n,
-            collectionName: COL_CITIES,
-            additionalQuery: {
-              _id: { $in: country.citiesIds },
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.duplicate'),
-            };
-          }
-
-          // Create city
-          const createdCityResult = await citiesCollection.insertOne({
-            ...values,
-          });
-          const createdCity = createdCityResult.ops[0];
-          if (!createdCityResult.result.ok || !createdCity) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.error'),
-            };
-          }
-
-          // Add created city to the country
-          const updatedCountryResult = await countriesCollection.findOneAndUpdate(
-            { _id: countryId },
-            {
-              $push: {
-                citiesIds: createdCity._id,
+            // Check if city already exist
+            const exist = await findDocumentByI18nField({
+              fieldName: 'nameI18n',
+              fieldArg: values.nameI18n,
+              collectionName: COL_CITIES,
+              additionalQuery: {
+                _id: { $in: country.citiesIds },
               },
-              $set: {
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCountry = updatedCountryResult.value;
-          if (!updatedCountryResult.ok || !updatedCountry) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.create.error'),
-            };
-          }
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('cities.create.success'),
-            payload: updatedCountry,
-          };
+            // Create city
+            const createdCityResult = await citiesCollection.insertOne({
+              ...values,
+            });
+            const createdCity = createdCityResult.ops[0];
+            if (!createdCityResult.result.ok || !createdCity) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add created city to the country
+            const updatedCountryResult = await countriesCollection.findOneAndUpdate(
+              { _id: countryId },
+              {
+                $push: {
+                  citiesIds: createdCity._id,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCountry = updatedCountryResult.value;
+            if (!updatedCountryResult.ok || !updatedCountry) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('cities.create.success'),
+              payload: updatedCountry,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -594,92 +642,117 @@ export const CountryMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CountryPayloadModel = {
+          success: false,
+          message: await getApiMessage('cities.delete.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteCity',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteCity',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: deleteCityFromCountrySchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: deleteCityFromCountrySchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
-          const { input } = args;
-          const { countryId, cityId } = input;
+            const { input } = args;
+            const { countryId, cityId } = input;
 
-          // Check country availability
-          const country = await countriesCollection.findOne({ _id: countryId });
-          if (!country) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.notFound'),
-            };
-          }
+            // Check country availability
+            const country = await countriesCollection.findOne({ _id: countryId });
+            if (!country) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Check city availability
-          const city = await citiesCollection.findOne({ _id: cityId });
-          if (!city) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.notFound'),
-            };
-          }
+            // Check city availability
+            const city = await citiesCollection.findOne({ _id: cityId });
+            if (!city) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Remove city
-          const removedCityResult = await citiesCollection.findOneAndDelete({ _id: cityId });
-          if (!removedCityResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.error'),
-            };
-          }
+            // Remove city
+            const removedCityResult = await citiesCollection.findOneAndDelete({ _id: cityId });
+            if (!removedCityResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update country cities list
-          const updatedCountryResult = await countriesCollection.findOneAndUpdate(
-            {
-              _id: countryId,
-            },
-            {
-              $pull: {
-                citiesIds: cityId,
+            // Update country cities list
+            const updatedCountryResult = await countriesCollection.findOneAndUpdate(
+              {
+                _id: countryId,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedCountry = updatedCountryResult.value;
-          if (!updatedCountryResult.ok || !updatedCountry) {
-            return {
-              success: false,
-              message: await getApiMessage('cities.delete.error'),
-            };
-          }
+              {
+                $pull: {
+                  citiesIds: cityId,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedCountry = updatedCountryResult.value;
+            if (!updatedCountryResult.ok || !updatedCountry) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('cities.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('cities.delete.success'),
-            payload: updatedCountry,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('cities.delete.success'),
+              payload: updatedCountry,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

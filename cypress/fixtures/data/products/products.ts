@@ -53,7 +53,7 @@ const brandCollectionsAttributeSlug = 'brandCollections';
 
 let counter = 0;
 
-const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
+const products = rubrics.reduce((acc: ProductModel[], rubric) => {
   const rubricSlug = rubric.slug;
 
   interface AddedAttributeInterface {

@@ -37,6 +37,7 @@ yarn-error.log*
 .vercel
 
 # dev
+/cypress/fixtures/assets/products
 /data
 /db/initialData/parsed
 /db/initialData/parsedBigCollections

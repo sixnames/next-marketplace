@@ -1,10 +1,5 @@
-/// <reference types="cypress" />
-/// <reference path="../../types/index.d.ts" />
-
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
+import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
 import { InitialSyncProductInterface, SyncResponseInterface } from 'db/syncInterfaces';
-
-export {};
 
 const body: InitialSyncProductInterface[] = [
   {
@@ -33,7 +28,7 @@ describe('Authorization', () => {
   beforeEach(() => {
     cy.createTestData();
     cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
-    cy.visit(`/`);
+    cy.testAuth(`/`);
   });
 
   it('Should sync shop products with site db', () => {
@@ -66,5 +61,22 @@ describe('Authorization', () => {
       const body = res.body as SyncResponseInterface;
       expect(body.success).equals(true);
     });
+
+    // should display synced products
+    cy.visit(`${ROUTE_CMS}/companies`);
+    cy.getByCy('companies-list').should('exist');
+    cy.getByCy(`company_b-update`).click();
+    cy.wait(1500);
+    cy.getByCy(`company-shops`).click();
+    cy.wait(1500);
+    cy.getByCy(`Shop C-update`).click();
+    cy.wait(1500);
+    cy.getByCy(`shop-products`).click();
+    cy.wait(1500);
+    cy.getByCy('shop-rubrics-list').should('exist');
+    cy.getByCy(`Шампанское-update`).click();
+    cy.wait(1500);
+    cy.getByCy('shop-rubric-products-list').should('exist');
+    cy.getByCy('shop-product-main-image').should('have.length', 3);
   });
 });

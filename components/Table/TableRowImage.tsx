@@ -6,11 +6,12 @@ interface TableRowImageInterface {
   src: string;
   alt: string;
   title: string;
+  testId?: string;
 }
 
-const TableRowImage: React.FC<TableRowImageInterface> = (props) => {
+const TableRowImage: React.FC<TableRowImageInterface> = ({ testId, ...props }) => {
   return (
-    <div className='table-image w-[40px] h-[50px] pt-[5px] pb-[5px]'>
+    <div className='table-image w-[40px] h-[50px] pt-[5px] pb-[5px]' data-cy={testId}>
       <Image {...props} width={TABLE_IMAGE_WIDTH} height={TABLE_IMAGE_WIDTH} quality={20} />
     </div>
   );

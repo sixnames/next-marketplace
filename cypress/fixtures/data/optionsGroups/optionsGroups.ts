@@ -63,6 +63,13 @@ const optionsGroups: OptionsGroupModel[] = [
     },
     variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantModel,
   },
+  {
+    _id: getObjectId('optionsGroup Сочетание'),
+    nameI18n: {
+      ru: 'Сочетание',
+    },
+    variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantModel,
+  },
 ];
 
 // @ts-ignore

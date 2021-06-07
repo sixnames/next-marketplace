@@ -316,6 +316,52 @@ const options: OptionModel[] = [
     },
     ...DEFAULT_COUNTERS_OBJECT,
   },
+
+  // Сочетание
+  {
+    _id: getObjectId('option Белое мясо'),
+    slug: '000031',
+    optionsGroupId: getObjectId('optionsGroup Сочетание'),
+    variants: {},
+    icon: 'white-meat',
+    nameI18n: {
+      ru: 'Белое мясо',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Дары моря'),
+    slug: '000032',
+    optionsGroupId: getObjectId('optionsGroup Сочетание'),
+    variants: {},
+    icon: 'seafood',
+    nameI18n: {
+      ru: 'Дары моря',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Суп'),
+    slug: '000033',
+    optionsGroupId: getObjectId('optionsGroup Сочетание'),
+    variants: {},
+    icon: 'soup',
+    nameI18n: {
+      ru: 'Суп',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Рыба'),
+    slug: '000034',
+    optionsGroupId: getObjectId('optionsGroup Сочетание'),
+    variants: {},
+    icon: 'fish',
+    nameI18n: {
+      ru: 'Рыба',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 // @ts-ignore

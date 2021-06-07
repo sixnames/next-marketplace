@@ -69,8 +69,8 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           metric: rubricAttribute.metric,
           notShowAsAlphabet: rubricAttribute.notShowAsAlphabet,
           positioningInTitle: rubricAttribute.positioningInTitle,
-          showInCard: true,
-          showAsBreadcrumb: true,
+          showInCard: rubricAttribute.showInCard,
+          showAsBreadcrumb: rubricAttribute.showAsBreadcrumb,
           textI18n:
             rubricAttribute.variant === ATTRIBUTE_VARIANT_STRING
               ? {

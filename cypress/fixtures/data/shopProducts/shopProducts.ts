@@ -45,6 +45,7 @@ shops.forEach((shop) => {
           slug: product.slug,
           originalName: product.originalName,
           itemId: product.itemId,
+          barcode: product.barcode,
           productId,
           active: product.active,
           brandCollectionSlug: product.brandCollectionSlug,

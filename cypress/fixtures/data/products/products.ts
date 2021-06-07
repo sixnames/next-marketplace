@@ -237,6 +237,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
       _id: getObjectId(`${rubricSlug} ${itemId}`),
       active: true,
       itemId,
+      barcode: itemId,
       slug: generateSlug(name),
       originalName: name,
       nameI18n: {

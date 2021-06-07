@@ -6,7 +6,7 @@ const defaultSlug = 'orderStatus';
 const orderStatuses: OrderStatusModel[] = [
   {
     _id: getObjectId(`${defaultSlug} new`),
-    slug: 'new',
+    slug: 'pending',
     color: '#0097a7',
     nameI18n: {
       ru: 'Новый',

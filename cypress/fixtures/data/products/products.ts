@@ -51,6 +51,8 @@ const manufacturersAttributeSlug = 'manufacturers';
 const brandsAttributeSlug = 'brands';
 const brandCollectionsAttributeSlug = 'brandCollections';
 
+let counter = 0;
+
 const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   const rubricSlug = rubric.slug;
 
@@ -109,6 +111,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
   }
 
   for (let i = 1; i <= maxProductsCount; i = i + 1) {
+    counter = counter + 1;
     const selectedAttributesIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
 
@@ -193,7 +196,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric, rubricIndex) => {
       }
     });
 
-    const counter = i * (rubricIndex + 1);
     const itemId = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug} ${itemId}`;
 

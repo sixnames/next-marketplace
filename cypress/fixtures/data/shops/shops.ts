@@ -12,6 +12,7 @@ const shops: ShopModel[] = [
   {
     _id: getObjectId('shop Shop A'),
     itemId: '000001',
+    token: '000001',
     slug: 'shop_a',
     name: 'Shop A',
     citySlug: DEFAULT_CITY,
@@ -44,6 +45,7 @@ const shops: ShopModel[] = [
   {
     _id: getObjectId('shop Shop B'),
     itemId: '000002',
+    token: '000002',
     slug: 'shop_b',
     name: 'Shop B',
     citySlug: DEFAULT_CITY,
@@ -67,6 +69,39 @@ const shops: ShopModel[] = [
       point: {
         type: 'Point',
         coordinates: [37.62867021460195, 55.74116803925581],
+      },
+    },
+    companyId: getObjectId('company Company B'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    _id: getObjectId('shop Shop C'),
+    itemId: '000003',
+    token: '000003',
+    slug: 'shop_c',
+    name: 'Shop C',
+    citySlug: DEFAULT_CITY,
+    logo: {
+      index: 0,
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
+    },
+    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
+    assets: [
+      {
+        index: 0,
+        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
+      },
+    ],
+    contacts: {
+      emails: ['shopC@gmail.com'],
+      phones: ['+76665554433'],
+    },
+    address: {
+      formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
+      point: {
+        type: 'Point',
+        coordinates: [37.522890631943376, 55.79065483867902],
       },
     },
     companyId: getObjectId('company Company B'),

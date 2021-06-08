@@ -19,7 +19,7 @@ const body: InitialSyncProductInterface[] = [
   },
 ];
 
-const errorCallback = (res: Cypress.Response) => {
+const errorCallback = (res: any) => {
   const body = res.body as SyncResponseInterface;
   expect(body.success).equals(false);
 };

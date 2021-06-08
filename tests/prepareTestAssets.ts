@@ -21,7 +21,6 @@ function uploadTestAssets() {
     {
       path: './cypress/fixtures/assets',
       save_name: true,
-      // cache_control: `public, max-age=${ONE_WEEK}`,
     },
     '/',
   )

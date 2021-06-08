@@ -1,6 +1,7 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
@@ -70,6 +71,8 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 
   const addProductsPath = `${layoutBasePath}/${shop._id}/products/add/${rubricId}`;
   const validationSchema = useValidationSchema({ schema: updateManyShopProductsSchema });
+
+  const withProducts = docs.length > 0;
 
   const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
     onCompleted: (data) => onCompleteCallback(data.updateManyShopProducts),
@@ -195,7 +198,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        {docs.length > 0 ? (
+        {withProducts ? (
           <FormikIndividualSearch
             withReset
             onReset={() => {
@@ -208,7 +211,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         ) : null}
 
         <div className={`max-w-full`}>
-          {docs.length > 0 ? (
+          {withProducts ? (
             <div className={'mb-8'}>
               <Accordion
                 title={'Фильтр'}
@@ -272,24 +275,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               {() => {
                 return (
                   <Form>
-                    <div className={`mb-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => {
-                            router.push(addProductsPath).catch((e) => console.log(e));
-                          }}
-                          testId={'add-shop-product'}
-                          size={'small'}
-                        >
-                          Добавить товары
-                        </Button>
-                      </div>
-                    </div>
                     <div className={`overflow-x-auto`}>
                       <Table<ShopProductInterface>
                         columns={columns}
@@ -297,24 +282,23 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         testIdKey={'_id'}
                       />
                     </div>
-                    <div className={`mt-6 flex`}>
-                      <div className={`mr-6`}>
+                    <FixedButtons>
+                      {withProducts ? (
                         <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
                           Сохранить
                         </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => {
-                            router.push(addProductsPath).catch((e) => console.log(e));
-                          }}
-                          testId={'add-shop-product'}
-                          size={'small'}
-                        >
-                          Добавить товары
-                        </Button>
-                      </div>
-                    </div>
+                      ) : null}
+
+                      <Button
+                        onClick={() => {
+                          router.push(addProductsPath).catch((e) => console.log(e));
+                        }}
+                        testId={'add-shop-product'}
+                        size={'small'}
+                      >
+                        Добавить товары
+                      </Button>
+                    </FixedButtons>
                   </Form>
                 );
               }}

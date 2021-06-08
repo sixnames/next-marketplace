@@ -1,6 +1,7 @@
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -200,18 +201,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
           </div>
 
           <div className={'max-w-full'}>
-            <div className={`mb-6 flex`}>
-              <div className={`mr-6`}>
-                <Button
-                  disabled={chosen.length < 1}
-                  onClick={() => setStepHandler(2)}
-                  testId={'next-step'}
-                  size={'small'}
-                >
-                  Далее
-                </Button>
-              </div>
-            </div>
             <div className={`overflow-x-auto`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
@@ -227,18 +216,16 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 testIdKey={'_id'}
               />
             </div>
-            <div className={`mt-6 flex`}>
-              <div className={`mr-6`}>
-                <Button
-                  disabled={chosen.length < 1}
-                  onClick={() => setStepHandler(2)}
-                  testId={'next-step'}
-                  size={'small'}
-                >
-                  Далее
-                </Button>
-              </div>
-            </div>
+            <FixedButtons>
+              <Button
+                disabled={chosen.length < 1}
+                onClick={() => setStepHandler(2)}
+                testId={'next-step'}
+                size={'small'}
+              >
+                Далее
+              </Button>
+            </FixedButtons>
 
             <Pager
               page={page}
@@ -416,53 +403,28 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
               {() => {
                 return (
                   <Form>
-                    <div className={`mb-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button
-                          disabled={chosen.length < 1}
-                          testId={'save-shop-products'}
-                          type={'submit'}
-                          size={'small'}
-                        >
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => setStepHandler(1)}
-                          testId={'back-top'}
-                          size={'small'}
-                          theme={'secondary'}
-                        >
-                          Назад
-                        </Button>
-                      </div>
-                    </div>
                     <div className={`overflow-x-auto`}>
                       <Table<ProductInterface> columns={columns} data={chosen} testIdKey={'_id'} />
                     </div>
-                    <div className={`mt-6 flex`}>
-                      <div className={`mr-6`}>
-                        <Button
-                          disabled={chosen.length < 1}
-                          testId={'save-shop-products'}
-                          type={'submit'}
-                          size={'small'}
-                        >
-                          Сохранить
-                        </Button>
-                      </div>
-                      <div className={`mr-6`}>
-                        <Button
-                          onClick={() => setStepHandler(1)}
-                          testId={'back-bottom'}
-                          size={'small'}
-                          theme={'secondary'}
-                        >
-                          Назад
-                        </Button>
-                      </div>
-                    </div>
+                    <FixedButtons>
+                      <Button
+                        disabled={chosen.length < 1}
+                        testId={'save-shop-products'}
+                        type={'submit'}
+                        size={'small'}
+                      >
+                        Сохранить
+                      </Button>
+
+                      <Button
+                        onClick={() => setStepHandler(1)}
+                        testId={'back-bottom'}
+                        size={'small'}
+                        theme={'secondary'}
+                      >
+                        Назад
+                      </Button>
+                    </FixedButtons>
                   </Form>
                 );
               }}

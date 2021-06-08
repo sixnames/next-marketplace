@@ -61,6 +61,7 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);

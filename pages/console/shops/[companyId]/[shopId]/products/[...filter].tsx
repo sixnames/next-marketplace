@@ -1,6 +1,6 @@
 import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -60,6 +60,8 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -285,7 +287,18 @@ export const getServerSideProps = async (
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const { rubric } = shopProductsResult;
+  let rubric: RubricInterface | null = shopProductsResult.rubric;
+  if (!rubric) {
+    rubric = await rubricsCollection.findOne({
+      _id: new ObjectId(rubricId),
+    });
+  }
+  if (!rubric) {
+    return {
+      notFound: true,
+    };
+  }
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,

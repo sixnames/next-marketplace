@@ -4,7 +4,7 @@ export interface SyncParamsInterface {
   token?: string;
 }
 
-export interface InitialSyncProductInterface {
+export interface SyncProductInterface {
   barcode?: string;
   available?: number;
   price?: number;

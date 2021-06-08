@@ -1,15 +1,12 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
-import { getCurrencyString } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
+  if (req.method !== 'PATCH') {
     res.status(200).send({
       success: false,
       message: 'wrong method',
@@ -70,52 +67,40 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const shopProducts: ShopProductModel[] = [];
+  const updatedShopProducts: ShopProductModel[] = [];
   for await (const product of products) {
     const bodyItem = body.find(({ barcode }) => product.barcode === barcode);
-    if (!bodyItem || !bodyItem.available || !bodyItem.price) {
+    if (!bodyItem || !bodyItem.available || !bodyItem.price || !bodyItem.barcode) {
       break;
     }
 
-    const { available, price } = bodyItem;
+    const { available, price, barcode } = bodyItem;
+    const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+      {
+        shopId: shop._id,
+        barcode,
+      },
+      {
+        $set: {
+          available,
+          price,
+        },
+      },
+      {
+        returnOriginal: false,
+      },
+    );
+    const updatedShopProduct = updatedShopProductResult.value;
 
-    const shopProduct: ShopProductModel = {
-      _id: new ObjectId(),
-      active: true,
-      available,
-      price,
-      formattedPrice: getCurrencyString(bodyItem.price),
-      formattedOldPrice: '',
-      discountedPercent: 0,
-      productId: product._id,
-      shopId: shop._id,
-      citySlug: shop.citySlug,
-      oldPrices: [],
-      rubricId: product.rubricId,
-      rubricSlug: product.rubricSlug,
-      companyId: shop.companyId,
-      itemId: product.itemId,
-      slug: product.slug,
-      originalName: product.originalName,
-      nameI18n: product.nameI18n,
-      brandSlug: product.brandSlug,
-      brandCollectionSlug: product.brandCollectionSlug,
-      manufacturerSlug: product.manufacturerSlug,
-      mainImage: product.mainImage,
-      selectedOptionsSlugs: product.selectedOptionsSlugs,
-      barcode: product.barcode,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      ...DEFAULT_COUNTERS_OBJECT,
-    };
-    shopProducts.push(shopProduct);
+    if (updatedShopProductResult.ok && updatedShopProduct) {
+      updatedShopProducts.push(updatedShopProduct);
+    }
   }
 
-  const createdShopProductsResult = await shopProductsCollection.insertMany(shopProducts);
-  if (!createdShopProductsResult.result.ok) {
+  if (updatedShopProducts.length !== body.length) {
     res.status(200).send({
       success: false,
-      message: 'shop products create error',
+      message: 'not all products added',
     });
     return;
   }

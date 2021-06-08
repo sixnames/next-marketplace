@@ -1,7 +1,7 @@
 import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
-import { InitialSyncProductInterface, SyncResponseInterface } from 'db/syncInterfaces';
+import { SyncProductInterface, SyncResponseInterface } from 'db/syncInterfaces';
 
-const body: InitialSyncProductInterface[] = [
+const initialBody: SyncProductInterface[] = [
   {
     barcode: '000003',
     available: 10,
@@ -18,25 +18,39 @@ const body: InitialSyncProductInterface[] = [
     price: 650,
   },
 ];
+const updateBody: SyncProductInterface[] = [
+  {
+    barcode: '000003',
+    available: 5,
+    price: 890,
+  },
+  {
+    barcode: '000004',
+    available: 5,
+    price: 1000,
+  },
+];
+
+console.log(updateBody);
 
 const errorCallback = (res: any) => {
   const body = res.body as SyncResponseInterface;
   expect(body.success).equals(false);
 };
 
-describe('Authorization', () => {
+describe('Sync', () => {
   beforeEach(() => {
     cy.createTestData();
     cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`/`);
   });
 
-  it('Should sync shop products with site db', () => {
+  it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',
       url: `/api/shops/sync?apiVersion=0.0.1&systemVersion=8.2`,
-      body: JSON.stringify(body),
+      body: JSON.stringify(initialBody),
     }).then(errorCallback);
 
     // should error on no request body
@@ -49,14 +63,14 @@ describe('Authorization', () => {
     // should error on wrong method
     cy.request({
       url: `/api/shops/sync?token=000003&apiVersion=0.0.1&systemVersion=8.2`,
-      body: JSON.stringify(body),
+      body: JSON.stringify(initialBody),
     }).then(errorCallback);
 
     // should success
     cy.request({
       method: 'POST',
       url: `/api/shops/sync?token=000003&apiVersion=0.0.1&systemVersion=8.2`,
-      body: JSON.stringify(body),
+      body: JSON.stringify(initialBody),
     }).then((res) => {
       const body = res.body as SyncResponseInterface;
       expect(body.success).equals(true);

@@ -121,4 +121,15 @@ describe('Sync', () => {
       expect(input.val()).to.equals('1000');
     });
   });
+
+  it.only('Should sync shop orders with site', () => {
+    // should error on no parameters
+    cy.request({
+      method: 'GET',
+      url: `/api/shops/get-orders?${validRequestParams}`,
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
+  });
 });

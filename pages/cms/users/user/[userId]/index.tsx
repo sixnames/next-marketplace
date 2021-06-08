@@ -71,9 +71,9 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
           {() => {
             return (
               <Form noValidate>
-                <FixedButtons>
-                  <UserMainFields roles={roles} />
+                <UserMainFields roles={roles} />
 
+                <FixedButtons>
                   <Button size={'small'} testId={'submit-user'} type={'submit'}>
                     Сохранить
                   </Button>

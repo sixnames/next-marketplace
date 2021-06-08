@@ -110,27 +110,31 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       headTitle: 'Наличие',
-      render: ({ rowIndex }) => {
+      render: ({ rowIndex, dataItem }) => {
         return (
-          <FormikInput
-            testId={`shop-product-available-${rowIndex}`}
-            name={`input[${rowIndex}].available`}
-            type={'number'}
-            low
-          />
+          <div data-cy={`${dataItem.itemId}-available`}>
+            <FormikInput
+              testId={`shop-product-available-${rowIndex}`}
+              name={`input[${rowIndex}].available`}
+              type={'number'}
+              low
+            />
+          </div>
         );
       },
     },
     {
       headTitle: 'Цена',
-      render: ({ rowIndex }) => {
+      render: ({ rowIndex, dataItem }) => {
         return (
-          <FormikInput
-            testId={`shop-product-price-${rowIndex}`}
-            name={`input[${rowIndex}].price`}
-            type={'number'}
-            low
-          />
+          <div data-cy={`${dataItem.itemId}-price`}>
+            <FormikInput
+              testId={`shop-product-price-${rowIndex}`}
+              name={`input[${rowIndex}].price`}
+              type={'number'}
+              low
+            />
+          </div>
         );
       },
     },

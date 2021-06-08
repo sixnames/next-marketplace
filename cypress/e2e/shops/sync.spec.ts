@@ -1,6 +1,8 @@
 import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
 import { SyncProductInterface, SyncResponseInterface } from 'db/syncInterfaces';
 
+const validRequestParams = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
+
 const initialBody: SyncProductInterface[] = [
   {
     barcode: '000003',
@@ -31,8 +33,6 @@ const updateBody: SyncProductInterface[] = [
   },
 ];
 
-console.log(updateBody);
-
 const errorCallback = (res: any) => {
   const body = res.body as SyncResponseInterface;
   expect(body.success).equals(false);
@@ -56,20 +56,20 @@ describe('Sync', () => {
     // should error on no request body
     cy.request({
       method: 'POST',
-      url: `/api/shops/sync?token=000003&apiVersion=0.0.1&systemVersion=8.2`,
+      url: `/api/shops/sync?${validRequestParams}`,
       body: JSON.stringify([]),
     }).then(errorCallback);
 
     // should error on wrong method
     cy.request({
-      url: `/api/shops/sync?token=000003&apiVersion=0.0.1&systemVersion=8.2`,
+      url: `/api/shops/sync?${validRequestParams}`,
       body: JSON.stringify(initialBody),
     }).then(errorCallback);
 
     // should success
     cy.request({
       method: 'POST',
-      url: `/api/shops/sync?token=000003&apiVersion=0.0.1&systemVersion=8.2`,
+      url: `/api/shops/sync?${validRequestParams}`,
       body: JSON.stringify(initialBody),
     }).then((res) => {
       const body = res.body as SyncResponseInterface;
@@ -92,5 +92,33 @@ describe('Sync', () => {
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
     cy.getByCy('shop-product-main-image').should('have.length', 3);
+
+    // should update synced products
+    cy.request({
+      method: 'PATCH',
+      url: `/api/shops/update?${validRequestParams}`,
+      body: JSON.stringify(updateBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
+    cy.reload();
+    cy.wait(1500);
+    cy.getByCy('000003-available').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('5');
+    });
+    cy.getByCy('000003-price').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('890');
+    });
+    cy.getByCy('000004-available').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('5');
+    });
+    cy.getByCy('000004-price').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('1000');
+    });
   });
 });

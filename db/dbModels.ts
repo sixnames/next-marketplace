@@ -409,6 +409,7 @@ export interface OrderProductModel extends TimestampModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
+  statusId: ObjectIdModel;
 }
 
 export interface OrderCustomerModel extends TimestampModel {
@@ -604,6 +605,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   mainImage: string;
+  token?: string;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {

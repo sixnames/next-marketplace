@@ -14,7 +14,7 @@ function uploadTestAssets() {
       secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
     },
     Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
-    // debug: true
+    // debug: true,
   });
 
   s3.Upload(

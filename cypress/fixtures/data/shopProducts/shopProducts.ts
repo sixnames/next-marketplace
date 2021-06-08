@@ -18,6 +18,9 @@ const getCurrencyString = (value?: number | string | null): string => {
 };
 
 shops.forEach((shop) => {
+  if (shop.itemId === '000003') {
+    return;
+  }
   rubrics.forEach((rubric) => {
     const rubricProducts = products.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
 
@@ -45,6 +48,7 @@ shops.forEach((shop) => {
           slug: product.slug,
           originalName: product.originalName,
           itemId: product.itemId,
+          barcode: product.barcode,
           productId,
           active: product.active,
           brandCollectionSlug: product.brandCollectionSlug,

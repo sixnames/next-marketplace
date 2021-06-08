@@ -30,7 +30,7 @@ const companies: CompanyModel[] = [
     name: 'Company B',
     staffIds: [],
     ownerId: getObjectId('company owner b'),
-    shopsIds: getObjectIds(['shop Shop B']),
+    shopsIds: getObjectIds(['shop Shop B', 'shop Shop C']),
     contacts: {
       phones: ['+72223334455'],
       emails: ['companyB@gmail.com', 'companyBB@gmail.com'],

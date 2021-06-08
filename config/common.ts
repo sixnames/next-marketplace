@@ -225,7 +225,7 @@ export const ORDER_LOG_VARIANT_STATUS = 'status';
 export const ORDER_LOG_VARIANTS_ENUMS = [ORDER_LOG_VARIANT_STATUS];
 
 // ORDER STATUSES SLUGS
-export const ORDER_STATUS_NEW = 'new';
+export const ORDER_STATUS_PENDING = 'pending';
 export const ORDER_STATUS_CONFIRMED = 'confirmed';
 export const ORDER_STATUS_DONE = 'done';
 export const ORDER_STATUS_CANCELED = 'canceled';

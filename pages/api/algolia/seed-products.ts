@@ -1,14 +1,13 @@
 import algoliasearch from 'algoliasearch';
-import { ALG_INDEX_PRODUCTS, ALG_INDEX_SHOP_PRODUCTS } from 'db/algoliaIndexes';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ProductModel, ShopProductModel } from 'db/dbModels';
+import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
+import { COL_PRODUCTS } from 'db/collectionNames';
+import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { castDbData } from 'lib/ssrUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
   const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
   // algolia
@@ -16,29 +15,9 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     `${process.env.ALGOLIA_APP_ID}`,
     `${process.env.ALGOLIA_API_KEY}`,
   );
-  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_SHOP_PRODUCTS);
   const productsIndex = algoliaClient.initIndex(ALG_INDEX_PRODUCTS);
 
   let error = false;
-
-  // Shop products
-  const shopProducts = await shopProductsCollection.aggregate([]).toArray();
-  const castedShopProducts = castDbData(shopProducts).map((shopProduct: any) => {
-    return {
-      objectID: shopProduct._id,
-      ...shopProduct,
-    };
-  });
-  shopProductsIndex
-    .saveObjects(castedShopProducts)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((e) => {
-      console.log('Shop products error');
-      console.log(e);
-      error = true;
-    });
 
   // Products
   const products = await productsCollection.aggregate([]).toArray();

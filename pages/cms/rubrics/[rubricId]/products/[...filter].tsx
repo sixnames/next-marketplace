@@ -1,3 +1,4 @@
+import algoliasearch from 'algoliasearch';
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
@@ -16,6 +17,7 @@ import TableRowImage from 'components/Table/TableRowImage';
 import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
+import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
@@ -297,6 +299,28 @@ export const getServerSideProps = async (
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('RubricProductsPage props ');
   // const startTime = new Date().getTime();
+
+  // algolia
+  const algoliaClient = algoliasearch(
+    `${process.env.ALGOLIA_APP_ID}`,
+    `${process.env.ALGOLIA_API_KEY}`,
+  );
+  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_PRODUCTS);
+  const searchIds: ObjectId[] = [];
+  if (search) {
+    const { hits } = await shopProductsIndex.search<ProductInterface>(`${search}`);
+    hits.forEach((hit) => {
+      searchIds.push(new ObjectId(hit._id));
+    });
+  }
+  const searchStage = search
+    ? {
+        _id: {
+          $in: searchIds,
+        },
+      }
+    : {};
+
   // Get shop
   if (!initialProps.props) {
     return {
@@ -326,35 +350,6 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
-
-  const languages = initialProps.props.initialData.languages;
-  const searchByName = languages.map(({ slug }) => {
-    return {
-      [`nameI18n.${slug}`]: {
-        $regex: search,
-        $options: 'i',
-      },
-    };
-  });
-  const searchStage = search
-    ? {
-        $or: [
-          ...searchByName,
-          {
-            originalName: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 

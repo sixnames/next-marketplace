@@ -144,10 +144,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
-                window.open(
-                  `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
-                  '_blank',
-                );
+                if (me?.role?.isStaff) {
+                  window.open(
+                    `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
+                    '_blank',
+                  );
+                }
               }}
             />
           </div>
@@ -203,6 +205,9 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
           <div className={'max-w-full'}>
             <div className={`overflow-x-auto`}>
               <Table<ProductInterface>
+                columns={columns}
+                data={docs}
+                testIdKey={'_id'}
                 onRowDoubleClick={(dataItem) => {
                   if (me?.role?.isStaff) {
                     window.open(
@@ -211,9 +216,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                     );
                   }
                 }}
-                columns={columns}
-                data={docs}
-                testIdKey={'_id'}
               />
             </div>
             <FixedButtons>

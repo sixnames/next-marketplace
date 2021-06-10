@@ -1,6 +1,7 @@
 import algoliasearch from 'algoliasearch';
 import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
+import { ALG_INDEX_SHOP_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
@@ -69,12 +70,17 @@ export const getServerSideProps = async (
   const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
+  // console.log(' ');
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
+  // console.log('CompanyShopProductsList props ');
+  // const startTime = new Date().getTime();
+
   // algolia
   const algoliaClient = algoliasearch(
     `${process.env.ALGOLIA_APP_ID}`,
     `${process.env.ALGOLIA_API_KEY}`,
   );
-  const shopProductsIndex = algoliaClient.initIndex('shop_products');
+  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_SHOP_PRODUCTS);
   const searchIds: ObjectId[] = [];
   if (search) {
     const { hits } = await shopProductsIndex.search<ShopProductModel>(`${search}`);
@@ -82,11 +88,14 @@ export const getServerSideProps = async (
       searchIds.push(new ObjectId(hit._id));
     });
   }
+  const searchStage = search
+    ? {
+        _id: {
+          $in: searchIds,
+        },
+      }
+    : {};
 
-  // console.log(' ');
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
-  // console.log('CompanyShopProductsList props ');
-  // const startTime = new Date().getTime();
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {
@@ -127,14 +136,6 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
-
-  const searchStage = search
-    ? {
-        _id: {
-          $in: searchIds,
-        },
-      }
-    : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 

@@ -11,7 +11,9 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModa
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
+import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modals';
+import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
   AppPaginationInterface,
@@ -59,6 +61,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricId,
   layoutBasePath,
 }) => {
+  const { me } = useUserContext();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
   const {
@@ -88,7 +91,18 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     {
       accessor: 'itemId',
       headTitle: 'Арт',
-      render: ({ cellData }) => cellData,
+      render: ({ dataItem }) => {
+        return me?.role?.isStaff ? (
+          <Link
+            href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`}
+            target={'_blank'}
+          >
+            {dataItem.itemId}
+          </Link>
+        ) : (
+          dataItem.itemId
+        );
+      },
     },
     {
       headTitle: 'Фото',
@@ -110,27 +124,31 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       headTitle: 'Наличие',
-      render: ({ rowIndex }) => {
+      render: ({ rowIndex, dataItem }) => {
         return (
-          <FormikInput
-            testId={`shop-product-available-${rowIndex}`}
-            name={`input[${rowIndex}].available`}
-            type={'number'}
-            low
-          />
+          <div data-cy={`${dataItem.itemId}-available`}>
+            <FormikInput
+              testId={`shop-product-available-${rowIndex}`}
+              name={`input[${rowIndex}].available`}
+              type={'number'}
+              low
+            />
+          </div>
         );
       },
     },
     {
       headTitle: 'Цена',
-      render: ({ rowIndex }) => {
+      render: ({ rowIndex, dataItem }) => {
         return (
-          <FormikInput
-            testId={`shop-product-price-${rowIndex}`}
-            name={`input[${rowIndex}].price`}
-            type={'number'}
-            low
-          />
+          <div data-cy={`${dataItem.itemId}-price`}>
+            <FormikInput
+              testId={`shop-product-price-${rowIndex}`}
+              name={`input[${rowIndex}].price`}
+              type={'number'}
+              low
+            />
+          </div>
         );
       },
     },
@@ -144,6 +162,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
+            updateTitle={'Редактировать товар'}
+            updateHandler={() => {
+              if (me?.role?.isStaff) {
+                window.open(
+                  `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
+                  '_blank',
+                );
+              }
+            }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
@@ -198,17 +225,19 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        {withProducts ? (
-          <FormikIndividualSearch
-            withReset
-            onReset={() => {
-              router.push(basePath).catch((e) => console.log(e));
-            }}
-            onSubmit={(search) => {
-              router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
-            }}
-          />
-        ) : null}
+        <FormikIndividualSearch
+          withReset
+          onReset={() => {
+            router.push(basePath).catch((e) => console.log(e));
+          }}
+          onSubmit={(search) => {
+            if (search && search.length > 0) {
+              router.push(`${basePath}?search=${search}`).catch(console.log);
+            } else {
+              router.push(basePath).catch(console.log);
+            }
+          }}
+        />
 
         <div className={`max-w-full`}>
           {withProducts ? (
@@ -280,6 +309,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         columns={columns}
                         data={docs}
                         testIdKey={'_id'}
+                        onRowDoubleClick={(dataItem) => {
+                          if (me?.role?.isStaff) {
+                            window.open(
+                              `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
+                              '_blank',
+                            );
+                          }
+                        }}
                       />
                     </div>
                     <FixedButtons>

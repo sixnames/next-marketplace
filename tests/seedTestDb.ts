@@ -1,7 +1,32 @@
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
+const EasyYandexS3 = require('easy-yandex-s3');
 
 require('dotenv').config();
+
+export async function uploadTestAssets() {
+  const s3 = new EasyYandexS3({
+    auth: {
+      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
+      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
+    },
+    Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
+    // debug: true,
+  });
+
+  try {
+    await s3.Upload(
+      {
+        path: './cypress/fixtures/assets',
+        save_name: true,
+      },
+      '/',
+    );
+    console.log('Assets uploaded');
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
@@ -38,6 +63,7 @@ const config = {
   try {
     await seeder.import(collections);
     console.log('Test data seeded');
+    // await uploadTestAssets();
   } catch (err) {
     console.log(err);
   }

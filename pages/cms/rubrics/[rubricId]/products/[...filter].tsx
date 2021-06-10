@@ -1,3 +1,4 @@
+import algoliasearch from 'algoliasearch';
 import Accordion from 'components/Accordion/Accordion';
 import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
 import Button from 'components/Buttons/Button';
@@ -13,9 +14,16 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  PAGE_DEFAULT,
+  QUERY_FILTER_PAGE,
+  ROUTE_CMS,
+  SORT_DESC,
+} from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
+import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
@@ -193,7 +201,11 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             router.push(basePath).catch((e) => console.log(e));
           }}
           onSubmit={(search) => {
-            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+            if (search && search.length > 0) {
+              router.push(`${basePath}?search=${search}`).catch(console.log);
+            } else {
+              router.push(basePath).catch(console.log);
+            }
           }}
         />
 
@@ -290,13 +302,33 @@ export const getServerSideProps = async (
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
-  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('RubricProductsPage props ');
   // const startTime = new Date().getTime();
+
+  // algolia
+  const algoliaClient = algoliasearch(
+    `${process.env.ALGOLIA_APP_ID}`,
+    `${process.env.ALGOLIA_API_KEY}`,
+  );
+  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_PRODUCTS);
+  const searchIds: ObjectId[] = [];
+  if (search) {
+    const { hits } = await shopProductsIndex.search<ProductInterface>(`${search}`);
+    hits.forEach((hit) => {
+      searchIds.push(new ObjectId(hit._id));
+    });
+  }
+  const searchStage = search
+    ? {
+        _id: {
+          $in: searchIds,
+        },
+      }
+    : {};
+
   // Get shop
   if (!initialProps.props) {
     return {
@@ -315,8 +347,10 @@ export const getServerSideProps = async (
     clearSlug,
   } = castCatalogueFilters({
     filters: restFilter,
-    basePath,
   });
+
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // Products stages
   const optionsStage = noFiltersSelected
@@ -326,35 +360,6 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
-
-  const languages = initialProps.props.initialData.languages;
-  const searchByName = languages.map(({ slug }) => {
-    return {
-      [`nameI18n.${slug}`]: {
-        $regex: search,
-        $options: 'i',
-      },
-    };
-  });
-  const searchStage = search
-    ? {
-        $or: [
-          ...searchByName,
-          {
-            originalName: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 

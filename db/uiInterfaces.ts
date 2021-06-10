@@ -270,6 +270,7 @@ export interface ShopProductInterface extends ShopProductModel {
   tagFeatures?: ProductAttributeInterface[];
   iconFeatures?: ProductAttributeInterface[];
   ratingFeatures?: ProductAttributeInterface[];
+  orders?: OrderInterface[];
 }
 
 export interface ShopInterface extends ShopModel {
@@ -277,6 +278,7 @@ export interface ShopInterface extends ShopModel {
   city?: CityInterface | null;
   contacts: ContactsInterface;
   address: AddressInterface;
+  orders?: OrderInterface[];
 }
 
 export interface UserInterface extends UserModel {

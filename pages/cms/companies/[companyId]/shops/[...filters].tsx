@@ -10,7 +10,13 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
+import {
+  ROUTE_CMS,
+  SORT_DESC,
+  PAGE_DEFAULT,
+  QUERY_FILTER_PAGE,
+  CATALOGUE_OPTION_SEPARATOR,
+} from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modals';
 import {
   COL_CITIES,
@@ -163,7 +169,11 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
             router.push(basePath).catch((e) => console.log(e));
           }}
           onSubmit={(search) => {
-            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+            if (search && search.length > 0) {
+              router.push(`${basePath}?search=${search}`).catch(console.log);
+            } else {
+              router.push(basePath).catch(console.log);
+            }
           }}
         />
 
@@ -236,14 +246,13 @@ export const getServerSideProps = async (
 
   const { filters, search } = query;
   const [companyId, ...restFilter] = alwaysArray(filters);
-  const basePath = `${ROUTE_CMS}/companies/${companyId}/shops/${companyId}`;
-  const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 
   // Cast filters
   const { page, skip, limit, clearSlug } = castCatalogueFilters({
     filters: restFilter,
-    basePath,
   });
+  const basePath = `${ROUTE_CMS}/companies/${companyId}/shops/${companyId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 
   const companyAggregationResult = await companiesCollection
     .aggregate([

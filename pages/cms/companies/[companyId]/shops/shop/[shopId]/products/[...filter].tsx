@@ -1,5 +1,13 @@
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import algoliasearch from 'algoliasearch';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  PAGE_DEFAULT,
+  QUERY_FILTER_PAGE,
+  ROUTE_CMS,
+  SORT_DESC,
+} from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
+import { ALG_INDEX_SHOP_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
@@ -66,12 +74,33 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('CompanyShopProductsList props ');
   // const startTime = new Date().getTime();
+
+  // algolia
+  const algoliaClient = algoliasearch(
+    `${process.env.ALGOLIA_APP_ID}`,
+    `${process.env.ALGOLIA_API_KEY}`,
+  );
+  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_SHOP_PRODUCTS);
+  const searchIds: ObjectId[] = [];
+  if (search) {
+    const { hits } = await shopProductsIndex.search<ShopProductModel>(`${search}`);
+    hits.forEach((hit) => {
+      searchIds.push(new ObjectId(hit._id));
+    });
+  }
+  const searchStage = search
+    ? {
+        _id: {
+          $in: searchIds,
+        },
+      }
+    : {};
+
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {
@@ -93,6 +122,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: restFilter,
   });
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
 
   // Products stages
   const pricesStage =
@@ -112,41 +142,6 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
-
-  const languages = initialProps.props.initialData.languages;
-  const searchByName = languages.map(({ slug }) => {
-    return {
-      [`nameI18n.${slug}`]: {
-        $regex: search,
-        $options: 'i',
-      },
-    };
-  });
-  const searchStage = search
-    ? {
-        $or: [
-          ...searchByName,
-          {
-            originalName: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            barcode: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 

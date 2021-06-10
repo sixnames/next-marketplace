@@ -146,7 +146,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
               router.push(basePath).catch((e) => console.log(e));
             }}
             onSubmit={(search) => {
-              router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+              if (search && search.length > 0) {
+                router.push(`${basePath}?search=${search}`).catch(console.log);
+              } else {
+                router.push(basePath).catch(console.log);
+              }
             }}
           />
 
@@ -221,8 +225,6 @@ export const getServerSideProps = async (
 
   const { query } = context;
   const { filter, search } = query;
-  const basePath = `${ROUTE_CMS}/users/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}`;
-  const itemPath = `${ROUTE_CMS}/users/user`;
   const locale = props.sessionLocale;
 
   // Cast filters
@@ -235,8 +237,9 @@ export const getServerSideProps = async (
     clearSlug,
   } = castCatalogueFilters({
     filters: alwaysArray(filter),
-    basePath,
   });
+  const basePath = `${ROUTE_CMS}/users/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const itemPath = `${ROUTE_CMS}/users/user`;
 
   const regexSearch = {
     $regex: search,

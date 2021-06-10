@@ -20,13 +20,22 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
   let error = false;
 
   // Shop products
-  const shopProducts = await shopProductsCollection.aggregate([]).toArray();
-  const castedShopProducts = castDbData(shopProducts).map((shopProduct: any) => {
-    return {
-      objectID: shopProduct._id,
-      ...shopProduct,
-    };
-  });
+  const shopProducts = await shopProductsCollection
+    .aggregate([
+      {
+        $project: {
+          _id: false,
+          objectID: {
+            $toString: '$_id',
+          },
+          itemId: true,
+          originalName: true,
+          nameI18n: true,
+        },
+      },
+    ])
+    .toArray();
+  const castedShopProducts = castDbData(shopProducts);
   shopProductsIndex
     .saveObjects(castedShopProducts)
     .then((res) => {

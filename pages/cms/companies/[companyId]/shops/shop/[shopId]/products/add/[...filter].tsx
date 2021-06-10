@@ -147,13 +147,14 @@ export const getServerSideProps = async (
       searchIds.push(new ObjectId(hit._id));
     });
   }
-  const searchStage = search
-    ? {
-        _id: {
-          $in: searchIds,
-        },
-      }
-    : {};
+  const searchStage =
+    search && search.length > 0 && searchIds.length > 0
+      ? {
+          _id: {
+            $in: searchIds,
+          },
+        }
+      : {};
 
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });

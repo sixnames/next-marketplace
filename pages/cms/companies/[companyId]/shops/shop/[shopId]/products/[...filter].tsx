@@ -88,7 +88,18 @@ export const getServerSideProps = async (
   const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_SHOP_PRODUCTS);
   const searchIds: ObjectId[] = [];
   if (search) {
-    const { hits } = await shopProductsIndex.search<ShopProductModel>(`${search}`);
+    const { hits, ...rest } = await shopProductsIndex.search<ShopProductModel>(`${search}`);
+    console.log(
+      JSON.stringify(
+        {
+          hits,
+          rest,
+        },
+        null,
+        2,
+      ),
+    );
+
     hits.forEach((hit) => {
       searchIds.push(new ObjectId(hit._id));
     });

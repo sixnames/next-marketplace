@@ -35,16 +35,11 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     ])
     .toArray();
   const castedShopProducts = castDbData(shopProducts);
-  shopProductsIndex
-    .saveObjects(castedShopProducts)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((e) => {
-      console.log('Shop products error');
-      console.log(e);
-      error = true;
-    });
+  const result = await shopProductsIndex.saveObjects(castedShopProducts);
+  if (result.objectIDs.length < shopProducts.length) {
+    console.log('Shop products error');
+    error = true;
+  }
 
   if (error) {
     res.status(200).send({

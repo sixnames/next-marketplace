@@ -24,7 +24,6 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     .aggregate([
       {
         $project: {
-          _id: false,
           objectID: {
             $toString: '$_id',
           },

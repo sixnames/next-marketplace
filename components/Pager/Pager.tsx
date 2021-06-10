@@ -19,7 +19,7 @@ export const useNavigateToPageHandler = () => {
   const router = useRouter();
   return React.useCallback(
     (newPage: number) => {
-      const { asPath } = router;
+      const { asPath, query } = router;
       const pageParam = `${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${newPage}`;
       const prevUrlArray = asPath.split('/').filter((param) => {
         if (!param) {
@@ -29,9 +29,13 @@ export const useNavigateToPageHandler = () => {
         return paramParts[0] !== QUERY_FILTER_PAGE;
       });
       const nextUrl = [...prevUrlArray, pageParam].join('/');
-      router.push(`/${nextUrl}/`).catch((e) => {
-        console.log(e);
-      });
+      router
+        .push(
+          `/${nextUrl}${query.search && query.search.length > 0 ? `?search=${query.search}` : '/'}`,
+        )
+        .catch((e) => {
+          console.log(e);
+        });
     },
     [router],
   );

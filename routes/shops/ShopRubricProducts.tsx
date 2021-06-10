@@ -231,7 +231,11 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             router.push(basePath).catch((e) => console.log(e));
           }}
           onSubmit={(search) => {
-            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+            if (search && search.length > 0) {
+              router.push(`${basePath}?search=${search}`).catch(console.log);
+            } else {
+              router.push(basePath).catch(console.log);
+            }
           }}
         />
 

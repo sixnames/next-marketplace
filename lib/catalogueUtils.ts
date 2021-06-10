@@ -426,21 +426,18 @@ interface CastCatalogueFiltersPayloadInterface {
   skip: number;
   limit: number;
   clearSlug: string;
-  basePath: string;
 }
 
 interface CastCatalogueFiltersInterface {
   filters: string[];
   initialLimit?: number;
   initialPage?: number;
-  basePath?: string;
 }
 
 export function castCatalogueFilters({
   filters,
   initialPage,
   initialLimit,
-  basePath = '',
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   let sortBy: string | null = null;
@@ -504,8 +501,7 @@ export function castCatalogueFilters({
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
   return {
-    clearSlug: `${basePath}${sortPathname}`,
-    basePath,
+    clearSlug: sortPathname,
     minPrice,
     maxPrice,
     realFilterOptions,

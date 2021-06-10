@@ -1,5 +1,11 @@
 import algoliasearch from 'algoliasearch';
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  PAGE_DEFAULT,
+  QUERY_FILTER_PAGE,
+  ROUTE_CMS,
+  SORT_DESC,
+} from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { ALG_INDEX_SHOP_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -68,7 +74,6 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -117,6 +122,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: restFilter,
   });
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
 
   // Products stages
   const pricesStage =

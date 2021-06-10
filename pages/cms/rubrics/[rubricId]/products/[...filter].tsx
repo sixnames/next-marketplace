@@ -14,7 +14,13 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  PAGE_DEFAULT,
+  QUERY_FILTER_PAGE,
+  ROUTE_CMS,
+  SORT_DESC,
+} from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
@@ -195,7 +201,11 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             router.push(basePath).catch((e) => console.log(e));
           }}
           onSubmit={(search) => {
-            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+            if (search && search.length > 0) {
+              router.push(`${basePath}?search=${search}`).catch(console.log);
+            } else {
+              router.push(basePath).catch(console.log);
+            }
           }}
         />
 
@@ -292,8 +302,6 @@ export const getServerSideProps = async (
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}`;
-  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
@@ -339,8 +347,10 @@ export const getServerSideProps = async (
     clearSlug,
   } = castCatalogueFilters({
     filters: restFilter,
-    basePath,
   });
+
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // Products stages
   const optionsStage = noFiltersSelected

@@ -1,3 +1,4 @@
+import algoliasearch from 'algoliasearch';
 import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -68,6 +69,20 @@ export const getServerSideProps = async (
   const initialProps = await getAppInitialData({ context });
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
+  // algolia
+  const algoliaClient = algoliasearch(
+    `${process.env.ALGOLIA_APP_ID}`,
+    `${process.env.ALGOLIA_API_KEY}`,
+  );
+  const shopProductsIndex = algoliaClient.initIndex('shop_products');
+  const searchIds: ObjectId[] = [];
+  if (search) {
+    const { hits } = await shopProductsIndex.search<ShopProductModel>(`${search}`);
+    hits.forEach((hit) => {
+      searchIds.push(new ObjectId(hit._id));
+    });
+  }
+
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('CompanyShopProductsList props ');
@@ -113,38 +128,11 @@ export const getServerSideProps = async (
         },
       };
 
-  const languages = initialProps.props.initialData.languages;
-  const searchByName = languages.map(({ slug }) => {
-    return {
-      [`nameI18n.${slug}`]: {
-        $regex: search,
-        $options: 'i',
-      },
-    };
-  });
   const searchStage = search
     ? {
-        $or: [
-          ...searchByName,
-          {
-            originalName: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            barcode: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
+        _id: {
+          $in: searchIds,
+        },
       }
     : {};
 

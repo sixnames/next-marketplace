@@ -33,6 +33,7 @@
     "@react-google-maps/api": "^2.1.1",
     "@tailwindcss/typography": "^0.4.0",
     "add-zero": "^1.0.0",
+    "algoliasearch": "^4.9.1",
     "apollo-link-context": "^1.0.20",
     "apollo-server-micro": "^2.21.2",
     "aws-sdk": "^2.905.0",

@@ -202,17 +202,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        {withProducts ? (
-          <FormikIndividualSearch
-            withReset
-            onReset={() => {
-              router.push(basePath).catch((e) => console.log(e));
-            }}
-            onSubmit={(search) => {
-              router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
-            }}
-          />
-        ) : null}
+        <FormikIndividualSearch
+          withReset
+          onReset={() => {
+            router.push(basePath).catch((e) => console.log(e));
+          }}
+          onSubmit={(search) => {
+            router.push(`${basePath}?search=${search}`).catch((e) => console.log(e));
+          }}
+        />
 
         <div className={`max-w-full`}>
           {withProducts ? (

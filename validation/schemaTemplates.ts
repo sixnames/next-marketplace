@@ -8,10 +8,10 @@ import {
   GetFieldValidationMessageInterface,
 } from 'lib/getFieldValidationMessage';
 
-export const minDescriptionLength = 15;
-export const maxDescriptionLength = 300;
+export const minDescriptionLength = 10;
+export const maxDescriptionLength = 1000;
 export const minNameLength = 2;
-export const maxNameLength = 70;
+export const maxNameLength = 150;
 export const minPrice = 1;
 
 // HEX color schema

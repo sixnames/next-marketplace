@@ -23,7 +23,6 @@ import {
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
-import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
@@ -313,7 +312,7 @@ export const getServerSideProps = async (
     `${process.env.ALGOLIA_APP_ID}`,
     `${process.env.ALGOLIA_API_KEY}`,
   );
-  const shopProductsIndex = algoliaClient.initIndex(ALG_INDEX_PRODUCTS);
+  const shopProductsIndex = algoliaClient.initIndex(`${process.env.ALG_INDEX_PRODUCTS}`);
   const searchIds: ObjectId[] = [];
   if (search) {
     const { hits } = await shopProductsIndex.search<ProductInterface>(`${search}`);

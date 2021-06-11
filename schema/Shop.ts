@@ -1,4 +1,9 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import {
+  AlgoliaProductInterface,
+  deleteAlgoliaObjects,
+  saveAlgoliaObjects,
+} from 'lib/algoliaUtils';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
 import { getCurrencyString } from 'lib/i18n';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
@@ -718,6 +723,28 @@ export const ShopMutations = extendType({
               return;
             }
 
+            const algoliaShopProductResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+              objects: [
+                {
+                  _id: createdShopProduct._id.toHexString(),
+                  objectID: createdShopProduct._id.toHexString(),
+                  itemId: createdShopProduct.itemId,
+                  originalName: createdShopProduct.originalName,
+                  nameI18n: createdShopProduct.nameI18n,
+                  barcode: createdShopProduct.barcode,
+                },
+              ],
+            });
+            if (!algoliaShopProductResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('shops.addProduct.success'),
@@ -791,6 +818,7 @@ export const ShopMutations = extendType({
             await validationSchema.validate(args);
 
             let doneCount = 0;
+            const algoliaShopProducts: AlgoliaProductInterface[] = [];
             for await (const shopProductInput of args.input) {
               const { shopId, productId, ...values } = shopProductInput;
 
@@ -844,9 +872,32 @@ export const ShopMutations = extendType({
               }
 
               doneCount = doneCount + 1;
+
+              algoliaShopProducts.push({
+                _id: createdShopProduct._id.toHexString(),
+                objectID: createdShopProduct._id.toHexString(),
+                itemId: createdShopProduct.itemId,
+                originalName: createdShopProduct.originalName,
+                nameI18n: createdShopProduct.nameI18n,
+                barcode: createdShopProduct.barcode,
+              });
             }
 
             if (doneCount !== args.input.length) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shops.addProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // save algolia shop products
+            const algoliaShopProductsResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+              objects: algoliaShopProducts,
+            });
+            if (!algoliaShopProductsResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shops.addProduct.error'),
@@ -933,6 +984,12 @@ export const ShopMutations = extendType({
               message: await getApiMessage('shops.deleteProduct.error'),
             };
           }
+
+          // delete algolia object
+          await deleteAlgoliaObjects({
+            indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+            objectIDs: [shopProductId.toHexString()],
+          });
 
           return {
             success: true,

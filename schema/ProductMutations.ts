@@ -1,3 +1,4 @@
+import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -102,101 +103,146 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.create.error`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: createProductSchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const { input } = args;
+            const { rubricId, ...values } = input;
+
+            // Get selected rubric
+            const rubric = await rubricsCollection.findOne({ _id: rubricId });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Store product assets
+            const itemId = await getNextItemId(COL_PRODUCTS);
+
+            const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
+
+            const productId = new ObjectId();
+            const createdProductResult = await productsCollection.insertOne({
+              ...values,
+              _id: productId,
+              itemId,
+              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              slug,
+              rubricId,
+              rubricSlug: rubric.slug,
+              active: false,
+              selectedOptionsSlugs: [],
+              selectedAttributesIds: [],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+
+            const createdProduct = createdProductResult.ops[0];
+            if (!createdProductResult.result.ok || !createdProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create product assets
+            const createdAssetsResult = await productAssetsCollection.insertOne({
+              productId,
+              productSlug: slug,
+              assets: [
+                {
+                  index: 1,
+                  url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+                },
+              ],
+            });
+            const createdAssets = createdAssetsResult.ops[0];
+            if (!createdAssetsResult.result.ok || !createdAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create algolia object
+            const algoliaResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+              objects: [
+                {
+                  _id: createdProduct._id.toHexString(),
+                  objectID: createdProduct._id.toHexString(),
+                  itemId: createdProduct.itemId,
+                  originalName: createdProduct.originalName,
+                  nameI18n: createdProduct.nameI18n,
+                  barcode: createdProduct.barcode,
+                },
+              ],
+            });
+            if (!algoliaResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.create.success'),
+              payload: createdProduct,
             };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: createProductSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { input } = args;
-          const { rubricId, ...values } = input;
-
-          // Get selected rubric
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          // Store product assets
-          const itemId = await getNextItemId(COL_PRODUCTS);
-
-          const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
-
-          const productId = new ObjectId();
-          const createdProductResult = await productsCollection.insertOne({
-            ...values,
-            _id: productId,
-            itemId,
-            mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-            slug,
-            rubricId,
-            rubricSlug: rubric.slug,
-            active: false,
-            selectedOptionsSlugs: [],
-            selectedAttributesIds: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
           });
 
-          const createdProduct = createdProductResult.ops[0];
-          if (!createdProductResult.result.ok || !createdProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.create.error`),
-            };
-          }
-
-          // Create product assets
-          const createdAssetsResult = await productAssetsCollection.insertOne({
-            productId,
-            productSlug: slug,
-            assets: [
-              {
-                index: 1,
-                url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              },
-            ],
-          });
-          const createdAssets = createdAssetsResult.ops[0];
-          if (!createdAssetsResult.result.ok || !createdAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.create.error`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('products.create.success'),
-            payload: createdProduct,
-          };
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -213,118 +259,189 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateProductSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateProductSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-          const { productId, ...values } = input;
+            const { input } = args;
+            const { productId, ...values } = input;
 
-          // Check product availability
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!product) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.notFound`),
-            };
-          }
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Create new slug for product
-          const updatedSlug = generateProductSlug({
-            nameI18n: values.nameI18n,
-            itemId: product.itemId,
-          });
+            // Create new slug for product
+            const updatedSlug = generateProductSlug({
+              nameI18n: values.nameI18n,
+              itemId: product.itemId,
+            });
 
-          // Update product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                ...values,
-                slug: updatedSlug,
-                updatedAt: new Date(),
+            // Update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-            {
-              productId,
-            },
-            {
-              $set: {
-                slug: updatedSlug,
-                nameI18n: values.nameI18n,
-                originalName: values.originalName,
-                barcode: values.barcode,
-                updatedAt: new Date(),
+              {
+                $set: {
+                  ...values,
+                  slug: updatedSlug,
+                  updatedAt: new Date(),
+                },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedProductAssetResult = await productAssetsCollection.findOneAndUpdate(
-            {
-              productId,
-            },
-            {
-              $set: {
-                slug: updatedSlug,
+              {
+                returnOriginal: false,
               },
-            },
-          );
+            );
 
-          const updatedProduct = updatedProductResult.value;
-          if (
-            !updatedProductResult.ok ||
-            !updatedProduct ||
-            !updatedShopProductResult.ok ||
-            !updatedProductAssetResult.ok
-          ) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
+            // update shop products
+            const updatedShopProductResult = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  slug: updatedSlug,
+                  nameI18n: values.nameI18n,
+                  originalName: values.originalName,
+                  barcode: values.barcode,
+                  updatedAt: new Date(),
+                },
+              },
+            );
+
+            // update assets
+            const updatedProductAssetResult = await productAssetsCollection.updateMany(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  slug: updatedSlug,
+                },
+              },
+            );
+
+            const updatedProduct = updatedProductResult.value;
+            if (
+              !updatedProductResult.ok ||
+              !updatedProduct ||
+              !updatedShopProductResult.result.ok ||
+              !updatedProductAssetResult.result.ok
+            ) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update algolia product object
+            const algoliaProductResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+              objects: [
+                {
+                  _id: updatedProduct._id.toHexString(),
+                  objectID: updatedProduct._id.toHexString(),
+                  itemId: updatedProduct.itemId,
+                  originalName: updatedProduct.originalName,
+                  nameI18n: updatedProduct.nameI18n,
+                  barcode: updatedProduct.barcode,
+                },
+              ],
+            });
+            if (!algoliaProductResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update algolia shop product objects
+            const shopProducts = await shopProductsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            const castedShopProductsForAlgolia = shopProducts.map((shopProduct) => {
+              return {
+                _id: shopProduct._id.toHexString(),
+                objectID: shopProduct._id.toHexString(),
+                itemId: shopProduct.itemId,
+                originalName: shopProduct.originalName,
+                nameI18n: shopProduct.nameI18n,
+                barcode: shopProduct.barcode,
+              };
+            });
+            const algoliaShopProductsResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+              objects: castedShopProductsForAlgolia,
+            });
+            if (!algoliaShopProductsResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.update.success'),
+              payload: updatedProduct,
             };
-          }
+          });
 
-          return {
-            success: true,
-            message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
-          };
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -341,125 +458,151 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'deleteProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deleteProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-          const { input } = args;
-          const { productId, assetIndex } = input;
+            const { input } = args;
+            const { productId, assetIndex } = input;
 
-          // Check product availability
-          const product = await productsCollection.findOne({ _id: productId });
-          const initialAssets = await productAssetsCollection.findOne({ productId });
-          if (!product || !initialAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.notFound`),
-            };
-          }
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            const initialAssets = await productAssetsCollection.findOne({ productId });
+            if (!product || !initialAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Delete product asset
-          const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
-          const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
-          if (!removedAsset) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
+            // Delete product asset
+            const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
+            const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
+            if (!removedAsset) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update product assets
-          const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-            {
-              productId,
-            },
-            {
-              $pull: {
-                assets: {
-                  index: assetIndex,
+            // Update product assets
+            const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
+              {
+                productId,
+              },
+              {
+                $pull: {
+                  assets: {
+                    index: assetIndex,
+                  },
                 },
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedProductAssets = updatedProductAssetsResult.value;
-          if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          const newAssets = updatedProductAssets.assets;
-          const mainImage = getMainImage(newAssets);
-
-          // Update product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
+              {
+                returnOriginal: false,
               },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
+            );
+            const updatedProductAssets = updatedProductAssetsResult.value;
+            if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          const updatedShopProductsResult = await shopProductsCollection.updateMany(
-            {
-              productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
+            const newAssets = updatedProductAssets.assets;
+            const mainImage = getMainImage(newAssets);
+
+            // Update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
               },
-            },
-          );
-          if (!updatedShopProductsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
+              {
+                $set: {
+                  mainImage,
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
-          };
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  mainImage,
+                  updatedAt: new Date(),
+                },
+              },
+            );
+            if (!updatedShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.update.success'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -476,125 +619,151 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateProduct',
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { productId, assetNewIndex, assetUrl } = input;
+
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            const initialAssets = await productAssetsCollection.findOne({ productId });
+            if (!product || !initialAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Reorder assets
+            const reorderedAssetsWithUpdatedIndexes = reorderAssets({
+              assetUrl,
+              assetNewIndex,
+              initialAssets: initialAssets.assets,
+            });
+            if (!reorderedAssetsWithUpdatedIndexes) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  assets: reorderedAssetsWithUpdatedIndexes,
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedProductAssets = updatedProductAssetsResult.value;
+            if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const newAssets = updatedProductAssets.assets;
+            const mainImage = getMainImage(newAssets);
+
+            // Update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  mainImage,
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  mainImage,
+                  updatedAt: new Date(),
+                },
+              },
+            );
+            if (!updatedShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.update.success'),
+              payload: updatedProduct,
+            };
           });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-          const { input } = args;
-          const { productId, assetNewIndex, assetUrl } = input;
-
-          // Check product availability
-          const product = await productsCollection.findOne({ _id: productId });
-          const initialAssets = await productAssetsCollection.findOne({ productId });
-          if (!product || !initialAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.notFound`),
-            };
-          }
-
-          // Reorder assets
-          const reorderedAssetsWithUpdatedIndexes = reorderAssets({
-            assetUrl,
-            assetNewIndex,
-            initialAssets: initialAssets.assets,
-          });
-          if (!reorderedAssetsWithUpdatedIndexes) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-            {
-              productId,
-            },
-            {
-              $set: {
-                assets: reorderedAssetsWithUpdatedIndexes,
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-          const updatedProductAssets = updatedProductAssetsResult.value;
-          if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-          const newAssets = updatedProductAssets.assets;
-          const mainImage = getMainImage(newAssets);
-
-          // Update product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          const updatedShopProductsResult = await shopProductsCollection.updateMany(
-            {
-              productId,
-            },
-            {
-              $set: {
-                mainImage,
-                updatedAt: new Date(),
-              },
-            },
-          );
-          if (!updatedShopProductsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('products.update.success'),
-            payload: updatedProduct,
-          };
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

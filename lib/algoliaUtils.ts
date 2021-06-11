@@ -17,3 +17,48 @@ export const getAlgoliaClient = (indexName: string): GetAlgoliaClientPayloadInte
     algoliaIndex,
   };
 };
+
+interface AlgoliaObjectInterface extends Record<string, any> {
+  objectID: string;
+}
+
+interface SaveAlgoliaObjectsInterface {
+  indexName: string;
+  objects: AlgoliaObjectInterface[];
+}
+
+export const saveAlgoliaObjects = async ({ indexName, objects }: SaveAlgoliaObjectsInterface) => {
+  try {
+    const { algoliaIndex } = getAlgoliaClient(indexName);
+    const saveResult = await algoliaIndex.saveObjects(objects);
+    if (saveResult.objectIDs.length < objects.length) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+interface DeleteAlgoliaObjectsInterface {
+  indexName: string;
+  objectIDs: string[];
+}
+
+export const deleteAlgoliaObjects = async ({
+  indexName,
+  objectIDs,
+}: DeleteAlgoliaObjectsInterface) => {
+  try {
+    const { algoliaIndex } = getAlgoliaClient(indexName);
+    const saveResult = await algoliaIndex.deleteObjects(objectIDs);
+    if (saveResult.objectIDs.length < objectIDs.length) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};

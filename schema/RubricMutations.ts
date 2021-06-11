@@ -1,3 +1,4 @@
+import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
 import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -914,6 +915,40 @@ export const RubricMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete algolia product object
+            const algoliaProductResult = await deleteAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+              objectIDs: [productId.toHexString()],
+            });
+            if (!algoliaProductResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete algolia shop product objects
+            const shopProducts = await shopProductsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            const shopProductIds: string[] = shopProducts.map(({ _id }) => _id.toHexString());
+            const algoliaShopProductsResult = await deleteAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+              objectIDs: shopProductIds,
+            });
+            if (!algoliaShopProductsResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
               };
               await session.abortTransaction();
               return;

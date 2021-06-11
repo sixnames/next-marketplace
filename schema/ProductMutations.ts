@@ -1,4 +1,4 @@
-import { saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { AlgoliaProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -404,16 +404,18 @@ export const ProductMutations = extendType({
                 productId,
               })
               .toArray();
-            const castedShopProductsForAlgolia = shopProducts.map((shopProduct) => {
-              return {
-                _id: shopProduct._id.toHexString(),
-                objectID: shopProduct._id.toHexString(),
-                itemId: shopProduct.itemId,
-                originalName: shopProduct.originalName,
-                nameI18n: shopProduct.nameI18n,
-                barcode: shopProduct.barcode,
-              };
-            });
+            const castedShopProductsForAlgolia: AlgoliaProductInterface[] = shopProducts.map(
+              (shopProduct) => {
+                return {
+                  _id: shopProduct._id.toHexString(),
+                  objectID: shopProduct._id.toHexString(),
+                  itemId: shopProduct.itemId,
+                  originalName: shopProduct.originalName,
+                  nameI18n: shopProduct.nameI18n,
+                  barcode: shopProduct.barcode,
+                };
+              },
+            );
             const algoliaShopProductsResult = await saveAlgoliaObjects({
               indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
               objects: castedShopProductsForAlgolia,

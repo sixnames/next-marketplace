@@ -1,5 +1,12 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
+import { ProductModel } from 'db/dbModels';
+
+export interface AlgoliaProductInterface
+  extends Pick<ProductModel, 'nameI18n' | 'originalName' | 'itemId' | 'barcode'> {
+  _id: string;
+  objectID: string;
+}
 
 interface GetAlgoliaClientPayloadInterface {
   algoliaClient: SearchClient;

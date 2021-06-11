@@ -1,5 +1,4 @@
 import algoliasearch from 'algoliasearch';
-import { ALG_INDEX_PRODUCTS } from 'db/algoliaIndexes';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -15,7 +14,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     `${process.env.ALGOLIA_APP_ID}`,
     `${process.env.ALGOLIA_API_KEY}`,
   );
-  const productsIndex = algoliaClient.initIndex(ALG_INDEX_PRODUCTS);
+  const productsIndex = algoliaClient.initIndex(`${process.env.ALG_INDEX_PRODUCTS}`);
 
   let error = false;
 

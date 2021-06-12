@@ -5,8 +5,8 @@ import {
 } from '../../../../config/common';
 import { RubricModel, RubricAttributeModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import * as attributes from '../attributes/attributes';
-import * as rubrics from '../rubrics/rubrics';
+import attributes from '../attributes/attributes';
+import rubrics from '../rubrics/rubrics';
 
 function getRubricAttributes(rubric: RubricModel): RubricAttributeModel[] {
   return attributes.map((attribute) => {

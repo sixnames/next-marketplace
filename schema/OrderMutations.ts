@@ -236,15 +236,8 @@ export const OrderMutations = extendType({
               if (!shopProduct) {
                 break;
               }
-              const {
-                price,
-                itemId,
-                nameI18n,
-                originalName,
-                slug,
-                shopId,
-                companyId,
-              } = shopProduct;
+              const { price, itemId, nameI18n, originalName, slug, shopId, companyId } =
+                shopProduct;
 
               // check shop availability
               const shop = await shopsCollection.findOne({ _id: shopId });
@@ -310,6 +303,7 @@ export const OrderMutations = extendType({
                 shopId: shop._id,
                 companyId: company._id,
                 orderId: existingOrder._id,
+                barcode: shopProduct.barcode,
                 createdAt: new Date(),
                 updatedAt: new Date(),
               });

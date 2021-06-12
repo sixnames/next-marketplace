@@ -1,9 +1,9 @@
 import { CATALOGUE_OPTION_SEPARATOR } from '../../../../config/common';
 import { ProductConnectionItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import * as products from '../products/products';
-import * as productConnections from '../productConnections/productConnections';
-import * as options from '../options/options';
+import products from '../products/products';
+import productConnections from '../productConnections/productConnections';
+import options from '../options/options';
 
 const productConnectionItems: ProductConnectionItemModel[] = [];
 

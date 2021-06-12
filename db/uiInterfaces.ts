@@ -383,6 +383,7 @@ export interface OrderProductInterface extends OrderProductModel {
   formattedPrice?: string | null;
   formattedTotalPrice?: string | null;
   name?: string | null;
+  status?: OrderStatusInterface | null;
 }
 
 export interface OrderInterface extends OrderModel {

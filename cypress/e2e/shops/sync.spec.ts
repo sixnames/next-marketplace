@@ -1,5 +1,9 @@
 import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
-import { SyncProductInterface, SyncResponseInterface } from 'db/syncInterfaces';
+import {
+  SyncOrderResponseInterface,
+  SyncProductInterface,
+  SyncResponseInterface,
+} from 'db/syncInterfaces';
 
 const validRequestParams = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
 
@@ -123,13 +127,20 @@ describe('Sync', () => {
   });
 
   it.only('Should sync shop orders with site', () => {
-    // should error on no parameters
+    cy.makeAnOrder({});
+
+    // should return shop new orders
     cy.request({
       method: 'GET',
-      url: `/api/shops/get-orders?${validRequestParams}`,
+      url: `/api/shops/get-orders?token=000001&apiVersion=0.0.1&systemVersion=8.2`,
     }).then((res) => {
-      const body = res.body as SyncResponseInterface;
-      expect(body.success).equals(true);
+      const { success, orders } = res.body as SyncOrderResponseInterface;
+
+      console.log(orders[0]);
+
+      expect(success).equals(true);
+      expect(orders).to.have.length(1);
+      expect(orders[0].products).to.have.length(1);
     });
   });
 });

@@ -157,7 +157,8 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {
-  cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
+  const catalogueRoute = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
+  cy.visit(catalogueRoute);
 
   // Should navigate to cart
   cy.get(`[data-cy=catalogue-item-0-name]`).invoke('removeAttr', 'target').click();
@@ -168,17 +169,21 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
 
   // Add second product #2
   cy.getByCy(`cart-modal-close`).click();
-  cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
+  cy.visit(catalogueRoute);
+  cy.wait(1500);
   cy.getByCy('catalogue').should('exist');
   cy.get(`[data-cy=catalogue-item-1-name]`).invoke('removeAttr', 'target').click();
+  cy.wait(1500);
   cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-shops-1-1-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 
   // Should navigate to cart
+  cy.wait(1500);
   cy.getByCy(`cart-aside-confirm`).click();
 
   // Should navigate to order form
+  cy.wait(1500);
   cy.getByCy(`order-form`).should('exist');
 
   // Should fill all order fields
@@ -191,6 +196,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
 
   // Should make an order and redirect to the Thank you page
   cy.getByCy(`cart-aside-confirm`).click();
+  cy.wait(1500);
   cy.get(`[data-cy="thank-you"]`).then(() => {
     if (callback) {
       callback();

@@ -9,12 +9,12 @@ import { ObjectIdModel, OptionModel, ProductModel } from '../../../../db/dbModel
 import { getObjectId } from 'mongo-seeding';
 const cyrillicToTranslit = require('cyrillic-to-translit-js');
 const addZero = require('add-zero');
-import * as rubrics from '../rubrics/rubrics';
-import * as options from '../options/options';
-import * as rubricAttributes from '../rubricAttributes/rubricAttributes';
-import * as manufacturers from '../manufacturers/manufacturers';
-import * as brands from '../brands/brands';
-import * as brandCollections from '../brandCollections/brandCollections';
+import rubrics from '../rubrics/rubrics';
+import options from '../options/options';
+import rubricAttributes from '../rubricAttributes/rubricAttributes';
+import manufacturers from '../manufacturers/manufacturers';
+import brands from '../brands/brands';
+import brandCollections from '../brandCollections/brandCollections';
 
 const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();

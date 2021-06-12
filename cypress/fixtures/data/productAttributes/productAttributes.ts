@@ -6,9 +6,9 @@ import {
 } from '../../../../config/common';
 import { ObjectIdModel, ProductAttributeModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import * as rubricAttributes from '../rubricAttributes/rubricAttributes';
-import * as products from '../products/products';
-import * as options from '../options/options';
+import rubricAttributes from '../rubricAttributes/rubricAttributes';
+import products from '../products/products';
+import options from '../options/options';
 
 const attributeText = `
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.

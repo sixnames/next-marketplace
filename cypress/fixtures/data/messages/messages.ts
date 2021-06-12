@@ -1,6 +1,6 @@
 import { MessageBaseInterface } from '../../../../db/uiInterfaces';
 import { MessageModel } from '../../../../db/dbModels';
-import * as messagesGroups from '../messagesGroups/messagesGroups';
+import messagesGroups from '../messagesGroups/messagesGroups';
 import { getObjectId } from 'mongo-seeding';
 import { attributesGroupsMessages } from '../../apiMessages/attributesGroupsMessages';
 import { brandCollectionsMessages } from '../../apiMessages/brandCollectionsMessages';

@@ -410,6 +410,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
+  barcode?: string | null;
 }
 
 export interface OrderCustomerModel extends TimestampModel {

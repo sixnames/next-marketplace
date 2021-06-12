@@ -30,3 +30,9 @@ export interface SyncOrderInterface extends TimestampModel {
   status: string; // TODO order status type
   products: SyncOrderProductInterface[];
 }
+
+export interface SyncOrderResponseInterface {
+  success: boolean;
+  message: string;
+  orders: SyncOrderInterface[];
+}

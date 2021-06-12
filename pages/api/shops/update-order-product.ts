@@ -1,4 +1,4 @@
-import { ORDER_STATUS_DONE } from 'config/common';
+import { ORDER_STATUS_CANCELED, ORDER_STATUS_DONE } from 'config/common';
 import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { OrderProductModel, OrderStatusModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -175,10 +175,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const doneOrderProductStatus = await orderStatusesCollection.findOne({
     slug: ORDER_STATUS_DONE,
   });
-  if (!doneOrderProductStatus) {
+  const canceledOrderProductStatus = await orderStatusesCollection.findOne({
+    slug: ORDER_STATUS_CANCELED,
+  });
+  if (!doneOrderProductStatus || !canceledOrderProductStatus) {
     res.status(200).send({
       success: false,
-      message: 'Done order product status not found',
+      message: 'Done or Canceled order product status not found',
     });
     return;
   }
@@ -194,7 +197,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   );
 
   const notDoneOrderProducts = orderUpdatedProducts.filter(({ statusId }) => {
-    return !statusId.equals(doneOrderProductStatus._id);
+    return (
+      !statusId.equals(doneOrderProductStatus._id) &&
+      !statusId.equals(canceledOrderProductStatus._id)
+    );
   });
   if (notDoneOrderProducts.length < 1) {
     const updatedOrderResult = await ordersCollection.findOneAndUpdate(

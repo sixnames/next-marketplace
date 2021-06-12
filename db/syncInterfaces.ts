@@ -21,7 +21,11 @@ export interface SyncOrderProductInterface extends TimestampModel {
   barcode?: string;
   amount?: number;
   price?: number;
-  status: string; // TODO order status type
+  status?: string; // TODO order status type
+}
+
+export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterface {
+  orderId?: string;
 }
 
 export interface SyncOrderInterface extends TimestampModel {

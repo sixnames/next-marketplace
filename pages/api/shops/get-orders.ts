@@ -14,7 +14,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const query = (req.query as unknown) as SyncParamsInterface | undefined | null;
+  const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!query) {
     res.status(200).send({

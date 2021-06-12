@@ -1,6 +1,6 @@
-import algoliasearch from 'algoliasearch';
 import {
   CATALOGUE_OPTION_SEPARATOR,
+  HITS_PER_PAGE,
   PAGE_DEFAULT,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
@@ -19,6 +19,7 @@ import {
   ShopInterface,
 } from 'db/uiInterfaces';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { getAlgoliaClient } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -134,14 +135,12 @@ export const getServerSideProps = async (
   // const startTime = new Date().getTime();
 
   // algolia
-  const algoliaClient = algoliasearch(
-    `${process.env.ALGOLIA_APP_ID}`,
-    `${process.env.ALGOLIA_API_KEY}`,
-  );
-  const shopProductsIndex = algoliaClient.initIndex(`${process.env.ALG_INDEX_PRODUCTS}`);
+  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
   const searchIds: ObjectId[] = [];
   if (search) {
-    const { hits } = await shopProductsIndex.search<ProductInterface>(`${search}`);
+    const { hits } = await algoliaIndex.search<ProductInterface>(`${search}`, {
+      hitsPerPage: HITS_PER_PAGE,
+    });
     hits.forEach((hit) => {
       searchIds.push(new ObjectId(hit._id));
     });
@@ -166,16 +165,10 @@ export const getServerSideProps = async (
   // const city = shop.citySlug;
 
   // Cast filters
-  const {
-    realFilterOptions,
-    sortFilterOptions,
-    noFiltersSelected,
-    page,
-    skip,
-    limit,
-  } = castCatalogueFilters({
-    filters: restFilter,
-  });
+  const { realFilterOptions, sortFilterOptions, noFiltersSelected, page, skip, limit } =
+    castCatalogueFilters({
+      filters: restFilter,
+    });
 
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
 

@@ -38,6 +38,7 @@ import {
   deleteProductFromShopSchema,
   updateShopSchema,
 } from 'validation/shopSchema';
+import generator from 'generate-password';
 
 export const ShopProductsPaginationPayload = objectType({
   name: 'ShopProductsPaginationPayload',
@@ -995,6 +996,86 @@ export const ShopMutations = extendType({
             success: true,
             message: await getApiMessage('shops.deleteProduct.success'),
             payload: shop,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should generate shop token
+    t.nonNull.field('generateShopToken', {
+      type: 'ShopPayload',
+      description: 'Should generate shop token',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateShop',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const { _id } = args;
+
+          // Check shop availability
+          const shop = await shopsCollection.findOne({ _id });
+          if (!shop) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.update.notFound'),
+            };
+          }
+
+          // Create token for shop
+          const token = generator.generate({
+            length: 10,
+            numbers: true,
+          });
+
+          // Update shop
+          const updatedShopResult = await shopsCollection.findOneAndUpdate(
+            { _id },
+            {
+              $set: {
+                token,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedShop = updatedShopResult.value;
+          if (!updatedShopResult.ok || !updatedShop) {
+            return {
+              success: false,
+              message: await getApiMessage('shops.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('shops.update.success'),
+            payload: updatedShop,
           };
         } catch (e) {
           return {

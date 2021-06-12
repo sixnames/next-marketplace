@@ -45,7 +45,6 @@ const shops: ShopModel[] = [
   {
     _id: getObjectId('shop Shop B'),
     itemId: '000002',
-    token: '000002',
     slug: 'shop_b',
     name: 'Shop B',
     citySlug: DEFAULT_CITY,

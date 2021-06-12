@@ -1033,6 +1033,11 @@ type Mutation {
   deleteUser(_id: ObjectId!): UserPayload!
 
   """
+  Should generate shop token
+  """
+  generateShopToken(_id: ObjectId!): ShopPayload!
+
+  """
   Should create order from session cart
   """
   makeAnOrder(input: MakeAnOrderInput!): MakeAnOrderPayload!

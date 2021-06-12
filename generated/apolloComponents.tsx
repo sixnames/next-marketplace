@@ -965,6 +965,8 @@ export type Mutation = {
   addManyProductsToShop: ShopPayload;
   /** Should delete product from shop */
   deleteProductFromShop: ShopPayload;
+  /** Should generate shop token */
+  generateShopToken: ShopPayload;
   /** Should create company */
   createCompany: CompanyPayload;
   /** Should update company */
@@ -1421,6 +1423,11 @@ export type MutationAddManyProductsToShopArgs = {
 
 export type MutationDeleteProductFromShopArgs = {
   input: DeleteProductFromShopInput;
+};
+
+
+export type MutationGenerateShopTokenArgs = {
+  _id: Scalars['ObjectId'];
 };
 
 
@@ -3665,6 +3672,19 @@ export type UpdateShopMutationVariables = Exact<{
 export type UpdateShopMutation = (
   { __typename?: 'Mutation' }
   & { updateShop: (
+    { __typename?: 'ShopPayload' }
+    & Pick<ShopPayload, 'success' | 'message'>
+  ) }
+);
+
+export type GenerateShopTokenMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type GenerateShopTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { generateShopToken: (
     { __typename?: 'ShopPayload' }
     & Pick<ShopPayload, 'success' | 'message'>
   ) }
@@ -7208,6 +7228,40 @@ export function useUpdateShopMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateShopMutationHookResult = ReturnType<typeof useUpdateShopMutation>;
 export type UpdateShopMutationResult = Apollo.MutationResult<UpdateShopMutation>;
 export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<UpdateShopMutation, UpdateShopMutationVariables>;
+export const GenerateShopTokenDocument = gql`
+    mutation GenerateShopToken($_id: ObjectId!) {
+  generateShopToken(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type GenerateShopTokenMutationFn = Apollo.MutationFunction<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>;
+
+/**
+ * __useGenerateShopTokenMutation__
+ *
+ * To run a mutation, you first call `useGenerateShopTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateShopTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateShopTokenMutation, { data, loading, error }] = useGenerateShopTokenMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useGenerateShopTokenMutation(baseOptions?: Apollo.MutationHookOptions<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>(GenerateShopTokenDocument, options);
+      }
+export type GenerateShopTokenMutationHookResult = ReturnType<typeof useGenerateShopTokenMutation>;
+export type GenerateShopTokenMutationResult = Apollo.MutationResult<GenerateShopTokenMutation>;
+export type GenerateShopTokenMutationOptions = Apollo.BaseMutationOptions<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>;
 export const DeleteShopAssetDocument = gql`
     mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
   deleteShopAsset(input: $input) {

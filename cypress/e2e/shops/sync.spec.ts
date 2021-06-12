@@ -129,7 +129,7 @@ describe('Sync', () => {
     });
   });
 
-  it.only('Should sync shop orders with site', () => {
+  it('Should sync shop orders with site', () => {
     // Should return order statuses list
     cy.request({
       method: 'GET',
@@ -172,5 +172,20 @@ describe('Sync', () => {
         expect(success).equals(true);
       });
     });
+  });
+
+  it('Should generate shop token', () => {
+    cy.testAuth(`${ROUTE_CMS}/companies`);
+    cy.wait(1500);
+    cy.getByCy(`company_b-update`).click();
+    cy.getByCy(`company-shops`).click();
+    cy.wait(1500);
+    cy.getByCy('company-shops-list').should('exist');
+    cy.getByCy(`Shop B-update`).click();
+    cy.wait(1500);
+    cy.getByCy('shop-details-page').should('exist');
+    cy.getByCy('generate-api-token').click();
+    cy.wait(1500);
+    cy.getByCy('generated-token').should('exist');
   });
 });

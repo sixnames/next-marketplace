@@ -35,8 +35,15 @@ export interface SyncOrderInterface extends TimestampModel {
   products: SyncOrderProductInterface[];
 }
 
-export interface SyncOrderResponseInterface {
-  success: boolean;
-  message: string;
+export interface SyncOrderResponseInterface extends SyncResponseInterface {
   orders: SyncOrderInterface[];
+}
+
+export interface SyncOrderStatusInterface {
+  _id: string;
+  name: string;
+}
+
+export interface SyncOrderStatusesResponseInterface extends SyncResponseInterface {
+  orderStatuses?: SyncOrderStatusInterface[];
 }

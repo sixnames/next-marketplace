@@ -1,6 +1,7 @@
 import { ADULT_KEY, ADULT_TRUE, ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
 import {
   SyncOrderResponseInterface,
+  SyncOrderStatusesResponseInterface,
   SyncProductInterface,
   SyncResponseInterface,
   SyncUpdateOrderProductInterface,
@@ -129,6 +130,17 @@ describe('Sync', () => {
   });
 
   it.only('Should sync shop orders with site', () => {
+    // Should return order statuses list
+    cy.request({
+      method: 'GET',
+      url: `/api/shops/get-order-statuses?${validRequestParamsC}`,
+      body: JSON.stringify(updateBody),
+    }).then((res) => {
+      const body = res.body as SyncOrderStatusesResponseInterface;
+      expect(body.success).equals(true);
+      expect(body.orderStatuses?.length).greaterThan(0);
+    });
+
     cy.makeAnOrder({});
 
     // should return shop new orders

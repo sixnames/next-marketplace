@@ -379,6 +379,7 @@ export interface OrderStatusModel extends TimestampModel {
   nameI18n: TranslationModel;
   slug: string;
   color: string;
+  index: number;
 }
 
 // Order log variant

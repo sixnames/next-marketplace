@@ -256,7 +256,7 @@ export const NavItemMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const createdNavItem = createdNavItemResult.value;

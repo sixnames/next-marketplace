@@ -159,7 +159,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     {
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
   const updatedOrderProduct = updatedOrderProductResult.value;
@@ -215,7 +215,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       {
-        returnOriginal: false,
+        returnDocument: 'after',
       },
     );
 

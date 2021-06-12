@@ -451,7 +451,7 @@ export const UserMutations = mutationType({
                 updatedAt: new Date(),
               },
             },
-            { returnOriginal: false },
+            { returnDocument: 'after' },
           );
           const updatedUser = updatedUserResult.value;
           if (!updatedUserResult.ok || !updatedUser) {
@@ -516,7 +516,7 @@ export const UserMutations = mutationType({
                 updatedAt: new Date(),
               },
             },
-            { returnOriginal: false },
+            { returnDocument: 'after' },
           );
           const updatedUser = updatedUserResult.value;
           if (!updatedUserResult.ok || !updatedUser) {
@@ -596,7 +596,7 @@ export const UserMutations = mutationType({
                 updatedAt: new Date(),
               },
             },
-            { returnOriginal: false },
+            { returnDocument: 'after' },
           );
           const updatedUser = updatedUserResult.value;
           if (!updatedUserResult.ok || !updatedUser) {
@@ -673,7 +673,7 @@ export const UserMutations = mutationType({
                 password,
               },
             },
-            { returnOriginal: false },
+            { returnDocument: 'after' },
           );
           const updatedUser = updatedUserResult.value;
           if (!updatedUserResult.ok || !updatedUser) {

@@ -151,7 +151,7 @@ export const ConfigMutations = extendType({
               $set: values,
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
               upsert: true,
             },
           );

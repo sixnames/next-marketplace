@@ -105,7 +105,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     {
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
 
@@ -131,7 +131,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     {
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
 

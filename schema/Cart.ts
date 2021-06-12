@@ -149,7 +149,7 @@ export const CartMutations = extendType({
               },
               {
                 arrayFilters: [{ 'product.shopProductId': { $eq: shopProductId } }],
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
 
@@ -183,7 +183,7 @@ export const CartMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -253,7 +253,7 @@ export const CartMutations = extendType({
               },
               {
                 arrayFilters: [{ 'product.productId': { $eq: productId } }],
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
 
@@ -287,7 +287,7 @@ export const CartMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -350,7 +350,7 @@ export const CartMutations = extendType({
             },
             {
               arrayFilters: [{ 'cartProduct._id': { $eq: cartProductId } }],
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -412,7 +412,7 @@ export const CartMutations = extendType({
             },
             {
               arrayFilters: [{ 'cartProduct._id': { $eq: cartProductId } }],
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -477,7 +477,7 @@ export const CartMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -522,7 +522,7 @@ export const CartMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -687,7 +687,7 @@ export const CartMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 

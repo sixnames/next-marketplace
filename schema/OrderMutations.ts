@@ -381,7 +381,7 @@ export const OrderMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedCart = updatedCartResult.value;

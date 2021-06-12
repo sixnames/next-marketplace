@@ -211,12 +211,10 @@ export const MetricMutations = extendType({
         const { db, client } = await getDatabase();
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -287,7 +285,7 @@ export const MetricMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedMetric = updatedMetricResult.value;

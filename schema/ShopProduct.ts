@@ -204,7 +204,7 @@ export const ShopProductMutations = extendType({
               ...oldPriceUpdater,
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShopProduct = updatedShopProductResult.value;
@@ -297,7 +297,7 @@ export const ShopProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedShopProduct = updatedShopProductResult.value;

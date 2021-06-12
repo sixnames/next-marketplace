@@ -384,7 +384,7 @@ export const ShopMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShop = updatedShopResult.value;
@@ -473,7 +473,7 @@ export const ShopMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShop = updatedShopResult.value;
@@ -494,7 +494,7 @@ export const ShopMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShopMainImage = updatedShopMainImageResult.value;
@@ -584,7 +584,7 @@ export const ShopMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShop = updatedShopResult.value;
@@ -1061,7 +1061,7 @@ export const ShopMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedShop = updatedShopResult.value;

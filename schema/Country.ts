@@ -264,7 +264,7 @@ export const CountryMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedCountry = updatedCountryResult.value;
@@ -490,7 +490,7 @@ export const CountryMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedCountry = updatedCountryResult.value;
@@ -605,7 +605,7 @@ export const CountryMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedCity = updatedCityResult.value;
@@ -724,7 +724,7 @@ export const CountryMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedCountry = updatedCountryResult.value;

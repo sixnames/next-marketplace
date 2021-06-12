@@ -103,12 +103,10 @@ export const ProductConnectionMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productsAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
-        const productConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
+        const productsAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
           COL_PRODUCT_CONNECTION_ITEMS,
         );
@@ -257,7 +255,7 @@ export const ProductConnectionMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedProduct = updatedProductResult.value;
@@ -305,12 +303,10 @@ export const ProductConnectionMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productsAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
-        const productConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
+        const productsAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
           COL_PRODUCT_CONNECTION_ITEMS,
         );
@@ -496,9 +492,8 @@ export const ProductConnectionMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
           COL_PRODUCT_CONNECTION_ITEMS,
         );
@@ -595,11 +590,10 @@ export const ProductConnectionMutations = extendType({
             }
 
             // Remove connection item
-            const removedConnectionItemResult = await productConnectionItemsCollection.findOneAndDelete(
-              {
+            const removedConnectionItemResult =
+              await productConnectionItemsCollection.findOneAndDelete({
                 productId: deleteProductId,
-              },
-            );
+              });
             if (!removedConnectionItemResult.ok) {
               mutationPayload = {
                 success: false,

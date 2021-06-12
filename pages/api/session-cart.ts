@@ -267,7 +267,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               cartId: newCart._id,
             },
           },
-          { returnOriginal: false },
+          { returnDocument: 'after' },
         );
 
         if (!newCartResult) {

@@ -379,6 +379,7 @@ export interface OrderStatusModel extends TimestampModel {
   nameI18n: TranslationModel;
   slug: string;
   color: string;
+  index: number;
 }
 
 // Order log variant
@@ -410,6 +411,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
+  barcode?: string | null;
 }
 
 export interface OrderCustomerModel extends TimestampModel {

@@ -81,9 +81,8 @@ export const AttributesGroupQueries = extendType({
       },
       resolve: async (_root, args): Promise<AttributesGroupModel> => {
         const { db } = await getDatabase();
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesGroup = await attributesGroupCollection.findOne({ _id: args._id });
 
         if (!attributesGroup) {
@@ -105,9 +104,8 @@ export const AttributesGroupQueries = extendType({
       },
       resolve: async (_root, args): Promise<AttributesGroupModel[]> => {
         const { db } = await getDatabase();
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesGroup = await attributesGroupCollection
           .find(
             { _id: { $nin: args.excludedIds || [] } },
@@ -234,9 +232,8 @@ export const attributesGroupMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
+          const attributesGroupCollection =
+            db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
 
           // Check if attributes group exist
           const exist = await findDocumentByI18nField<AttributesGroupModel>({
@@ -314,9 +311,8 @@ export const attributesGroupMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const attributesGroupCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
+          const attributesGroupCollection =
+            db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
 
           // Check if attributes group exist
           const exist = await findDocumentByI18nField<AttributesGroupModel>({
@@ -346,7 +342,7 @@ export const attributesGroupMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -386,19 +382,15 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
-        const productAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
-        const productConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
 
         const session = client.startSession();
 
@@ -528,9 +520,8 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
 
@@ -634,7 +625,7 @@ export const attributesGroupMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedGroup = updatedGroupResult.value;
@@ -681,17 +672,14 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
-        const productAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -787,7 +775,7 @@ export const attributesGroupMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedAttribute = updatedAttributeResult.value;
@@ -871,15 +859,12 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
-        const productAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
-        const attributesGroupCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
         const session = client.startSession();
@@ -967,7 +952,7 @@ export const attributesGroupMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedGroup = updatedGroupResult.value;

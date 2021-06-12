@@ -1,10 +1,10 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE } from '../../../../config/common';
 import { ShopProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import * as products from '../products/products';
-import * as productConnectionItems from '../productConnectionItems/productConnectionItems';
-import * as shops from '../shops/shops';
-import * as rubrics from '../rubrics/rubrics';
+import products from '../products/products';
+import productConnectionItems from '../productConnectionItems/productConnectionItems';
+import shops from '../shops/shops';
+import rubrics from '../rubrics/rubrics';
 
 const maxProductsCountForShop = 50;
 const shopProducts: ShopProductModel[] = [];

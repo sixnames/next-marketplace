@@ -1,8 +1,8 @@
 import { CATALOGUE_OPTION_SEPARATOR } from '../../../../config/common';
 import { ObjectIdModel, ProductConnectionModel, ProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import * as products from '../products/products';
-import * as rubrics from '../rubrics/rubrics';
+import products from '../products/products';
+import rubrics from '../rubrics/rubrics';
 
 const connectionAttributesConfig = [
   {

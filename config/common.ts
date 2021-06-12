@@ -258,6 +258,9 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+// ALGOLIA
+export const HITS_PER_PAGE = 150;
+
 // ASSETS
 export const ASSETS_DIST_USERS = 'users';
 export const ASSETS_DIST_PRODUCTS = 'products';

@@ -9,6 +9,15 @@ export const UPDATE_SHOP_MUTATION = gql`
   }
 `;
 
+export const GENERATE_SHOP_TOKEN_MUTATION = gql`
+  mutation GenerateShopToken($_id: ObjectId!) {
+    generateShopToken(_id: $_id) {
+      success
+      message
+    }
+  }
+`;
+
 export const DELETE_SHOP_ASSET_MUTATION = gql`
   mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
     deleteShopAsset(input: $input) {

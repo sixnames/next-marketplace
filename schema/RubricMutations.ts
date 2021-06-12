@@ -277,7 +277,7 @@ export const RubricMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedRubric = updatedRubricResult.value;
@@ -419,12 +419,10 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
-        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+        const attributesGroupsCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
         const session = client.startSession();
@@ -522,7 +520,7 @@ export const RubricMutations = extendType({
                   attributesGroupsIds: attributesGroup._id,
                 },
               },
-              { returnOriginal: false },
+              { returnDocument: 'after' },
             );
 
             const updatedRubric = updatedRubricResult.value;
@@ -590,9 +588,8 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
+          const rubricAttributesCollection =
+            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { rubricId, attributeId } = input;
 
@@ -677,9 +674,8 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
+          const rubricAttributesCollection =
+            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { rubricId, attributeId } = input;
 
@@ -744,12 +740,10 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
-        const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-          COL_RUBRIC_ATTRIBUTES,
-        );
+        const attributesGroupsCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -822,7 +816,7 @@ export const RubricMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedRubric = updatedRubricResult.value;

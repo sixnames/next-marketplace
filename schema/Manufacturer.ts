@@ -372,7 +372,7 @@ export const ManufacturerMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedManufacturer = updatedManufacturerResult.value;

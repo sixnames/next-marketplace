@@ -237,7 +237,7 @@ export const RubricVariantMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedRubricVariant = updatedRubricVariantResult.value;

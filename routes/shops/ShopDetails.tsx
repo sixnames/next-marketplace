@@ -1,8 +1,13 @@
 import Button from 'components/Buttons/Button';
+import FakeInput from 'components/FormElements/Input/FakeInput';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner/Inner';
 import { Form, Formik } from 'formik';
-import { UpdateShopInput, useUpdateShopMutation } from 'generated/apolloComponents';
+import {
+  UpdateShopInput,
+  useGenerateShopTokenMutation,
+  useUpdateShopMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
@@ -13,20 +18,21 @@ import { updateShopSchema } from 'validation/shopSchema';
 export type ShopDetailsInterface = AppShopLayoutInterface;
 
 const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
-  const {
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    showErrorNotification,
-  } = useMutationCallbacks({
-    reload: true,
-  });
+  const { showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+    });
   const [updateShopMutation] = useUpdateShopMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateShop),
   });
   const validationSchema = useValidationSchema({
     schema: updateShopSchema,
+  });
+
+  const [generateShopTokenMutation] = useGenerateShopTokenMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.generateShopToken),
   });
 
   const initialValues: UpdateShopInput = {
@@ -48,8 +54,8 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
 
   return (
     <AppShopLayout shop={shop} basePath={basePath}>
-      <Inner>
-        <div data-cy={'shop-details-page'}>
+      <Inner testId={'shop-details-page'}>
+        <div className='relative'>
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
@@ -92,6 +98,29 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
               );
             }}
           </Formik>
+        </div>
+
+        <div className='mt-8'>
+          <FakeInput
+            testId={shop.token ? 'generated-token' : ''}
+            value={shop.token}
+            label={'API токен'}
+          />
+          {!shop.token ? (
+            <Button
+              onClick={() => {
+                showLoading();
+                generateShopTokenMutation({
+                  variables: {
+                    _id: shop._id,
+                  },
+                }).catch(console.log);
+              }}
+              testId={'generate-api-token'}
+            >
+              Сгенерировать токен
+            </Button>
+          ) : null}
         </div>
       </Inner>
     </AppShopLayout>

@@ -129,7 +129,7 @@ export const RoleRuleMutations = extendType({
               $set: values,
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
               upsert: true,
             },
           );

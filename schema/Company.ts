@@ -398,7 +398,7 @@ export const CompanyMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -674,7 +674,7 @@ export const CompanyMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedCompany = updatedCompanyResult.value;
@@ -770,7 +770,7 @@ export const CompanyMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedCompany = updatedCompanyResult.value;

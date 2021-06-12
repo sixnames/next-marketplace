@@ -98,7 +98,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
     {
       upsert: true,
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
   const updatedConfig = updatedConfigResult.value;

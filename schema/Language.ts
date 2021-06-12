@@ -225,7 +225,7 @@ export const LanguageMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedLanguage = updatedLanguageResult.value;

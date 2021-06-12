@@ -52,7 +52,7 @@ export async function getNextItemId(collectionName: string): Promise<string> {
     },
     {
       upsert: true,
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
 

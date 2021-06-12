@@ -343,7 +343,7 @@ export const OptionsGroupMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedOptionsGroup = updatedOptionsGroupResult.value;
@@ -736,9 +736,8 @@ export const OptionsGroupMutations = extendType({
 
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
             COL_PRODUCT_CONNECTION_ITEMS,
           );

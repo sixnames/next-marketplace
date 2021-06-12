@@ -171,7 +171,7 @@ export const ProductAttributeMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedProduct = updatedProductResult.value;
@@ -230,7 +230,7 @@ export const ProductAttributeMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedProduct = updatedProductResult.value;
@@ -289,7 +289,7 @@ export const ProductAttributeMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedProduct = updatedProductResult.value;
@@ -331,9 +331,8 @@ export const ProductAttributeMutations = extendType({
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { selectedOptionsIds, productId, attributeId, productAttributeId } = input;
@@ -437,7 +436,7 @@ export const ProductAttributeMutations = extendType({
             },
             {
               upsert: true,
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedProductAttribute = updatedProductAttributeResult.value;
@@ -480,9 +479,8 @@ export const ProductAttributeMutations = extendType({
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -551,7 +549,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 upsert: true,
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
           }
@@ -588,9 +586,8 @@ export const ProductAttributeMutations = extendType({
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -659,7 +656,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 upsert: true,
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
           }

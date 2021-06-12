@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const body = JSON.parse(req.body || []) as SyncProductInterface[] | undefined | null;
-  const query = (req.query as unknown) as SyncParamsInterface | undefined | null;
+  const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!body || body.length < 1 || !query) {
     res.status(200).send({
@@ -87,7 +87,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       {
-        returnOriginal: false,
+        returnDocument: 'after',
       },
     );
     const updatedShopProduct = updatedShopProductResult.value;
@@ -100,7 +100,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (updatedShopProducts.length !== body.length) {
     res.status(200).send({
       success: false,
-      message: 'not all products added',
+      message: 'not all products updated',
     });
     return;
   }

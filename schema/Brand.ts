@@ -97,9 +97,8 @@ export const Brand = objectType({
       type: 'BrandCollection',
       resolve: async (source): Promise<BrandCollectionModel[]> => {
         const { db } = await getDatabase();
-        const brandCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const brandCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
         const brands = await brandCollectionsCollection.find({ brandId: source._id }).toArray();
         return brands;
       },
@@ -449,7 +448,7 @@ export const BrandMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
 
@@ -560,9 +559,8 @@ export const BrandMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const brandsCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const brandsCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
 
         const session = client.startSession();
 
@@ -661,7 +659,7 @@ export const BrandMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedBrand = updatedBrandResult.value;
@@ -709,9 +707,8 @@ export const BrandMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const dbBrandsCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
 
         const session = client.startSession();
 
@@ -787,18 +784,19 @@ export const BrandMutations = extendType({
             }
 
             // Update brand collection
-            const updatedBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndUpdate(
-              { _id: brandCollectionId },
-              {
-                $set: {
-                  ...values,
-                  updatedAt: new Date(),
+            const updatedBrandCollectionResult =
+              await dbBrandsCollectionsCollection.findOneAndUpdate(
+                { _id: brandCollectionId },
+                {
+                  $set: {
+                    ...values,
+                    updatedAt: new Date(),
+                  },
                 },
-              },
-              {
-                returnOriginal: false,
-              },
-            );
+                {
+                  returnDocument: 'after',
+                },
+              );
             const updatedBrandCollection = updatedBrandCollectionResult.value;
             if (!updatedBrandCollectionResult.ok || !updatedBrandCollection) {
               mutationPayload = {
@@ -818,7 +816,7 @@ export const BrandMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedBrand = updatedBrandResult.value;
@@ -866,9 +864,8 @@ export const BrandMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const dbBrandsCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const dbBrandsCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
         const dbProductsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
         const session = client.startSession();
@@ -940,9 +937,8 @@ export const BrandMutations = extendType({
             }
 
             // Delete brand collection
-            const removedBrandCollectionResult = await dbBrandsCollectionsCollection.findOneAndDelete(
-              { _id: brandCollectionId },
-            );
+            const removedBrandCollectionResult =
+              await dbBrandsCollectionsCollection.findOneAndDelete({ _id: brandCollectionId });
             if (!removedBrandCollectionResult.ok) {
               mutationPayload = {
                 success: false,
@@ -964,7 +960,7 @@ export const BrandMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedBrand = updatedBrandResult.value;

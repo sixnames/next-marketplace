@@ -190,7 +190,7 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
             cartId: newCart._id,
           },
         },
-        { returnOriginal: false },
+        { returnDocument: 'after' },
       );
 
       if (!newCartResult) {

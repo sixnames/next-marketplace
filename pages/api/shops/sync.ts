@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const body = JSON.parse(req.body || []) as SyncProductInterface[] | undefined | null;
-  const query = (req.query as unknown) as SyncParamsInterface | undefined | null;
+  const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!body || body.length < 1 || !query) {
     res.status(200).send({

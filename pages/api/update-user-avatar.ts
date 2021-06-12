@@ -118,7 +118,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     {
-      returnOriginal: false,
+      returnDocument: 'after',
     },
   );
   const updatedUser = updatedUserResult.value;

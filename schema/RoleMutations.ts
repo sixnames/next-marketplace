@@ -211,7 +211,7 @@ export const RoleMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedRole = updatedRoleResult.value;
@@ -404,7 +404,7 @@ export const RoleMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedRole = updatedRoleResult.value;
@@ -431,7 +431,7 @@ export const RoleMutations = extendType({
               },
             },
             {
-              returnOriginal: false,
+              returnDocument: 'after',
             },
           );
           const updatedRole = updatedRoleResult.value;

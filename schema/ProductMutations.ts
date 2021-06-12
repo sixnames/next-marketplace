@@ -328,7 +328,7 @@ export const ProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
 
@@ -529,7 +529,7 @@ export const ProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedProductAssets = updatedProductAssetsResult.value;
@@ -557,7 +557,7 @@ export const ProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedProduct = updatedProductResult.value;
@@ -690,7 +690,7 @@ export const ProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
             const updatedProductAssets = updatedProductAssetsResult.value;
@@ -717,7 +717,7 @@ export const ProductMutations = extendType({
                 },
               },
               {
-                returnOriginal: false,
+                returnDocument: 'after',
               },
             );
 

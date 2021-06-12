@@ -174,8 +174,8 @@ describe('Sync', () => {
     });
   });
 
-  it('Should generate shop token', () => {
-    cy.testAuth(`${ROUTE_CMS}/companies`);
+  it.only('Should generate shop token', () => {
+    cy.visit(`${ROUTE_CMS}/companies`);
     cy.wait(1500);
     cy.getByCy(`company_b-update`).click();
     cy.getByCy(`company-shops`).click();

@@ -4,7 +4,7 @@ import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Currency from 'components/Currency/Currency';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -15,7 +15,6 @@ import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import {
   CATALOGUE_OPTION_SEPARATOR,
-  HITS_PER_PAGE,
   PAGE_DEFAULT,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
@@ -23,7 +22,7 @@ import {
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -38,7 +37,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
-import { getAlgoliaClient } from 'lib/algoliaUtils';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
@@ -65,7 +64,6 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  basePath,
   itemPath,
 }) => {
   const router = useRouter();
@@ -194,20 +192,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
-        <FormikIndividualSearch
-          testId={'products'}
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            if (search && search.length > 0) {
-              router.push(`${basePath}?search=${search}`).catch(console.log);
-            } else {
-              router.push(basePath).catch(console.log);
-            }
-          }}
-        />
+        <FormikRouterSearch />
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
@@ -298,6 +283,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -307,26 +293,6 @@ export const getServerSideProps = async (
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('RubricProductsPage props ');
   // const startTime = new Date().getTime();
-
-  // algolia
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
-  const searchIds: ObjectId[] = [];
-  if (search) {
-    const { hits } = await algoliaIndex.search<ProductInterface>(`${search}`, {
-      hitsPerPage: HITS_PER_PAGE,
-    });
-    hits.forEach((hit) => {
-      searchIds.push(new ObjectId(hit._id));
-    });
-  }
-  const searchStage =
-    search && search.length > 0 && searchIds.length > 0
-      ? {
-          _id: {
-            $in: searchIds,
-          },
-        }
-      : {};
 
   // Get shop
   if (!initialProps.props) {
@@ -342,7 +308,7 @@ export const getServerSideProps = async (
       filters: restFilter,
     });
 
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}1`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // Products stages
@@ -353,6 +319,62 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
+
+  // algolia
+  let searchIds: ObjectId[] = [];
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+      search: `${search}`,
+    });
+
+    // return empty page if no search results
+    if (searchIds.length < 1) {
+      const rubric = await rubricsCollection.findOne({
+        _id: new ObjectId(rubricId),
+      });
+
+      if (!rubric) {
+        return {
+          notFound: true,
+        };
+      }
+
+      const payload: RubricProductsInterface = {
+        rubric: {
+          ...(rubric || {}),
+          attributes: [],
+          name: getFieldStringLocale(rubric?.nameI18n, locale),
+        },
+        clearSlug: basePath,
+        totalDocs: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+        attributes: [],
+        selectedAttributes: [],
+        page,
+        docs: [],
+      };
+
+      const castedPayload = castDbData(payload);
+
+      return {
+        props: {
+          ...initialProps.props,
+          ...castedPayload,
+        },
+      };
+    }
+  }
+  const searchStage =
+    search && search.length > 0 && searchIds.length > 0
+      ? {
+          _id: {
+            $in: searchIds,
+          },
+        }
+      : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 
@@ -523,7 +545,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    basePath,
     itemPath,
     selectedAttributes,
     page,

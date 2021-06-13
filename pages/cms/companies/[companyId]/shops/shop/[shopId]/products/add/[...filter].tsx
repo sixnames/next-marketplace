@@ -1,13 +1,12 @@
 import {
   CATALOGUE_OPTION_SEPARATOR,
-  HITS_PER_PAGE,
   PAGE_DEFAULT,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -19,7 +18,7 @@ import {
   ShopInterface,
 } from 'db/uiInterfaces';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getAlgoliaClient } from 'lib/algoliaUtils';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -124,6 +123,7 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const { query } = context;
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -133,26 +133,6 @@ export const getServerSideProps = async (
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('CompanyShopProductsList props ');
   // const startTime = new Date().getTime();
-
-  // algolia
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
-  const searchIds: ObjectId[] = [];
-  if (search) {
-    const { hits } = await algoliaIndex.search<ProductInterface>(`${search}`, {
-      hitsPerPage: HITS_PER_PAGE,
-    });
-    hits.forEach((hit) => {
-      searchIds.push(new ObjectId(hit._id));
-    });
-  }
-  const searchStage =
-    search && search.length > 0 && searchIds.length > 0
-      ? {
-          _id: {
-            $in: searchIds,
-          },
-        }
-      : {};
 
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
@@ -170,7 +150,7 @@ export const getServerSideProps = async (
       filters: restFilter,
     });
 
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}1`;
 
   // Products stages
   const optionsStage = noFiltersSelected
@@ -199,6 +179,62 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const excludedProductsIds = shopProductsAggregation.map(({ productId }) => productId);
+
+  // algolia
+  let searchIds: ObjectId[] = [];
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+      search: `${search}`,
+      excludedProductsIds,
+    });
+
+    // return empty page if no search results
+    if (searchIds.length < 1) {
+      const rubric = await rubricsCollection.findOne({
+        _id: new ObjectId(rubricId),
+      });
+
+      if (!rubric) {
+        return {
+          notFound: true,
+        };
+      }
+
+      const payload: ShopAddProductsListRouteReduced = {
+        shop,
+        rubricId: rubric._id.toHexString(),
+        rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
+        clearSlug: basePath,
+        totalDocs: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+        attributes: [],
+        selectedAttributes: [],
+        page,
+        docs: [],
+      };
+
+      const castedPayload = castDbData(payload);
+
+      return {
+        props: {
+          ...initialProps.props,
+          ...castedPayload,
+        },
+      };
+    }
+  }
+
+  const searchStage =
+    search && search.length > 0 && searchIds.length > 0
+      ? {
+          _id: {
+            $in: searchIds,
+          },
+        }
+      : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 
@@ -326,7 +362,18 @@ export const getServerSideProps = async (
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const { rubric } = productsResult;
+  let rubric: RubricInterface | null = productsResult.rubric;
+  if (!rubric) {
+    rubric = await rubricsCollection.findOne({
+      _id: new ObjectId(rubricId),
+    });
+  }
+  if (!rubric) {
+    return {
+      notFound: true,
+    };
+  }
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
@@ -355,7 +402,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    basePath,
     selectedAttributes,
     page,
     docs,

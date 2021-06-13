@@ -1,7 +1,7 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -10,13 +10,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
-import {
-  ROUTE_CMS,
-  SORT_DESC,
-  PAGE_DEFAULT,
-  QUERY_FILTER_PAGE,
-  CATALOGUE_OPTION_SEPARATOR,
-} from 'config/common';
+import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modals';
 import {
   COL_CITIES,
@@ -57,23 +51,17 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   page,
   totalPages,
   totalDocs,
-  basePath,
   itemPath,
   docs,
 }) => {
   const isPageLoading = usePageLoadingState();
   const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
-  const {
-    showModal,
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    showErrorNotification,
-  } = useMutationCallbacks({
-    reload: true,
-    withModal: true,
-  });
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+      withModal: true,
+    });
 
   const counterString = React.useMemo(() => {
     if (totalDocs < 1) {
@@ -163,19 +151,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     <CmsCompanyLayout company={currentCompany}>
       <Inner testId={'company-shops-list'}>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
-        <FormikIndividualSearch
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            if (search && search.length > 0) {
-              router.push(`${basePath}?search=${search}`).catch(console.log);
-            } else {
-              router.push(basePath).catch(console.log);
-            }
-          }}
-        />
+        <FormikRouterSearch />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>
@@ -251,7 +227,6 @@ export const getServerSideProps = async (
   const { page, skip, limit, clearSlug } = castCatalogueFilters({
     filters: restFilter,
   });
-  const basePath = `${ROUTE_CMS}/companies/${companyId}/shops/${companyId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
   const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 
   const companyAggregationResult = await companiesCollection
@@ -462,7 +437,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       currentCompany: castDbData(companyResult),
-      basePath,
       itemPath,
       clearSlug,
       page,

@@ -186,7 +186,6 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
         <FormikIndividualSearch
           onSubmit={setSearch}
           testId={'product'}
-          withReset
           onReset={() => setSearch(null)}
         />
 
@@ -227,7 +226,6 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
       <FormikIndividualSearch
         onSubmit={setSearch}
         testId={'product'}
-        withReset
         onReset={() => setSearch(null)}
       />
 

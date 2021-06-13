@@ -137,16 +137,10 @@ export const getServerSideProps = async (
   // const city = shop.citySlug;
 
   // Cast filters
-  const {
-    realFilterOptions,
-    sortFilterOptions,
-    noFiltersSelected,
-    page,
-    skip,
-    limit,
-  } = castCatalogueFilters({
-    filters: restFilter,
-  });
+  const { realFilterOptions, sortFilterOptions, noFiltersSelected, page, skip, limit } =
+    castCatalogueFilters({
+      filters: restFilter,
+    });
 
   // Products stages
   const optionsStage = noFiltersSelected
@@ -366,7 +360,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    basePath,
     selectedAttributes,
     page,
     docs,

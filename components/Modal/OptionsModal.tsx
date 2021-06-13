@@ -204,7 +204,6 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
       <FormikIndividualSearch
         onSubmit={setSearch}
         testId={'options'}
-        withReset
         onReset={() => setSearch(null)}
       />
 

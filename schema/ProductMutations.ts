@@ -506,14 +506,19 @@ export const ProductMutations = extendType({
 
             // Delete product asset
             const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
-            const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
-            if (!removedAsset) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
+            if (
+              currentAsset &&
+              currentAsset.url !== process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK
+            ) {
+              const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
+              if (!removedAsset) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage(`products.update.error`),
+                };
+                await session.abortTransaction();
+                return;
+              }
             }
 
             // Update product assets

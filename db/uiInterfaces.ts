@@ -419,6 +419,5 @@ export interface AppPaginationInterface<Model> {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   clearSlug: string;
-  basePath: string;
   itemPath?: string;
 }

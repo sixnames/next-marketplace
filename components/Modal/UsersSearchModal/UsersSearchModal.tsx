@@ -53,7 +53,6 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
       <FormikIndividualSearch
         onSubmit={setSearch}
         testId={'user'}
-        withReset
         onReset={() => setSearch(null)}
       />
 

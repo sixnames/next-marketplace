@@ -4,7 +4,7 @@ import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -57,20 +57,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   page,
   totalPages,
   rubricName,
-  basePath,
   rubricId,
   layoutBasePath,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
-  const {
-    showModal,
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({ withModal: true, reload: true });
+  const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
+    useMutationCallbacks({ withModal: true, reload: true });
 
   const addProductsPath = `${layoutBasePath}/${shop._id}/products/add/${rubricId}`;
   const validationSchema = useValidationSchema({ schema: updateManyShopProductsSchema });
@@ -225,19 +219,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        <FormikIndividualSearch
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            if (search && search.length > 0) {
-              router.push(`${basePath}?search=${search}`).catch(console.log);
-            } else {
-              router.push(basePath).catch(console.log);
-            }
-          }}
-        />
+        <FormikRouterSearch />
 
         <div className={`max-w-full`}>
           {withProducts ? (

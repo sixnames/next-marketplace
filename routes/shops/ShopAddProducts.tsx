@@ -5,7 +5,7 @@ import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
@@ -62,7 +62,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   page,
   totalPages,
   rubricName,
-  basePath,
   chosen,
   createChosenProduct,
   deleteChosenProduct,
@@ -71,7 +70,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 }) => {
   useReloadListener();
   const { me } = useUserContext();
-  const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
 
   const columns: TableColumn<ProductInterface>[] = [
@@ -173,19 +171,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        <FormikIndividualSearch
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            if (search && search.length > 0) {
-              router.push(`${basePath}?search=${search}`).catch(console.log);
-            } else {
-              router.push(basePath).catch(console.log);
-            }
-          }}
-        />
+        <FormikRouterSearch />
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
@@ -257,12 +243,8 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   layoutBasePath,
 }) => {
   const router = useRouter();
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({ withModal: true });
+  const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
+    useMutationCallbacks({ withModal: true });
   const [addManyProductsToShopMutation] = useAddManyProductsToShopMutation({
     onCompleted: (data) => {
       onCompleteCallback(data.addManyProductsToShop);

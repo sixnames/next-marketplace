@@ -4,7 +4,7 @@ import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Currency from 'components/Currency/Currency';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -65,7 +65,6 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  basePath,
   itemPath,
 }) => {
   const router = useRouter();
@@ -194,20 +193,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
-        <FormikIndividualSearch
-          testId={'products'}
-          withReset
-          onReset={() => {
-            router.push(basePath).catch((e) => console.log(e));
-          }}
-          onSubmit={(search) => {
-            if (search && search.length > 0) {
-              router.push(`${basePath}?search=${search}`).catch(console.log);
-            } else {
-              router.push(basePath).catch(console.log);
-            }
-          }}
-        />
+        <FormikRouterSearch />
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
@@ -342,7 +328,7 @@ export const getServerSideProps = async (
       filters: restFilter,
     });
 
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}1`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // Products stages
@@ -523,7 +509,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    basePath,
     itemPath,
     selectedAttributes,
     page,

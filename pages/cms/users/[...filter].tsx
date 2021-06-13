@@ -1,7 +1,7 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner/Inner';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
@@ -9,13 +9,7 @@ import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
-import {
-  CATALOGUE_OPTION_SEPARATOR,
-  PAGE_DEFAULT,
-  QUERY_FILTER_PAGE,
-  ROUTE_CMS,
-  SORT_DESC,
-} from 'config/common';
+import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modals';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -50,7 +44,6 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   docs,
   page,
   totalPages,
-  basePath,
   itemPath,
   filters: { roles },
 }) => {
@@ -139,20 +132,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='relative'>
-          <FormikIndividualSearch
-            testId={'users'}
-            withReset
-            onReset={() => {
-              router.push(basePath).catch((e) => console.log(e));
-            }}
-            onSubmit={(search) => {
-              if (search && search.length > 0) {
-                router.push(`${basePath}?search=${search}`).catch(console.log);
-              } else {
-                router.push(basePath).catch(console.log);
-              }
-            }}
-          />
+          <FormikRouterSearch />
 
           <div className='overflew-x-auto overflew-y-hidden'>
             <Table<UserInterface>
@@ -238,7 +218,6 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: alwaysArray(filter),
   });
-  const basePath = `${ROUTE_CMS}/users/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${page}`;
   const itemPath = `${ROUTE_CMS}/users/user`;
 
   const regexSearch = {
@@ -424,7 +403,6 @@ export const getServerSideProps = async (
     totalPages: usersResult.totalPages,
     hasNextPage: usersResult.hasNextPage,
     hasPrevPage: usersResult.hasPrevPage,
-    basePath,
     itemPath,
     page,
     docs,

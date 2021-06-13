@@ -112,7 +112,6 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
 
       <Inner testId={'role-rules-list'}>
         <FormikIndividualSearch
-          withReset
           onSubmit={(value) => {
             const filteredRules = (role.rules || []).filter((rule) => {
               const finalName = `${rule.name}`.toLowerCase();

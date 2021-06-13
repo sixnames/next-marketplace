@@ -91,7 +91,7 @@ export const getAlgoliaProductsSearch = async ({
       `${search}`,
       {
         hitsPerPage: HITS_PER_PAGE,
-        optionalWords: `${search}`.split(' ').slice(1),
+        // optionalWords: `${search}`.split(' ').slice(1),
       },
     );
     hits.forEach((hit) => {

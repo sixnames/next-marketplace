@@ -6,17 +6,20 @@ interface FormikIndividualSearchInterface {
   onSubmit: (query: string) => void;
   onReset?: () => void;
   testId?: string;
+  initialValue?: string;
 }
 
 const FormikIndividualSearch: React.FC<FormikIndividualSearchInterface> = ({
   onSubmit,
   testId,
   onReset,
+  initialValue = '',
 }) => {
   return (
     <Formik
+      enableReinitialize
       initialValues={{
-        search: '',
+        search: initialValue,
       }}
       onSubmit={({ search }) => {
         onSubmit(search);

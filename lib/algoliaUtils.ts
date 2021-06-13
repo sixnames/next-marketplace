@@ -1,6 +1,9 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
+import { HITS_PER_PAGE } from 'config/common';
 import { ProductModel } from 'db/dbModels';
+import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface AlgoliaProductInterface
   extends Pick<ProductModel, 'nameI18n' | 'originalName' | 'itemId' | 'barcode'> {
@@ -67,5 +70,44 @@ export const deleteAlgoliaObjects = async ({
   } catch (e) {
     console.log(e);
     return false;
+  }
+};
+
+interface GetAlgoliaProductsSearch {
+  indexName: string;
+  search: string;
+  excludedProductsIds?: ObjectId[];
+}
+
+export const getAlgoliaProductsSearch = async ({
+  indexName,
+  search,
+  excludedProductsIds,
+}: GetAlgoliaProductsSearch): Promise<ObjectId[]> => {
+  const { algoliaIndex } = getAlgoliaClient(indexName);
+  const searchIds: ObjectId[] = [];
+  try {
+    const { hits } = await algoliaIndex.search<ProductInterface | ShopProductInterface>(
+      `${search}`,
+      {
+        hitsPerPage: HITS_PER_PAGE,
+        optionalWords: `${search}`.split(' ').slice(1),
+      },
+    );
+    hits.forEach((hit) => {
+      const hitId = new ObjectId(hit._id);
+      const exist = (excludedProductsIds || []).some((_id) => {
+        return _id.equals(hitId);
+      });
+
+      if (!exist) {
+        searchIds.push(hitId);
+      }
+    });
+
+    return searchIds;
+  } catch (e) {
+    console.log(e);
+    return searchIds;
   }
 };

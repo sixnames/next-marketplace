@@ -1,6 +1,5 @@
 import {
   CATALOGUE_OPTION_SEPARATOR,
-  HITS_PER_PAGE,
   PAGE_DEFAULT,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
@@ -18,7 +17,7 @@ import {
   ShopInterface,
 } from 'db/uiInterfaces';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getAlgoliaClient } from 'lib/algoliaUtils';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -80,26 +79,6 @@ export const getServerSideProps = async (
   // console.log('CompanyShopProductsList props ');
   // const startTime = new Date().getTime();
 
-  // algolia
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_SHOP_PRODUCTS}`);
-  const searchIds: ObjectId[] = [];
-  if (search) {
-    const { hits } = await algoliaIndex.search<ShopProductModel>(`${search}`, {
-      hitsPerPage: HITS_PER_PAGE,
-    });
-    hits.forEach((hit) => {
-      searchIds.push(new ObjectId(hit._id));
-    });
-  }
-  const searchStage =
-    search && search.length > 0 && searchIds.length > 0
-      ? {
-          _id: {
-            $in: searchIds,
-          },
-        }
-      : {};
-
   // Get shop
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {
@@ -141,6 +120,61 @@ export const getServerSideProps = async (
           $all: realFilterOptions,
         },
       };
+
+  // algolia
+  let searchIds: ObjectId[] = [];
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+      search: `${search}`,
+    });
+
+    // return empty page if no search results
+    if (searchIds.length < 1) {
+      const rubric = await rubricsCollection.findOne({
+        _id: new ObjectId(rubricId),
+      });
+
+      if (!rubric) {
+        return {
+          notFound: true,
+        };
+      }
+
+      const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
+        shop,
+        rubricId: rubric._id.toHexString(),
+        rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
+        clearSlug: basePath,
+        totalDocs: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+        attributes: [],
+        selectedAttributes: [],
+        basePath,
+        page,
+        docs: [],
+      };
+
+      const castedPayload = castDbData(payload);
+
+      return {
+        props: {
+          ...initialProps.props,
+          ...castedPayload,
+        },
+      };
+    }
+  }
+  const searchStage =
+    search && search.length > 0 && searchIds.length > 0
+      ? {
+          _id: {
+            $in: searchIds,
+          },
+        }
+      : {};
 
   const rubricsPipeline = getCatalogueRubricPipeline();
 

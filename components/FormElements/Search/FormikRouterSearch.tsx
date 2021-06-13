@@ -6,6 +6,14 @@ import * as React from 'react';
 const FormikRouterSearch: React.FC = () => {
   const router = useRouter();
 
+  const initialValue = React.useMemo(() => {
+    const { search } = router.query;
+    if (search && search.length > 0) {
+      return `${search}`;
+    }
+    return '';
+  }, [router.query]);
+
   const basePath = React.useMemo(() => {
     const cleanAsPath = router.asPath.split('?')[0];
     const cleanAsPathArray = cleanAsPath.split('/').filter((param) => {
@@ -25,6 +33,7 @@ const FormikRouterSearch: React.FC = () => {
 
   return (
     <FormikIndividualSearch
+      initialValue={initialValue}
       testId={'products'}
       onReset={() => {
         router.push(basePath).catch((e) => console.log(e));

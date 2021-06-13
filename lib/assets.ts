@@ -4,7 +4,8 @@ import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
 import mime from 'mime-types';
-// import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
+// import imagemin from 'imagemin';
+// import imageminWebp from 'imagemin-webp';
 
 interface StoreRestApiUploadsAsset {
   buffer: Buffer;
@@ -35,8 +36,19 @@ export async function storeRestApiUploads({
     const uploads: StoreRestApiUploadsAsset[] = [];
     for await (const file of initialFiles) {
       const buffer = await fs.readFile(file[0].path);
+
+      // compress buffer
+      /*const compressedBuffer = await imagemin.buffer(buffer, {
+        plugins: [
+          imageminWebp({
+            quality: 50,
+          }),
+        ],
+      });*/
+
       uploads.push({
         buffer,
+        // buffer: compressedBuffer,
         ext: file[0].type ? mime.extension(file[0].type) : '',
       });
     }

@@ -29,15 +29,10 @@ interface ProductAssetsInterface {
 
 const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
   const router = useRouter();
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
-    reload: true,
-  });
+  const { onErrorCallback, onCompleteCallback, showLoading, hideLoading, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+    });
   const validationSchema = useValidationSchema({
     schema: addProductAssetsSchema,
   });

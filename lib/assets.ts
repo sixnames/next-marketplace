@@ -1,10 +1,9 @@
 import Formidable from 'formidable';
-import { promises as fs } from 'fs';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
 import imagemin from 'imagemin';
-import imageminWebp from 'imagemin-webp';
+// import imageminWebp from 'imagemin-webp';
 import FileType from 'file-type';
 
 interface StoreRestApiUploadsAsset {
@@ -35,16 +34,24 @@ export async function storeRestApiUploads({
 
     const uploads: StoreRestApiUploadsAsset[] = [];
     for await (const file of initialFiles) {
-      const buffer = await fs.readFile(file[0].path);
-
+      // const buffer = await fs.readFile(file[0].path);
+      // console.log(file);
       // compress buffer
-      const compressedBuffer = await imagemin.buffer(buffer, {
+      const imageminResult = await imagemin(
+        [file[0].path] /*{
         plugins: [
           imageminWebp({
             quality: 50,
           }),
         ],
-      });
+      }*/,
+      );
+
+      const compressedBuffer = imageminResult[0]?.data;
+
+      if (!compressedBuffer) {
+        break;
+      }
 
       const fileType = await FileType.fromBuffer(compressedBuffer);
       if (!fileType) {

@@ -1,4 +1,5 @@
 import { CellPlugin } from '@react-page/editor/lib/core/types/plugins';
+import { PAGE_EDITOR_DEFAULT_VALUE } from 'config/common';
 import * as React from 'react';
 import '@react-page/editor/lib/index.css';
 import '@react-page/plugins-image/lib/index.css';
@@ -9,9 +10,8 @@ import divider from '@react-page/plugins-divider';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
 import { imagePlugin } from '@react-page/plugins-image';
-// import type { ImageUploadType } from '@react-page/plugins-image';
 
-const cellPlugins = (page: string): CellPlugin[] => [
+const cellPlugins = (pageId: string): CellPlugin[] => [
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   slate(),
@@ -25,7 +25,7 @@ const cellPlugins = (page: string): CellPlugin[] => [
     imageUpload: async (file) => {
       try {
         const formData = new FormData();
-        formData.append('page', page);
+        formData.append('pageId', pageId);
         formData.append('assets', file);
 
         const responseFetch = await fetch('/api/add-page-asset', {
@@ -47,26 +47,28 @@ const cellPlugins = (page: string): CellPlugin[] => [
   }),
 ];
 
-const defaultValue: Value = {
-  id: '1',
-  version: 1,
-  rows: [],
-};
-
 interface PageEditorInterface {
   readOnly?: boolean;
   initialValue?: Value;
-  page: string;
+  pageId: string;
   onSubmit?: (value: Value) => void;
 }
 
-const PageEditor: React.FC<PageEditorInterface> = ({ initialValue, page, readOnly }) => {
+const PageEditor: React.FC<PageEditorInterface> = ({ initialValue, pageId, readOnly }) => {
   const [value, setValue] = React.useState<Value>(() => {
-    return initialValue || defaultValue;
+    return initialValue || PAGE_EDITOR_DEFAULT_VALUE;
   });
 
   return (
-    <Editor readOnly={readOnly} cellPlugins={cellPlugins(page)} value={value} onChange={setValue} />
+    <Editor
+      cellSpacing={30}
+      allowMoveInEditMode
+      allowResizeInEditMode
+      readOnly={readOnly}
+      cellPlugins={cellPlugins(pageId)}
+      value={value}
+      onChange={setValue}
+    />
   );
 };
 

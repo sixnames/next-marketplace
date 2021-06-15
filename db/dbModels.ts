@@ -622,6 +622,30 @@ export interface UserModel extends BaseModel, TimestampModel {
   cartId?: ObjectIdModel | null;
 }
 
+// Pages
+export interface PagesGroupModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  index: number;
+}
+
+// Page state enum
+export enum PageStateModel {
+  draft = 'draft',
+  published = 'published',
+}
+
+export interface PageModel extends TimestampModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  index: number;
+  slug: string;
+  assetKeys: string[];
+  pagesGroupId: ObjectIdModel;
+  content: string;
+  state: PageStateModel;
+}
+
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;

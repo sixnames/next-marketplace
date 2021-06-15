@@ -25,6 +25,8 @@ import {
   OrderModel,
   OrderProductModel,
   OrderStatusModel,
+  PageModel,
+  PagesGroupModel,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
@@ -420,4 +422,12 @@ export interface AppPaginationInterface<Model> {
   hasNextPage: boolean;
   clearSlug: string;
   itemPath?: string;
+}
+
+export interface PagesGroupInterface extends PagesGroupModel {
+  name?: string | null;
+}
+
+export interface PageInterface extends PageModel {
+  name?: string | null;
 }

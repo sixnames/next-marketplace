@@ -1,4 +1,6 @@
 // ID Counters
+import { Value } from '@react-page/editor';
+
 export const DEFAULT_ID_COUNTER = 1;
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
@@ -272,6 +274,15 @@ export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
+
+// PAGES
+export const PAGE_STATE_DRAFT = 'draft';
+export const PAGE_STATE_PUBLISHED = 'published';
+export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
+  id: '1',
+  version: 1,
+  rows: [],
+};
 
 // Alphabets
 export const ALPHABET_EN = [

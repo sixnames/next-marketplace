@@ -1,5 +1,6 @@
 // ID Counters
 import { Value } from '@react-page/editor';
+import { PageStateModel } from '../db/dbModels';
 
 export const DEFAULT_ID_COUNTER = 1;
 export const ID_COUNTER_STEP = 1;
@@ -276,8 +277,8 @@ export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
 
 // PAGES
-export const PAGE_STATE_DRAFT = 'draft';
-export const PAGE_STATE_PUBLISHED = 'published';
+export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
+export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
 export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   id: '1',
   version: 1,

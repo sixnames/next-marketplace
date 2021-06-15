@@ -531,6 +531,17 @@ export type CreateOptionsGroupInput = {
   variant: OptionsGroupVariant;
 };
 
+export type CreatePageInput = {
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
+  pagesGroupId: Scalars['ObjectId'];
+};
+
+export type CreatePagesGroupInput = {
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
+};
+
 export type CreateProductConnectionInput = {
   productId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
@@ -921,6 +932,18 @@ export type Mutation = {
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should remove product from rubric */
   deleteProductFromRubric: RubricPayload;
+  /** Should create pages group */
+  createPagesGroup: PagesGroupPayload;
+  /** Should update pages group */
+  updatePagesGroup: PagesGroupPayload;
+  /** Should delete pages group */
+  deletePagesGroup: PagesGroupPayload;
+  /** Should crate page */
+  createPage: PagePayload;
+  /** Should update page */
+  updatePage: PagePayload;
+  /** Should delete page */
+  deletePage: PagePayload;
   /** Should create product */
   createProduct: ProductPayload;
   /** Should update product */
@@ -1316,6 +1339,36 @@ export type MutationDeleteProductFromRubricArgs = {
 };
 
 
+export type MutationCreatePagesGroupArgs = {
+  input: CreatePagesGroupInput;
+};
+
+
+export type MutationUpdatePagesGroupArgs = {
+  input: UpdatePagesGroupInput;
+};
+
+
+export type MutationDeletePagesGroupArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreatePageArgs = {
+  input: CreatePageInput;
+};
+
+
+export type MutationUpdatePageArgs = {
+  input: UpdatePageInput;
+};
+
+
+export type MutationDeletePageArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
 export type MutationCreateProductArgs = {
   input: CreateProductInput;
 };
@@ -1494,10 +1547,10 @@ export type NavItem = {
   __typename?: 'NavItem';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
   slug: Scalars['String'];
   path: Scalars['String'];
   navGroup: Scalars['String'];
-  index: Scalars['Int'];
   icon?: Maybe<Scalars['String']>;
   parentId?: Maybe<Scalars['ObjectId']>;
   name: Scalars['String'];
@@ -1637,6 +1690,47 @@ export type OrderStatus = Timestamp & {
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
   name: Scalars['String'];
+};
+
+export type Page = {
+  __typename?: 'Page';
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
+  slug: Scalars['String'];
+  content: Scalars['String'];
+  pagesGroupId: Scalars['ObjectId'];
+  assetKeys: Array<Scalars['String']>;
+  state: PageState;
+  name: Scalars['String'];
+};
+
+export type PagePayload = Payload & {
+  __typename?: 'PagePayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<Page>;
+};
+
+/** Page state enum. */
+export enum PageState {
+  Draft = 'draft',
+  Published = 'published'
+}
+
+export type PagesGroup = {
+  __typename?: 'PagesGroup';
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type PagesGroupPayload = Payload & {
+  __typename?: 'PagesGroupPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<PagesGroup>;
 };
 
 export type PaginationInput = {
@@ -2509,6 +2603,21 @@ export type UpdateOptionsGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   variant: OptionsGroupVariant;
+};
+
+export type UpdatePageInput = {
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
+  pagesGroupId: Scalars['ObjectId'];
+  content: Scalars['String'];
+  state: PageState;
+};
+
+export type UpdatePagesGroupInput = {
+  _id: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  index: Scalars['Int'];
 };
 
 export type UpdateProductAssetIndexInput = {
@@ -3384,6 +3493,84 @@ export type DeleteOptionFromGroupMutation = (
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayload' }
     & Pick<OptionsGroupPayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreatePagesGroupMutationVariables = Exact<{
+  input: CreatePagesGroupInput;
+}>;
+
+
+export type CreatePagesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { createPagesGroup: (
+    { __typename?: 'PagesGroupPayload' }
+    & Pick<PagesGroupPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdatePagesGroupMutationVariables = Exact<{
+  input: UpdatePagesGroupInput;
+}>;
+
+
+export type UpdatePagesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { updatePagesGroup: (
+    { __typename?: 'PagesGroupPayload' }
+    & Pick<PagesGroupPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeletePagesGroupMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeletePagesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePagesGroup: (
+    { __typename?: 'PagesGroupPayload' }
+    & Pick<PagesGroupPayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreatePageMutationVariables = Exact<{
+  input: CreatePageInput;
+}>;
+
+
+export type CreatePageMutation = (
+  { __typename?: 'Mutation' }
+  & { createPage: (
+    { __typename?: 'PagePayload' }
+    & Pick<PagePayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdatePageMutationVariables = Exact<{
+  input: UpdatePageInput;
+}>;
+
+
+export type UpdatePageMutation = (
+  { __typename?: 'Mutation' }
+  & { updatePage: (
+    { __typename?: 'PagePayload' }
+    & Pick<PagePayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeletePageMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeletePageMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePage: (
+    { __typename?: 'PagePayload' }
+    & Pick<PagePayload, 'success' | 'message'>
   ) }
 );
 
@@ -6477,6 +6664,210 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = Apollo.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const CreatePagesGroupDocument = gql`
+    mutation CreatePagesGroup($input: CreatePagesGroupInput!) {
+  createPagesGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreatePagesGroupMutationFn = Apollo.MutationFunction<CreatePagesGroupMutation, CreatePagesGroupMutationVariables>;
+
+/**
+ * __useCreatePagesGroupMutation__
+ *
+ * To run a mutation, you first call `useCreatePagesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePagesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPagesGroupMutation, { data, loading, error }] = useCreatePagesGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePagesGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreatePagesGroupMutation, CreatePagesGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePagesGroupMutation, CreatePagesGroupMutationVariables>(CreatePagesGroupDocument, options);
+      }
+export type CreatePagesGroupMutationHookResult = ReturnType<typeof useCreatePagesGroupMutation>;
+export type CreatePagesGroupMutationResult = Apollo.MutationResult<CreatePagesGroupMutation>;
+export type CreatePagesGroupMutationOptions = Apollo.BaseMutationOptions<CreatePagesGroupMutation, CreatePagesGroupMutationVariables>;
+export const UpdatePagesGroupDocument = gql`
+    mutation UpdatePagesGroup($input: UpdatePagesGroupInput!) {
+  updatePagesGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdatePagesGroupMutationFn = Apollo.MutationFunction<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>;
+
+/**
+ * __useUpdatePagesGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdatePagesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePagesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePagesGroupMutation, { data, loading, error }] = useUpdatePagesGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePagesGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>(UpdatePagesGroupDocument, options);
+      }
+export type UpdatePagesGroupMutationHookResult = ReturnType<typeof useUpdatePagesGroupMutation>;
+export type UpdatePagesGroupMutationResult = Apollo.MutationResult<UpdatePagesGroupMutation>;
+export type UpdatePagesGroupMutationOptions = Apollo.BaseMutationOptions<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>;
+export const DeletePagesGroupDocument = gql`
+    mutation DeletePagesGroup($_id: ObjectId!) {
+  deletePagesGroup(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeletePagesGroupMutationFn = Apollo.MutationFunction<DeletePagesGroupMutation, DeletePagesGroupMutationVariables>;
+
+/**
+ * __useDeletePagesGroupMutation__
+ *
+ * To run a mutation, you first call `useDeletePagesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePagesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePagesGroupMutation, { data, loading, error }] = useDeletePagesGroupMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeletePagesGroupMutation(baseOptions?: Apollo.MutationHookOptions<DeletePagesGroupMutation, DeletePagesGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePagesGroupMutation, DeletePagesGroupMutationVariables>(DeletePagesGroupDocument, options);
+      }
+export type DeletePagesGroupMutationHookResult = ReturnType<typeof useDeletePagesGroupMutation>;
+export type DeletePagesGroupMutationResult = Apollo.MutationResult<DeletePagesGroupMutation>;
+export type DeletePagesGroupMutationOptions = Apollo.BaseMutationOptions<DeletePagesGroupMutation, DeletePagesGroupMutationVariables>;
+export const CreatePageDocument = gql`
+    mutation CreatePage($input: CreatePageInput!) {
+  createPage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreatePageMutationFn = Apollo.MutationFunction<CreatePageMutation, CreatePageMutationVariables>;
+
+/**
+ * __useCreatePageMutation__
+ *
+ * To run a mutation, you first call `useCreatePageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPageMutation, { data, loading, error }] = useCreatePageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePageMutation(baseOptions?: Apollo.MutationHookOptions<CreatePageMutation, CreatePageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePageMutation, CreatePageMutationVariables>(CreatePageDocument, options);
+      }
+export type CreatePageMutationHookResult = ReturnType<typeof useCreatePageMutation>;
+export type CreatePageMutationResult = Apollo.MutationResult<CreatePageMutation>;
+export type CreatePageMutationOptions = Apollo.BaseMutationOptions<CreatePageMutation, CreatePageMutationVariables>;
+export const UpdatePageDocument = gql`
+    mutation UpdatePage($input: UpdatePageInput!) {
+  updatePage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdatePageMutationFn = Apollo.MutationFunction<UpdatePageMutation, UpdatePageMutationVariables>;
+
+/**
+ * __useUpdatePageMutation__
+ *
+ * To run a mutation, you first call `useUpdatePageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePageMutation, { data, loading, error }] = useUpdatePageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePageMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePageMutation, UpdatePageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePageMutation, UpdatePageMutationVariables>(UpdatePageDocument, options);
+      }
+export type UpdatePageMutationHookResult = ReturnType<typeof useUpdatePageMutation>;
+export type UpdatePageMutationResult = Apollo.MutationResult<UpdatePageMutation>;
+export type UpdatePageMutationOptions = Apollo.BaseMutationOptions<UpdatePageMutation, UpdatePageMutationVariables>;
+export const DeletePageDocument = gql`
+    mutation DeletePage($_id: ObjectId!) {
+  deletePage(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeletePageMutationFn = Apollo.MutationFunction<DeletePageMutation, DeletePageMutationVariables>;
+
+/**
+ * __useDeletePageMutation__
+ *
+ * To run a mutation, you first call `useDeletePageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePageMutation, { data, loading, error }] = useDeletePageMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeletePageMutation(baseOptions?: Apollo.MutationHookOptions<DeletePageMutation, DeletePageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePageMutation, DeletePageMutationVariables>(DeletePageDocument, options);
+      }
+export type DeletePageMutationHookResult = ReturnType<typeof useDeletePageMutation>;
+export type DeletePageMutationResult = Apollo.MutationResult<DeletePageMutation>;
+export type DeletePageMutationOptions = Apollo.BaseMutationOptions<DeletePageMutation, DeletePageMutationVariables>;
 export const UpdateProductDocument = gql`
     mutation UpdateProduct($input: UpdateProductInput!) {
   updateProduct(input: $input) {

@@ -1198,7 +1198,7 @@
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
-"@material-ui/icons@^4.11.2":
+"@material-ui/icons@^4.11.2", "@material-ui/icons@^4.2.1":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.11.2.tgz#b3a7353266519cd743b6461ae9fdfcb1b25eb4c5"
   integrity sha512-fQNsKX2TxBmqIGJCSi3tGTO/gZ+eJgWmMJkgDiOfyNaunNaxcklJQFaFogYcFl0qFuaEz1qaXYXboa/bUXVSOQ==
@@ -1575,6 +1575,14 @@
     uniforms-bridge-json-schema "^2.6.0 || ^3.0.0"
     uniforms-material "^2.6.0 || ^3.0.0"
 
+"@react-page/plugins-divider@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-divider/-/plugins-divider-2.4.0.tgz#3e60a7200b53617b1e46c610cf930ff2732d4c62"
+  integrity sha512-PYu69PJ+slH3bZMQY9skglpF1MBXo2Z+MqFhB8Xs0xjPaGmz8YDhxMt+g1uRfa+ymJNMAeWDZmctWMSHR09wOA==
+  dependencies:
+    "@material-ui/icons" "^4.2.1"
+    "@react-page/editor" "^2.4.0"
+
 "@react-page/plugins-image@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@react-page/plugins-image/-/plugins-image-2.4.0.tgz#3e6a1f2e4aad821f16a2878d5a2a4a9080b99ca1"
@@ -1604,6 +1612,15 @@
     slate-hyperscript "^0.62.0"
     slate-react "^0.65.0"
     xmldom "^0.5.0"
+
+"@react-page/plugins-spacer@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-spacer/-/plugins-spacer-2.4.0.tgz#2d0fa9a66430b7c4859b25a8f0aa288bf638dc7d"
+  integrity sha512-pSj2+v0M6MtdkNYiVwgM7gvo1XXwblUETl9UJ1rEALac0mBFFjW75uzaJITgWDsYf5CTAtb2GTXE3EudfNC6Xg==
+  dependencies:
+    "@react-page/editor" "^2.4.0"
+    classnames "2.2.6"
+    react-resizable "^1.11.0"
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.1"
@@ -8874,7 +8891,7 @@ prop-types-exact@^1.2.0:
     object.assign "^4.1.0"
     reflect.ownkeys "^0.2.0"
 
-prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -9171,7 +9188,7 @@ react-dom@17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-draggable@4.4.3:
+react-draggable@4.4.3, react-draggable@^4.0.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.3.tgz#0727f2cae5813e36b0e4962bf11b2f9ef2b406f3"
   integrity sha512-jV4TE59MBuWm7gb6Ns3Q1mxX8Azffb7oTtDtBgFkxRvhDp38YAARmRplrj0+XGkhOJB5XziArX+4HUUABtyZ0w==
@@ -9273,6 +9290,14 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-resizable@^1.11.0:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-1.11.1.tgz#02ca6850afa7a22c1b3e623e64aef71ee252af69"
+  integrity sha512-S70gbLaAYqjuAd49utRHibtHLrHXInh7GuOR+6OO6RO6uleQfuBnWmZjRABfqNEx3C3Z6VPLg0/0uOYFrkfu9Q==
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^4.0.3"
 
 react-transition-group@^4.4.0:
   version "4.4.2"

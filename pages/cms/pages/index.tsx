@@ -4,7 +4,7 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table/Table';
-import { SORT_ASC } from 'config/common';
+import { ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import { COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -14,6 +14,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner/Inner';
@@ -30,6 +31,7 @@ interface PageGroupsPageConsumerInterface {
 }
 
 const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pagesGroups }) => {
+  const router = useRouter();
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
   });
@@ -104,7 +106,13 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
         <Title>{pageTitle}</Title>
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
-            <Table<PagesGroupInterface> columns={columns} data={pagesGroups} />
+            <Table<PagesGroupInterface>
+              onRowDoubleClick={(dataItem) => {
+                router.push(`${ROUTE_CMS}/pages/${dataItem._id}`).catch(console.log);
+              }}
+              columns={columns}
+              data={pagesGroups}
+            />
           </div>
 
           <FixedButtons>

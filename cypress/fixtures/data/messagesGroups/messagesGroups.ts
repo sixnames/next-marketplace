@@ -140,6 +140,18 @@ const messagesGroups: MessagesGroupModel[] = [
       ru: 'Производители',
     },
   },
+  {
+    _id: getObjectId('messagesGroups Группы страниц'),
+    nameI18n: {
+      ru: 'Группы страниц',
+    },
+  },
+  {
+    _id: getObjectId('messagesGroups Страницы'),
+    nameI18n: {
+      ru: 'Страницы',
+    },
+  },
 ];
 
 export = messagesGroups;

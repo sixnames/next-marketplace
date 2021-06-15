@@ -1,7 +1,7 @@
-import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
-import { pagesMessages } from '../../apiMessages/pagesMessages';
 import { MessageBaseInterface } from '../../../../db/uiInterfaces';
 import { MessageModel } from '../../../../db/dbModels';
+import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
+import { pagesMessages } from '../../apiMessages/pagesMessages';
 import messagesGroups from '../messagesGroups/messagesGroups';
 import { getObjectId } from 'mongo-seeding';
 import { attributesGroupsMessages } from '../../apiMessages/attributesGroupsMessages';

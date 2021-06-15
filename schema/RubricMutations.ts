@@ -1,9 +1,12 @@
 import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
+import { deleteUpload } from 'lib/assets';
 import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
+  ProductAssetsModel,
+  ProductAttributeModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -19,6 +22,8 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -865,6 +870,9 @@ export const RubricMutations = extendType({
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -940,6 +948,45 @@ export const RubricMutations = extendType({
               objectIDs: shopProductIds,
             });
             if (!algoliaShopProductsResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete product assets from cloud
+            const productAssets = await productAssetsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            for await (const productAsset of productAssets) {
+              for await (const asset of productAsset.assets) {
+                await deleteUpload({
+                  filePath: asset.url,
+                });
+              }
+            }
+            // Delete product assets
+            const removedProductAssetsResult = await productAssetsCollection.deleteMany({
+              productId,
+            });
+            if (!removedProductAssetsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete product attributes
+            const removedProductAttributesResult = await productAttributesCollection.deleteMany({
+              productId,
+            });
+            if (!removedProductAttributesResult.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),

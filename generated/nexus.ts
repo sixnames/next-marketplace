@@ -1313,6 +1313,7 @@ export interface NexusGenFieldTypes {
     deleteNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    deletePage: NexusGenRootTypes['PagePayload']; // PagePayload!
     deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -2341,6 +2342,7 @@ export interface NexusGenFieldTypeNames {
     deleteNavItem: 'NavItemPayload';
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
+    deletePage: 'PagePayload';
     deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
@@ -3167,6 +3169,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['DeleteOptionFromGroupInput']; // DeleteOptionFromGroupInput!
     };
     deleteOptionsGroup: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deletePage: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };

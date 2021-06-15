@@ -3,6 +3,7 @@ import { COL_PAGES } from 'db/collectionNames';
 import { PageModel, PagePayloadModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
+import { deleteUpload } from 'lib/assets';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -117,7 +118,7 @@ export const PageMutations = extendType({
           const pagesCollection = db.collection<PageModel>(COL_PAGES);
           const { input } = args;
 
-          // Check if page item already exist
+          // Check if page already exist
           const exist = await findDocumentByI18nField({
             collectionName: COL_PAGES,
             fieldName: 'nameI18n',
@@ -138,7 +139,7 @@ export const PageMutations = extendType({
             };
           }
 
-          // Create nav item
+          // Create page
           const createdPageResult = await pagesCollection.insertOne({
             ...input,
             slug: generateDefaultLangSlug(input.nameI18n),
@@ -208,7 +209,7 @@ export const PageMutations = extendType({
           const { input } = args;
           const { _id, ...values } = input;
 
-          // Check if page item already exist
+          // Check if page already exist
           const exist = await findDocumentByI18nField({
             collectionName: COL_PAGES,
             fieldName: 'nameI18n',
@@ -232,7 +233,7 @@ export const PageMutations = extendType({
             };
           }
 
-          // Create nav item
+          // Update page
           const updatedPageResult = await pagesCollection.findOneAndUpdate(
             { _id },
             {
@@ -257,6 +258,74 @@ export const PageMutations = extendType({
             success: true,
             message: await getApiMessage('pages.update.success'),
             payload: updatedPage,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should delete page
+    t.nonNull.field('deletePage', {
+      type: 'PagePayload',
+      description: 'Should delete page',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<PagePayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'deletePage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const pagesCollection = db.collection<PageModel>(COL_PAGES);
+          const { _id } = args;
+
+          // Check page availability
+          const page = await pagesCollection.findOne({ _id });
+          if (!page) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.delete.notFound'),
+            };
+          }
+
+          // Delete page assets from cloud
+          for await (const filePath of page.assetKeys) {
+            await deleteUpload({
+              filePath,
+            });
+          }
+
+          // Delete page
+          const removedPageResult = await pagesCollection.findOneAndDelete({ _id });
+          if (!removedPageResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.delete.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pages.delete.success'),
           };
         } catch (e) {
           return {

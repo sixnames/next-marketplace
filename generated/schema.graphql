@@ -999,6 +999,11 @@ type Mutation {
   deleteOptionsGroup(_id: ObjectId!): OptionsGroupPayload!
 
   """
+  Should delete page
+  """
+  deletePage(_id: ObjectId!): PagePayload!
+
+  """
   Should delete pages group
   """
   deletePagesGroup(_id: ObjectId!): PagesGroupPayload!

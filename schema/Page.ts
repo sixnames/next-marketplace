@@ -1,6 +1,17 @@
-import { PAGE_STATE_ENUMS } from 'config/common';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { enumType, inputObjectType, objectType } from 'nexus';
+import { PAGE_EDITOR_DEFAULT_VALUE, PAGE_STATE_DRAFT, PAGE_STATE_ENUMS } from 'config/common';
+import { COL_PAGES } from 'db/collectionNames';
+import { PageModel, PagePayloadModel } from 'db/dbModels';
+import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { getDatabase } from 'db/mongodb';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createPageSchema } from 'validation/pagesSchema';
 
 export const PageState = enumType({
   name: 'PageState',
@@ -51,6 +62,111 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.string('content');
     t.nonNull.field('state', {
       type: 'PageState',
+    });
+  },
+});
+
+export const PagePayload = objectType({
+  name: 'PagePayload',
+  definition(t) {
+    t.implements('Payload');
+    t.field('payload', {
+      type: 'Page',
+    });
+  },
+});
+
+export const PageMutations = extendType({
+  type: 'Mutation',
+  definition(t) {
+    // Should crate page
+    t.nonNull.field('createPage', {
+      type: 'PagePayload',
+      description: 'Should crate page',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CreatePageInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<PagePayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createPage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: createPageSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const pagesCollection = db.collection<PageModel>(COL_PAGES);
+          const { input } = args;
+
+          // Check if page item already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+            additionalQuery: {
+              pagesGroupId: input.pagesGroupId,
+            },
+            additionalOrQuery: [
+              {
+                index: input.index,
+              },
+            ],
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.create.duplicate'),
+            };
+          }
+
+          // Create nav item
+          const createdPageResult = await pagesCollection.insertOne({
+            ...input,
+            slug: generateDefaultLangSlug(input.nameI18n),
+            content: JSON.stringify(PAGE_EDITOR_DEFAULT_VALUE),
+            assetKeys: [],
+            state: PAGE_STATE_DRAFT,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          const createdPage = createdPageResult.ops[0];
+          if (!createdPageResult.result.ok || !createdPage) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.create.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pages.create.success'),
+            payload: createdPage,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
     });
   },
 });

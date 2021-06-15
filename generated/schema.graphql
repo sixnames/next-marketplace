@@ -884,6 +884,11 @@ type Mutation {
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayload!
 
   """
+  Should crate page
+  """
+  createPage(input: CreatePageInput!): PagePayload!
+
+  """
   Should create pages group
   """
   createPagesGroup(input: CreatePagesGroupInput!): PagesGroupPayload!
@@ -1440,6 +1445,12 @@ type Page {
   pagesGroupId: ObjectId!
   slug: String!
   state: PageState!
+}
+
+type PagePayload implements Payload {
+  message: String!
+  payload: Page
+  success: Boolean!
 }
 
 """

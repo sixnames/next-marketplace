@@ -58,3 +58,16 @@ export const updatePagesGroupSchema = (args: ValidationSchemaArgsInterface) => {
     ...pagesGroupCommonFieldsSchema(args),
   });
 };
+
+export const createPageSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    ...pageCommonFieldsSchema(args),
+  });
+};
+
+export const updatePageSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    _id: pagesGroupIdSchema(args),
+    ...pageCommonFieldsSchema(args),
+  });
+};

@@ -867,6 +867,7 @@ export interface NexusGenObjects {
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
   Page: dbModels.PageModel;
+  PagePayload: dbModels.PagePayloadModel;
   PagesGroup: dbModels.PagesGroupModel;
   PagesGroupPayload: dbModels.PagesGroupPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
@@ -1288,6 +1289,7 @@ export interface NexusGenFieldTypes {
     createMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    createPage: NexusGenRootTypes['PagePayload']; // PagePayload!
     createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1494,6 +1496,12 @@ export interface NexusGenFieldTypes {
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
     state: NexusGenEnums['PageState']; // PageState!
+  };
+  PagePayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['Page'] | null; // Page
+    success: boolean; // Boolean!
   };
   PagesGroup: {
     // field return type
@@ -2308,6 +2316,7 @@ export interface NexusGenFieldTypeNames {
     createMetric: 'MetricPayload';
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
+    createPage: 'PagePayload';
     createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
@@ -2514,6 +2523,12 @@ export interface NexusGenFieldTypeNames {
     pagesGroupId: 'ObjectId';
     slug: 'String';
     state: 'PageState';
+  };
+  PagePayload: {
+    // field return type name
+    message: 'String';
+    payload: 'Page';
+    success: 'Boolean';
   };
   PagesGroup: {
     // field return type name
@@ -3060,6 +3075,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOptionsGroupInput']; // CreateOptionsGroupInput!
     };
+    createPage: {
+      // args
+      input: NexusGenInputs['CreatePageInput']; // CreatePageInput!
+    };
     createPagesGroup: {
       // args
       input: NexusGenInputs['CreatePagesGroupInput']; // CreatePagesGroupInput!
@@ -3585,6 +3604,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'MetricPayload'
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
+    | 'PagePayload'
     | 'PagesGroupPayload'
     | 'ProductPayload'
     | 'RolePayload'
@@ -3641,6 +3661,7 @@ export interface NexusGenTypeInterfaces {
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';
   OrderStatus: 'Timestamp';
+  PagePayload: 'Payload';
   PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
   ProductPayload: 'Payload';

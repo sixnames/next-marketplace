@@ -1,5 +1,5 @@
-import { COL_PAGES_GROUP } from 'db/collectionNames';
-import { PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
+import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
+import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -9,7 +9,7 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { createPagesGroupSchema } from 'validation/pagesSchema';
+import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
 
 export const PagesGroup = objectType({
   name: 'PagesGroup',
@@ -162,7 +162,7 @@ export const NavItemMutations = extendType({
           // Validate
           const validationSchema = await getResolverValidationSchema({
             context,
-            schema: createPagesGroupSchema,
+            schema: updatePagesGroupSchema,
           });
           await validationSchema.validate(args.input);
 
@@ -221,6 +221,92 @@ export const NavItemMutations = extendType({
             success: false,
             message: getResolverErrorMessage(e),
           };
+        }
+      },
+    });
+
+    // Should delete pages group
+    t.nonNull.field('deletePagesGroup', {
+      type: 'PagesGroupPayload',
+      description: 'Should delete pages group',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
+        const pagesCollection = db.collection<PageModel>(COL_PAGES);
+
+        const session = client.startSession();
+
+        let mutationPayload: PagesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage('pageGroups.delete.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deletePagesGroup',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { _id } = args;
+
+            // Delete pages
+            const removedPagesResult = await pagesCollection.deleteMany({
+              pagesGroupId: _id,
+            });
+            if (!removedPagesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('pageGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete pages group
+            const removedPagesGroupResult = await pagesGroupsCollection.findOneAndDelete({
+              _id,
+            });
+            if (!removedPagesGroupResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('pageGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('pageGroups.delete.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
         }
       },
     });

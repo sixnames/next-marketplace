@@ -1,3 +1,5 @@
+import { pageGroupsMessages } from 'cypress/fixtures/apiMessages/pagesGroupsMessages';
+import { pagesMessages } from 'cypress/fixtures/apiMessages/pagesMessages';
 import { MessageBaseInterface } from '../../../../db/uiInterfaces';
 import { MessageModel } from '../../../../db/dbModels';
 import messagesGroups from '../messagesGroups/messagesGroups';
@@ -142,6 +144,14 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: manufacturersMessages,
     groupName: 'Производители',
+  },
+  {
+    initialMessages: pageGroupsMessages,
+    groupName: 'Группы страниц',
+  },
+  {
+    initialMessages: pagesMessages,
+    groupName: 'Страницы',
   },
 ];
 

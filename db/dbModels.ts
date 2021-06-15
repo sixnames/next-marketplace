@@ -667,6 +667,8 @@ export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
+export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
+export type PagePayloadModel = PayloadType<PageModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;

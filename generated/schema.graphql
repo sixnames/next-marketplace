@@ -490,6 +490,11 @@ input CreateOptionsGroupInput {
   variant: OptionsGroupVariant!
 }
 
+input CreatePagesGroupInput {
+  index: Int!
+  nameI18n: JSONObject!
+}
+
 input CreateProductConnectionInput {
   attributeId: ObjectId!
   productId: ObjectId!
@@ -1404,6 +1409,39 @@ type OrderStatus implements Timestamp {
   updatedAt: Date!
 }
 
+type Page {
+  _id: ObjectId!
+  assetKeys: [String!]!
+  content: String!
+  index: Int!
+  name: String!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+  slug: String!
+  state: PageState!
+}
+
+"""
+Page state enum.
+"""
+enum PageState {
+  draft
+  published
+}
+
+type PagesGroup {
+  _id: ObjectId!
+  index: Int!
+  name: String!
+  nameI18n: JSONObject!
+}
+
+type PagesGroupPayload implements Payload {
+  message: String!
+  payload: PagesGroup
+  success: Boolean!
+}
+
 input PaginationInput {
   limit: Int = 30
   page: Int = 1
@@ -2248,6 +2286,12 @@ input UpdateOptionsGroupInput {
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   variant: OptionsGroupVariant!
+}
+
+input UpdatePagesGroupInput {
+  _id: ObjectId!
+  index: Int!
+  nameI18n: JSONObject!
 }
 
 input UpdateProductAssetIndexInput {

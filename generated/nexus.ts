@@ -285,6 +285,11 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  CreatePagesGroupInput: {
+    // input type
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+  };
   CreateProductConnectionInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -611,6 +616,12 @@ export interface NexusGenInputs {
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  UpdatePagesGroupInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+  };
   UpdateProductAssetIndexInput: {
     // input type
     assetNewIndex: number; // Int!
@@ -764,6 +775,7 @@ export interface NexusGenEnums {
   Gender: dbModels.GenderModel;
   OptionsGroupVariant: dbModels.OptionsGroupVariantModel;
   OrderLogVariant: dbModels.OrderLogVariantModel;
+  PageState: dbModels.PageStateModel;
   SortDirection: dbModels.SortDirectionModel;
 }
 
@@ -840,6 +852,9 @@ export interface NexusGenObjects {
   OrderLog: dbModels.OrderLogModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
+  Page: dbModels.PageModel;
+  PagesGroup: dbModels.PagesGroupModel;
+  PagesGroupPayload: dbModels.PagesGroupPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
@@ -1450,6 +1465,31 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
+  };
+  Page: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
+    content: string; // String!
+    index: number; // Int!
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+    state: NexusGenEnums['PageState']; // PageState!
+  };
+  PagesGroup: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    index: number; // Int!
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+  };
+  PagesGroupPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['PagesGroup'] | null; // PagesGroup
+    success: boolean; // Boolean!
   };
   PointGeoJSON: {
     // field return type
@@ -2442,6 +2482,31 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     slug: 'String';
     updatedAt: 'Date';
+  };
+  Page: {
+    // field return type name
+    _id: 'ObjectId';
+    assetKeys: 'String';
+    content: 'String';
+    index: 'Int';
+    name: 'String';
+    nameI18n: 'JSONObject';
+    pagesGroupId: 'ObjectId';
+    slug: 'String';
+    state: 'PageState';
+  };
+  PagesGroup: {
+    // field return type name
+    _id: 'ObjectId';
+    index: 'Int';
+    name: 'String';
+    nameI18n: 'JSONObject';
+  };
+  PagesGroupPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'PagesGroup';
+    success: 'Boolean';
   };
   PointGeoJSON: {
     // field return type name
@@ -3488,6 +3553,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'MetricPayload'
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
+    | 'PagesGroupPayload'
     | 'ProductPayload'
     | 'RolePayload'
     | 'RoleRulePayload'
@@ -3543,6 +3609,7 @@ export interface NexusGenTypeInterfaces {
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';
   OrderStatus: 'Timestamp';
+  PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
   ProductPayload: 'Payload';
   Role: 'Timestamp';

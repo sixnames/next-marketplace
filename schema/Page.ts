@@ -1,6 +1,6 @@
 import { PAGE_STATE_ENUMS } from 'config/common';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { enumType, objectType } from 'nexus';
+import { enumType, inputObjectType, objectType } from 'nexus';
 
 export const PageState = enumType({
   name: 'PageState',
@@ -29,6 +29,28 @@ export const Page = objectType({
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
+    });
+  },
+});
+
+export const CreatePageInput = inputObjectType({
+  name: 'CreatePageInput',
+  definition(t) {
+    t.nonNull.json('nameI18n');
+    t.nonNull.int('index');
+    t.nonNull.objectId('pagesGroupId');
+  },
+});
+
+export const UpdatePageInput = inputObjectType({
+  name: 'UpdatePageInput',
+  definition(t) {
+    t.nonNull.json('nameI18n');
+    t.nonNull.int('index');
+    t.nonNull.objectId('pagesGroupId');
+    t.nonNull.string('content');
+    t.nonNull.field('state', {
+      type: 'PageState',
     });
   },
 });

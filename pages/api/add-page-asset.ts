@@ -4,6 +4,7 @@ import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { storeRestApiUploads } from 'lib/assets';
 import { parseRestApiFormData } from 'lib/restApi';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -13,15 +14,17 @@ export const config = {
   },
 };
 
-// TODO pageID
-// TODO api messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const formData = await parseRestApiFormData(req);
+  const { getApiMessage } = await getRequestParams({
+    req,
+    res,
+  });
 
   if (!formData || !formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
-      message: 'error',
+      message: await getApiMessage('pages.update.error'),
     });
     return;
   }
@@ -31,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!pageId) {
     res.status(500).send({
       success: false,
-      message: 'page not found',
+      message: await getApiMessage('pages.update.notFound'),
     });
     return;
   }
@@ -45,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!page) {
     res.status(500).send({
       success: false,
-      message: 'page not found',
+      message: await getApiMessage('pages.update.notFound'),
     });
     return;
   }
@@ -59,7 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!assets) {
     res.status(500).send({
       success: false,
-      message: 'upload error',
+      message: await getApiMessage('pages.update.error'),
     });
     return;
   }
@@ -84,7 +87,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (!assets) {
       res.status(500).send({
         success: false,
-        message: 'page update error',
+        message: await getApiMessage('pages.update.error'),
       });
       return;
     }
@@ -92,7 +95,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   res.status(200).send({
     success: true,
-    message: 'file uploaded',
+    message: await getApiMessage('pages.update.success'),
     url: asset.url,
   });
 };

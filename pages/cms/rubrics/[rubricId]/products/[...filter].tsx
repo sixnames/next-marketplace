@@ -21,7 +21,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { getDatabase } from 'db/mongodb';

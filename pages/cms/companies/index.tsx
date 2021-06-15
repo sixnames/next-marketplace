@@ -7,7 +7,7 @@ import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';

@@ -4,7 +4,7 @@ import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
 import useUsersListColumns from '../../hooks/useUsersListColumns';
 import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal/UsersSearchModal';
-import { USERS_SEARCH_MODAL } from 'config/modals';
+import { USERS_SEARCH_MODAL } from 'config/modalVariants';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from '../../components/ContentItemControls/ContentItemControls';

@@ -1,5 +1,5 @@
 import { ADULT_FALSE, ADULT_KEY, CONFIG_DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
-import { ADULT_MODAL } from 'config/modals';
+import { ADULT_MODAL } from 'config/modalVariants';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';

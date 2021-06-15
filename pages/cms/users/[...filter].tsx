@@ -10,7 +10,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';

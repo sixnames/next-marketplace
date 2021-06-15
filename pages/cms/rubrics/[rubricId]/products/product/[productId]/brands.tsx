@@ -9,7 +9,7 @@ import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
-} from 'config/modals';
+} from 'config/modalVariants';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -54,16 +54,11 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    showLoading,
-    showErrorNotification,
-    showModal,
-  } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
+  const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
+    useMutationCallbacks({
+      withModal: true,
+      reload: true,
+    });
 
   const [updateProductBrandMutation] = useUpdateProductBrandMutation({
     onError: onErrorCallback,

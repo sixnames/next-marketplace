@@ -9,7 +9,7 @@ import RequestError from 'components/RequestError/RequestError';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
 import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface, OptionsGroupInterface } from 'db/uiInterfaces';

@@ -6,7 +6,7 @@ import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal/C
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,

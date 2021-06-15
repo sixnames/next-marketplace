@@ -14,7 +14,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modals';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
 import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,

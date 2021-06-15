@@ -28,7 +28,8 @@ import {
   CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
   CREATE_USER_MODAL,
   NAV_ITEM_MODAL,
-} from 'config/modals';
+  PAGES_GROUP_MODAL,
+} from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
@@ -45,6 +46,7 @@ const RubricVariantModal = dynamic(() => import('./RubricVariantModal/RubricVari
 const OptionInGroupModal = dynamic(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = dynamic(() => import('./CreateRubricModal/CreateRubricModal'));
 const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
+const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
 );
@@ -131,6 +133,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
+
+          {modalType === PAGES_GROUP_MODAL && <PagesGroupModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

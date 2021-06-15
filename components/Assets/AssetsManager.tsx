@@ -1,7 +1,7 @@
 import ButtonCross from 'components/Buttons/ButtonCross';
 import InputLine from 'components/FormElements/Input/InputLine';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import Image from 'next/image';
 import * as React from 'react';

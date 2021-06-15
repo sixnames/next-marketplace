@@ -12,7 +12,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {

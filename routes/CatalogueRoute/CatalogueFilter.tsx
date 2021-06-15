@@ -4,7 +4,7 @@ import {
   PRICE_ATTRIBUTE_SLUG,
   ROUTE_CATALOGUE,
 } from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modals';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';

@@ -1,6 +1,6 @@
 import { CartModalInterface } from 'components/Modal/CartModal/CartModal';
 import { ROUTE_THANK_YOU } from 'config/common';
-import { CART_MODAL } from 'config/modals';
+import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';

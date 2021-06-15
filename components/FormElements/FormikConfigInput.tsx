@@ -7,7 +7,7 @@ import Icon from 'components/Icon/Icon';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Tooltip from 'components/TTip/Tooltip';
 import { DEFAULT_CITY } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';

@@ -9,7 +9,7 @@ import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, NAV_ITEM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, NAV_ITEM_MODAL } from 'config/modalVariants';
 import { COL_NAV_ITEMS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, NavItemInterface } from 'db/uiInterfaces';

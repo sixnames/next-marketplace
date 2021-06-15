@@ -11,7 +11,7 @@ import {
 } from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { createPageSchema } from 'validation/pagesSchema';
+import { createPageSchema, updatePageSchema } from 'validation/pagesSchema';
 
 export const PageState = enumType({
   name: 'PageState',
@@ -56,6 +56,7 @@ export const CreatePageInput = inputObjectType({
 export const UpdatePageInput = inputObjectType({
   name: 'UpdatePageInput',
   definition(t) {
+    t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
@@ -159,6 +160,103 @@ export const PageMutations = extendType({
             success: true,
             message: await getApiMessage('pages.create.success'),
             payload: createdPage,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update page
+    t.nonNull.field('updatePage', {
+      type: 'PagePayload',
+      description: 'Should update page',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdatePageInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<PagePayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updatePage',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updatePageSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const pagesCollection = db.collection<PageModel>(COL_PAGES);
+          const { input } = args;
+          const { _id, ...values } = input;
+
+          // Check if page item already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+            additionalQuery: {
+              pagesGroupId: values.pagesGroupId,
+              _id: {
+                $ne: _id,
+              },
+            },
+            additionalOrQuery: [
+              {
+                index: input.index,
+              },
+            ],
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.update.duplicate'),
+            };
+          }
+
+          // Create nav item
+          const updatedPageResult = await pagesCollection.findOneAndUpdate(
+            { _id },
+            {
+              $set: {
+                ...values,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnDocument: 'after',
+            },
+          );
+          const updatedPage = updatedPageResult.value;
+          if (!updatedPageResult.ok || !updatedPage) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pages.update.success'),
+            payload: updatedPage,
           };
         } catch (e) {
           return {

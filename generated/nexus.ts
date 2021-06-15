@@ -624,6 +624,7 @@ export interface NexusGenInputs {
   };
   UpdatePageInput: {
     // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     content: string; // String!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1349,6 +1350,7 @@ export interface NexusGenFieldTypes {
     updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    updatePage: NexusGenRootTypes['PagePayload']; // PagePayload!
     updatePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2376,6 +2378,7 @@ export interface NexusGenFieldTypeNames {
     updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
+    updatePage: 'PagePayload';
     updatePagesGroup: 'PagesGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
@@ -3314,6 +3317,10 @@ export interface NexusGenArgTypes {
     updateOptionsGroup: {
       // args
       input: NexusGenInputs['UpdateOptionsGroupInput']; // UpdateOptionsGroupInput!
+    };
+    updatePage: {
+      // args
+      input: NexusGenInputs['UpdatePageInput']; // UpdatePageInput!
     };
     updatePagesGroup: {
       // args

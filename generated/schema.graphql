@@ -1184,6 +1184,11 @@ type Mutation {
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayload!
 
   """
+  Should update page
+  """
+  updatePage(input: UpdatePageInput!): PagePayload!
+
+  """
   Should update pages group
   """
   updatePagesGroup(input: UpdatePagesGroupInput!): PagesGroupPayload!
@@ -2321,6 +2326,7 @@ input UpdateOptionsGroupInput {
 }
 
 input UpdatePageInput {
+  _id: ObjectId!
   content: String!
   index: Int!
   nameI18n: JSONObject!

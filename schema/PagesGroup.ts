@@ -1,4 +1,7 @@
-import { PagesGroupPayloadModel } from 'db/dbModels';
+import { COL_PAGES_GROUP } from 'db/collectionNames';
+import { PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
+import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -88,9 +91,39 @@ export const NavItemMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
+          const { input } = args;
+
+          // Check if pages group already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES_GROUP,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.create.duplicate'),
+            };
+          }
+
+          const createdPagesGroupResult = await pagesGroupsCollection.insertOne({
+            ...input,
+          });
+          const createdPagesGroup = createdPagesGroupResult.ops[0];
+          if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.create.error'),
+            };
+          }
+
           return {
             success: true,
-            message: '',
+            message: await getApiMessage('pageGroups.create.success'),
+            payload: createdPagesGroup,
           };
         } catch (e) {
           return {

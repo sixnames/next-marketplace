@@ -1,4 +1,6 @@
 import Button from 'components/Buttons/Button';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -36,7 +38,9 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
 
   return (
     <ModalFrame testId={'create-pages-group-modal'}>
-      <ModalTitle>Добавление рубрики</ModalTitle>
+      <ModalTitle>
+        {pagesGroup ? 'Обновление группы старниц' : 'Создание группы страниц'}
+      </ModalTitle>
 
       <Formik
         validationSchema={validationSchema}
@@ -75,6 +79,9 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
         {() => {
           return (
             <Form>
+              <FormikTranslationsInput name={'nameI18n'} testId={'name'} />
+              <FormikInput name={'index'} testId={'index'} />
+
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-user'}>
                   Создать

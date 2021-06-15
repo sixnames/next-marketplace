@@ -45,6 +45,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
       <Formik
         validationSchema={validationSchema}
         initialValues={{
+          _id: pagesGroup?._id,
           index: pagesGroup ? pagesGroup.index : null,
           nameI18n: pagesGroup
             ? pagesGroup.nameI18n
@@ -84,7 +85,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-user'}>
-                  Создать
+                  {pagesGroup ? 'Сохранить' : 'Создать'}
                 </Button>
                 <Button theme={'secondary'} onClick={hideModal}>
                   Закрыть

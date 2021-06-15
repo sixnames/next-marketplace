@@ -1,13 +1,17 @@
+import Button from 'components/Buttons/Button';
+import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
+import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import { COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { PagePropsInterface } from 'pages/_app';
@@ -17,6 +21,7 @@ import Title from 'components/Title/Title';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
 
 const pageTitle = 'Группы страниц';
 
@@ -28,6 +33,15 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
   });
+
+  const createPagesGroupValidationSchema = useValidationSchema({
+    schema: createPagesGroupSchema,
+  });
+
+  const updatePagesGroupValidationSchema = useValidationSchema({
+    schema: updatePagesGroupSchema,
+  });
+
   const [deletePagesGroupMutation] = useDeletePagesGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.deletePagesGroup),
     onError: onErrorCallback,
@@ -49,6 +63,16 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              updateTitle={'Обновить группу страниц'}
+              updateHandler={() => {
+                showModal<PagesGroupModalInterface>({
+                  variant: PAGES_GROUP_MODAL,
+                  props: {
+                    validationSchema: updatePagesGroupValidationSchema,
+                    pagesGroup: dataItem,
+                  },
+                });
+              }}
               deleteTitle={'Удалить группу страниц'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
@@ -78,7 +102,27 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
     <AppContentWrapper>
       <Inner>
         <Title>{pageTitle}</Title>
-        <Table<PagesGroupInterface> columns={columns} data={pagesGroups} />
+        <div className='relative'>
+          <div className='overflow-x-auto overflow-y-hidden'>
+            <Table<PagesGroupInterface> columns={columns} data={pagesGroups} />
+          </div>
+
+          <FixedButtons>
+            <Button
+              size={'small'}
+              onClick={() => {
+                showModal<PagesGroupModalInterface>({
+                  variant: PAGES_GROUP_MODAL,
+                  props: {
+                    validationSchema: createPagesGroupValidationSchema,
+                  },
+                });
+              }}
+            >
+              Добавить группу страниц
+            </Button>
+          </FixedButtons>
+        </div>
       </Inner>
     </AppContentWrapper>
   );

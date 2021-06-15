@@ -6,14 +6,14 @@ const pagesGroups: PagesGroupModel[] = [
     _id: getObjectId('pages group a'),
     index: 0,
     nameI18n: {
-      ru: 'Group A',
+      ru: 'Pages group A',
     },
   },
   {
     _id: getObjectId('pages group b'),
     index: 1,
     nameI18n: {
-      ru: 'Group B',
+      ru: 'Pages group B',
     },
   },
 ];

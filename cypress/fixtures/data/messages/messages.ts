@@ -1,5 +1,5 @@
-import { pageGroupsMessages } from 'cypress/fixtures/apiMessages/pagesGroupsMessages';
-import { pagesMessages } from 'cypress/fixtures/apiMessages/pagesMessages';
+import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
+import { pagesMessages } from '../../apiMessages/pagesMessages';
 import { MessageBaseInterface } from '../../../../db/uiInterfaces';
 import { MessageModel } from '../../../../db/dbModels';
 import messagesGroups from '../messagesGroups/messagesGroups';

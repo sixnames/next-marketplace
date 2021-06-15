@@ -1,8 +1,13 @@
+import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { SORT_ASC } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PagesGroupInterface } from 'db/uiInterfaces';
+import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { PagePropsInterface } from 'pages/_app';
@@ -20,6 +25,14 @@ interface PageGroupsPageConsumerInterface {
 }
 
 const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pagesGroups }) => {
+  const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+    reload: true,
+  });
+  const [deletePagesGroupMutation] = useDeletePagesGroupMutation({
+    onCompleted: (data) => onCompleteCallback(data.deletePagesGroup),
+    onError: onErrorCallback,
+  });
+
   const columns: TableColumn<PagesGroupInterface>[] = [
     {
       accessor: 'name',
@@ -30,6 +43,34 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
       accessor: 'index',
       headTitle: 'Порядковый номер',
       render: ({ cellData }) => cellData,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              deleteTitle={'Удалить группу страниц'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-pages-group-modal',
+                    message: `Вы уверенны, что хотите удалить группу старниц ${dataItem.name}. Все страницы данной группы будту так же удалены.`,
+                    confirm: () => {
+                      showLoading();
+                      deletePagesGroupMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 

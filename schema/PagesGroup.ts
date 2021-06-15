@@ -133,5 +133,96 @@ export const NavItemMutations = extendType({
         }
       },
     });
+
+    // Should update pages group
+    t.nonNull.field('updatePagesGroup', {
+      type: 'PagesGroupPayload',
+      description: 'Should update pages group',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdatePagesGroupInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updatePagesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: createPagesGroupSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
+          const { input } = args;
+          const { _id, ...values } = input;
+
+          // Check if pages group already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES_GROUP,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+            additionalQuery: {
+              _id: {
+                $ne: _id,
+              },
+            },
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.duplicate'),
+            };
+          }
+
+          const updatedPagesGroupResult = await pagesGroupsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+              },
+            },
+            {
+              returnDocument: 'after',
+            },
+          );
+          const updatedPagesGroup = updatedPagesGroupResult.value;
+          if (!updatedPagesGroupResult.ok || !updatedPagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pageGroups.update.success'),
+            payload: updatedPagesGroup,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
   },
 });

@@ -285,6 +285,12 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  CreatePageInput: {
+    // input type
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   CreatePagesGroupInput: {
     // input type
     index: number; // Int!
@@ -615,6 +621,14 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
+  };
+  UpdatePageInput: {
+    // input type
+    content: string; // String!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    state: NexusGenEnums['PageState']; // PageState!
   };
   UpdatePagesGroupInput: {
     // input type
@@ -1274,6 +1288,7 @@ export interface NexusGenFieldTypes {
     createMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
@@ -1295,6 +1310,7 @@ export interface NexusGenFieldTypes {
     deleteNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1331,6 +1347,7 @@ export interface NexusGenFieldTypes {
     updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    updatePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2291,6 +2308,7 @@ export interface NexusGenFieldTypeNames {
     createMetric: 'MetricPayload';
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
+    createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
     createRole: 'RolePayload';
@@ -2312,6 +2330,7 @@ export interface NexusGenFieldTypeNames {
     deleteNavItem: 'NavItemPayload';
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
+    deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
     deleteProductFromConnection: 'ProductPayload';
@@ -2348,6 +2367,7 @@ export interface NexusGenFieldTypeNames {
     updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
+    updatePagesGroup: 'PagesGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
     updateProductBrand: 'ProductPayload';
@@ -3040,6 +3060,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOptionsGroupInput']; // CreateOptionsGroupInput!
     };
+    createPagesGroup: {
+      // args
+      input: NexusGenInputs['CreatePagesGroupInput']; // CreatePagesGroupInput!
+    };
     createProduct: {
       // args
       input: NexusGenInputs['CreateProductInput']; // CreateProductInput!
@@ -3121,6 +3145,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['DeleteOptionFromGroupInput']; // DeleteOptionFromGroupInput!
     };
     deleteOptionsGroup: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deletePagesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
@@ -3267,6 +3295,10 @@ export interface NexusGenArgTypes {
     updateOptionsGroup: {
       // args
       input: NexusGenInputs['UpdateOptionsGroupInput']; // UpdateOptionsGroupInput!
+    };
+    updatePagesGroup: {
+      // args
+      input: NexusGenInputs['UpdatePagesGroupInput']; // UpdatePagesGroupInput!
     };
     updateProduct: {
       // args

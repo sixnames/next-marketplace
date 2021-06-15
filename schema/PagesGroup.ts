@@ -56,7 +56,7 @@ export const PagesGroupPayload = objectType({
   },
 });
 
-export const NavItemMutations = extendType({
+export const PagesGroupMutations = extendType({
   type: 'Mutation',
   definition(t) {
     // Should create pages group

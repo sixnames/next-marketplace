@@ -490,6 +490,12 @@ input CreateOptionsGroupInput {
   variant: OptionsGroupVariant!
 }
 
+input CreatePageInput {
+  index: Int!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+}
+
 input CreatePagesGroupInput {
   index: Int!
   nameI18n: JSONObject!
@@ -878,6 +884,11 @@ type Mutation {
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayload!
 
   """
+  Should create pages group
+  """
+  createPagesGroup(input: CreatePagesGroupInput!): PagesGroupPayload!
+
+  """
   Should create product
   """
   createProduct(input: CreateProductInput!): ProductPayload!
@@ -981,6 +992,11 @@ type Mutation {
   Should delete options group
   """
   deleteOptionsGroup(_id: ObjectId!): OptionsGroupPayload!
+
+  """
+  Should delete pages group
+  """
+  deletePagesGroup(_id: ObjectId!): PagesGroupPayload!
 
   """
   Should update product assets
@@ -1161,6 +1177,11 @@ type Mutation {
   Should update options group
   """
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayload!
+
+  """
+  Should update pages group
+  """
+  updatePagesGroup(input: UpdatePagesGroupInput!): PagesGroupPayload!
 
   """
   Should update product
@@ -2286,6 +2307,14 @@ input UpdateOptionsGroupInput {
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   variant: OptionsGroupVariant!
+}
+
+input UpdatePageInput {
+  content: String!
+  index: Int!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+  state: PageState!
 }
 
 input UpdatePagesGroupInput {

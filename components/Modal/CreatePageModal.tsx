@@ -99,6 +99,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
                 firstOption={'Не назначен'}
                 label={'Город'}
                 name={'citySlug'}
+                testId={'citySlug'}
                 options={data?.getSessionCities || []}
                 isRequired
                 showInlineError

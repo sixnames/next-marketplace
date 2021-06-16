@@ -97,6 +97,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                 label={'Порадковый номер'}
                 name={'index'}
                 testId={'index'}
+                type={'number'}
                 showInlineError
                 isRequired
               />

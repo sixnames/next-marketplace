@@ -48,7 +48,7 @@ export const pageCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
       slug: 'validation.pages.index',
     }),
     pagesGroupId: pagesGroupIdSchema(args),
-    companySlug: requiredStringSchema({
+    citySlug: requiredStringSchema({
       ...args,
       slug: 'validation.pages.citySlug',
     }),

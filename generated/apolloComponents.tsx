@@ -4633,6 +4633,17 @@ export type GetOptionAlphabetListsQuery = (
   )> }
 );
 
+export type GetSessionCitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSessionCitiesQuery = (
+  { __typename?: 'Query' }
+  & { getSessionCities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, '_id' | 'slug' | 'name'>
+  )> }
+);
+
 export type UserInListFragment = (
   { __typename?: 'User' }
   & Pick<User, '_id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
@@ -9176,6 +9187,42 @@ export function useGetOptionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetOptionAlphabetListsQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsQuery>;
 export type GetOptionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsLazyQuery>;
 export type GetOptionAlphabetListsQueryResult = Apollo.QueryResult<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>;
+export const GetSessionCitiesDocument = gql`
+    query GetSessionCities {
+  getSessionCities {
+    _id
+    slug
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetSessionCitiesQuery__
+ *
+ * To run a query within a React component, call `useGetSessionCitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSessionCitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSessionCitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSessionCitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>(GetSessionCitiesDocument, options);
+      }
+export function useGetSessionCitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>(GetSessionCitiesDocument, options);
+        }
+export type GetSessionCitiesQueryHookResult = ReturnType<typeof useGetSessionCitiesQuery>;
+export type GetSessionCitiesLazyQueryHookResult = ReturnType<typeof useGetSessionCitiesLazyQuery>;
+export type GetSessionCitiesQueryResult = Apollo.QueryResult<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>;
 export const UsersSerchDocument = gql`
     query UsersSerch($input: PaginationInput!) {
   getAllUsers(input: $input) {

@@ -149,3 +149,13 @@ export const OPTIONS_ALPHABET_QUERY = gql`
     }
   }
 `;
+
+export const CITIES_LIST_QUERY = gql`
+  query GetSessionCities {
+    getSessionCities {
+      _id
+      slug
+      name
+    }
+  }
+`;

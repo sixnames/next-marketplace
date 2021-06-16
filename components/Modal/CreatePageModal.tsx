@@ -1,9 +1,12 @@
 import Button from 'components/Buttons/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
+import RequestError from 'components/RequestError/RequestError';
+import Spinner from 'components/Spinner/Spinner';
 import { DEFAULT_LOCALE } from 'config/common';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -11,7 +14,7 @@ import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import { createPageSchema } from 'validation/pagesSchema';
 import { Form, Formik } from 'formik';
-import { useCreatePageMutation } from 'generated/apolloComponents';
+import { useCreatePageMutation, useGetSessionCitiesQuery } from 'generated/apolloComponents';
 
 export interface CreatePageModalInterface {
   pagesGroupId: string;
@@ -30,6 +33,24 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
     onError: onErrorCallback,
   });
 
+  const { data, loading, error } = useGetSessionCitiesQuery();
+
+  if (loading) {
+    return (
+      <ModalFrame>
+        <Spinner isNested isTransparent />
+      </ModalFrame>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <ModalFrame>
+        <RequestError />
+      </ModalFrame>
+    );
+  }
+
   return (
     <ModalFrame testId={'create-page-modal'}>
       <ModalTitle>Создание старницы</ModalTitle>
@@ -39,6 +60,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
         initialValues={{
           index: null,
           pagesGroupId,
+          citySlug: '',
           nameI18n: {
             [DEFAULT_LOCALE]: '',
           },
@@ -49,6 +71,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
             variables: {
               input: {
                 ...values,
+                citySlug: `${values.citySlug}`,
                 index: noNaN(values.index),
               },
             },
@@ -71,6 +94,14 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
                 testId={'index'}
                 showInlineError
                 isRequired
+              />
+              <FormikSelect
+                firstOption={'Не назначен'}
+                label={'Город'}
+                name={'citySlug'}
+                options={data?.getSessionCities || []}
+                isRequired
+                showInlineError
               />
 
               <ModalButtons>

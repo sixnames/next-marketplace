@@ -18,6 +18,8 @@ export const PagesGroup = objectType({
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.string('companySlug');
+    t.nonNull.boolean('showInFooter');
+    t.nonNull.boolean('showInHeader');
 
     // PagesGroup name translation field resolver
     t.nonNull.field('name', {
@@ -36,6 +38,8 @@ export const CreatePagesGroupInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.string('companySlug');
+    t.nonNull.boolean('showInFooter');
+    t.nonNull.boolean('showInHeader');
   },
 });
 
@@ -45,6 +49,8 @@ export const UpdatePagesGroupInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
+    t.nonNull.boolean('showInFooter');
+    t.nonNull.boolean('showInHeader');
   },
 });
 

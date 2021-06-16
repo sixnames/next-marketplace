@@ -501,6 +501,8 @@ input CreatePagesGroupInput {
   companySlug: String!
   index: Int!
   nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
 }
 
 input CreateProductConnectionInput {
@@ -1480,6 +1482,8 @@ type PagesGroup {
   index: Int!
   name: String!
   nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
 }
 
 type PagesGroupPayload implements Payload {
@@ -2348,6 +2352,8 @@ input UpdatePagesGroupInput {
   _id: ObjectId!
   index: Int!
   nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
 }
 
 input UpdateProductAssetIndexInput {

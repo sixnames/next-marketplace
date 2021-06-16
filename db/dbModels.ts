@@ -628,6 +628,8 @@ export interface PagesGroupModel {
   nameI18n: TranslationModel;
   index: number;
   companySlug: string;
+  showInFooter: boolean;
+  showInHeader: boolean;
 }
 
 // Page state enum

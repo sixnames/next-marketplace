@@ -1,4 +1,5 @@
 import Button from 'components/Buttons/Button';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import ModalButtons from 'components/Modal/ModalButtons';
@@ -52,6 +53,8 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
         initialValues={{
           _id: pagesGroup?._id,
           index: pagesGroup ? pagesGroup.index : null,
+          showInFooter: pagesGroup?.showInFooter || false,
+          showInHeader: pagesGroup?.showInHeader || false,
           nameI18n: pagesGroup
             ? pagesGroup.nameI18n
             : {
@@ -67,6 +70,8 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                   _id: pagesGroup._id,
                   index: noNaN(values.index),
                   nameI18n: values.nameI18n,
+                  showInFooter: values.showInFooter,
+                  showInHeader: values.showInHeader,
                 },
               },
             }).catch(console.log);
@@ -77,6 +82,8 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                   index: noNaN(values.index),
                   nameI18n: values.nameI18n,
                   companySlug,
+                  showInFooter: values.showInFooter,
+                  showInHeader: values.showInHeader,
                 },
               },
             }).catch(console.log);
@@ -101,6 +108,10 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                 showInlineError
                 isRequired
               />
+
+              <FormikCheckboxLine label={'Показывать в шапке сайта'} name={'showInHeader'} />
+
+              <FormikCheckboxLine label={'Показывать в футере сайта'} name={'showInFooter'} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-user'}>

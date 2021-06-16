@@ -297,6 +297,8 @@ export interface NexusGenInputs {
     companySlug: string; // String!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
   };
   CreateProductConnectionInput: {
     // input type
@@ -639,6 +641,8 @@ export interface NexusGenInputs {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
   };
   UpdateProductAssetIndexInput: {
     // input type
@@ -1517,6 +1521,8 @@ export interface NexusGenFieldTypes {
     index: number; // Int!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
   };
   PagesGroupPayload: {
     // field return type
@@ -2548,6 +2554,8 @@ export interface NexusGenFieldTypeNames {
     index: 'Int';
     name: 'String';
     nameI18n: 'JSONObject';
+    showInFooter: 'Boolean';
+    showInHeader: 'Boolean';
   };
   PagesGroupPayload: {
     // field return type name

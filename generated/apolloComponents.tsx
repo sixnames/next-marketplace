@@ -542,6 +542,8 @@ export type CreatePagesGroupInput = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
   companySlug: Scalars['String'];
+  showInFooter: Scalars['Boolean'];
+  showInHeader: Scalars['Boolean'];
 };
 
 export type CreateProductConnectionInput = {
@@ -1727,6 +1729,8 @@ export type PagesGroup = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
   companySlug: Scalars['String'];
+  showInFooter: Scalars['Boolean'];
+  showInHeader: Scalars['Boolean'];
   name: Scalars['String'];
 };
 
@@ -2623,6 +2627,8 @@ export type UpdatePagesGroupInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
+  showInFooter: Scalars['Boolean'];
+  showInHeader: Scalars['Boolean'];
 };
 
 export type UpdateProductAssetIndexInput = {

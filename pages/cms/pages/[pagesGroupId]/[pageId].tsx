@@ -103,15 +103,14 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                     </Button>
                   </InputLine>
 
-                  <InputLine labelTag={'div'} label={'Контент страницы'} isRequired>
-                    <PageEditor
-                      pageId={`${page._id}`}
-                      value={values.content}
-                      setValue={(value) => {
-                        setFieldValue('content', value);
-                      }}
-                    />
-                  </InputLine>
+                  <Title tag={'div'}>Контент страницы</Title>
+                  <PageEditor
+                    pageId={`${page._id}`}
+                    value={values.content}
+                    setValue={(value) => {
+                      setFieldValue('content', value);
+                    }}
+                  />
                 </div>
               </Form>
             );

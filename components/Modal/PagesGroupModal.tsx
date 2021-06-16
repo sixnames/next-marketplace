@@ -80,8 +80,20 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
         {() => {
           return (
             <Form>
-              <FormikTranslationsInput name={'nameI18n'} testId={'name'} />
-              <FormikInput name={'index'} testId={'index'} />
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'nameI18n'}
+                testId={'name'}
+                showInlineError
+                isRequired
+              />
+              <FormikInput
+                label={'Порадковый номер'}
+                name={'index'}
+                testId={'index'}
+                showInlineError
+                isRequired
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-user'}>

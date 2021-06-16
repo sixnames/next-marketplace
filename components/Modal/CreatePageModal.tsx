@@ -31,13 +31,14 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
   });
 
   return (
-    <ModalFrame testId={'create-user-modal'}>
+    <ModalFrame testId={'create-page-modal'}>
       <ModalTitle>Создание старницы</ModalTitle>
 
       <Formik
         validationSchema={validationSchema}
         initialValues={{
           index: null,
+          pagesGroupId,
           nameI18n: {
             [DEFAULT_LOCALE]: '',
           },
@@ -49,7 +50,6 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
               input: {
                 ...values,
                 index: noNaN(values.index),
-                pagesGroupId,
               },
             },
           }).catch(console.log);
@@ -58,10 +58,22 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
         {() => {
           return (
             <Form>
-              <ModalButtons>
-                <FormikTranslationsInput name={'nameI18n'} testId={'name'} />
-                <FormikInput name={'index'} testId={'index'} />
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'nameI18n'}
+                testId={'name'}
+                showInlineError
+                isRequired
+              />
+              <FormikInput
+                label={'Порадковый номер'}
+                name={'index'}
+                testId={'index'}
+                showInlineError
+                isRequired
+              />
 
+              <ModalButtons>
                 <Button type={'submit'} testId={'submit-user'}>
                   Создать
                 </Button>

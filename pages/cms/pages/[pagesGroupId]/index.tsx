@@ -1,10 +1,16 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
+import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
+import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { PAGE_STATE_DRAFT, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
 import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { useDeletePageMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -23,6 +29,14 @@ interface PagesListPageConsumerInterface {
 
 const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pagesGroup }) => {
   const router = useRouter();
+  const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+
+  const [deletePageMutation] = useDeletePageMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.deletePage),
+  });
 
   const columns: TableColumn<PageInterface>[] = [
     {
@@ -39,6 +53,40 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
       accessor: 'state',
       headTitle: 'Опубликована',
       render: ({ cellData }) => (cellData === PAGE_STATE_DRAFT ? 'Нет' : 'Да'),
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              deleteTitle={'Удалить страницу'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-page-modal',
+                    message: `Вы уверены, что хотите удалить страницу ${dataItem.name}`,
+                    confirm: () => {
+                      showLoading();
+                      deletePageMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+              updateTitle={'Редактировать страницу'}
+              updateHandler={() => {
+                router
+                  .push(`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`)
+                  .catch(console.log);
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -63,14 +111,14 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
           <FixedButtons>
             <Button
               size={'small'}
-              /*onClick={() => {
-                showModal<PagesGroupModalInterface>({
-                  variant: PAGES_GROUP_MODAL,
+              onClick={() => {
+                showModal<CreatePageModalInterface>({
+                  variant: CREATE_PAGE_MODAL,
                   props: {
-                    validationSchema: createPagesGroupValidationSchema,
+                    pagesGroupId: `${pagesGroup._id}`,
                   },
                 });
-              }}*/
+              }}
             >
               Добавить страницу
             </Button>

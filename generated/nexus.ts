@@ -627,6 +627,7 @@ export interface NexusGenInputs {
   UpdatePageInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    citySlug: string; // String!
     content: string; // String!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!

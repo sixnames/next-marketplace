@@ -2336,6 +2336,7 @@ input UpdateOptionsGroupInput {
 
 input UpdatePageInput {
   _id: ObjectId!
+  citySlug: String!
   content: String!
   index: Int!
   nameI18n: JSONObject!

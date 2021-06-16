@@ -2614,6 +2614,7 @@ export type UpdatePageInput = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
+  citySlug: Scalars['String'];
   content: Scalars['String'];
   state: PageState;
 };

@@ -63,6 +63,7 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
+    t.nonNull.string('citySlug');
     t.nonNull.string('content');
     t.nonNull.field('state', {
       type: 'PageState',

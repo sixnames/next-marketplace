@@ -28,7 +28,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
     schema: createPageSchema,
   });
 
-  const [createUserMutation] = useCreatePageMutation({
+  const [createPageMutation] = useCreatePageMutation({
     onCompleted: (data) => onCompleteCallback(data.createPage),
     onError: onErrorCallback,
   });
@@ -67,7 +67,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
         }}
         onSubmit={(values) => {
           showLoading();
-          createUserMutation({
+          createPageMutation({
             variables: {
               input: {
                 ...values,

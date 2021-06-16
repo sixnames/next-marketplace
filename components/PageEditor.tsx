@@ -1,5 +1,7 @@
+import { Languages } from '@react-page/editor/lib/core/EditorStore';
 import { CellPlugin } from '@react-page/editor/lib/core/types/plugins';
 import { PAGE_EDITOR_DEFAULT_VALUE } from 'config/common';
+import { useLocaleContext } from 'context/localeContext';
 import * as React from 'react';
 import '@react-page/editor/lib/index.css';
 import '@react-page/plugins-image/lib/index.css';
@@ -49,15 +51,21 @@ const cellPlugins = (pageId: string): CellPlugin[] => [
 
 interface PageEditorInterface {
   readOnly?: boolean;
-  initialValue?: Value;
+  value?: Value;
   pageId: string;
-  onSubmit?: (value: Value) => void;
+  setValue?: (value: Value) => void;
 }
 
-const PageEditor: React.FC<PageEditorInterface> = ({ initialValue, pageId, readOnly }) => {
-  const [value, setValue] = React.useState<Value>(() => {
-    return initialValue || PAGE_EDITOR_DEFAULT_VALUE;
-  });
+const PageEditor: React.FC<PageEditorInterface> = ({ value, pageId, readOnly, setValue }) => {
+  const { languagesList, locale } = useLocaleContext();
+  const languages: Languages = React.useMemo(() => {
+    return languagesList.map((locale) => {
+      return {
+        label: locale.name,
+        lang: locale.slug,
+      };
+    });
+  }, [languagesList]);
 
   return (
     <Editor
@@ -66,8 +74,10 @@ const PageEditor: React.FC<PageEditorInterface> = ({ initialValue, pageId, readO
       allowResizeInEditMode
       readOnly={readOnly}
       cellPlugins={cellPlugins(pageId)}
-      value={value}
+      value={value || PAGE_EDITOR_DEFAULT_VALUE}
       onChange={setValue}
+      languages={languages}
+      lang={locale}
     />
   );
 };

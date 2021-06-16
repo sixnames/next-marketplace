@@ -26,6 +26,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   description,
   pageUrls,
   footerPageGroups,
+  headerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -41,7 +42,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 
       <Meta title={title} description={description} pageUrls={pageUrls} />
 
-      <Header />
+      <Header headerPageGroups={headerPageGroups} />
 
       <div className='flex flex-col flex-grow'>
         <main className='flex-grow'>

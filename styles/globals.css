@@ -92,9 +92,30 @@
     box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
   }
 
-  /* Header nav */
+  /* Header */
   .header-aside {
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
+  }
+
+  .header-sub-nav-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: block;
+    min-width: 100%;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .header-sub-nav:not(:hover) .header-sub-nav-list {
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0s;
   }
 
   .header-hidden-dropdown {

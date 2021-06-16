@@ -16,6 +16,7 @@ import {
   ROUTE_SIGN_IN,
   SORT_ASC,
   SORT_DESC,
+  PAGE_STATE_PUBLISHED,
 } from 'config/common';
 import {
   COL_CITIES,
@@ -732,6 +733,7 @@ async function getCatalogueCreatedPages({
             {
               $match: {
                 citySlug: sessionCity,
+                state: PAGE_STATE_PUBLISHED,
                 $expr: {
                   $eq: ['$pagesGroupId', '$$pagesGroupId'],
                 },

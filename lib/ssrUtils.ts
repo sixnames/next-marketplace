@@ -24,6 +24,8 @@ import {
   COL_COUNTRIES,
   COL_LANGUAGES,
   COL_NAV_ITEMS,
+  COL_PAGES,
+  COL_PAGES_GROUP,
   COL_ROLES,
   COL_SHOP_PRODUCTS,
   COL_USERS,
@@ -40,8 +42,17 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CityInterface, ConfigInterface, RubricInterface, UserInterface } from 'db/uiInterfaces';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import {
+  CityInterface,
+  ConfigInterface,
+  PagesGroupInterface,
+  RubricInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'layout/SiteLayoutProvider';
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
@@ -685,6 +696,91 @@ export function castDbData(data: any): any {
   return JSON.parse(JSON.stringify(data));
 }
 
+interface GetCatalogueCreatedPagesInterface {
+  companySlug: string;
+  sessionLocale: string;
+  sessionCity: string;
+}
+
+async function getCatalogueCreatedPages({
+  companySlug,
+  sessionCity,
+  sessionLocale,
+}: GetCatalogueCreatedPagesInterface): Promise<SiteLayoutCatalogueCreatedPages> {
+  const { db } = await getDatabase();
+  const pageGroupsCollection = db.collection<PagesGroupInterface>(COL_PAGES_GROUP);
+  const pageGroupsAggregationInterface = await pageGroupsCollection
+    .aggregate([
+      {
+        $match: {
+          companySlug,
+        },
+      },
+      {
+        $sort: {
+          index: SORT_ASC,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_PAGES,
+          as: 'pages',
+          let: {
+            pagesGroupId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                citySlug: sessionCity,
+                $expr: {
+                  $eq: ['$pagesGroupId', '$$pagesGroupId'],
+                },
+              },
+            },
+            {
+              $sort: {
+                index: SORT_ASC,
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  const initialHeaderPageGroups: PagesGroupInterface[] = [];
+  const initialFooterPageGroups: PagesGroupInterface[] = [];
+
+  pageGroupsAggregationInterface.forEach((pagesGroup) => {
+    const castedPagesGroup = {
+      ...pagesGroup,
+      name: getI18nLocaleValue(pagesGroup.nameI18n, sessionLocale),
+      pages: (pagesGroup.pages || []).map((page) => {
+        return {
+          ...page,
+          name: getI18nLocaleValue(page.nameI18n, sessionLocale),
+        };
+      }),
+    };
+    if (castedPagesGroup.pages.length < 1) {
+      return;
+    }
+
+    if (castedPagesGroup.showInHeader) {
+      initialHeaderPageGroups.push(castedPagesGroup);
+    }
+
+    if (castedPagesGroup.showInFooter) {
+      initialFooterPageGroups.push(castedPagesGroup);
+    }
+  });
+
+  return {
+    headerPageGroups: castDbData(initialHeaderPageGroups),
+    footerPageGroups: castDbData(initialFooterPageGroups),
+  };
+}
+
 export interface GetSiteInitialDataInterface {
   context: GetServerSidePropsContext;
 }
@@ -721,11 +817,17 @@ export async function getSiteInitialData({
     company,
   });
   const navRubrics = castDbData(rawNavRubrics);
+  const catalogueCreatedPages = await getCatalogueCreatedPages({
+    sessionCity,
+    sessionLocale,
+    companySlug,
+  });
 
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {
     props: {
+      ...catalogueCreatedPages,
       companySlug,
       initialData,
       navRubrics,

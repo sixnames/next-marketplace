@@ -65,6 +65,7 @@ export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 // Routes
+export const ROUTE_DOCS_PAGES = '/docs';
 export const ROUTE_CONSOLE = '/console';
 export const ROUTE_CMS = `/cms`;
 export const ROUTE_CONSOLE_NAV_GROUP = 'console';

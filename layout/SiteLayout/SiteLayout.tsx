@@ -1,5 +1,8 @@
 import { useConfigContext } from 'context/configContext';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import Footer from 'layout/SiteLayout/Footer';
@@ -10,7 +13,7 @@ import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
 import Modal from 'components/Modal/Modal';
 
-interface SiteLayoutConsumerInterface {
+interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages {
   title?: string;
   description?: string;
   previewImage?: string;
@@ -22,6 +25,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
   pageUrls,
+  footerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -44,7 +48,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
-        <Footer />
+        <Footer footerPageGroups={footerPageGroups} />
       </div>
 
       {isLoading ? <Spinner /> : null}
@@ -61,10 +65,18 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   pageUrls,
   sessionCity,
   company,
+  footerPageGroups,
+  headerPageGroups,
 }) => {
   return (
     <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
-      <SiteLayoutConsumer title={title} description={description} pageUrls={pageUrls}>
+      <SiteLayoutConsumer
+        title={title}
+        description={description}
+        pageUrls={pageUrls}
+        footerPageGroups={footerPageGroups}
+        headerPageGroups={headerPageGroups}
+      >
         {children}
       </SiteLayoutConsumer>
     </SiteContextProvider>

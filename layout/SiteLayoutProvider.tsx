@@ -1,4 +1,4 @@
-import { RubricInterface } from 'db/uiInterfaces';
+import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -8,7 +8,14 @@ const CompanyDefaultLayout = dynamic(
   () => import('layout/CompanyDefaultLayout/CompanyDefaultLayout'),
 );
 
-export interface SiteLayoutProviderInterface extends PagePropsInterface {
+export interface SiteLayoutCatalogueCreatedPages {
+  footerPageGroups: PagesGroupInterface[];
+  headerPageGroups: PagesGroupInterface[];
+}
+
+export interface SiteLayoutProviderInterface
+  extends PagePropsInterface,
+    SiteLayoutCatalogueCreatedPages {
   title?: string;
   description?: string;
   navRubrics: RubricInterface[];

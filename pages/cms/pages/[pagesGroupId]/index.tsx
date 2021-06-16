@@ -179,6 +179,7 @@ export const getServerSideProps = async (
             {
               $sort: {
                 index: SORT_ASC,
+                citySlug: SORT_ASC,
               },
             },
             {

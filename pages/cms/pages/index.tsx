@@ -4,7 +4,7 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table/Table';
-import { ROUTE_CMS, SORT_ASC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import { COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -71,6 +71,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
+                    companySlug: DEFAULT_COMPANY_SLUG,
                     validationSchema: updatePagesGroupValidationSchema,
                     pagesGroup: dataItem,
                   },
@@ -124,6 +125,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
+                    companySlug: DEFAULT_COMPANY_SLUG,
                     validationSchema: createPagesGroupValidationSchema,
                   },
                 });
@@ -163,6 +165,11 @@ export const getServerSideProps = async (
 
   const pagesGroupsAggregationResult = await pagesGroupsCollection
     .aggregate([
+      {
+        $match: {
+          companySlug: DEFAULT_COMPANY_SLUG,
+        },
+      },
       {
         $sort: {
           index: SORT_ASC,

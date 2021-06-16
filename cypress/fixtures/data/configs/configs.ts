@@ -3,7 +3,7 @@ import { ConfigModel, ConfigVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import {
   ASSETS_DIST_CONFIGS,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
 } from '../../../../config/common';
@@ -616,8 +616,8 @@ function getConfigTemplates({
 
 const defaultConfigs = getConfigTemplates({
   siteName: 'Default site',
-  companySlug: CONFIG_DEFAULT_COMPANY_SLUG,
-  assetsPath: CONFIG_DEFAULT_COMPANY_SLUG,
+  companySlug: DEFAULT_COMPANY_SLUG,
+  assetsPath: DEFAULT_COMPANY_SLUG,
 });
 
 const companyASlug = 'company_a';

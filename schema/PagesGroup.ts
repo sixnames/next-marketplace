@@ -17,6 +17,7 @@ export const PagesGroup = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
+    t.nonNull.string('companySlug');
 
     // PagesGroup name translation field resolver
     t.nonNull.field('name', {
@@ -34,6 +35,7 @@ export const CreatePagesGroupInput = inputObjectType({
   definition(t) {
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
+    t.nonNull.string('companySlug');
   },
 });
 
@@ -101,6 +103,9 @@ export const PagesGroupMutations = extendType({
             collectionName: COL_PAGES_GROUP,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
+            additionalQuery: {
+              companySlug: input.companySlug,
+            },
           });
           if (exist) {
             return {
@@ -172,12 +177,22 @@ export const PagesGroupMutations = extendType({
           const { input } = args;
           const { _id, ...values } = input;
 
+          // Check pages group availability
+          const pagesGroup = await pagesGroupsCollection.findOne({ _id });
+          if (!pagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.notFound'),
+            };
+          }
+
           // Check if pages group already exist
           const exist = await findDocumentByI18nField({
             collectionName: COL_PAGES_GROUP,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {
+              companySlug: pagesGroup.companySlug,
               _id: {
                 $ne: _id,
               },

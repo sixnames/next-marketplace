@@ -401,6 +401,7 @@ export type MessageSlug =
   | 'validation.pageGroups.id'
   | 'validation.pageGroups.name'
   | 'validation.pageGroups.index'
+  | 'validation.pageGroups.companySlug'
 
   // Pages ----------
   | 'pages.create.error'
@@ -418,6 +419,7 @@ export type MessageSlug =
   | 'validation.pages.id'
   | 'validation.pages.name'
   | 'validation.pages.index'
+  | 'validation.pages.citySlug'
 
   // Products ----------
   | 'products.create.error'

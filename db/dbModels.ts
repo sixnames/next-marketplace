@@ -627,6 +627,7 @@ export interface PagesGroupModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   index: number;
+  companySlug: string;
 }
 
 // Page state enum
@@ -640,6 +641,7 @@ export interface PageModel extends TimestampModel {
   nameI18n: TranslationModel;
   index: number;
   slug: string;
+  citySlug: string;
   assetKeys: string[];
   pagesGroupId: ObjectIdModel;
   content: string;

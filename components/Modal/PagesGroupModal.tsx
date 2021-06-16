@@ -19,9 +19,14 @@ import {
 export interface PagesGroupModalInterface {
   pagesGroup?: PagesGroupInterface;
   validationSchema: ResolverValidationSchema;
+  companySlug: string;
 }
 
-const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, validationSchema }) => {
+const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
+  pagesGroup,
+  companySlug,
+  validationSchema,
+}) => {
   const { showLoading, hideModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
   });
@@ -71,6 +76,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({ pagesGroup, valid
                 input: {
                   index: noNaN(values.index),
                   nameI18n: values.nameI18n,
+                  companySlug,
                 },
               },
             }).catch(console.log);

@@ -79,4 +79,11 @@ export const pagesMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Index is required`,
     },
   },
+  {
+    slug: 'validation.pages.citySlug',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Slug города обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `City slug is required`,
+    },
+  },
 ];

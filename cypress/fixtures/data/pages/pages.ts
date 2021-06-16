@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CITY,
   PAGE_EDITOR_DEFAULT_VALUE,
   PAGE_STATE_DRAFT,
   PAGE_STATE_PUBLISHED,
@@ -13,6 +14,7 @@ const pages: PageModel[] = [
     _id: getObjectId('page a'),
     index: 0,
     slug: 'page_a',
+    citySlug: DEFAULT_CITY,
     nameI18n: {
       ru: 'Page A',
     },
@@ -27,6 +29,7 @@ const pages: PageModel[] = [
     _id: getObjectId('page b'),
     index: 1,
     slug: 'page_b',
+    citySlug: DEFAULT_CITY,
     nameI18n: {
       ru: 'Page B',
     },
@@ -41,6 +44,7 @@ const pages: PageModel[] = [
     _id: getObjectId('page c'),
     index: 0,
     slug: 'page_c',
+    citySlug: DEFAULT_CITY,
     nameI18n: {
       ru: 'Page C',
     },

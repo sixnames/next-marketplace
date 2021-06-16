@@ -23,7 +23,7 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { generateProductSlug } from 'lib/slugUtils';
-import { CONFIG_DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
@@ -83,7 +83,7 @@ export const UpdateProductCounterInput = inputObjectType({
   name: 'UpdateProductCounterInput',
   definition(t) {
     t.nonNull.list.nonNull.objectId('shopProductIds');
-    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+    t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
   },
 });
 

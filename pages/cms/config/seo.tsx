@@ -1,6 +1,6 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner/Inner';
-import { CONFIG_DEFAULT_COMPANY_SLUG, CONFIG_GROUP_SEO } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_SEO } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getConfigPageData } from 'lib/configsUtils';
@@ -38,7 +38,7 @@ export const getServerSideProps = async (
   }
 
   const configsPayload = await getConfigPageData({
-    companyId: CONFIG_DEFAULT_COMPANY_SLUG,
+    companyId: DEFAULT_COMPANY_SLUG,
     group: CONFIG_GROUP_SEO,
   });
 

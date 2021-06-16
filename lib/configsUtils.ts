@@ -1,5 +1,5 @@
 import {
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   CONFIG_VARIANT_ASSET,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -648,7 +648,7 @@ export async function getConfigPageData({
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const isDefault = companyId === CONFIG_DEFAULT_COMPANY_SLUG;
+  const isDefault = companyId === DEFAULT_COMPANY_SLUG;
 
   if (!companyId || companyId === 'undefined') {
     return null;
@@ -663,7 +663,7 @@ export async function getConfigPageData({
     return null;
   }
 
-  const companySlug = isDefault ? CONFIG_DEFAULT_COMPANY_SLUG : company?.slug;
+  const companySlug = isDefault ? DEFAULT_COMPANY_SLUG : company?.slug;
   const companyConfigs = await configsCollection.find({ companySlug, group }).toArray();
   const initialConfigTemplates = getConfigTemplates({
     companySlug: `${companySlug}`,

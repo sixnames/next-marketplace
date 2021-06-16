@@ -1,4 +1,4 @@
-import { CONFIG_DEFAULT_COMPANY_SLUG, DEFAULT_CITY, DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_CITY, DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { COL_CITIES, COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { CityModel, CompanyModel, ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -26,7 +26,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { db } = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
-  const companySlug = company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG;
+  const companySlug = company ? company.slug : DEFAULT_COMPANY_SLUG;
 
   // Session city
   let currentCity: CityModel | null | undefined;

@@ -287,12 +287,14 @@ export interface NexusGenInputs {
   };
   CreatePageInput: {
     // input type
+    citySlug: string; // String!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreatePagesGroupInput: {
     // input type
+    companySlug: string; // String!
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -1492,6 +1494,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     assetKeys: string[]; // [String!]!
+    citySlug: string; // String!
     content: string; // String!
     index: number; // Int!
     name: string; // String!
@@ -1509,6 +1512,7 @@ export interface NexusGenFieldTypes {
   PagesGroup: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    companySlug: string; // String!
     index: number; // Int!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2521,6 +2525,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     assetKeys: 'String';
+    citySlug: 'String';
     content: 'String';
     index: 'Int';
     name: 'String';
@@ -2538,6 +2543,7 @@ export interface NexusGenFieldTypeNames {
   PagesGroup: {
     // field return type name
     _id: 'ObjectId';
+    companySlug: 'String';
     index: 'Int';
     name: 'String';
     nameI18n: 'JSONObject';

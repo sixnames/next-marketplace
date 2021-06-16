@@ -27,6 +27,7 @@ export const Page = objectType({
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.string('slug');
+    t.nonNull.string('citySlug');
     t.nonNull.string('content');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.list.nonNull.string('assetKeys');
@@ -51,6 +52,7 @@ export const CreatePageInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
+    t.nonNull.string('citySlug');
   },
 });
 
@@ -125,6 +127,7 @@ export const PageMutations = extendType({
             fieldArg: input.nameI18n,
             additionalQuery: {
               pagesGroupId: input.pagesGroupId,
+              citySlug: input.citySlug,
             },
             additionalOrQuery: [
               {
@@ -209,12 +212,22 @@ export const PageMutations = extendType({
           const { input } = args;
           const { _id, ...values } = input;
 
+          // Check page availability
+          const page = await pagesCollection.findOne({ _id });
+          if (!page) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.update.notFound'),
+            };
+          }
+
           // Check if page already exist
           const exist = await findDocumentByI18nField({
             collectionName: COL_PAGES,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {
+              citySlug: page.citySlug,
               pagesGroupId: values.pagesGroupId,
               _id: {
                 $ne: _id,

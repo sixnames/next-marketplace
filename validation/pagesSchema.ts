@@ -2,6 +2,7 @@ import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import {
   objectIdSchema,
   requiredNumberSchema,
+  requiredStringSchema,
   requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
@@ -29,6 +30,10 @@ export const pagesGroupCommonFieldsSchema = (args: ValidationSchemaArgsInterface
       ...args,
       slug: 'validation.pageGroups.index',
     }),
+    companySlug: requiredStringSchema({
+      ...args,
+      slug: 'validation.pageGroups.companySlug',
+    }),
   };
 };
 
@@ -43,6 +48,10 @@ export const pageCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
       slug: 'validation.pages.index',
     }),
     pagesGroupId: pagesGroupIdSchema(args),
+    companySlug: requiredStringSchema({
+      ...args,
+      slug: 'validation.pages.citySlug',
+    }),
   };
 };
 

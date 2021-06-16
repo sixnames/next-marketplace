@@ -1,6 +1,6 @@
 import {
   CATALOGUE_OPTION_SEPARATOR,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   SORT_DESC,
 } from 'config/common';
@@ -17,7 +17,7 @@ export function getCatalogueRubricPipeline(
   props?: GetCatalogueRubricPipelineInterface,
 ): Record<string, any>[] {
   const { companySlug, city, visibleAttributesCount, visibleOptionsCount, viewVariant } = props || {
-    companySlug: CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug: DEFAULT_COMPANY_SLUG,
     city: DEFAULT_CITY,
     viewVariant: 'filter',
   };

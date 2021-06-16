@@ -79,4 +79,11 @@ export const pageGroupsMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Index is required`,
     },
   },
+  {
+    slug: 'validation.pageGroups.companySlug',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Slug компании обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Company slug is required`,
+    },
+  },
 ];

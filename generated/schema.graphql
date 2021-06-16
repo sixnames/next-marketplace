@@ -491,12 +491,14 @@ input CreateOptionsGroupInput {
 }
 
 input CreatePageInput {
+  citySlug: String!
   index: Int!
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
 }
 
 input CreatePagesGroupInput {
+  companySlug: String!
   index: Int!
   nameI18n: JSONObject!
 }
@@ -1448,6 +1450,7 @@ type OrderStatus implements Timestamp {
 type Page {
   _id: ObjectId!
   assetKeys: [String!]!
+  citySlug: String!
   content: String!
   index: Int!
   name: String!
@@ -1473,6 +1476,7 @@ enum PageState {
 
 type PagesGroup {
   _id: ObjectId!
+  companySlug: String!
   index: Int!
   name: String!
   nameI18n: JSONObject!

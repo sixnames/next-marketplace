@@ -535,11 +535,13 @@ export type CreatePageInput = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
+  citySlug: Scalars['String'];
 };
 
 export type CreatePagesGroupInput = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
+  companySlug: Scalars['String'];
 };
 
 export type CreateProductConnectionInput = {
@@ -1698,6 +1700,7 @@ export type Page = {
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
   slug: Scalars['String'];
+  citySlug: Scalars['String'];
   content: Scalars['String'];
   pagesGroupId: Scalars['ObjectId'];
   assetKeys: Array<Scalars['String']>;
@@ -1723,6 +1726,7 @@ export type PagesGroup = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   index: Scalars['Int'];
+  companySlug: Scalars['String'];
   name: Scalars['String'];
 };
 

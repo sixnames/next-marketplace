@@ -1,7 +1,7 @@
 import {
   CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
   CATALOGUE_NAV_VISIBLE_OPTIONS,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   COOKIE_CITY,
   COOKIE_COMPANY_SLUG,
   COOKIE_LOCALE,
@@ -71,7 +71,7 @@ export const getCatalogueNavRubrics = async ({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // Get configs
   const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
@@ -189,7 +189,7 @@ export const getPageInitialData = async ({
     .aggregate([
       {
         $match: {
-          companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
         },
       },
       {
@@ -468,7 +468,7 @@ export async function getPageInitialState({
   const initialData = castDbData(rawInitialData);
 
   // Set company slug as a cookie
-  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG, {
+  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : DEFAULT_COMPANY_SLUG, {
     httpOnly: true,
     path: '/',
     sameSite: 'strict',
@@ -496,7 +496,7 @@ export async function getPageInitialState({
     session,
     initialData,
     company: castDbData(company),
-    companySlug: company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug: company ? company.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
     sessionUser,

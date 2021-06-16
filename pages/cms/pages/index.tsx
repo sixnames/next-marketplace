@@ -65,6 +65,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              testId={`${dataItem.name}`}
               updateTitle={'Обновить группу страниц'}
               updateHandler={() => {
                 showModal<PagesGroupModalInterface>({
@@ -107,11 +108,12 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
             <Table<PagesGroupInterface>
+              testIdKey={'name'}
+              columns={columns}
+              data={pagesGroups}
               onRowDoubleClick={(dataItem) => {
                 router.push(`${ROUTE_CMS}/pages/${dataItem._id}`).catch(console.log);
               }}
-              columns={columns}
-              data={pagesGroups}
             />
           </div>
 

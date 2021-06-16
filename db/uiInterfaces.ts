@@ -424,10 +424,11 @@ export interface AppPaginationInterface<Model> {
   itemPath?: string;
 }
 
-export interface PagesGroupInterface extends PagesGroupModel {
+export interface PageInterface extends PageModel {
   name?: string | null;
 }
 
-export interface PageInterface extends PageModel {
+export interface PagesGroupInterface extends PagesGroupModel {
   name?: string | null;
+  pages?: PageInterface[];
 }

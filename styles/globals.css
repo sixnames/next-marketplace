@@ -725,6 +725,17 @@ html [data-reach-menu], html [data-reach-menu-popover] {
   margin-bottom: 1.25rem;
 }
 
+.react-page-row blockquote {
+  display: block;
+  line-height: 1.6;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--secondaryBackground);
+  border-radius: 0.5rem;
+}
+
 .react-page-row ul,
 .react-page-row ul li {
   list-style: disc;

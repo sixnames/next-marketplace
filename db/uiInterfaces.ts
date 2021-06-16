@@ -426,6 +426,7 @@ export interface AppPaginationInterface<Model> {
 
 export interface PageInterface extends PageModel {
   name?: string | null;
+  city?: CityInterface | null;
 }
 
 export interface PagesGroupInterface extends PagesGroupModel {

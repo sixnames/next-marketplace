@@ -6,7 +6,7 @@ import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
 import Table, { TableColumn } from 'components/Table/Table';
 import { PAGE_STATE_DRAFT, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
-import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
+import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import { useDeletePageMutation } from 'generated/apolloComponents';
@@ -53,6 +53,11 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
       accessor: 'state',
       headTitle: 'Опубликована',
       render: ({ cellData }) => (cellData === PAGE_STATE_DRAFT ? 'Нет' : 'Да'),
+    },
+    {
+      accessor: 'city.name',
+      headTitle: 'Город',
+      render: ({ cellData }) => cellData,
     },
     {
       render: ({ dataItem }) => {
@@ -187,6 +192,31 @@ export const getServerSideProps = async (
                 content: false,
               },
             },
+            {
+              $lookup: {
+                from: COL_CITIES,
+                as: 'city',
+                let: {
+                  citySlug: '$citySlug',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$slug', '$$citySlug'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                city: {
+                  $arrayElemAt: ['$city', 0],
+                },
+              },
+            },
           ],
         },
       },
@@ -201,6 +231,12 @@ export const getServerSideProps = async (
         return {
           ...page,
           name: getFieldStringLocale(page.nameI18n, props.sessionLocale),
+          city: page.city
+            ? {
+                ...page.city,
+                name: getFieldStringLocale(page.city.nameI18n, props.sessionLocale),
+              }
+            : null,
         };
       }),
     };

@@ -1,5 +1,5 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { CONFIG_DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
@@ -124,7 +124,7 @@ export const ConfigMutations = extendType({
           const { allow, message } = await getOperationPermission({
             context,
             slug:
-              args.input.companySlug === CONFIG_DEFAULT_COMPANY_SLUG
+              args.input.companySlug === DEFAULT_COMPANY_SLUG
                 ? 'updateConfig'
                 : 'updateCompanyConfig',
           });

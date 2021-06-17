@@ -8,7 +8,7 @@ import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupM
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modals';
+import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AttributesGroupInterface } from 'db/uiInterfaces';

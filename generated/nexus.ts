@@ -285,6 +285,22 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  CreatePageInput: {
+    // input type
+    citySlug: string; // String!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  CreatePagesGroupInput: {
+    // input type
+    companySlug: string; // String!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
+  };
   CreateProductConnectionInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -611,6 +627,25 @@ export interface NexusGenInputs {
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  UpdatePageInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    citySlug: string; // String!
+    content: string; // String!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    state: NexusGenEnums['PageState']; // PageState!
+  };
+  UpdatePagesGroupInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
+  };
   UpdateProductAssetIndexInput: {
     // input type
     assetNewIndex: number; // Int!
@@ -764,6 +799,7 @@ export interface NexusGenEnums {
   Gender: dbModels.GenderModel;
   OptionsGroupVariant: dbModels.OptionsGroupVariantModel;
   OrderLogVariant: dbModels.OrderLogVariantModel;
+  PageState: dbModels.PageStateModel;
   SortDirection: dbModels.SortDirectionModel;
 }
 
@@ -840,6 +876,10 @@ export interface NexusGenObjects {
   OrderLog: dbModels.OrderLogModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
+  Page: dbModels.PageModel;
+  PagePayload: dbModels.PagePayloadModel;
+  PagesGroup: dbModels.PagesGroupModel;
+  PagesGroupPayload: dbModels.PagesGroupPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
@@ -1259,6 +1299,8 @@ export interface NexusGenFieldTypes {
     createMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    createPage: NexusGenRootTypes['PagePayload']; // PagePayload!
+    createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
@@ -1280,6 +1322,8 @@ export interface NexusGenFieldTypes {
     deleteNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    deletePage: NexusGenRootTypes['PagePayload']; // PagePayload!
+    deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1316,6 +1360,8 @@ export interface NexusGenFieldTypes {
     updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    updatePage: NexusGenRootTypes['PagePayload']; // PagePayload!
+    updatePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1450,6 +1496,42 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
+  };
+  Page: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
+    citySlug: string; // String!
+    content: string; // String!
+    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    index: number; // Int!
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+    state: NexusGenEnums['PageState']; // PageState!
+  };
+  PagePayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['Page'] | null; // Page
+    success: boolean; // Boolean!
+  };
+  PagesGroup: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    companySlug: string; // String!
+    index: number; // Int!
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showInFooter: boolean; // Boolean!
+    showInHeader: boolean; // Boolean!
+  };
+  PagesGroupPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['PagesGroup'] | null; // PagesGroup
+    success: boolean; // Boolean!
   };
   PointGeoJSON: {
     // field return type
@@ -2251,6 +2333,8 @@ export interface NexusGenFieldTypeNames {
     createMetric: 'MetricPayload';
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
+    createPage: 'PagePayload';
+    createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
     createRole: 'RolePayload';
@@ -2272,6 +2356,8 @@ export interface NexusGenFieldTypeNames {
     deleteNavItem: 'NavItemPayload';
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
+    deletePage: 'PagePayload';
+    deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
     deleteProductFromConnection: 'ProductPayload';
@@ -2308,6 +2394,8 @@ export interface NexusGenFieldTypeNames {
     updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
+    updatePage: 'PagePayload';
+    updatePagesGroup: 'PagesGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
     updateProductBrand: 'ProductPayload';
@@ -2442,6 +2530,42 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     slug: 'String';
     updatedAt: 'Date';
+  };
+  Page: {
+    // field return type name
+    _id: 'ObjectId';
+    assetKeys: 'String';
+    citySlug: 'String';
+    content: 'String';
+    descriptionI18n: 'JSONObject';
+    index: 'Int';
+    name: 'String';
+    nameI18n: 'JSONObject';
+    pagesGroupId: 'ObjectId';
+    slug: 'String';
+    state: 'PageState';
+  };
+  PagePayload: {
+    // field return type name
+    message: 'String';
+    payload: 'Page';
+    success: 'Boolean';
+  };
+  PagesGroup: {
+    // field return type name
+    _id: 'ObjectId';
+    companySlug: 'String';
+    index: 'Int';
+    name: 'String';
+    nameI18n: 'JSONObject';
+    showInFooter: 'Boolean';
+    showInHeader: 'Boolean';
+  };
+  PagesGroupPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'PagesGroup';
+    success: 'Boolean';
   };
   PointGeoJSON: {
     // field return type name
@@ -2975,6 +3099,14 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOptionsGroupInput']; // CreateOptionsGroupInput!
     };
+    createPage: {
+      // args
+      input: NexusGenInputs['CreatePageInput']; // CreatePageInput!
+    };
+    createPagesGroup: {
+      // args
+      input: NexusGenInputs['CreatePagesGroupInput']; // CreatePagesGroupInput!
+    };
     createProduct: {
       // args
       input: NexusGenInputs['CreateProductInput']; // CreateProductInput!
@@ -3056,6 +3188,14 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['DeleteOptionFromGroupInput']; // DeleteOptionFromGroupInput!
     };
     deleteOptionsGroup: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deletePage: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deletePagesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
@@ -3202,6 +3342,14 @@ export interface NexusGenArgTypes {
     updateOptionsGroup: {
       // args
       input: NexusGenInputs['UpdateOptionsGroupInput']; // UpdateOptionsGroupInput!
+    };
+    updatePage: {
+      // args
+      input: NexusGenInputs['UpdatePageInput']; // UpdatePageInput!
+    };
+    updatePagesGroup: {
+      // args
+      input: NexusGenInputs['UpdatePagesGroupInput']; // UpdatePagesGroupInput!
     };
     updateProduct: {
       // args
@@ -3488,6 +3636,8 @@ export interface NexusGenAbstractTypeMembers {
     | 'MetricPayload'
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
+    | 'PagePayload'
+    | 'PagesGroupPayload'
     | 'ProductPayload'
     | 'RolePayload'
     | 'RoleRulePayload'
@@ -3543,6 +3693,8 @@ export interface NexusGenTypeInterfaces {
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';
   OrderStatus: 'Timestamp';
+  PagePayload: 'Payload';
+  PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
   ProductPayload: 'Payload';
   Role: 'Timestamp';

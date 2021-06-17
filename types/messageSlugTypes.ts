@@ -385,6 +385,42 @@ export type MessageSlug =
   | 'validation.rubrics.keyword'
   | 'validation.rubrics.gender'
 
+  // Page groups ----------
+  | 'pageGroups.create.error'
+  | 'pageGroups.create.duplicate'
+  | 'pageGroups.create.success'
+  | 'pageGroups.update.notFound'
+  | 'pageGroups.update.duplicate'
+  | 'pageGroups.update.error'
+  | 'pageGroups.update.success'
+  | 'pageGroups.delete.notFound'
+  | 'pageGroups.delete.error'
+  | 'pageGroups.delete.success'
+
+  // Page groups validation
+  | 'validation.pageGroups.id'
+  | 'validation.pageGroups.name'
+  | 'validation.pageGroups.index'
+  | 'validation.pageGroups.companySlug'
+
+  // Pages ----------
+  | 'pages.create.error'
+  | 'pages.create.duplicate'
+  | 'pages.create.success'
+  | 'pages.update.notFound'
+  | 'pages.update.duplicate'
+  | 'pages.update.error'
+  | 'pages.update.success'
+  | 'pages.delete.notFound'
+  | 'pages.delete.error'
+  | 'pages.delete.success'
+
+  // Pages validation
+  | 'validation.pages.id'
+  | 'validation.pages.name'
+  | 'validation.pages.index'
+  | 'validation.pages.citySlug'
+
   // Products ----------
   | 'products.create.error'
   | 'products.create.success'

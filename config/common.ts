@@ -1,4 +1,7 @@
 // ID Counters
+import { Value } from '@react-page/editor';
+import { PageStateModel } from '../db/dbModels';
+
 export const DEFAULT_ID_COUNTER = 1;
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
@@ -62,6 +65,7 @@ export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 // Routes
+export const ROUTE_DOCS_PAGES = '/docs';
 export const ROUTE_CONSOLE = '/console';
 export const ROUTE_CMS = `/cms`;
 export const ROUTE_CONSOLE_NAV_GROUP = 'console';
@@ -167,15 +171,15 @@ export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
 // COUNTERS
 export const DEFAULT_PRIORITY = 1;
 export const VIEWS_COUNTER_STEP = 1;
-export const CONFIG_DEFAULT_COMPANY_SLUG = 'default';
+export const DEFAULT_COMPANY_SLUG = 'default';
 export const DEFAULT_COUNTERS_OBJECT = {
   priorities: {
-    [CONFIG_DEFAULT_COMPANY_SLUG]: {
+    [DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,
     },
   },
   views: {
-    [CONFIG_DEFAULT_COMPANY_SLUG]: {
+    [DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,
     },
   },
@@ -268,9 +272,21 @@ export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';
 export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_CONFIGS = 'configs';
+export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
+
+// PAGES
+export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
+export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
+export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
+export const PAGE_EDITOR_DEFAULT_VALUE_STRING = '{"id":"1","version":1,"rows":[]}';
+export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
+  id: '1',
+  version: 1,
+  rows: [],
+};
 
 // Alphabets
 export const ALPHABET_EN = [

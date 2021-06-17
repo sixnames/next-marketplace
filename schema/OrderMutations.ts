@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import {
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   ORDER_LOG_VARIANT_STATUS,
   ORDER_STATUS_PENDING,
   ROLE_SLUG_GUEST,
@@ -66,7 +66,7 @@ export const MakeAnOrderInput = inputObjectType({
     t.nonNull.phone('phone');
     t.nonNull.email('email');
     t.string('comment');
-    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+    t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
   },
 });
 

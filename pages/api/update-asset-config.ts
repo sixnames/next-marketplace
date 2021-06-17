@@ -1,6 +1,6 @@
 import {
   ASSETS_DIST_CONFIGS,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
 } from 'config/common';
@@ -46,8 +46,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       req,
       res,
     },
-    slug:
-      config.companySlug === CONFIG_DEFAULT_COMPANY_SLUG ? 'updateConfig' : 'updateCompanyConfig',
+    slug: config.companySlug === DEFAULT_COMPANY_SLUG ? 'updateConfig' : 'updateCompanyConfig',
   });
   if (!allow) {
     res.status(500).send({

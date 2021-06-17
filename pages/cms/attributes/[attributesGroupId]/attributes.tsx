@@ -5,7 +5,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModa
 import Table, { TableColumn } from 'components/Table/Table';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modals';
+import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
   AddAttributeToGroupInput,

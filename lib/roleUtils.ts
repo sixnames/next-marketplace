@@ -88,6 +88,14 @@ export type RoleRuleSlugType =
   | 'deleteOrder'
 
   // Product
+  | 'createPagesGroup' // done
+  | 'updatePagesGroup' // done
+  | 'deletePagesGroup' // done
+  | 'createPage' // done
+  | 'updatePage' // done
+  | 'deletePage' // done
+
+  // Product
   | 'createProduct' // done
   | 'updateProduct' // done
   | 'deleteProduct' // done
@@ -589,6 +597,56 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление товара',
+    },
+  },
+
+  // Page
+  {
+    allow: false,
+    slug: 'createPagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание группы старниц',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updatePagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление группы старниц',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deletePagesGroup',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление группы старниц',
+    },
+  },
+  {
+    allow: false,
+    slug: 'createPage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание старницы',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updatePage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление старницы',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deletePage',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление старницы',
     },
   },
 

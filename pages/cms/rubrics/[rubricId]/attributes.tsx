@@ -8,7 +8,7 @@ import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAt
 import Table, { TableColumn } from 'components/Table/Table';
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modals';
+import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';

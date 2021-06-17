@@ -29,6 +29,8 @@ export * from './RubricAttributesGroup';
 export * from './RubricQueries';
 export * from './RubricMutations';
 export * from './SelectOption';
+export * from './PagesGroup';
+export * from './Page';
 export * from './Product';
 export * from './ProductQueries';
 export * from './ProductMutations';

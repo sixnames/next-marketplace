@@ -2,11 +2,10 @@ import { ASSETS_DIST_PRODUCTS } from 'config/common';
 import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ProductAssetsModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue } from 'lib/apiMessageUtils';
 import { getMainImage, storeRestApiUploads } from 'lib/assets';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
-import { getOperationPermission } from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -39,15 +38,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
   const formData = await parseRestApiFormData(req);
-  const { locale } = req.cookies;
+  const { getApiMessage } = await getRequestParams({
+    req,
+    res,
+  });
 
   if (!formData || !formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
@@ -61,10 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!product || !initialAssets) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
@@ -84,10 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!assets) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
@@ -113,10 +106,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
@@ -139,10 +129,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!updatedProductMainImageResult.ok || !updatedProductMainImage) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
@@ -160,19 +147,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!updatedShopProductsResult.result.ok) {
     res.status(500).send({
       success: false,
-      message: await getApiMessageValue({
-        slug: 'products.update.error',
-        locale,
-      }),
+      message: await getApiMessage('products.update.error'),
     });
     return;
   }
 
   res.status(200).send({
     success: true,
-    message: await getApiMessageValue({
-      slug: 'products.update.success',
-      locale,
-    }),
+    message: await getApiMessage('products.update.success'),
   });
 };

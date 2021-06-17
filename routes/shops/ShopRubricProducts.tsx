@@ -12,7 +12,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modals';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -219,7 +219,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        <FormikRouterSearch />
+        <FormikRouterSearch testId={'products'} />
 
         <div className={`max-w-full`}>
           {withProducts ? (

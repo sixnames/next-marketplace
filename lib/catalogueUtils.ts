@@ -31,7 +31,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGINATION_DEFAULT_LIMIT,
@@ -531,7 +531,7 @@ export const getCatalogueData = async ({
   locale,
   city,
   input,
-  companySlug = CONFIG_DEFAULT_COMPANY_SLUG,
+  companySlug = DEFAULT_COMPANY_SLUG,
   companyId,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -543,7 +543,7 @@ export const getCatalogueData = async ({
 
     // Args
     const { filters, page, rubricSlug } = input;
-    const realCompanySlug = companySlug || CONFIG_DEFAULT_COMPANY_SLUG;
+    const realCompanySlug = companySlug || DEFAULT_COMPANY_SLUG;
 
     // Get configs
     // const configsTimeStart = new Date().getTime();

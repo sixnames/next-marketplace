@@ -11,7 +11,7 @@ import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
 import {
   COL_CITIES,
   COL_COMPANIES,
@@ -151,7 +151,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     <CmsCompanyLayout company={currentCompany}>
       <Inner testId={'company-shops-list'}>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
-        <FormikRouterSearch />
+        <FormikRouterSearch testId={'shops'} />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>

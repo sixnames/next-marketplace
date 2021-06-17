@@ -622,6 +622,35 @@ export interface UserModel extends BaseModel, TimestampModel {
   cartId?: ObjectIdModel | null;
 }
 
+// Pages
+export interface PagesGroupModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  index: number;
+  companySlug: string;
+  showInFooter: boolean;
+  showInHeader: boolean;
+}
+
+// Page state enum
+export enum PageStateModel {
+  draft = 'draft',
+  published = 'published',
+}
+
+export interface PageModel extends TimestampModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel | null;
+  index: number;
+  slug: string;
+  citySlug: string;
+  assetKeys: string[];
+  pagesGroupId: ObjectIdModel;
+  content: string;
+  state: PageStateModel;
+}
+
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;
@@ -643,6 +672,8 @@ export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
+export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
+export type PagePayloadModel = PayloadType<PageModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;

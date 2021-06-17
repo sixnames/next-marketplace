@@ -170,6 +170,17 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-pages`),
+    nameI18n: {
+      ru: 'Страницы',
+      en: 'Pages',
+    },
+    index: 11,
+    slug: 'cms-pages',
+    path: `${ROUTE_CMS}/pages`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-config`),
     nameI18n: {
       ru: 'Настройки сайта',

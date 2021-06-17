@@ -3,7 +3,11 @@ import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, QUERY_FILTER_PAGE } from 'con
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-const FormikRouterSearch: React.FC = () => {
+interface FormikRouterSearchInterface {
+  testId: string;
+}
+
+const FormikRouterSearch: React.FC<FormikRouterSearchInterface> = ({ testId }) => {
   const router = useRouter();
 
   const initialValue = React.useMemo(() => {
@@ -34,7 +38,7 @@ const FormikRouterSearch: React.FC = () => {
   return (
     <FormikIndividualSearch
       initialValue={initialValue}
-      testId={'products'}
+      testId={testId}
       onReset={() => {
         router.push(basePath).catch((e) => console.log(e));
       }}

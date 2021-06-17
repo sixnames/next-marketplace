@@ -490,6 +490,22 @@ input CreateOptionsGroupInput {
   variant: OptionsGroupVariant!
 }
 
+input CreatePageInput {
+  citySlug: String!
+  descriptionI18n: JSONObject
+  index: Int!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+}
+
+input CreatePagesGroupInput {
+  companySlug: String!
+  index: Int!
+  nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
+}
+
 input CreateProductConnectionInput {
   attributeId: ObjectId!
   productId: ObjectId!
@@ -873,6 +889,16 @@ type Mutation {
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayload!
 
   """
+  Should crate page
+  """
+  createPage(input: CreatePageInput!): PagePayload!
+
+  """
+  Should create pages group
+  """
+  createPagesGroup(input: CreatePagesGroupInput!): PagesGroupPayload!
+
+  """
   Should create product
   """
   createProduct(input: CreateProductInput!): ProductPayload!
@@ -976,6 +1002,16 @@ type Mutation {
   Should delete options group
   """
   deleteOptionsGroup(_id: ObjectId!): OptionsGroupPayload!
+
+  """
+  Should delete page
+  """
+  deletePage(_id: ObjectId!): PagePayload!
+
+  """
+  Should delete pages group
+  """
+  deletePagesGroup(_id: ObjectId!): PagesGroupPayload!
 
   """
   Should update product assets
@@ -1156,6 +1192,16 @@ type Mutation {
   Should update options group
   """
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayload!
+
+  """
+  Should update page
+  """
+  updatePage(input: UpdatePageInput!): PagePayload!
+
+  """
+  Should update pages group
+  """
+  updatePagesGroup(input: UpdatePagesGroupInput!): PagesGroupPayload!
 
   """
   Should update product
@@ -1402,6 +1448,50 @@ type OrderStatus implements Timestamp {
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
+}
+
+type Page {
+  _id: ObjectId!
+  assetKeys: [String!]!
+  citySlug: String!
+  content: String!
+  descriptionI18n: JSONObject
+  index: Int!
+  name: String!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+  slug: String!
+  state: PageState!
+}
+
+type PagePayload implements Payload {
+  message: String!
+  payload: Page
+  success: Boolean!
+}
+
+"""
+Page state enum.
+"""
+enum PageState {
+  draft
+  published
+}
+
+type PagesGroup {
+  _id: ObjectId!
+  companySlug: String!
+  index: Int!
+  name: String!
+  nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
+}
+
+type PagesGroupPayload implements Payload {
+  message: String!
+  payload: PagesGroup
+  success: Boolean!
 }
 
 input PaginationInput {
@@ -2248,6 +2338,25 @@ input UpdateOptionsGroupInput {
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   variant: OptionsGroupVariant!
+}
+
+input UpdatePageInput {
+  _id: ObjectId!
+  citySlug: String!
+  content: String!
+  descriptionI18n: JSONObject
+  index: Int!
+  nameI18n: JSONObject!
+  pagesGroupId: ObjectId!
+  state: PageState!
+}
+
+input UpdatePagesGroupInput {
+  _id: ObjectId!
+  index: Int!
+  nameI18n: JSONObject!
+  showInFooter: Boolean!
+  showInHeader: Boolean!
 }
 
 input UpdateProductAssetIndexInput {

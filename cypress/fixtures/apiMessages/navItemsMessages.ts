@@ -34,28 +34,28 @@ export const navItemsMessages: MessageBaseInterface[] = [
     slug: 'navItems.update.error',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка обновления страницы.`,
-      [SECONDARY_LOCALE]: `Language update error.`,
+      [SECONDARY_LOCALE]: `Page update error.`,
     },
   },
   {
     slug: 'navItems.update.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Страница обновлёна.`,
-      [SECONDARY_LOCALE]: `Language updated.`,
+      [SECONDARY_LOCALE]: `Page updated.`,
     },
   },
   {
     slug: 'navItems.delete.error',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка удаления страницы.`,
-      [SECONDARY_LOCALE]: `Language delete error.`,
+      [SECONDARY_LOCALE]: `Page delete error.`,
     },
   },
   {
     slug: 'navItems.delete.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Страница удалёна.`,
-      [SECONDARY_LOCALE]: `Language removed.`,
+      [SECONDARY_LOCALE]: `Page removed.`,
     },
   },
   {
@@ -83,7 +83,7 @@ export const navItemsMessages: MessageBaseInterface[] = [
     slug: 'validation.navItems.path',
     messageI18n: {
       [DEFAULT_LOCALE]: `Путь страницы обязателен к заполнению`,
-      [SECONDARY_LOCALE]: ` is required`,
+      [SECONDARY_LOCALE]: `Path is required`,
     },
   },
   {
@@ -96,7 +96,7 @@ export const navItemsMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.navItems.index',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Порадковый номер страницы обязателен к заполнению`,
+      [DEFAULT_LOCALE]: `Порядковый номер страницы обязателен к заполнению`,
       [SECONDARY_LOCALE]: `Index is required`,
     },
   },

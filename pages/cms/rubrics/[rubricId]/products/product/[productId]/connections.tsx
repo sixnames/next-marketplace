@@ -9,7 +9,7 @@ import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';
 import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,

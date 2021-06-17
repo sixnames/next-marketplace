@@ -92,9 +92,30 @@
     box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
   }
 
-  /* Header nav */
+  /* Header */
   .header-aside {
     width: calc((100% - (var(--logo-width) + 2rem)) / 2);
+  }
+
+  .header-sub-nav-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: block;
+    min-width: 100%;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .header-sub-nav:not(:hover) .header-sub-nav-list {
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0s;
   }
 
   .header-hidden-dropdown {
@@ -682,4 +703,79 @@ html [data-reach-menu], html [data-reach-menu-popover] {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/*Page editor*/
+.react-page-row h1,
+.react-page-row h2,
+.react-page-row h3,
+.react-page-row h4,
+.react-page-row h5,
+.react-page-row h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.react-page-row h1 {
+  font-size: 2rem;
+}
+
+.react-page-row h2 {
+  font-size: 1.75rem;
+}
+
+.react-page-row h3 {
+  font-size: 1.5rem;
+}
+
+.react-page-row h4 {
+  font-size: 1.35rem;
+}
+
+.react-page-row h5 {
+  font-size: 1.175rem;
+}
+
+.react-page-row h6 {
+  font-size: 1rem;
+}
+
+.react-page-row p {
+  line-height: 1.6;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.react-page-row blockquote {
+  display: block;
+  line-height: 1.6;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--secondaryBackground);
+  border-radius: 0.5rem;
+}
+
+.react-page-row ul,
+.react-page-row ul li {
+  list-style: disc;
+  list-style-position: inside;
+}
+
+.react-page-row ol,
+.react-page-row ol li {
+  list-style: decimal;
+  list-style-position: inside;
+}
+
+.react-page-row ul {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.react-page-row li {
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }

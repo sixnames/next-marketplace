@@ -6,7 +6,7 @@ import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswor
 import RequestError from 'components/RequestError/RequestError';
 import Title from 'components/Title/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
-import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
 import {
@@ -31,16 +31,10 @@ import { signOut } from 'next-auth/client';
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
   const { me } = useUserContext();
-  const {
-    onErrorCallback,
-    showModal,
-    showLoading,
-    showErrorNotification,
-    hideLoading,
-    hideModal,
-  } = useMutationCallbacks({
-    withModal: true,
-  });
+  const { onErrorCallback, showModal, showLoading, showErrorNotification, hideLoading, hideModal } =
+    useMutationCallbacks({
+      withModal: true,
+    });
   const [updateMyProfileMutation] = useUpdateMyProfileMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {

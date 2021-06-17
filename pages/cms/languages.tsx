@@ -10,7 +10,7 @@ import {
 import Table, { TableColumn } from 'components/Table/Table';
 import Title from 'components/Title/Title';
 import { SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, LANGUAGE_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, LANGUAGE_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_LANGUAGES } from 'db/collectionNames';
 import { LanguageModel } from 'db/dbModels';

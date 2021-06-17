@@ -17,10 +17,10 @@ export const NavItem = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+    t.nonNull.int('index');
     t.nonNull.string('slug');
     t.nonNull.string('path');
     t.nonNull.string('navGroup');
-    t.nonNull.int('index');
     t.string('icon');
     t.objectId('parentId');
 

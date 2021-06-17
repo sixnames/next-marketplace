@@ -1,5 +1,5 @@
-import { ADULT_FALSE, ADULT_KEY, CONFIG_DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
-import { ADULT_MODAL } from 'config/modals';
+import { ADULT_FALSE, ADULT_KEY, DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
+import { ADULT_MODAL } from 'config/modalVariants';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
@@ -38,7 +38,7 @@ const AppContext = React.createContext<AppContextType>({
     isMobile: false,
     isLoading: false,
     sessionCity: DEFAULT_CITY,
-    companySlug: CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug: DEFAULT_COMPANY_SLUG,
   },
 });
 
@@ -59,7 +59,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
     isModal: defaultModalState,
     isLoading: false,
     sessionCity: sessionCity || DEFAULT_CITY,
-    companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   }));
 
   React.useEffect(() => {

@@ -1,5 +1,5 @@
 // import { ONE_WEEK } from '../config/common';
-import * as products from '../cypress/fixtures/data/products/products';
+import products from '../cypress/fixtures/data/products/products';
 const EasyYandexS3 = require('easy-yandex-s3');
 const mkdirp = require('mkdirp');
 const path = require('path');

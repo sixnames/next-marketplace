@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
-import { CartInterface } from 'db/uiInterfaces';
+import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -27,6 +27,7 @@ import {
   ROUTE_CMS,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
+  ROUTE_DOCS_PAGES,
 } from 'config/common';
 
 interface HeaderSearchTriggerInterface {
@@ -328,8 +329,12 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
+interface HeaderInterface {
+  headerPageGroups: PagesGroupInterface[];
+}
+
 const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
-const Header: React.FC = () => {
+const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -363,17 +368,47 @@ const Header: React.FC = () => {
         style={headerVars}
         ref={headerRef}
       >
-        <Inner
-          className='hidden relative z-[10] h-[30px] items-center justify-between lg:flex'
-          lowBottom
-          lowTop
-        >
-          <ThemeTrigger />
-          <LanguageTrigger />
-        </Inner>
+        <div className='relative z-[10] bg-secondary'>
+          <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
+            <div className='flex items-center'>
+              {headerPageGroups.map(({ name, _id, pages }) => {
+                return (
+                  <div
+                    key={`${_id}`}
+                    className='header-sub-nav font-sm relative mr-6 cursor-pointer'
+                  >
+                    <div className='flex items-center h-[30px] text-secondary-text'>{name}</div>
+                    <ul className='header-sub-nav-list rounded-md bg-secondary shadow-md'>
+                      {(pages || []).map(({ name, slug, _id }) => {
+                        return (
+                          <li className='' key={`${_id}`}>
+                            <Link
+                              target={'_blank'}
+                              className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
+                              href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                            >
+                              {name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className='flex items-center'>
+              <ThemeTrigger />
+              <div className='ml-6'>
+                <LanguageTrigger />
+              </div>
+            </div>
+          </Inner>
+        </div>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:pt-2 lg:pt-4'>
+          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>

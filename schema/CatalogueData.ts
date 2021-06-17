@@ -38,7 +38,7 @@ import {
   CATALOGUE_BRAND_KEY,
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -60,7 +60,7 @@ export const CatalogueSearchTopItemsInput = inputObjectType({
   name: 'CatalogueSearchTopItemsInput',
   definition(t) {
     t.objectId('companyId');
-    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+    t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
   },
 });
 
@@ -69,7 +69,7 @@ export const CatalogueSearchInput = inputObjectType({
   definition(t) {
     t.nonNull.string('search');
     t.objectId('companyId');
-    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+    t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
   },
 });
 
@@ -572,7 +572,7 @@ export const CatalogueQueries = extendType({
 export const CatalogueDataInput = inputObjectType({
   name: 'CatalogueDataInput',
   definition(t) {
-    t.string('companySlug', { default: CONFIG_DEFAULT_COMPANY_SLUG });
+    t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
     t.nonNull.list.nonNull.string('filter');
     t.nonNull.string('rubricSlug');
   },
@@ -598,17 +598,14 @@ export const CatalogueMutations = extendType({
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection = db.collection<RubricAttributeModel>(
-            COL_RUBRIC_ATTRIBUTES,
-          );
-          const productAttributesCollection = db.collection<ProductAttributeModel>(
-            COL_PRODUCT_ATTRIBUTES,
-          );
+          const rubricAttributesCollection =
+            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const brandCollectionsCollection = db.collection<BrandCollectionModel>(
-            COL_BRAND_COLLECTIONS,
-          );
+          const brandCollectionsCollection =
+            db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
 
           // Args

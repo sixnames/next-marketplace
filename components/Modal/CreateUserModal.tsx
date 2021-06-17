@@ -31,7 +31,7 @@ const CreateUserModal: React.FC<CreateUserModalInterface> = ({ roles }) => {
 
   return (
     <ModalFrame testId={'create-user-modal'}>
-      <ModalTitle>Добавление рубрики</ModalTitle>
+      <ModalTitle>Создание пользователя</ModalTitle>
 
       <Formik<CreateUserInput>
         validationSchema={validationSchema}

@@ -1,7 +1,7 @@
 import {
   CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
   CATALOGUE_NAV_VISIBLE_OPTIONS,
-  CONFIG_DEFAULT_COMPANY_SLUG,
+  DEFAULT_COMPANY_SLUG,
   COOKIE_CITY,
   COOKIE_COMPANY_SLUG,
   COOKIE_LOCALE,
@@ -16,6 +16,7 @@ import {
   ROUTE_SIGN_IN,
   SORT_ASC,
   SORT_DESC,
+  PAGE_STATE_PUBLISHED,
 } from 'config/common';
 import {
   COL_CITIES,
@@ -24,6 +25,8 @@ import {
   COL_COUNTRIES,
   COL_LANGUAGES,
   COL_NAV_ITEMS,
+  COL_PAGES,
+  COL_PAGES_GROUP,
   COL_ROLES,
   COL_SHOP_PRODUCTS,
   COL_USERS,
@@ -40,8 +43,18 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CityInterface, ConfigInterface, RubricInterface, UserInterface } from 'db/uiInterfaces';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import {
+  CityInterface,
+  ConfigInterface,
+  PageInterface,
+  PagesGroupInterface,
+  RubricInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'layout/SiteLayoutProvider';
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
@@ -71,7 +84,7 @@ export const getCatalogueNavRubrics = async ({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const companySlug = company?.slug || CONFIG_DEFAULT_COMPANY_SLUG;
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // Get configs
   const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
@@ -189,7 +202,7 @@ export const getPageInitialData = async ({
     .aggregate([
       {
         $match: {
-          companySlug: companySlug || CONFIG_DEFAULT_COMPANY_SLUG,
+          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
         },
       },
       {
@@ -468,7 +481,7 @@ export async function getPageInitialState({
   const initialData = castDbData(rawInitialData);
 
   // Set company slug as a cookie
-  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG, {
+  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : DEFAULT_COMPANY_SLUG, {
     httpOnly: true,
     path: '/',
     sameSite: 'strict',
@@ -496,7 +509,7 @@ export async function getPageInitialState({
     session,
     initialData,
     company: castDbData(company),
-    companySlug: company ? company.slug : CONFIG_DEFAULT_COMPANY_SLUG,
+    companySlug: company ? company.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
     sessionUser,
@@ -685,6 +698,100 @@ export function castDbData(data: any): any {
   return JSON.parse(JSON.stringify(data));
 }
 
+interface GetCatalogueCreatedPagesInterface {
+  companySlug: string;
+  sessionLocale: string;
+  sessionCity: string;
+}
+
+async function getCatalogueCreatedPages({
+  companySlug,
+  sessionCity,
+  sessionLocale,
+}: GetCatalogueCreatedPagesInterface): Promise<SiteLayoutCatalogueCreatedPages> {
+  const { db } = await getDatabase();
+  const pageGroupsCollection = db.collection<PagesGroupInterface>(COL_PAGES_GROUP);
+  const pageGroupsAggregationInterface = await pageGroupsCollection
+    .aggregate([
+      {
+        $match: {
+          companySlug,
+        },
+      },
+      {
+        $sort: {
+          index: SORT_ASC,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_PAGES,
+          as: 'pages',
+          let: {
+            pagesGroupId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                citySlug: sessionCity,
+                state: PAGE_STATE_PUBLISHED,
+                $expr: {
+                  $eq: ['$pagesGroupId', '$$pagesGroupId'],
+                },
+              },
+            },
+            {
+              $sort: {
+                index: SORT_ASC,
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  const initialHeaderPageGroups: PagesGroupInterface[] = [];
+  const initialFooterPageGroups: PagesGroupInterface[] = [];
+
+  pageGroupsAggregationInterface.forEach((pagesGroup) => {
+    const castedPagesGroup = {
+      ...pagesGroup,
+      name: getI18nLocaleValue(pagesGroup.nameI18n, sessionLocale),
+      pages: (pagesGroup.pages || []).reduce((acc: PageInterface[], page) => {
+        const content = JSON.parse(page.content);
+        if ((content.rows || []).length < 1) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            ...page,
+            name: getI18nLocaleValue(page.nameI18n, sessionLocale),
+          },
+        ];
+      }, []),
+    };
+    if (castedPagesGroup.pages.length < 1) {
+      return;
+    }
+
+    if (castedPagesGroup.showInHeader) {
+      initialHeaderPageGroups.push(castedPagesGroup);
+    }
+
+    if (castedPagesGroup.showInFooter) {
+      initialFooterPageGroups.push(castedPagesGroup);
+    }
+  });
+
+  return {
+    headerPageGroups: castDbData(initialHeaderPageGroups),
+    footerPageGroups: castDbData(initialFooterPageGroups),
+  };
+}
+
 export interface GetSiteInitialDataInterface {
   context: GetServerSidePropsContext;
 }
@@ -721,11 +828,17 @@ export async function getSiteInitialData({
     company,
   });
   const navRubrics = castDbData(rawNavRubrics);
+  const catalogueCreatedPages = await getCatalogueCreatedPages({
+    sessionCity,
+    sessionLocale,
+    companySlug,
+  });
 
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {
     props: {
+      ...catalogueCreatedPages,
       companySlug,
       initialData,
       navRubrics,

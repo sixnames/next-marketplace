@@ -1,4 +1,4 @@
-import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
+import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';

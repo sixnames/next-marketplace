@@ -5,7 +5,7 @@ import ControlButton from 'components/Buttons/ControlButton';
 import Currency from 'components/Currency/Currency';
 import ErrorBoundaryFallback from 'components/ErrorBoundary/ErrorBoundaryFallback';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
-import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
+import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner/Inner';
 import TagLink from 'components/Link/TagLink';
 import OrderStepsDescription from 'components/OrderStepsDescription';

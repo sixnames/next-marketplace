@@ -127,7 +127,7 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                   />
 
                   <InputLine labelTag={'div'}>
-                    <Button type={'submit'} testId={'submit-user'}>
+                    <Button type={'submit'} testId={'submit-page'}>
                       Сохранить
                     </Button>
                   </InputLine>

@@ -43,7 +43,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
   });
 
   return (
-    <ModalFrame testId={'create-pages-group-modal'}>
+    <ModalFrame testId={'pages-group-modal'}>
       <ModalTitle>
         {pagesGroup ? 'Обновление группы старниц' : 'Создание группы страниц'}
       </ModalTitle>
@@ -109,12 +109,20 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                 isRequired
               />
 
-              <FormikCheckboxLine label={'Показывать в шапке сайта'} name={'showInHeader'} />
+              <FormikCheckboxLine
+                label={'Показывать в шапке сайта'}
+                name={'showInHeader'}
+                testId={'showInHeader'}
+              />
 
-              <FormikCheckboxLine label={'Показывать в футере сайта'} name={'showInFooter'} />
+              <FormikCheckboxLine
+                label={'Показывать в футере сайта'}
+                name={'showInFooter'}
+                testId={'showInFooter'}
+              />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-user'}>
+                <Button type={'submit'} testId={'submit-pages-group'}>
                   {pagesGroup ? 'Сохранить' : 'Создать'}
                 </Button>
                 <Button theme={'secondary'} onClick={hideModal}>

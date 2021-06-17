@@ -1,6 +1,7 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
 import Table, { TableColumn } from 'components/Table/Table';
@@ -42,7 +43,17 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
     {
       accessor: 'name',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return (
+          <Link
+            testId={`${cellData}-link`}
+            className='text-primary-text hover:no-underline hover:text-link-text'
+            href={`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`}
+          >
+            {cellData}
+          </Link>
+        );
+      },
     },
     {
       accessor: 'index',
@@ -64,6 +75,7 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              testId={`${dataItem.name}`}
               deleteTitle={'Удалить страницу'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
@@ -96,7 +108,7 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'pages-list'}>
       <Inner>
         <Title>{pagesGroup.name}</Title>
         <div className='relative'>
@@ -115,6 +127,7 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
 
           <FixedButtons>
             <Button
+              testId={'create-page'}
               size={'small'}
               onClick={() => {
                 showModal<CreatePageModalInterface>({

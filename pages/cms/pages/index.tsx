@@ -1,6 +1,7 @@
 import Button from 'components/Buttons/Button';
 import FixedButtons from 'components/Buttons/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table/Table';
@@ -53,7 +54,17 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
     {
       accessor: 'name',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return (
+          <Link
+            testId={`${cellData}-link`}
+            className='text-primary-text hover:no-underline hover:text-link-text'
+            href={`${ROUTE_CMS}/pages/${dataItem._id}`}
+          >
+            {cellData}
+          </Link>
+        );
+      },
     },
     {
       accessor: 'index',
@@ -120,6 +131,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
 
           <FixedButtons>
             <Button
+              testId={'create-pages-group'}
               size={'small'}
               onClick={() => {
                 showModal<PagesGroupModalInterface>({

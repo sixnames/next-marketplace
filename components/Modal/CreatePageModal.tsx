@@ -116,7 +116,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-user'}>
+                <Button type={'submit'} testId={'submit-page'}>
                   Создать
                 </Button>
                 <Button theme={'secondary'} onClick={hideModal}>

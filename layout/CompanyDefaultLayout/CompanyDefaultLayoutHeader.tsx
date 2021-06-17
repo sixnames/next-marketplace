@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CounterSticker from 'components/CounterSticker/CounterSticker';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
-import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
+import LanguageTrigger from 'components/LanguageTrigger';
 import Link from 'components/Link/Link';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import {

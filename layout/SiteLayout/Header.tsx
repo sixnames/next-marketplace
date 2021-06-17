@@ -1,5 +1,5 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import LanguageTrigger from 'components/LanguageTrigger/LanguageTrigger';
+import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
 import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';

@@ -1,12 +1,13 @@
 import * as React from 'react';
-import classes from './MenuButtonWithName.module.css';
-import ReachMenuButton, { MenuButtonInterface } from './ReachMenuButton';
-import Icon from '../Icon/Icon';
+import HeadlessMenuButton, { MenuButtonInterface } from 'components/HeadlessMenuButton';
+import Icon from 'components/Icon/Icon';
 
 export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {
   iconPosition?: 'left' | 'right';
   frameClassName?: string;
 }
+
+const iconClassName = 'w-3 h-3';
 
 const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   className,
@@ -16,25 +17,27 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   initialValue,
 }) => {
   return (
-    <div
-      className={`${classes.frame} ${
-        iconPosition === 'left' ? classes.iconPositionLeft : classes.iconPositionRight
-      } ${frameClassName ? frameClassName : ''}`}
-    >
-      <ReachMenuButton
+    <div className={`text-primary ${frameClassName ? frameClassName : ''}`}>
+      <HeadlessMenuButton
         config={config}
         className={className}
         initialValue={initialValue}
         buttonText={({ internalButtonText, isOpen }) => (
-          <React.Fragment>
+          <span className='uppercase text-primary-text flex items-center'>
             {iconPosition === 'left' ? (
-              <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} />
+              <Icon
+                className={`${iconClassName} mr-2`}
+                name={isOpen ? 'chevron-up' : 'chevron-down'}
+              />
             ) : null}
             {internalButtonText}
             {iconPosition === 'right' ? (
-              <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} />
+              <Icon
+                className={`${iconClassName} ml-2`}
+                name={isOpen ? 'chevron-up' : 'chevron-down'}
+              />
             ) : null}
-          </React.Fragment>
+          </span>
         )}
       />
     </div>

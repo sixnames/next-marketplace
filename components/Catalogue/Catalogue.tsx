@@ -5,8 +5,8 @@ import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import ProductSnippetRow from 'components/Product/ProductSnippet/ProductSnippetRow';
-import MenuButtonSorter from 'components/ReachMenuButton/MenuButtonSorter';
-import ReachMenuButton from 'components/ReachMenuButton/ReachMenuButton';
+import MenuButtonSorter from 'components/MenuButtonSorter';
+import HeadlessMenuButton from 'components/HeadlessMenuButton';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
@@ -279,7 +279,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   >
                     Фильтр
                   </Button>
-                  <ReachMenuButton
+                  <HeadlessMenuButton
                     config={sortConfig}
                     buttonAs={'div'}
                     buttonText={() => (

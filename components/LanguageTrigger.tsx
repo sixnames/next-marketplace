@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import classes from './LanguageTrigger.module.css';
-import MenuButtonWithName from '../ReachMenuButton/MenuButtonWithName';
+import MenuButtonWithName from 'components/MenuButtonWithName';
 import { useLocaleContext } from 'context/localeContext';
 
 const LanguageTrigger: React.FC = () => {
@@ -26,10 +25,9 @@ const LanguageTrigger: React.FC = () => {
   }
 
   return (
-    <div className={classes.frame}>
+    <div className='relative'>
       <MenuButtonWithName
         initialValue={currentLocaleItem?.nativeName}
-        frameClassName={classes.button}
         config={config}
         iconPosition={'right'}
       />

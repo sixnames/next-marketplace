@@ -1,6 +1,5 @@
 import * as React from 'react';
-import classes from './MenuButtonSorter.module.css';
-import MenuButtonWithName, { MenuButtonWithNameInterface } from './MenuButtonWithName';
+import MenuButtonWithName, { MenuButtonWithNameInterface } from 'components/MenuButtonWithName';
 
 interface MenuButtonSorterInterface extends MenuButtonWithNameInterface {
   className?: string;
@@ -12,8 +11,8 @@ const MenuButtonSorter: React.FC<MenuButtonSorterInterface> = ({
   className,
 }) => {
   return (
-    <div className={`${classes.sort} ${className ? className : ''}`}>
-      <div className={classes.sortLabel}>Сортировать</div>
+    <div className={`flex items-center ${className ? className : ''}`}>
+      <div className='relative top-[-1px] text-secondary-text mr-6'>Сортировать</div>
       <MenuButtonWithName config={config} initialValue={initialValue} />
     </div>
   );

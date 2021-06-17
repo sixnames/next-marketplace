@@ -30,10 +30,6 @@ export const pagesGroupCommonFieldsSchema = (args: ValidationSchemaArgsInterface
       ...args,
       slug: 'validation.pageGroups.index',
     }),
-    companySlug: requiredStringSchema({
-      ...args,
-      slug: 'validation.pageGroups.companySlug',
-    }),
   };
 };
 
@@ -58,6 +54,10 @@ export const pageCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
 export const createPagesGroupSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     ...pagesGroupCommonFieldsSchema(args),
+    companySlug: requiredStringSchema({
+      ...args,
+      slug: 'validation.pageGroups.companySlug',
+    }),
   });
 };
 

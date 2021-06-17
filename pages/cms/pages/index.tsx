@@ -103,7 +103,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'page-groups-list'}>
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='relative'>

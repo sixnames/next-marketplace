@@ -151,7 +151,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     <CmsCompanyLayout company={currentCompany}>
       <Inner testId={'company-shops-list'}>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
-        <FormikRouterSearch />
+        <FormikRouterSearch testId={'shops'} />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
           <Table<ShopInterface>

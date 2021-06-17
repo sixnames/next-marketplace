@@ -102,7 +102,7 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                     isRequired
                   />
                   <FormikInput
-                    label={'Порадковый номер'}
+                    label={'Порядковый номер'}
                     name={'index'}
                     testId={'index'}
                     showInlineError

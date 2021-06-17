@@ -219,7 +219,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
-        <FormikRouterSearch />
+        <FormikRouterSearch testId={'products'} />
 
         <div className={`max-w-full`}>
           {withProducts ? (

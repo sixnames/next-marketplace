@@ -75,7 +75,7 @@ export const pageGroupsMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.pageGroups.index',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Порадковый номер страницы обязателен к заполнению`,
+      [DEFAULT_LOCALE]: `Порядковый номер страницы обязателен к заполнению`,
       [SECONDARY_LOCALE]: `Index is required`,
     },
   },

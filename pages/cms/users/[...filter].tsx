@@ -132,7 +132,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='relative'>
-          <FormikRouterSearch />
+          <FormikRouterSearch testId={'users'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
             <Table<UserInterface>

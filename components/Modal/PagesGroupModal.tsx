@@ -55,6 +55,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
           index: pagesGroup ? pagesGroup.index : null,
           showInFooter: pagesGroup?.showInFooter || false,
           showInHeader: pagesGroup?.showInHeader || false,
+          companySlug,
           nameI18n: pagesGroup
             ? pagesGroup.nameI18n
             : {
@@ -101,7 +102,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                 isRequired
               />
               <FormikInput
-                label={'Порадковый номер'}
+                label={'Порядковый номер'}
                 name={'index'}
                 testId={'index'}
                 type={'number'}

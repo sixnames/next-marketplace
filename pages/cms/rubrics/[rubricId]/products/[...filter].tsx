@@ -192,7 +192,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
-        <FormikRouterSearch />
+        <FormikRouterSearch testId={'products'} />
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>

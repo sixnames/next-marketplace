@@ -99,7 +99,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
                 isRequired
               />
               <FormikInput
-                label={'Порадковый номер'}
+                label={'Порядковый номер'}
                 name={'index'}
                 testId={'index'}
                 showInlineError

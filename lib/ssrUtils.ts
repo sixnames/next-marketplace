@@ -46,6 +46,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   CityInterface,
   ConfigInterface,
+  PageInterface,
   PagesGroupInterface,
   RubricInterface,
   UserInterface,
@@ -757,12 +758,20 @@ async function getCatalogueCreatedPages({
     const castedPagesGroup = {
       ...pagesGroup,
       name: getI18nLocaleValue(pagesGroup.nameI18n, sessionLocale),
-      pages: (pagesGroup.pages || []).map((page) => {
-        return {
-          ...page,
-          name: getI18nLocaleValue(page.nameI18n, sessionLocale),
-        };
-      }),
+      pages: (pagesGroup.pages || []).reduce((acc: PageInterface[], page) => {
+        const content = JSON.parse(page.content);
+        if ((content.rows || []).length < 1) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            ...page,
+            name: getI18nLocaleValue(page.nameI18n, sessionLocale),
+          },
+        ];
+      }, []),
     };
     if (castedPagesGroup.pages.length < 1) {
       return;

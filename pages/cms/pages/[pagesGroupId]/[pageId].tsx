@@ -4,7 +4,7 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import PageEditor from 'components/PageEditor';
-import { SORT_DESC } from 'config/common';
+import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, SORT_DESC } from 'config/common';
 import { COL_CITIES, COL_PAGES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CityInterface, PageInterface } from 'db/uiInterfaces';
@@ -29,6 +29,19 @@ interface PageDetailsPageConsumerInterface {
   page: PageInterface;
   cities: CityInterface[];
 }
+
+const PAGE_STATE_OPTIONS = [
+  {
+    _id: PAGE_STATE_DRAFT,
+    slug: PAGE_STATE_DRAFT,
+    name: 'Не опубликована',
+  },
+  {
+    _id: PAGE_STATE_PUBLISHED,
+    slug: PAGE_STATE_PUBLISHED,
+    name: 'Опубликована',
+  },
+];
 
 const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ page, cities }) => {
   const validationSchema = useValidationSchema({
@@ -93,6 +106,14 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                     name={'citySlug'}
                     testId={'citySlug'}
                     options={cities}
+                    isRequired
+                    showInlineError
+                  />
+                  <FormikSelect
+                    label={'Состояние'}
+                    name={'state'}
+                    testId={'state'}
+                    options={PAGE_STATE_OPTIONS}
                     isRequired
                     showInlineError
                   />

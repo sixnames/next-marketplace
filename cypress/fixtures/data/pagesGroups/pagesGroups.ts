@@ -25,7 +25,7 @@ const pagesGroups: PagesGroupModel[] = [
   },
   {
     _id: getObjectId('pages group c'),
-    index: 1,
+    index: 2,
     companySlug: DEFAULT_COMPANY_SLUG,
     showInFooter: true,
     showInHeader: true,

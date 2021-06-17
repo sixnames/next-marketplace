@@ -377,7 +377,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
                     key={`${_id}`}
                     className='header-sub-nav font-sm relative mr-6 cursor-pointer'
                   >
-                    <div className='flex items-center h-[30px]'>{name}</div>
+                    <div className='flex items-center h-[30px] text-secondary-text'>{name}</div>
                     <ul className='header-sub-nav-list rounded-md bg-secondary shadow-md'>
                       {(pages || []).map(({ name, slug, _id }) => {
                         return (

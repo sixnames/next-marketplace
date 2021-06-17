@@ -1,4 +1,8 @@
-import { PAGE_EDITOR_DEFAULT_VALUE, PAGE_STATE_DRAFT, PAGE_STATE_ENUMS } from 'config/common';
+import {
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
+  PAGE_STATE_DRAFT,
+  PAGE_STATE_ENUMS,
+} from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';
 import { PageModel, PagePayloadModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
@@ -147,7 +151,7 @@ export const PageMutations = extendType({
           const createdPageResult = await pagesCollection.insertOne({
             ...input,
             slug: generateDefaultLangSlug(input.nameI18n),
-            content: JSON.stringify(PAGE_EDITOR_DEFAULT_VALUE),
+            content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
             assetKeys: [],
             state: PAGE_STATE_DRAFT,
             createdAt: new Date(),

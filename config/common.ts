@@ -281,6 +281,7 @@ export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
 export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
 export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
+export const PAGE_EDITOR_DEFAULT_VALUE_STRING = '{"id":"1","version":1,"rows":[]}';
 export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   id: '1',
   version: 1,

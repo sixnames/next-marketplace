@@ -1,4 +1,4 @@
-import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
+import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner/Inner';
 import Table, { TableColumn } from 'components/Table/Table';
 import { SORT_DESC } from 'config/common';

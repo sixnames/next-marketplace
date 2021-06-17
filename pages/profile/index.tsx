@@ -2,7 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure
 import ControlButton from 'components/Buttons/ControlButton';
 import ControlButtonChevron from 'components/Buttons/ControlButtonChevron';
 import Currency from 'components/Currency/Currency';
-import FormattedDate from 'components/FormattedDateTime/FormattedDate';
+import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon/Icon';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
 import RequestError from 'components/RequestError';

@@ -1,17 +1,15 @@
 import * as React from 'react';
-import classes from './FormattedDate.module.css';
 import { useLocaleContext } from 'context/localeContext';
 
-interface FormattedDateTimeInterface {
+interface FormattedDateInterface {
   value?: string | Date | null;
   className?: string;
 }
 
-const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, className }) => {
+const FormattedDate: React.FC<FormattedDateInterface> = ({ value, className }) => {
   const { locale } = useLocaleContext();
-  const dateClass = `${classes.frame} ${className ? className : ''}`;
+  const dateClass = `whitespace-nowrap ${className ? className : ''}`;
   const fallback = <span className={dateClass}>--</span>;
-
   if (!value) {
     return fallback;
   }
@@ -22,8 +20,6 @@ const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, classN
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       dateStyle: 'short',
-      timeStyle: 'short',
-      hour12: false,
     }).format(date);
 
     return <span className={dateClass}>{formattedDate}</span>;
@@ -32,4 +28,4 @@ const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, classN
   }
 };
 
-export default FormattedDateTime;
+export default FormattedDate;

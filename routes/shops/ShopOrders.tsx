@@ -1,4 +1,4 @@
-import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
+import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';

@@ -9,7 +9,7 @@ import { useAppContext } from 'context/appContext';
 import { UpdateMyPasswordInput } from 'generated/apolloComponents';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import { useUserContext } from 'context/userContext';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import FormikInput from '../../FormElements/Input/FormikInput';
 import { updateMyPasswordSchema } from 'validation/userSchema';
 

@@ -5,7 +5,7 @@ import Currency from 'components/Currency/Currency';
 import FormattedDate from 'components/FormattedDateTime/FormattedDate';
 import Icon from 'components/Icon/Icon';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Tooltip from 'components/TTip/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';

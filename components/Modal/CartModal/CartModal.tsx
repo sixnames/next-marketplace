@@ -1,4 +1,4 @@
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import { useSiteContext } from 'context/siteContext';
 import * as React from 'react';

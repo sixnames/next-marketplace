@@ -2,7 +2,7 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import Inner from 'components/Inner/Inner';
 import Link from 'components/Link/Link';
 import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Table, { TableColumn } from 'components/Table/Table';
 import TableRowImage from 'components/Table/TableRowImage';

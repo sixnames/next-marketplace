@@ -6,7 +6,7 @@ import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';

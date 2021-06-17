@@ -4,7 +4,7 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import Icon from 'components/Icon/Icon';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import * as React from 'react';

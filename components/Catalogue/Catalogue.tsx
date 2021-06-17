@@ -7,7 +7,7 @@ import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippet
 import ProductSnippetRow from 'components/Product/ProductSnippet/ProductSnippetRow';
 import MenuButtonSorter from 'components/ReachMenuButton/MenuButtonSorter';
 import ReachMenuButton from 'components/ReachMenuButton/ReachMenuButton';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import {

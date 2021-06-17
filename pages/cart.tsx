@@ -6,7 +6,7 @@ import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner/Inner';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { ROUTE_PROFILE } from 'config/common';

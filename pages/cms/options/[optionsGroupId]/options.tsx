@@ -5,7 +5,7 @@ import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal/OptionInGroupModal';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Title from 'components/Title/Title';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';

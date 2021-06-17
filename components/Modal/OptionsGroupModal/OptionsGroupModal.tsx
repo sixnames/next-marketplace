@@ -12,7 +12,7 @@ import {
 } from 'generated/apolloComponents';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';

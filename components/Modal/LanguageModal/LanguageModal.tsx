@@ -9,7 +9,7 @@ import {
   UpdateLanguageInput,
   useGetIsoLanguagesListQuery,
 } from 'generated/apolloComponents';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';

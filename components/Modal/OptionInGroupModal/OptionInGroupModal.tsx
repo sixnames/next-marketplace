@@ -16,7 +16,7 @@ import {
   Gender,
 } from 'generated/apolloComponents';
 import InputLine from '../../FormElements/Input/InputLine';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';

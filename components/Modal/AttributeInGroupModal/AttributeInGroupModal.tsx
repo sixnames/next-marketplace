@@ -15,7 +15,7 @@ import {
   UpdateAttributeInGroupInput,
   useGetNewAttributeOptionsQuery,
 } from 'generated/apolloComponents';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import { useAppContext } from 'context/appContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslationsSelect';

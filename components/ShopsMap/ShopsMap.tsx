@@ -3,7 +3,7 @@ import * as React from 'react';
 import classes from './ShopsMap.module.css';
 import { Coordinates } from 'generated/apolloComponents';
 import { useLoadScript, Marker, GoogleMap, InfoWindow } from '@react-google-maps/api';
-import RequestError from '../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Spinner from '../Spinner/Spinner';
 import { useThemeContext } from 'context/themeContext';
 import Image from 'next/image';

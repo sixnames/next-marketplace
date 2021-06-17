@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Spinner from '../../Spinner/Spinner';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';

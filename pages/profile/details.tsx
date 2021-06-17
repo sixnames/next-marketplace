@@ -3,7 +3,7 @@ import StringButton from 'components/Buttons/StringButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
 import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Title from 'components/Title/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';

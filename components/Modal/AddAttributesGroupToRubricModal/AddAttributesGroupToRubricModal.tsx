@@ -6,7 +6,7 @@ import {
   useGetAttributesGroupsForRubricQuery,
 } from 'generated/apolloComponents';
 import Spinner from '../../Spinner/Spinner';
-import RequestError from '../../RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import ModalButtons from '../ModalButtons';

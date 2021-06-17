@@ -12,7 +12,7 @@ import {
   useGetCatalogueSearchResultLazyQuery,
 } from 'generated/apolloComponents';
 import Spinner from 'components/Spinner/Spinner';
-import RequestError from 'components/RequestError/RequestError';
+import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 

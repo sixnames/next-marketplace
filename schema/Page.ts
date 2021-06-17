@@ -29,6 +29,7 @@ export const Page = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+    t.json('descriptionI18n');
     t.nonNull.int('index');
     t.nonNull.string('slug');
     t.nonNull.string('citySlug');
@@ -54,6 +55,7 @@ export const CreatePageInput = inputObjectType({
   name: 'CreatePageInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.json('descriptionI18n');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');
@@ -65,6 +67,7 @@ export const UpdatePageInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+    t.json('descriptionI18n');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');

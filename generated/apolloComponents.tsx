@@ -533,6 +533,7 @@ export type CreateOptionsGroupInput = {
 
 export type CreatePageInput = {
   nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
@@ -1700,6 +1701,7 @@ export type Page = {
   __typename?: 'Page';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   index: Scalars['Int'];
   slug: Scalars['String'];
   citySlug: Scalars['String'];
@@ -2616,6 +2618,7 @@ export type UpdateOptionsGroupInput = {
 export type UpdatePageInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];

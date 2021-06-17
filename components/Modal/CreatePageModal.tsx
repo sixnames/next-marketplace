@@ -64,6 +64,9 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
           nameI18n: {
             [DEFAULT_LOCALE]: '',
           },
+          descriptionI18n: {
+            [DEFAULT_LOCALE]: '',
+          },
         }}
         onSubmit={(values) => {
           showLoading();
@@ -85,6 +88,13 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
                 label={'Название'}
                 name={'nameI18n'}
                 testId={'name'}
+                showInlineError
+                isRequired
+              />
+              <FormikTranslationsInput
+                label={'Описание'}
+                name={'descriptionI18n'}
+                testId={'description'}
                 showInlineError
                 isRequired
               />

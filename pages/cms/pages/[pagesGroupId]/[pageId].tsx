@@ -73,6 +73,7 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                   _id: values._id,
                   content: JSON.stringify(values.content),
                   nameI18n: values.nameI18n,
+                  descriptionI18n: values.descriptionI18n,
                   pagesGroupId: values.pagesGroupId,
                   state: values.state as unknown as PageState,
                   citySlug: `${values.citySlug}`,
@@ -90,6 +91,13 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                     label={'Название'}
                     name={'nameI18n'}
                     testId={'name'}
+                    showInlineError
+                    isRequired
+                  />
+                  <FormikTranslationsInput
+                    label={'Описание'}
+                    name={'descriptionI18n'}
+                    testId={'description'}
                     showInlineError
                     isRequired
                   />

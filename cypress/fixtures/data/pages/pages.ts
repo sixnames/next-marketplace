@@ -1,5 +1,6 @@
 import {
   DEFAULT_CITY,
+  DEFAULT_LOCALE,
   PAGE_EDITOR_DEFAULT_VALUE,
   PAGE_STATE_DRAFT,
   PAGE_STATE_PUBLISHED,
@@ -16,7 +17,11 @@ const pages: PageModel[] = [
     slug: 'page_a',
     citySlug: DEFAULT_CITY,
     nameI18n: {
-      ru: 'Page A',
+      [DEFAULT_LOCALE]: 'Page A',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
     },
     assetKeys: [`https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_a/page_a.jpg`],
     pagesGroupId: getObjectId('pages group a'),
@@ -31,7 +36,11 @@ const pages: PageModel[] = [
     slug: 'page_b',
     citySlug: DEFAULT_CITY,
     nameI18n: {
-      ru: 'Page B',
+      [DEFAULT_LOCALE]: 'Page B',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
     },
     assetKeys: [`https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_b/page_b.jpg`],
     pagesGroupId: getObjectId('pages group a'),
@@ -46,7 +55,7 @@ const pages: PageModel[] = [
     slug: 'page_c',
     citySlug: DEFAULT_CITY,
     nameI18n: {
-      ru: 'Page C',
+      [DEFAULT_LOCALE]: 'Page C',
     },
     assetKeys: [],
     pagesGroupId: getObjectId('pages group b'),
@@ -61,7 +70,7 @@ const pages: PageModel[] = [
     slug: 'page_d',
     citySlug: DEFAULT_CITY,
     nameI18n: {
-      ru: 'Page D',
+      [DEFAULT_LOCALE]: 'Page D',
     },
     assetKeys: [`https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_d/page_d.jpg`],
     pagesGroupId: getObjectId('pages group c'),
@@ -76,7 +85,11 @@ const pages: PageModel[] = [
     slug: 'page_e',
     citySlug: DEFAULT_CITY,
     nameI18n: {
-      ru: 'Page E',
+      [DEFAULT_LOCALE]: 'Page E',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
     },
     assetKeys: [`https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_e/page_e.jpg`],
     pagesGroupId: getObjectId('pages group c'),

@@ -492,6 +492,7 @@ input CreateOptionsGroupInput {
 
 input CreatePageInput {
   citySlug: String!
+  descriptionI18n: JSONObject
   index: Int!
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
@@ -1454,6 +1455,7 @@ type Page {
   assetKeys: [String!]!
   citySlug: String!
   content: String!
+  descriptionI18n: JSONObject
   index: Int!
   name: String!
   nameI18n: JSONObject!
@@ -2342,6 +2344,7 @@ input UpdatePageInput {
   _id: ObjectId!
   citySlug: String!
   content: String!
+  descriptionI18n: JSONObject
   index: Int!
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!

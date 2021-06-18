@@ -20,6 +20,8 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   initialValue,
   isOpenIcon = 'chevron-up',
   isClosedIcon = 'chevron-down',
+  buttonClassName,
+  ...props
 }) => {
   return (
     <div className={`text-primary ${frameClassName ? frameClassName : ''}`}>
@@ -28,17 +30,27 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
         className={className}
         initialValue={initialValue}
         buttonText={({ internalButtonText, isOpen }) => {
-          const icon = (
-            <Icon className={`${iconClassName} mr-2`} name={isOpen ? isOpenIcon : isClosedIcon} />
-          );
           return (
-            <span className='uppercase text-primary-text flex items-center'>
-              {iconPosition === 'left' ? icon : null}
+            <span
+              className={`uppercase flex items-center ${buttonClassName ? buttonClassName : ''}`}
+            >
+              {iconPosition === 'left' ? (
+                <Icon
+                  className={`${iconClassName} mr-2`}
+                  name={isOpen ? isOpenIcon : isClosedIcon}
+                />
+              ) : null}
               {internalButtonText}
-              {iconPosition === 'right' ? icon : null}
+              {iconPosition === 'right' ? (
+                <Icon
+                  className={`${iconClassName} ml-2`}
+                  name={isOpen ? isOpenIcon : isClosedIcon}
+                />
+              ) : null}
             </span>
           );
         }}
+        {...props}
       />
     </div>
   );

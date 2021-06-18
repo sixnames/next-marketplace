@@ -1,18 +1,10 @@
-import { HeadlessMenuItemInterface } from 'components/HeadlessMenuButton';
+import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
+import MenuButtonWithName from 'components/MenuButtonWithName';
 import * as React from 'react';
-import Link from '../Link/Link';
 import CounterSticker from '../CounterSticker/CounterSticker';
 
-interface AsideNavGroupInterface {
-  name?: string;
-  children: HeadlessMenuItemInterface[];
-  testId?: string;
-}
-
-export type AsideNavConfigType = AsideNavGroupInterface[];
-
 interface AsideNavInterface {
-  config: AsideNavConfigType;
+  config: HeadlessMenuGroupInterface[];
   className?: string;
   testId?: string;
 }
@@ -27,17 +19,29 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
             <div className='mb-12' key={groupIndex} data-cy={testId}>
               {name ? <div className='text-secondary-text mb-2'>{name}</div> : null}
               <ul>
-                {children.map(({ counter, name, ...linkProps }, linkIndex) => {
+                {children.map((menuItem) => {
+                  const { name, _id, onSelect, hidden, testId, current, counter } = menuItem;
+                  const isSelected = typeof current === 'function' ? current(menuItem) : current;
+
+                  if (hidden) {
+                    return null;
+                  }
+
                   return (
-                    <li key={linkIndex}>
-                      <Link
-                        activeClassName='no-underline text-theme pointer-events-none'
-                        className='flex items-center min-h-[2.75rem] lg:text-lg font-medium text-primary-text hover:no-underline hover:text-theme'
-                        {...linkProps}
+                    <li key={_id}>
+                      <button
+                        data-cy={testId}
+                        onClick={() => {
+                          onSelect(menuItem);
+                        }}
+                        className={`${
+                          isSelected ? 'text-theme' : 'text-primary-text'
+                        } group flex rounded-md items-center w-full py-2`}
                       >
                         {name}
+
                         {counter ? <CounterSticker className='' {...counter} /> : null}
-                      </Link>
+                      </button>
                     </li>
                   );
                 })}
@@ -48,7 +52,15 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
       </div>
 
       {/*Mobile*/}
-      <div className='md:hidden'></div>
+      <div className='md:hidden flex'>
+        <MenuButtonWithName
+          config={config}
+          buttonClassName='text-primary-text'
+          isOpenIcon={'burger'}
+          isClosedIcon={'burger'}
+          menuPosition={'left'}
+        />
+      </div>
     </aside>
   );
 };

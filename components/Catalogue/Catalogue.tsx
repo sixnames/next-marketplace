@@ -3,9 +3,9 @@ import Button from 'components/Buttons/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundary/ErrorBoundaryFallback';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
+import MenuButtonWithName from 'components/MenuButtonWithName';
 import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
 import ProductSnippetRow from 'components/Product/ProductSnippet/ProductSnippetRow';
-import MenuButtonSorter from 'components/MenuButtonSorter';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner/Spinner';
@@ -160,82 +160,85 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
     return `Найдено ${catalogueData.totalProducts} ${catalogueCounterPostfix}`;
   }, [catalogueData.totalProducts]);
 
-  const sortConfig = React.useMemo(
-    () => [
+  const sortConfig = React.useMemo(() => {
+    return [
       {
-        name: 'По популярности',
-        _id: 'По популярности',
-        current: () => {
-          const sortBy = getCatalogueFilterValueByKey({
-            asPath: router.asPath,
-            slug: SORT_BY_KEY,
-          });
-          return sortBy === 'priority';
-        },
-        onSelect: () => {
-          const options = getCatalogueFilterNextPath({
-            asPath: router.asPath,
-            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
-          });
-          const nextPath = `${options}/${SORT_BY_KEY}-priority`;
-          router.push(nextPath).catch(() => {
-            showErrorNotification();
-          });
-        },
+        children: [
+          {
+            name: 'По популярности',
+            _id: 'По популярности',
+            current: () => {
+              const sortBy = getCatalogueFilterValueByKey({
+                asPath: router.asPath,
+                slug: SORT_BY_KEY,
+              });
+              return sortBy === 'priority';
+            },
+            onSelect: () => {
+              const options = getCatalogueFilterNextPath({
+                asPath: router.asPath,
+                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+              });
+              const nextPath = `${options}/${SORT_BY_KEY}-priority`;
+              router.push(nextPath).catch(() => {
+                showErrorNotification();
+              });
+            },
+          },
+          {
+            name: 'По возрастанию цены',
+            _id: 'По возрастанию цены',
+            current: () => {
+              const sortBy = getCatalogueFilterValueByKey({
+                asPath: router.asPath,
+                slug: SORT_BY_KEY,
+              });
+              const sortDir = getCatalogueFilterValueByKey({
+                asPath: router.asPath,
+                slug: SORT_DIR_KEY,
+              });
+              return sortBy === 'price' && sortDir === SORT_ASC_STR;
+            },
+            onSelect: () => {
+              const options = getCatalogueFilterNextPath({
+                asPath: router.asPath,
+                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+              });
+              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+              router.push(nextPath).catch(() => {
+                showErrorNotification();
+              });
+            },
+          },
+          {
+            name: 'По убыванию цены',
+            _id: 'По убыванию цены',
+            current: () => {
+              const sortBy = getCatalogueFilterValueByKey({
+                asPath: router.asPath,
+                slug: SORT_BY_KEY,
+              });
+              const sortDir = getCatalogueFilterValueByKey({
+                asPath: router.asPath,
+                slug: SORT_DIR_KEY,
+              });
+              return sortBy === 'price' && sortDir === SORT_DESC_STR;
+            },
+            onSelect: () => {
+              const options = getCatalogueFilterNextPath({
+                asPath: router.asPath,
+                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+              });
+              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
+              router.push(nextPath).catch(() => {
+                showErrorNotification();
+              });
+            },
+          },
+        ],
       },
-      {
-        name: 'По возрастанию цены',
-        _id: 'По возрастанию цены',
-        current: () => {
-          const sortBy = getCatalogueFilterValueByKey({
-            asPath: router.asPath,
-            slug: SORT_BY_KEY,
-          });
-          const sortDir = getCatalogueFilterValueByKey({
-            asPath: router.asPath,
-            slug: SORT_DIR_KEY,
-          });
-          return sortBy === 'price' && sortDir === SORT_ASC_STR;
-        },
-        onSelect: () => {
-          const options = getCatalogueFilterNextPath({
-            asPath: router.asPath,
-            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
-          });
-          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
-          router.push(nextPath).catch(() => {
-            showErrorNotification();
-          });
-        },
-      },
-      {
-        name: 'По убыванию цены',
-        _id: 'По убыванию цены',
-        current: () => {
-          const sortBy = getCatalogueFilterValueByKey({
-            asPath: router.asPath,
-            slug: SORT_BY_KEY,
-          });
-          const sortDir = getCatalogueFilterValueByKey({
-            asPath: router.asPath,
-            slug: SORT_DIR_KEY,
-          });
-          return sortBy === 'price' && sortDir === SORT_DESC_STR;
-        },
-        onSelect: () => {
-          const options = getCatalogueFilterNextPath({
-            asPath: router.asPath,
-            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
-          });
-          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
-          router.push(nextPath).catch(() => {
-            showErrorNotification();
-          });
-        },
-      },
-    ],
-    [router, showErrorNotification],
-  );
+    ];
+  }, [router, showErrorNotification]);
 
   if (catalogueData.totalProducts < 1) {
     return (
@@ -281,7 +284,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   </Button>
                   <HeadlessMenuButton
                     config={sortConfig}
+                    buttonClassName='text-primary-text'
                     buttonAs={'div'}
+                    menuPosition={'left'}
                     buttonText={() => (
                       <Button className={classes.controlsMobileButn} theme={'secondary'}>
                         Сортировать
@@ -291,7 +296,10 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                 </div>
               ) : (
                 <div className={classes.controls}>
-                  <MenuButtonSorter config={sortConfig} />
+                  <div className='flex items-center'>
+                    <div className='relative top-[-1px] text-secondary-text mr-6'>Сортировать</div>
+                    <MenuButtonWithName config={sortConfig} buttonClassName='text-primary-text' />
+                  </div>
 
                   <div className={`${classes.viewControls}`}>
                     <button

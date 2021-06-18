@@ -8,13 +8,13 @@ export interface HeadlessMenuItemInterface {
   _id: string;
   name: any;
   onSelect: (menuItem: HeadlessMenuItemInterface) => void;
-  current?: boolean | CurrentAction;
+  current: boolean | CurrentAction;
   hidden?: boolean;
   counter?: Omit<CounterStickerInterface, 'className'>;
   testId?: string;
 }
 
-interface HeadlessMenuGroupInterface {
+export interface HeadlessMenuGroupInterface {
   name?: string;
   children: HeadlessMenuItemInterface[];
   testId?: string;
@@ -33,6 +33,7 @@ export interface MenuButtonInterface {
   initialValue?: string;
   buttonAs?: any;
   testId?: string;
+  menuPosition?: 'right' | 'left';
 }
 
 const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
@@ -43,6 +44,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   initialValue,
   buttonAs,
   testId,
+  menuPosition = 'right',
 }) => {
   const [internalButtonText, setInternalButtonText] = React.useState<string>(() => {
     return `${config[0]?.children[0]?._id}`;
@@ -95,16 +97,22 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'
               >
-                <Menu.Items className='absolute right-0 w-56 mt-2 origin-top-right bg-secondary divide-y divide-border-color rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                <Menu.Items
+                  className={`absolute ${
+                    menuPosition === 'right' ? 'right-0' : 'left-0'
+                  } min-w-[200px] mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                >
                   {config.map((group, groupIndex) => {
                     return (
                       <div
-                        className={config.length > 1 ? 'mb-12' : ''}
+                        className={`divide-y divide-border-color ${
+                          config.length > 1 ? 'mb-12' : ''
+                        }`}
                         key={groupIndex}
                         data-cy={group.testId}
                       >
                         {group.name ? (
-                          <div className='text-secondary-text mb-2'>{group.name}</div>
+                          <div className='text-secondary-text px-4 py-2'>{group.name}</div>
                         ) : null}
 
                         {group.children.map((menuItem) => {
@@ -116,13 +124,14 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                           }
 
                           return (
-                            <div className='px-1 py-2' key={_id} data-cy={testId}>
+                            <div key={_id} className='whitespace-nowrap'>
                               <Menu.Item>
                                 {() => (
                                   <button
                                     onClick={() => {
                                       onSelect(menuItem);
                                     }}
+                                    data-cy={testId || name}
                                     className={`${
                                       isSelected ? 'text-theme' : 'text-primary-text'
                                     } group flex rounded-md items-center w-full px-4 py-2`}

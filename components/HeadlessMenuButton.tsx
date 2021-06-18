@@ -1,15 +1,23 @@
 import { Menu, Transition } from '@headlessui/react';
+import { CounterStickerInterface } from 'components/CounterSticker/CounterSticker';
 import * as React from 'react';
 
-type CurrentAction = () => boolean;
+type CurrentAction = (menuItem: HeadlessMenuItemInterface) => boolean;
 
-export interface ReachMenuItemConfig {
+export interface HeadlessMenuItemInterface {
   _id: string;
   name: any;
-  slug?: string;
-  onSelect: (menuItem: ReachMenuItemConfig) => void;
+  onSelect: (menuItem: HeadlessMenuItemInterface) => void;
   current?: boolean | CurrentAction;
   hidden?: boolean;
+  counter?: Omit<CounterStickerInterface, 'className'>;
+  testId?: string;
+}
+
+interface HeadlessMenuGroupInterface {
+  name?: string;
+  children: HeadlessMenuItemInterface[];
+  testId?: string;
 }
 
 interface ButtonTextPropsInterface {
@@ -21,7 +29,7 @@ export interface MenuButtonInterface {
   className?: string;
   buttonClassName?: string;
   buttonText?: (props: ButtonTextPropsInterface) => any;
-  config: ReachMenuItemConfig[];
+  config: HeadlessMenuGroupInterface[];
   initialValue?: string;
   buttonAs?: any;
   testId?: string;
@@ -37,13 +45,17 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   testId,
 }) => {
   const [internalButtonText, setInternalButtonText] = React.useState<string>(() => {
-    return `${config[0]?._id}`;
+    return `${config[0]?.children[0]?._id}`;
   });
 
   React.useEffect(() => {
-    const currentConfigItem = config.find(({ current }) => {
+    const allMenuItems = config.reduce((acc: HeadlessMenuItemInterface[], { children }) => {
+      return [...acc, ...children];
+    }, []);
+    const currentConfigItem = allMenuItems.find((menuItem) => {
+      const { current } = menuItem;
       if (typeof current === 'function') {
-        return current();
+        return current(menuItem);
       }
       return current;
     });
@@ -52,10 +64,10 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
       return;
     }
 
-    const initialValueItem = config.find(({ _id }) => {
+    const initialValueItem = allMenuItems.find(({ _id }) => {
       return _id === initialValue;
     });
-    const updatedInitialValue = initialValueItem?._id || `${config[0]?._id}`;
+    const updatedInitialValue = initialValueItem?._id || `${allMenuItems[0]?._id}`;
     setInternalButtonText(updatedInitialValue);
   }, [config, initialValue]);
 
@@ -84,30 +96,44 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                 leaveTo='transform opacity-0 scale-95'
               >
                 <Menu.Items className='absolute right-0 w-56 mt-2 origin-top-right bg-secondary divide-y divide-border-color rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                  {config.map((menuItem) => {
-                    const { name, _id, onSelect, hidden } = menuItem;
-                    const isSelected = _id === internalButtonText;
-
-                    if (hidden) {
-                      return null;
-                    }
-
+                  {config.map((group, groupIndex) => {
                     return (
-                      <div className='px-1 py-2' key={_id}>
-                        <Menu.Item>
-                          {() => (
-                            <button
-                              onClick={() => {
-                                onSelect(menuItem);
-                              }}
-                              className={`${
-                                isSelected ? 'text-theme' : 'text-primary-text'
-                              } group flex rounded-md items-center w-full px-4 py-2`}
-                            >
-                              {name}
-                            </button>
-                          )}
-                        </Menu.Item>
+                      <div
+                        className={config.length > 1 ? 'mb-12' : ''}
+                        key={groupIndex}
+                        data-cy={group.testId}
+                      >
+                        {group.name ? (
+                          <div className='text-secondary-text mb-2'>{group.name}</div>
+                        ) : null}
+
+                        {group.children.map((menuItem) => {
+                          const { name, _id, onSelect, hidden, testId } = menuItem;
+                          const isSelected = _id === internalButtonText;
+
+                          if (hidden) {
+                            return null;
+                          }
+
+                          return (
+                            <div className='px-1 py-2' key={_id} data-cy={testId}>
+                              <Menu.Item>
+                                {() => (
+                                  <button
+                                    onClick={() => {
+                                      onSelect(menuItem);
+                                    }}
+                                    className={`${
+                                      isSelected ? 'text-theme' : 'text-primary-text'
+                                    } group flex rounded-md items-center w-full px-4 py-2`}
+                                  >
+                                    {name}
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   })}

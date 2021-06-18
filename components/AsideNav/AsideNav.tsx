@@ -1,20 +1,11 @@
+import { HeadlessMenuItemInterface } from 'components/HeadlessMenuButton';
 import * as React from 'react';
-import classes from './AsideNav.module.css';
-import Link, { LinkInterface } from '../Link/Link';
-import CounterSticker, { CounterStickerInterface } from '../CounterSticker/CounterSticker';
-import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import { useRouter } from 'next/router';
-import { useNotificationsContext } from 'context/notificationsContext';
-import Icon from '../Icon/Icon';
-
-interface AsideNavItemInterface extends LinkInterface {
-  counter?: Omit<CounterStickerInterface, 'className'>;
-  name: string;
-}
+import Link from '../Link/Link';
+import CounterSticker from '../CounterSticker/CounterSticker';
 
 interface AsideNavGroupInterface {
   name?: string;
-  children: AsideNavItemInterface[];
+  children: HeadlessMenuItemInterface[];
   testId?: string;
 }
 
@@ -27,42 +18,25 @@ interface AsideNavInterface {
 }
 
 const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) => {
-  const { showErrorNotification } = useNotificationsContext();
-  const [buttonText, setButtonText] = React.useState('');
-  const router = useRouter();
-
-  React.useEffect(() => {
-    config.forEach(({ children }) => {
-      children.forEach(({ href, name }) => {
-        const isSelected = router.asPath === href;
-        if (isSelected) {
-          setButtonText(name);
-        }
-      });
-    });
-  }, [config, router.asPath]);
-
   return (
-    <aside className={`${classes.frame} ${className ? className : ''}`} data-cy={testId}>
+    <aside className={`mb-4 ${className ? className : ''}`} data-cy={testId}>
       {/*Desktop*/}
-      <div className={`${classes.desktopFrame}`}>
+      <div className='hidden md:block'>
         {config.map(({ name, children, testId }, groupIndex) => {
           return (
-            <div className={classes.group} key={groupIndex} data-cy={testId}>
-              {name ? <div className={classes.groupTitle}>{name}</div> : null}
+            <div className='mb-12' key={groupIndex} data-cy={testId}>
+              {name ? <div className='text-secondary-text mb-2'>{name}</div> : null}
               <ul>
                 {children.map(({ counter, name, ...linkProps }, linkIndex) => {
                   return (
                     <li key={linkIndex}>
                       <Link
-                        activeClassName={classes.linkActive}
-                        className={classes.link}
+                        activeClassName='no-underline text-theme pointer-events-none'
+                        className='flex items-center min-h-[2.75rem] lg:text-lg font-medium text-primary-text hover:no-underline hover:text-theme'
                         {...linkProps}
                       >
                         {name}
-                        {counter ? (
-                          <CounterSticker className={classes.counter} {...counter} />
-                        ) : null}
+                        {counter ? <CounterSticker className='' {...counter} /> : null}
                       </Link>
                     </li>
                   );
@@ -72,63 +46,9 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
           );
         })}
       </div>
+
       {/*Mobile*/}
-      <div className={`${classes.mobileFrame}`}>
-        <Menu>
-          {() => {
-            return (
-              <React.Fragment>
-                <MenuButton className={`${classes.mobileTrigger}`}>
-                  <Icon name={'burger'} className={`${classes.mobileTriggerIcon}`} />
-                  {buttonText}
-                </MenuButton>
-
-                <MenuList>
-                  {config.map(({ name, children, testId }, groupIndex) => {
-                    return (
-                      <div
-                        className={`${classes.group} ${classes.groupMobile}`}
-                        key={groupIndex}
-                        data-cy={testId}
-                      >
-                        {name ? (
-                          <div className={`${classes.groupTitle} ${classes.groupTitleMobile}`}>
-                            {name}
-                          </div>
-                        ) : null}
-                        <ul>
-                          {children.map(({ counter, name, href }, linkIndex) => {
-                            const isSelected = router.asPath === href;
-
-                            return (
-                              <li key={linkIndex}>
-                                <MenuItem
-                                  key={name}
-                                  className={`${isSelected ? 'rui-selected-item' : ''}`}
-                                  onSelect={() => {
-                                    router.push(href).catch(() => {
-                                      showErrorNotification();
-                                    });
-                                  }}
-                                >
-                                  {name}
-                                  {counter ? (
-                                    <CounterSticker className={classes.counter} {...counter} />
-                                  ) : null}
-                                </MenuItem>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    );
-                  })}
-                </MenuList>
-              </React.Fragment>
-            );
-          }}
-        </Menu>
-      </div>
+      <div className='md:hidden'></div>
     </aside>
   );
 };

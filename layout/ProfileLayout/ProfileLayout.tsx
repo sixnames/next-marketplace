@@ -10,6 +10,7 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
@@ -22,6 +23,7 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
+  const router = useRouter();
   const { me } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
@@ -30,9 +32,12 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         name: 'Покупки',
         children: [
           {
+            _id: 'История заказов',
             name: 'История заказов',
-            href: ROUTE_PROFILE,
             testId: 'profile-orders-link',
+            onSelect: () => {
+              router.push(ROUTE_PROFILE).catch(console.log);
+            },
           },
           {
             name: 'Избранное',

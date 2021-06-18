@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './ErrorBoundaryFallback.module.css';
 
 export interface ErrorBoundaryFallbackInterface {
   statusCode?: number;
@@ -7,7 +6,7 @@ export interface ErrorBoundaryFallbackInterface {
 
 const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackInterface> = ({ statusCode }) => {
   return (
-    <div className={classes.frame}>
+    <div className='flex items-center justify-center h-[100vh] w-full py-12 px-8 bg-primary text-wp-error font-bold text-xl text-center'>
       <div>
         <p>УПС! Что-то пошло не так.</p>
         <p>Лог ошибки отправлен разработчикам.</p>

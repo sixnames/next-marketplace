@@ -7,7 +7,7 @@ import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// TODO messages //
+// TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
     res.status(405).send({
@@ -17,10 +17,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const body = JSON.parse(req.body) as SyncUpdateOrderProductInterface | undefined | null;
+  const body = JSON.parse(req.body) as SyncUpdateOrderProductInterface[] | undefined | null;
   const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
-  if (!query || !body) {
+  if (!query || !body || body.length < 1) {
     res.status(400).send({
       success: false,
       message: 'no params provided',
@@ -28,9 +28,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { orderId } = body;
   const { apiVersion, systemVersion, token } = query;
-  if (!apiVersion || !systemVersion || !token || !orderId) {
+  if (!apiVersion || !systemVersion || !token) {
     res.status(400).send({
       success: false,
       message: 'no query params provided',
@@ -82,135 +81,93 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
   ];
 
-  const shopOrdersAggregation = await ordersCollection
-    .aggregate([
-      {
-        $match: {
-          shopId: shop._id,
-          itemId: orderId,
-        },
-      },
-      {
-        $lookup: {
-          as: 'products',
-          from: COL_ORDER_PRODUCTS,
-          let: { orderId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$orderId', '$$orderId'],
-                },
+  const lookupStages = [
+    {
+      $lookup: {
+        as: 'products',
+        from: COL_ORDER_PRODUCTS,
+        let: { orderId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$orderId', '$$orderId'],
               },
             },
-            ...statusStages,
-          ],
-        },
-      },
-      ...statusStages,
-    ])
-    .toArray();
-
-  const shopOrder = shopOrdersAggregation[0];
-  if (!shopOrder) {
-    res.status(500).send({
-      success: false,
-      message: 'shop order not found',
-    });
-    return;
-  }
-
-  // find order product
-  const currentProduct = (shopOrder.products || []).find((orderProduct) => {
-    return orderProduct.barcode === body.barcode;
-  });
-  if (!currentProduct) {
-    res.status(500).send({
-      success: false,
-      message: 'order product not found',
-    });
-    return;
-  }
-
-  // find order product new status
-  const newOrderProductStatus = await orderStatusesCollection.findOne({
-    slug: `${body.status}`,
-  });
-  if (!newOrderProductStatus) {
-    res.status(500).send({
-      success: false,
-      message: 'order product status not found',
-    });
-    return;
-  }
-
-  // update order product
-  const newAmount = body.amount ? noNaN(body.amount) : currentProduct.amount;
-  const updatedOrderProductResult = await orderProductsCollection.findOneAndUpdate(
-    {
-      _id: currentProduct._id,
-    },
-    {
-      $set: {
-        statusId: newOrderProductStatus._id,
-        amount: newAmount,
-        totalPrice: newAmount * currentProduct.price,
-        updatedAt: new Date(),
+          },
+          ...statusStages,
+        ],
       },
     },
-    {
-      returnDocument: 'after',
-    },
-  );
-  const updatedOrderProduct = updatedOrderProductResult.value;
-  if (!updatedOrderProductResult.ok || !updatedOrderProduct) {
-    res.status(500).send({
-      success: false,
-      message: 'order product update error',
-    });
-    return;
-  }
+    ...statusStages,
+  ];
 
-  // close order if all product is in Done status
-  const doneOrderProductStatus = await orderStatusesCollection.findOne({
+  // get order statuses
+  const doneOrderStatus = await orderStatusesCollection.findOne({
     slug: ORDER_STATUS_DONE,
   });
-  const canceledOrderProductStatus = await orderStatusesCollection.findOne({
+  const canceledOrderStatus = await orderStatusesCollection.findOne({
     slug: ORDER_STATUS_CANCELED,
   });
-  if (!doneOrderProductStatus || !canceledOrderProductStatus) {
-    res.status(500).send({
-      success: false,
-      message: 'Done or Canceled order product status not found',
+  if (!doneOrderStatus || !canceledOrderStatus) {
+    res.status(200).send({
+      success: true,
+      message: 'order statuses not fount',
     });
     return;
   }
 
-  const orderUpdatedProducts = (shopOrder.products || []).reduce(
-    (acc: OrderProductInterface[], orderProduct) => {
-      if (orderProduct._id.equals(updatedOrderProduct._id)) {
-        return [...acc, updatedOrderProduct];
-      }
-      return [...acc, orderProduct];
-    },
-    [],
-  );
+  const erroredOrderProducts: SyncUpdateOrderProductInterface[] = [];
 
-  const notDoneOrderProducts = orderUpdatedProducts.filter(({ statusId }) => {
-    return (
-      !statusId.equals(doneOrderProductStatus._id) &&
-      !statusId.equals(canceledOrderProductStatus._id)
-    );
-  });
-  if (notDoneOrderProducts.length < 1) {
-    const updatedOrderResult = await ordersCollection.findOneAndUpdate(
+  for await (const bodyItem of body) {
+    const { orderId } = bodyItem;
+    const shopOrdersAggregation = await ordersCollection
+      .aggregate([
+        {
+          $match: {
+            shopId: shop._id,
+            itemId: orderId,
+          },
+        },
+        ...lookupStages,
+      ])
+      .toArray();
+
+    const shopOrder = shopOrdersAggregation[0];
+    if (!shopOrder) {
+      erroredOrderProducts.push(bodyItem);
+      continue;
+    }
+
+    // find order product
+    const currentProduct = (shopOrder.products || []).find((orderProduct) => {
+      return orderProduct.barcode === bodyItem.barcode;
+    });
+    if (!currentProduct) {
+      erroredOrderProducts.push(bodyItem);
+      continue;
+    }
+
+    // find order product new status
+    const newOrderProductStatus = await orderStatusesCollection.findOne({
+      slug: `${bodyItem.status}`,
+    });
+    if (!newOrderProductStatus) {
+      erroredOrderProducts.push(bodyItem);
+      continue;
+    }
+
+    // update order product
+    const newAmount = bodyItem.amount ? noNaN(bodyItem.amount) : currentProduct.amount;
+    const updatedOrderProductResult = await orderProductsCollection.findOneAndUpdate(
       {
-        shopId: shop._id,
-        itemId: orderId,
+        _id: currentProduct._id,
       },
       {
         $set: {
-          statusId: doneOrderProductStatus._id,
+          statusId: newOrderProductStatus._id,
+          amount: newAmount,
+          totalPrice: newAmount * currentProduct.price,
           updatedAt: new Date(),
         },
       },
@@ -218,20 +175,68 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         returnDocument: 'after',
       },
     );
-
-    const updatedOrder = updatedOrderResult.value;
-    if (!updatedOrderResult.ok || !updatedOrder) {
-      res.status(500).send({
-        success: false,
-        message: 'order update error',
-      });
-      return;
+    const updatedOrderProduct = updatedOrderProductResult.value;
+    if (!updatedOrderProductResult.ok || !updatedOrderProduct) {
+      erroredOrderProducts.push(bodyItem);
+      continue;
     }
+
+    const orderUpdatedProducts = (shopOrder.products || []).reduce(
+      (acc: OrderProductInterface[], orderProduct) => {
+        if (orderProduct._id.equals(updatedOrderProduct._id)) {
+          return [...acc, updatedOrderProduct];
+        }
+        return [...acc, orderProduct];
+      },
+      [],
+    );
+
+    // close order if all product is in Done status
+    const notDoneOrderProducts = orderUpdatedProducts.filter(({ statusId }) => {
+      return !statusId.equals(doneOrderStatus._id) && !statusId.equals(canceledOrderStatus._id);
+    });
+
+    const doneOrderProducts = orderUpdatedProducts.filter(({ statusId }) => {
+      return statusId.equals(doneOrderStatus._id);
+    });
+
+    if (notDoneOrderProducts.length < 1) {
+      const updatedOrderResult = await ordersCollection.findOneAndUpdate(
+        {
+          shopId: shop._id,
+          itemId: orderId,
+        },
+        {
+          $set: {
+            statusId: doneOrderProducts.length > 0 ? doneOrderStatus._id : canceledOrderStatus._id,
+            updatedAt: new Date(),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      );
+
+      const updatedOrder = updatedOrderResult.value;
+      if (!updatedOrderResult.ok || !updatedOrder) {
+        erroredOrderProducts.push(bodyItem);
+      }
+    }
+  }
+
+  if (erroredOrderProducts.length === body.length) {
+    res.status(500).send({
+      success: true,
+      message: 'all products errored',
+      erroredOrderProducts,
+    });
+    return;
   }
 
   res.status(200).send({
     success: true,
     message: 'success',
+    erroredOrderProducts,
   });
   return;
 };

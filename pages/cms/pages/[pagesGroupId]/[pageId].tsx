@@ -1,4 +1,4 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
@@ -18,8 +18,8 @@ import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

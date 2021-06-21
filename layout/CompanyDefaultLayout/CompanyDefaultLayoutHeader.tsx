@@ -1,8 +1,8 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CounterSticker from 'components/CounterSticker/CounterSticker';
-import Icon from 'components/Icon/Icon';
-import Inner from 'components/Inner/Inner';
+import Icon from 'components/Icon';
+import Inner from 'components/Inner';
 import LanguageTrigger from 'components/LanguageTrigger';
 import Link from 'components/Link/Link';
 import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';

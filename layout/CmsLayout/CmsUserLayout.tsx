@@ -1,5 +1,5 @@
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { UserInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';

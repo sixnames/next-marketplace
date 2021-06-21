@@ -1,5 +1,5 @@
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 
 export interface SelectOptionInterface {

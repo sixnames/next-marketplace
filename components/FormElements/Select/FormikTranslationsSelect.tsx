@@ -3,11 +3,11 @@ import FormikSelect, { FormikSelectInterface } from './FormikSelect';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
-import Accordion from '../../Accordion/Accordion';
+import Accordion from 'components/Accordion';
 import InputLine from '../Input/InputLine';
 import classes from './FormikTranslationsSelect.module.css';
-import Icon from '../../Icon/Icon';
-import Tooltip from '../../TTip/Tooltip';
+import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import { TranslationModel } from 'db/dbModels';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({

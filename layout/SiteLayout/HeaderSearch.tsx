@@ -2,19 +2,19 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
-import Icon from 'components/Icon/Icon';
+import Icon from 'components/Icon';
 import Input from 'components/FormElements/Input/Input';
 import {
   GetCatalogueSearchResultQuery,
   GetCatalogueSearchTopItemsQuery,
   useGetCatalogueSearchResultLazyQuery,
 } from 'generated/apolloComponents';
-import Spinner from 'components/Spinner/Spinner';
+import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
-import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
+import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']

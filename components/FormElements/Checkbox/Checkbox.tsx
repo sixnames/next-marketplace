@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import classes from './Checkbox.module.css';
 import { FormikHandlers } from 'formik/dist/types';
 

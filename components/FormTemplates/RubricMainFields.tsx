@@ -1,7 +1,7 @@
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner/Spinner';
+import Spinner from 'components/Spinner';
 import { useGetAllRubricVariantsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 

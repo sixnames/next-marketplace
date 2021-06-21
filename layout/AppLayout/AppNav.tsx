@@ -3,13 +3,13 @@ import useSignOut from 'hooks/useSignOut';
 import AppNavItem from 'layout/AppLayout/AppNavItem';
 import AppNavUser from 'layout/AppLayout/AppNavUser';
 import * as React from 'react';
-import Icon from '../../components/Icon/Icon';
+import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import classes from './AppNav.module.css';
 import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 import { useAppContext } from 'context/appContext';
-import Tooltip from '../../components/TTip/Tooltip';
+import Tooltip from 'components/Tooltip';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
 
 interface AppNavInterface {

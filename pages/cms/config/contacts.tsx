@@ -1,5 +1,5 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_CONTACTS } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';

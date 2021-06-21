@@ -1,4 +1,4 @@
-import Catalogue, { CatalogueInterface } from 'components/Catalogue/Catalogue';
+import Catalogue, { CatalogueInterface } from 'components/Catalogue';
 import { getCatalogueServerSideProps } from 'lib/catalogueUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

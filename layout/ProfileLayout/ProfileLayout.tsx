@@ -13,11 +13,11 @@ import {
 } from 'config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import Inner from '../../components/Inner/Inner';
-import Title from '../../components/Title/Title';
+import Breadcrumbs from 'components/Breadcrumbs';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { useUserContext } from 'context/userContext';
-import AsideNav from '../../components/AsideNav/AsideNav';
+import AsideNav from 'components/AsideNav';
 
 interface ProfileLayoutInterface {
   testId?: string;

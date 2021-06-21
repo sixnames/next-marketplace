@@ -1,11 +1,11 @@
 import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';

@@ -1,6 +1,6 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
+import Inner from 'components/Inner';
+import Table, { TableColumn } from 'components/Table';
 import { RubricInterface } from 'db/uiInterfaces';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
 import { useRouter } from 'next/router';

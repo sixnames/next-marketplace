@@ -1,10 +1,10 @@
-import Button from 'components/Buttons/Button';
-import StringButton from 'components/Buttons/StringButton';
+import Button from 'components/Button';
+import StringButton from 'components/StringButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal';
 import RequestError from 'components/RequestError';
-import Title from 'components/Title/Title';
+import Title from 'components/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';

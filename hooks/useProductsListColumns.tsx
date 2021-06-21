@@ -2,9 +2,9 @@ import * as React from 'react';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from '../components/ContentItemControls/ContentItemControls';
-import TableRowImage from '../components/Table/TableRowImage';
+import TableRowImage from 'components/TableRowImage';
 import { RubricProductFragment } from 'generated/apolloComponents';
-import { TableColumn } from 'components/Table/Table';
+import { TableColumn } from 'components/Table';
 import Link from 'next/link';
 import { ROUTE_CMS } from 'config/common';
 

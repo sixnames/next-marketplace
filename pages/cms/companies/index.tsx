@@ -1,11 +1,11 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import Table, { TableColumn } from 'components/Table';
+import TableRowImage from 'components/TableRowImage';
+import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';

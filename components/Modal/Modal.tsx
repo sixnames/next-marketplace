@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Spinner from '../Spinner/Spinner';
+import Spinner from 'components/Spinner';
 import dynamic from 'next/dynamic';
 import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
@@ -32,45 +32,37 @@ import {
   CREATE_PAGE_MODAL,
 } from 'config/modalVariants';
 
-const AdultModal = dynamic(() => import('./AdultModal/AdultModal'));
+const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
 const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const NavItemModal = dynamic(() => import('./NavItemModal'));
-const ConfirmModal = dynamic(() => import('./ConfirmModal/ConfirmModal'));
-const LanguageModal = dynamic(() => import('./LanguageModal/LanguageModal'));
-const OptionsGroupModal = dynamic(() => import('./OptionsGroupModal/OptionsGroupModal'));
-const AttributesGroupModal = dynamic(() => import('./AttributesGroupModal/AttributesGroupModal'));
-const RubricVariantModal = dynamic(() => import('./RubricVariantModal/RubricVariantModal'));
-const OptionInGroupModal = dynamic(() => import('./OptionInGroupModal/OptionInGroupModal'));
-const CreateRubricModal = dynamic(() => import('./CreateRubricModal/CreateRubricModal'));
+const ConfirmModal = dynamic(() => import('components/Modal/ConfirmModal'));
+const LanguageModal = dynamic(() => import('components/Modal/LanguageModal'));
+const OptionsGroupModal = dynamic(() => import('components/Modal/OptionsGroupModal'));
+const AttributesGroupModal = dynamic(() => import('components/Modal/AttributesGroupModal'));
+const RubricVariantModal = dynamic(() => import('components/Modal/RubricVariantModal'));
+const OptionInGroupModal = dynamic(() => import('components/Modal/OptionInGroupModal'));
+const CreateRubricModal = dynamic(() => import('components/Modal/CreateRubricModal'));
 const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
 const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal'));
 const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal'));
 const AddAttributesGroupToRubricModal = dynamic(
-  () => import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
+  () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
-const AttributeInGroupModal = dynamic(
-  () => import('./AttributeInGroupModal/AttributeInGroupModal'),
-);
-const CreateNewProductModal = dynamic(
-  () => import('./CreateNewProductModal/CreateNewProductModal'),
-);
+const AttributeInGroupModal = dynamic(() => import('components/Modal/AttributeInGroupModal'));
+const CreateNewProductModal = dynamic(() => import('components/Modal/CreateNewProductModal'));
 
-const UsersSearchModal = dynamic(() => import('./UsersSearchModal/UsersSearchModal'));
-const ProductSearchModal = dynamic(() => import('./ProductSearchModal/ProductSearchModal'));
-const UpdateMyPasswordModal = dynamic(
-  () => import('./UpdateMyPasswordModal/UpdateMyPasswordModal'),
-);
-const CreateConnectionModal = dynamic(
-  () => import('./CreateConnectionModal/CreateConnectionModal'),
-);
-const CreateShopModal = dynamic(() => import('./CreateShopModal/CreateShopModal'));
-const ShopProductModal = dynamic(() => import('./ShopProductModal/ShopProductModal'));
-const CartModal = dynamic(() => import('./CartModal/CartModal'));
-const CreateRoleModal = dynamic(() => import('./CreateRoleModal/CreateRoleModal'));
+const UsersSearchModal = dynamic(() => import('components/Modal/UsersSearchModal'));
+const ProductSearchModal = dynamic(() => import('components/Modal/ProductSearchModal'));
+const UpdateMyPasswordModal = dynamic(() => import('components/Modal/UpdateMyPasswordModal'));
+const CreateConnectionModal = dynamic(() => import('components/Modal/CreateConnectionModal'));
+const CreateShopModal = dynamic(() => import('components/Modal/CreateShopModal'));
+const ShopProductModal = dynamic(() => import('components/Modal/ShopProductModal'));
+const CartModal = dynamic(() => import('components/Modal/CartModal'));
+const CreateRoleModal = dynamic(() => import('components/Modal/CreateRoleModal'));
 
 interface ModalInterface {
   modalType: string;

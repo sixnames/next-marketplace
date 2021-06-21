@@ -1,7 +1,7 @@
 import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Link from 'next/link';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import classes from './FilterCheckbox.module.css';
 
 export interface FilterCheckboxInterface {

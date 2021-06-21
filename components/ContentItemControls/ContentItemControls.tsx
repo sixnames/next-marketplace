@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '../Buttons/Button';
+import Button from 'components/Button';
 import classes from './ContentItemControls.module.css';
 import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
 

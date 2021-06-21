@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
 import classes from './FormikAddressInput.module.css';
-import Spinner from '../../Spinner/Spinner';
+import Spinner from 'components/Spinner';
 import { useDebounce } from 'use-debounce';
 import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
 

@@ -1,7 +1,7 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';

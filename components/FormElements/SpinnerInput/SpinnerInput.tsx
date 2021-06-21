@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 import { noNaN } from 'lib/numbers';
 

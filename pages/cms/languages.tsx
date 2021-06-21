@@ -1,14 +1,11 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import {
-  LanguageModalInterface,
-  UpdateLanguageModalInput,
-} from 'components/Modal/LanguageModal/LanguageModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { LanguageModalInterface, UpdateLanguageModalInput } from 'components/Modal/LanguageModal';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, LANGUAGE_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';

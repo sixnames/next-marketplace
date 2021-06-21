@@ -1,7 +1,7 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { SORT_DESC } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

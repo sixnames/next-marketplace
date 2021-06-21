@@ -1,6 +1,6 @@
 import * as React from 'react';
 import HeadlessMenuButton, { MenuButtonInterface } from 'components/HeadlessMenuButton';
-import Icon from 'components/Icon/Icon';
+import Icon from 'components/Icon';
 import { IconType } from 'types/iconTypes';
 
 export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {

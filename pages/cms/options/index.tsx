@@ -1,10 +1,10 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal/OptionsGroupModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'config/modalVariants';

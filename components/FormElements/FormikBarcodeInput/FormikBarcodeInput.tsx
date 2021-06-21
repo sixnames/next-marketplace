@@ -1,4 +1,4 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import Input, { InputPropsInterface } from 'components/FormElements/Input/Input';
 import InputLine from 'components/FormElements/Input/InputLine';
 import dynamic from 'next/dynamic';
@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
 
-const BarcodeReader = dynamic(() => import('../../BarcodeReader/BarcodeReader'), {
+const BarcodeReader = dynamic(() => import('components/BarcodeReader'), {
   ssr: false,
 });
 

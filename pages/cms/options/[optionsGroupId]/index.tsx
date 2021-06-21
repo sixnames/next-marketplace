@@ -1,10 +1,10 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner/Spinner';
-import Title from 'components/Title/Title';
+import Spinner from 'components/Spinner';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_OPTIONS_GROUPS } from 'db/collectionNames';

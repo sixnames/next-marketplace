@@ -1,11 +1,11 @@
-import Accordion from 'components/Accordion/Accordion';
-import Button from 'components/Buttons/Button';
-import ButtonCross from 'components/Buttons/ButtonCross';
+import Accordion from 'components/Accordion';
+import Button from 'components/Button';
+import ButtonCross from 'components/ButtonCross';
 import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
-import Icon from 'components/Icon/Icon';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import Tooltip from 'components/TTip/Tooltip';
+import Icon from 'components/Icon';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import Tooltip from 'components/Tooltip';
 import { DEFAULT_CITY } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';

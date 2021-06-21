@@ -1,8 +1,8 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

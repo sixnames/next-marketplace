@@ -1,13 +1,13 @@
-import Accordion from 'components/Accordion/Accordion';
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Accordion from 'components/Accordion';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal/CreateConnectionModal';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
+import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';
+import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
+import Table, { TableColumn } from 'components/Table';
+import TableRowImage from 'components/TableRowImage';
 import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import {

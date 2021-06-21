@@ -2,7 +2,7 @@ import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import Button from '../../components/Buttons/Button';
+import Button from 'components/Button';
 import classes from './CartShopsList.module.css';
 import Image from 'next/image';
 import RatingStars from '../../components/RatingStars/RatingStars';

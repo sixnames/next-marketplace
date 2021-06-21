@@ -1,8 +1,8 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import RoleMainFields from 'components/FormTemplates/RoleMainFields';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

@@ -13,7 +13,7 @@ import classes from './CatalogueFilter.module.css';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
-import Icon from '../../components/Icon/Icon';
+import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
 

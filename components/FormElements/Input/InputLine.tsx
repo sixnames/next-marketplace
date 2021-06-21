@@ -1,8 +1,8 @@
 import FieldErrorMessage from 'components/FormElements/FieldErrorMessage/FieldErrorMessage';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
-import Icon from '../../Icon/Icon';
-import Tooltip from '../../TTip/Tooltip';
+import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 
 export interface InputLinePropsInterface {
   name?: string;

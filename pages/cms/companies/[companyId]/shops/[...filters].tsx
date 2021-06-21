@@ -1,15 +1,15 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { CreateShopModalInterface } from 'components/Modal/CreateShopModal/CreateShopModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
-import Spinner from 'components/Spinner/Spinner';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
+import Spinner from 'components/Spinner';
+import Table, { TableColumn } from 'components/Table';
+import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
 import {

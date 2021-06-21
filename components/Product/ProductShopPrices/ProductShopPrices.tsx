@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classes from './ProductShopPrices.module.css';
-import Currency from '../../Currency/Currency';
-import Percent from '../../Percent/Percent';
+import Currency from 'components/Currency';
+import Percent from 'components/Percent';
 
 interface ProductPricesInterface {
   discountedPercent?: number | null;

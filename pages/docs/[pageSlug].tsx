@@ -1,4 +1,4 @@
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { PAGE_STATE_PUBLISHED } from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';

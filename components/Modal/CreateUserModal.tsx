@@ -1,4 +1,4 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';

@@ -1,10 +1,10 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal/RubricVariantModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'config/modalVariants';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classes from './AppNavUser.module.css';
 import { useUserContext } from 'context/userContext';
-import Icon from '../../components/Icon/Icon';
+import Icon from 'components/Icon';
 
 interface AppNavUserInterface {
   compact: boolean;

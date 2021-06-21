@@ -1,4 +1,4 @@
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';

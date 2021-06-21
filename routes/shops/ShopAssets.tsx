@@ -1,8 +1,8 @@
 import AssetsManager from 'components/Assets/AssetsManager';
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { Form, Formik } from 'formik';
 import {
   useDeleteShopAssetMutation,

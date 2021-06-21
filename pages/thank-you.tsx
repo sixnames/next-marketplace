@@ -1,6 +1,6 @@
-import Button from 'components/Buttons/Button';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Button from 'components/Button';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';

@@ -1,13 +1,13 @@
-import ButtonCross from 'components/Buttons/ButtonCross';
+import ButtonCross from 'components/ButtonCross';
 import * as React from 'react';
 import { DragDropContext, Draggable, DragUpdate, Droppable } from 'react-beautiful-dnd';
 import { useDropzone } from 'react-dropzone';
 import InputLine from '../Input/InputLine';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import Button from '../../Buttons/Button';
+import Button from 'components/Button';
 import classes from './FormikDropZone.module.css';
-import Tooltip from '../../TTip/Tooltip';
+import Tooltip from 'components/Tooltip';
 import { NEGATIVE_INDEX } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { alwaysArray } from 'lib/arrayUtils';

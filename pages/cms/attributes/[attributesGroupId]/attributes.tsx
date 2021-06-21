@@ -1,8 +1,8 @@
-import FixedButtons from 'components/Buttons/FixedButtons';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import Table, { TableColumn } from 'components/Table/Table';
+import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
@@ -17,9 +17,9 @@ import {
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/Buttons/Button';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Button from 'components/Button';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';

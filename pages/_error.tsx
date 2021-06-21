@@ -1,4 +1,4 @@
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import FormikInput from '../Input/FormikInput';
 import classes from './FormikSearch.module.css';
-import Button from '../../Buttons/Button';
+import Button from 'components/Button';
 
 interface FormikSearchInterface {
   resetForm?: (() => void) | null;

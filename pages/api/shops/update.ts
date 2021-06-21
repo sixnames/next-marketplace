@@ -7,7 +7,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
-    res.status(200).send({
+    res.status(405).send({
       success: false,
       message: 'wrong method',
     });
@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!body || body.length < 1 || !query) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no products provided',
     });
@@ -27,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { apiVersion, systemVersion, token } = query;
   if (!apiVersion || !systemVersion || !token) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no query params provided',
     });
@@ -43,7 +43,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shop = await shopsCollection.findOne({ token });
 
   if (!shop) {
-    res.status(200).send({
+    res.status(401).send({
       success: false,
       message: 'shop not found',
     });
@@ -60,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     })
     .toArray();
   if (products.length < 1) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'no products found',
     });
@@ -97,8 +97,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  if (updatedShopProducts.length !== body.length) {
-    res.status(200).send({
+  if (updatedShopProducts.length !== products.length) {
+    res.status(500).send({
       success: false,
       message: 'not all products updated',
     });

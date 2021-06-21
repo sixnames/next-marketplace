@@ -10,7 +10,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
-    res.status(200).send({
+    res.status(405).send({
       success: false,
       message: 'wrong method',
     });
@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!query || !body) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no params provided',
     });
@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { orderId } = body;
   const { apiVersion, systemVersion, token } = query;
   if (!apiVersion || !systemVersion || !token || !orderId) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no query params provided',
     });
@@ -48,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shop = await shopsCollection.findOne({ token });
 
   if (!shop) {
-    res.status(200).send({
+    res.status(401).send({
       success: false,
       message: 'shop not found',
     });
@@ -113,7 +113,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const shopOrder = shopOrdersAggregation[0];
   if (!shopOrder) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'shop order not found',
     });
@@ -125,7 +125,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return orderProduct.barcode === body.barcode;
   });
   if (!currentProduct) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'order product not found',
     });
@@ -137,7 +137,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     slug: `${body.status}`,
   });
   if (!newOrderProductStatus) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'order product status not found',
     });
@@ -164,7 +164,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   );
   const updatedOrderProduct = updatedOrderProductResult.value;
   if (!updatedOrderProductResult.ok || !updatedOrderProduct) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'order product update error',
     });
@@ -179,7 +179,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     slug: ORDER_STATUS_CANCELED,
   });
   if (!doneOrderProductStatus || !canceledOrderProductStatus) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'Done or Canceled order product status not found',
     });
@@ -221,7 +221,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const updatedOrder = updatedOrderResult.value;
     if (!updatedOrderResult.ok || !updatedOrder) {
-      res.status(200).send({
+      res.status(500).send({
         success: false,
         message: 'order update error',
       });

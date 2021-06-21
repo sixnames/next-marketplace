@@ -74,9 +74,39 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   for await (const product of products) {
     const bodyItem = body.find(({ barcode }) => product.barcode === barcode);
     if (!bodyItem || !bodyItem.available || !bodyItem.price) {
-      break;
+      continue;
     }
 
+    // Check existing shop product
+    const exitingShopProduct = await shopProductsCollection.findOne({
+      barcode: bodyItem.barcode,
+    });
+    if (exitingShopProduct) {
+      const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+        {
+          _id: exitingShopProduct._id,
+        },
+        {
+          $set: {
+            available: bodyItem.available,
+            price: bodyItem.price,
+            formattedPrice: getCurrencyString(bodyItem.price),
+            updatedAt: new Date(),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      );
+
+      const updatedShopProduct = updatedShopProductResult.value;
+      if (!updatedShopProductResult.ok || !updatedShopProduct) {
+        break;
+      }
+      continue;
+    }
+
+    // Create new shop product
     const { available, price } = bodyItem;
 
     const shopProduct: ShopProductModel = {

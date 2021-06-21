@@ -84,6 +84,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         $set: {
           available,
           price,
+          updatedAt: new Date(),
         },
       },
       {

@@ -15,7 +15,6 @@ const LanguageTrigger: React.FC = () => {
             _id: nativeName,
             name: nativeName,
             current: (menuItem) => {
-              console.log(menuItem);
               return menuItem.name === locale;
             },
             onSelect: () => {

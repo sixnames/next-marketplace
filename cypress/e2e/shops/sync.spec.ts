@@ -129,7 +129,7 @@ describe('Sync', () => {
     });
   });
 
-  it('Should sync shop orders with site', () => {
+  it.only('Should sync shop orders with site', () => {
     // Should return order statuses list
     cy.request({
       method: 'GET',
@@ -159,6 +159,7 @@ describe('Sync', () => {
       // should update order product
       const updateProduct: SyncUpdateOrderProductInterface = {
         ...product,
+        amount: 55,
         orderId: order.orderId,
         status: ORDER_STATUS_DONE,
       };
@@ -174,7 +175,7 @@ describe('Sync', () => {
     });
   });
 
-  it.only('Should generate shop token', () => {
+  it('Should generate shop token', () => {
     cy.visit(`${ROUTE_CMS}/companies`);
     cy.wait(1500);
     cy.getByCy(`company_b-update`).click();

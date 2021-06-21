@@ -1,3 +1,4 @@
+import Breadcrumbs from 'components/Breadcrumbs';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { PAGE_STATE_PUBLISHED } from 'config/common';
@@ -17,8 +18,10 @@ interface CreatedPageConsumerInterface {
 
 const CreatedPageConsumer: React.FC<CreatedPageConsumerInterface> = ({ page }) => {
   return (
-    <div className='mb-20 mt-12'>
-      <Inner>
+    <div className='mb-12'>
+      <Breadcrumbs currentPageName={`${page.name}`} />
+
+      <Inner lowTop>
         <PageEditor pageId={`${page._id}`} value={JSON.parse(page.content)} readOnly />
       </Inner>
     </div>
@@ -29,8 +32,9 @@ interface CreatedPageInterface extends SiteLayoutProviderInterface, CreatedPageC
 
 const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   return (
-    <SiteLayoutProvider title={`${page.name}`} {...props}>
+    <SiteLayoutProvider {...props}>
       <Head>
+        <title>{`${page.name}`}</title>
         <meta name={'description'} content={page.description ? page.description : `${page.name}`} />
       </Head>
       <CreatedPageConsumer page={page} />

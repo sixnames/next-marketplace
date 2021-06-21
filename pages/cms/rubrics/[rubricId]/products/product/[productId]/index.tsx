@@ -51,7 +51,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     originalName,
     descriptionI18n,
     active,
-    barcode,
+    barcode: barcode && barcode.length ? barcode[0] : '',
   };
 
   return (
@@ -66,8 +66,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
             return updateProductMutation({
               variables: {
                 input: {
-                  productId: product._id,
                   ...values,
+                  productId: product._id,
+                  barcode: values.barcode ? [values.barcode] : [],
                 },
               },
             });

@@ -309,7 +309,7 @@ export interface NexusGenInputs {
   CreateProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string | null; // String
+    barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
@@ -675,7 +675,7 @@ export interface NexusGenInputs {
   UpdateProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string | null; // String
+    barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!

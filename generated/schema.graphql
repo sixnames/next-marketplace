@@ -513,7 +513,7 @@ input CreateProductConnectionInput {
 
 input CreateProductInput {
   active: Boolean!
-  barcode: String
+  barcode: [String!]
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -2387,7 +2387,7 @@ input UpdateProductInCartInput {
 
 input UpdateProductInput {
   active: Boolean!
-  barcode: String
+  barcode: [String!]
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!

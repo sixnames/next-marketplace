@@ -113,7 +113,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // TODO barcode of current shop product
   const shopOrders = shopOrdersAggregation.reduce((acc: SyncOrderInterface[], order) => {
-    const { itemId, status, products, updatedAt, createdAt, pickupDate } = order;
+    const { itemId, status, products, updatedAt, createdAt, reservationDate } = order;
     if (!status || !products || products.length < 1) {
       return acc;
     }
@@ -124,7 +124,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         orderId: itemId,
         shopId: shop.itemId,
         status: status.slug,
-        pickupDate: pickupDate ? pickupDate.toISOString() : null,
+        reservationDate: reservationDate ? reservationDate.toISOString() : null,
         updatedAt,
         createdAt,
         products: products.reduce((acc: SyncOrderProductInterface[], orderProduct) => {

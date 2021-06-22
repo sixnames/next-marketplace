@@ -59,7 +59,7 @@ export const ordersMessages: MessageBaseInterface[] = [
     },
   },
   {
-    slug: 'validation.orders.pickupDate',
+    slug: 'validation.orders.reservationDate',
     messageI18n: {
       [DEFAULT_LOCALE]: `Дата отгрузки обязательна к заполнению.`,
       [SECONDARY_LOCALE]: `Order pickup date is required.`,

@@ -437,7 +437,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   shopItemId: string;
   companyId: ObjectIdModel;
   companyItemId: string;
-  pickupDate?: DateModel | null;
+  reservationDate?: DateModel | null;
 }
 
 export interface ProductConnectionItemModel {

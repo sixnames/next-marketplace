@@ -556,6 +556,11 @@ table {
   color: var(--placeholder);
 }
 
+/* React Date Picker */
+.react-datepicker-wrapper {
+  display: block !important;
+}
+
 /* Reach UI */
 html [data-reach-menu-button] {
   outline: none;

@@ -9,10 +9,10 @@ export const makeAnOrderSchema = (args: ValidationSchemaArgsInterface) => {
     email: emailSchema(args),
     name: userNameSchema(args),
     phone: phoneSchema(args),
-    pickupDate: Yup.date().required(
+    reservationDate: Yup.date().required(
       getFieldValidationMessage({
         ...args,
-        slug: 'validation.orders.pickupDate',
+        slug: 'validation.orders.reservationDate',
       }),
     ),
   });

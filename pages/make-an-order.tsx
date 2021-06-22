@@ -1,6 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import Currency from 'components/Currency';
+import DatePickerInput from 'components/FormElements/DatePickerInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
@@ -196,10 +197,10 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
-            pickupDate: new Date(),
+            reservationDate: new Date(),
           }}
           onSubmit={(values) => {
-            if (!values.pickupDate) {
+            if (!values.reservationDate) {
               showErrorNotification();
               return;
             }
@@ -229,6 +230,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-phone'}
@@ -237,6 +239,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-email'}
@@ -245,6 +248,17 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
+                        />
+
+                        <DatePickerInput
+                          isRequired
+                          showInlineError
+                          label={'Дата брони'}
+                          name={'reservationDate'}
+                          onChange={(value) => {
+                            console.log(value);
+                          }}
                         />
                       </div>
 

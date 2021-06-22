@@ -37,7 +37,7 @@ export interface SyncOrderInterface extends TimestampModel {
   shopId: string;
   status: string;
   products: SyncOrderProductInterface[];
-  pickupDate?: string | null;
+  reservationDate?: string | null;
 }
 
 export interface SyncOrderResponseInterface extends SyncResponseInterface {

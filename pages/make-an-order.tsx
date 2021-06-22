@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import Currency from 'components/Currency';
-import DatePickerInput from 'components/FormElements/DatePickerInput';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
@@ -200,11 +200,6 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             reservationDate: new Date(),
           }}
           onSubmit={(values) => {
-            if (!values.reservationDate) {
-              showErrorNotification();
-              return;
-            }
-
             makeAnOrder({
               ...values,
               phone: phoneToRaw(values.phone),
@@ -251,14 +246,11 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           showInlineError
                         />
 
-                        <DatePickerInput
+                        <FormikDatePicker
                           isRequired
                           showInlineError
                           label={'Дата брони'}
                           name={'reservationDate'}
-                          onChange={(value) => {
-                            console.log(value);
-                          }}
                         />
                       </div>
 

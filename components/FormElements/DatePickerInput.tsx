@@ -19,7 +19,17 @@ registerLocale(SECONDARY_LOCALE, en);
 registerLocale(DEFAULT_LOCALE, ru);
 // setDefaultLocale(DEFAULT_LOCALE);
 
-export interface DatePickerInputInterface extends ReactDatePickerProps, InputLinePropsInterface {
+export interface DatePickerInputEvent {
+  target: {
+    id?: string;
+    name?: string;
+    value: Date | [Date, Date] | null;
+  };
+}
+
+export interface DatePickerInputInterface
+  extends Omit<ReactDatePickerProps, 'onChange'>,
+    InputLinePropsInterface {
   notValid?: boolean;
   theme?: InputTheme;
   icon?: IconType;
@@ -28,6 +38,7 @@ export interface DatePickerInputInterface extends ReactDatePickerProps, InputLin
   readOnly?: boolean;
   disabled?: boolean;
   name: string;
+  onChange(event: DatePickerInputEvent): void;
 }
 
 const DatePickerInput: React.FC<DatePickerInputInterface> = ({
@@ -88,7 +99,15 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
 
       <DatePicker
         selected={selected}
-        onChange={onChange}
+        name={name}
+        onChange={(value) => {
+          onChange({
+            target: {
+              name,
+              value,
+            },
+          });
+        }}
         className={inputClassName}
         readOnly={readOnly}
         disabled={disabled}

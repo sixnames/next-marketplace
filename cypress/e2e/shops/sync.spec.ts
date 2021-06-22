@@ -100,6 +100,8 @@ describe('Sync', () => {
     cy.getByCy('shop-rubric-products-list').should('exist');
     cy.getByCy('shop-product-main-image').should('have.length', 3);
 
+    // TODO test get-shop-products route
+
     // should update synced products
     cy.request({
       method: 'PATCH',

@@ -130,6 +130,8 @@ describe('Sync', () => {
   });
 
   it.only('Should sync shop orders with site', () => {
+    const currentDate = new Date().toISOString();
+
     // Should return order statuses list
     cy.request({
       method: 'GET',
@@ -146,7 +148,7 @@ describe('Sync', () => {
     // should return shop new orders
     cy.request({
       method: 'GET',
-      url: `/api/shops/get-orders?${validRequestParamsA}`,
+      url: `/api/shops/get-orders?${validRequestParamsA}&fromDate=${currentDate}`,
     }).then((res) => {
       const { success, orders } = res.body as SyncOrderResponseInterface;
       const order = orders[0];
@@ -167,7 +169,7 @@ describe('Sync', () => {
       cy.request({
         method: 'PATCH',
         url: `/api/shops/update-order-product?${validRequestParamsA}`,
-        body: JSON.stringify(updateProduct),
+        body: JSON.stringify([updateProduct]),
       }).then((res) => {
         const { success } = res.body as SyncOrderResponseInterface;
         expect(success).equals(true);

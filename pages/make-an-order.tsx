@@ -196,8 +196,14 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
+            pickupDate: new Date(),
           }}
           onSubmit={(values) => {
+            if (!values.pickupDate) {
+              showErrorNotification();
+              return;
+            }
+
             makeAnOrder({
               ...values,
               phone: phoneToRaw(values.phone),

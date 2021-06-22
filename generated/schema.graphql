@@ -678,6 +678,7 @@ input MakeAnOrderInput {
   email: EmailAddress!
   name: String!
   phone: PhoneNumber!
+  pickupDate: Date!
 }
 
 type MakeAnOrderPayload implements Payload {

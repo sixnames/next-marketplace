@@ -536,6 +536,7 @@ export type MessageSlug =
   | 'orders.makeAnOrder.empty'
   | 'orders.makeAnOrder.success'
   // Orders validation
+  | 'validation.orders.pickupDate'
 
   // Fallback for empty key
   | 'none';

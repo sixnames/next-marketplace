@@ -1,11 +1,10 @@
-import { ONE_DAY } from 'config/common';
 import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   SyncOrderInterface,
   SyncOrderProductInterface,
-  SyncParamsInterface,
+  GetOrdersParamsInterface,
 } from 'db/syncInterfaces';
 import { OrderInterface } from 'db/uiInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -20,7 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const query = req.query as unknown as SyncParamsInterface | undefined | null;
+  const query = req.query as unknown as GetOrdersParamsInterface | undefined | null;
 
   if (!query) {
     res.status(400).send({
@@ -30,8 +29,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { apiVersion, systemVersion, token } = query;
-  if (!apiVersion || !systemVersion || !token) {
+  const { apiVersion, systemVersion, token, fromDate } = query;
+  if (!apiVersion || !systemVersion || !token || !fromDate) {
     res.status(400).send({
       success: false,
       message: 'no query params provided',
@@ -53,11 +52,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     return;
   }
-
-  const currentDate = new Date();
-  const currentDateTime = currentDate.getTime();
-  const prevDateTime = currentDateTime - ONE_DAY;
-  const prevDate = new Date(prevDateTime);
 
   const statusStages = [
     {
@@ -85,23 +79,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
   ];
 
+  const updatedAt = new Date(fromDate);
   const shopOrdersAggregation = await ordersCollection
     .aggregate([
       {
         $match: {
           shopId: shop._id,
-          $and: [
-            {
-              updatedAt: {
-                $gte: prevDate,
-              },
-            },
-            {
-              updatedAt: {
-                $lte: currentDate,
-              },
-            },
-          ],
+          updatedAt: {
+            $gte: updatedAt,
+          },
         },
       },
       {
@@ -125,8 +111,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     ])
     .toArray();
 
+  // TODO barcode of current shop product
   const shopOrders = shopOrdersAggregation.reduce((acc: SyncOrderInterface[], order) => {
-    const { itemId, status, products, updatedAt, createdAt } = order;
+    const { itemId, status, products, updatedAt, createdAt, pickupDate } = order;
     if (!status || !products || products.length < 1) {
       return acc;
     }
@@ -137,6 +124,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         orderId: itemId,
         shopId: shop.itemId,
         status: status.slug,
+        pickupDate: pickupDate ? pickupDate.toISOString() : null,
         updatedAt,
         createdAt,
         products: products.reduce((acc: SyncOrderProductInterface[], orderProduct) => {
@@ -148,7 +136,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...acc,
             {
               status: status.slug,
-              barcode: barcode || undefined,
+              barcode: barcode && barcode[0] ? `${barcode[0]}` : undefined, // TODO current barcode
               amount,
               price,
               createdAt,

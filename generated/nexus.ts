@@ -420,6 +420,7 @@ export interface NexusGenInputs {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     name: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
+    pickupDate: NexusGenScalars['Date']; // Date!
   };
   ManufacturerAlphabetInput: {
     // input type

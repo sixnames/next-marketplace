@@ -707,6 +707,7 @@ export type MakeAnOrderInput = {
   name: Scalars['String'];
   phone: Scalars['PhoneNumber'];
   email: Scalars['EmailAddress'];
+  pickupDate: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
   companySlug?: Maybe<Scalars['String']>;
 };

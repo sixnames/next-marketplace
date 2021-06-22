@@ -6,6 +6,10 @@ export interface SyncParamsInterface {
   token?: string;
 }
 
+export interface GetOrdersParamsInterface extends SyncParamsInterface {
+  fromDate: string;
+}
+
 export interface SyncProductInterface {
   barcode?: string;
   available?: number;
@@ -18,10 +22,10 @@ export interface SyncResponseInterface {
 }
 
 export interface SyncOrderProductInterface extends TimestampModel {
-  barcode?: string[];
+  barcode?: string;
   amount?: number;
   price?: number;
-  status?: string; // TODO order status type
+  status?: string;
 }
 
 export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterface {
@@ -31,8 +35,9 @@ export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterfa
 export interface SyncOrderInterface extends TimestampModel {
   orderId: string;
   shopId: string;
-  status: string; // TODO order status type
+  status: string;
   products: SyncOrderProductInterface[];
+  pickupDate?: string | null;
 }
 
 export interface SyncOrderResponseInterface extends SyncResponseInterface {

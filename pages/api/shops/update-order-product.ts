@@ -136,14 +136,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopOrder = shopOrdersAggregation[0];
     if (!shopOrder) {
       erroredOrderProducts.push(bodyItem);
+      console.log(`if (!shopOrder)`);
       continue;
     }
 
     // find order product
     const currentProduct = (shopOrder.products || []).find((orderProduct) => {
-      return orderProduct.barcode === bodyItem.barcode;
+      return orderProduct.barcode?.includes(`${bodyItem.barcode}`);
     });
     if (!currentProduct) {
+      console.log('if (!currentProduct)');
       erroredOrderProducts.push(bodyItem);
       continue;
     }
@@ -153,6 +155,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       slug: `${bodyItem.status}`,
     });
     if (!newOrderProductStatus) {
+      console.log(`if (!newOrderProductStatus)`);
       erroredOrderProducts.push(bodyItem);
       continue;
     }
@@ -177,6 +180,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     );
     const updatedOrderProduct = updatedOrderProductResult.value;
     if (!updatedOrderProductResult.ok || !updatedOrderProduct) {
+      console.log(`if (!updatedOrderProductResult.ok || !updatedOrderProduct)`);
       erroredOrderProducts.push(bodyItem);
       continue;
     }
@@ -219,6 +223,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const updatedOrder = updatedOrderResult.value;
       if (!updatedOrderResult.ok || !updatedOrder) {
+        console.log(`if (!updatedOrderResult.ok || !updatedOrder)`);
         erroredOrderProducts.push(bodyItem);
       }
     }

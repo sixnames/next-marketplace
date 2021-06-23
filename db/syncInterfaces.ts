@@ -11,7 +11,7 @@ export interface GetOrdersParamsInterface extends SyncParamsInterface {
 }
 
 export interface SyncProductInterface {
-  barcode?: string;
+  barcode?: string | null;
   available?: number;
   price?: number;
   name: string;
@@ -52,4 +52,8 @@ export interface SyncOrderStatusInterface {
 
 export interface SyncOrderStatusesResponseInterface extends SyncResponseInterface {
   orderStatuses?: SyncOrderStatusInterface[];
+}
+
+export interface SyncShopProductsResponseInterface extends SyncResponseInterface {
+  shopProducts: SyncProductInterface[];
 }

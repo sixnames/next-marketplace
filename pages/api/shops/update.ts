@@ -2,6 +2,8 @@ import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { getCurrencyString } from 'lib/i18n';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
@@ -69,23 +71,40 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updatedShopProducts: ShopProductModel[] = [];
   for await (const product of products) {
-    const bodyItem = body.find(({ barcode }) => product.barcode === barcode);
+    const bodyItem = body.find(({ barcode }) => product.barcode?.includes(`${barcode}`));
     if (!bodyItem || !bodyItem.available || !bodyItem.price || !bodyItem.barcode) {
-      break;
+      continue;
     }
 
-    const { available, price, barcode } = bodyItem;
+    const { barcode } = bodyItem;
+    const shopProduct = await shopProductsCollection.findOne({
+      shopId: shop._id,
+      barcode,
+    });
+
+    if (!shopProduct) {
+      continue;
+    }
+
+    const { discountedPercent, formattedOldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+      shopProduct,
+      newPrice: bodyItem.price,
+    });
+
     const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
       {
-        shopId: shop._id,
-        barcode,
+        _id: shopProduct._id,
       },
       {
         $set: {
-          available,
-          price,
+          available: bodyItem.available,
+          price: bodyItem.price,
+          formattedPrice: getCurrencyString(bodyItem.price),
+          formattedOldPrice,
+          discountedPercent,
           updatedAt: new Date(),
         },
+        ...oldPriceUpdater,
       },
       {
         returnDocument: 'after',

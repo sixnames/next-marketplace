@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
+  if (req.method !== 'GET') {
     res.status(405).send({
       success: false,
       message: 'wrong method',
@@ -57,11 +57,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
-    const { barcode, available, price } = shopProduct;
+    const { barcode, available, price, originalName } = shopProduct;
     shopProducts.push({
-      barcode: barcode && barcode[0] ? `${barcode[0]}` : undefined, // TODO current barcode
+      barcode,
       available,
       price,
+      name: originalName,
     });
   });
   res.status(200).send({

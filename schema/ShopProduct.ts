@@ -1,5 +1,5 @@
 import { getCurrencyString } from 'lib/i18n';
-import { getPercentage } from 'lib/numbers';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -163,34 +163,11 @@ export const ShopProductMutations = extendType({
             };
           }
 
-          const priceChanged = shopProduct.price !== values.price;
-          const oldPriceUpdater = priceChanged
-            ? {
-                $push: {
-                  oldPrices: {
-                    price: shopProduct.price,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  },
-                },
-              }
-            : {};
-
-          const formattedOldPrice = priceChanged
-            ? getCurrencyString(shopProduct.price)
-            : shopProduct.formattedOldPrice;
-
-          const lastOldPrice = priceChanged
-            ? { price: shopProduct.price }
-            : shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
-          const currentPrice = priceChanged ? values.price : shopProduct.price;
-          const discountedPercent =
-            lastOldPrice && lastOldPrice.price > shopProduct.price
-              ? getPercentage({
-                  fullValue: lastOldPrice.price,
-                  partialValue: currentPrice,
-                })
-              : 0;
+          const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
+            getUpdatedShopProductPrices({
+              shopProduct,
+              newPrice: values.price,
+            });
 
           // Update shop product
           const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
@@ -282,34 +259,11 @@ export const ShopProductMutations = extendType({
               break;
             }
 
-            const priceChanged = shopProduct.price !== values.price;
-            const oldPriceUpdater = priceChanged
-              ? {
-                  $push: {
-                    oldPrices: {
-                      price: shopProduct.price,
-                      createdAt: new Date(),
-                      updatedAt: new Date(),
-                    },
-                  },
-                }
-              : {};
-
-            const formattedOldPrice = priceChanged
-              ? getCurrencyString(shopProduct.price)
-              : shopProduct.formattedOldPrice;
-
-            const lastOldPrice = priceChanged
-              ? { price: shopProduct.price }
-              : shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
-            const currentPrice = priceChanged ? values.price : shopProduct.price;
-            const discountedPercent =
-              lastOldPrice && lastOldPrice.price > shopProduct.price
-                ? getPercentage({
-                    fullValue: lastOldPrice.price,
-                    partialValue: currentPrice,
-                  })
-                : 0;
+            const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
+              getUpdatedShopProductPrices({
+                shopProduct,
+                newPrice: values.price,
+              });
 
             // Update shop product
             const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(

@@ -4,6 +4,7 @@ import {
   SyncOrderStatusesResponseInterface,
   SyncProductInterface,
   SyncResponseInterface,
+  SyncShopProductsResponseInterface,
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
 
@@ -15,28 +16,61 @@ const initialBody: SyncProductInterface[] = [
     barcode: '000003',
     available: 10,
     price: 1890,
+    name: '000003',
   },
   {
     barcode: '000004',
     available: 1,
     price: 800,
+    name: '000004',
   },
   {
     barcode: '000005',
     available: 5,
     price: 650,
+    name: '000005',
   },
 ];
+
+const secondarySyncBody: SyncProductInterface[] = [
+  {
+    barcode: '000003',
+    available: 1,
+    price: 1,
+    name: '000003',
+  },
+  {
+    barcode: '000004',
+    available: 1,
+    price: 1,
+    name: '000004',
+  },
+  {
+    barcode: '000005',
+    available: 1,
+    price: 1,
+    name: '000005',
+  },
+  {
+    barcode: '000006',
+    available: 1,
+    price: 1,
+    name: '000006',
+  },
+];
+
 const updateBody: SyncProductInterface[] = [
   {
     barcode: '000003',
     available: 5,
     price: 890,
+    name: '000003',
   },
   {
     barcode: '000004',
     available: 5,
     price: 1000,
+    name: '000004',
   },
 ];
 
@@ -58,6 +92,7 @@ describe('Sync', () => {
       method: 'POST',
       url: `/api/shops/sync?apiVersion=0.0.1&systemVersion=8.2`,
       body: JSON.stringify(initialBody),
+      failOnStatusCode: false,
     }).then(errorCallback);
 
     // should error on no request body
@@ -65,12 +100,14 @@ describe('Sync', () => {
       method: 'POST',
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify([]),
+      failOnStatusCode: false,
     }).then(errorCallback);
 
     // should error on wrong method
     cy.request({
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(initialBody),
+      failOnStatusCode: false,
     }).then(errorCallback);
 
     // should success
@@ -100,6 +137,34 @@ describe('Sync', () => {
     cy.getByCy('shop-rubric-products-list').should('exist');
     cy.getByCy('shop-product-main-image').should('have.length', 3);
 
+    // should update existing shop products and creat new ones
+    cy.request({
+      method: 'POST',
+      url: `/api/shops/sync?${validRequestParamsC}`,
+      body: JSON.stringify(secondarySyncBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
+    cy.reload();
+    cy.wait(1500);
+    cy.getByCy('000003-available').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('1');
+    });
+    cy.getByCy('000003-price').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('1');
+    });
+    cy.getByCy('000006-available').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('1');
+    });
+    cy.getByCy('000006-price').then((el: any) => {
+      const input = el.find('input');
+      expect(input.val()).to.equals('1');
+    });
+
     // should update synced products
     cy.request({
       method: 'PATCH',
@@ -127,9 +192,21 @@ describe('Sync', () => {
       const input = el.find('input');
       expect(input.val()).to.equals('1000');
     });
+
+    // Should return shop products list
+    cy.request({
+      method: 'GET',
+      url: `/api/shops/get-shop-products?${validRequestParamsC}`,
+    }).then((res) => {
+      const body = res.body as SyncShopProductsResponseInterface;
+      expect(body.success).equals(true);
+      expect(body.shopProducts.length).equals(secondarySyncBody.length);
+    });
   });
 
-  it.only('Should sync shop orders with site', () => {
+  it('Should sync shop orders with site', () => {
+    const currentDate = new Date().toISOString();
+
     // Should return order statuses list
     cy.request({
       method: 'GET',
@@ -146,7 +223,7 @@ describe('Sync', () => {
     // should return shop new orders
     cy.request({
       method: 'GET',
-      url: `/api/shops/get-orders?${validRequestParamsA}`,
+      url: `/api/shops/get-orders?${validRequestParamsA}&fromDate=${currentDate}`,
     }).then((res) => {
       const { success, orders } = res.body as SyncOrderResponseInterface;
       const order = orders[0];
@@ -154,7 +231,7 @@ describe('Sync', () => {
 
       expect(success).equals(true);
       expect(orders).to.have.length(1);
-      expect(orders[0].products).to.have.length(1);
+      expect(orders[0].products).to.have.length(2);
 
       // should update order product
       const updateProduct: SyncUpdateOrderProductInterface = {
@@ -167,7 +244,7 @@ describe('Sync', () => {
       cy.request({
         method: 'PATCH',
         url: `/api/shops/update-order-product?${validRequestParamsA}`,
-        body: JSON.stringify(updateProduct),
+        body: JSON.stringify([updateProduct]),
       }).then((res) => {
         const { success } = res.body as SyncOrderResponseInterface;
         expect(success).equals(true);

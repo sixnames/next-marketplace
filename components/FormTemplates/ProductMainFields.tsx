@@ -4,11 +4,12 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { CreateProductInput } from 'generated/apolloComponents';
 
-export type ProductFormValuesBaseType = Omit<CreateProductInput, 'assets' | 'rubricId'>;
+export type ProductFormValuesBaseType = Omit<CreateProductInput, 'assets' | 'rubricId' | 'barcode'>;
 
 export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
   assets?: any[] | null;
+  barcode: string;
 }
 
 const ProductMainFields: React.FC = () => {

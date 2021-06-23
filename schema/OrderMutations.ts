@@ -65,6 +65,7 @@ export const MakeAnOrderInput = inputObjectType({
     t.nonNull.string('name');
     t.nonNull.phone('phone');
     t.nonNull.email('email');
+    t.nonNull.date('reservationDate');
     t.string('comment');
     t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
   },
@@ -278,6 +279,7 @@ export const OrderMutations = extendType({
                   shopItemId: shop.itemId,
                   companyId,
                   companyItemId: company.itemId,
+                  reservationDate: input.reservationDate,
                   createdAt: new Date(),
                   updatedAt: new Date(),
                 };

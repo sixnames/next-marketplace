@@ -1,6 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import Currency from 'components/Currency';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
@@ -196,6 +197,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
+            reservationDate: new Date(),
           }}
           onSubmit={(values) => {
             makeAnOrder({
@@ -223,6 +225,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-phone'}
@@ -231,6 +234,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-email'}
@@ -239,6 +243,15 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
+                        />
+
+                        <FormikDatePicker
+                          isRequired
+                          showInlineError
+                          label={'Дата брони'}
+                          name={'reservationDate'}
+                          testId={'reservationDate'}
                         />
                       </div>
 

@@ -513,7 +513,7 @@ input CreateProductConnectionInput {
 
 input CreateProductInput {
   active: Boolean!
-  barcode: String
+  barcode: [String!]
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -678,6 +678,7 @@ input MakeAnOrderInput {
   email: EmailAddress!
   name: String!
   phone: PhoneNumber!
+  reservationDate: Date!
 }
 
 type MakeAnOrderPayload implements Payload {
@@ -2123,6 +2124,7 @@ type ShopPayload implements Payload {
 type ShopProduct implements Timestamp {
   _id: ObjectId!
   available: Int!
+  barcode: String
   citySlug: String!
   createdAt: Date!
   discountedPercent: Int
@@ -2387,7 +2389,7 @@ input UpdateProductInCartInput {
 
 input UpdateProductInput {
   active: Boolean!
-  barcode: String
+  barcode: [String!]
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   originalName: String!
@@ -2482,6 +2484,7 @@ input UpdateShopInput {
 
 input UpdateShopProductInput {
   available: Int!
+  barcode: String
   price: Int!
   productId: ObjectId!
   shopProductId: ObjectId!

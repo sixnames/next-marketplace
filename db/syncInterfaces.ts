@@ -14,6 +14,7 @@ export interface SyncProductInterface {
   barcode?: string;
   available?: number;
   price?: number;
+  name: string;
 }
 
 export interface SyncResponseInterface {

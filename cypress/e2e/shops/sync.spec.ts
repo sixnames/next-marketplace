@@ -15,16 +15,19 @@ const initialBody: SyncProductInterface[] = [
     barcode: '000003',
     available: 10,
     price: 1890,
+    name: '000003',
   },
   {
     barcode: '000004',
     available: 1,
     price: 800,
+    name: '000004',
   },
   {
     barcode: '000005',
     available: 5,
     price: 650,
+    name: '000005',
   },
 ];
 const updateBody: SyncProductInterface[] = [
@@ -32,11 +35,13 @@ const updateBody: SyncProductInterface[] = [
     barcode: '000003',
     available: 5,
     price: 890,
+    name: '000003',
   },
   {
     barcode: '000004',
     available: 5,
     price: 1000,
+    name: '000004',
   },
 ];
 

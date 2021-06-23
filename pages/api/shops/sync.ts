@@ -107,7 +107,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Create new shop product
-    const { available, price } = bodyItem;
+    const { available, price, barcode } = bodyItem;
 
     const shopProduct: ShopProductModel = {
       _id: new ObjectId(),
@@ -133,7 +133,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       manufacturerSlug: product.manufacturerSlug,
       mainImage: product.mainImage,
       selectedOptionsSlugs: product.selectedOptionsSlugs,
-      barcode: product.barcode,
+      barcode,
       updatedAt: new Date(),
       createdAt: new Date(),
       ...DEFAULT_COUNTERS_OBJECT,

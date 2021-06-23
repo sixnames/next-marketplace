@@ -411,7 +411,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
-  barcode?: string[] | null;
+  barcode?: string | null;
 }
 
 export interface OrderCustomerModel extends TimestampModel {
@@ -595,7 +595,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   rubricSlug: string;
   selectedOptionsSlugs: string[];
   mainImage: string;
-  barcode?: string[] | null;
+  barcode?: string | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

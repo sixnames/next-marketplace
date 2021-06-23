@@ -1,6 +1,6 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import {
-  AlgoliaProductInterface,
+  AlgoliaShopProductInterface,
   deleteAlgoliaObjects,
   saveAlgoliaObjects,
 } from 'lib/algoliaUtils';
@@ -709,7 +709,6 @@ export const ShopMutations = extendType({
               manufacturerSlug: product.manufacturerSlug,
               mainImage: product.mainImage,
               selectedOptionsSlugs: product.selectedOptionsSlugs,
-              barcode: product.barcode,
               updatedAt: new Date(),
               createdAt: new Date(),
               ...DEFAULT_COUNTERS_OBJECT,
@@ -819,7 +818,7 @@ export const ShopMutations = extendType({
             await validationSchema.validate(args);
 
             let doneCount = 0;
-            const algoliaShopProducts: AlgoliaProductInterface[] = [];
+            const algoliaShopProducts: AlgoliaShopProductInterface[] = [];
             for await (const shopProductInput of args.input) {
               const { shopId, productId, ...values } = shopProductInput;
 
@@ -862,7 +861,6 @@ export const ShopMutations = extendType({
                 manufacturerSlug: product.manufacturerSlug,
                 mainImage: product.mainImage,
                 selectedOptionsSlugs: product.selectedOptionsSlugs,
-                barcode: product.barcode,
                 updatedAt: new Date(),
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,

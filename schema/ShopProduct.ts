@@ -31,6 +31,7 @@ export const ShopProduct = objectType({
     t.nonNull.int('price');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopId');
+    t.string('barcode');
     t.nonNull.list.nonNull.field('oldPrices', {
       type: 'ShopProductOldPrice',
     });
@@ -108,6 +109,7 @@ export const UpdateShopProductInput = inputObjectType({
     t.nonNull.int('price');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopProductId');
+    t.string('barcode');
   },
 });
 
@@ -280,21 +282,47 @@ export const ShopProductMutations = extendType({
               break;
             }
 
+            const priceChanged = shopProduct.price !== values.price;
+            const oldPriceUpdater = priceChanged
+              ? {
+                  $push: {
+                    oldPrices: {
+                      price: shopProduct.price,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                    },
+                  },
+                }
+              : {};
+
+            const formattedOldPrice = priceChanged
+              ? getCurrencyString(shopProduct.price)
+              : shopProduct.formattedOldPrice;
+
+            const lastOldPrice = priceChanged
+              ? { price: shopProduct.price }
+              : shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
+            const currentPrice = priceChanged ? values.price : shopProduct.price;
+            const discountedPercent =
+              lastOldPrice && lastOldPrice.price > shopProduct.price
+                ? getPercentage({
+                    fullValue: lastOldPrice.price,
+                    partialValue: currentPrice,
+                  })
+                : 0;
+
             // Update shop product
             const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
               { _id: shopProductId },
               {
                 $set: {
                   ...values,
+                  formattedPrice: getCurrencyString(values.price),
+                  formattedOldPrice,
+                  discountedPercent,
                   updatedAt: new Date(),
                 },
-                $push: {
-                  oldPrices: {
-                    price: shopProduct.price,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  },
-                },
+                ...oldPriceUpdater,
               },
               {
                 returnDocument: 'after',

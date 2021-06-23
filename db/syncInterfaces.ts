@@ -1,4 +1,4 @@
-import { TimestampModel } from 'db/dbModels';
+import { EmailAddressModel, PhoneNumberModel, TimestampModel } from 'db/dbModels';
 
 export interface SyncParamsInterface {
   apiVersion?: string;
@@ -27,6 +27,15 @@ export interface SyncOrderProductInterface extends TimestampModel {
   amount?: number;
   price?: number;
   status?: string;
+  name?: string;
+}
+
+export interface SyncOrderCustomerInterface {
+  name: string;
+  lastName?: string | null;
+  secondName?: string | null;
+  email: EmailAddressModel;
+  phone: PhoneNumberModel;
 }
 
 export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterface {
@@ -38,6 +47,7 @@ export interface SyncOrderInterface extends TimestampModel {
   shopId: string;
   status: string;
   products: SyncOrderProductInterface[];
+  customer?: SyncOrderCustomerInterface;
   reservationDate?: string | null;
 }
 

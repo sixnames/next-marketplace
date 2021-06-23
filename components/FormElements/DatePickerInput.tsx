@@ -39,6 +39,7 @@ export interface DatePickerInputInterface
   disabled?: boolean;
   name: string;
   onChange(event: DatePickerInputEvent): void;
+  testId?: string;
 }
 
 const DatePickerInput: React.FC<DatePickerInputInterface> = ({
@@ -64,6 +65,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
   lineIcon,
   showInlineError,
   error,
+  testId,
   ...props
 }) => {
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
@@ -111,6 +113,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
         className={inputClassName}
         readOnly={readOnly}
         disabled={disabled}
+        id={testId}
         // locale={locale}
         {...props}
       />

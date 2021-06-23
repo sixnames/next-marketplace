@@ -86,7 +86,7 @@ describe('Sync', () => {
     cy.testAuth(`/`);
   });
 
-  it.only('Should sync shop products with site catalogue', () => {
+  it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',
@@ -231,7 +231,7 @@ describe('Sync', () => {
 
       expect(success).equals(true);
       expect(orders).to.have.length(1);
-      expect(orders[0].products).to.have.length(1);
+      expect(orders[0].products).to.have.length(2);
 
       // should update order product
       const updateProduct: SyncUpdateOrderProductInterface = {

@@ -251,6 +251,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           showInlineError
                           label={'Дата брони'}
                           name={'reservationDate'}
+                          testId={'reservationDate'}
                         />
                       </div>
 

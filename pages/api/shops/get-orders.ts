@@ -1,4 +1,10 @@
-import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_ORDER_CUSTOMERS,
+  COL_ORDER_PRODUCTS,
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -107,13 +113,27 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           ],
         },
       },
+      {
+        $lookup: {
+          from: COL_ORDER_CUSTOMERS,
+          as: 'customer',
+          localField: '_id',
+          foreignField: 'orderId',
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $arrayElemAt: ['$customer', 0],
+          },
+        },
+      },
       ...statusStages,
     ])
     .toArray();
 
-  // TODO barcode of current shop product
   const shopOrders = shopOrdersAggregation.reduce((acc: SyncOrderInterface[], order) => {
-    const { itemId, status, products, updatedAt, createdAt, reservationDate } = order;
+    const { itemId, status, products, updatedAt, createdAt, reservationDate, customer } = order;
     if (!status || !products || products.length < 1) {
       return acc;
     }
@@ -127,8 +147,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         reservationDate: reservationDate ? reservationDate.toISOString() : null,
         updatedAt,
         createdAt,
+        customer: customer
+          ? {
+              name: customer.name,
+              lastName: customer.lastName,
+              secondName: customer.secondName,
+              email: customer.email,
+              phone: customer.phone,
+            }
+          : undefined,
         products: products.reduce((acc: SyncOrderProductInterface[], orderProduct) => {
-          const { status, barcode, amount, price, createdAt, updatedAt } = orderProduct;
+          const { status, barcode, amount, price, createdAt, updatedAt, originalName } =
+            orderProduct;
           if (!status) {
             return acc;
           }
@@ -136,7 +166,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...acc,
             {
               status: status.slug,
-              barcode: barcode && barcode[0] ? `${barcode[0]}` : undefined, // TODO current barcode
+              barcode: `${barcode}`,
+              name: originalName,
               amount,
               price,
               createdAt,

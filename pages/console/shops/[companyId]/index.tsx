@@ -1,12 +1,12 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
-import Title from 'components/Title/Title';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
+import Table, { TableColumn } from 'components/Table';
+import TableRowImage from 'components/TableRowImage';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from 'hooks/useDataLayoutMethods';

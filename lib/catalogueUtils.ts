@@ -1,4 +1,4 @@
-import { CatalogueInterface } from 'components/Catalogue/Catalogue';
+import { CatalogueInterface } from 'components/Catalogue';
 import { getPriceAttribute } from 'config/constantAttributes';
 import {
   COL_ATTRIBUTES,

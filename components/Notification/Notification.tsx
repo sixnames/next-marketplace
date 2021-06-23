@@ -1,7 +1,7 @@
 import * as React from 'react';
-import Icon from '../Icon/Icon';
+import Icon from 'components/Icon';
 import classes from './Notification.module.css';
-import ButtonCross from '../Buttons/ButtonCross';
+import ButtonCross from 'components/ButtonCross';
 import { IconType } from 'types/iconTypes';
 import { NotificationVariant } from 'types/clientTypes';
 

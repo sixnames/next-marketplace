@@ -3,13 +3,13 @@ import useSignOut from 'hooks/useSignOut';
 import * as React from 'react';
 import CmsNavUser from 'layout/CmsLayout/CmsNavUser';
 import CmsNavItem from 'layout/CmsLayout/CmsNavItem';
-import Icon from '../../components/Icon/Icon';
+import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import classes from 'layout/CmsLayout/CmsNav.module.css';
 import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 import { useAppContext } from 'context/appContext';
-import Tooltip from '../../components/TTip/Tooltip';
+import Tooltip from 'components/Tooltip';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
 
 interface AppNavInterface {

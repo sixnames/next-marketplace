@@ -1,11 +1,16 @@
-import { ONE_DAY } from 'config/common';
-import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_ORDER_CUSTOMERS,
+  COL_ORDER_PRODUCTS,
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   SyncOrderInterface,
   SyncOrderProductInterface,
-  SyncParamsInterface,
+  GetOrdersParamsInterface,
 } from 'db/syncInterfaces';
 import { OrderInterface } from 'db/uiInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -13,26 +18,26 @@ import { NextApiRequest, NextApiResponse } from 'next';
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
-    res.status(200).send({
+    res.status(405).send({
       success: false,
       message: 'wrong method',
     });
     return;
   }
 
-  const query = req.query as unknown as SyncParamsInterface | undefined | null;
+  const query = req.query as unknown as GetOrdersParamsInterface | undefined | null;
 
   if (!query) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no params provided',
     });
     return;
   }
 
-  const { apiVersion, systemVersion, token } = query;
-  if (!apiVersion || !systemVersion || !token) {
-    res.status(200).send({
+  const { apiVersion, systemVersion, token, fromDate } = query;
+  if (!apiVersion || !systemVersion || !token || !fromDate) {
+    res.status(400).send({
       success: false,
       message: 'no query params provided',
     });
@@ -47,17 +52,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shop = await shopsCollection.findOne({ token });
 
   if (!shop) {
-    res.status(200).send({
+    res.status(401).send({
       success: false,
       message: 'shop not found',
     });
     return;
   }
-
-  const currentDate = new Date();
-  const currentDateTime = currentDate.getTime();
-  const prevDateTime = currentDateTime - ONE_DAY;
-  const prevDate = new Date(prevDateTime);
 
   const statusStages = [
     {
@@ -85,23 +85,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
   ];
 
+  const updatedAt = new Date(fromDate);
   const shopOrdersAggregation = await ordersCollection
     .aggregate([
       {
         $match: {
           shopId: shop._id,
-          $and: [
-            {
-              updatedAt: {
-                $gte: prevDate,
-              },
-            },
-            {
-              updatedAt: {
-                $lte: currentDate,
-              },
-            },
-          ],
+          updatedAt: {
+            $gte: updatedAt,
+          },
         },
       },
       {
@@ -121,12 +113,27 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           ],
         },
       },
+      {
+        $lookup: {
+          from: COL_ORDER_CUSTOMERS,
+          as: 'customer',
+          localField: '_id',
+          foreignField: 'orderId',
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $arrayElemAt: ['$customer', 0],
+          },
+        },
+      },
       ...statusStages,
     ])
     .toArray();
 
   const shopOrders = shopOrdersAggregation.reduce((acc: SyncOrderInterface[], order) => {
-    const { itemId, status, products, updatedAt, createdAt } = order;
+    const { itemId, status, products, updatedAt, createdAt, reservationDate, customer } = order;
     if (!status || !products || products.length < 1) {
       return acc;
     }
@@ -137,10 +144,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         orderId: itemId,
         shopId: shop.itemId,
         status: status.slug,
+        reservationDate: reservationDate ? reservationDate.toISOString() : null,
         updatedAt,
         createdAt,
+        customer: customer
+          ? {
+              name: customer.name,
+              lastName: customer.lastName,
+              secondName: customer.secondName,
+              email: customer.email,
+              phone: customer.phone,
+            }
+          : undefined,
         products: products.reduce((acc: SyncOrderProductInterface[], orderProduct) => {
-          const { status, barcode, amount, price, createdAt, updatedAt } = orderProduct;
+          const { status, barcode, amount, price, createdAt, updatedAt, originalName } =
+            orderProduct;
           if (!status) {
             return acc;
           }
@@ -148,7 +166,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...acc,
             {
               status: status.slug,
-              barcode: barcode || undefined,
+              barcode: `${barcode}`,
+              name: originalName,
               amount,
               price,
               createdAt,

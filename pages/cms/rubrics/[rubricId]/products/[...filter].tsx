@@ -1,18 +1,18 @@
-import Accordion from 'components/Accordion/Accordion';
-import AppContentFilter from 'components/AppContentFilter/AppContentFilter';
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Accordion from 'components/Accordion';
+import AppContentFilter from 'components/AppContentFilter';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Currency from 'components/Currency/Currency';
+import Currency from 'components/Currency';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModal';
-import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal/CreateNewProductModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
-import Spinner from 'components/Spinner/Spinner';
-import Table, { TableColumn } from 'components/Table/Table';
-import TableRowImage from 'components/Table/TableRowImage';
+import Spinner from 'components/Spinner';
+import Table, { TableColumn } from 'components/Table';
+import TableRowImage from 'components/TableRowImage';
 import {
   CATALOGUE_OPTION_SEPARATOR,
   PAGE_DEFAULT,

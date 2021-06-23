@@ -437,6 +437,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   shopItemId: string;
   companyId: ObjectIdModel;
   companyItemId: string;
+  reservationDate?: DateModel | null;
 }
 
 export interface ProductConnectionItemModel {
@@ -481,7 +482,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
-  barcode?: string | null;
+  barcode?: string[] | null;
 
   // types for aggregation
   shopsCount?: number;

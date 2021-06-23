@@ -1,6 +1,6 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';

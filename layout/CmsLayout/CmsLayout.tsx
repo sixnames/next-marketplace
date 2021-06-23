@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Spinner from 'components/Spinner/Spinner';
-import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
+import Spinner from 'components/Spinner';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { useUserContext } from 'context/userContext';
 import CmsNav from 'layout/CmsLayout/CmsNav';
 import { useAppContext } from 'context/appContext';

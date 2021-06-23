@@ -1,5 +1,5 @@
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';

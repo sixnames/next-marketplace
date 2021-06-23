@@ -554,7 +554,7 @@ export type CreateProductConnectionInput = {
 
 export type CreateProductInput = {
   active: Scalars['Boolean'];
-  barcode?: Maybe<Scalars['String']>;
+  barcode?: Maybe<Array<Scalars['String']>>;
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
@@ -707,6 +707,7 @@ export type MakeAnOrderInput = {
   name: Scalars['String'];
   phone: Scalars['PhoneNumber'];
   email: Scalars['EmailAddress'];
+  reservationDate: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
   companySlug?: Maybe<Scalars['String']>;
 };
@@ -2406,6 +2407,7 @@ export type ShopProduct = Timestamp & {
   price: Scalars['Int'];
   productId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
+  barcode?: Maybe<Scalars['String']>;
   oldPrices: Array<ShopProductOldPrice>;
   formattedPrice: Scalars['String'];
   formattedOldPrice?: Maybe<Scalars['String']>;
@@ -2662,7 +2664,7 @@ export type UpdateProductInCartInput = {
 
 export type UpdateProductInput = {
   productId: Scalars['ObjectId'];
-  barcode?: Maybe<Scalars['String']>;
+  barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
@@ -2760,6 +2762,7 @@ export type UpdateShopProductInput = {
   price: Scalars['Int'];
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
+  barcode?: Maybe<Scalars['String']>;
 };
 
 export type UpdateUserInput = {

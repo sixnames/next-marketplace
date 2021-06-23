@@ -1,5 +1,5 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import AppLayout from 'layout/AppLayout/AppLayout';

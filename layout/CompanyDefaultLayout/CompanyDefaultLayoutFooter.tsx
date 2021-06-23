@@ -1,8 +1,8 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import Socials from 'components/Socials/Socials';
+import Socials from 'components/Socials';
 import { ROUTE_CONTACTS } from 'config/common';
 import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';

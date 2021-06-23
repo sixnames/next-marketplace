@@ -1,7 +1,7 @@
-import HorizontalScroll from 'components/HorizontalList/HorizontalScroll';
+import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
-import ProductSnippetGrid from 'components/Product/ProductSnippet/ProductSnippetGrid';
+import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap/ShopsMap';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -31,8 +31,8 @@ import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtil
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Title from 'components/Title/Title';
-import Inner from 'components/Inner/Inner';
+import Title from 'components/Title';
+import Inner from 'components/Inner';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomeRoutInterface {

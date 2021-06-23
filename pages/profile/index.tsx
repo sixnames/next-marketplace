@@ -1,12 +1,12 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import ControlButton from 'components/Buttons/ControlButton';
-import ControlButtonChevron from 'components/Buttons/ControlButtonChevron';
-import Currency from 'components/Currency/Currency';
-import FormattedDate from 'components/FormattedDateTime/FormattedDate';
-import Icon from 'components/Icon/Icon';
+import ControlButton from 'components/ControlButton';
+import ControlButtonChevron from 'components/ControlButtonChevron';
+import Currency from 'components/Currency';
+import FormattedDate from 'components/FormattedDate';
+import Icon from 'components/Icon';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
-import RequestError from 'components/RequestError/RequestError';
-import Tooltip from 'components/TTip/Tooltip';
+import RequestError from 'components/RequestError';
+import Tooltip from 'components/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {

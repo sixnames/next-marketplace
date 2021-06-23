@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classes from './ThemeTrigger.module.css';
-import Icon from '../Icon/Icon';
+import Icon from 'components/Icon';
 import { useThemeContext } from 'context/themeContext';
 
 interface ThemeTriggerInterface {

@@ -1,6 +1,6 @@
-import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
-import Inner from 'components/Inner/Inner';
-import Table, { TableColumn } from 'components/Table/Table';
+import FormattedDateTime from 'components/FormattedDateTime';
+import Inner from 'components/Inner';
+import Table, { TableColumn } from 'components/Table';
 import { SORT_DESC } from 'config/common';
 import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

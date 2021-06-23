@@ -3,7 +3,7 @@ import { useConfigContext } from 'context/configContext';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';

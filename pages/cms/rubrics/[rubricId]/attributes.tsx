@@ -1,11 +1,11 @@
-import Accordion from 'components/Accordion/Accordion';
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Accordion from 'components/Accordion';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner/Inner';
-import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal';
-import Table, { TableColumn } from 'components/Table/Table';
+import Inner from 'components/Inner';
+import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
+import Table, { TableColumn } from 'components/Table';
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';

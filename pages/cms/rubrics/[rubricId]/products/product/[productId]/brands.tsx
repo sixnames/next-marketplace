@@ -1,7 +1,7 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import InputLine from 'components/FormElements/Input/InputLine';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';

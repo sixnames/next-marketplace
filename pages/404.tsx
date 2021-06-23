@@ -1,6 +1,6 @@
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import Title from 'components/Title/Title';
+import Title from 'components/Title';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';

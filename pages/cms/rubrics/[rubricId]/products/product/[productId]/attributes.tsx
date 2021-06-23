@@ -1,9 +1,9 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,

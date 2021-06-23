@@ -1,13 +1,13 @@
-import FixedButtons from 'components/Buttons/FixedButtons';
+import FixedButtons from 'components/FixedButtons';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { ROUTE_CMS } from 'config/common';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/Buttons/Button';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Button from 'components/Button';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AttributesGroupInterface } from 'db/uiInterfaces';

@@ -1,7 +1,7 @@
 import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import TagLink, { TagLinkInterface } from './TagLink';
-import Icon from '../Icon/Icon';
+import Icon from 'components/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;

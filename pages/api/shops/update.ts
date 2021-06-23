@@ -2,12 +2,14 @@ import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { getCurrencyString } from 'lib/i18n';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
-    res.status(200).send({
+    res.status(405).send({
       success: false,
       message: 'wrong method',
     });
@@ -18,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
   if (!body || body.length < 1 || !query) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no products provided',
     });
@@ -27,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { apiVersion, systemVersion, token } = query;
   if (!apiVersion || !systemVersion || !token) {
-    res.status(200).send({
+    res.status(400).send({
       success: false,
       message: 'no query params provided',
     });
@@ -43,7 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shop = await shopsCollection.findOne({ token });
 
   if (!shop) {
-    res.status(200).send({
+    res.status(401).send({
       success: false,
       message: 'shop not found',
     });
@@ -60,7 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     })
     .toArray();
   if (products.length < 1) {
-    res.status(200).send({
+    res.status(500).send({
       success: false,
       message: 'no products found',
     });
@@ -69,22 +71,40 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updatedShopProducts: ShopProductModel[] = [];
   for await (const product of products) {
-    const bodyItem = body.find(({ barcode }) => product.barcode === barcode);
+    const bodyItem = body.find(({ barcode }) => product.barcode?.includes(`${barcode}`));
     if (!bodyItem || !bodyItem.available || !bodyItem.price || !bodyItem.barcode) {
-      break;
+      continue;
     }
 
-    const { available, price, barcode } = bodyItem;
+    const { barcode } = bodyItem;
+    const shopProduct = await shopProductsCollection.findOne({
+      shopId: shop._id,
+      barcode,
+    });
+
+    if (!shopProduct) {
+      continue;
+    }
+
+    const { discountedPercent, formattedOldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+      shopProduct,
+      newPrice: bodyItem.price,
+    });
+
     const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
       {
-        shopId: shop._id,
-        barcode,
+        _id: shopProduct._id,
       },
       {
         $set: {
-          available,
-          price,
+          available: bodyItem.available,
+          price: bodyItem.price,
+          formattedPrice: getCurrencyString(bodyItem.price),
+          formattedOldPrice,
+          discountedPercent,
+          updatedAt: new Date(),
         },
+        ...oldPriceUpdater,
       },
       {
         returnDocument: 'after',
@@ -97,8 +117,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  if (updatedShopProducts.length !== body.length) {
-    res.status(200).send({
+  if (updatedShopProducts.length !== products.length) {
+    res.status(500).send({
       success: false,
       message: 'not all products updated',
     });

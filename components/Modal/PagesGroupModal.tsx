@@ -1,4 +1,4 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';

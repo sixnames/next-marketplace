@@ -1,11 +1,11 @@
 import { NavItemInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Icon from '../../components/Icon/Icon';
+import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
 import classes from 'layout/CmsLayout/CmsNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
-import Tooltip from '../../components/TTip/Tooltip';
+import Tooltip from 'components/Tooltip';
 import { IconType } from 'types/iconTypes';
 
 interface AppNavItemInterface {

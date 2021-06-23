@@ -1,6 +1,6 @@
-import Inner from 'components/Inner/Inner';
-import Socials from 'components/Socials/Socials';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Socials from 'components/Socials';
+import Title from 'components/Title';
 import { useConfigContext } from 'context/configContext';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { phoneToReadable } from 'lib/phoneUtils';

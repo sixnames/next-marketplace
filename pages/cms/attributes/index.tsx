@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Inner from 'components/Inner/Inner';
-import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal/AttributesGroupModal';
-import Table, { TableColumn } from 'components/Table/Table';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
+import Table, { TableColumn } from 'components/Table';
+import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';

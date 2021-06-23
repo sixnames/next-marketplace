@@ -1,4 +1,4 @@
-import Icon from 'components/Icon/Icon';
+import Icon from 'components/Icon';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
 import Link, { LinkInterface } from './Link';

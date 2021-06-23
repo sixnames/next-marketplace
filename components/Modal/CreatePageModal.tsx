@@ -1,12 +1,12 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import { DEFAULT_LOCALE } from 'config/common';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';

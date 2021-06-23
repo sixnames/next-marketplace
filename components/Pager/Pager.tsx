@@ -2,7 +2,7 @@ import { CATALOGUE_OPTION_SEPARATOR, QUERY_FILTER_PAGE } from 'config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ReactPaginate from 'react-paginate';
-import Icon from '../Icon/Icon';
+import Icon from 'components/Icon';
 import classes from './Pager.module.css';
 
 interface PagerInterface {

@@ -1,4 +1,4 @@
-import { TimestampModel } from 'db/dbModels';
+import { EmailAddressModel, PhoneNumberModel, TimestampModel } from 'db/dbModels';
 
 export interface SyncParamsInterface {
   apiVersion?: string;
@@ -6,10 +6,15 @@ export interface SyncParamsInterface {
   token?: string;
 }
 
+export interface GetOrdersParamsInterface extends SyncParamsInterface {
+  fromDate: string;
+}
+
 export interface SyncProductInterface {
-  barcode?: string;
+  barcode?: string | null;
   available?: number;
   price?: number;
+  name: string;
 }
 
 export interface SyncResponseInterface {
@@ -21,7 +26,16 @@ export interface SyncOrderProductInterface extends TimestampModel {
   barcode?: string;
   amount?: number;
   price?: number;
-  status?: string; // TODO order status type
+  status?: string;
+  name?: string;
+}
+
+export interface SyncOrderCustomerInterface {
+  name: string;
+  lastName?: string | null;
+  secondName?: string | null;
+  email: EmailAddressModel;
+  phone: PhoneNumberModel;
 }
 
 export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterface {
@@ -31,8 +45,10 @@ export interface SyncUpdateOrderProductInterface extends SyncOrderProductInterfa
 export interface SyncOrderInterface extends TimestampModel {
   orderId: string;
   shopId: string;
-  status: string; // TODO order status type
+  status: string;
   products: SyncOrderProductInterface[];
+  customer?: SyncOrderCustomerInterface;
+  reservationDate?: string | null;
 }
 
 export interface SyncOrderResponseInterface extends SyncResponseInterface {
@@ -46,4 +62,8 @@ export interface SyncOrderStatusInterface {
 
 export interface SyncOrderStatusesResponseInterface extends SyncResponseInterface {
   orderStatuses?: SyncOrderStatusInterface[];
+}
+
+export interface SyncShopProductsResponseInterface extends SyncResponseInterface {
+  shopProducts: SyncProductInterface[];
 }

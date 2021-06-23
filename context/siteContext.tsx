@@ -1,4 +1,4 @@
-import { CartModalInterface } from 'components/Modal/CartModal/CartModal';
+import { CartModalInterface } from 'components/Modal/CartModal';
 import { ROUTE_THANK_YOU } from 'config/common';
 import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';

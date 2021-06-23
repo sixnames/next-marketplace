@@ -1,10 +1,10 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -51,7 +51,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     originalName,
     descriptionI18n,
     active,
-    barcode,
+    barcode: barcode && barcode.length ? barcode[0] : '',
   };
 
   return (
@@ -66,8 +66,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
             return updateProductMutation({
               variables: {
                 input: {
-                  productId: product._id,
                   ...values,
+                  productId: product._id,
+                  barcode: values.barcode ? [values.barcode] : [],
                 },
               },
             });

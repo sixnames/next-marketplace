@@ -3,7 +3,7 @@ import { UpdateCompanyInput, UserInListFragment } from 'generated/apolloComponen
 import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
 import useUsersListColumns from '../../hooks/useUsersListColumns';
-import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal/UsersSearchModal';
+import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from 'config/modalVariants';
 import ContentItemControls, {
   ContentItemControlsInterface,
@@ -12,8 +12,8 @@ import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import Button from '../../components/Buttons/Button';
-import Table from '../../components/Table/Table';
+import Button from 'components/Button';
+import Table from 'components/Table';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
   owner: UserInListFragment | null;

@@ -1,10 +1,10 @@
-import FormattedDateTime from 'components/FormattedDateTime/FormattedDateTime';
-import Inner from 'components/Inner/Inner';
+import FormattedDateTime from 'components/FormattedDateTime';
+import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
-import Table, { TableColumn } from 'components/Table/Table';
+import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';

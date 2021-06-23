@@ -1,4 +1,4 @@
-import { TableColumn } from 'components/Table/Table';
+import { TableColumn } from 'components/Table';
 import { UserInListFragment } from 'generated/apolloComponents';
 import Link from 'next/link';
 import LinkPhone from '../components/Link/LinkPhone';

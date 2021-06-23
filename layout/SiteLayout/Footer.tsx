@@ -1,13 +1,13 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
-import Socials from 'components/Socials/Socials';
+import Socials from 'components/Socials';
 import { ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 
 interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];

@@ -1,7 +1,7 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { Form, Formik } from 'formik';
 import {
   UpdateShopInput,

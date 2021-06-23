@@ -1,7 +1,7 @@
 import Link from 'components/Link/Link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface AppSubNavInterface {

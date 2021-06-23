@@ -1,6 +1,6 @@
 import * as React from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-import ButtonCross from '../Buttons/ButtonCross';
+import ButtonCross from 'components/ButtonCross';
 import { useAppContext } from 'context/appContext';
 import { ModalSizeType } from 'types/clientTypes';
 

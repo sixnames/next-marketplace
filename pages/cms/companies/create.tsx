@@ -1,9 +1,9 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
 } from 'components/FormTemplates/CompanyMainFields';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
@@ -27,13 +27,8 @@ export type CreateCompanyFieldsInterface = CompanyFormMainValuesInterface;
 
 const CreateCompanyContent: React.FC = () => {
   const router = useRouter();
-  const {
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    showErrorNotification,
-    hideLoading,
-  } = useMutationCallbacks();
+  const { showLoading, onCompleteCallback, onErrorCallback, showErrorNotification, hideLoading } =
+    useMutationCallbacks();
   const [createCompanyMutation] = useCreateCompanyMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {

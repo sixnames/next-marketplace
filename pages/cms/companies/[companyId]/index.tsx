@@ -1,6 +1,6 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';

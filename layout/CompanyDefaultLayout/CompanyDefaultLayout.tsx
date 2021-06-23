@@ -1,6 +1,6 @@
-import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Modal from 'components/Modal/Modal';
-import Spinner from 'components/Spinner/Spinner';
+import Spinner from 'components/Spinner';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';

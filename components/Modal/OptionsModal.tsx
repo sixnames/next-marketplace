@@ -1,11 +1,11 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Icon from 'components/Icon/Icon';
+import Icon from 'components/Icon';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError/RequestError';
-import Spinner from 'components/Spinner/Spinner';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import * as React from 'react';
 

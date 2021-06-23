@@ -192,6 +192,10 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
     cy.getByCy(`order-form-phone`).clear().type(orderFields.customerPhone);
     cy.getByCy(`order-form-email`).clear().type(orderFields.customerEmail);
   }
+  // Should choose reservation date
+  cy.clock(1624449303350);
+  cy.get('#reservationDate').click();
+  cy.get('.react-datepicker__day--024').click();
   cy.getByCy(`order-form-comment`).type('comment');
 
   // Should make an order and redirect to the Thank you page

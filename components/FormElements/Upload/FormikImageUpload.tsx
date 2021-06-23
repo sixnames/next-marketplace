@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Field, FieldProps, useFormikContext } from 'formik';
-import Icon from '../../Icon/Icon';
+import Icon from 'components/Icon';
 import InputLine from '../Input/InputLine';
 import classes from './FormikImageUpload.module.css';
 import { FormikInputPropsInterface } from '../Input/FormikInput';
-import ButtonCross from '../../Buttons/ButtonCross';
+import ButtonCross from 'components/ButtonCross';
 import { useDropzone } from 'react-dropzone';
-import Tooltip from '../../TTip/Tooltip';
+import Tooltip from 'components/Tooltip';
 import { get } from 'lodash';
 
 interface FormikImageUploadInterface extends FormikInputPropsInterface {

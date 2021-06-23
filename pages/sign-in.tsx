@@ -1,7 +1,7 @@
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import Inner from 'components/Inner/Inner';
-import Title from 'components/Title/Title';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';

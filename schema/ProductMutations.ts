@@ -1,4 +1,4 @@
-import { AlgoliaProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -42,7 +42,7 @@ export const CreateProductInput = inputObjectType({
   name: 'CreateProductInput',
   definition(t) {
     t.nonNull.boolean('active');
-    t.string('barcode');
+    t.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
@@ -54,7 +54,7 @@ export const UpdateProductInput = inputObjectType({
   name: 'UpdateProductInput',
   definition(t) {
     t.nonNull.objectId('productId');
-    t.string('barcode');
+    t.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
@@ -342,7 +342,6 @@ export const ProductMutations = extendType({
                   slug: updatedSlug,
                   nameI18n: values.nameI18n,
                   originalName: values.originalName,
-                  barcode: values.barcode,
                   updatedAt: new Date(),
                 },
               },
@@ -404,7 +403,7 @@ export const ProductMutations = extendType({
                 productId,
               })
               .toArray();
-            const castedShopProductsForAlgolia: AlgoliaProductInterface[] = shopProducts.map(
+            const castedShopProductsForAlgolia: AlgoliaShopProductInterface[] = shopProducts.map(
               (shopProduct) => {
                 return {
                   _id: shopProduct._id.toHexString(),

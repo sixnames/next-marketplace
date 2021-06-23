@@ -1,7 +1,7 @@
-import Button from 'components/Buttons/Button';
-import FixedButtons from 'components/Buttons/FixedButtons';
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

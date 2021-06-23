@@ -1,7 +1,7 @@
 import { GetAllRubricsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
-import Accordion from '../../components/Accordion/Accordion';
-import RequestError from 'components/RequestError/RequestError';
+import Accordion from 'components/Accordion';
+import RequestError from 'components/RequestError';
 
 interface RubricsTreeRenderInterface {
   _id: string;

@@ -4,11 +4,11 @@ import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
-import Accordion from '../../Accordion/Accordion';
+import Accordion from 'components/Accordion';
 import InputLine from './InputLine';
 import classes from './FormikTranslationsInput.module.css';
-import Icon from '../../Icon/Icon';
-import Tooltip from '../../TTip/Tooltip';
+import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import { TranslationModel } from 'db/dbModels';
 
 interface FormikTranslationsInputInterface extends FormikInputPropsInterface {

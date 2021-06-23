@@ -1,7 +1,7 @@
 import AssetsManager from 'components/Assets/AssetsManager';
-import Button from 'components/Buttons/Button';
+import Button from 'components/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
-import Inner from 'components/Inner/Inner';
+import Inner from 'components/Inner';
 import { COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

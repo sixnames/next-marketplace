@@ -2,7 +2,7 @@ import * as React from 'react';
 import classes from './FormikMultiLineInput.module.css';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useField } from 'formik';
-import Button from '../../Buttons/Button';
+import Button from 'components/Button';
 import InputLine from './InputLine';
 import { NEGATIVE_INDEX } from 'config/common';
 

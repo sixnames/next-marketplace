@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classes from './RatingStars.module.css';
-import Icon from '../Icon/Icon';
+import Icon from 'components/Icon';
 import { SizeType } from 'types/clientTypes';
 
 interface RatingStarsInterface {

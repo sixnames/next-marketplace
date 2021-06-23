@@ -611,6 +611,16 @@ export interface ShopModel extends BaseModel, TimestampModel {
   token?: string;
 }
 
+export interface NotSyncedProductModel {
+  _id: ObjectIdModel;
+  name: string;
+  price: number;
+  available: number;
+  barcode: string;
+  shopId: ObjectIdModel;
+  createdAt: DateModel;
+}
+
 export interface UserModel extends BaseModel, TimestampModel {
   name: string;
   lastName?: string | null;

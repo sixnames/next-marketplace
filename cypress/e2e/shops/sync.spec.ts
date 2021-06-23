@@ -13,6 +13,12 @@ const validRequestParamsC = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
 
 const initialBody: SyncProductInterface[] = [
   {
+    barcode: '9999999999999999',
+    available: 999,
+    price: 999,
+    name: 'notFoundProduct',
+  },
+  {
     barcode: '000003',
     available: 10,
     price: 1890,
@@ -86,7 +92,7 @@ describe('Sync', () => {
     cy.testAuth(`/`);
   });
 
-  it('Should sync shop products with site catalogue', () => {
+  it.only('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',

@@ -171,7 +171,7 @@ describe('Sync', () => {
       expect(input.val()).to.equals('1');
     });
 
-    // should update synced products
+    // Should update synced products
     cy.request({
       method: 'PATCH',
       url: `/api/shops/update?${validRequestParamsC}`,
@@ -198,6 +198,12 @@ describe('Sync', () => {
       const input = el.find('input');
       expect(input.val()).to.equals('1000');
     });
+
+    // Should display sync errors list
+    cy.getByCy('shop-sync-errors').click();
+    cy.wait(1500);
+    cy.getByCy('shop-sync-errors-page').should('exist');
+    cy.getByCy('notFoundProduct-row').should('exist');
 
     // Should return shop products list
     cy.request({

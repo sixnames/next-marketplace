@@ -120,14 +120,14 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
   const firstProduct = (products || [])[0];
 
   return (
-    <Disclosure defaultOpen={true}>
+    <Disclosure>
       {({ open }) => (
         <div className='mb-4 bg-secondary rounded-lg' data-cy={`profile-order-${itemId}`}>
           {/*Order head*/}
           <div className='relative flex pr-[var(--controlButtonHeightBig)] items-start'>
             <Disclosure.Button
-              as={'div'}
               className='flex items-center justify-center min-h-[4rem] w-20 lg:w-28'
+              as={'div'}
             >
               <ControlButtonChevron isActive={open} testId={`profile-order-${itemId}-open`} />
             </Disclosure.Button>
@@ -274,6 +274,13 @@ export async function getServerSideProps(
         },
       },
       {
+        $addFields: {
+          status: {
+            $arrayElemAt: ['$status', 0],
+          },
+        },
+      },
+      {
         $lookup: {
           from: COL_ORDER_PRODUCTS,
           as: 'products',
@@ -331,21 +338,14 @@ export async function getServerSideProps(
           ],
         },
       },
-      {
-        $addFields: {
-          status: {
-            $arrayElemAt: ['$status', 0],
-          },
-        },
-      },
     ])
     .toArray();
 
   const orders = orderAggregation.map((order) => {
     return {
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
-        return acc + amount * price;
+      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+        return acc + totalPrice;
       }, 0),
       status: order.status
         ? {

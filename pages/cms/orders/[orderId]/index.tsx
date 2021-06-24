@@ -6,17 +6,17 @@ import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const CmsOrderRoute: React.FC = () => {
+const OrderPageConsumer: React.FC = () => {
   const { query } = useRouter();
   const { orderId } = query;
 
   return <Inner testId={`order-details`}>Заказ №{orderId}</Inner>;
 };
 
-const Order: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const OrderPage: NextPage<PagePropsInterface> = ({ pageUrls }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CmsOrderRoute />
+      <OrderPageConsumer />
     </CmsLayout>
   );
 };
@@ -25,4 +25,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return getAppInitialData({ context });
 };
 
-export default Order;
+export default OrderPage;

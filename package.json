@@ -23,7 +23,6 @@
     "@reach/disclosure": "0.15.0",
     "@reach/menu-button": "0.15.1",
     "@reach/portal": "0.15.0",
-    "@reach/tabs": "0.15.0",
     "@reach/tooltip": "0.15.0",
     "@react-google-maps/api": "2.2.0",
     "@react-page/editor": "^2.4.0",

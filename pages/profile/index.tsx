@@ -1,4 +1,4 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import { Disclosure, Transition } from '@headlessui/react';
 import ControlButton from 'components/ControlButton';
 import ControlButtonChevron from 'components/ControlButtonChevron';
 import Currency from 'components/Currency';
@@ -123,70 +123,77 @@ interface ProfileOrderInterface {
 }
 
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) => {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const { itemId, createdAt, totalPrice, status, products } = order;
   const { repeatAnOrder } = useSiteContext();
 
   return (
-    <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>
-      <div className={classes.order} data-cy={`profile-order-${itemId}`}>
-        <div className={`${classes.orderMainGrid} ${classes.orderHead}`}>
-          <DisclosureButton as={'div'} className={`${classes.orderTrigger}`}>
-            <ControlButtonChevron
-              isActive={isOpen}
-              testId={`profile-order-${itemId}-open`}
-              className={classes.productsTrigger}
-            />
-          </DisclosureButton>
-          <div className={classes.orderHeadMainGrid}>
-            <div>
-              <div className={classes.orderHeadGrid}>
-                <div className={classes.orderNumber}>{`№ ${itemId}`}</div>
-                <div className={classes.orderCreatedAt}>
+    <Disclosure defaultOpen={true}>
+      {({ open }) => (
+        <>
+          <div className={classes.order} data-cy={`profile-order-${itemId}`}>
+            {/*Order head*/}
+            <div className='relative flex pr-16 items-start'>
+              <Disclosure.Button
+                as={'div'}
+                className='flex items-center justify-center w-20 min-h-[4rem] lg:w-28'
+              >
+                <ControlButtonChevron isActive={open} testId={`profile-order-${itemId}-open`} />
+              </Disclosure.Button>
+
+              <div className='grid gap-4 flex-grow items-baseline sm:grid-cols-2 sm:pt-4 lg:grid-cols-4'>
+                <div className='text-lg font-medium pt-4 sm:pt-0'>{`№ ${itemId}`}</div>
+                <div className='text-sm'>
                   от <FormattedDate value={createdAt} />
                 </div>
-              </div>
-            </div>
-            <div>
-              <div className={classes.orderHeadGrid}>
                 <div>
-                  <Currency className={classes.orderTotalPrice} value={totalPrice} />
+                  <Currency className='text-2xl' value={totalPrice} />
                 </div>
-                <div className={classes.orderStatus} style={status ? { color: status.color } : {}}>
+                <div className='font-medium' style={status ? { color: status.color } : {}}>
                   {status?.name}
                 </div>
               </div>
-            </div>
-          </div>
-          <div>
-            <Tooltip title={'Повторить заказ'}>
-              <div>
-                <ControlButton
-                  roundedTopRight
-                  onClick={() => repeatAnOrder(`${order._id}`)}
-                  className={classes.orderCartBtn}
-                  iconSize={'big'}
-                  icon={'cart'}
-                  testId={`profile-order-${itemId}-repeat`}
-                />
-              </div>
-            </Tooltip>
-          </div>
-        </div>
 
-        <DisclosurePanel data-cy={`profile-order-${itemId}-content`}>
-          {(products || []).map((orderProduct, index) => {
-            return (
-              <ProfileOrderProduct
-                testId={index}
-                orderIndex={orderIndex}
-                orderProduct={orderProduct}
-                key={`${orderProduct._id}`}
-              />
-            );
-          })}
-        </DisclosurePanel>
-      </div>
+              <div className='absolute top-0 right-0'>
+                <Tooltip title={'Повторить заказ'}>
+                  <ControlButton
+                    roundedTopRight
+                    onClick={() => repeatAnOrder(`${order._id}`)}
+                    iconSize={'big'}
+                    size={'big'}
+                    icon={'cart'}
+                    theme={'accent'}
+                    testId={`profile-order-${itemId}-repeat`}
+                  />
+                </Tooltip>
+              </div>
+            </div>
+
+            {/*Order body*/}
+            <Transition
+              show={open}
+              enter='transition duration-100 ease-out'
+              enterFrom='transform opacity-0'
+              enterTo='transform opacity-100'
+              leave='transition duration-75 ease-out'
+              leaveFrom='transform opacity-100'
+              leaveTo='transform opacity-0'
+            >
+              <Disclosure.Panel static>
+                {(products || []).map((orderProduct, index) => {
+                  return (
+                    <ProfileOrderProduct
+                      testId={index}
+                      orderIndex={orderIndex}
+                      orderProduct={orderProduct}
+                      key={`${orderProduct._id}`}
+                    />
+                  );
+                })}
+              </Disclosure.Panel>
+            </Transition>
+          </div>
+        </>
+      )}
     </Disclosure>
   );
 };
@@ -197,7 +204,7 @@ interface ProfileOrdersRouteInterface {
 
 const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) => {
   return (
-    <div className={classes.frame} data-cy={'profile-orders'}>
+    <div className='mb-8' data-cy={'profile-orders'}>
       {orders.length < 1 ? (
         <div>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />

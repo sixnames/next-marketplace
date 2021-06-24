@@ -9,7 +9,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ShopAssets, { ShopAssetsInterface } from 'routes/shops/ShopAssets';
+import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
 
 interface CompanyShopAssetsInterface
   extends PagePropsInterface,

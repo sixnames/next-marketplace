@@ -29,7 +29,7 @@ import {
   ShopAddProductsListInterface,
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
-} from 'routes/shops/ShopAddProducts';
+} from 'components/shops/ShopAddProducts';
 
 type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,

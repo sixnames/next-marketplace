@@ -1,8 +1,8 @@
+import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
 import { ROUTE_CMS } from 'config/common';
 import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -10,13 +10,10 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import ShopDetails, { ShopDetailsInterface } from 'routes/shops/ShopDetails';
 
 interface CompanyShopSyncErrorsInterface
   extends PagePropsInterface,
-    Omit<ShopDetailsInterface, 'basePath'> {
-  notSyncedProducts: NotSyncedProductInterface[];
-}
+    Omit<ShopSyncErrorsInterface, 'basePath'> {}
 
 const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   pageUrls,
@@ -24,10 +21,11 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   notSyncedProducts,
 }) => {
   const router = useRouter();
-  console.log(notSyncedProducts);
+
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ShopDetails
+      <ShopSyncErrors
+        notSyncedProducts={notSyncedProducts}
         basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
         shop={shop}
       />

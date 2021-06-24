@@ -20,7 +20,9 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ShopRubricProducts, { ShopRubricProductsInterface } from 'routes/shops/ShopRubricProducts';
+import ShopRubricProducts, {
+  ShopRubricProductsInterface,
+} from 'components/shops/ShopRubricProducts';
 
 interface CompanyShopProductsListInterface
   extends PagePropsInterface,

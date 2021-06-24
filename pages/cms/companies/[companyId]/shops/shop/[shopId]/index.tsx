@@ -9,7 +9,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import ShopDetails, { ShopDetailsInterface } from 'routes/shops/ShopDetails';
+import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails';
 
 interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
 

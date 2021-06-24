@@ -1,5 +1,8 @@
+import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
+import Icon from 'components/Icon';
 import Inner from 'components/Inner';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import Title from 'components/Title';
 import {
   COL_ORDER_PRODUCTS,
@@ -9,15 +12,64 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { OrderInterface } from 'db/uiInterfaces';
+import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
+import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+
+interface OrderProductProductInterface {
+  orderProduct: OrderProductInterface;
+}
+
+const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
+  const { originalName, shopProduct, itemId, price, amount, totalPrice } = orderProduct;
+
+  const productImageSrc = shopProduct
+    ? shopProduct.mainImage
+    : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+  const imageWidth = 35;
+  const imageHeight = 120;
+
+  return (
+    <div className='flex mb-4 py-8 bg-secondary rounded-lg pr-6'>
+      <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
+        <Image
+          src={productImageSrc}
+          alt={`${originalName}`}
+          title={`${originalName}`}
+          width={imageWidth}
+          height={imageHeight}
+        />
+      </div>
+
+      <div className='flex-grow'>
+        <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+
+        <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
+          <div className='text-lg font-bold flex-grow'>{originalName}</div>
+
+          <div>
+            <div className='flex items-baseline ml-auto flex-grow-0'>
+              <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
+              <Icon name={'cross'} className='w-2 h-2 mx-4' />
+              <div className='font-medium'>{amount}</div>
+            </div>
+            <div className='flex gap-2 lg:justify-end text-secondary-text'>
+              <span>Итого:</span>
+              <Currency value={totalPrice} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
@@ -25,11 +77,7 @@ interface OrderPageConsumerInterface {
 
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { itemId, createdAt, totalPrice, status, products } = order;
-
-  console.log({
-    totalPrice,
-    products,
-  });
+  const firstProduct = (products || [])[0];
 
   return (
     <AppContentWrapper>
@@ -43,6 +91,42 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
           </div>
           <div className='font-medium' style={status ? { color: status.color } : {}}>
             {status?.name}
+          </div>
+        </div>
+
+        <div className='md:grid grid-cols-9 gap-8'>
+          <div className='col-span-6'>
+            {products?.map((orderProduct) => {
+              return <OrderProduct orderProduct={orderProduct} key={`${orderProduct._id}`} />;
+            })}
+          </div>
+
+          <div className='relative col-span-3'>
+            <div className='sticky bg-secondary rounded-lg py-8 px-6'>
+              {/*shop info*/}
+              <div className='mb-6'>
+                {firstProduct.shop ? (
+                  <div className=''>
+                    <div className='flex flex-wrap gap-2 mb-2 items-baseline'>
+                      <span className='text-secondary-text'>Винотека:</span>
+                      <span className='text-primary-text font-medium'>
+                        {firstProduct.shop.name}
+                      </span>
+                    </div>
+                    <div className='text-secondary-text'>
+                      {firstProduct.shop.address.formattedAddress}
+                    </div>
+                  </div>
+                ) : (
+                  <div className='text-theme font-medium'>Магазин не найден</div>
+                )}
+              </div>
+
+              <div className='flex flex-wrap gap-2 items-baseline'>
+                <div className='text-secondary-text'>Итого:</div>
+                <Currency className='text-2xl' valueClassName='font-medium' value={totalPrice} />
+              </div>
+            </div>
           </div>
         </div>
       </Inner>

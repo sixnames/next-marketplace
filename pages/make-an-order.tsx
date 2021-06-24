@@ -6,7 +6,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
-import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
@@ -74,8 +74,8 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                 <div className={classes.productTotals}>
                   <ProductShopPrices
                     className={classes.productTotalsPrice}
-                    formattedPrice={`${formattedPrice}`}
-                    formattedOldPrice={formattedOldPrice}
+                    price={`${formattedPrice}`}
+                    oldPrice={formattedOldPrice}
                     discountedPercent={discountedPercent}
                     size={'small'}
                   />

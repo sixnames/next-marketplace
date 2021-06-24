@@ -2,7 +2,7 @@ import { useSiteContext } from 'context/siteContext';
 import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Image from 'next/image';
-import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
 import ButtonCross from 'components/ButtonCross';
 import ControlButton from 'components/ControlButton';
@@ -84,8 +84,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                     <ProductShopPrices
                       className='mb-[var(--textLineGap)]'
-                      formattedPrice={shopProduct.formattedPrice}
-                      formattedOldPrice={shopProduct.formattedOldPrice}
+                      price={shopProduct.formattedPrice}
+                      oldPrice={shopProduct.formattedOldPrice}
                       discountedPercent={shopProduct.discountedPercent}
                     />
                     <div className='mb-[var(--textLineGap)]'>

@@ -12,7 +12,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ShopRubrics, { ShopRubricsInterface } from 'routes/shops/ShopRubrics';
+import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
 
 interface CompanyShopProductsInterface
   extends PagePropsInterface,

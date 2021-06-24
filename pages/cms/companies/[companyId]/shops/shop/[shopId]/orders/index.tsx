@@ -13,7 +13,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ShopOrders, { ShopOrdersInterface } from 'routes/shops/ShopOrders';
+import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
 
 interface CompanyShopAssetsInterface
   extends PagePropsInterface,

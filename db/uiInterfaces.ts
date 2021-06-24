@@ -17,6 +17,7 @@ import {
   MessageModel,
   MetricModel,
   NavItemModel,
+  NotSyncedProductModel,
   ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
@@ -281,6 +282,10 @@ export interface ShopInterface extends ShopModel {
   contacts: ContactsInterface;
   address: AddressInterface;
   orders?: OrderInterface[];
+}
+
+export interface NotSyncedProductInterface extends NotSyncedProductModel {
+  shop?: ShopInterface | null;
 }
 
 export interface UserInterface extends UserModel {

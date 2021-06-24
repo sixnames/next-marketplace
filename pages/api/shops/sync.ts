@@ -1,9 +1,15 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
+import {
+  COL_NOT_SYNCED_PRODUCTS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
+import { NotSyncedProductModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
 import { getCurrencyString } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -43,6 +49,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const notSyncedProductsCollection =
+      db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
 
     // get shop
     const shop = await shopsCollection.findOne({ token });
@@ -56,7 +64,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // get products
-    const barcodeList = body.map(({ barcode }) => barcode);
+    const barcodeList = body.reduce((acc: string[], { barcode }) => {
+      if (!barcode || barcode.length < 1) {
+        return acc;
+      }
+      return [...acc, barcode];
+    }, []);
+
     const products = await productsCollection
       .find({
         barcode: {
@@ -73,9 +87,33 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const shopProducts: ShopProductModel[] = [];
-    for await (const product of products) {
-      const bodyItem = body.find(({ barcode }) => product.barcode?.includes(`${barcode}`));
-      if (!bodyItem || !bodyItem.available || !bodyItem.price) {
+    const notSyncedProducts: NotSyncedProductModel[] = [];
+
+    for await (const bodyItem of body) {
+      const product = products.find(({ barcode }) => barcode?.includes(`${bodyItem.barcode}`));
+      if (!product) {
+        notSyncedProducts.push({
+          _id: new ObjectId(),
+          name: `${bodyItem?.name}`,
+          price: noNaN(bodyItem?.price),
+          available: noNaN(bodyItem?.available),
+          barcode: `${bodyItem?.barcode}`,
+          shopId: shop._id,
+          createdAt: new Date(),
+        });
+        continue;
+      }
+
+      if (!bodyItem.available || !bodyItem.price) {
+        notSyncedProducts.push({
+          _id: new ObjectId(),
+          name: `${bodyItem?.name}`,
+          price: noNaN(bodyItem?.price),
+          available: noNaN(bodyItem?.available),
+          barcode: `${bodyItem?.barcode}`,
+          shopId: shop._id,
+          createdAt: new Date(),
+        });
         continue;
       }
 
@@ -161,6 +199,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
         return;
       }
+    }
+
+    // Save not synced shop products
+    if (notSyncedProducts.length > 0) {
+      await notSyncedProductsCollection.insertMany(notSyncedProducts);
     }
 
     res.status(200).send({

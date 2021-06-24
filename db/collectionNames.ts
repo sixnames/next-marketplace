@@ -24,6 +24,7 @@ export const COL_ORDER_LOGS = 'ordersLogs';
 export const COL_ORDER_STATUSES = 'orderStatuses';
 export const COL_PAGES_GROUP = 'pagesGroups';
 export const COL_PAGES = 'pages';
+export const COL_NOT_SYNCED_PRODUCTS = 'notSyncedProducts';
 export const COL_PRODUCTS = 'products';
 export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';
 export const COL_PRODUCT_ASSETS = 'productAssets';

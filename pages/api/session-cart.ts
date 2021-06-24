@@ -7,9 +7,9 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import { CartModel, UserModel } from 'db/dbModels';
+import { CartModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CartInterface } from 'db/uiInterfaces';
+import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getCurrencyString } from 'lib/i18n';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -51,6 +51,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const cookies = new Cookies(req, res);
     const cartId = userCartId || cookies.get(CART_COOKIE_KEY);
 
+    const companyIdStage = companyId ? { companyId: new ObjectId(companyId) } : {};
     const shopProductPipeline = ({ letStage, expr, as }: ShopProductPipelineInterface) => ({
       $lookup: {
         from: COL_SHOP_PRODUCTS,
@@ -72,13 +73,12 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               selectedOptionsSlugs: false,
               priorities: false,
               views: false,
-              name: false,
             },
           },
           {
             $lookup: {
               from: COL_SHOPS,
-              as: 'shops',
+              as: 'shop',
               let: { shopId: '$shopId' },
               pipeline: [
                 {
@@ -99,7 +99,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           {
             $addFields: {
               shop: {
-                $arrayElemAt: ['$shops', 0],
+                $arrayElemAt: ['$shop', 0],
               },
             },
           },
@@ -113,7 +113,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     });
 
     // Find exiting cart
-    const companyIdStage = companyId ? { companyId: new ObjectId(companyId) } : {};
     const cartAggregation = cartId
       ? await cartsCollection
           .aggregate<CartInterface>([
@@ -284,10 +283,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       cart = newCart;
     }
 
-    // Shop products
-
-    // Products
-
     // Total price
     const sessionCart: CartInterface = {
       ...cart,
@@ -296,11 +291,88 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       formattedTotalPrice: getCurrencyString(cart.totalPrice),
     };
 
+    interface ShopProductsGroupInterface {
+      _id: ObjectIdModel;
+      shopProducts: ShopProductInterface[];
+    }
+
+    // Group cart products by shop and filter out shop products with different barcodes
+    const cartProducts = sessionCart.cartProducts.reduce(
+      (acc: CartProductInterface[], initialCartProduct) => {
+        let product = initialCartProduct.product;
+        if (product) {
+          const groupedByShops = (product.shopProducts || []).reduce(
+            (acc: ShopProductsGroupInterface[], shopProduct) => {
+              const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
+              if (existingShopIndex > -1) {
+                acc[existingShopIndex].shopProducts.push(shopProduct);
+                return acc;
+              }
+
+              return [
+                ...acc,
+                {
+                  _id: shopProduct.shopId,
+                  shopProducts: [shopProduct],
+                },
+              ];
+            },
+            [],
+          );
+
+          const finalShopProducts: ShopProductInterface[] = [];
+          groupedByShops.forEach((group) => {
+            const { shopProducts } = group;
+            const sortedShopProducts = shopProducts.sort((a, b) => {
+              return b.available - a.available;
+            });
+
+            const firstShopProduct = sortedShopProducts[0];
+            if (firstShopProduct) {
+              finalShopProducts.push(firstShopProduct);
+            }
+          });
+
+          const sortedShopProductsByPrice = finalShopProducts.sort((a, b) => {
+            return b.price - a.price;
+          });
+
+          const minPriceShopProduct =
+            sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
+          const maxPriceShopProduct = sortedShopProductsByPrice[0];
+
+          product = {
+            ...product,
+            shopProducts: finalShopProducts,
+            cardPrices: {
+              _id: new ObjectId(),
+              min: `${minPriceShopProduct.price}`,
+              max: `${maxPriceShopProduct.price}`,
+            },
+          };
+        }
+
+        return [
+          ...acc,
+          {
+            ...initialCartProduct,
+            product,
+          },
+        ];
+      },
+      [],
+    );
+
+    // console.log(JSON.stringify(cartProducts, null, 2));
+
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.end(
       JSON.stringify({
-        sessionCart,
+        sessionCart: {
+          ...sessionCart,
+          cartProducts,
+        },
       }),
     );
   } catch (e) {

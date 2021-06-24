@@ -36,6 +36,12 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, basePath, child
         path: `${basePath}/${shop._id}/assets`,
         exact: true,
       },
+      {
+        name: 'Ошибки синхронизации',
+        testId: 'shop-sync-errors',
+        path: `${basePath}/${shop._id}/sync-errors`,
+        exact: true,
+      },
     ];
   }, [basePath, shop._id]);
 

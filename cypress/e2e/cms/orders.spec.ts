@@ -23,11 +23,13 @@ describe('Admin orders', () => {
 
         // Should display all orders list
         cy.testAuth(`${ROUTE_CMS}/orders`);
+        cy.wait(1500);
         cy.getByCy(`${orderItemIdA}-row`).should('contain', orderFields.customerName);
         cy.getByCy(`${orderItemIdB}-row`).should('contain', orderFields.customerEmail);
 
         // Should navigate to the order details
         cy.getByCy(`order-${orderItemIdA}-link`).click();
+        cy.wait(1500);
         cy.getByCy(`order-details`).should('exist');
       },
     });

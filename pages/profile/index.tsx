@@ -1,4 +1,4 @@
-import { Disclosure, Transition } from '@headlessui/react';
+import { Disclosure } from '@headlessui/react';
 import ControlButton from 'components/ControlButton';
 import ControlButtonChevron from 'components/ControlButtonChevron';
 import Currency from 'components/Currency';
@@ -163,45 +163,33 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
           </div>
 
           {/*Order body*/}
-          <Transition
-            show={open}
-            enter='transition duration-100 ease-out'
-            enterFrom='transform opacity-0'
-            enterTo='transform opacity-100'
-            leave='transition duration-75 ease-out'
-            leaveFrom='transform opacity-100'
-            leaveTo='transform opacity-0'
-          >
-            <Disclosure.Panel static>
-              {/*shop info*/}
-              <div className='mb-6 pl-20 lg:pl-28 pr-6'>
-                {firstProduct.shop ? (
-                  <div className=''>
-                    <div className='text-secondary-text mb-2'>
-                      винотека:{' '}
-                      <span className='text-primary-text font-medium'>
-                        {firstProduct.shop.name}
-                      </span>
-                    </div>
-                    <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
+          <Disclosure.Panel static>
+            {/*shop info*/}
+            <div className='mb-6 pl-20 lg:pl-28 pr-6'>
+              {firstProduct.shop ? (
+                <div className=''>
+                  <div className='text-secondary-text mb-2'>
+                    винотека:{' '}
+                    <span className='text-primary-text font-medium'>{firstProduct.shop.name}</span>
                   </div>
-                ) : (
-                  <div className='text-theme font-medium'>Магазин не найден</div>
-                )}
-              </div>
+                  <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
+                </div>
+              ) : (
+                <div className='text-theme font-medium'>Магазин не найден</div>
+              )}
+            </div>
 
-              {(products || []).map((orderProduct, index) => {
-                return (
-                  <ProfileOrderProduct
-                    testId={index}
-                    orderIndex={orderIndex}
-                    orderProduct={orderProduct}
-                    key={`${orderProduct._id}`}
-                  />
-                );
-              })}
-            </Disclosure.Panel>
-          </Transition>
+            {(products || []).map((orderProduct, index) => {
+              return (
+                <ProfileOrderProduct
+                  testId={index}
+                  orderIndex={orderIndex}
+                  orderProduct={orderProduct}
+                  key={`${orderProduct._id}`}
+                />
+              );
+            })}
+          </Disclosure.Panel>
         </div>
       )}
     </Disclosure>

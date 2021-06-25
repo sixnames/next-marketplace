@@ -28,22 +28,22 @@ export async function uploadTestAssets() {
   }
 }
 
-const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
+// const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
 const config = {
   database: {
     protocol: 'mongodb',
     host: `${process.env.MONGO_TEST_HOST}`,
-    port: 27018,
+    port: 27017,
     username: `${process.env.MONGO_TEST_USER_NAME}`,
     password: `${process.env.MONGO_TEST_USER_PWD}`,
     name: `${process.env.MONGO_DB_NAME}`,
-    options: {
+    /*options: {
       tls: 'true',
       tlsCAFile,
       replicaSet: `${process.env.MONGO_DB_RS}`,
       authSource: `${process.env.MONGO_DB_NAME}`,
-    },
+    },*/
   },
   dropDatabase: false,
   dropCollections: true,

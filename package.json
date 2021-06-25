@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "up": "docker-compose -f docker-compose.dev.yml up -d",
+    "stop": "docker-compose -f docker-compose.dev.yml stop",
+    "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
+    "postup": "echo \"db started\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

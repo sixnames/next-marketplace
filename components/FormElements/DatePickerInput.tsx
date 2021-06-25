@@ -1,7 +1,10 @@
 import ButtonCross from 'components/ButtonCross';
 import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import {
+  DEFAULT_LOCALE,
+  // SECONDARY_LOCALE
+} from 'config/common';
 // import { useLocaleContext } from 'context/localeContext';
 import * as React from 'react';
 import DatePicker, {
@@ -10,12 +13,10 @@ import DatePicker, {
   // setDefaultLocale,
 } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import en from 'date-fns/locale/en';
 import ru from 'date-fns/locale/ru';
 import { InputTheme } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 
-registerLocale(SECONDARY_LOCALE, en);
 registerLocale(DEFAULT_LOCALE, ru);
 // setDefaultLocale(DEFAULT_LOCALE);
 

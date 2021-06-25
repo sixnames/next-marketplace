@@ -25,8 +25,9 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   ShopProductInterface,
+  ShopProductsGroupInterface,
 } from 'db/uiInterfaces';
-import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
@@ -334,13 +335,6 @@ export async function getCardData({
     // console.log(JSON.stringify(product, null, 2));
     // console.log(`Shop products `, new Date().getTime() - shopProductsStartTime);
 
-    // prices
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: getCurrencyString(product.cardPrices?.min),
-      max: getCurrencyString(product.cardPrices?.max),
-    };
-
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
     const cardConnections: ProductConnectionInterface[] = [];
@@ -435,8 +429,52 @@ export async function getCardData({
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
+    const groupedByShops = (product.shopProducts || []).reduce(
+      (acc: ShopProductsGroupInterface[], shopProduct) => {
+        const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
+        if (existingShopIndex > -1) {
+          acc[existingShopIndex].shopProducts.push(shopProduct);
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            _id: shopProduct.shopId,
+            shopProducts: [shopProduct],
+          },
+        ];
+      },
+      [],
+    );
+
+    const finalShopProducts: ShopProductInterface[] = [];
+    groupedByShops.forEach((group) => {
+      const { shopProducts } = group;
+      const sortedShopProducts = shopProducts.sort((a, b) => {
+        return b.available - a.available;
+      });
+
+      const firstShopProduct = sortedShopProducts[0];
+      if (firstShopProduct) {
+        finalShopProducts.push(firstShopProduct);
+      }
+    });
+
+    // prices
+    const sortedShopProductsByPrice = finalShopProducts.sort((a, b) => {
+      return b.price - a.price;
+    });
+    const minPriceShopProduct = sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
+    const maxPriceShopProduct = sortedShopProductsByPrice[0];
+    const cardPrices = {
+      _id: new ObjectId(),
+      min: `${minPriceShopProduct.price}`,
+      max: `${maxPriceShopProduct.price}`,
+    };
+
     const cardShopProducts: ShopProductInterface[] = [];
-    (product.shopProducts || []).forEach((shopProduct) => {
+    finalShopProducts.forEach((shopProduct) => {
       const { shop } = shopProduct;
       if (!shop) {
         return;

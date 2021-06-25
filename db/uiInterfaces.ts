@@ -398,7 +398,7 @@ export interface OrderInterface extends OrderModel {
   products?: OrderProductInterface[] | null;
   logs?: OrderLogInterface[] | null;
   shopsCount?: number | null;
-  shops?: ShopInterface[] | null;
+  shop?: ShopInterface | null;
   status?: OrderStatusInterface | null;
   productsCount?: number | null;
   totalPrice?: number | null;

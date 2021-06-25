@@ -2,9 +2,12 @@ import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
+import LinkEmail from 'components/Link/LinkEmail';
+import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/Product/ProductShopPrices';
 import Title from 'components/Title';
 import {
+  COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -16,6 +19,8 @@ import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
@@ -76,8 +81,7 @@ interface OrderPageConsumerInterface {
 }
 
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
-  const { itemId, createdAt, totalPrice, status, products } = order;
-  const firstProduct = (products || [])[0];
+  const { itemId, createdAt, totalPrice, status, products, shop, customer } = order;
 
   return (
     <AppContentWrapper>
@@ -88,9 +92,6 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
             <div className='text-secondary-text'>
               от <FormattedDate value={createdAt} />
             </div>
-          </div>
-          <div className='font-medium' style={status ? { color: status.color } : {}}>
-            {status?.name}
           </div>
         </div>
 
@@ -103,22 +104,47 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
           <div className='relative col-span-3'>
             <div className='sticky bg-secondary rounded-lg py-8 px-6'>
-              {/*shop info*/}
+              {/*status*/}
+              <div className='flex items-baseline justify-between mb-6'>
+                <div className='text-secondary-text'>Статус</div>
+                {status ? (
+                  <div className='font-medium' style={status ? { color: status.color } : {}}>
+                    {status.name}
+                  </div>
+                ) : (
+                  <div className='text-wp-error font-medium'>Статус не найден</div>
+                )}
+              </div>
+
+              {/*customer*/}
               <div className='mb-6'>
-                {firstProduct.shop ? (
-                  <div className=''>
-                    <div className='flex flex-wrap gap-2 mb-2 items-baseline'>
-                      <span className='text-secondary-text'>Винотека:</span>
-                      <span className='text-primary-text font-medium'>
-                        {firstProduct.shop.name}
-                      </span>
+                <div className='text-secondary-text mb-3'>Заказчик:</div>
+                {customer ? (
+                  <div className='space-y-2'>
+                    <div className='font-medium'>{customer?.fullName}</div>
+                    <div className='font-medium text-secondary-text'>
+                      <LinkEmail value={customer.email} />
                     </div>
-                    <div className='text-secondary-text'>
-                      {firstProduct.shop.address.formattedAddress}
+                    <div className='font-medium text-secondary-text'>
+                      <LinkPhone value={customer.formattedPhone} />
                     </div>
                   </div>
                 ) : (
-                  <div className='text-theme font-medium'>Магазин не найден</div>
+                  <div className='text-wp-error font-medium'>Заказчик не найден</div>
+                )}
+              </div>
+
+              {/*shop info*/}
+              <div className='mb-6'>
+                <div className='text-secondary-text mb-3'>Магазин:</div>
+
+                {shop ? (
+                  <div className='space-y-2'>
+                    <span className='text-primary-text font-medium'>{shop.name}</span>
+                    <div className='text-secondary-text'>{shop.address.formattedAddress}</div>
+                  </div>
+                ) : (
+                  <div className='text-wp-error font-medium'>Магазин не найден</div>
                 )}
               </div>
 
@@ -173,9 +199,39 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_ORDER_CUSTOMERS,
+          as: 'customer',
+          localField: '_id',
+          foreignField: 'orderId',
+        },
+      },
+      {
+        $lookup: {
+          from: COL_SHOPS,
+          as: 'shop',
+          let: { shopId: '$shopId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$shopId', '$_id'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $addFields: {
           status: {
             $arrayElemAt: ['$status', 0],
+          },
+          customer: {
+            $arrayElemAt: ['$customer', 0],
+          },
+          shop: {
+            $arrayElemAt: ['$shop', 0],
           },
         },
       },
@@ -190,22 +246,6 @@ export const getServerSideProps = async (
                 $expr: {
                   $eq: ['$$orderId', '$orderId'],
                 },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_SHOPS,
-                as: 'shop',
-                let: { shopId: '$shopId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$shopId', '$_id'],
-                      },
-                    },
-                  },
-                ],
               },
             },
             {
@@ -228,9 +268,6 @@ export const getServerSideProps = async (
               $addFields: {
                 shopProduct: {
                   $arrayElemAt: ['$shopProduct', 0],
-                },
-                shop: {
-                  $arrayElemAt: ['$shop', 0],
                 },
               },
             },
@@ -256,6 +293,16 @@ export const getServerSideProps = async (
       ? {
           ...initialOrder.status,
           name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
+        }
+      : null,
+    customer: initialOrder.customer
+      ? {
+          ...initialOrder.customer,
+          fullName: getFullName(initialOrder.customer),
+          formattedPhone: {
+            raw: phoneToRaw(initialOrder.customer.phone),
+            readable: phoneToReadable(initialOrder.customer.phone),
+          },
         }
       : null,
   };

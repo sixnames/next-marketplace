@@ -1,5 +1,5 @@
-export const noNaN = (value: any) => {
-  return value && !isNaN(+value) ? +value : 0;
+export const noNaN = (value: unknown) => {
+  return value && !isNaN(parseFloat(`${value}`)) ? parseFloat(`${value}`) : 0;
 };
 
 interface GetPercentageInterface {

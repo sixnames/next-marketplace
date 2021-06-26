@@ -37,9 +37,9 @@ shops.forEach((shop) => {
           const available = 5;
           const withDiscount = i % 2 === 0;
           const price = Math.round(Math.random() * 1000);
-          const oldPrice = price - Math.round(price / 3);
-          const pricePercent = price / 100;
-          const discountedPercent = Math.floor(oldPrice / pricePercent);
+          const oldPrice = price + Math.round(price / 3);
+          const pricePercent = oldPrice / 100;
+          const discountedPercent = 100 - Math.floor(price / pricePercent);
 
           shopProducts.push({
             _id: getObjectId(`shopProduct ${shop.slug} ${product.slug} ${barcode}`),

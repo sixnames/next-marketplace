@@ -4,7 +4,7 @@ import ButtonCross from 'components/ButtonCross';
 import ControlButton from 'components/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
-import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -215,8 +215,8 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
         <div className={classes.productGridRight}>
           <ProductShopPrices
-            formattedPrice={`${formattedPrice}`}
-            formattedOldPrice={formattedOldPrice}
+            price={`${formattedPrice}`}
+            oldPrice={formattedOldPrice}
             discountedPercent={discountedPercent}
           />
           <div className={classes.productConnections}>

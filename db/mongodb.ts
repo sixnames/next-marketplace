@@ -23,13 +23,19 @@ export async function getDatabase(): Promise<GetDbPayloadInterface> {
     throw new Error('Unable to connect to database, no URI provided');
   }
 
+  const sslOptions = process.env.DEV_ENV
+    ? {}
+    : {
+        tls: true,
+        tlsCAFile,
+        replicaSet: process.env.MONGO_DB_RS,
+      };
+
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    tls: true,
-    tlsCAFile,
-    replicaSet: process.env.MONGO_DB_RS,
     authSource: process.env.MONGO_DB_NAME,
+    ...sslOptions,
   };
 
   // If no connection is cached, create a new one

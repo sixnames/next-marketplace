@@ -7,9 +7,14 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import { CartModel, ObjectIdModel, UserModel } from 'db/dbModels';
+import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import {
+  CartInterface,
+  CartProductInterface,
+  ShopProductInterface,
+  ShopProductsGroupInterface,
+} from 'db/uiInterfaces';
 import { getCurrencyString } from 'lib/i18n';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -290,11 +295,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       isWithShopless: cart.cartProducts.some(({ productId }) => !!productId),
       formattedTotalPrice: getCurrencyString(cart.totalPrice),
     };
-
-    interface ShopProductsGroupInterface {
-      _id: ObjectIdModel;
-      shopProducts: ShopProductInterface[];
-    }
 
     // Group cart products by shop and filter out shop products with different barcodes
     const cartProducts = sessionCart.cartProducts.reduce(

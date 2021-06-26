@@ -7,7 +7,7 @@ import classes from './CartShopsList.module.css';
 import Image from 'next/image';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
-import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 
 interface CartShopInterface {
   shopProduct: ShopProductInterface;
@@ -73,9 +73,9 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
         <div className={`${classes.column}`}>
           <ProductShopPrices
             className={classes.prices}
-            formattedPrice={`${formattedPrice}`}
+            price={`${formattedPrice}`}
             discountedPercent={discountedPercent}
-            formattedOldPrice={formattedOldPrice}
+            oldPrice={formattedOldPrice}
           />
           <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 

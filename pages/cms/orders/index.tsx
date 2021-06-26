@@ -7,7 +7,7 @@ import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
+import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
@@ -55,6 +55,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       },
     },
     {
+      accessor: 'shop.name',
+      headTitle: 'Магазин',
+      render: ({ cellData }) => cellData,
+    },
+    {
       accessor: 'productsCount',
       headTitle: 'Товаров',
       render: ({ cellData }) => {
@@ -85,7 +90,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'orders-list'}>
       <Head>
         <title>{`Заказы`}</title>
       </Head>
@@ -151,6 +156,22 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_SHOPS,
+          as: 'shop',
+          let: { shopId: '$shopId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$shopId', '$_id'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $addFields: {
           status: {
             $arrayElemAt: ['$status', 0],
@@ -160,6 +181,9 @@ export const getServerSideProps = async (
           },
           productsCount: {
             $size: '$shopProductIds',
+          },
+          shop: {
+            $arrayElemAt: ['$shop', 0],
           },
         },
       },

@@ -406,6 +406,7 @@ export interface OrderProductModel extends TimestampModel {
   originalName: string;
   nameI18n: TranslationModel;
   productId: ObjectIdModel;
+  customerId: ObjectIdModel;
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;

@@ -300,6 +300,7 @@ export const OrderMutations = extendType({
                 slug,
                 originalName,
                 nameI18n,
+                customerId: user._id,
                 productId: product._id,
                 shopProductId: shopProduct._id,
                 shopId: shop._id,

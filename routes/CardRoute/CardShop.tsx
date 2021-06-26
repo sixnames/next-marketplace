@@ -9,7 +9,7 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import { useAppContext } from 'context/appContext';
 import Icon from 'components/Icon';
-import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 
@@ -82,9 +82,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
           <div className={classes.column}>
             <ProductShopPrices
               className={classes.prices}
-              formattedPrice={`${formattedPrice}`}
+              price={`${formattedPrice}`}
               discountedPercent={discountedPercent}
-              formattedOldPrice={formattedOldPrice}
+              oldPrice={formattedOldPrice}
             />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 

@@ -90,7 +90,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
   ];
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper testId={'orders-list'}>
       <Head>
         <title>{`Заказы`}</title>
       </Head>

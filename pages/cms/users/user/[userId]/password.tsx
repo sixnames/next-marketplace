@@ -1,12 +1,14 @@
 import Button from 'components/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
+import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateUserPasswordMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -22,21 +24,31 @@ interface UserPasswordInterface {
 }
 
 const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
-  const {
-    onCompleteCallback,
-    onErrorCallback,
-    showLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
-    reload: true,
-  });
+  const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+    });
   const [updateUserPasswordMutation] = useUpdateUserPasswordMutation({
     onCompleted: (data) => onCompleteCallback(data.updateUserPassword),
     onError: onErrorCallback,
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Пароль`,
+    config: [
+      {
+        name: 'Пользователи',
+        href: `${ROUTE_CMS}/users`,
+      },
+      {
+        name: `${user.fullName}`,
+        href: `${ROUTE_CMS}/users/${user._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsUserLayout user={user}>
+    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner testId={'user-password-page'}>
         <Formik
           initialValues={{

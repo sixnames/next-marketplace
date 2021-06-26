@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
 import Inner from 'components/Inner';
-import { SORT_DESC } from 'config/common';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RoleInterface, UserInterface } from 'db/uiInterfaces';
@@ -10,6 +10,7 @@ import { Form, Formik } from 'formik';
 import { UpdateUserInput, useUpdateUserMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -49,8 +50,18 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
     userId: user._id,
   };
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${user.fullName}`,
+    config: [
+      {
+        name: 'Пользователи',
+        href: `${ROUTE_CMS}/users`,
+      },
+    ],
+  };
+
   return (
-    <CmsUserLayout user={user}>
+    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner testId={'user-details-page'}>
         <Formik
           enableReinitialize

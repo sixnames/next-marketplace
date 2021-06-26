@@ -1,10 +1,11 @@
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
-import { SORT_DESC } from 'config/common';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -56,8 +57,22 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
     },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Заказы`,
+    config: [
+      {
+        name: 'Пользователи',
+        href: `${ROUTE_CMS}/users`,
+      },
+      {
+        name: `${user.fullName}`,
+        href: `${ROUTE_CMS}/users/${user._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsUserLayout user={user}>
+    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner testId={'user-orders-page'}>
         <div className='overflow-x-auto'>
           <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />

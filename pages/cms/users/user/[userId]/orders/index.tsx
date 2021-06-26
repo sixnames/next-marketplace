@@ -1,8 +1,15 @@
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import {
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_ROLES,
+  COL_SHOPS,
+  COL_USERS,
+} from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
@@ -25,7 +32,14 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => (
+        <Link
+          testId={`order-${dataItem.itemId}-link`}
+          href={`${ROUTE_CMS}/users/user/${user._id}/orders/${dataItem._id}`}
+        >
+          {cellData}
+        </Link>
+      ),
     },
     {
       accessor: 'status',
@@ -42,15 +56,13 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
       },
     },
     {
-      accessor: 'productsCount',
-      headTitle: 'Товаров',
-      render: ({ cellData }) => {
-        return cellData;
-      },
+      accessor: 'shop.name',
+      headTitle: 'Магазин',
+      render: ({ cellData }) => cellData,
     },
     {
-      accessor: 'shopsCount',
-      headTitle: 'Магазины',
+      accessor: 'productsCount',
+      headTitle: 'Товаров',
       render: ({ cellData }) => {
         return cellData;
       },
@@ -161,12 +173,28 @@ export const getServerSideProps = async (
               },
             },
             {
+              $lookup: {
+                from: COL_SHOPS,
+                as: 'shop',
+                let: { shopId: '$shopId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$shopId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
               $addFields: {
+                shop: {
+                  $arrayElemAt: ['$shop', 0],
+                },
                 status: {
                   $arrayElemAt: ['$status', 0],
-                },
-                shopsCount: {
-                  $size: '$shopIds',
                 },
                 productsCount: {
                   $size: '$shopProductIds',

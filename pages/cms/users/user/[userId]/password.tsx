@@ -42,7 +42,7 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/${user._id}`,
+        href: `${ROUTE_CMS}/users/user/${user._id}`,
       },
     ],
   };

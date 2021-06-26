@@ -36,7 +36,7 @@ const UserAssetsConsumer: React.FC<UserAssetsInterface> = ({ user }) => {
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/${user._id}`,
+        href: `${ROUTE_CMS}/users/user/${user._id}`,
       },
     ],
   };

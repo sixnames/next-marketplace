@@ -143,7 +143,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     currentPageName: 'Атрибуты',
     config: [
       {
-        name: 'Список рубрик',
+        name: 'Рубрикатор',
         href: `${ROUTE_CMS}/rubrics`,
       },
       {

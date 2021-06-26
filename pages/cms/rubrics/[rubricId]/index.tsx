@@ -67,7 +67,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     currentPageName: `${rubric.name}`,
     config: [
       {
-        name: 'Список рубрик',
+        name: 'Рубрикатор',
         href: `${ROUTE_CMS}/rubrics`,
       },
     ],

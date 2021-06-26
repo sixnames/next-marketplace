@@ -192,7 +192,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     currentPageName: 'Товары',
     config: [
       {
-        name: 'Список рубрик',
+        name: 'Рубрикатор',
         href: `${ROUTE_CMS}/rubrics`,
       },
       {

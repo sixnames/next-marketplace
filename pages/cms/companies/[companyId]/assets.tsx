@@ -1,10 +1,12 @@
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner';
+import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -13,8 +15,6 @@ import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-
-// import CompanyShops from 'routes/Company/CompanyShops';
 
 interface CompanyAssetsConsumerInterface {
   currentCompany: CompanyInterface;
@@ -25,8 +25,22 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
   const router = useRouter();
   const { logo } = currentCompany;
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Изображения',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: currentCompany.name,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsCompanyLayout company={currentCompany}>
+    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize

@@ -287,6 +287,7 @@ export interface ShopInterface extends ShopModel {
   contacts: ContactsInterface;
   address: AddressInterface;
   orders?: OrderInterface[];
+  company?: CompanyInterface | null;
 }
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {

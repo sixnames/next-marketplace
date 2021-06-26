@@ -1,7 +1,9 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ShopInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
@@ -9,9 +11,15 @@ import * as React from 'react';
 export interface AppShopLayoutInterface {
   shop: ShopInterface;
   basePath: string;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
-const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, basePath, children }) => {
+const AppShopLayout: React.FC<AppShopLayoutInterface> = ({
+  shop,
+  breadcrumbs,
+  basePath,
+  children,
+}) => {
   const navConfig = React.useMemo(() => {
     return [
       {
@@ -46,7 +54,7 @@ const AppShopLayout: React.FC<AppShopLayoutInterface> = ({ shop, basePath, child
   }, [basePath, shop._id]);
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{`Магазин ${shop.name}`}</title>
       </Head>

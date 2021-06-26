@@ -1,11 +1,11 @@
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
 import { ROUTE_CMS } from 'config/common';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -20,13 +20,36 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   shop,
   notSyncedProducts,
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Ошибки синхронизации',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopSyncErrors
+        breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
-        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />
     </CmsLayout>
@@ -43,7 +66,29 @@ export const getServerSideProps = async (
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });
 
-  const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
+  const shopAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${shopId}`) },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const shop = shopAggregation[0];
 
   if (!initialProps.props || !shop) {
     return {

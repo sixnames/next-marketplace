@@ -13,7 +13,7 @@ import * as React from 'react';
 
 export type ShopOrdersInterface = AppShopLayoutInterface;
 
-const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
+const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();
 
   const columns: TableColumn<OrderInterface>[] = [
@@ -74,7 +74,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-orders-list'}>
           <div className='overflow-x-auto'>

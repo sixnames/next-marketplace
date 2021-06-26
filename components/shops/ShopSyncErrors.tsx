@@ -13,6 +13,7 @@ const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   shop,
   notSyncedProducts,
   basePath,
+  breadcrumbs,
 }) => {
   const columns: TableColumn<NotSyncedProductInterface>[] = [
     {
@@ -38,7 +39,7 @@ const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-sync-errors-page'}>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<NotSyncedProductInterface>

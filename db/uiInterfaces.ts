@@ -439,6 +439,7 @@ export interface PageInterface extends PageModel {
   name?: string | null;
   description?: string | null;
   city?: CityInterface | null;
+  pagesGroup?: PagesGroupInterface | null;
 }
 
 export interface PagesGroupInterface extends PagesGroupModel {

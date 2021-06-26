@@ -12,7 +12,9 @@ import { getDatabase } from 'db/mongodb';
 import { PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import { useDeletePageMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -107,8 +109,18 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
     },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${pagesGroup.name}`,
+    config: [
+      {
+        name: 'Группы страниц',
+        href: `${ROUTE_CMS}/pages`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper testId={'pages-list'}>
+    <AppContentWrapper testId={'pages-list'} breadcrumbs={breadcrumbs}>
       <Inner>
         <Title>{pagesGroup.name}</Title>
         <div className='relative'>

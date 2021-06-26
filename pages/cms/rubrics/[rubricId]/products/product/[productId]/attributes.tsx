@@ -11,6 +11,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -20,13 +21,15 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
 } from 'db/collectionNames';
-import { ProductModel } from 'db/dbModels';
+import { ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   ProductAttributeInterface,
   ProductAttributesGroupASTInterface,
   ProductInterface,
+  RubricInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductNumberAttributeMutation,
@@ -34,6 +37,7 @@ import {
   useUpdateProductTextAttributeMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
@@ -48,13 +52,14 @@ import { Form, Formik } from 'formik';
 
 interface ProductAttributesInterface {
   product: ProductInterface;
+  rubric: RubricInterface;
 }
 
 const attributesGroupClassName = 'relative mb-24';
 const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubric }) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     // withModal: true,
     reload: true,
@@ -101,8 +106,30 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
     [product._id, showLoading, updateProductSelectAttributeMutation],
   );
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Атрибуты',
+    config: [
+      {
+        name: 'Рубрикатор',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+      },
+      {
+        name: product.originalName,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsProductLayout product={product}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-attributes-list'}>
         {selectAttributesAST ? (
           <div className={attributesGroupClassName}>
@@ -329,10 +356,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
 interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} />
+      <ProductAttributes product={product} rubric={rubric} />
     </CmsLayout>
   );
 };
@@ -341,11 +368,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId) {
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
@@ -439,7 +467,12 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const product = productAggregation[0];
-  if (!product) {
+
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
+  });
+
+  if (!product || !initialRubric) {
     return {
       notFound: true,
     };
@@ -522,11 +555,17 @@ export const getServerSideProps = async (
     multipleSelectAttributesAST,
     selectAttributesAST,
   };
-  // console.log(JSON.stringify(product.rubricAttributes, null, 2));
+
+  const rubric: RubricInterface = {
+    ...initialRubric,
+    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
+  };
+
   return {
     props: {
       ...props,
       product: castDbData(finalProduct),
+      rubric: castDbData(rubric),
     },
   };
 };

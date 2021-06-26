@@ -5,6 +5,7 @@ import Inner from 'components/Inner';
 import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';
+import { ROUTE_CMS } from 'config/common';
 import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
@@ -15,14 +16,22 @@ import {
   COL_BRANDS,
   COL_MANUFACTURERS,
   COL_PRODUCTS,
+  COL_RUBRICS,
 } from 'db/collectionNames';
-import { BrandCollectionModel, BrandModel, ManufacturerModel, ProductModel } from 'db/dbModels';
+import {
+  BrandCollectionModel,
+  BrandModel,
+  ManufacturerModel,
+  ProductModel,
+  RubricModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductInterface,
+  RubricInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductBrandCollectionMutation,
@@ -30,6 +39,7 @@ import {
   useUpdateProductManufacturerMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -44,6 +54,7 @@ interface ProductBrandsInterface {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
+  rubric: RubricInterface;
 }
 
 const emptyValue = 'Не назначено';
@@ -53,6 +64,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brand,
   brandCollection,
   manufacturer,
+  rubric,
 }) => {
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
     useMutationCallbacks({
@@ -75,8 +87,30 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
     onCompleted: (data) => onCompleteCallback(data.updateProductManufacturer),
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Бренды / Производители',
+    config: [
+      {
+        name: 'Рубрикатор',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+      },
+      {
+        name: product.originalName,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsProductLayout product={product}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-brands-list'}>
         <InputLine label={'Бренд'}>
           <FakeInput
@@ -255,10 +289,12 @@ const Product: NextPage<ProductPageInterface> = ({
   brand,
   brandCollection,
   manufacturer,
+  rubric,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ProductBrands
+        rubric={rubric}
         product={product}
         brand={brand}
         brandCollection={brandCollection}
@@ -272,14 +308,15 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId) {
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
@@ -300,7 +337,12 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const product = productAggregation[0];
-  if (!product) {
+
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
+  });
+
+  if (!product || !initialRubric) {
     return {
       notFound: true,
     };
@@ -367,6 +409,11 @@ export const getServerSideProps = async (
       }
     : null;
 
+  const rubric: RubricInterface = {
+    ...initialRubric,
+    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
+  };
+
   return {
     props: {
       ...props,
@@ -374,6 +421,7 @@ export const getServerSideProps = async (
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
+      rubric: castDbData(rubric),
     },
   };
 };

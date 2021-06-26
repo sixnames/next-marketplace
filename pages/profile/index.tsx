@@ -1,10 +1,10 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import { Disclosure } from '@headlessui/react';
 import ControlButton from 'components/ControlButton';
 import ControlButtonChevron from 'components/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
-import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductShopPrices from 'components/Product/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Tooltip from 'components/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';
@@ -28,7 +28,6 @@ import Image from 'next/image';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'styles/ProfileOrdersRoute.module.css';
 
 interface ProfileOrderProductInterface {
   orderIndex: number;
@@ -42,7 +41,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   testId,
 }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
-  const { originalName, shopProduct, itemId, shop, price, amount } = orderProduct;
+  const { originalName, shopProduct, itemId, price, amount, totalPrice } = orderProduct;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
@@ -57,8 +56,8 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   const imageHeight = 120;
 
   return (
-    <div className={`${classes.orderProduct} ${classes.orderMainGrid}`}>
-      <div className={classes.productImage}>
+    <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
+      <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
         <Image
           src={productImageSrc}
           alt={`${originalName}`}
@@ -67,40 +66,33 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           height={imageHeight}
         />
       </div>
-      <div>
-        <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
 
-        <div className={classes.orderProductGrid}>
-          <div className={classes.productName}>{originalName}</div>
+      <div className='flex-grow'>
+        <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
 
-          <div className={classes.productTotals}>
-            <ProductShopPrices
-              className={classes.productTotalsPrice}
-              formattedPrice={price}
-              size={'small'}
-            />
-            <Icon name={'cross'} className={classes.productTotalsIcon} />
-            <div className={classes.productTotalsAmount}>{amount}</div>
-          </div>
+        <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
+          <div className='text-lg font-bold flex-grow'>{originalName}</div>
 
-          {shop ? (
-            <div className={classes.shop}>
-              <div>
-                <span>винотека: </span>
-                {shop.name}
-              </div>
-              <div>{shop.address.formattedAddress}</div>
+          <div>
+            <div className='flex items-baseline ml-auto flex-grow-0'>
+              <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
+              <Icon name={'cross'} className='w-2 h-2 mx-4' />
+              <div className='font-medium'>{amount}</div>
             </div>
-          ) : (
-            <div className={classes.shop}>Магазин не найден</div>
-          )}
+            <div className='flex gap-2 lg:justify-end text-secondary-text'>
+              <span>Итого:</span>
+              <Currency value={totalPrice} />
+            </div>
+          </div>
         </div>
       </div>
-      <div className={classes.orderProductBtn}>
+
+      <div className='absolute top-0 right-0'>
         <Tooltip title={'Добавить в корзину'}>
           <div>
             <ControlButton
               disabled={isCartButtonDisabled}
+              size={'big'}
               onClick={() => {
                 addProductToCart({
                   amount: addToCartAmount,
@@ -123,70 +115,87 @@ interface ProfileOrderInterface {
 }
 
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) => {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const { itemId, createdAt, totalPrice, status, products } = order;
   const { repeatAnOrder } = useSiteContext();
+  const firstProduct = (products || [])[0];
 
   return (
-    <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>
-      <div className={classes.order} data-cy={`profile-order-${itemId}`}>
-        <div className={`${classes.orderMainGrid} ${classes.orderHead}`}>
-          <DisclosureButton as={'div'} className={`${classes.orderTrigger}`}>
-            <ControlButtonChevron
-              isActive={isOpen}
-              testId={`profile-order-${itemId}-open`}
-              className={classes.productsTrigger}
-            />
-          </DisclosureButton>
-          <div className={classes.orderHeadMainGrid}>
-            <div>
-              <div className={classes.orderHeadGrid}>
-                <div className={classes.orderNumber}>{`№ ${itemId}`}</div>
-                <div className={classes.orderCreatedAt}>
-                  от <FormattedDate value={createdAt} />
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className={classes.orderHeadGrid}>
-                <div>
-                  <Currency className={classes.orderTotalPrice} value={totalPrice} />
-                </div>
-                <div className={classes.orderStatus} style={status ? { color: status.color } : {}}>
-                  {status?.name}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <Tooltip title={'Повторить заказ'}>
-              <div>
-                <ControlButton
-                  roundedTopRight
-                  onClick={() => repeatAnOrder(`${order._id}`)}
-                  className={classes.orderCartBtn}
-                  iconSize={'big'}
-                  icon={'cart'}
-                  testId={`profile-order-${itemId}-repeat`}
-                />
-              </div>
-            </Tooltip>
-          </div>
-        </div>
+    <Disclosure>
+      {({ open }) => (
+        <div className='mb-4 bg-secondary rounded-lg' data-cy={`profile-order-${itemId}`}>
+          {/*Order head*/}
+          <div className='relative flex pr-[var(--controlButtonHeightBig)] items-start'>
+            <Disclosure.Button
+              className='flex items-center justify-center min-h-[4rem] w-20 lg:w-28'
+              as={'div'}
+            >
+              <ControlButtonChevron isActive={open} testId={`profile-order-${itemId}-open`} />
+            </Disclosure.Button>
 
-        <DisclosurePanel data-cy={`profile-order-${itemId}-content`}>
-          {(products || []).map((orderProduct, index) => {
-            return (
-              <ProfileOrderProduct
-                testId={index}
-                orderIndex={orderIndex}
-                orderProduct={orderProduct}
-                key={`${orderProduct._id}`}
-              />
-            );
-          })}
-        </DisclosurePanel>
-      </div>
+            <div className='grid gap-4 flex-grow items-baseline sm:grid-cols-2 lg:grid-cols-4 py-4'>
+              <div className='text-lg font-medium sm:pt-0'>{`№ ${itemId}`}</div>
+              <div className='text-sm'>
+                от <FormattedDate value={createdAt} />
+              </div>
+              <div>
+                <Currency className='text-2xl' value={totalPrice} />
+              </div>
+              <div className='font-medium' style={status ? { color: status.color } : {}}>
+                {status?.name}
+              </div>
+            </div>
+
+            <div className='absolute top-0 right-0'>
+              <Tooltip title={'Повторить заказ'}>
+                <div>
+                  <ControlButton
+                    roundedTopRight
+                    onClick={() => repeatAnOrder(`${order._id}`)}
+                    iconSize={'big'}
+                    size={'big'}
+                    icon={'cart'}
+                    theme={'accent'}
+                    testId={`profile-order-${itemId}-repeat`}
+                  />
+                </div>
+              </Tooltip>
+            </div>
+          </div>
+
+          {/*Order body*/}
+          <Disclosure.Panel static>
+            <div data-cy={`profile-order-${itemId}-content`}>
+              {/*shop info*/}
+              <div className='mb-6 pl-20 lg:pl-28 pr-6'>
+                {firstProduct.shop ? (
+                  <div className=''>
+                    <div className='text-secondary-text mb-2'>
+                      винотека:{' '}
+                      <span className='text-primary-text font-medium'>
+                        {firstProduct.shop.name}
+                      </span>
+                    </div>
+                    <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
+                  </div>
+                ) : (
+                  <div className='text-theme font-medium'>Магазин не найден</div>
+                )}
+              </div>
+
+              {(products || []).map((orderProduct, index) => {
+                return (
+                  <ProfileOrderProduct
+                    testId={index}
+                    orderIndex={orderIndex}
+                    orderProduct={orderProduct}
+                    key={`${orderProduct._id}`}
+                  />
+                );
+              })}
+            </div>
+          </Disclosure.Panel>
+        </div>
+      )}
     </Disclosure>
   );
 };
@@ -197,7 +206,7 @@ interface ProfileOrdersRouteInterface {
 
 const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) => {
   return (
-    <div className={classes.frame} data-cy={'profile-orders'}>
+    <div className='mb-8' data-cy={'profile-orders'}>
       {orders.length < 1 ? (
         <div>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />
@@ -254,6 +263,13 @@ export async function getServerSideProps(
           as: 'status',
           localField: 'statusId',
           foreignField: '_id',
+        },
+      },
+      {
+        $addFields: {
+          status: {
+            $arrayElemAt: ['$status', 0],
+          },
         },
       },
       {
@@ -314,21 +330,14 @@ export async function getServerSideProps(
           ],
         },
       },
-      {
-        $addFields: {
-          status: {
-            $arrayElemAt: ['$status', 0],
-          },
-        },
-      },
     ])
     .toArray();
 
   const orders = orderAggregation.map((order) => {
     return {
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
-        return acc + amount * price;
+      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+        return acc + totalPrice;
       }, 0),
       status: order.status
         ? {

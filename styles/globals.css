@@ -363,6 +363,7 @@
   --controlButtonHeight: var(--formInputHeight);
   --controlButtonHeightSmall: var(--formInputHeightSmall);
   --controlButtonHeightSmaller: var(--formInputHeightSmaller);
+  --controlButtonHeightBig: 4rem;
   --minLinkHeight: var(--formInputHeight);
   --minLinkHeightSmall: var(--formInputHeightSmall);
   --minLinkHeightSmaller: var(--formInputHeightSmaller);
@@ -485,6 +486,7 @@ body {
   font-family: var(--font);
   color: var(--textColor);
   background-color: var(--primaryBackground);
+  display: block !important;
 }
 
 html *::-webkit-scrollbar {

@@ -33,7 +33,7 @@ const Currency: React.FC<CurrencyInterface> = ({
       >
         {finalValue || 0}
       </span>
-      <span className={'font-normal text-secondary-text text-[0.5em]'}>{currency}</span>
+      <span className={'font-normal text-secondary-text text-[0.75em]'}>{currency}</span>
     </span>
   );
 };

@@ -159,6 +159,11 @@ export interface ProductConnectionItemInterface extends ProductConnectionItemMod
   option?: OptionInterface | null;
 }
 
+export interface ShopProductsGroupInterface {
+  _id: ObjectIdModel;
+  shopProducts: ShopProductInterface[];
+}
+
 export interface ProductConnectionInterface extends ProductConnectionModel {
   attribute?: AttributeInterface | null;
   connectionProducts?: ProductConnectionItemInterface[];
@@ -398,7 +403,7 @@ export interface OrderInterface extends OrderModel {
   products?: OrderProductInterface[] | null;
   logs?: OrderLogInterface[] | null;
   shopsCount?: number | null;
-  shops?: ShopInterface[] | null;
+  shop?: ShopInterface | null;
   status?: OrderStatusInterface | null;
   productsCount?: number | null;
   totalPrice?: number | null;

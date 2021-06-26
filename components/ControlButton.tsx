@@ -20,7 +20,7 @@ export interface ControlButtonInterface {
   roundedTopLeft?: boolean;
   roundedTopRight?: boolean;
   iconSize?: 'smaller' | 'small' | 'normal' | 'mid' | 'big';
-  size?: 'smaller' | 'small' | 'normal';
+  size?: 'smaller' | 'small' | 'normal' | 'big';
   theme?: 'blank' | 'accent';
   ariaLabel?: string;
 }
@@ -51,6 +51,8 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
       ? 'w-[var(--controlButtonHeightSmaller)] h-[var(--controlButtonHeightSmaller)]'
       : size === 'small'
       ? 'w-[var(--controlButtonHeightSmall)] h-[var(--controlButtonHeightSmall)]'
+      : size === 'big'
+      ? 'w-[var(--controlButtonHeightBig)] h-[var(--controlButtonHeightBig)]'
       : 'w-[var(--controlButtonHeight)] h-[var(--controlButtonHeight)]';
 
   const iconSizeClass =

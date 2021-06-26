@@ -2,13 +2,16 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
+import { ROUTE_CMS } from 'config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -20,7 +23,7 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
-  rubric: RubricModel;
+  rubric: RubricInterface;
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
@@ -60,8 +63,18 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     variantId,
   };
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${rubric.name}`,
+    config: [
+      {
+        name: 'Список рубрик',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+    ],
+  };
+
   return (
-    <CmsRubricLayout rubric={rubric}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-details'}>
         <Formik
           validationSchema={validationSchema}
@@ -95,9 +108,9 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   );
 };
 
-interface RubricInterface extends PagePropsInterface, RubricDetailsInterface {}
+interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const Rubric: NextPage<RubricInterface> = ({ pageUrls, rubric }) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
       <RubricDetails rubric={rubric} />
@@ -107,7 +120,7 @@ const Rubric: NextPage<RubricInterface> = ({ pageUrls, rubric }) => {
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RubricInterface>> => {
+): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -157,4 +170,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default Rubric;
+export default RubricPage;

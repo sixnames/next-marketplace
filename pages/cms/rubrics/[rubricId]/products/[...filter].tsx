@@ -35,6 +35,7 @@ import {
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
@@ -187,8 +188,22 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     return `Найдено ${counter} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Товары',
+    config: [
+      {
+        name: 'Список рубрик',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsRubricLayout rubric={rubric}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 

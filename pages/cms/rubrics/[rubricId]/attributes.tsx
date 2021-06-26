@@ -6,7 +6,7 @@ import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from 'config/common';
+import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING, ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -21,6 +21,7 @@ import {
   useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -138,8 +139,22 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Атрибуты',
+    config: [
+      {
+        name: 'Список рубрик',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsRubricLayout rubric={rubric}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-attributes'}>
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;

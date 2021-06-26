@@ -6,6 +6,7 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/Product/ProductShopPrices';
 import Title from 'components/Title';
+import { ROUTE_CMS } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -16,7 +17,9 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -83,8 +86,18 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { itemId, createdAt, totalPrice, status, products, shop, customer } = order;
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Заказ №${itemId}`,
+    config: [
+      {
+        name: 'Список заказов',
+        href: `${ROUTE_CMS}/orders`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Inner testId={`order-details`}>
         <div className='grid gap-4 md:flex justify-between items-baseline mb-12'>
           <div>

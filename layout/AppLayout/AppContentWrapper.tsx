@@ -1,9 +1,14 @@
 import Breadcrumbs, { BreadcrumbsInterface } from 'components/Breadcrumbs';
 import * as React from 'react';
 
+export type AppContentWrapperBreadCrumbs = Omit<
+  BreadcrumbsInterface,
+  'noMainPage' | 'lowWrapper' | 'lowBottom'
+>;
+
 interface AppContentWrapperInterface {
   testId?: string | number;
-  breadcrumbs?: BreadcrumbsInterface;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 const AppContentWrapper: React.FC<AppContentWrapperInterface> = ({
@@ -14,7 +19,13 @@ const AppContentWrapper: React.FC<AppContentWrapperInterface> = ({
   return (
     <div data-cy={testId} className={`${breadcrumbs ? '' : 'pt-12'} pb-11`}>
       {breadcrumbs ? (
-        <Breadcrumbs currentPageName={breadcrumbs.currentPageName} config={breadcrumbs.config} />
+        <Breadcrumbs
+          currentPageName={breadcrumbs.currentPageName}
+          config={breadcrumbs.config}
+          noMainPage={true}
+          lowWrapper={true}
+          lowBottom={true}
+        />
       ) : null}
       {children}
     </div>

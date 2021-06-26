@@ -12,12 +12,18 @@ export interface BreadcrumbsInterface {
   currentPageName: string;
   config?: BreadcrumbsItemInterface[];
   noMainPage?: boolean;
+  lowTop?: boolean;
+  lowBottom?: boolean;
+  lowWrapper?: boolean;
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   currentPageName,
   config = [],
   noMainPage,
+  lowBottom,
+  lowTop,
+  lowWrapper,
 }) => {
   const { locale } = useRouter();
 
@@ -26,8 +32,8 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   }, [locale]);
 
   return (
-    <div className='mb-10'>
-      <Inner>
+    <div className={lowWrapper ? '' : 'mb-10'}>
+      <Inner lowBottom={lowBottom} lowTop={lowTop}>
         <ul className='overflow-hidden whitespace-nowrap overflow-ellipsis'>
           {noMainPage ? null : (
             <li className='inline mr-1'>

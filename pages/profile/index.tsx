@@ -164,31 +164,35 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
 
           {/*Order body*/}
           <Disclosure.Panel static>
-            {/*shop info*/}
-            <div className='mb-6 pl-20 lg:pl-28 pr-6'>
-              {firstProduct.shop ? (
-                <div className=''>
-                  <div className='text-secondary-text mb-2'>
-                    винотека:{' '}
-                    <span className='text-primary-text font-medium'>{firstProduct.shop.name}</span>
+            <div data-cy={`profile-order-${itemId}-content`}>
+              {/*shop info*/}
+              <div className='mb-6 pl-20 lg:pl-28 pr-6'>
+                {firstProduct.shop ? (
+                  <div className=''>
+                    <div className='text-secondary-text mb-2'>
+                      винотека:{' '}
+                      <span className='text-primary-text font-medium'>
+                        {firstProduct.shop.name}
+                      </span>
+                    </div>
+                    <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
                   </div>
-                  <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
-                </div>
-              ) : (
-                <div className='text-theme font-medium'>Магазин не найден</div>
-              )}
-            </div>
+                ) : (
+                  <div className='text-theme font-medium'>Магазин не найден</div>
+                )}
+              </div>
 
-            {(products || []).map((orderProduct, index) => {
-              return (
-                <ProfileOrderProduct
-                  testId={index}
-                  orderIndex={orderIndex}
-                  orderProduct={orderProduct}
-                  key={`${orderProduct._id}`}
-                />
-              );
-            })}
+              {(products || []).map((orderProduct, index) => {
+                return (
+                  <ProfileOrderProduct
+                    testId={index}
+                    orderIndex={orderIndex}
+                    orderProduct={orderProduct}
+                    key={`${orderProduct._id}`}
+                  />
+                );
+              })}
+            </div>
           </Disclosure.Panel>
         </div>
       )}

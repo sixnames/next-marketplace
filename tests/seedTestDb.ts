@@ -1,4 +1,8 @@
-import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../config/common';
+import {
+  ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_SHOPS,
+  ASSETS_DIST_SHOPS_LOGOS,
+} from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
 const EasyYandexS3 = require('easy-yandex-s3');
@@ -73,6 +77,10 @@ const config = {
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
       `/${ASSETS_DIST_SHOPS}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
+      `/${ASSETS_DIST_COMPANIES}`,
     );
   } catch (err) {
     console.log(err);

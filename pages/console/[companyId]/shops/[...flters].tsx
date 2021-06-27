@@ -112,9 +112,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
           data={docs}
           testIdKey={'name'}
           onRowDoubleClick={(dataItem) => {
-            router
-              .push(`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`)
-              .catch(console.log);
+            router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
           }}
         />
 

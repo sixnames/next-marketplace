@@ -14,7 +14,7 @@ import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails'
 interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
-  const companyBasePath = `${ROUTE_CONSOLE}/shops/${shop.companyId}`;
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: shop.name,
     config: [
@@ -27,11 +27,7 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
 
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopDetails
-        basePath={`${ROUTE_CONSOLE}/${shop.companyId}/shops/shop`}
-        shop={shop}
-        breadcrumbs={breadcrumbs}
-      />
+      <ShopDetails basePath={`${companyBasePath}/shop`} shop={shop} breadcrumbs={breadcrumbs} />
     </AppLayout>
   );
 };

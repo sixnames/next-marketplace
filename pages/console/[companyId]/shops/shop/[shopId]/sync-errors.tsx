@@ -3,9 +3,9 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -20,13 +20,27 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   shop,
   notSyncedProducts,
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Ошибки синхронизации',
+    config: [
+      {
+        name: 'Магазины',
+        href: companyBasePath,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopSyncErrors
         notSyncedProducts={notSyncedProducts}
-        basePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`}
+        basePath={`${companyBasePath}/shop`}
+        breadcrumbs={breadcrumbs}
         shop={shop}
       />
     </AppLayout>

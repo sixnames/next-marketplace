@@ -2,11 +2,11 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
@@ -16,11 +16,24 @@ interface CompanyShopAssetsInterface
     Omit<ShopAssetsInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Изображения',
+    config: [
+      {
+        name: 'Магазины',
+        href: companyBasePath,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <AppLayout pageUrls={pageUrls}>
-      <ShopAssets basePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`} shop={shop} />
+      <ShopAssets basePath={`${companyBasePath}/shop`} shop={shop} breadcrumbs={breadcrumbs} />
     </AppLayout>
   );
 };

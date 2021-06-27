@@ -3,13 +3,13 @@ import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
@@ -23,14 +23,28 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Товары',
+    config: [
+      {
+        name: 'Магазины',
+        href: companyBasePath,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`}
+        basePath={`${companyBasePath}/shop`}
+        breadcrumbs={breadcrumbs}
       />
     </AppLayout>
   );

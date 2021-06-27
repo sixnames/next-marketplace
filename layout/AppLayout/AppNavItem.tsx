@@ -42,8 +42,9 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   const checkIsCurrent = React.useCallback(
     (path: string) => {
-      const reg = RegExp(`${path}`);
-      return reg.test(asPath);
+      const reg = RegExp(`^${path}`);
+      const finalAsPath = `/${asPath.split('/').slice(3).join('/')}`;
+      return reg.test(finalAsPath);
     },
     [asPath],
   );

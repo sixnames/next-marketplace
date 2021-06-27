@@ -10,6 +10,7 @@ import {
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
@@ -17,7 +18,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubricProducts, {
@@ -31,13 +31,34 @@ interface CompanyShopProductsListInterface
 const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
+  rubricName,
   ...props
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: rubricName,
+    config: [
+      {
+        name: 'Магазины',
+        href: companyBasePath,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shop/${shop._id}`,
+      },
+      {
+        name: 'Товары',
+        href: `${companyBasePath}/shop/${shop._id}/products`,
+      },
+    ],
+  };
+
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopRubricProducts
-        layoutBasePath={`${ROUTE_CONSOLE}/shops/${router.query.companyId}`}
+        rubricName={rubricName}
+        breadcrumbs={breadcrumbs}
+        layoutBasePath={`${companyBasePath}/shop`}
         shop={shop}
         {...props}
       />
@@ -68,7 +89,7 @@ export const getServerSideProps = async (
   const { shopId, filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getConsoleInitialData({ context });
-  const basePath = `${ROUTE_CONSOLE}/${query.companyId}/shops/${shopId}/products/${rubricId}`;
+  const basePath = `${ROUTE_CONSOLE}/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
 
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');

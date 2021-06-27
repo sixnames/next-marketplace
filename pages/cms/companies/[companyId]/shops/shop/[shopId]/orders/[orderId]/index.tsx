@@ -1,6 +1,6 @@
-import CmsOrderDetails from 'components/CmsOrderDetails';
 import { ROUTE_CMS } from 'config/common';
 import {
+  COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
@@ -9,67 +9,114 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { OrderInterface } from 'db/uiInterfaces';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
+import { OrderInterface, ShopInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ShopOrder, { ShopOrderInterface } from 'components/shops/ShopOrder';
 
-interface OrderPageConsumerInterface {
-  order: OrderInterface;
-}
+interface CompanyShopAssetsInterface
+  extends PagePropsInterface,
+    Omit<ShopOrderInterface, 'basePath'> {}
 
-const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop, order }) => {
   const { itemId } = order;
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Заказ №${itemId}`,
     config: [
       {
-        name: 'Список заказов',
-        href: `${ROUTE_CMS}/orders`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+      {
+        name: 'Заказы',
+        href: `${companyBasePath}/shops/shop/${shop._id}/orders`,
       },
     ],
   };
 
   return (
-    <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} />
-    </AppContentWrapper>
-  );
-};
-
-interface OrderPageInterface extends OrderPageConsumerInterface, PagePropsInterface {}
-
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order }) => {
-  return (
-    <CmsLayout pageUrls={pageUrls} title={`Заказ №${order.itemId}`}>
-      <OrderPageConsumer order={order} />
+    <CmsLayout pageUrls={pageUrls}>
+      <ShopOrder
+        order={order}
+        breadcrumbs={breadcrumbs}
+        basePath={`${companyBasePath}/shops/shop`}
+        shop={shop}
+      />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<OrderPageInterface>> => {
+): Promise<GetServerSidePropsResult<CompanyShopAssetsInterface>> => {
+  const { db } = await getDatabase();
+  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+
   const { query } = context;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.orderId) {
+  const { shopId, orderId } = query;
+  const initialProps = await getAppInitialData({ context });
+
+  if (!initialProps.props || !shopId || !orderId) {
     return {
       notFound: true,
     };
   }
 
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const shopAggregationResult = await shopsCollection
+    .aggregate<ShopInterface>([
+      {
+        $match: {
+          _id: new ObjectId(`${shopId}`),
+        },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+
+  const shop = shopAggregationResult[0];
+  if (!shop) {
+    return {
+      notFound: true,
+    };
+  }
+
   const orderAggregationResult = await ordersCollection
     .aggregate([
       {
@@ -179,7 +226,10 @@ export const getServerSideProps = async (
     status: initialOrder.status
       ? {
           ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
+          name: getFieldStringLocale(
+            initialOrder.status.nameI18n,
+            initialProps.props.sessionLocale,
+          ),
         }
       : null,
     customer: initialOrder.customer
@@ -196,10 +246,11 @@ export const getServerSideProps = async (
 
   return {
     props: {
-      ...props,
+      ...initialProps.props,
+      shop: castDbData(shop),
       order: castDbData(order),
     },
   };
 };
 
-export default OrderPage;
+export default CompanyShopAssets;

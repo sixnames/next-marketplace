@@ -1,12 +1,12 @@
 .filter {
+  display: flex;
+  align-items: flex-end;
   position: relative;
 }
 
 .filterHolder {
-  /*--stickyGap: 1.5rem;*/
-
-  /*position: sticky;*/
-  /*top: calc(var(--minLinkHeight) + var(--stickyGap));*/
+  position: sticky;
+  bottom: 2rem;
 }
 
 .totalCounter {

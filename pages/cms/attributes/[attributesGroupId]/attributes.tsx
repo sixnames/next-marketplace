@@ -24,7 +24,9 @@ import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/co
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
@@ -84,6 +86,20 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       },
     });
   }
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Атрибуты`,
+    config: [
+      {
+        name: 'Группы атрибутов',
+        href: `${ROUTE_CMS}/attributes`,
+      },
+      {
+        name: `${attributesGroup.name}`,
+        href: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
+      },
+    ],
+  };
 
   const navConfig = React.useMemo(() => {
     return [
@@ -175,7 +191,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
   ];
 
   return (
-    <AppContentWrapper testId={'attributes-list'}>
+    <AppContentWrapper testId={'attributes-list'} breadcrumbs={breadcrumbs}>
       <Head>
         <title>{attributesGroup.name}</title>
       </Head>

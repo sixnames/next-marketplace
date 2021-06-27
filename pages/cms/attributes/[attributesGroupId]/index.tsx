@@ -13,7 +13,9 @@ import { getDatabase } from 'db/mongodb';
 import { AttributesGroupInterface } from 'db/uiInterfaces';
 import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
@@ -44,6 +46,16 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${attributesGroup.name}`,
+    config: [
+      {
+        name: 'Группы атрибутов',
+        href: `${ROUTE_CMS}/attributes`,
+      },
+    ],
+  };
+
   const navConfig = React.useMemo(() => {
     return [
       {
@@ -62,7 +74,7 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
   }, [attributesGroup._id]);
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{attributesGroup.name}</title>
       </Head>

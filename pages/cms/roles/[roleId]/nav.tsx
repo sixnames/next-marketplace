@@ -9,7 +9,9 @@ import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, RoleInterface, NavItemInterface } from 'db/uiInterfaces';
 import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -95,8 +97,22 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
     },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Навигация`,
+    config: [
+      {
+        name: 'Список ролей',
+        href: `${ROUTE_CMS}/roles`,
+      },
+      {
+        name: `${role.name}`,
+        href: `${ROUTE_CMS}/roles/${role._id}`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{role.name}</title>
       </Head>

@@ -59,6 +59,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricName,
   rubricId,
   layoutBasePath,
+  breadcrumbs,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -214,7 +215,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath}>
+    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`shop-rubric-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>

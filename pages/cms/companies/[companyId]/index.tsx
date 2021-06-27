@@ -1,6 +1,7 @@
 import Button from 'components/Button';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner';
+import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
@@ -8,6 +9,7 @@ import { Form, Formik } from 'formik';
 import { useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
@@ -36,8 +38,18 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
     schema: updateCompanyClientSchema,
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: currentCompany.name,
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+    ],
+  };
+
   return (
-    <CmsCompanyLayout company={currentCompany}>
+    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-details'}>
         <Formik
           validationSchema={validationSchema}

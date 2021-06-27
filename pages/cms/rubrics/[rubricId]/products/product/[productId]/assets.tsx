@@ -2,10 +2,11 @@ import AssetsManager from 'components/Assets/AssetsManager';
 import Button from 'components/Button';
 import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import Inner from 'components/Inner';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
-import { ProductModel } from 'db/dbModels';
+import { ROUTE_CMS } from 'config/common';
+import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteProductAssetMutation,
@@ -13,8 +14,10 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -25,9 +28,10 @@ import { addProductAssetsSchema } from 'validation/productSchema';
 
 interface ProductAssetsInterface {
   product: ProductInterface;
+  rubric: RubricInterface;
 }
 
-const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
+const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) => {
   const router = useRouter();
   const { onErrorCallback, onCompleteCallback, showLoading, hideLoading, showErrorNotification } =
     useMutationCallbacks({
@@ -47,8 +51,30 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
     onCompleted: (data) => onCompleteCallback(data.updateProductAssetIndex),
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Изображения',
+    config: [
+      {
+        name: 'Рубрикатор',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+      },
+      {
+        name: product.originalName,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsProductLayout product={product}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-assets-list'}>
         <AssetsManager
           initialAssets={product.assets?.assets || []}
@@ -135,10 +161,10 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
 
 interface ProductPageInterface extends PagePropsInterface, ProductAssetsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAssets product={product} />
+      <ProductAssets product={product} rubric={rubric} />
     </CmsLayout>
   );
 };
@@ -147,11 +173,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId) {
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
@@ -182,16 +209,27 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const product = productAggregation[0];
-  if (!product) {
+
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
+  });
+
+  if (!product || !initialRubric) {
     return {
       notFound: true,
     };
   }
 
+  const rubric: RubricInterface = {
+    ...initialRubric,
+    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
+  };
+
   return {
     props: {
       ...props,
       product: castDbData(product),
+      rubric: castDbData(rubric),
     },
   };
 };

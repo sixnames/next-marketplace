@@ -27,6 +27,7 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
 import { getNumWord } from 'lib/i18n';
 import { useRouter } from 'next/router';
@@ -50,6 +51,7 @@ export interface ShopAddProductsListInterface extends AppPaginationInterface<Pro
   rubricName: string;
   rubricId: string;
   layoutBasePath: string;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
@@ -67,6 +69,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   deleteChosenProduct,
   setStepHandler,
   layoutBasePath,
+  breadcrumbs,
 }) => {
   useReloadListener();
   const { me } = useUserContext();
@@ -166,7 +169,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   }, [totalDocs]);
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath}>
+    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`not-in-shop-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
@@ -241,6 +244,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   setStepHandler,
   rubricId,
   layoutBasePath,
+  breadcrumbs,
 }) => {
   const router = useRouter();
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
@@ -358,7 +362,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath}>
+    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'not-in-shop-products-list-step-2'}>
         <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>

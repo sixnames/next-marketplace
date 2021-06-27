@@ -29,6 +29,7 @@ import {
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
@@ -147,8 +148,22 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Магазины',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: currentCompany.name,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsCompanyLayout company={currentCompany}>
+    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-shops-list'}>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
         <FormikRouterSearch testId={'shops'} />

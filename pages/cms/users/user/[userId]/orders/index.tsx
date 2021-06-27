@@ -1,10 +1,18 @@
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import Table, { TableColumn } from 'components/Table';
-import { SORT_DESC } from 'config/common';
-import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import {
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_ROLES,
+  COL_SHOPS,
+  COL_USERS,
+} from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -24,7 +32,14 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => (
+        <Link
+          testId={`order-${dataItem.itemId}-link`}
+          href={`${ROUTE_CMS}/users/user/${user._id}/orders/${dataItem._id}`}
+        >
+          {cellData}
+        </Link>
+      ),
     },
     {
       accessor: 'status',
@@ -41,23 +56,35 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
       },
     },
     {
+      accessor: 'shop.name',
+      headTitle: 'Магазин',
+      render: ({ cellData }) => cellData,
+    },
+    {
       accessor: 'productsCount',
       headTitle: 'Товаров',
       render: ({ cellData }) => {
         return cellData;
       },
     },
-    {
-      accessor: 'shopsCount',
-      headTitle: 'Магазины',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-    },
   ];
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Заказы`,
+    config: [
+      {
+        name: 'Пользователи',
+        href: `${ROUTE_CMS}/users`,
+      },
+      {
+        name: `${user.fullName}`,
+        href: `${ROUTE_CMS}/users/${user._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsUserLayout user={user}>
+    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner testId={'user-orders-page'}>
         <div className='overflow-x-auto'>
           <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
@@ -146,12 +173,28 @@ export const getServerSideProps = async (
               },
             },
             {
+              $lookup: {
+                from: COL_SHOPS,
+                as: 'shop',
+                let: { shopId: '$shopId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$shopId', '$_id'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
               $addFields: {
+                shop: {
+                  $arrayElemAt: ['$shop', 0],
+                },
                 status: {
                   $arrayElemAt: ['$status', 0],
-                },
-                shopsCount: {
-                  $size: '$shopIds',
                 },
                 productsCount: {
                   $size: '$shopProductIds',

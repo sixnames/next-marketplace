@@ -5,71 +5,126 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_ROLES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_USERS,
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { OrderInterface } from 'db/uiInterfaces';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface OrderPageConsumerInterface {
+interface UserOrderConsumerInterface {
+  user: UserInterface;
   order: OrderInterface;
 }
 
-const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
-  const { itemId } = order;
-
+const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Заказ №${itemId}`,
+    currentPageName: `Заказ №${order.itemId}`,
     config: [
       {
-        name: 'Список заказов',
-        href: `${ROUTE_CMS}/orders`,
+        name: 'Пользователи',
+        href: `${ROUTE_CMS}/users`,
+      },
+      {
+        name: `${user.fullName}`,
+        href: `${ROUTE_CMS}/users/user/${user._id}`,
+      },
+      {
+        name: `Заказы`,
+        href: `${ROUTE_CMS}/users/user/${user._id}/orders`,
       },
     ],
   };
 
   return (
-    <AppContentWrapper breadcrumbs={breadcrumbs}>
+    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <CmsOrderDetails order={order} />
-    </AppContentWrapper>
+    </CmsUserLayout>
   );
 };
 
-interface OrderPageInterface extends OrderPageConsumerInterface, PagePropsInterface {}
+interface UserOrderInterface extends PagePropsInterface, UserOrderConsumerInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order }) => {
+const UserOrderPage: NextPage<UserOrderInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={`Заказ №${order.itemId}`}>
-      <OrderPageConsumer order={order} />
+    <CmsLayout pageUrls={pageUrls}>
+      <UserOrdersConsumer {...props} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<OrderPageInterface>> => {
+): Promise<GetServerSidePropsResult<UserOrderInterface>> => {
   const { query } = context;
+  const { userId, orderId } = query;
+  const { db } = await getDatabase();
+  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.orderId) {
+  if (!props || !userId || !orderId) {
     return {
       notFound: true,
     };
   }
 
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  // get user
+  const userAggregationResult = await usersCollection
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(`${userId}`),
+        },
+      },
+      {
+        $lookup: {
+          from: COL_ROLES,
+          as: 'role',
+          let: { roleId: '$roleId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$roleId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          role: { $arrayElemAt: ['$role', 0] },
+        },
+      },
+      {
+        $project: {
+          password: false,
+        },
+      },
+    ])
+    .toArray();
+  const userResult = userAggregationResult[0];
+  if (!userResult) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // get order
   const orderAggregationResult = await ordersCollection
     .aggregate([
       {
@@ -194,12 +249,24 @@ export const getServerSideProps = async (
       : null,
   };
 
+  const user: UserInterface = {
+    ...userResult,
+    fullName: getFullName(userResult),
+    role: userResult.role
+      ? {
+          ...userResult.role,
+          name: getFieldStringLocale(userResult.role.nameI18n, props.sessionLocale),
+        }
+      : null,
+  };
+
   return {
     props: {
       ...props,
+      user: castDbData(user),
       order: castDbData(order),
     },
   };
 };
 
-export default OrderPage;
+export default UserOrderPage;

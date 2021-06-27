@@ -21,7 +21,9 @@ import {
   useUpdateOptionInGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getOptionsTree } from 'lib/optionsUtils';
@@ -187,8 +189,22 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
 
   const { options, variant } = optionsGroup;
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Опции`,
+    config: [
+      {
+        name: 'Группы опцый',
+        href: `${ROUTE_CMS}/options`,
+      },
+      {
+        name: `${optionsGroup.name}`,
+        href: `${ROUTE_CMS}/options/${optionsGroup._id}`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{optionsGroup.name}</title>
       </Head>

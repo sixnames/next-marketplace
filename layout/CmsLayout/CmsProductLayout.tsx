@@ -2,7 +2,9 @@ import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,9 +12,14 @@ import * as React from 'react';
 
 interface CmsProductLayoutInterface {
   product: ProductInterface;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
-const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({ product, children }) => {
+const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
+  product,
+  breadcrumbs,
+  children,
+}) => {
   const { query } = useRouter();
   const navConfig = React.useMemo(() => {
     return [
@@ -50,7 +57,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({ product, childr
   }, [product._id, query.rubricId]);
 
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{product.originalName}</title>
       </Head>

@@ -6,7 +6,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -16,6 +16,7 @@ import {
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -24,7 +25,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubricProducts, {
@@ -38,14 +38,44 @@ interface CompanyShopProductsListInterface
 const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
+  rubricName,
   ...props
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: rubricName,
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+      {
+        name: 'Товары',
+        href: `${companyBasePath}/shops/shop/${shop._id}/products`,
+      },
+    ],
+  };
+
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopRubricProducts
-        layoutBasePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        breadcrumbs={breadcrumbs}
+        layoutBasePath={`${companyBasePath}/shops/shop`}
         shop={shop}
+        rubricName={rubricName}
         {...props}
       />
     </CmsLayout>
@@ -82,7 +112,29 @@ export const getServerSideProps = async (
   // const startTime = new Date().getTime();
 
   // Get shop
-  const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
+  const shopAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${shopId}`) },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const shop = shopAggregation[0];
   if (!initialProps.props || !shop) {
     return {
       notFound: true,

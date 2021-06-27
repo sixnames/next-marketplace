@@ -4,15 +4,17 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import PageEditor from 'components/PageEditor';
-import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, SORT_DESC } from 'config/common';
-import { COL_CITIES, COL_PAGES } from 'db/collectionNames';
+import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CityInterface, PageInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -55,8 +57,22 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
     onCompleted: (data) => onCompleteCallback(data.updatePage),
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `Страницы`,
+    config: [
+      {
+        name: 'Группы страниц',
+        href: `${ROUTE_CMS}/pages`,
+      },
+      {
+        name: `${page.pagesGroup?.name}`,
+        href: `${ROUTE_CMS}/pages/${page.pagesGroup?._id}`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper testId={'page-details'}>
+    <AppContentWrapper testId={'page-details'} breadcrumbs={breadcrumbs}>
       <Inner>
         <Title>{page.name}</Title>
         <Formik
@@ -176,7 +192,30 @@ export const getServerSideProps = async (
   const pagesCollection = db.collection<PageInterface>(COL_PAGES);
   const citiesCollection = db.collection<CityInterface>(COL_CITIES);
 
-  const initialPage = await pagesCollection.findOne({ _id: new ObjectId(`${pageId}`) });
+  const initialPageAggregation = await pagesCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${pageId}`) },
+      },
+      {
+        $lookup: {
+          from: COL_PAGES_GROUP,
+          as: 'pagesGroup',
+          foreignField: '_id',
+          localField: 'pagesGroupId',
+        },
+      },
+      {
+        $addFields: {
+          pagesGroup: {
+            $arrayElemAt: ['$pagesGroup', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+
+  const initialPage = initialPageAggregation[0];
   if (!initialPage) {
     return {
       notFound: true,
@@ -197,6 +236,12 @@ export const getServerSideProps = async (
   const page: PageInterface = {
     ...initialPage,
     name: getFieldStringLocale(initialPage.nameI18n, props.sessionLocale),
+    pagesGroup: initialPage.pagesGroup
+      ? {
+          ...initialPage.pagesGroup,
+          name: getFieldStringLocale(initialPage.pagesGroup.nameI18n, props.sessionLocale),
+        }
+      : null,
   };
 
   const cities: CityInterface[] = initialCities.map((city) => {

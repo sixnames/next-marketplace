@@ -56,7 +56,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     originalName,
     descriptionI18n,
     active,
-    barcode: barcode && barcode.length ? barcode[0] : '',
+    barcode,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -91,7 +91,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
                 input: {
                   ...values,
                   productId: product._id,
-                  barcode: values.barcode ? [values.barcode] : [],
+                  barcode: (values.barcode || []).filter((currentBarcode) => {
+                    return Boolean(currentBarcode);
+                  }),
                 },
               },
             });

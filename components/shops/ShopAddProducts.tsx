@@ -29,6 +29,7 @@ import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppShopLayout from 'layout/AppLayout/AppShopLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -134,7 +135,22 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        const barcode = alwaysArray(cellData);
+        return (
+          <div>
+            {barcode.map((barcodeItem, index) => {
+              const isLastItem = barcode.length === index + 1;
+              return (
+                <span key={index}>
+                  {barcodeItem}
+                  {isLastItem ? '' : ', '}
+                </span>
+              );
+            })}
+          </div>
+        );
+      },
     },
     {
       isHidden: !me?.role?.isStaff,
@@ -336,7 +352,22 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        const barcode = alwaysArray(cellData);
+        return (
+          <div>
+            {barcode.map((barcodeItem, index) => {
+              const isLastItem = barcode.length === index + 1;
+              return (
+                <span key={index}>
+                  {barcodeItem}
+                  {isLastItem ? '' : ', '}
+                </span>
+              );
+            })}
+          </div>
+        );
+      },
     },
   ];
 

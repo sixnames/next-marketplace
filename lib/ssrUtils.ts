@@ -529,7 +529,7 @@ export async function getPageInitialState({
 
 interface CheckPagePermissionInterface {
   allowedAppNavItems?: string[];
-  url?: string | null;
+  url: string;
   isCms: boolean;
 }
 function checkPagePermission({
@@ -539,10 +539,11 @@ function checkPagePermission({
 }: CheckPagePermissionInterface): boolean {
   const excludedExtension = '.json';
   const initialAllowedAppNavItems = allowedAppNavItems || [];
+  let finalUrl = url;
 
   // Check cms root url
   if (isCms) {
-    const cmsRootUrlList = `${url}`.split(ROUTE_CMS);
+    const cmsRootUrlList = finalUrl.split(ROUTE_CMS);
     if (!cmsRootUrlList[1] || cmsRootUrlList[1] === excludedExtension) {
       return initialAllowedAppNavItems.includes(ROUTE_CMS);
     }
@@ -550,20 +551,21 @@ function checkPagePermission({
 
   // Check console root url
   if (!isCms) {
-    const appRootUrlList = `${url}`.split(ROUTE_CONSOLE);
-    if (!appRootUrlList[1] || appRootUrlList[1] === excludedExtension) {
-      return initialAllowedAppNavItems.includes(ROUTE_CONSOLE);
-    }
+    finalUrl = `/${url.split('/').slice(3).join('/')}`;
   }
 
   // Check nested urls
   const finalAllowedAppNavItems = initialAllowedAppNavItems.filter((path) => {
-    return path !== ROUTE_CMS && path !== ROUTE_CONSOLE;
+    return path !== ROUTE_CMS && path !== '';
   });
+
+  if (finalUrl === '/') {
+    return true;
+  }
 
   return finalAllowedAppNavItems.some((path) => {
     const reg = RegExp(path);
-    return reg.test(`${url}`);
+    return reg.test(finalUrl);
   });
 }
 
@@ -577,7 +579,7 @@ interface GetCompanyAppInitialDataPayloadInterface<T> {
   notFound?: true;
 }
 
-export async function getCompanyAppInitialData({
+export async function getConsoleInitialData({
   context,
 }: GetCompanyAppInitialDataInterface): Promise<
   GetCompanyAppInitialDataPayloadInterface<PagePropsInterface>
@@ -606,7 +608,7 @@ export async function getCompanyAppInitialData({
   // Check if page is allowed
   const isAllowed = checkPagePermission({
     allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
-    url: context.req.url,
+    url: context.resolvedUrl,
     isCms: false,
   });
 
@@ -666,7 +668,7 @@ export async function getAppInitialData({
   // Check if page is allowed
   const isAllowed = checkPagePermission({
     allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
-    url: context.req.url,
+    url: context.resolvedUrl,
     isCms: true,
   });
   if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {

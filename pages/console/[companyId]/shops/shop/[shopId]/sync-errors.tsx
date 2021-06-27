@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface CompanyShopSyncErrorsInterface
   extends PagePropsInterface,
@@ -41,7 +41,7 @@ export const getServerSideProps = async (
   const notSyncedProductsCollection = db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getCompanyAppInitialData({ context });
+  const initialProps = await getConsoleInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
   if (!initialProps.props || !shop) {

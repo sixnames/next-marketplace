@@ -1,3 +1,4 @@
+import { ROUTE_CONSOLE } from 'config/common';
 import { NavItemInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -88,7 +89,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             return (
               <li className={classes.item} key={name} data-cy={`app-nav-item-${_id}`}>
                 <Link
-                  href={`${path}/${query.companyId}`}
+                  href={`${ROUTE_CONSOLE}/${query.companyId}${path}`}
                   className={`${classes.complexLink} ${isCurrent ? classes.linkActive : ''}`}
                 >
                   <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
@@ -109,7 +110,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
       <Tooltip title={compact ? name : ''}>
         <div>
           <Link
-            href={`${path}/${query.companyId}`}
+            href={`${ROUTE_CONSOLE}/${query.companyId}${path}`}
             className={`${classes.link} ${compact ? classes.linkCompact : ''} ${
               isCurrent ? classes.linkActive : ''
             }`}

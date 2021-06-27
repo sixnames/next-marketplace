@@ -6,7 +6,7 @@ import { RubricInterface } from 'db/uiInterfaces';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -44,7 +44,7 @@ export const getServerSideProps = async (
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getCompanyAppInitialData({ context });
+  const initialProps = await getConsoleInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

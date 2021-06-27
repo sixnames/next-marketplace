@@ -1,10 +1,10 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_CATALOGUE } from 'config/common';
+import { CONFIG_GROUP_GLOBALS } from 'config/common';
 import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -33,7 +33,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
   const { query } = context;
-  const { props } = await getCompanyAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -42,7 +42,7 @@ export const getServerSideProps = async (
 
   const configsPayload = await getConfigPageData({
     companyId: `${query.companyId}`,
-    group: CONFIG_GROUP_CATALOGUE,
+    group: CONFIG_GROUP_GLOBALS,
   });
 
   if (!configsPayload) {

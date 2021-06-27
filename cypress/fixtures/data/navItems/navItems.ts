@@ -19,7 +19,7 @@ const navItems: NavItemModel[] = [
     },
     index: 0,
     icon: 'cart',
-    path: ROUTE_CONSOLE,
+    path: '',
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -31,7 +31,7 @@ const navItems: NavItemModel[] = [
     },
     index: 1,
     icon: 'cart',
-    path: `${ROUTE_CONSOLE}/orders`,
+    path: `/orders`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -43,7 +43,7 @@ const navItems: NavItemModel[] = [
     },
     index: 2,
     icon: 'marker',
-    path: `${ROUTE_CONSOLE}/shops`,
+    path: `/shops`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -55,7 +55,7 @@ const navItems: NavItemModel[] = [
     },
     index: 99,
     icon: 'gear',
-    path: `${ROUTE_CONSOLE}/config`,
+    path: `/config`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {

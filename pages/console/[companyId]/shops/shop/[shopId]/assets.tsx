@@ -3,7 +3,7 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -32,7 +32,7 @@ export const getServerSideProps = async (
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;
-  const initialProps = await getCompanyAppInitialData({ context });
+  const initialProps = await getConsoleInitialData({ context });
 
   const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
 

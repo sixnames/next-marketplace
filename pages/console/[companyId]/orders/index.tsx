@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getCompanyAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface OrdersRouteInterface {
   orders: OrderInterface[];
@@ -38,7 +38,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       render: ({ cellData, dataItem }) => (
         <Link
           testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_CONSOLE}/orders/${router.query.companyId}/${dataItem._id}`}
+          href={`${ROUTE_CONSOLE}/${router.query.companyId}/orders/${dataItem._id}`}
         >
           {cellData}
         </Link>
@@ -103,7 +103,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router
-                .push(`${ROUTE_CONSOLE}/orders/${router.query.companyId}/${dataItem._id}`)
+                .push(`${ROUTE_CONSOLE}/${router.query.companyId}/orders/${dataItem._id}`)
                 .catch((e) => {
                   console.log(e);
                 });
@@ -132,7 +132,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const { props } = await getCompanyAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props || !props.sessionUser) {
     return {
       notFound: true,

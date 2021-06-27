@@ -42,6 +42,25 @@ const companies: CompanyModel[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    _id: getObjectId('company Company C'),
+    itemId: '000003',
+    slug: 'company_c',
+    name: 'Company C',
+    staffIds: [],
+    ownerId: getObjectId('company owner b'),
+    shopsIds: getObjectIds(['shop Shop D']),
+    contacts: {
+      phones: ['+72223334466'],
+      emails: ['companyC@gmail.com', 'companyCB@gmail.com'],
+    },
+    logo: {
+      index: 1,
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000003/000003-0.webp`,
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 // @ts-ignore

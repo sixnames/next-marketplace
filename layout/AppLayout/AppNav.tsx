@@ -40,6 +40,10 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
           <div className={`${classes.list} ${isCompact ? classes.listClosed : ''}`}>
             <ul className={classes.listHolder}>
               {navItems.map((item) => {
+                if (item.path === '' || item.path === '/') {
+                  return null;
+                }
+
                 return (
                   <AppNavItem
                     compact={isCompact}

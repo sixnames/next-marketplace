@@ -163,7 +163,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
           </div>
 
           {/*Order body*/}
-          <Disclosure.Panel static>
+          <Disclosure.Panel>
             <div data-cy={`profile-order-${itemId}-content`}>
               {/*shop info*/}
               <div className='mb-6 pl-20 lg:pl-28 pr-6'>

@@ -1,8 +1,5 @@
-import { ROUTE_CONSOLE } from '../../../../config/common';
 import { RoleModel } from '../../../../db/dbModels';
-import { getObjectId, getObjectIds } from 'mongo-seeding';
-
-const navItemsDefaultSlug = 'navItem';
+import { getObjectId } from 'mongo-seeding';
 
 const roles: RoleModel[] = [
   {
@@ -63,12 +60,7 @@ const roles: RoleModel[] = [
     slug: 'companyOwner',
     isStaff: false,
     isCompanyStaff: true,
-    allowedAppNavigation: [
-      ROUTE_CONSOLE,
-      `${ROUTE_CONSOLE}/orders`,
-      `${ROUTE_CONSOLE}/shops`,
-      `${ROUTE_CONSOLE}/config`,
-    ],
+    allowedAppNavigation: ['', `/orders`, `/shops`, `/config`],
     createdAt: new Date(),
     updatedAt: new Date(),
   },

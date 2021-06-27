@@ -573,17 +573,19 @@ interface GetCompanyAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetCompanyAppInitialDataPayloadInterface<T> {
-  props?: T;
+interface GetCompanyAppInitialDataPropsInterface extends PagePropsInterface {
+  currentCompany?: CompanyModel;
+}
+
+interface GetCompanyAppInitialDataPayloadInterface {
+  props?: GetCompanyAppInitialDataPropsInterface;
   redirect?: Redirect;
   notFound?: true;
 }
 
 export async function getConsoleInitialData({
   context,
-}: GetCompanyAppInitialDataInterface): Promise<
-  GetCompanyAppInitialDataPayloadInterface<PagePropsInterface>
-> {
+}: GetCompanyAppInitialDataInterface): Promise<GetCompanyAppInitialDataPayloadInterface> {
   const {
     sessionUser,
     pageUrls,
@@ -618,6 +620,11 @@ export async function getConsoleInitialData({
     };
   }
 
+  // Get current company
+  const currentCompany = (sessionUser.companies || []).find((company) => {
+    return company._id.toHexString() === `${context.query.companyId}`;
+  });
+
   return {
     props: {
       companySlug,
@@ -625,6 +632,7 @@ export async function getConsoleInitialData({
       currentCity,
       sessionCity,
       sessionUser: castDbData(sessionUser),
+      currentCompany: castDbData(currentCompany),
       sessionLocale,
       pageUrls,
     },

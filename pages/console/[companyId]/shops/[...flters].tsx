@@ -1,33 +1,26 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
-import { PAGE_DEFAULT, ROUTE_CMS, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
-import {
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from 'db/collectionNames';
+import { PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
-  CompanyInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
-import { ShopInListFragment, useGetAppCompanyShopsQuery } from 'generated/apolloComponents';
-import useDataLayoutMethods from 'hooks/useDataLayoutMethods';
+import usePageLoadingState from 'hooks/usePageLoadingState';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -36,39 +29,37 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
-interface CompanyShopsPageConsumerInterface extends AppPaginationInterface<ShopInterface> {
-  currentCompany: CompanyInterface;
-}
+const pageTitle = 'Магазины компании';
 
-const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = () => {
+type CompanyShopsPageConsumerInterface = AppPaginationInterface<ShopInterface>;
+
+const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
+  page,
+  totalPages,
+  totalDocs,
+  itemPath,
+  docs,
+}) => {
+  const isPageLoading = usePageLoadingState();
+  const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
-  const { setPage, page } = useDataLayoutMethods();
-  const { data, loading, error } = useGetAppCompanyShopsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        page,
-      },
-      companyId: `${router.query.companyId}`,
-    },
-  });
 
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
+  const counterString = React.useMemo(() => {
+    if (totalDocs < 1) {
+      return '';
+    }
 
-  if (error || !data || !data.getCompanyShops) {
-    return <RequestError />;
-  }
+    const counterPostfix = getNumWord(totalDocs, ['магазин', 'магазина', 'магазинов']);
+    const counterPrefix = getNumWord(totalDocs, ['Найден', 'Найдено', 'Найдено']);
+    return `${counterPrefix} ${totalDocs} ${counterPostfix}`;
+  }, [totalDocs]);
 
-  const columns: TableColumn<ShopInListFragment>[] = [
+  const columns: TableColumn<ShopInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`}>
-          {cellData}
-        </Link>
+        <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>
       ),
     },
     {
@@ -84,6 +75,11 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ()
       render: ({ cellData }) => cellData,
     },
     {
+      accessor: 'productsCount',
+      headTitle: 'Товаров',
+      render: ({ cellData }) => noNaN(cellData),
+    },
+    {
       accessor: 'city.name',
       headTitle: 'Город',
       render: ({ cellData }) => cellData,
@@ -95,9 +91,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ()
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router
-                .push(`${ROUTE_CONSOLE}/shops/${router.query.companyId}/${dataItem._id}`)
-                .catch(console.log);
+              router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
             }}
             testId={dataItem.name}
           />
@@ -107,13 +101,15 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ()
   ];
 
   return (
-    <Inner testId={'shops-list'}>
-      <div className={'pt-11'}>
-        <Title>Магазины компании</Title>
+    <AppContentWrapper>
+      <Inner testId={'shops-list'}>
+        <Title>{pageTitle}</Title>
+        <div className={`text-xl font-medium mb-2`}>{counterString}</div>
+        <FormikRouterSearch testId={'shops'} />
 
-        <Table<ShopInListFragment>
+        <Table<ShopInterface>
           columns={columns}
-          data={data.getCompanyShops.docs}
+          data={docs}
           testIdKey={'name'}
           onRowDoubleClick={(dataItem) => {
             router
@@ -121,9 +117,18 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ()
               .catch(console.log);
           }}
         />
-        <Pager page={page} setPage={setPage} totalPages={data.getCompanyShops.totalPages} />
-      </div>
-    </Inner>
+
+        {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+
+        <Pager
+          page={page}
+          totalPages={totalPages}
+          setPage={(newPage) => {
+            setPageHandler(newPage);
+          }}
+        />
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
@@ -149,49 +154,16 @@ export const getServerSideProps = async (
   }
 
   const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
 
   const { filters, search } = query;
-  const [companyId, ...restFilter] = alwaysArray(filters);
+  const filtersArray = alwaysArray(filters);
 
   // Cast filters
   const { page, skip, limit, clearSlug } = castCatalogueFilters({
-    filters: restFilter,
+    filters: filtersArray,
   });
-  const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
-
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${companyId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_USERS,
-          as: 'owner',
-          let: { ownerId: '$ownerId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$ownerId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
+  const itemPath = `${ROUTE_CONSOLE}/${query.companyId}/shops/shop`;
 
   const searchStage = search
     ? {
@@ -228,7 +200,7 @@ export const getServerSideProps = async (
     .aggregate<AppPaginationAggregationInterface<ShopInterface>>([
       {
         $match: {
-          companyId: new ObjectId(`${companyId}`),
+          companyId: new ObjectId(`${query.companyId}`),
           ...searchStage,
         },
       },
@@ -368,7 +340,6 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(companyResult),
       itemPath,
       clearSlug,
       page,

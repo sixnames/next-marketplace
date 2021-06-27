@@ -28,7 +28,7 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopDetails
-        basePath={`${ROUTE_CONSOLE}/shops/${shop.companyId}`}
+        basePath={`${ROUTE_CONSOLE}/${shop.companyId}/shops/shop`}
         shop={shop}
         breadcrumbs={breadcrumbs}
       />

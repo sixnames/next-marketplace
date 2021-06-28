@@ -4,6 +4,7 @@ import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal
 import Table, { TableColumn } from 'components/Table';
 import { PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import { useUpdateProductWithSyncErrorMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 
@@ -18,8 +19,13 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   showShopName = true,
   showControls = true,
 }) => {
-  const { showModal } = useMutationCallbacks({
+  const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
+  });
+
+  const [updateProductWithSyncErrorMutation] = useUpdateProductWithSyncErrorMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateProductWithSyncError),
+    onError: onErrorCallback,
   });
 
   const columns: TableColumn<NotSyncedProductInterface>[] = [
@@ -51,7 +57,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
     },
     {
       isHidden: !showControls,
-      render: () => {
+      render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
             <ContentItemControls
@@ -63,7 +69,18 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                     testId: 'products-search-modal',
                     createTitle: 'Выбрать',
                     createHandler: (product) => {
-                      console.log(product);
+                      showLoading();
+                      updateProductWithSyncErrorMutation({
+                        variables: {
+                          input: {
+                            productId: product._id,
+                            available: dataItem.available,
+                            barcode: dataItem.barcode,
+                            price: dataItem.price,
+                            shopId: dataItem.shopId,
+                          },
+                        },
+                      }).catch(console.log);
                     },
                   },
                 });

@@ -561,6 +561,14 @@ export type CreateProductInput = {
   rubricId: Scalars['ObjectId'];
 };
 
+export type CreateProductWithSyncErrorInput = {
+  barcode: Scalars['String'];
+  available: Scalars['Int'];
+  price: Scalars['Int'];
+  shopId: Scalars['ObjectId'];
+  productFields: CreateProductInput;
+};
+
 export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -958,6 +966,10 @@ export type Mutation = {
   deleteProductAsset: ProductPayload;
   /** Should update product asset index */
   updateProductAssetIndex: ProductPayload;
+  /** Should update product with syn error and remove sync error */
+  updateProductWithSyncError: ProductPayload;
+  /** Should create product with syn error and remove sync error */
+  createProductWithSyncError: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should update product brand */
@@ -1392,6 +1404,16 @@ export type MutationDeleteProductAssetArgs = {
 
 export type MutationUpdateProductAssetIndexArgs = {
   input: UpdateProductAssetIndexInput;
+};
+
+
+export type MutationUpdateProductWithSyncErrorArgs = {
+  input: UpdateProductWithSyncErrorInput;
+};
+
+
+export type MutationCreateProductWithSyncErrorArgs = {
+  input: CreateProductWithSyncErrorInput;
 };
 
 
@@ -2705,6 +2727,14 @@ export type UpdateProductTextAttributeItemInput = {
   textI18n?: Maybe<Scalars['JSONObject']>;
 };
 
+export type UpdateProductWithSyncErrorInput = {
+  productId: Scalars['ObjectId'];
+  barcode: Scalars['String'];
+  available: Scalars['Int'];
+  price: Scalars['Int'];
+  shopId: Scalars['ObjectId'];
+};
+
 export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
@@ -3982,6 +4012,32 @@ export type DeleteProductFromShopMutation = (
   & { deleteProductFromShop: (
     { __typename?: 'ShopPayload' }
     & Pick<ShopPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductWithSyncErrorMutationVariables = Exact<{
+  input: UpdateProductWithSyncErrorInput;
+}>;
+
+
+export type UpdateProductWithSyncErrorMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductWithSyncError: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreateProductWithSyncErrorMutationVariables = Exact<{
+  input: CreateProductWithSyncErrorInput;
+}>;
+
+
+export type CreateProductWithSyncErrorMutation = (
+  { __typename?: 'Mutation' }
+  & { createProductWithSyncError: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
   ) }
 );
 
@@ -7919,6 +7975,74 @@ export function useDeleteProductFromShopMutation(baseOptions?: Apollo.MutationHo
 export type DeleteProductFromShopMutationHookResult = ReturnType<typeof useDeleteProductFromShopMutation>;
 export type DeleteProductFromShopMutationResult = Apollo.MutationResult<DeleteProductFromShopMutation>;
 export type DeleteProductFromShopMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>;
+export const UpdateProductWithSyncErrorDocument = gql`
+    mutation UpdateProductWithSyncError($input: UpdateProductWithSyncErrorInput!) {
+  updateProductWithSyncError(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductWithSyncErrorMutationFn = Apollo.MutationFunction<UpdateProductWithSyncErrorMutation, UpdateProductWithSyncErrorMutationVariables>;
+
+/**
+ * __useUpdateProductWithSyncErrorMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductWithSyncErrorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductWithSyncErrorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductWithSyncErrorMutation, { data, loading, error }] = useUpdateProductWithSyncErrorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductWithSyncErrorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductWithSyncErrorMutation, UpdateProductWithSyncErrorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductWithSyncErrorMutation, UpdateProductWithSyncErrorMutationVariables>(UpdateProductWithSyncErrorDocument, options);
+      }
+export type UpdateProductWithSyncErrorMutationHookResult = ReturnType<typeof useUpdateProductWithSyncErrorMutation>;
+export type UpdateProductWithSyncErrorMutationResult = Apollo.MutationResult<UpdateProductWithSyncErrorMutation>;
+export type UpdateProductWithSyncErrorMutationOptions = Apollo.BaseMutationOptions<UpdateProductWithSyncErrorMutation, UpdateProductWithSyncErrorMutationVariables>;
+export const CreateProductWithSyncErrorDocument = gql`
+    mutation CreateProductWithSyncError($input: CreateProductWithSyncErrorInput!) {
+  createProductWithSyncError(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateProductWithSyncErrorMutationFn = Apollo.MutationFunction<CreateProductWithSyncErrorMutation, CreateProductWithSyncErrorMutationVariables>;
+
+/**
+ * __useCreateProductWithSyncErrorMutation__
+ *
+ * To run a mutation, you first call `useCreateProductWithSyncErrorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductWithSyncErrorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductWithSyncErrorMutation, { data, loading, error }] = useCreateProductWithSyncErrorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductWithSyncErrorMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductWithSyncErrorMutation, CreateProductWithSyncErrorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductWithSyncErrorMutation, CreateProductWithSyncErrorMutationVariables>(CreateProductWithSyncErrorDocument, options);
+      }
+export type CreateProductWithSyncErrorMutationHookResult = ReturnType<typeof useCreateProductWithSyncErrorMutation>;
+export type CreateProductWithSyncErrorMutationResult = Apollo.MutationResult<CreateProductWithSyncErrorMutation>;
+export type CreateProductWithSyncErrorMutationOptions = Apollo.BaseMutationOptions<CreateProductWithSyncErrorMutation, CreateProductWithSyncErrorMutationVariables>;
 export const UpdateMyProfileDocument = gql`
     mutation UpdateMyProfile($input: UpdateMyProfileInput!) {
   updateMyProfile(input: $input) {

@@ -1,18 +1,27 @@
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Currency from 'components/Currency';
+import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
+import { PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 
 export interface SyncErrorsListInterface {
   notSyncedProducts: NotSyncedProductInterface[];
   showShopName?: boolean;
+  showControls?: boolean;
 }
 
 const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   notSyncedProducts,
   showShopName = true,
+  showControls = true,
 }) => {
+  const { showModal } = useMutationCallbacks({
+    reload: true,
+  });
+
   const columns: TableColumn<NotSyncedProductInterface>[] = [
     {
       accessor: 'barcode',
@@ -41,17 +50,19 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
       isHidden: !showShopName,
     },
     {
-      render: ({ dataItem }) => {
+      isHidden: !showControls,
+      render: () => {
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              createTitle={'Создать товар'}
+              createTitle={'Найти или создать товар'}
               createHandler={() => {
-                console.log(dataItem);
-              }}
-              deleteTitle={'Удалить ошибку'}
-              deleteHandler={() => {
-                console.log(dataItem);
+                showModal<ProductSearchModalInterface>({
+                  variant: PRODUCT_SEARCH_MODAL,
+                  props: {
+                    testId: 'products-search-modal',
+                  },
+                });
               }}
             />
           </div>

@@ -202,7 +202,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   if (!data && !loading && !error) {
     return (
       <ModalFrame>
-        <ModalTitle>Ошибка загрузки данных</ModalTitle>
+        <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
       </ModalFrame>
     );
   }

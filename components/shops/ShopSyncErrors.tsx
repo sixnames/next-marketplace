@@ -10,11 +10,17 @@ const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   notSyncedProducts,
   basePath,
   breadcrumbs,
+  showShopName,
+  showControls,
 }) => {
   return (
     <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-sync-errors-page'}>
-        <SyncErrorsList notSyncedProducts={notSyncedProducts} showShopName={false} />
+        <SyncErrorsList
+          notSyncedProducts={notSyncedProducts}
+          showShopName={showShopName}
+          showControls={showControls}
+        />
       </Inner>
     </AppShopLayout>
   );

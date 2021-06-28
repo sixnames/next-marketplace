@@ -1,5 +1,7 @@
+import { ROUTE_CONSOLE_NAV_GROUP } from '../../../../config/common';
 import { RoleModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import navItems from '../navItems/navItems';
 
 const roles: RoleModel[] = [
   {
@@ -60,7 +62,12 @@ const roles: RoleModel[] = [
     slug: 'companyOwner',
     isStaff: false,
     isCompanyStaff: true,
-    allowedAppNavigation: ['', `/orders`, `/shops`, `/config`],
+    allowedAppNavigation: navItems.reduce((acc: string[], { path, navGroup }) => {
+      if (navGroup === ROUTE_CONSOLE_NAV_GROUP) {
+        return [...acc, path];
+      }
+      return acc;
+    }, []),
     createdAt: new Date(),
     updatedAt: new Date(),
   },

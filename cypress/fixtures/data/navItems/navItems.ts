@@ -1,9 +1,4 @@
-import {
-  ROUTE_CONSOLE,
-  ROUTE_CONSOLE_NAV_GROUP,
-  ROUTE_CMS,
-  ROUTE_CMS_NAV_GROUP,
-} from '../../../../config/common';
+import { ROUTE_CONSOLE_NAV_GROUP, ROUTE_CMS, ROUTE_CMS_NAV_GROUP } from '../../../../config/common';
 import { NavItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -44,6 +39,18 @@ const navItems: NavItemModel[] = [
     index: 2,
     icon: 'marker',
     path: `/shops`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} console-pages`),
+    nameI18n: {
+      ru: 'Страницы',
+      en: 'Pages',
+    },
+    index: 3,
+    icon: 'filter',
+    slug: 'cms-pages',
+    path: `/pages`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {

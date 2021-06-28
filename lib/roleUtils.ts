@@ -606,7 +606,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'createPagesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Создание группы старниц',
+      ru: 'Создание группы страниц',
     },
   },
   {
@@ -614,7 +614,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'updatePagesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновление группы старниц',
+      ru: 'Обновление группы страниц',
     },
   },
   {
@@ -622,7 +622,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'deletePagesGroup',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Удаление группы старниц',
+      ru: 'Удаление группы страниц',
     },
   },
   {
@@ -630,7 +630,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'createPage',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Создание старницы',
+      ru: 'Создание страницы',
     },
   },
   {
@@ -638,7 +638,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'updatePage',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Обновление старницы',
+      ru: 'Обновление страницы',
     },
   },
   {
@@ -646,7 +646,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     slug: 'deletePage',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Удаление старницы',
+      ru: 'Удаление страницы',
     },
   },
 

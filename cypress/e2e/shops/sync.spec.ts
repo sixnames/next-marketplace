@@ -1,3 +1,4 @@
+import { itAsync } from '@apollo/client/testing';
 import { ADULT_KEY, ADULT_TRUE, ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
 import {
   SyncOrderResponseInterface,
@@ -154,6 +155,8 @@ describe('Sync', () => {
     cy.wait(1500);
     cy.getByCy('generated-token').should('exist');
   });
+
+  // TODO test cms sync-errors page
 
   it.only('Should sync shop products with site catalogue', () => {
     // should error on no parameters

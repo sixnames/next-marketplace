@@ -188,6 +188,17 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
+    nameI18n: {
+      ru: 'Ошибки синхронизации',
+      en: 'Sync errors',
+    },
+    index: 12,
+    slug: 'cms-sync-errors',
+    path: `${ROUTE_CMS}/sync-errors`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-config`),
     nameI18n: {
       ru: 'Настройки сайта',

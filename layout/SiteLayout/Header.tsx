@@ -1,6 +1,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import LanguageTrigger from 'components/LanguageTrigger';
-import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
+import ThemeTrigger from 'components/ThemeTrigger';
 import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';

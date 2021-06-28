@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import LanguageTrigger from 'components/LanguageTrigger';
 import Link from 'components/Link/Link';
-import ThemeTrigger from 'components/ThemeTrigger/ThemeTrigger';
+import ThemeTrigger from 'components/ThemeTrigger';
 import {
   ROLE_SLUG_COMPANY_MANAGER,
   ROLE_SLUG_COMPANY_OWNER,

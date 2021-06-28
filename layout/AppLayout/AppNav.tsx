@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import classes from './AppNav.module.css';
-import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
+import ThemeTrigger from 'components/ThemeTrigger';
 import { useAppContext } from 'context/appContext';
 import Tooltip from 'components/Tooltip';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
@@ -40,6 +40,10 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
           <div className={`${classes.list} ${isCompact ? classes.listClosed : ''}`}>
             <ul className={classes.listHolder}>
               {navItems.map((item) => {
+                if (item.path === '' || item.path === '/') {
+                  return null;
+                }
+
                 return (
                   <AppNavItem
                     compact={isCompact}
@@ -98,7 +102,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                 <div
                   className={`${classes.bottomLink} ${isCompact ? classes.bottomLinkCompact : ''}`}
                 >
-                  <ThemeTrigger isCompact={isCompact} />
+                  <ThemeTrigger staticColors />
                 </div>
               </li>
             </ul>

@@ -3,6 +3,7 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
@@ -62,7 +63,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
     {
       headTitle: 'ID',
       accessor: 'itemId',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+      },
     },
     {
       headTitle: 'Имя',

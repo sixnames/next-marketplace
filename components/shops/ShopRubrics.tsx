@@ -10,7 +10,7 @@ export interface ShopRubricsInterface extends AppShopLayoutInterface {
   rubrics: RubricInterface[];
 }
 
-const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, rubrics, basePath }) => {
+const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubrics, basePath }) => {
   const router = useRouter();
 
   const columns: TableColumn<RubricInterface>[] = [
@@ -45,7 +45,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, rubrics, basePath }
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-rubrics-list'}>
         <Table<RubricInterface>
           columns={columns}

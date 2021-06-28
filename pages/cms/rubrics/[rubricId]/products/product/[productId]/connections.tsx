@@ -8,7 +8,7 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { CATALOGUE_OPTION_SEPARATOR, SORT_DESC } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import {
   COL_ATTRIBUTES,
@@ -17,13 +17,15 @@ import {
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
+  COL_RUBRICS,
 } from 'db/collectionNames';
-import { ProductConnectionItemModel, ProductModel } from 'db/dbModels';
+import { ProductConnectionItemModel, ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
+  RubricInterface,
 } from 'db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
@@ -31,6 +33,7 @@ import {
   useDeleteProductFromConnectionMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -214,9 +217,10 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
 interface ProductConnectionsPropsInterface {
   product: ProductInterface;
+  rubric: RubricInterface;
 }
 
-const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
+const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product, rubric }) => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
@@ -226,8 +230,30 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
     onCompleted: (data) => onCompleteCallback(data.createProductConnection),
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Связи',
+    config: [
+      {
+        name: 'Рубрикатор',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+      },
+      {
+        name: product.originalName,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsProductLayout product={product}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-connections-list'}>
         <div className='mb-8'>
           {(product.connections || []).map((connection) => {
@@ -272,10 +298,10 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
 interface ProductPageInterface extends PagePropsInterface, ProductConnectionsPropsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductConnections product={product} />
+      <ProductConnections product={product} rubric={rubric} />
     </CmsLayout>
   );
 };
@@ -284,11 +310,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId) {
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
@@ -422,7 +449,12 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const product = productAggregation[0];
-  if (!product) {
+
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
+  });
+
+  if (!product || !initialRubric) {
     return {
       notFound: true,
     };
@@ -467,10 +499,16 @@ export const getServerSideProps = async (
     }),
   };
 
+  const rubric: RubricInterface = {
+    ...initialRubric,
+    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
+  };
+
   return {
     props: {
       ...props,
       product: castDbData(rawProduct),
+      rubric: castDbData(rubric),
     },
   };
 };

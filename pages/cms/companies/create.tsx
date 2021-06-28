@@ -9,7 +9,9 @@ import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
 import Head from 'next/head';
@@ -45,6 +47,16 @@ const CreateCompanyContent: React.FC = () => {
     schema: createCompanyClientSchema,
   });
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: pageTitle,
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+    ],
+  };
+
   const initialValues: CreateCompanyFieldsInterface = {
     name: '',
     contacts: {
@@ -58,7 +70,7 @@ const CreateCompanyContent: React.FC = () => {
   };
 
   return (
-    <AppContentWrapper testId={'create-company-content'}>
+    <AppContentWrapper testId={'create-company-content'} breadcrumbs={breadcrumbs}>
       <Head>
         <title>{pageTitle}</title>
       </Head>

@@ -1,10 +1,15 @@
+import {
+  ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_SHOPS,
+  ASSETS_DIST_SHOPS_LOGOS,
+} from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
 const EasyYandexS3 = require('easy-yandex-s3');
 
 require('dotenv').config();
 
-export async function uploadTestAssets() {
+export async function uploadTestAssets(srcPath: string, distPath = '/') {
   const s3 = new EasyYandexS3({
     auth: {
       accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
@@ -17,10 +22,10 @@ export async function uploadTestAssets() {
   try {
     await s3.Upload(
       {
-        path: './cypress/fixtures/assets',
+        path: srcPath,
         save_name: true,
       },
-      '/',
+      distPath,
     );
     console.log('Assets uploaded');
   } catch (e) {
@@ -34,7 +39,7 @@ const config = {
   database: {
     protocol: 'mongodb',
     host: `${process.env.MONGO_TEST_HOST}`,
-    port: 27017,
+    port: +`${process.env.MONGO_TEST_PORT}`,
     username: `${process.env.MONGO_TEST_USER_NAME}`,
     password: `${process.env.MONGO_TEST_USER_PWD}`,
     name: `${process.env.MONGO_DB_NAME}`,
@@ -51,6 +56,7 @@ const config = {
 };
 
 (async function seedTestDb() {
+  console.log(JSON.stringify(config, null, 2));
   const seeder = new Seeder(config);
 
   const collections = seeder.readCollectionsFromPath(
@@ -63,7 +69,20 @@ const config = {
   try {
     await seeder.import(collections);
     console.log('Test data seeded');
-    // await uploadTestAssets();
+    // await uploadTestAssets('./cypress/fixtures/assets');
+
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
+      `/${ASSETS_DIST_SHOPS_LOGOS}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
+      `/${ASSETS_DIST_SHOPS}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
+      `/${ASSETS_DIST_COMPANIES}`,
+    );
   } catch (err) {
     console.log(err);
   }

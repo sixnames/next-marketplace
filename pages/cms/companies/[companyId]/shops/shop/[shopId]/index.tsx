@@ -1,10 +1,10 @@
 import { ROUTE_CMS } from 'config/common';
-import { COL_SHOPS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -14,12 +14,32 @@ import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails'
 interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: shop.name,
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+    ],
+  };
+
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopDetails
-        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
+        breadcrumbs={breadcrumbs}
       />
     </CmsLayout>
   );
@@ -34,7 +54,29 @@ export const getServerSideProps = async (
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });
 
-  const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
+  const shopAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${shopId}`) },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const shop = shopAggregation[0];
 
   if (!initialProps.props || !shop) {
     return {

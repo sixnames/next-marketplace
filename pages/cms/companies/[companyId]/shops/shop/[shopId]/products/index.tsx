@@ -1,15 +1,15 @@
 import { ROUTE_CMS } from 'config/common';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
@@ -23,14 +23,37 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Товары',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        basePath={`${companyBasePath}/shops/shop`}
+        breadcrumbs={breadcrumbs}
       />
     </CmsLayout>
   );
@@ -46,7 +69,29 @@ export const getServerSideProps = async (
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });
 
-  const shop = await shopsCollection.findOne({ _id: new ObjectId(`${shopId}`) });
+  const shopAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${shopId}`) },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const shop = shopAggregation[0];
 
   if (!initialProps.props || !shop) {
     return {

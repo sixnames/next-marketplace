@@ -18,7 +18,9 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -77,8 +79,18 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
     );
   }
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${optionsGroup.name}`,
+    config: [
+      {
+        name: 'Группы опцый',
+        href: `${ROUTE_CMS}/options`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{optionsGroup.name}</title>
       </Head>

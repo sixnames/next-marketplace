@@ -287,6 +287,7 @@ export interface ShopInterface extends ShopModel {
   contacts: ContactsInterface;
   address: AddressInterface;
   orders?: OrderInterface[];
+  company?: CompanyInterface | null;
 }
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
@@ -438,6 +439,7 @@ export interface PageInterface extends PageModel {
   name?: string | null;
   description?: string | null;
   city?: CityInterface | null;
+  pagesGroup?: PagesGroupInterface | null;
 }
 
 export interface PagesGroupInterface extends PagesGroupModel {

@@ -5,15 +5,19 @@ import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
-import { COL_PRODUCTS } from 'db/collectionNames';
-import { ProductModel } from 'db/dbModels';
+import { ROUTE_CMS } from 'config/common';
+import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
@@ -24,10 +28,11 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateProductSchema } from 'validation/productSchema';
 
 interface ProductDetailsInterface {
-  product: ProductModel;
+  product: ProductInterface;
+  rubric: RubricInterface;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) => {
   const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
@@ -51,11 +56,29 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     originalName,
     descriptionI18n,
     active,
-    barcode: barcode && barcode.length ? barcode[0] : '',
+    barcode,
+  };
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: originalName,
+    config: [
+      {
+        name: 'Рубрикатор',
+        href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+      },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+      },
+    ],
   };
 
   return (
-    <CmsProductLayout product={product}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-details'}>
         <Formik
           enableReinitialize
@@ -68,7 +91,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 input: {
                   ...values,
                   productId: product._id,
-                  barcode: values.barcode ? [values.barcode] : [],
+                  barcode: (values.barcode || []).filter((currentBarcode) => {
+                    return Boolean(currentBarcode);
+                  }),
                 },
               },
             });
@@ -107,10 +132,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails product={product} />
+      <ProductDetails product={product} rubric={rubric} />
     </CmsLayout>
   );
 };
@@ -119,11 +144,13 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId) {
+
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
@@ -144,16 +171,27 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const product = productAggregation[0];
-  if (!product) {
+
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
+  });
+
+  if (!product || !initialRubric) {
     return {
       notFound: true,
     };
   }
 
+  const rubric: RubricInterface = {
+    ...initialRubric,
+    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
+  };
+
   return {
     props: {
       ...props,
       product: castDbData(product),
+      rubric: castDbData(rubric),
     },
   };
 };

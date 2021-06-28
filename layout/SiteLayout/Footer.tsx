@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
 import Inner from 'components/Inner';
 
-interface FooterInterface {
+export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
 }
 

@@ -58,7 +58,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
     nameI18n: {},
     originalName: '',
     descriptionI18n: {},
-    barcode: '',
+    barcode: [],
   };
 
   return (
@@ -74,7 +74,9 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
               input: {
                 ...values,
                 rubricId,
-                barcode: values.barcode ? [values.barcode] : [],
+                barcode: (values.barcode || []).filter((currentBarcode) => {
+                  return Boolean(currentBarcode);
+                }),
               },
             },
           });

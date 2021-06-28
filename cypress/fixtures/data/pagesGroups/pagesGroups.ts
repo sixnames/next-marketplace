@@ -33,6 +33,26 @@ const pagesGroups: PagesGroupModel[] = [
       ru: 'Pages group C',
     },
   },
+  {
+    _id: getObjectId('company pages group a'),
+    index: 0,
+    companySlug: 'company_a',
+    showInFooter: true,
+    showInHeader: true,
+    nameI18n: {
+      ru: 'Company pages group A',
+    },
+  },
+  {
+    _id: getObjectId('company pages group b'),
+    index: 1,
+    companySlug: 'company_a',
+    showInFooter: true,
+    showInHeader: true,
+    nameI18n: {
+      ru: 'Company pages group B',
+    },
+  },
 ];
 
 // @ts-ignore

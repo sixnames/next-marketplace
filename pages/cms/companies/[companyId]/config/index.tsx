@@ -1,8 +1,9 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_GLOBALS } from 'config/common';
+import { CONFIG_GROUP_GLOBALS, ROUTE_CMS } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getConfigPageData } from 'lib/configsUtils';
@@ -20,8 +21,22 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
   currentCompany,
 }) => {
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Основные настройки',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: currentCompany.name,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+      },
+    ],
+  };
+
   return (
-    <CmsCompanyLayout company={currentCompany}>
+    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-config-globals'}>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>

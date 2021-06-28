@@ -5,7 +5,6 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
 import { useRouter } from 'next/router';
@@ -13,7 +12,7 @@ import * as React from 'react';
 
 export type ShopOrdersInterface = AppShopLayoutInterface;
 
-const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
+const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();
 
   const columns: TableColumn<OrderInterface>[] = [
@@ -23,7 +22,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
       render: ({ cellData, dataItem }) => (
         <Link
           testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop/${router.query.shopId}/orders/order/${dataItem._id}`}
+          href={`${basePath}/${shop._id}/orders/${dataItem._id}`}
         >
           {cellData}
         </Link>
@@ -74,7 +73,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-orders-list'}>
           <div className='overflow-x-auto'>
@@ -83,13 +82,9 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath }) => {
               data={shop.orders}
               testIdKey={'itemId'}
               onRowDoubleClick={(dataItem) => {
-                router
-                  .push(
-                    `${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop/${router.query.shopId}/orders/order/${dataItem._id}`,
-                  )
-                  .catch((e) => {
-                    console.log(e);
-                  });
+                router.push(`${basePath}/${shop._id}/orders/${dataItem._id}`).catch((e) => {
+                  console.log(e);
+                });
               }}
             />
           </div>

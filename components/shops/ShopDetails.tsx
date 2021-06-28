@@ -17,7 +17,7 @@ import { updateShopSchema } from 'validation/shopSchema';
 
 export type ShopDetailsInterface = AppShopLayoutInterface;
 
-const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
+const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrumbs }) => {
   const { showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
     useMutationCallbacks({
       reload: true,
@@ -53,7 +53,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath }) => {
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-details-page'}>
         <div className='relative'>
           <Formik

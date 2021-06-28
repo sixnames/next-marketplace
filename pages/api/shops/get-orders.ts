@@ -133,7 +133,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .toArray();
 
   const shopOrders = shopOrdersAggregation.reduce((acc: SyncOrderInterface[], order) => {
-    const { itemId, status, products, updatedAt, createdAt, reservationDate, customer } = order;
+    const {
+      itemId,
+      status,
+      products,
+      updatedAt,
+      createdAt,
+      reservationDate,
+      // customer
+    } = order;
     if (!status || !products || products.length < 1) {
       return acc;
     }
@@ -147,7 +155,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         reservationDate: reservationDate ? reservationDate.toISOString() : null,
         updatedAt,
         createdAt,
-        customer: customer
+        /*customer: customer
           ? {
               name: customer.name,
               lastName: customer.lastName,
@@ -155,7 +163,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               email: customer.email,
               phone: customer.phone,
             }
-          : undefined,
+          : undefined,*/
         products: products.reduce((acc: SyncOrderProductInterface[], orderProduct) => {
           const { status, barcode, amount, price, createdAt, updatedAt, originalName } =
             orderProduct;

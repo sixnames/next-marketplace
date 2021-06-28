@@ -1,8 +1,15 @@
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_COMPANIES,
+  COL_ORDER_CUSTOMERS,
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
@@ -10,7 +17,6 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
@@ -20,12 +26,35 @@ interface CompanyShopAssetsInterface
     Omit<ShopOrdersInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
-  const router = useRouter();
+  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Заказы',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+    ],
+  };
 
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopOrders
-        basePath={`${ROUTE_CMS}/companies/${router.query.companyId}/shops/shop`}
+        breadcrumbs={breadcrumbs}
+        basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />
     </CmsLayout>
@@ -52,6 +81,21 @@ export const getServerSideProps = async (
       {
         $match: {
           _id: new ObjectId(`${shopId}`),
+        },
+      },
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
         },
       },
       {

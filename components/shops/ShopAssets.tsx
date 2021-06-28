@@ -15,16 +15,11 @@ import * as React from 'react';
 
 export type ShopAssetsInterface = AppShopLayoutInterface;
 
-const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath }) => {
+const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();
   const { _id, logo, name } = shop;
-  const {
-    hideLoading,
-    onErrorCallback,
-    showErrorNotification,
-    onCompleteCallback,
-    showLoading,
-  } = useMutationCallbacks({ reload: true });
+  const { hideLoading, onErrorCallback, showErrorNotification, onCompleteCallback, showLoading } =
+    useMutationCallbacks({ reload: true });
 
   const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
     onError: onErrorCallback,
@@ -37,7 +32,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath }) => {
   });
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath}>
+    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-assets-list'}>
           <Formik

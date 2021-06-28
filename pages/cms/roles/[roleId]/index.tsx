@@ -11,7 +11,9 @@ import { Form, Formik } from 'formik';
 import { useUpdateRoleMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppSubNav from 'layout/AppLayout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -63,8 +65,18 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
     ];
   }, [role._id]);
 
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${role.name}`,
+    config: [
+      {
+        name: 'Список ролей',
+        href: `${ROUTE_CMS}/roles`,
+      },
+    ],
+  };
+
   return (
-    <AppContentWrapper>
+    <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
         <title>{role.name}</title>
       </Head>

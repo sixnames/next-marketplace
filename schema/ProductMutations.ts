@@ -19,6 +19,7 @@ import {
 } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
+  COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -73,6 +74,19 @@ export const UpdateProductWithSyncErrorInput = inputObjectType({
     t.nonNull.int('available');
     t.nonNull.int('price');
     t.nonNull.objectId('shopId');
+  },
+});
+
+export const CreateProductWithSyncErrorInput = inputObjectType({
+  name: 'CreateProductWithSyncErrorInput',
+  definition(t) {
+    t.nonNull.string('barcode');
+    t.nonNull.int('available');
+    t.nonNull.int('price');
+    t.nonNull.objectId('shopId');
+    t.nonNull.field('productFields', {
+      type: 'CreateProductInput',
+    });
   },
 });
 
@@ -167,11 +181,9 @@ export const ProductMutations = extendType({
               return;
             }
 
-            // Store product assets
+            // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-
             const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
-
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...values,
@@ -187,7 +199,6 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-
             const createdProduct = createdProductResult.ops[0];
             if (!createdProductResult.result.ok || !createdProduct) {
               mutationPayload = {
@@ -805,6 +816,7 @@ export const ProductMutations = extendType({
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
 
         const session = client.startSession();
 
@@ -818,7 +830,7 @@ export const ProductMutations = extendType({
             // Permission
             const { allow, message } = await getOperationPermission({
               context,
-              slug: 'updateProduct',
+              slug: 'createShopProduct',
             });
             if (!allow) {
               mutationPayload = {
@@ -843,7 +855,7 @@ export const ProductMutations = extendType({
               return;
             }
 
-            // Check product availability
+            // Check shop availability
             const shop = await shopsCollection.findOne({ _id: shopId });
             if (!shop) {
               mutationPayload = {
@@ -886,9 +898,21 @@ export const ProductMutations = extendType({
                 returnDocument: 'after',
               },
             );
-
             const updatedProduct = updatedProductResult.value;
             if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete sync errors
+            const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
+              barcode,
+            });
+            if (!removedNotSyncedProductsResult.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -938,6 +962,205 @@ export const ProductMutations = extendType({
               success: true,
               message: await getApiMessage('shopProducts.create.success'),
               payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should create product with syn error and remove sync error
+    t.nonNull.field('createProductWithSyncError', {
+      type: 'ProductPayload',
+      description: 'Should create product with syn error and remove sync error',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CreateProductWithSyncErrorInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: createProductSchema,
+            });
+            await validationSchema.validate(args.input.productFields);
+
+            const { input } = args;
+            const { productFields, barcode, available, price, shopId } = input;
+
+            // Check if product already exist
+            const product = await productsCollection.findOne({
+              barcode,
+            });
+            if (product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Get selected rubric
+            const rubric = await rubricsCollection.findOne({ _id: productFields.rubricId });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check shop availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            if (!shop) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shops.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if shop product already exist
+            const shopProduct = await shopProductsCollection.findOne({
+              barcode,
+              shopId,
+            });
+            if (!shopProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shopProducts.create.duplicate`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update product
+            const itemId = await getNextItemId(COL_PRODUCTS);
+            const slug = generateProductSlug({ nameI18n: productFields.nameI18n, itemId });
+            const productId = new ObjectId();
+            const createdProductResult = await productsCollection.insertOne({
+              ...productFields,
+              _id: productId,
+              itemId,
+              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              slug,
+              rubricId: rubric._id,
+              rubricSlug: rubric.slug,
+              active: false,
+              selectedOptionsSlugs: [],
+              selectedAttributesIds: [],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+            const createdProduct = createdProductResult.ops[0];
+            if (!createdProductResult.result.ok || !createdProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete sync errors
+            const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
+              barcode,
+            });
+            if (!removedNotSyncedProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const createdShopProductsResult = await shopProductsCollection.insertOne({
+              barcode,
+              available,
+              price,
+              active: true,
+              formattedPrice: getCurrencyString(price),
+              formattedOldPrice: '',
+              discountedPercent: 0,
+              productId,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: createdProduct.rubricId,
+              rubricSlug: createdProduct.rubricSlug,
+              companyId: shop.companyId,
+              itemId: createdProduct.itemId,
+              slug: createdProduct.slug,
+              originalName: createdProduct.originalName,
+              nameI18n: createdProduct.nameI18n,
+              brandSlug: createdProduct.brandSlug,
+              brandCollectionSlug: createdProduct.brandCollectionSlug,
+              manufacturerSlug: createdProduct.manufacturerSlug,
+              mainImage: createdProduct.mainImage,
+              selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
+            });
+            if (!createdShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shopProducts.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.create.success'),
+              payload: createdProduct,
             };
           });
 

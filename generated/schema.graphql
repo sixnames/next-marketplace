@@ -520,6 +520,14 @@ input CreateProductInput {
   rubricId: ObjectId!
 }
 
+input CreateProductWithSyncErrorInput {
+  available: Int!
+  barcode: String!
+  price: Int!
+  productFields: CreateProductInput!
+  shopId: ObjectId!
+}
+
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
@@ -908,6 +916,11 @@ type Mutation {
   Should create product connection
   """
   createProductConnection(input: CreateProductConnectionInput!): ProductPayload!
+
+  """
+  Should create product with syn error and remove sync error
+  """
+  createProductWithSyncError(input: CreateProductWithSyncErrorInput!): ProductPayload!
 
   """
   Should create role

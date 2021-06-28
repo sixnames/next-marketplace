@@ -315,6 +315,14 @@ export interface NexusGenInputs {
     originalName: string; // String!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  CreateProductWithSyncErrorInput: {
+    // input type
+    available: number; // Int!
+    barcode: string; // String!
+    price: number; // Int!
+    productFields: NexusGenInputs['CreateProductInput']; // CreateProductInput!
+    shopId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   CreateRoleInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -1313,6 +1321,7 @@ export interface NexusGenFieldTypes {
     createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    createProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
@@ -2349,6 +2358,7 @@ export interface NexusGenFieldTypeNames {
     createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
+    createProductWithSyncError: 'ProductPayload';
     createRole: 'RolePayload';
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
@@ -3128,6 +3138,10 @@ export interface NexusGenArgTypes {
     createProductConnection: {
       // args
       input: NexusGenInputs['CreateProductConnectionInput']; // CreateProductConnectionInput!
+    };
+    createProductWithSyncError: {
+      // args
+      input: NexusGenInputs['CreateProductWithSyncErrorInput']; // CreateProductWithSyncErrorInput!
     };
     createRole: {
       // args

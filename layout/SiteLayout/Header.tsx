@@ -329,7 +329,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-interface HeaderInterface {
+export interface HeaderInterface {
   headerPageGroups: PagesGroupInterface[];
 }
 
@@ -398,11 +398,9 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
               })}
             </div>
 
-            <div className='flex items-center'>
+            <div className='flex gap-6 items-center'>
               <ThemeTrigger />
-              <div className='ml-6'>
-                <LanguageTrigger />
-              </div>
+              <LanguageTrigger />
             </div>
           </Inner>
         </div>

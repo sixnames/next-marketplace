@@ -1,9 +1,4 @@
-import {
-  ROUTE_CONSOLE,
-  ROUTE_CONSOLE_NAV_GROUP,
-  ROUTE_CMS,
-  ROUTE_CMS_NAV_GROUP,
-} from '../../../../config/common';
+import { ROUTE_CONSOLE_NAV_GROUP, ROUTE_CMS, ROUTE_CMS_NAV_GROUP } from '../../../../config/common';
 import { NavItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -19,7 +14,7 @@ const navItems: NavItemModel[] = [
     },
     index: 0,
     icon: 'cart',
-    path: ROUTE_CONSOLE,
+    path: '',
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -31,7 +26,7 @@ const navItems: NavItemModel[] = [
     },
     index: 1,
     icon: 'cart',
-    path: `${ROUTE_CONSOLE}/orders`,
+    path: `/orders`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -43,7 +38,19 @@ const navItems: NavItemModel[] = [
     },
     index: 2,
     icon: 'marker',
-    path: `${ROUTE_CONSOLE}/shops`,
+    path: `/shops`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} console-pages`),
+    nameI18n: {
+      ru: 'Страницы',
+      en: 'Pages',
+    },
+    index: 3,
+    icon: 'filter',
+    slug: 'cms-pages',
+    path: `/pages`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -55,7 +62,7 @@ const navItems: NavItemModel[] = [
     },
     index: 99,
     icon: 'gear',
-    path: `${ROUTE_CONSOLE}/config`,
+    path: `/config`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
@@ -178,6 +185,17 @@ const navItems: NavItemModel[] = [
     index: 11,
     slug: 'cms-pages',
     path: `${ROUTE_CMS}/pages`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
+    nameI18n: {
+      ru: 'Ошибки синхронизации',
+      en: 'Sync errors',
+    },
+    index: 12,
+    slug: 'cms-sync-errors',
+    path: `${ROUTE_CMS}/sync-errors`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {

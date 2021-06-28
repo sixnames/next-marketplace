@@ -107,6 +107,39 @@ const shops: ShopModel[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    _id: getObjectId('shop Shop D'),
+    itemId: '000004',
+    token: '000004',
+    slug: 'shop_d',
+    name: 'Shop D',
+    citySlug: DEFAULT_CITY,
+    logo: {
+      index: 0,
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,
+    },
+    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
+    assets: [
+      {
+        index: 0,
+        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
+      },
+    ],
+    contacts: {
+      emails: ['shopD@gmail.com'],
+      phones: ['+76665554444'],
+    },
+    address: {
+      formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
+      point: {
+        type: 'Point',
+        coordinates: [37.522890631943376, 55.79065483867902],
+      },
+    },
+    companyId: getObjectId('company Company C'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 // @ts-ignore

@@ -132,7 +132,22 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        const barcode = alwaysArray(cellData);
+        return (
+          <div>
+            {barcode.map((barcodeItem, index) => {
+              const isLastItem = barcode.length === index + 1;
+              return (
+                <span key={index}>
+                  {barcodeItem}
+                  {isLastItem ? '' : ', '}
+                </span>
+              );
+            })}
+          </div>
+        );
+      },
     },
     {
       render: ({ dataItem }) => {

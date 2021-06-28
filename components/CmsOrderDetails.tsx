@@ -63,7 +63,7 @@ interface CmsOrderDetailsInterface {
 }
 
 const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order }) => {
-  const { itemId, createdAt, totalPrice, status, products, shop, customer } = order;
+  const { itemId, createdAt, totalPrice, status, products, shop, customer, comment } = order;
 
   return (
     <Inner testId={`order-details`}>
@@ -114,6 +114,14 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order }) => {
                 <div className='text-wp-error font-medium'>Заказчик не найден</div>
               )}
             </div>
+
+            {/*comment*/}
+            {comment && comment.length > 0 ? (
+              <div className='mb-6'>
+                <div className='text-secondary-text mb-3'>Комментарий заказчика:</div>
+                <div className='prose'>{comment}</div>
+              </div>
+            ) : null}
 
             {/*shop info*/}
             <div className='mb-6'>

@@ -8,10 +8,13 @@ import { CompanyModel } from 'db/dbModels';
 import CompanyDefaultLayoutFooter from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutFooter';
 import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 
-interface CompanyDefaultLayoutConsumerInterface {
+interface CompanyDefaultLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages {
   title?: string;
   description?: string;
   previewImage?: string;
@@ -25,6 +28,8 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   description,
   pageUrls,
   company,
+  headerPageGroups,
+  footerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -38,14 +43,14 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
     <div className='flex flex-col text-primary-text bg-primary min-h-full-height'>
       <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
       <Meta title={title} description={description} pageUrls={pageUrls} />
-      <CompanyDefaultLayoutHeader company={company} />
+      <CompanyDefaultLayoutHeader headerPageGroups={headerPageGroups} company={company} />
 
       <div className='flex flex-col flex-grow'>
         <main className='flex-grow'>
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
-        <CompanyDefaultLayoutFooter />
+        <CompanyDefaultLayoutFooter footerPageGroups={footerPageGroups} />
       </div>
 
       {isLoading ? <Spinner /> : null}
@@ -62,6 +67,8 @@ const CompanyDefaultLayout: React.FC<SiteLayoutProviderInterface> = ({
   pageUrls,
   sessionCity,
   company,
+  footerPageGroups,
+  headerPageGroups,
 }) => {
   return (
     <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
@@ -70,6 +77,8 @@ const CompanyDefaultLayout: React.FC<SiteLayoutProviderInterface> = ({
         description={description}
         pageUrls={pageUrls}
         company={company}
+        footerPageGroups={footerPageGroups}
+        headerPageGroups={headerPageGroups}
       >
         {children}
       </CompanyDefaultLayoutConsumer>

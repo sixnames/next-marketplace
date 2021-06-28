@@ -24,7 +24,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
       {
         name: 'Общие',
         testId: 'globals',
-        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_CONSOLE}/config/${companyId}`,
+        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_CONSOLE}/${companyId}/config`,
         exact: true,
       },
       {
@@ -32,13 +32,13 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
         testId: 'analytics',
         path: isCms
           ? `${ROUTE_CMS}/config/analytics`
-          : `${ROUTE_CONSOLE}/config/${companyId}/analytics`,
+          : `${ROUTE_CONSOLE}/${companyId}/config/analytics`,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'ui',
-        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_CONSOLE}/config/${companyId}/ui`,
+        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_CONSOLE}/${companyId}/config/ui`,
         exact: true,
       },
       {
@@ -46,13 +46,13 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
         testId: 'contacts',
         path: isCms
           ? `${ROUTE_CMS}/config/contacts`
-          : `${ROUTE_CONSOLE}/config/${companyId}/contacts`,
+          : `${ROUTE_CONSOLE}/${companyId}/config/contacts`,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'seo',
-        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_CONSOLE}/config/${companyId}/seo`,
+        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_CONSOLE}/${companyId}/config/seo`,
         exact: true,
       },
       {
@@ -60,7 +60,7 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
         testId: 'catalogue',
         path: isCms
           ? `${ROUTE_CMS}/config/catalogue`
-          : `${ROUTE_CONSOLE}/config/${companyId}/catalogue`,
+          : `${ROUTE_CONSOLE}/${companyId}/config/catalogue`,
         exact: true,
       },
     ];

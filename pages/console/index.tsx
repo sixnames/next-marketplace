@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getCompanyAppInitialData } from 'lib/ssrUtils';
+import { getConsoleInitialData } from 'lib/ssrUtils';
 
 const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
   const router = useRouter();
@@ -19,10 +19,10 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
         {(sessionUser?.companies || []).map((company) => {
           return (
             <div
-              className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6'
+              className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6 cursor-pointer'
               key={`${company._id}`}
               onClick={() => {
-                router.push(`${ROUTE_CONSOLE}/shops/${company._id}`).catch((e) => console.log(e));
+                router.push(`${ROUTE_CONSOLE}/${company?._id}/orders`).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>
@@ -48,7 +48,7 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> => {
-  const { props } = await getCompanyAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
 
   if (!props?.sessionUser) {
     return {
@@ -72,7 +72,7 @@ export const getServerSideProps = async (
     const company = props?.sessionUser?.companies[0];
     return {
       redirect: {
-        destination: `${ROUTE_CONSOLE}/shops/${company?._id}`,
+        destination: `${ROUTE_CONSOLE}/${company?._id}/orders`,
         permanent: false,
       },
     };

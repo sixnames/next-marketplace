@@ -39,7 +39,7 @@ const config = {
   database: {
     protocol: 'mongodb',
     host: `${process.env.MONGO_TEST_HOST}`,
-    port: 27017,
+    port: +`${process.env.MONGO_TEST_PORT}`,
     username: `${process.env.MONGO_TEST_USER_NAME}`,
     password: `${process.env.MONGO_TEST_USER_PWD}`,
     name: `${process.env.MONGO_DB_NAME}`,
@@ -56,6 +56,7 @@ const config = {
 };
 
 (async function seedTestDb() {
+  console.log(JSON.stringify(config, null, 2));
   const seeder = new Seeder(config);
 
   const collections = seeder.readCollectionsFromPath(

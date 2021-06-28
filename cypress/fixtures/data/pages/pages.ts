@@ -98,6 +98,27 @@ const pages: PageModel[] = [
     updatedAt: new Date(),
     createdAt: new Date(),
   },
+  {
+    _id: getObjectId('company page a'),
+    index: 0,
+    slug: 'company_page_a',
+    citySlug: DEFAULT_CITY,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Company page a',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
+    },
+    assetKeys: [
+      `https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/company_page_a/company_page_a.jpg`,
+    ],
+    pagesGroupId: getObjectId('company pages group a'),
+    state: PAGE_STATE_PUBLISHED,
+    content: `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"ppcfbj","size":6,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/company_page_a/company_page_a.jpg"}},"rows":[],"inline":null},{"id":"hzq58d","size":6,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header E"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
+    updatedAt: new Date(),
+    createdAt: new Date(),
+  },
 ];
 
 // @ts-ignore

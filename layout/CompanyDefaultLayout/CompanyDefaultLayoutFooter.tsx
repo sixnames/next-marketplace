@@ -3,99 +3,13 @@ import FakeInput from 'components/FormElements/Input/FakeInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import Socials from 'components/Socials';
-import { ROUTE_CONTACTS } from 'config/common';
+import { ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
+import { FooterInterface } from 'layout/SiteLayout/Footer';
 import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
 
-const navConfig = (companyName: string) => [
-  {
-    title: companyName,
-    links: [
-      {
-        name: 'О компании',
-      },
-      {
-        name: 'Контакты',
-        href: ROUTE_CONTACTS,
-      },
-      {
-        name: 'Служба поддержки',
-      },
-      {
-        name: 'Винотеки',
-      },
-      {
-        name: 'Вакансии',
-      },
-      {
-        name: 'Блог компании',
-      },
-    ],
-  },
-  {
-    title: 'Покупателям',
-    links: [
-      {
-        name: 'Покупка и оплата',
-      },
-      {
-        name: 'Программа лояльности',
-      },
-      {
-        name: 'Консультации',
-      },
-      {
-        name: 'Статус заявки',
-      },
-      {
-        name: 'Срочная покупка',
-      },
-      {
-        name: 'Гарантии',
-      },
-    ],
-  },
-  {
-    title: 'Интересно',
-    links: [
-      {
-        name: 'Отзывы о вине',
-      },
-      {
-        name: 'Советы сомелье',
-      },
-      {
-        name: `Лучшие вина ${new Date().getFullYear()}`,
-      },
-      {
-        name: 'Популярные товары',
-      },
-      {
-        name: 'Новинки',
-      },
-      {
-        name: 'Акции',
-      },
-    ],
-  },
-  {
-    title: 'Сотрудничество',
-    links: [
-      {
-        name: 'Партнерская программа',
-      },
-      {
-        name: 'Начать сотрудничество',
-      },
-      {
-        name: 'Преимущества',
-      },
-    ],
-  },
-];
-
-const CompanyDefaultLayoutFooter: React.FC = () => {
+const CompanyDefaultLayoutFooter: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configSiteName = getSiteConfigSingleValue('siteName');
   const contactEmail = getSiteConfigSingleValue('contactEmail');
@@ -145,27 +59,36 @@ const CompanyDefaultLayoutFooter: React.FC = () => {
         </div>
 
         <div className='grid sm:grid-cols-2 lg:grid-cols-4 lg:col-span-4 gap-x-6 gap-y-6'>
-          {navConfig(`${configSiteName}`).map(({ title, links }) => {
+          {footerPageGroups.map(({ name, _id, pages }, index) => {
             return (
-              <div key={title} className='font-sm'>
-                <div className='uppercase mb-1.5'>{title}</div>
+              <div key={`${_id}`} className='font-sm'>
+                <div className='uppercase mb-1.5'>{name}</div>
                 <ul>
-                  {links.map(({ name, href }) => {
+                  {(pages || []).map(({ name, slug, _id }) => {
                     return (
-                      <li className='' key={name}>
-                        {href ? (
-                          <Link
-                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                            href={href}
-                          >
-                            {name}
-                          </Link>
-                        ) : (
-                          <span className='block pt-1.5 pb-1.5 text-secondary-text'>{name}</span>
-                        )}
+                      <li className='' key={`${_id}`}>
+                        <Link
+                          target={'_blank'}
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                          href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                        >
+                          {name}
+                        </Link>
                       </li>
                     );
                   })}
+
+                  {index === 0 ? (
+                    <li className='' key={`${_id}`}>
+                      <Link
+                        target={'_blank'}
+                        className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                        href={ROUTE_CONTACTS}
+                      >
+                        Контакты
+                      </Link>
+                    </li>
+                  ) : null}
                 </ul>
               </div>
             );

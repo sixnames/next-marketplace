@@ -92,7 +92,70 @@ describe('Sync', () => {
     cy.testAuth(`/`);
   });
 
-  it('Should sync shop products with site catalogue', () => {
+  it('Should sync shop orders with site', () => {
+    const currentDate = new Date().toISOString();
+
+    // Should return order statuses list
+    cy.request({
+      method: 'GET',
+      url: `/api/shops/get-order-statuses?${validRequestParamsC}`,
+      body: JSON.stringify(updateBody),
+    }).then((res) => {
+      const body = res.body as SyncOrderStatusesResponseInterface;
+      expect(body.success).equals(true);
+      expect(body.orderStatuses?.length).greaterThan(0);
+    });
+
+    cy.makeAnOrder({});
+
+    // should return shop new orders
+    cy.request({
+      method: 'GET',
+      url: `/api/shops/get-orders?${validRequestParamsA}&fromDate=${currentDate}`,
+    }).then((res) => {
+      const { success, orders } = res.body as SyncOrderResponseInterface;
+      const order = orders[0];
+      const product = order.products[0];
+
+      expect(success).equals(true);
+      expect(orders).to.have.length(1);
+      expect(orders[0].products).to.have.length(2);
+
+      // should update order product
+      const updateProduct: SyncUpdateOrderProductInterface = {
+        ...product,
+        amount: 55,
+        orderId: order.orderId,
+        status: ORDER_STATUS_DONE,
+      };
+
+      cy.request({
+        method: 'PATCH',
+        url: `/api/shops/update-order-product?${validRequestParamsA}`,
+        body: JSON.stringify([updateProduct]),
+      }).then((res) => {
+        const { success } = res.body as SyncOrderResponseInterface;
+        expect(success).equals(true);
+      });
+    });
+  });
+
+  it('Should generate shop token', () => {
+    cy.visit(`${ROUTE_CMS}/companies`);
+    cy.wait(1500);
+    cy.getByCy(`company_b-update`).click();
+    cy.getByCy(`company-shops`).click();
+    cy.wait(1500);
+    cy.getByCy('company-shops-list').should('exist');
+    cy.getByCy(`Shop B-update`).click();
+    cy.wait(1500);
+    cy.getByCy('shop-details-page').should('exist');
+    cy.getByCy('generate-api-token').click();
+    cy.wait(1500);
+    cy.getByCy('generated-token').should('exist');
+  });
+
+  it.only('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',
@@ -214,68 +277,5 @@ describe('Sync', () => {
       expect(body.success).equals(true);
       expect(body.shopProducts.length).equals(secondarySyncBody.length);
     });
-  });
-
-  it('Should sync shop orders with site', () => {
-    const currentDate = new Date().toISOString();
-
-    // Should return order statuses list
-    cy.request({
-      method: 'GET',
-      url: `/api/shops/get-order-statuses?${validRequestParamsC}`,
-      body: JSON.stringify(updateBody),
-    }).then((res) => {
-      const body = res.body as SyncOrderStatusesResponseInterface;
-      expect(body.success).equals(true);
-      expect(body.orderStatuses?.length).greaterThan(0);
-    });
-
-    cy.makeAnOrder({});
-
-    // should return shop new orders
-    cy.request({
-      method: 'GET',
-      url: `/api/shops/get-orders?${validRequestParamsA}&fromDate=${currentDate}`,
-    }).then((res) => {
-      const { success, orders } = res.body as SyncOrderResponseInterface;
-      const order = orders[0];
-      const product = order.products[0];
-
-      expect(success).equals(true);
-      expect(orders).to.have.length(1);
-      expect(orders[0].products).to.have.length(2);
-
-      // should update order product
-      const updateProduct: SyncUpdateOrderProductInterface = {
-        ...product,
-        amount: 55,
-        orderId: order.orderId,
-        status: ORDER_STATUS_DONE,
-      };
-
-      cy.request({
-        method: 'PATCH',
-        url: `/api/shops/update-order-product?${validRequestParamsA}`,
-        body: JSON.stringify([updateProduct]),
-      }).then((res) => {
-        const { success } = res.body as SyncOrderResponseInterface;
-        expect(success).equals(true);
-      });
-    });
-  });
-
-  it('Should generate shop token', () => {
-    cy.visit(`${ROUTE_CMS}/companies`);
-    cy.wait(1500);
-    cy.getByCy(`company_b-update`).click();
-    cy.getByCy(`company-shops`).click();
-    cy.wait(1500);
-    cy.getByCy('company-shops-list').should('exist');
-    cy.getByCy(`Shop B-update`).click();
-    cy.wait(1500);
-    cy.getByCy('shop-details-page').should('exist');
-    cy.getByCy('generate-api-token').click();
-    cy.wait(1500);
-    cy.getByCy('generated-token').should('exist');
   });
 });

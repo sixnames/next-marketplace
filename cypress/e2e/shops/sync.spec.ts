@@ -1,4 +1,3 @@
-import { itAsync } from '@apollo/client/testing';
 import { ADULT_KEY, ADULT_TRUE, ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
 import {
   SyncOrderResponseInterface,

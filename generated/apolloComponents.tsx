@@ -3672,7 +3672,7 @@ export type CreateProductMutation = (
     & Pick<ProductPayload, 'success' | 'message'>
     & { payload?: Maybe<(
       { __typename?: 'Product' }
-      & Pick<Product, '_id'>
+      & Pick<Product, '_id' | 'rubricId'>
     )> }
   ) }
 );
@@ -4038,6 +4038,10 @@ export type CreateProductWithSyncErrorMutation = (
   & { createProductWithSyncError: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, '_id' | 'rubricId'>
+    )> }
   ) }
 );
 
@@ -7061,6 +7065,7 @@ export const CreateProductDocument = gql`
     message
     payload {
       _id
+      rubricId
     }
   }
 }
@@ -8014,6 +8019,10 @@ export const CreateProductWithSyncErrorDocument = gql`
   createProductWithSyncError(input: $input) {
     success
     message
+    payload {
+      _id
+      rubricId
+    }
   }
 }
     `;

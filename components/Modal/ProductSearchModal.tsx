@@ -163,6 +163,7 @@ export interface ProductSearchModalInterface extends ProductColumnsInterface {
   excludedOptionsSlugs?: string[] | null;
   testId?: string;
   rubricSlug?: string;
+  subtitle?: any;
 }
 
 const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
@@ -171,6 +172,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   excludedOptionsSlugs,
   attributesIds,
   rubricSlug,
+  subtitle,
   ...props
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
@@ -208,11 +210,19 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   }
 
   if (loading) {
-    return <Spinner isNested isTransparent />;
+    return (
+      <ModalFrame>
+        <Spinner isNested isTransparent />
+      </ModalFrame>
+    );
   }
 
   if (error || !data || !data.getAllRubrics) {
-    return <RequestError />;
+    return (
+      <ModalFrame>
+        <RequestError />
+      </ModalFrame>
+    );
   }
 
   const { getAllRubrics } = data;
@@ -220,6 +230,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   return (
     <ModalFrame testId={testId} size={'wide'}>
       <ModalTitle>Выберите товар</ModalTitle>
+      {subtitle}
 
       <FormikIndividualSearch
         onSubmit={setSearch}

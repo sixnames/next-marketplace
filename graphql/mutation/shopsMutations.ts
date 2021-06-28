@@ -95,6 +95,10 @@ export const CREATE_PRODUCT_WITH_SYNC_ERROR_MUTATION = gql`
     createProductWithSyncError(input: $input) {
       success
       message
+      payload {
+        _id
+        rubricId
+      }
     }
   }
 `;

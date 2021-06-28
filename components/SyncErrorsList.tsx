@@ -1,8 +1,10 @@
+import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import Currency from 'components/Currency';
+import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
-import { PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
+import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import { useUpdateProductWithSyncErrorMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -68,6 +70,23 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                   props: {
                     testId: 'products-search-modal',
                     createTitle: 'Выбрать',
+                    subtitle: (
+                      <div className='mb-8'>
+                        <Button
+                          size={'small'}
+                          onClick={() => {
+                            showModal<CreateProductWithSyncErrorModalInterface>({
+                              variant: CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+                              props: {
+                                notSyncedProduct: dataItem,
+                              },
+                            });
+                          }}
+                        >
+                          Создать товар
+                        </Button>
+                      </div>
+                    ),
                     createHandler: (product) => {
                       showLoading();
                       updateProductWithSyncErrorMutation({

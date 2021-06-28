@@ -1,13 +1,20 @@
 import Button from 'components/Button';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import { DEFAULT_LOCALE } from 'config/common';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
+import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useCreateProductMutation } from 'generated/apolloComponents';
+import {
+  useCreateProductWithSyncErrorMutation,
+  useGetAllRubricsQuery,
+} from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import { createProductSchema } from 'validation/productSchema';
 import ProductMainFields, {
@@ -18,13 +25,17 @@ interface InitialValuesInterface extends ProductFormValuesInterface {
   rubricId?: string;
 }
 
-export interface CreateNewProductModalInterface {
+export interface CreateProductWithSyncErrorModalInterface {
   notSyncedProduct: NotSyncedProductInterface;
 }
 
-const CreateNewProductFromErrorModal: React.FC<CreateNewProductModalInterface> = ({
+const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalInterface> = ({
   notSyncedProduct,
 }) => {
+  const router = useRouter();
+  const { data, error, loading } = useGetAllRubricsQuery({
+    fetchPolicy: 'network-only',
+  });
   const validationSchema = useValidationSchema({
     schema: createProductSchema,
   });
@@ -37,21 +48,54 @@ const CreateNewProductFromErrorModal: React.FC<CreateNewProductModalInterface> =
     showErrorNotification,
     hideLoading,
   } = useMutationCallbacks({
-    reload: true,
+    withModal: true,
   });
 
-  const [createProductMutation] = useCreateProductMutation({
+  const [createProductWithSyncErrorMutation] = useCreateProductWithSyncErrorMutation({
     awaitRefetchQueries: true,
     onCompleted: (data) => {
-      if (data.createProduct.success) {
-        onCompleteCallback(data.createProduct);
+      if (data.createProductWithSyncError.success) {
+        onCompleteCallback(data.createProductWithSyncError);
+        router
+          .push(
+            `${ROUTE_CMS}/rubrics/${data.createProductWithSyncError.payload?.rubricId}/products/product/${data.createProductWithSyncError.payload?._id}`,
+          )
+          .catch((e) => console.log(e));
       } else {
         hideLoading();
-        showErrorNotification({ title: data.createProduct.message });
+        showErrorNotification({
+          title: data.createProductWithSyncError.message,
+        });
       }
     },
     onError: onErrorCallback,
   });
+
+  if (loading) {
+    return (
+      <ModalFrame>
+        <Spinner isNested isTransparent />
+      </ModalFrame>
+    );
+  }
+
+  if (error || !data || !data.getAllRubrics) {
+    return (
+      <ModalFrame>
+        <RequestError />
+      </ModalFrame>
+    );
+  }
+
+  if (!data && !loading && !error) {
+    return (
+      <ModalFrame>
+        <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
+      </ModalFrame>
+    );
+  }
+
+  const { getAllRubrics } = data;
 
   const initialValues: InitialValuesInterface = {
     active: true,
@@ -80,14 +124,20 @@ const CreateNewProductFromErrorModal: React.FC<CreateNewProductModalInterface> =
             return;
           }
           showLoading();
-          return createProductMutation({
+          return createProductWithSyncErrorMutation({
             variables: {
               input: {
-                ...values,
-                rubricId: `${values.rubricId}`,
-                barcode: (values.barcode || []).filter((currentBarcode) => {
-                  return Boolean(currentBarcode);
-                }),
+                available: notSyncedProduct.available,
+                price: notSyncedProduct.price,
+                barcode: notSyncedProduct.barcode,
+                shopId: notSyncedProduct.shopId,
+                productFields: {
+                  ...values,
+                  rubricId: `${values.rubricId}`,
+                  barcode: (values.barcode || []).filter((currentBarcode) => {
+                    return Boolean(currentBarcode);
+                  }),
+                },
               },
             },
           });
@@ -96,6 +146,16 @@ const CreateNewProductFromErrorModal: React.FC<CreateNewProductModalInterface> =
         {() => {
           return (
             <Form>
+              <FormikSelect
+                label={'Рубрика'}
+                testId={'rubricId'}
+                name={'rubricId'}
+                firstOption={'Не назначено'}
+                options={getAllRubrics}
+                useIdField
+                isRequired
+              />
+
               <ProductMainFields />
 
               <ModalButtons>
@@ -114,4 +174,4 @@ const CreateNewProductFromErrorModal: React.FC<CreateNewProductModalInterface> =
   );
 };
 
-export default CreateNewProductFromErrorModal;
+export default CreateProductWithSyncErrorModal;

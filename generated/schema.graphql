@@ -1255,6 +1255,11 @@ type Mutation {
   updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
 
   """
+  Should update product with syn error and remove sync error
+  """
+  updateProductWithSyncError(input: UpdateProductWithSyncErrorInput!): ProductPayload!
+
+  """
   Should update role
   """
   updateRole(input: UpdateRoleInput!): RolePayload!
@@ -2428,6 +2433,14 @@ input UpdateProductTextAttributeItemInput {
   attributeId: ObjectId!
   productAttributeId: ObjectId!
   textI18n: JSONObject
+}
+
+input UpdateProductWithSyncErrorInput {
+  available: Int!
+  barcode: String!
+  price: Int!
+  productId: ObjectId!
+  shopId: ObjectId!
 }
 
 input UpdateRoleInput {

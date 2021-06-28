@@ -61,6 +61,10 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                   variant: PRODUCT_SEARCH_MODAL,
                   props: {
                     testId: 'products-search-modal',
+                    createTitle: 'Выбрать',
+                    createHandler: (product) => {
+                      console.log(product);
+                    },
                   },
                 });
               }}

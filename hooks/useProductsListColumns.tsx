@@ -8,6 +8,9 @@ import { RubricProductFragment } from 'generated/apolloComponents';
 import { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
 
+export type ProductColumnsItemHandler = (product: RubricProductFragment) => void;
+export type ProductColumnsHandlerPermission = (product: RubricProductFragment) => boolean;
+
 export interface ProductColumnsInterface
   extends Omit<
     ContentItemControlsInterface,
@@ -18,12 +21,12 @@ export interface ProductColumnsInterface
     | 'updateHandler'
     | 'deleteHandler'
   > {
-  createHandler?: (product: RubricProductFragment) => void;
-  updateHandler?: (product: RubricProductFragment) => void;
-  deleteHandler?: (product: RubricProductFragment) => void;
-  isCreateDisabled?: (product: RubricProductFragment) => boolean;
-  isUpdateDisabled?: (product: RubricProductFragment) => boolean;
-  isDeleteDisabled?: (product: RubricProductFragment) => boolean;
+  createHandler?: ProductColumnsItemHandler;
+  updateHandler?: ProductColumnsItemHandler;
+  deleteHandler?: ProductColumnsItemHandler;
+  isCreateDisabled?: ProductColumnsHandlerPermission;
+  isUpdateDisabled?: ProductColumnsHandlerPermission;
+  isDeleteDisabled?: ProductColumnsHandlerPermission;
 }
 
 const useProductsListColumns = ({

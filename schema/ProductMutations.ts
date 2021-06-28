@@ -1,4 +1,5 @@
 import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { getCurrencyString } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -6,6 +7,7 @@ import {
   ProductModel,
   ProductPayloadModel,
   RubricModel,
+  ShopModel,
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -21,9 +23,10 @@ import {
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_SHOPS,
 } from 'db/collectionNames';
 import { generateProductSlug } from 'lib/slugUtils';
-import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assets';
@@ -59,6 +62,17 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
+  },
+});
+
+export const UpdateProductWithSyncErrorInput = inputObjectType({
+  name: 'UpdateProductWithSyncErrorInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.string('barcode');
+    t.nonNull.int('available');
+    t.nonNull.int('price');
+    t.nonNull.objectId('shopId');
   },
 });
 
@@ -758,6 +772,171 @@ export const ProductMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should update product with syn error and remove sync error
+    t.nonNull.field('updateProductWithSyncError', {
+      type: 'ProductPayload',
+      description: 'Should update product with syn error and remove sync error',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductWithSyncErrorInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { productId, barcode, available, price, shopId } = input;
+
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check product availability
+            const shop = await shopsCollection.findOne({ _id: shopId });
+            if (!shop) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shops.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if shop product already exist
+            const shopProduct = await shopProductsCollection.findOne({
+              barcode,
+              productId,
+              shopId,
+            });
+            if (!shopProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shopProducts.create.duplicate`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $addToSet: {
+                  barcode,
+                },
+                $set: {
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const createdShopProductsResult = await shopProductsCollection.insertOne({
+              barcode,
+              available,
+              price,
+              active: true,
+              formattedPrice: getCurrencyString(price),
+              formattedOldPrice: '',
+              discountedPercent: 0,
+              productId,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: product.rubricId,
+              rubricSlug: product.rubricSlug,
+              companyId: shop.companyId,
+              itemId: product.itemId,
+              slug: product.slug,
+              originalName: product.originalName,
+              nameI18n: product.nameI18n,
+              brandSlug: product.brandSlug,
+              brandCollectionSlug: product.brandCollectionSlug,
+              manufacturerSlug: product.manufacturerSlug,
+              mainImage: product.mainImage,
+              selectedOptionsSlugs: product.selectedOptionsSlugs,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
+            });
+            if (!createdShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`shopProducts.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.create.success'),
               payload: updatedProduct,
             };
           });

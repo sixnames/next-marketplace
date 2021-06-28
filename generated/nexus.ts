@@ -716,6 +716,14 @@ export interface NexusGenInputs {
     productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
     textI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
+  UpdateProductWithSyncErrorInput: {
+    // input type
+    available: number; // Int!
+    barcode: string; // String!
+    price: number; // Int!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    shopId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateRoleInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -1374,6 +1382,7 @@ export interface NexusGenFieldTypes {
     updateProductNumberAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
@@ -2409,6 +2418,7 @@ export interface NexusGenFieldTypeNames {
     updateProductNumberAttribute: 'ProductPayload';
     updateProductSelectAttribute: 'ProductPayload';
     updateProductTextAttribute: 'ProductPayload';
+    updateProductWithSyncError: 'ProductPayload';
     updateRole: 'RolePayload';
     updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
@@ -3394,6 +3404,10 @@ export interface NexusGenArgTypes {
     updateProductTextAttribute: {
       // args
       input: NexusGenInputs['UpdateProductTextAttributeInput']; // UpdateProductTextAttributeInput!
+    };
+    updateProductWithSyncError: {
+      // args
+      input: NexusGenInputs['UpdateProductWithSyncErrorInput']; // UpdateProductWithSyncErrorInput!
     };
     updateRole: {
       // args

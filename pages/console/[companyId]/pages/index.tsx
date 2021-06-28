@@ -5,11 +5,11 @@ import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import { COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { PagesGroupInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -29,9 +29,13 @@ const pageTitle = 'Группы страниц';
 
 interface PageGroupsPageConsumerInterface {
   pagesGroups: PagesGroupInterface[];
+  currentCompany: CompanyInterface;
 }
 
-const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pagesGroups }) => {
+const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({
+  pagesGroups,
+  currentCompany,
+}) => {
   const router = useRouter();
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
@@ -59,7 +63,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
           <Link
             testId={`${cellData}-link`}
             className='text-primary-text hover:no-underline hover:text-link-text'
-            href={`${ROUTE_CMS}/pages/${dataItem._id}`}
+            href={`${ROUTE_CONSOLE}/${currentCompany._id}/pages/${dataItem._id}`}
           >
             {cellData}
           </Link>
@@ -124,7 +128,9 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
               columns={columns}
               data={pagesGroups}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${ROUTE_CMS}/pages/${dataItem._id}`).catch(console.log);
+                router
+                  .push(`${ROUTE_CONSOLE}/${currentCompany._id}/pages/${dataItem._id}`)
+                  .catch(console.log);
               }}
             />
           </div>
@@ -137,7 +143,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
-                    companySlug: DEFAULT_COMPANY_SLUG,
+                    companySlug: `${currentCompany?.slug}`,
                     validationSchema: createPagesGroupValidationSchema,
                   },
                 });
@@ -154,10 +160,14 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({ pag
 
 interface PageGroupsPageInterface extends PagePropsInterface, PageGroupsPageConsumerInterface {}
 
-const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGroups }) => {
+const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
+  pageUrls,
+  pagesGroups,
+  currentCompany,
+}) => {
   return (
     <AppLayout title={pageTitle} pageUrls={pageUrls}>
-      <PageGroupsPageConsumer pagesGroups={pagesGroups} />
+      <PageGroupsPageConsumer pagesGroups={pagesGroups} currentCompany={currentCompany} />
     </AppLayout>
   );
 };
@@ -201,6 +211,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
+      currentCompany: props.currentCompany,
     },
   };
 };

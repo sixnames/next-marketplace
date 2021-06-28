@@ -5,11 +5,11 @@ import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
 import Table, { TableColumn } from 'components/Table';
-import { PAGE_STATE_DRAFT, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { PAGE_STATE_DRAFT, ROUTE_CONSOLE, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import { useDeletePageMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, {
@@ -28,9 +28,13 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface PagesListPageConsumerInterface {
   pagesGroup: PagesGroupInterface;
+  currentCompany: CompanyInterface;
 }
 
-const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pagesGroup }) => {
+const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({
+  pagesGroup,
+  currentCompany,
+}) => {
   const router = useRouter();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -50,7 +54,7 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
           <Link
             testId={`${cellData}-link`}
             className='text-primary-text hover:no-underline hover:text-link-text'
-            href={`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`}
+            href={`${ROUTE_CONSOLE}/${currentCompany._id}/pages/${pagesGroup._id}/${dataItem._id}`}
           >
             {cellData}
           </Link>
@@ -99,7 +103,9 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
               updateTitle={'Редактировать страницу'}
               updateHandler={() => {
                 router
-                  .push(`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`)
+                  .push(
+                    `${ROUTE_CONSOLE}/${currentCompany._id}/pages/${pagesGroup._id}/${dataItem._id}`,
+                  )
                   .catch(console.log);
               }}
             />
@@ -114,7 +120,7 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
     config: [
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/pages`,
+        href: `${ROUTE_CONSOLE}/${currentCompany._id}/pages`,
       },
     ],
   };
@@ -131,7 +137,9 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
               data={pagesGroup.pages || []}
               onRowDoubleClick={(dataItem) => {
                 router
-                  .push(`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`)
+                  .push(
+                    `${ROUTE_CONSOLE}/${currentCompany._id}/pages/${pagesGroup._id}/${dataItem._id}`,
+                  )
                   .catch(console.log);
               }}
             />
@@ -161,10 +169,14 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pages
 
 interface PagesListPageInterface extends PagePropsInterface, PagesListPageConsumerInterface {}
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup }) => {
+const PagesListPage: NextPage<PagesListPageInterface> = ({
+  pageUrls,
+  pagesGroup,
+  currentCompany,
+}) => {
   return (
     <AppLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesListPageConsumer pagesGroup={pagesGroup} />
+      <PagesListPageConsumer pagesGroup={pagesGroup} currentCompany={currentCompany} />
     </AppLayout>
   );
 };
@@ -278,6 +290,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
+      currentCompany: props.currentCompany,
     },
   };
 };

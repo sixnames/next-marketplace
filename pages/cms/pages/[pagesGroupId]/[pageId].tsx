@@ -170,7 +170,7 @@ interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsPageCo
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
   return (
-    <CmsLayout title={'Page'} pageUrls={pageUrls}>
+    <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
       <PageDetailsPageConsumer page={page} cities={cities} />
     </CmsLayout>
   );

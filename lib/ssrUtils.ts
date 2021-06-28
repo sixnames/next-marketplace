@@ -632,7 +632,7 @@ export async function getConsoleInitialData({
       currentCity,
       sessionCity,
       sessionUser: castDbData(sessionUser),
-      currentCompany: castDbData(currentCompany),
+      currentCompany: currentCompany ? castDbData(currentCompany) : null,
       sessionLocale,
       pageUrls,
     },

@@ -4,10 +4,10 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import PageEditor from 'components/PageEditor';
-import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CityInterface, PageInterface } from 'db/uiInterfaces';
+import { CityInterface, CompanyInterface, PageInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -15,6 +15,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
+import AppLayout from 'layout/AppLayout/AppLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -22,14 +23,14 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { updatePageSchema } from 'validation/pagesSchema';
 
 interface PageDetailsPageConsumerInterface {
   page: PageInterface;
   cities: CityInterface[];
+  currentCompany: CompanyInterface;
 }
 
 const PAGE_STATE_OPTIONS = [
@@ -45,7 +46,11 @@ const PAGE_STATE_OPTIONS = [
   },
 ];
 
-const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ page, cities }) => {
+const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({
+  page,
+  currentCompany,
+  cities,
+}) => {
   const validationSchema = useValidationSchema({
     schema: updatePageSchema,
   });
@@ -62,11 +67,11 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
     config: [
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/pages`,
+        href: `${ROUTE_CONSOLE}/${currentCompany._id}/pages`,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/pages/${page.pagesGroup?._id}`,
+        href: `${ROUTE_CONSOLE}/${currentCompany._id}/pages/${page.pagesGroup?._id}`,
       },
     ],
   };
@@ -168,11 +173,16 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
 
 interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsPageConsumerInterface {}
 
-const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
+const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
+  pageUrls,
+  page,
+  currentCompany,
+  cities,
+}) => {
   return (
-    <CmsLayout title={'Page'} pageUrls={pageUrls}>
-      <PageDetailsPageConsumer page={page} cities={cities} />
-    </CmsLayout>
+    <AppLayout title={`${page.name}`} pageUrls={pageUrls}>
+      <PageDetailsPageConsumer page={page} cities={cities} currentCompany={currentCompany} />
+    </AppLayout>
   );
 };
 
@@ -181,8 +191,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<PageDetailsPageInterface>> => {
   const { query } = context;
   const { pageId } = query;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !pageId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !pageId || !props.currentCompany) {
     return {
       notFound: true,
     };
@@ -256,6 +266,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(page),
       cities: castDbData(cities),
+      currentCompany: props.currentCompany,
     },
   };
 };

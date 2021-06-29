@@ -63,6 +63,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
         return (
           <div className='flex justify-end'>
             <ContentItemControls
+              testId={dataItem.barcode}
               createTitle={'Найти или создать товар'}
               createHandler={() => {
                 showModal<ProductSearchModalInterface>({
@@ -73,6 +74,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                     subtitle: (
                       <div className='mb-8'>
                         <Button
+                          testId={'create-product'}
                           size={'small'}
                           onClick={() => {
                             showModal<CreateProductWithSyncErrorModalInterface>({

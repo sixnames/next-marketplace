@@ -11,9 +11,11 @@ import {
 const validRequestParamsA = 'token=000001&apiVersion=0.0.1&systemVersion=8.2';
 const validRequestParamsC = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
 
+const errorBarcode = '9999999999999999';
+
 const initialBody: SyncProductInterface[] = [
   {
-    barcode: '9999999999999999',
+    barcode: errorBarcode,
     available: 999,
     price: 999,
     name: 'notFoundProduct',
@@ -119,7 +121,7 @@ describe('Sync', () => {
 
       expect(success).equals(true);
       expect(orders).to.have.length(1);
-      expect(orders[0].products).to.have.length(2);
+      expect(orders[0].products).to.have.length(1);
 
       // should update order product
       const updateProduct: SyncUpdateOrderProductInterface = {
@@ -155,9 +157,55 @@ describe('Sync', () => {
     cy.getByCy('generated-token').should('exist');
   });
 
-  // TODO test cms sync-errors page
+  it('Should create product with sync error', () => {
+    cy.request({
+      method: 'POST',
+      url: `/api/shops/sync?${validRequestParamsC}`,
+      body: JSON.stringify(initialBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
 
-  it.only('Should sync shop products with site catalogue', () => {
+    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.getByCy('sync-errors-page').should('exist');
+    cy.getByCy(`${errorBarcode}-create`).click();
+    cy.getByCy('products-search-modal').should('exist');
+    cy.getByCy(`create-product`).click();
+    cy.getByCy('create-product-with-sync-error-modal').should('exist');
+    cy.getByCy('descriptionI18n-ru').type('description');
+    cy.selectOptionByTestId('rubricId', 'vino');
+    cy.getByCy(`submit-new-product`).click();
+    cy.wait(1500);
+    cy.getByCy('product-details').should('exist');
+    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.getByCy(`${errorBarcode}-create`).should('not.exist');
+  });
+
+  it('Should update product with sync error', () => {
+    cy.request({
+      method: 'POST',
+      url: `/api/shops/sync?${validRequestParamsC}`,
+      body: JSON.stringify(initialBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
+
+    // Should create product with sync error
+    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.getByCy('sync-errors-page').should('exist');
+    cy.getByCy(`${errorBarcode}-create`).click();
+    cy.getByCy('products-search-modal').should('exist');
+    cy.getByCy('product-search-input').type('000200');
+    cy.getByCy('product-search-submit').click();
+    cy.wait(1500);
+    cy.getByCy('vino 000208-create').click();
+    cy.wait(1500);
+    cy.getByCy(`${errorBarcode}-create`).should('not.exist');
+  });
+
+  it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',
@@ -236,7 +284,7 @@ describe('Sync', () => {
       expect(input.val()).to.equals('1');
     });
 
-    // Should update synced products
+    // should update synced products
     cy.request({
       method: 'PATCH',
       url: `/api/shops/update?${validRequestParamsC}`,
@@ -264,13 +312,13 @@ describe('Sync', () => {
       expect(input.val()).to.equals('1000');
     });
 
-    // Should display sync errors list
+    // should display sync errors list in the shop
     cy.getByCy('shop-sync-errors').click();
     cy.wait(1500);
     cy.getByCy('shop-sync-errors-page').should('exist');
     cy.getByCy('notFoundProduct-row').should('exist');
 
-    // Should return shop products list
+    // should return shop products list
     cy.request({
       method: 'GET',
       url: `/api/shops/get-shop-products?${validRequestParamsC}`,

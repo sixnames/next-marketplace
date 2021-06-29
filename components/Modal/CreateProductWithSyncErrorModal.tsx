@@ -111,7 +111,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
   };
 
   return (
-    <ModalFrame testId={'create-new-product-modal'}>
+    <ModalFrame testId={'create-product-with-sync-error-modal'}>
       <ModalTitle>Создание товара</ModalTitle>
       <Formik<InitialValuesInterface>
         validationSchema={validationSchema}

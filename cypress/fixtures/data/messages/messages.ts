@@ -1,9 +1,9 @@
 import { MessageBaseInterface } from '../../../../db/uiInterfaces';
 import { MessageModel } from '../../../../db/dbModels';
+import { getObjectId } from 'mongo-seeding';
 import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
 import { pagesMessages } from '../../apiMessages/pagesMessages';
 import messagesGroups from '../messagesGroups/messagesGroups';
-import { getObjectId } from 'mongo-seeding';
 import { attributesGroupsMessages } from '../../apiMessages/attributesGroupsMessages';
 import { brandCollectionsMessages } from '../../apiMessages/brandCollectionsMessages';
 import { brandsMessages } from '../../apiMessages/brandsMessages';

@@ -56,7 +56,6 @@ const config = {
 };
 
 (async function seedTestDb() {
-  console.log(JSON.stringify(config, null, 2));
   const seeder = new Seeder(config);
 
   const collections = seeder.readCollectionsFromPath(

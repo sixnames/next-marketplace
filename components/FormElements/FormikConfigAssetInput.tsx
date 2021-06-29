@@ -4,7 +4,6 @@ import { ConfigModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { get } from 'lodash';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface ConfigsAssetInputInterface {
@@ -14,9 +13,10 @@ interface ConfigsAssetInputInterface {
 }
 
 const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => {
-  const router = useRouter();
   const { slug, name, description, acceptedFormats, cities } = config;
-  const { showErrorNotification, showLoading } = useMutationCallbacks({});
+  const { showErrorNotification, onCompleteCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
 
   const file = get(cities, `${DEFAULT_CITY}.${DEFAULT_LOCALE}`);
 
@@ -53,11 +53,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
                         return res.json();
                       })
                       .then((json) => {
-                        if (json.success) {
-                          router.reload();
-                          return;
-                        }
-                        showErrorNotification({ title: json.message });
+                        onCompleteCallback(json);
                       })
                       .catch(() => {
                         showErrorNotification({ title: 'error' });

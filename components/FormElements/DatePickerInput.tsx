@@ -11,7 +11,7 @@ import * as React from 'react';
 import DatePicker, {
   ReactDatePickerProps,
   registerLocale,
-  // setDefaultLocale,
+  setDefaultLocale,
 } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ru from 'date-fns/locale/ru';
@@ -19,7 +19,7 @@ import { InputTheme } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 
 registerLocale(DEFAULT_LOCALE, ru);
-// setDefaultLocale(DEFAULT_LOCALE);
+setDefaultLocale(DEFAULT_LOCALE);
 
 export interface DatePickerInputEvent {
   target: {

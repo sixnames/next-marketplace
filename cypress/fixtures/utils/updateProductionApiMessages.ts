@@ -1,7 +1,7 @@
-import messagesGroupsTemplates from '../cypress/fixtures/data/messagesGroups/messagesGroups';
-import messageTemplates from '../cypress/fixtures/data/messages/messages';
+import messagesGroupsTemplates from '../data/messagesGroups/messagesGroups';
+import messageTemplates from '../data/messages/messages';
 import path from 'path';
-import { COL_MESSAGES, COL_MESSAGES_GROUPS } from './collectionNames';
+import { COL_MESSAGES, COL_MESSAGES_GROUPS } from '../../../db/collectionNames';
 import { MongoClient } from 'mongodb';
 require('dotenv').config();
 

@@ -91,10 +91,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
     cardBreadcrumbs,
     cardShopProducts,
     shopsCount,
+    shopProducts,
   } = cardData;
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [amount, setAmount] = React.useState<number>(1);
   const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
@@ -282,10 +283,17 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                     />
                     <Button
                       onClick={() => {
-                        addShoplessProductToCart({
-                          amount,
-                          productId: _id,
-                        });
+                        if (shopProducts && shopProducts.length < 2) {
+                          addProductToCart({
+                            amount,
+                            shopProductId: `${shopProducts[0]._id}`,
+                          });
+                        } else {
+                          addShoplessProductToCart({
+                            amount,
+                            productId: _id,
+                          });
+                        }
                       }}
                       testId={`card-add-to-cart`}
                       className='w-full sm:half-column'

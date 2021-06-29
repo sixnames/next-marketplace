@@ -174,11 +174,14 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     onCompleted: ({ makeAnOrder }) => {
       if (makeAnOrder.success) {
         showLoading();
-        refetchCartHandler(() => {
-          router.push(ROUTE_THANK_YOU).catch(() => {
+        router
+          .push(ROUTE_THANK_YOU)
+          .then(() => {
+            refetchCartHandler();
+          })
+          .catch(() => {
             showErrorNotification();
           });
-        });
         return;
       }
       hideLoading();

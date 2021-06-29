@@ -98,7 +98,7 @@ const PageGroupsPageConsumer: React.FC<PageGroupsPageConsumerInterface> = ({
                   variant: CONFIRM_MODAL,
                   props: {
                     testId: 'delete-pages-group-modal',
-                    message: `Вы уверенны, что хотите удалить группу старниц ${dataItem.name}. Все страницы данной группы будту так же удалены.`,
+                    message: `Вы уверенны, что хотите удалить группу страниц ${dataItem.name}. Все страницы данной группы будту так же удалены.`,
                     confirm: () => {
                       showLoading();
                       deletePagesGroupMutation({

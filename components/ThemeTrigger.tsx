@@ -17,9 +17,9 @@ const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className, staticColors
       onClick={toggleTheme}
     >
       {isDark ? (
-        <Icon name={'moon'} className={`w-[16px] h-[16px]`} />
+        <Icon name={'sun'} className={`w-[16px] h-[16px]`} />
       ) : (
-        <Icon name={'sun'} className={`w-[18px] h-[18px]`} />
+        <Icon name={'moon'} className={`w-[18px] h-[18px]`} />
       )}
     </div>
   );

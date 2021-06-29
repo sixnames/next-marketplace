@@ -9,7 +9,7 @@ const ErrorPage: NextPage = () => {
   const router = useRouter();
   return (
     <Inner className='mt-8'>
-      <Title>404 Стараница не найдена</Title>
+      <Title>404 Страница не найдена</Title>
       <div className='flex'>
         <Link href={`/`}>На главную</Link>
         <div className='ml-4 cursor-pointer' onClick={() => router.back()}>

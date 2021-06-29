@@ -34,6 +34,7 @@ export const CREATE_PRODUCT_MUTATION = gql`
       message
       payload {
         _id
+        rubricId
       }
     }
   }

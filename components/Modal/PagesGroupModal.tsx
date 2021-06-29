@@ -45,7 +45,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
   return (
     <ModalFrame testId={'pages-group-modal'}>
       <ModalTitle>
-        {pagesGroup ? 'Обновление группы старниц' : 'Создание группы страниц'}
+        {pagesGroup ? 'Обновление группы страниц' : 'Создание группы страниц'}
       </ModalTitle>
 
       <Formik

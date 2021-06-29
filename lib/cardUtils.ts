@@ -61,6 +61,11 @@ export async function getCardData({
             ...companyRubricsMatch,
           },
         },
+        {
+          $sort: {
+            _id: SORT_DESC,
+          },
+        },
 
         // Get shops
         {

@@ -2,9 +2,8 @@ import {
   ProductsPaginationPayloadModel,
   ProductsPaginationInputModel,
   SortDirectionModel,
-  LanguageModel,
 } from 'db/dbModels';
-import { COL_LANGUAGES, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCTS } from 'db/collectionNames';
 import {
   PAGE_DEFAULT,
   PAGINATION_DEFAULT_LIMIT,
@@ -14,8 +13,9 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import { ProductsPaginationAggregationInterface } from 'db/uiInterfaces';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { noNaN } from 'lib/numbers';
-import { CollectionAggregationOptions } from 'mongodb';
+import { CollectionAggregationOptions, ObjectId } from 'mongodb';
 
 export interface ProductsPaginationQueryInterface {
   input?: ProductsPaginationInputModel | null;
@@ -52,7 +52,6 @@ export async function productsPaginationQuery({
 
     const { db } = await getDatabase();
     const productsCollection = db.collection(COL_PRODUCTS);
-    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
     const {
       excludedProductsIds,
       excludedRubricsIds,
@@ -136,48 +135,42 @@ export async function productsPaginationQuery({
         ]
       : [];
 
-    // Search stage
-    let searchStage: Record<string, any>[] = [];
+    // algolia
+    let searchIds: ObjectId[] = [];
     if (search) {
-      const languages = await languagesCollection.find({}).toArray();
-      const searchByName = languages.map(({ slug }) => {
-        return {
-          [`nameI18n.${slug}`]: {
-            $regex: search,
-            $options: 'i',
-          },
-        };
+      searchIds = await getAlgoliaProductsSearch({
+        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+        search: `${search}`,
+        excludedProductsIds,
       });
-      searchStage = [
-        {
-          $match: {
-            $or: [
-              ...searchByName,
-              {
-                originalName: {
-                  $regex: search,
-                  $options: 'i',
-                },
-              },
-              {
-                itemId: {
-                  $regex: search,
-                  $options: 'i',
-                },
-              },
-            ],
-          },
-        },
-      ];
+
+      // return empty page if no search results
+      if (searchIds.length < 1) {
+        return aggregationFallback;
+      }
     }
 
+    // search
+    const searchStage =
+      search && search.length > 0 && searchIds.length > 0
+        ? [
+            {
+              $match: {
+                _id: {
+                  $in: searchIds,
+                },
+              },
+            },
+          ]
+        : [];
+
     const pipeline = [
-      ...rubricsStage,
+      ...searchStage,
       ...excludedProductsStage,
+      ...rubricsStage,
       ...excludedRubricsStage,
       ...attributesStage,
       ...excludedOptionsSlugsStage,
-      ...searchStage,
 
       // filter shop products data
       ...shopsMatchPipeline,

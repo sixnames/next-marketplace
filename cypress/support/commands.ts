@@ -167,7 +167,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-shops-1-0-add-to-cart`).click();
 
-  // Add second product #2
+  // Add product #2
   cy.getByCy(`cart-modal-close`).click();
   cy.visit(catalogueRoute);
   cy.wait(1500);

@@ -7,7 +7,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import { useThemeContext } from 'context/themeContext';
 import Image from 'next/image';
-import RatingStars from '../RatingStars/RatingStars';
+import RatingStars from 'components/RatingStars';
 import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
 
 interface ShopsMapInterface {

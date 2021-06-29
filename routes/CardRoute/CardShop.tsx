@@ -5,7 +5,7 @@ import classes from './CardShop.module.css';
 import Image from 'next/image';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import Button from 'components/Button';
-import RatingStars from '../../components/RatingStars/RatingStars';
+import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import { useAppContext } from 'context/appContext';
 import Icon from 'components/Icon';

@@ -17,7 +17,6 @@ import { useUpdateConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { get } from 'lodash';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import { InputType } from 'types/clientTypes';
 import { updateConfigSchema } from 'validation/configSchema';
@@ -172,14 +171,13 @@ interface FormikConfigInputInterface {
 }
 
 const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => {
-  const router = useRouter();
   const { cities } = useConfigContext();
-  const { onErrorCallback } = useMutationCallbacks({});
+  const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({
+    reload: true,
+  });
   const [updateConfigMutation] = useUpdateConfigMutation({
     onError: onErrorCallback,
-    onCompleted: () => {
-      router.reload();
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateConfig),
   });
   const notAssetSchema = useValidationSchema({
     schema: updateConfigSchema,

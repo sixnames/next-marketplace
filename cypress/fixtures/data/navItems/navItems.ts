@@ -54,6 +54,18 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} console-company-config`),
+    slug: 'console-company-config',
+    nameI18n: {
+      ru: 'Настройки компании',
+      en: 'Site settings',
+    },
+    index: 98,
+    icon: 'gear',
+    path: `/company-config`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} console-config`),
     slug: 'console-config',
     nameI18n: {

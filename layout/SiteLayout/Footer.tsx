@@ -119,8 +119,9 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
         <div className='grid sm:grid-cols-2 lg:grid-cols-4 lg:col-span-4 gap-x-6 gap-y-6 text-xs'>
           <div className='hidden lg:block text-secondary-text' />
           <div className='hidden lg:block text-secondary-text' />
+          <div className='hidden lg:block text-secondary-text' />
           {/*<div className='text-secondary-text'>Карта сайта</div>*/}
-          <div className='text-secondary-text'>Политика конфиденциальности</div>
+          {/*<div className='text-secondary-text'>Политика конфиденциальности</div>*/}
           <small className='text-secondary-text text-[1em]'>
             {configSiteName} © {new Date().getFullYear()}
           </small>

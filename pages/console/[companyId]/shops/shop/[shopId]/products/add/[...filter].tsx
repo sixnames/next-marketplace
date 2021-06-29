@@ -11,6 +11,7 @@ import {
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
@@ -43,12 +44,37 @@ interface CompanyShopProductsListInterface
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
+  rubricName,
+  rubricId,
   ...props
 }) => {
   const router = useRouter();
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const layoutBasePath = `${ROUTE_CONSOLE}/shops/${router.query.companyId}`;
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Добавление товаров',
+    config: [
+      {
+        name: 'Магазины',
+        href: companyBasePath,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shop/${shop._id}`,
+      },
+      {
+        name: 'Товары',
+        href: `${companyBasePath}/shop/${shop._id}/products`,
+      },
+      {
+        name: rubricName,
+        href: `${companyBasePath}/shop/${shop._id}/products/${rubricId}`,
+      },
+    ],
+  };
 
   const createChosenProduct: ShopAddProductsCreateChosenProduct = (product) => {
     setChosen((prevState) => {
@@ -71,6 +97,9 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
     return (
       <AppLayout pageUrls={pageUrls}>
         <ShopAddProductsFinalStep
+          breadcrumbs={breadcrumbs}
+          rubricName={rubricName}
+          rubricId={rubricId}
           layoutBasePath={layoutBasePath}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
@@ -86,6 +115,9 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   return (
     <AppLayout pageUrls={pageUrls}>
       <ShopAddProductsList
+        breadcrumbs={breadcrumbs}
+        rubricName={rubricName}
+        rubricId={rubricId}
         layoutBasePath={layoutBasePath}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}

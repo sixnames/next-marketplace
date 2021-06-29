@@ -30,7 +30,7 @@ import {
   NAV_ITEM_MODAL,
   PAGES_GROUP_MODAL,
   CREATE_PAGE_MODAL,
-  CREATE_NEW_PRODUCT_FROM_ERROR_MODAL,
+  CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -55,8 +55,8 @@ const AddAttributesGroupToRubricModal = dynamic(
 );
 const AttributeInGroupModal = dynamic(() => import('components/Modal/AttributeInGroupModal'));
 const CreateNewProductModal = dynamic(() => import('components/Modal/CreateNewProductModal'));
-const CreateNewProductFromErrorModal = dynamic(
-  () => import('components/Modal/CreateNewProductFromErrorModal'),
+const CreateProductWithSyncErrorModal = dynamic(
+  () => import('components/Modal/CreateProductWithSyncErrorModal'),
 );
 
 const UsersSearchModal = dynamic(() => import('components/Modal/UsersSearchModal'));
@@ -106,8 +106,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
 
-          {modalType === CREATE_NEW_PRODUCT_FROM_ERROR_MODAL && (
-            <CreateNewProductFromErrorModal {...modalProps} />
+          {modalType === CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL && (
+            <CreateProductWithSyncErrorModal {...modalProps} />
           )}
 
           {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}

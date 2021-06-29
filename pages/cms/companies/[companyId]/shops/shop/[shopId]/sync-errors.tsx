@@ -49,6 +49,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
       <ShopSyncErrors
         breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
+        showShopName={false}
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />

@@ -25,6 +25,7 @@ export interface SelectInterface extends InputLinePropsInterface {
   testId?: string;
   disabled?: boolean;
   theme?: InputTheme;
+  useIdField?: boolean;
 }
 
 const Select: React.FC<SelectInterface> = ({
@@ -52,6 +53,7 @@ const Select: React.FC<SelectInterface> = ({
   showInlineError,
   error,
   disabled,
+  useIdField,
   ...props
 }) => {
   const withFirstOptions: SelectOptionInterface[] = firstOption
@@ -59,7 +61,7 @@ const Select: React.FC<SelectInterface> = ({
         {
           _id: null,
           slug: null,
-          nameString: firstOption,
+          name: firstOption,
         },
         ...options,
       ]
@@ -113,9 +115,14 @@ const Select: React.FC<SelectInterface> = ({
         >
           {withFirstOptions.map(({ name, lastName, _id, slug }) => {
             const { optionName } = getOptionName(name, lastName);
-            const value = slug ? slug : setNameToValue ? optionName : _id;
+            let value = slug ? slug : setNameToValue ? optionName : _id;
+            if (useIdField) {
+              value = _id;
+            }
+            const key = _id || slug || optionName;
+
             return (
-              <option key={_id || slug} value={value} data-cy={`option-${slug || optionName}`}>
+              <option key={key} value={value} data-cy={`option-${slug || optionName}`}>
                 {optionName}
               </option>
             );

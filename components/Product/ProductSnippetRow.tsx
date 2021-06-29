@@ -3,7 +3,7 @@ import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import LayoutCard from 'layout/LayoutCard';
-import RatingStars from 'components/RatingStars/RatingStars';
+import RatingStars from 'components/RatingStars';
 import Image from 'next/image';
 import Link from 'components/Link/Link';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';

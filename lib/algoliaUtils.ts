@@ -82,7 +82,7 @@ export const deleteAlgoliaObjects = async ({
 interface GetAlgoliaProductsSearch {
   indexName: string;
   search: string;
-  excludedProductsIds?: ObjectId[];
+  excludedProductsIds?: ObjectId[] | null;
 }
 
 export const getAlgoliaProductsSearch = async ({

@@ -520,6 +520,14 @@ input CreateProductInput {
   rubricId: ObjectId!
 }
 
+input CreateProductWithSyncErrorInput {
+  available: Int!
+  barcode: String!
+  price: Int!
+  productFields: CreateProductInput!
+  shopId: ObjectId!
+}
+
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
@@ -910,6 +918,11 @@ type Mutation {
   createProductConnection(input: CreateProductConnectionInput!): ProductPayload!
 
   """
+  Should create product with syn error and remove sync error
+  """
+  createProductWithSyncError(input: CreateProductWithSyncErrorInput!): ProductPayload!
+
+  """
   Should create role
   """
   createRole(input: CreateRoleInput!): RolePayload!
@@ -1253,6 +1266,11 @@ type Mutation {
   Should update product text attribute
   """
   updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
+
+  """
+  Should update product with syn error and remove sync error
+  """
+  updateProductWithSyncError(input: UpdateProductWithSyncErrorInput!): ProductPayload!
 
   """
   Should update role
@@ -2428,6 +2446,14 @@ input UpdateProductTextAttributeItemInput {
   attributeId: ObjectId!
   productAttributeId: ObjectId!
   textI18n: JSONObject
+}
+
+input UpdateProductWithSyncErrorInput {
+  available: Int!
+  barcode: String!
+  price: Int!
+  productId: ObjectId!
+  shopId: ObjectId!
 }
 
 input UpdateRoleInput {

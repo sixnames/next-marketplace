@@ -53,7 +53,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
 
   return (
     <ModalFrame testId={'create-page-modal'}>
-      <ModalTitle>Создание старницы</ModalTitle>
+      <ModalTitle>Создание страницы</ModalTitle>
 
       <Formik
         validationSchema={validationSchema}

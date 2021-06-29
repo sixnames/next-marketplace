@@ -5,7 +5,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure
 import Button from 'components/Button';
 import classes from './CartShopsList.module.css';
 import Image from 'next/image';
-import RatingStars from '../../components/RatingStars/RatingStars';
+import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import ProductShopPrices from 'components/Product/ProductShopPrices';
 

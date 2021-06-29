@@ -2,6 +2,7 @@ import ButtonCross from 'components/ButtonCross';
 import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
 import {
+  DATE_FORMAT_DATE,
   DEFAULT_LOCALE,
   // SECONDARY_LOCALE
 } from 'config/common';
@@ -115,6 +116,8 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
         readOnly={readOnly}
         disabled={disabled}
         id={testId}
+        dateFormat={DATE_FORMAT_DATE}
+        autoComplete={'off'}
         // locale={locale}
         {...props}
       />

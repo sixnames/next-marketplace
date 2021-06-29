@@ -14,6 +14,11 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 
+//DATES
+export const DATE_FORMAT_DATE = 'dd-MM-yyyy';
+export const DATE_FORMAT_TIME = 'HH:mm';
+export const DATE_FORMAT_FULL = `${DATE_FORMAT_DATE} ${DATE_FORMAT_TIME}`;
+
 // Cookies / Local storage
 export const CART_COOKIE_KEY = 'cart';
 export const THEME_COOKIE_KEY = 'theme';

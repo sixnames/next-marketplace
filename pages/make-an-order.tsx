@@ -197,7 +197,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
-            reservationDate: new Date(),
+            reservationDate: '',
           }}
           onSubmit={(values) => {
             makeAnOrder({
@@ -225,7 +225,6 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
-                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-phone'}
@@ -234,7 +233,6 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
-                          showInlineError
                         />
                         <FormikInput
                           testId={'order-form-email'}
@@ -243,12 +241,10 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
-                          showInlineError
                         />
 
                         <FormikDatePicker
                           isRequired
-                          showInlineError
                           label={'Дата брони'}
                           name={'reservationDate'}
                           testId={'reservationDate'}

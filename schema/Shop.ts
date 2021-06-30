@@ -704,6 +704,7 @@ export const ShopMutations = extendType({
               slug: product.slug,
               originalName: product.originalName,
               nameI18n: product.nameI18n,
+              descriptionI18n: product.descriptionI18n,
               brandSlug: product.brandSlug,
               brandCollectionSlug: product.brandCollectionSlug,
               manufacturerSlug: product.manufacturerSlug,
@@ -732,6 +733,7 @@ export const ShopMutations = extendType({
                   itemId: createdShopProduct.itemId,
                   originalName: createdShopProduct.originalName,
                   nameI18n: createdShopProduct.nameI18n,
+                  descriptionI18n: createdShopProduct.descriptionI18n,
                   barcode: createdShopProduct.barcode,
                 },
               ],
@@ -856,6 +858,7 @@ export const ShopMutations = extendType({
                 slug: product.slug,
                 originalName: product.originalName,
                 nameI18n: product.nameI18n,
+                descriptionI18n: product.descriptionI18n,
                 brandSlug: product.brandSlug,
                 brandCollectionSlug: product.brandCollectionSlug,
                 manufacturerSlug: product.manufacturerSlug,
@@ -878,6 +881,7 @@ export const ShopMutations = extendType({
                 itemId: createdShopProduct.itemId,
                 originalName: createdShopProduct.originalName,
                 nameI18n: createdShopProduct.nameI18n,
+                descriptionI18n: createdShopProduct.descriptionI18n,
                 barcode: createdShopProduct.barcode,
               });
             }

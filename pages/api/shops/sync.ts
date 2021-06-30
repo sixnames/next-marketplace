@@ -177,6 +177,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         slug: product.slug,
         originalName: product.originalName,
         nameI18n: product.nameI18n,
+        descriptionI18n: product.descriptionI18n,
         brandSlug: product.brandSlug,
         brandCollectionSlug: product.brandCollectionSlug,
         manufacturerSlug: product.manufacturerSlug,

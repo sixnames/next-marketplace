@@ -57,6 +57,7 @@ shops.forEach((shop) => {
             brandSlug: product.brandSlug,
             manufacturerSlug: product.manufacturerSlug,
             nameI18n: product.nameI18n,
+            descriptionI18n: product.descriptionI18n,
             rubricId: product.rubricId,
             rubricSlug: product.rubricSlug,
             selectedOptionsSlugs: product.selectedOptionsSlugs,

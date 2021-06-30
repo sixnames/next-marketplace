@@ -18,6 +18,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   withCross,
   disabled,
   postfix,
+  onClick,
   ...props
 }) => {
   const { name, nextSlug, isSelected } = option;
@@ -27,6 +28,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       href={nextSlug}
       isActive={isSelected}
       prefetch={false}
+      onClick={onClick}
       className={`${disabled ? 'cursor-default pointer-events-none opacity-50' : ''} ${
         className ? className : ''
       }`}

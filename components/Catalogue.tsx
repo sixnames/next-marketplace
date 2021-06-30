@@ -20,7 +20,6 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
 } from 'config/common';
-import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/uiInterfaces';
@@ -35,8 +34,7 @@ import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
-import classes from 'styles/CatalogueRoute.module.css';
+import CatalogueFilter from 'components/CatalogueFilter';
 
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;
@@ -52,7 +50,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -60,6 +57,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
+
+  // hide filter on page leave
+  React.useEffect(() => {
+    return () => {
+      setIsFilterVisible(false);
+    };
+  }, []);
 
   React.useEffect(() => {
     function scrollHandler() {
@@ -110,7 +114,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
     }).catch((e) => {
       console.log(e);
     });
-  }, [catalogueData, companySlug, updateCatalogueCountersMutation]);
+  }, [catalogueData, companySlug, router.query.rubricSlug, updateCatalogueCountersMutation]);
 
   // fetch more products handler
   const fetchMoreHandler = React.useCallback(() => {
@@ -242,7 +246,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
   if (catalogueData.totalProducts < 1) {
     return (
-      <div className={classes.catalogue}>
+      <div className='my-12 lg:mt-0 catalogue'>
         <Breadcrumbs currentPageName={catalogueData.rubricName} />
         <Inner lowTop testId={'catalogue'}>
           <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
@@ -253,14 +257,17 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   }
 
   return (
-    <div className={classes.catalogue}>
+    <div className='my-12 lg:mt-0 catalogue'>
       <Breadcrumbs currentPageName={catalogueData.rubricName} />
       <Inner lowTop testId={'catalogue'}>
-        <Title testId={'catalogue-title'} subtitle={isMobile ? catalogueCounterString : undefined}>
+        <Title
+          testId={'catalogue-title'}
+          subtitle={<span className='lg:hidden'>{catalogueCounterString}</span>}
+        >
           {catalogueData.catalogueTitle}
         </Title>
 
-        <div className={classes.catalogueContent}>
+        <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
             companyId={companyId}
             attributes={catalogueData.attributes}
@@ -271,69 +278,72 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
             hideFilterHandler={hideFilterHandler}
           />
 
-          <div>
+          <div className='lg:col-span-5'>
             <div id={'catalogue-products'}>
-              {isMobile ? (
-                <div className={classes.controlsMobile}>
-                  <Button
-                    className={classes.controlsMobileButn}
-                    theme={'secondary'}
-                    onClick={showFilterHandler}
+              {/*Mobile controls*/}
+              <div className='grid grid-cols-2 gap-10 grid lg:hidden'>
+                <Button theme={'secondary'} onClick={showFilterHandler}>
+                  Фильтр
+                </Button>
+                <HeadlessMenuButton
+                  config={sortConfig}
+                  buttonAs={'div'}
+                  menuPosition={'left'}
+                  buttonText={() => (
+                    <Button className='w-full' theme={'secondary'}>
+                      Сортировать
+                    </Button>
+                  )}
+                />
+              </div>
+
+              {/*Desktop controls*/}
+              <div className='hidden lg:flex items-center justify-between min-h-[var(--catalogueVieButtonSize)]'>
+                <div className='flex items-center'>
+                  <div className='relative top-[-1px] text-secondary-text mr-6'>Сортировать</div>
+                  <MenuButtonWithName config={sortConfig} buttonClassName='text-primary-text' />
+                </div>
+
+                <div className='flex gap-4'>
+                  <button
+                    aria-label={'Отображение сетка'}
+                    className={`w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)] ${
+                      isRowView ? 'text-secondary-text' : 'text-primary-text'
+                    }`}
+                    onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
                   >
-                    Фильтр
-                  </Button>
-                  <HeadlessMenuButton
-                    config={sortConfig}
-                    buttonClassName='text-primary-text'
-                    buttonAs={'div'}
-                    menuPosition={'left'}
-                    buttonText={() => (
-                      <Button className={classes.controlsMobileButn} theme={'secondary'}>
-                        Сортировать
-                      </Button>
-                    )}
-                  />
-                </div>
-              ) : (
-                <div className={classes.controls}>
-                  <div className='flex items-center'>
-                    <div className='relative top-[-1px] text-secondary-text mr-6'>Сортировать</div>
-                    <MenuButtonWithName config={sortConfig} buttonClassName='text-primary-text' />
-                  </div>
+                    <Icon
+                      className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
+                      name={'grid'}
+                    />
+                  </button>
 
-                  <div className={`${classes.viewControls}`}>
-                    <button
-                      aria-label={'Отображение сетка'}
-                      className={`${classes.viewControlsItem} ${
-                        isRowView ? '' : classes.viewControlsItemActive
-                      }`}
-                      onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
-                    >
-                      <Icon name={'grid'} />
-                    </button>
-                    <button
-                      aria-label={'Отображение список'}
-                      className={`${classes.viewControlsItem} ${
-                        isRowView ? classes.viewControlsItemActive : ''
-                      }`}
-                      onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
-                    >
-                      <Icon name={'rows'} />
-                    </button>
-                  </div>
+                  <button
+                    aria-label={'Отображение список'}
+                    className={`w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)] text-[var(--wp-mid-gray-100)] ${
+                      isRowView ? 'text-primary-text' : 'text-secondary-text'
+                    }`}
+                    onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
+                  >
+                    <Icon
+                      className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
+                      name={'rows'}
+                    />
+                  </button>
                 </div>
-              )}
+              </div>
 
-              <div className={classes.loaderHolder}>
+              {/*Products*/}
+              <div className='relative'>
                 {isPageLoading ? (
-                  <div className={classes.loaderFrame}>
-                    <Spinner className={classes.loaderSpinner} isNested isTransparent />
+                  <div className='absolute inset-0 z-50 w-full h-full bg-primary opacity-50'>
+                    <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />
                   </div>
                 ) : null}
 
                 <InfiniteScroll
-                  className={`${classes.list} ${
-                    isRowView ? classes.listRows : classes.listColumns
+                  className={`catalogue__list grid gap-10 pt-8 ${
+                    isRowView ? '' : 'md:grid-cols-2'
                   }`}
                   next={fetchMoreHandler}
                   hasMore={state.products.length < state.totalProducts}
@@ -342,7 +352,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   loader={<span />}
                 >
                   {state.products.map((product, index) => {
-                    if (isRowView && !isMobile) {
+                    if (isRowView) {
                       return (
                         <ProductSnippetRow
                           product={product}

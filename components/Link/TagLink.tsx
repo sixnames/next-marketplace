@@ -20,6 +20,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
   prefetch,
   shallow,
   icon,
+  onClick,
   ...props
 }) => {
   const borderClassName = isActive
@@ -39,6 +40,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
         testId={testId}
         prefetch={prefetch}
         shallow={shallow}
+        onClick={onClick}
         className={`${tagClassName} hover:no-underline hover:text-theme ${
           className ? className : ''
         }`}
@@ -51,7 +53,12 @@ const TagLink: React.FC<TagLinkInterface> = ({
   }
 
   return (
-    <div data-cy={testId} className={`${tagClassName} ${className ? className : ''}`} {...props}>
+    <div
+      onClick={onClick}
+      data-cy={testId}
+      className={`${tagClassName} ${className ? className : ''}`}
+      {...props}
+    >
       {icon ? <Icon className={iconClassName} name={icon} /> : null}
       {children}
     </div>

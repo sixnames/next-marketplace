@@ -246,7 +246,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
         ru: name,
       },
       descriptionI18n: {
-        ru: name,
+        ru: `Description ${name}`,
       },
       rubricSlug: rubric.slug,
       rubricId: rubric._id,

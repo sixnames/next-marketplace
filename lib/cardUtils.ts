@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   CATALOGUE_OPTION_SEPARATOR,
+  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROUTE_CATALOGUE,
   SORT_DESC,
 } from 'config/common';
@@ -99,6 +100,7 @@ export async function getCardData({
             mainImage: { $first: `$mainImage` },
             originalName: { $first: `$originalName` },
             nameI18n: { $first: `$nameI18n` },
+            descriptionI18n: { $first: `descriptionI18n` },
             rubricId: { $first: `$rubricId` },
             rubricSlug: { $first: `$rubricSlug` },
             minPrice: {
@@ -558,11 +560,14 @@ export async function getCardData({
     ];
     // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);
 
+    const name = getFieldStringLocale(product.nameI18n, locale);
+    const description = getFieldStringLocale(product.descriptionI18n, locale);
+
     return {
       ...restProduct,
       connections: cardConnections,
-      name: getFieldStringLocale(product.nameI18n, locale),
-      description: getFieldStringLocale(product.descriptionI18n, locale),
+      name,
+      description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
       cardPrices,
       listFeatures,
       textFeatures,

@@ -6,13 +6,19 @@ import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
 export interface AlgoliaProductInterface
-  extends Pick<ProductModel, 'nameI18n' | 'originalName' | 'itemId' | 'barcode'> {
+  extends Pick<
+    ProductModel,
+    'nameI18n' | 'originalName' | 'itemId' | 'barcode' | 'descriptionI18n'
+  > {
   _id: string;
   objectID: string;
 }
 
 export interface AlgoliaShopProductInterface
-  extends Pick<ShopProductModel, 'nameI18n' | 'originalName' | 'itemId' | 'barcode'> {
+  extends Pick<
+    ShopProductModel,
+    'nameI18n' | 'originalName' | 'itemId' | 'barcode' | 'descriptionI18n'
+  > {
   _id: string;
   objectID: string;
 }

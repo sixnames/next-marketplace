@@ -20,7 +20,6 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
 } from 'config/common';
-import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/uiInterfaces';
@@ -51,7 +50,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -354,7 +352,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   loader={<span />}
                 >
                   {state.products.map((product, index) => {
-                    if (isRowView && !isMobile) {
+                    if (isRowView) {
                       return (
                         <ProductSnippetRow
                           product={product}

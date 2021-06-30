@@ -9,7 +9,7 @@ import ControlButton from 'components/ControlButton';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
 import LayoutCard from 'layout/LayoutCard';
 
-interface ProductSnippetGridInterface {
+export interface ProductSnippetGridInterface {
   product: ProductInterface;
   testId?: string;
   className?: string;

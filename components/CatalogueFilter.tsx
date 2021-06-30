@@ -9,9 +9,8 @@ import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import classes from './CatalogueFilter.module.css';
-import FilterLink from '../../components/Link/FilterLink';
-import Link from '../../components/Link/Link';
+import FilterLink from 'components/Link/FilterLink';
+import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
@@ -43,23 +42,22 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
   return (
-    <div className={classes.attribute}>
-      <div className={classes.attributeTitle}>
-        <span className={classes.attributeTitleText}>{name}</span>
+    <div className='mb-12'>
+      <div className='flex items-baseline justify-between mb-4'>
+        <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link href={clearSlug} onClick={onClick} className={classes.attributeTitleTrigger}>
+          <Link href={clearSlug} onClick={onClick} className='font-medium text-theme'>
             Очистить
           </Link>
         ) : null}
       </div>
 
-      <div className={classes.attributeList}>
+      <div className='flex flex-wrap gap-2'>
         {options.map((option) => {
           const testId = `catalogue-option-${option.slug}`;
           return (
             <FilterLink
               onClick={onClick}
-              className={classes.attributeOption}
               option={option}
               key={testId}
               testId={testId}
@@ -71,7 +69,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 
       {options.length === maxVisibleOptions && !isPrice ? (
         <div
-          className={`${classes.moreTrigger}`}
+          className='uppercase cursor-pointer hover:text-theme mt-6'
           onClick={() => {
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
@@ -112,7 +110,6 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   companyId,
 }) => {
   const { currency } = useLocaleContext();
-  const { isMobile } = useAppContext();
 
   return (
     <div
@@ -120,32 +117,38 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         isFilterVisible ? 'block lg:flex' : 'hidden lg:flex'
       }`}
     >
-      <div className={`pb-12 lg:pb-0 w-full ${classes.filterHolder}`}>
-        <div className={classes.totalCounter}>{catalogueCounterString}</div>
+      <div className='w-full px-inner-block-horizontal-padding py-inner-block-vertical-padding lg:p-0 lg:sticky lg:bottom-8'>
+        <div className='hidden lg:block text-secondary-text h-[var(--catalogueVieButtonSize)] flex items-center mb-8'>
+          {catalogueCounterString}
+        </div>
 
-        {isMobile ? (
-          <div className={classes.filterTitle}>
-            <div className={classes.filterTitleName}>Фильтр</div>
-            <div className={classes.filterTitleClose} onClick={hideFilterHandler}>
-              <Icon name={'cross'} />
-            </div>
+        {/* Mobile title */}
+        <div className='lg:hidden flex items-center justify-end min-h-[2rem] mb-4 text-lg font-medium'>
+          <div className='truncate text-center w-[calc(100%-(var(--formInputHeightSmall)*2))]'>
+            Фильтр
           </div>
-        ) : null}
+          <div
+            className='text-secondary-text flex items-center justify-center w-[var(--formInputHeightSmall)] h-[var(--formInputHeightSmall)]'
+            onClick={hideFilterHandler}
+          >
+            <Icon className='w-4 h-4' name={'cross'} />
+          </div>
+        </div>
 
         {selectedAttributes.length > 0 ? (
-          <div className={classes.attribute}>
-            <div className={classes.attributeTitle}>
-              <span className={classes.attributeTitleText}>Выбранные</span>
+          <div className='mb-12'>
+            <div className='flex items-baseline justify-between mb-4'>
+              <span className='text-lg font-bold'>Выбранные</span>
               <Link
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
-                className={classes.attributeTitleTrigger}
+                className='font-medium text-theme'
                 onClick={hideFilterHandler}
               >
                 Очистить все
               </Link>
             </div>
 
-            <div className={classes.attributeList}>
+            <div className='flex flex-wrap gap-2'>
               {selectedAttributes.map((attribute) => {
                 const { metric, slug } = attribute;
                 const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
@@ -156,7 +159,6 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                     <FilterLink
                       withCross
                       onClick={hideFilterHandler}
-                      className={classes.attributeOption}
                       option={option}
                       key={key}
                       testId={key}

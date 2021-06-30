@@ -35,7 +35,7 @@ import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
+import CatalogueFilter from 'components/CatalogueFilter';
 
 interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;

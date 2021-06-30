@@ -79,7 +79,7 @@ const ProductMainFields: React.FC = () => {
       </div>
 
       <FormikTranslationsInput
-        label={'Описание'}
+        label={'Мета-тег Description'}
         name={'descriptionI18n'}
         testId={'descriptionI18n'}
         showInlineError

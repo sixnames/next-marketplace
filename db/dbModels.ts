@@ -585,6 +585,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   slug: string;
   originalName: string;
   nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;

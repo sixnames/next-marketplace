@@ -127,6 +127,17 @@
     width: calc(100% - (var(--formInputHeightSmall) * 2));
   }
 
+  /* Catalogue */
+  .catalogue .catalogue__list[class*='infinite-scroll-component'] {
+    overflow: unset !important;
+  }
+
+  @media only screen and (min-width: 1024px) {
+    div.catalogue__filter {
+      overflow: unset;
+    }
+  }
+
   /* Table */
   .table-image img {
     height: 40px;

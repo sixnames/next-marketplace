@@ -21,12 +21,14 @@ interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;
   companyId?: string;
   rubricSlug: string;
+  onClick: () => void;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
   companyId,
   rubricSlug,
+  onClick,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -45,7 +47,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       <div className={classes.attributeTitle}>
         <span className={classes.attributeTitleText}>{name}</span>
         {isSelected ? (
-          <Link href={clearSlug} className={classes.attributeTitleTrigger}>
+          <Link href={clearSlug} onClick={onClick} className={classes.attributeTitleTrigger}>
             Очистить
           </Link>
         ) : null}
@@ -56,6 +58,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
           const testId = `catalogue-option-${option.slug}`;
           return (
             <FilterLink
+              onClick={onClick}
               className={classes.attributeOption}
               option={option}
               key={testId}
@@ -112,13 +115,17 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const { isMobile } = useAppContext();
 
   return (
-    <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
-      <div className={classes.filterHolder}>
+    <div
+      className={`catalogue__filter lg:col-span-2 lg:flex lg:items-end inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative overflow-auto h-[calc(var(--fullHeight,100vh)-var(--mobileNavHeight))] lg:h-auto ${
+        isFilterVisible ? 'block lg:flex' : 'hidden lg:flex'
+      }`}
+    >
+      <div className={`pb-12 lg:pb-0 w-full ${classes.filterHolder}`}>
         <div className={classes.totalCounter}>{catalogueCounterString}</div>
 
         {isMobile ? (
           <div className={classes.filterTitle}>
-            <div className={classes.filterTitleName}>Поиск</div>
+            <div className={classes.filterTitleName}>Фильтр</div>
             <div className={classes.filterTitleClose} onClick={hideFilterHandler}>
               <Icon name={'cross'} />
             </div>
@@ -132,11 +139,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
               <Link
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
                 className={classes.attributeTitleTrigger}
-                onClick={() => {
-                  if (isMobile) {
-                    hideFilterHandler();
-                  }
-                }}
+                onClick={hideFilterHandler}
               >
                 Очистить все
               </Link>
@@ -152,6 +155,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                   return (
                     <FilterLink
                       withCross
+                      onClick={hideFilterHandler}
                       className={classes.attributeOption}
                       option={option}
                       key={key}
@@ -168,6 +172,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         {attributes.map((attribute) => {
           return (
             <CatalogueFilterAttribute
+              onClick={hideFilterHandler}
               rubricSlug={rubricSlug}
               companyId={companyId}
               attribute={attribute}

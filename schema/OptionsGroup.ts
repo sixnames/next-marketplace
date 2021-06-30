@@ -546,8 +546,11 @@ export const OptionsGroupMutations = extendType({
             additionalQuery: parentId
               ? {
                   parentId,
+                  optionsGroupId,
                 }
-              : undefined,
+              : {
+                  optionsGroupId,
+                },
           });
 
           if (exist) {
@@ -658,8 +661,8 @@ export const OptionsGroupMutations = extendType({
             collectionName: COL_OPTIONS,
             fieldName: 'nameI18n',
             additionalQuery: parentId
-              ? { _id: { $ne: optionId } }
-              : { _id: { $ne: optionId }, parentId },
+              ? { _id: { $ne: optionId }, optionsGroupId }
+              : { _id: { $ne: optionId }, parentId, optionsGroupId },
           });
 
           if (exist) {

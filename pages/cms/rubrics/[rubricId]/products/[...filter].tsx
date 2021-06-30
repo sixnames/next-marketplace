@@ -539,7 +539,18 @@ export const getServerSideProps = async (
 
   // Get filter attributes
   // const beforeOptions = new Date().getTime();
-  const { rubric } = productsResult;
+  let rubric: RubricInterface | null = productsResult.rubric;
+  if (!rubric) {
+    rubric = await rubricsCollection.findOne({
+      _id: new ObjectId(rubricId),
+    });
+  }
+  if (!rubric) {
+    return {
+      notFound: true,
+    };
+  }
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     attributes: [getPriceAttribute(), ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,

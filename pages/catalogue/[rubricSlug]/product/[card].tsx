@@ -4,7 +4,6 @@ import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import Currency from 'components/Currency';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
@@ -97,7 +96,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
   const isShopless = noNaN(shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [amount, setAmount] = React.useState<number>(1);
   const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
   const [isMap, setIsMap] = React.useState<boolean>(false);
 
@@ -269,28 +267,16 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                 {/*cart action elements*/}
                 <div className='flex flex-wrap gap-4 mb-8'>
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
-                    <SpinnerInput
-                      onChange={(e) => {
-                        setAmount(noNaN(e.target.value));
-                      }}
-                      plusTestId={`card-plus`}
-                      minusTestId={`card-minus`}
-                      testId={`card-amount`}
-                      frameClassName='w-full sm:half-column'
-                      min={1}
-                      name={'amount'}
-                      value={amount}
-                    />
                     <Button
                       onClick={() => {
                         if (shopProducts && shopProducts.length < 2) {
                           addProductToCart({
-                            amount,
+                            amount: 1,
                             shopProductId: `${shopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({
-                            amount,
+                            amount: 1,
                             productId: _id,
                           });
                         }

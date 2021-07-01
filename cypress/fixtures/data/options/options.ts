@@ -1,12 +1,35 @@
-import { DEFAULT_COUNTERS_OBJECT } from '../../../../config/common';
+import { DEFAULT_COUNTERS_OBJECT, ID_COUNTER_DIGITS } from '../../../../config/common';
 import { OptionModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+const addZero = require('add-zero');
 
-const options: OptionModel[] = [
+type OptionBaseModel = Omit<OptionModel, 'slug'>;
+
+const yearOptionsCount = 10;
+const yearOptionsBase = (): OptionBaseModel[] => {
+  let counter = 1980;
+  const bases: OptionBaseModel[] = [];
+
+  while (bases.length <= yearOptionsCount) {
+    counter = counter + 1;
+    bases.push({
+      _id: getObjectId(`option ${counter}`),
+      optionsGroupId: getObjectId('optionsGroup Год'),
+      variants: {},
+      nameI18n: {
+        ru: `${counter}`,
+      },
+      ...DEFAULT_COUNTERS_OBJECT,
+    });
+  }
+
+  return bases;
+};
+
+const optionsBase: OptionBaseModel[] = [
   // Состав
   {
     _id: getObjectId('option Хмель'),
-    slug: '000001',
     optionsGroupId: getObjectId('optionsGroup Состав'),
     variants: {},
     nameI18n: {
@@ -16,7 +39,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Вода'),
-    slug: '000002',
     optionsGroupId: getObjectId('optionsGroup Состав'),
     variants: {},
     nameI18n: {
@@ -26,7 +48,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Солод'),
-    slug: '000003',
     optionsGroupId: getObjectId('optionsGroup Состав'),
     variants: {},
     nameI18n: {
@@ -38,7 +59,6 @@ const options: OptionModel[] = [
   // Регион
   {
     _id: getObjectId('option США'),
-    slug: '000004',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     variants: {},
     nameI18n: {
@@ -48,7 +68,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Калифорния'),
-    slug: '000005',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     parentId: getObjectId('option США'),
     variants: {},
@@ -59,7 +78,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Пасо Роблес'),
-    slug: '000006',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     parentId: getObjectId('option Калифорния'),
     variants: {},
@@ -70,7 +88,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Франция'),
-    slug: '000007',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     variants: {},
     nameI18n: {
@@ -80,7 +97,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Лангедок-Руссийон'),
-    slug: '000008',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     parentId: getObjectId('option Франция'),
     variants: {},
@@ -91,7 +107,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Австралия'),
-    slug: '000009',
     optionsGroupId: getObjectId('optionsGroup Регион'),
     variants: {},
     nameI18n: {
@@ -103,7 +118,6 @@ const options: OptionModel[] = [
   // Объем
   {
     _id: getObjectId('option 300'),
-    slug: '000010',
     optionsGroupId: getObjectId('optionsGroup Объем'),
     variants: {},
     nameI18n: {
@@ -113,7 +127,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option 350'),
-    slug: '000011',
     optionsGroupId: getObjectId('optionsGroup Объем'),
     variants: {},
     nameI18n: {
@@ -123,7 +136,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option 500'),
-    slug: '000012',
     optionsGroupId: getObjectId('optionsGroup Объем'),
     variants: {},
     nameI18n: {
@@ -133,7 +145,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option 750'),
-    slug: '000013',
     optionsGroupId: getObjectId('optionsGroup Объем'),
     variants: {},
     nameI18n: {
@@ -143,7 +154,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option 1000'),
-    slug: '000014',
     optionsGroupId: getObjectId('optionsGroup Объем'),
     variants: {},
     nameI18n: {
@@ -155,7 +165,6 @@ const options: OptionModel[] = [
   // Тип ёмкости
   {
     _id: getObjectId('option Бутылка'),
-    slug: '000015',
     optionsGroupId: getObjectId('optionsGroup Тип ёмкости'),
     variants: {},
     nameI18n: {
@@ -165,7 +174,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Банка'),
-    slug: '000016',
     optionsGroupId: getObjectId('optionsGroup Тип ёмкости'),
     variants: {},
     nameI18n: {
@@ -174,52 +182,9 @@ const options: OptionModel[] = [
     ...DEFAULT_COUNTERS_OBJECT,
   },
 
-  // Год
-  {
-    _id: getObjectId('option 1914'),
-    slug: '000017',
-    optionsGroupId: getObjectId('optionsGroup Год'),
-    variants: {},
-    nameI18n: {
-      ru: '1914',
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  },
-  {
-    _id: getObjectId('option 1950'),
-    slug: '000018',
-    optionsGroupId: getObjectId('optionsGroup Год'),
-    variants: {},
-    nameI18n: {
-      ru: '1950',
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  },
-  {
-    _id: getObjectId('option 1984'),
-    slug: '000019',
-    optionsGroupId: getObjectId('optionsGroup Год'),
-    variants: {},
-    nameI18n: {
-      ru: '1984',
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  },
-  {
-    _id: getObjectId('option 1999'),
-    slug: '000021',
-    optionsGroupId: getObjectId('optionsGroup Год'),
-    variants: {},
-    nameI18n: {
-      ru: '1999',
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  },
-
   // Виноград
   {
     _id: getObjectId('option Бикал'),
-    slug: '000022',
     optionsGroupId: getObjectId('optionsGroup Виноград'),
     variants: {},
     nameI18n: {
@@ -229,7 +194,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Аринту'),
-    slug: '000023',
     optionsGroupId: getObjectId('optionsGroup Виноград'),
     variants: {},
     nameI18n: {
@@ -239,7 +203,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Бага'),
-    slug: '000024',
     optionsGroupId: getObjectId('optionsGroup Виноград'),
     variants: {},
     nameI18n: {
@@ -251,7 +214,6 @@ const options: OptionModel[] = [
   // Сахар
   {
     _id: getObjectId('option Сухое'),
-    slug: '000025',
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
     icon: 'arrow-left',
@@ -262,7 +224,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Сладкое'),
-    slug: '000026',
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
     icon: 'burger',
@@ -273,7 +234,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Полусухое'),
-    slug: '000027',
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
     nameI18n: {
@@ -285,7 +245,6 @@ const options: OptionModel[] = [
   // Тип вина
   {
     _id: getObjectId('option Крепленое'),
-    slug: '000028',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
     color: 'ff0000',
@@ -296,7 +255,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Плодовое'),
-    slug: '000029',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
     color: '29b77a',
@@ -307,7 +265,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Херес'),
-    slug: '000030',
     optionsGroupId: getObjectId('optionsGroup Тип вина'),
     variants: {},
     color: 'b09030',
@@ -320,7 +277,6 @@ const options: OptionModel[] = [
   // Сочетание
   {
     _id: getObjectId('option Белое мясо'),
-    slug: '000031',
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
     icon: 'white-meat',
@@ -331,7 +287,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Дары моря'),
-    slug: '000032',
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
     icon: 'seafood',
@@ -342,7 +297,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Суп'),
-    slug: '000033',
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
     icon: 'soup',
@@ -353,7 +307,6 @@ const options: OptionModel[] = [
   },
   {
     _id: getObjectId('option Рыба'),
-    slug: '000034',
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
     icon: 'fish',
@@ -363,6 +316,13 @@ const options: OptionModel[] = [
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];
+
+const options: OptionModel[] = [...optionsBase, ...yearOptionsBase()].map((base, i) => {
+  return {
+    slug: addZero(i, ID_COUNTER_DIGITS),
+    ...base,
+  };
+});
 
 // @ts-ignore
 export = options;

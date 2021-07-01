@@ -550,7 +550,10 @@ export const getCatalogueData = async ({
 
     // Get configs
     // const configsTimeStart = new Date().getTime();
-    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs({
+    const {
+      snippetVisibleAttributesCount,
+      // visibleOptionsCount
+    } = await getCatalogueConfigs({
       companySlug: realCompanySlug,
       city,
     });
@@ -625,7 +628,7 @@ export const getCatalogueData = async ({
       city,
       companySlug,
       // visibleAttributesCount,
-      visibleOptionsCount,
+      // visibleOptionsCount,
     });
 
     // const shopProductsStart = new Date().getTime();

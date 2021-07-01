@@ -648,7 +648,10 @@ export const getCatalogueData = async ({
             $match: { ...productsInitialMatch },
           },
           {
-            $unwind: '$selectedOptionsSlugs',
+            $unwind: {
+              path: '$selectedOptionsSlugs',
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $group: {

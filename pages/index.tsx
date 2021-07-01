@@ -43,13 +43,13 @@ interface HomeRoutInterface {
 
 const bannersConfig = [
   {
-    src: '/home/banner-1.jpg',
+    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-1.jpg`,
   },
   {
-    src: '/home/banner-2.jpg',
+    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-2.jpg`,
   },
   {
-    src: '/home/banner-3.jpg',
+    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-3.jpg`,
   },
 ];
 
@@ -65,7 +65,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
           <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
             <img
               className='w-full'
-              src={'/home/slider.jpg'}
+              src={`https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/main-banner.jpg`}
               width='1249'
               height='432'
               alt={'slider'}

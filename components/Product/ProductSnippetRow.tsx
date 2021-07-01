@@ -9,7 +9,6 @@ import RatingStars from 'components/RatingStars';
 import Image from 'next/image';
 import Link from 'components/Link/Link';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import { noNaN } from 'lib/numbers';
@@ -22,8 +21,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   className,
   ...props
 }) => {
-  const [amount, setAmount] = React.useState<number>(1);
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
     name,
     originalName,
@@ -37,7 +35,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     shopsCount,
     mainImage,
     rubricSlug,
+    shopProductsIds,
   } = product;
+
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
 
@@ -169,21 +169,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                     : 'Нет в наличии'}
                 </div>
 
-                <div className='mb-4'>
-                  <SpinnerInput
-                    plusTestId={`card-shops-${slug}-plus`}
-                    minusTestId={`card-shops-${slug}-minus`}
-                    testId={`card-shops-${slug}-input-row`}
-                    onChange={(e) => {
-                      setAmount(noNaN(e.target.value));
-                    }}
-                    min={1}
-                    name={'amount'}
-                    value={amount}
-                    disabled={isShopless}
-                  />
-                </div>
-
                 <Button
                   className='w-full'
                   disabled={isShopless}
@@ -192,10 +177,17 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   testId={`${testId}-add-to-cart-row`}
                   ariaLabel={'Добавить в корзину'}
                   onClick={() => {
-                    addShoplessProductToCart({
-                      amount,
-                      productId: _id,
-                    });
+                    if (shopProductsIds && shopProductsIds.length < 2) {
+                      addProductToCart({
+                        amount: 1,
+                        shopProductId: `${shopProductsIds[0]}`,
+                      });
+                    } else {
+                      addShoplessProductToCart({
+                        amount: 1,
+                        productId: _id,
+                      });
+                    }
                   }}
                 >
                   В корзину

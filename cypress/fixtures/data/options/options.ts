@@ -161,6 +161,15 @@ const optionsBase: OptionBaseModel[] = [
     },
     ...DEFAULT_COUNTERS_OBJECT,
   },
+  {
+    _id: getObjectId('option 1500'),
+    optionsGroupId: getObjectId('optionsGroup Объем'),
+    variants: {},
+    nameI18n: {
+      ru: '1500',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 
   // Тип ёмкости
   {

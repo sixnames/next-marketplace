@@ -243,6 +243,8 @@ export interface GetCatalogueAttributesInterface {
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
   basePath: string;
+  visibleAttributesCount?: number | null;
+  visibleOptionsCount?: number | null;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -257,6 +259,8 @@ export async function getCatalogueAttributes({
   attributes,
   productsPrices,
   basePath,
+  visibleOptionsCount,
+  visibleAttributesCount,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
@@ -368,12 +372,22 @@ export async function getCatalogueAttributes({
       });
     }
 
-    castedAttributes.push(castedAttribute);
+    // slice options if limit is specified
+    const finalCastedAttribute = visibleOptionsCount
+      ? {
+          ...castedAttribute,
+          options: castedAttribute.options.slice(0, visibleOptionsCount),
+        }
+      : castedAttribute;
+
+    castedAttributes.push(finalCastedAttribute);
   }
 
   return {
     selectedFilters,
-    castedAttributes,
+    castedAttributes: visibleAttributesCount
+      ? castedAttributes.slice(0, visibleAttributesCount)
+      : castedAttributes,
     selectedAttributes,
   };
 }
@@ -550,10 +564,7 @@ export const getCatalogueData = async ({
 
     // Get configs
     // const configsTimeStart = new Date().getTime();
-    const {
-      snippetVisibleAttributesCount,
-      // visibleOptionsCount
-    } = await getCatalogueConfigs({
+    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs({
       companySlug: realCompanySlug,
       city,
     });
@@ -627,8 +638,6 @@ export const getCatalogueData = async ({
     const rubricsPipeline = getCatalogueRubricPipeline({
       city,
       companySlug,
-      // visibleAttributesCount,
-      // visibleOptionsCount,
     });
 
     // const shopProductsStart = new Date().getTime();
@@ -927,6 +936,8 @@ export const getCatalogueData = async ({
       filters,
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      visibleOptionsCount,
+      // visibleAttributesCount,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 

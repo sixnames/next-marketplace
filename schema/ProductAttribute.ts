@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -8,6 +8,7 @@ import {
   ProductAttributeModel,
   ProductModel,
   ProductPayloadModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -15,6 +16,7 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { getRequestParams } from 'lib/sessionHelpers';
 
@@ -327,9 +329,12 @@ export const ProductAttributeMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
+          // TODO all mutations transactions!!!!!!!1
+
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
             db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
@@ -351,17 +356,17 @@ export const ProductAttributeMutations = extendType({
             _id: productAttributeId,
           });
 
+          // Check attribute availability
+          const attribute = await attributesCollection.findOne({ _id: attributeId });
+          if (!attribute) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
           // Create new product attribute if original is absent
           if (!productAttribute) {
-            const attribute = await attributesCollection.findOne({ _id: attributeId });
-
-            if (!attribute) {
-              return {
-                success: false,
-                message: await getApiMessage('products.update.error'),
-              };
-            }
-
             productAttribute = {
               ...attribute,
               attributeId,
@@ -420,7 +425,9 @@ export const ProductAttributeMutations = extendType({
           }
 
           // Update or create product attribute
-          const finalSelectedOptionsSlugs = finalOptions.map(({ slug }) => slug);
+          const finalSelectedOptionsSlugs = finalOptions.map(
+            ({ slug }) => `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`,
+          );
           const finalSelectedOptionsIds = finalOptions.map(({ _id }) => _id);
           const { _id, ...restProductAttribute } = productAttribute;
           const updatedProductAttributeResult = await productAttributesCollection.findOneAndUpdate(
@@ -441,6 +448,35 @@ export const ProductAttributeMutations = extendType({
           );
           const updatedProductAttribute = updatedProductAttributeResult.value;
           if (!updatedProductAttributeResult.ok || !updatedProductAttribute) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          // Update product
+          const productUpdater = {
+            $addToSet: {
+              selectedOptionsSlugs: {
+                $each: finalSelectedOptionsSlugs,
+              },
+              selectedAttributesIds: attributeId,
+            },
+          };
+
+          const updatedProduct = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            productUpdater,
+          );
+          const updatedShopProduct = await shopProductsCollection.findOneAndUpdate(
+            {
+              productId,
+            },
+            productUpdater,
+          );
+          if (!updatedProduct.ok || !updatedShopProduct.ok) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),

@@ -66,7 +66,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               quality={50}
             />
             <Link
-              testId={`${testId}-image`}
+              testId={`${testId}-image-row`}
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
@@ -86,7 +86,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <div className='flex flex-col col-span-5'>
               <div className='text-2xl font-medium mb-1'>
                 <Link
-                  testId={`${testId}-name`}
+                  testId={`${testId}-name-row`}
                   target={'_blank'}
                   className='block text-primary-text hover:no-underline hover:text-primary-text'
                   href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
@@ -173,7 +173,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   <SpinnerInput
                     plusTestId={`card-shops-${slug}-plus`}
                     minusTestId={`card-shops-${slug}-minus`}
-                    testId={`card-shops-${slug}-input`}
+                    testId={`card-shops-${slug}-input-row`}
                     onChange={(e) => {
                       setAmount(noNaN(e.target.value));
                     }}
@@ -189,7 +189,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   disabled={isShopless}
                   theme={'gray'}
                   short
-                  testId={`${testId}-add-to-cart`}
+                  testId={`${testId}-add-to-cart-row`}
                   ariaLabel={'Добавить в корзину'}
                   onClick={() => {
                     addShoplessProductToCart({

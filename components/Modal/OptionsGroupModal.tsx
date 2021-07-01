@@ -1,3 +1,4 @@
+import { OPTIONS_GROUP_VARIANT_TEXT } from 'config/common';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -56,7 +57,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ confirm }) =>
       <Formik
         initialValues={{
           nameI18n: undefined,
-          variant: '' as OptionsGroupVariant,
+          variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariant,
         }}
         onSubmit={(values) => {
           confirm(values);

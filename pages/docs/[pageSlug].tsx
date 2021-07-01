@@ -62,6 +62,7 @@ export async function getServerSideProps(
   const initialPage = await pagesCollection.findOne({
     slug: `${pageSlug}`,
     citySlug: props.sessionCity,
+    companySlug: props.companySlug,
     state: PAGE_STATE_PUBLISHED,
   });
 

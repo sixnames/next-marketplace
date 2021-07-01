@@ -92,7 +92,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
                 });
               }}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/options/${dataItem._id}`).catch((e) => console.log(e));
+                router.push(`${ROUTE_CMS}/options/${dataItem._id}/options`).catch(console.log);
               }}
             />
           </div>
@@ -116,7 +116,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
               columns={columns}
               data={optionsGroups}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${ROUTE_CMS}/options/${dataItem._id}`).catch((e) => console.log(e));
+                router.push(`${ROUTE_CMS}/options/${dataItem._id}/options`).catch(console.log);
               }}
             />
           </div>

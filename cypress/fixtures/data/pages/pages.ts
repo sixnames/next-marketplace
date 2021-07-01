@@ -1,5 +1,6 @@
 import {
   DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_EDITOR_DEFAULT_VALUE,
   PAGE_STATE_DRAFT,
@@ -16,6 +17,7 @@ const pages: PageModel[] = [
     index: 0,
     slug: 'page_a',
     citySlug: DEFAULT_CITY,
+    companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Page A',
     },
@@ -35,6 +37,7 @@ const pages: PageModel[] = [
     index: 1,
     slug: 'page_b',
     citySlug: DEFAULT_CITY,
+    companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Page B',
     },
@@ -54,6 +57,7 @@ const pages: PageModel[] = [
     index: 0,
     slug: 'page_c',
     citySlug: DEFAULT_CITY,
+    companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Page C',
     },
@@ -69,6 +73,7 @@ const pages: PageModel[] = [
     index: 0,
     slug: 'page_d',
     citySlug: DEFAULT_CITY,
+    companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Page D',
     },
@@ -84,6 +89,7 @@ const pages: PageModel[] = [
     index: 1,
     slug: 'page_e',
     citySlug: DEFAULT_CITY,
+    companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Page E',
     },
@@ -103,6 +109,7 @@ const pages: PageModel[] = [
     index: 0,
     slug: 'company_page_a',
     citySlug: DEFAULT_CITY,
+    companySlug: 'company_a',
     nameI18n: {
       [DEFAULT_LOCALE]: 'Company page a',
     },

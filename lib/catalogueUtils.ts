@@ -7,6 +7,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
@@ -55,6 +56,7 @@ import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   RubricAttributeInterface,
+  RubricInterface,
   RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -241,6 +243,8 @@ export interface GetCatalogueAttributesInterface {
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
   basePath: string;
+  visibleAttributesCount?: number | null;
+  visibleOptionsCount?: number | null;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -255,6 +259,8 @@ export async function getCatalogueAttributes({
   attributes,
   productsPrices,
   basePath,
+  visibleOptionsCount,
+  visibleAttributesCount,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
@@ -366,12 +372,22 @@ export async function getCatalogueAttributes({
       });
     }
 
-    castedAttributes.push(castedAttribute);
+    // slice options if limit is specified
+    const finalCastedAttribute = visibleOptionsCount
+      ? {
+          ...castedAttribute,
+          options: castedAttribute.options.slice(0, visibleOptionsCount),
+        }
+      : castedAttribute;
+
+    castedAttributes.push(finalCastedAttribute);
   }
 
   return {
     selectedFilters,
-    castedAttributes,
+    castedAttributes: visibleAttributesCount
+      ? castedAttributes.slice(0, visibleAttributesCount)
+      : castedAttributes,
     selectedAttributes,
   };
 }
@@ -540,6 +556,7 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
     // Args
     const { filters, page, rubricSlug } = input;
@@ -621,8 +638,6 @@ export const getCatalogueData = async ({
     const rubricsPipeline = getCatalogueRubricPipeline({
       city,
       companySlug,
-      // visibleAttributesCount,
-      visibleOptionsCount,
     });
 
     // const shopProductsStart = new Date().getTime();
@@ -633,7 +648,10 @@ export const getCatalogueData = async ({
             $match: { ...productsInitialMatch },
           },
           {
-            $unwind: '$selectedOptionsSlugs',
+            $unwind: {
+              path: '$selectedOptionsSlugs',
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $group: {
@@ -853,13 +871,13 @@ export const getCatalogueData = async ({
                   $count: 'totalDocs',
                 },
               ],
-              rubrics: rubricsPipeline,
+              rubric: rubricsPipeline,
             },
           },
           {
             $addFields: {
               totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-              rubric: { $arrayElemAt: ['$rubrics', 0] },
+              rubric: { $arrayElemAt: ['$rubric', 0] },
             },
           },
           {
@@ -890,8 +908,30 @@ export const getCatalogueData = async ({
       return null;
     }
 
+    // Get catalogue rubric
+    let rubric: RubricInterface | null = shopProductsAggregationResult.rubric;
+    if (!rubric) {
+      rubric = await rubricsCollection.findOne({
+        slug: rubricSlug,
+      });
+    }
+    if (!rubric) {
+      return {
+        _id: new ObjectId(),
+        clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+        filters,
+        rubricName: rubricSlug,
+        rubricSlug,
+        products: [],
+        catalogueTitle: 'Товары не найдены',
+        totalProducts: 0,
+        attributes: [],
+        selectedAttributes: [],
+        page: 1,
+      };
+    }
+
     // Get filter attributes
-    const { rubric } = shopProductsAggregationResult;
     // const beforeOptions = new Date().getTime();
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
@@ -899,6 +939,8 @@ export const getCatalogueData = async ({
       filters,
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      visibleOptionsCount,
+      // visibleAttributesCount,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 

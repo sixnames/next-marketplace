@@ -78,17 +78,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
       })
       .toArray();
-    if (products.length < 1) {
-      res.status(500).send({
-        success: false,
-        message: 'no products found',
-      });
-      return;
-    }
 
     const shopProducts: ShopProductModel[] = [];
     const notSyncedProducts: NotSyncedProductModel[] = [];
-
     for await (const bodyItem of body) {
       const product = products.find(({ barcode }) => barcode?.includes(`${bodyItem.barcode}`));
       if (!product) {

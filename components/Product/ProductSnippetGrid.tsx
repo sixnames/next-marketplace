@@ -55,7 +55,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           quality={50}
         />
         <Link
-          testId={`${testId}-image`}
+          testId={`${testId}-image-grid`}
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
@@ -68,7 +68,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         <div className='mb-auto pb-4'>
           <div className='text-lg sm:text-xl font-medium mb-1'>
             <Link
-              testId={`${testId}-name`}
+              testId={`${testId}-name-grid`}
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
@@ -122,7 +122,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
             <ControlButton
               ariaLabel={'Добавить в корзину'}
-              testId={`${testId}-add-to-cart`}
+              testId={`${testId}-add-to-cart-grid`}
               onClick={() =>
                 addShoplessProductToCart({
                   amount: 1,

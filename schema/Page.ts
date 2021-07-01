@@ -3,8 +3,8 @@ import {
   PAGE_STATE_DRAFT,
   PAGE_STATE_ENUMS,
 } from 'config/common';
-import { COL_PAGES } from 'db/collectionNames';
-import { PageModel, PagePayloadModel } from 'db/dbModels';
+import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
+import { PageModel, PagePayloadModel, PagesGroupModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import { deleteUpload } from 'lib/assets';
@@ -126,6 +126,7 @@ export const PageMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const pagesCollection = db.collection<PageModel>(COL_PAGES);
+          const pageGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
           const { input } = args;
 
           // Check if page already exist
@@ -140,6 +141,8 @@ export const PageMutations = extendType({
             additionalOrQuery: [
               {
                 index: input.index,
+                pagesGroupId: input.pagesGroupId,
+                citySlug: input.citySlug,
               },
             ],
           });
@@ -150,6 +153,15 @@ export const PageMutations = extendType({
             };
           }
 
+          // Get pages group
+          const pagesGroup = await pageGroupsCollection.findOne({ _id: input.pagesGroupId });
+          if (!pagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pages.create.error'),
+            };
+          }
+
           // Create page
           const createdPageResult = await pagesCollection.insertOne({
             ...input,
@@ -157,6 +169,7 @@ export const PageMutations = extendType({
             content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
             assetKeys: [],
             state: PAGE_STATE_DRAFT,
+            companySlug: pagesGroup.companySlug,
             createdAt: new Date(),
             updatedAt: new Date(),
           });

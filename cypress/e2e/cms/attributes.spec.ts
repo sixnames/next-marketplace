@@ -42,6 +42,8 @@ describe('Attributes Groups', () => {
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-${createdGroupName}-update`).click();
     cy.wait(1500);
+    cy.getByCy(`sub-nav-details`).click();
+    cy.wait(1500);
     cy.getByCy(`attributes-group-title`).contains(createdGroupName).should('exist');
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)
@@ -59,6 +61,7 @@ describe('Attributes Groups', () => {
 
     // Should CRUD attributes
     cy.getByCy(`sub-nav-attributes`).click();
+    cy.wait(1500);
     cy.getByCy(`attributes-list`).should('exist');
 
     // Shouldn't create attribute in group on validation error

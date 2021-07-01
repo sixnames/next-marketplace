@@ -74,9 +74,9 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
               updateTitle={'Редактировать группу'}
               deleteTitle={'Удалить группу'}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/attributes/${dataItem._id}`).catch((e) => {
-                  console.log(e);
-                });
+                router
+                  .push(`${ROUTE_CMS}/attributes/${dataItem._id}/attributes`)
+                  .catch(console.log);
               }}
               deleteHandler={() => {
                 showModal({
@@ -111,9 +111,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
             data={attributesGroups}
             testIdKey={'name'}
             onRowDoubleClick={(dataItem) => {
-              router.push(`${ROUTE_CMS}/attributes/${dataItem._id}`).catch((e) => {
-                console.log(e);
-              });
+              router.push(`${ROUTE_CMS}/attributes/${dataItem._id}/attributes`).catch(console.log);
             }}
           />
         </div>

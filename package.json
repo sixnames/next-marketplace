@@ -12,7 +12,7 @@
     "start": "next start",
     "generate": "graphql-codegen --config codegen.yml",
     "cy:open": "cypress open",
-    "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
+    "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
     "test": "cypress run",
     "update-prod-api-messages": "ts-node --skip-project cypress/fixtures/utils/updateProductionApiMessages.ts",
     "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",

@@ -53,15 +53,15 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
   const navConfig = React.useMemo(() => {
     return [
       {
-        name: 'Общие',
-        testId: 'details',
-        path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
-        exact: true,
-      },
-      {
         name: 'Опции',
         testId: 'options',
         path: `${ROUTE_CMS}/options/${optionsGroup._id}/options`,
+        exact: true,
+      },
+      {
+        name: 'Общие',
+        testId: 'details',
+        path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
         exact: true,
       },
     ];

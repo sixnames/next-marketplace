@@ -104,15 +104,15 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
   const navConfig = React.useMemo(() => {
     return [
       {
-        name: 'Детали',
-        testId: 'sub-nav-details',
-        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
-        exact: true,
-      },
-      {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
         path: `${ROUTE_CMS}/attributes/${attributesGroup._id}/attributes`,
+        exact: true,
+      },
+      {
+        name: 'Детали',
+        testId: 'sub-nav-details',
+        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
         exact: true,
       },
     ];

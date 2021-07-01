@@ -662,6 +662,7 @@ export interface PageModel extends TimestampModel {
   pagesGroupId: ObjectIdModel;
   content: string;
   state: PageStateModel;
+  companySlug: string;
 }
 
 // Payload

@@ -112,6 +112,12 @@ export const PagesGroupMutations = extendType({
             additionalQuery: {
               companySlug: input.companySlug,
             },
+            additionalOrQuery: [
+              {
+                index: input.index,
+                companySlug: input.companySlug,
+              },
+            ],
           });
           if (exist) {
             return {
@@ -203,6 +209,15 @@ export const PagesGroupMutations = extendType({
                 $ne: _id,
               },
             },
+            additionalOrQuery: [
+              {
+                _id: {
+                  $ne: _id,
+                },
+                index: input.index,
+                companySlug: pagesGroup.companySlug,
+              },
+            ],
           });
           if (exist) {
             return {

@@ -24,7 +24,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   noSecondaryName,
   noAttributes,
 }) => {
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
     name,
     originalName,
@@ -37,6 +37,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     mainImage,
     rubricSlug,
     itemId,
+    shopProductsIds,
   } = product;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
@@ -123,12 +124,19 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             <ControlButton
               ariaLabel={'Добавить в корзину'}
               testId={`${testId}-add-to-cart-grid`}
-              onClick={() =>
-                addShoplessProductToCart({
-                  amount: 1,
-                  productId: _id,
-                })
-              }
+              onClick={() => {
+                if (shopProductsIds && shopProductsIds.length < 2) {
+                  addProductToCart({
+                    amount: 1,
+                    shopProductId: `${shopProductsIds[0]}`,
+                  });
+                } else {
+                  addShoplessProductToCart({
+                    amount: 1,
+                    productId: _id,
+                  });
+                }
+              }}
               icon={'cart'}
               theme={'accent'}
               roundedTopLeft

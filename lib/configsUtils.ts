@@ -675,12 +675,26 @@ export async function getConfigPageData({
   const configTemplates = initialConfigsGroup.reduce((acc: ConfigModel[], template) => {
     const companyConfig = companyConfigs.find(({ slug }) => slug === template.slug);
     if (companyConfig) {
+      const cities = Object.keys(companyConfig.cities).reduce((acc: Record<string, any>, key) => {
+        const city = companyConfig.cities[key];
+        const defaultValue = city[DEFAULT_LOCALE];
+        if (!defaultValue || defaultValue.length < 1) {
+          acc[key] = {
+            [DEFAULT_LOCALE]: [''],
+          };
+        } else {
+          acc[key] = city;
+        }
+
+        return acc;
+      }, {});
+
       return [
         ...acc,
         {
           ...template,
           _id: companyConfig._id,
-          cities: companyConfig.cities,
+          cities: cities,
         },
       ];
     }

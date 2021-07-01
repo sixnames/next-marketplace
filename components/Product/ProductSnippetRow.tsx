@@ -21,7 +21,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   className,
   ...props
 }) => {
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
     name,
     originalName,
@@ -35,7 +35,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     shopsCount,
     mainImage,
     rubricSlug,
+    shopProductsIds,
   } = product;
+
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
   const isShopless = noNaN(shopsCount) < 1;
 
@@ -175,10 +177,17 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   testId={`${testId}-add-to-cart-row`}
                   ariaLabel={'Добавить в корзину'}
                   onClick={() => {
-                    addShoplessProductToCart({
-                      amount: 1,
-                      productId: _id,
-                    });
+                    if (shopProductsIds && shopProductsIds.length < 2) {
+                      addProductToCart({
+                        amount: 1,
+                        shopProductId: `${shopProductsIds[0]}`,
+                      });
+                    } else {
+                      addShoplessProductToCart({
+                        amount: 1,
+                        productId: _id,
+                      });
+                    }
                   }}
                 >
                   В корзину

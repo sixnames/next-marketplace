@@ -9,7 +9,7 @@ import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import OrderStepsDescription from 'components/OrderStepsDescription';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
-import ShopsMap from 'components/ShopsMap/ShopsMap';
+import ShopsMap from 'components/ShopsMap';
 import Title from 'components/Title';
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';

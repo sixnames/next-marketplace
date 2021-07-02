@@ -1,6 +1,6 @@
 import { ShopInterface } from 'db/uiInterfaces';
+import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import classes from './ShopsMap.module.css';
 import { Coordinates } from 'generated/apolloComponents';
 import { useLoadScript, Marker, GoogleMap, InfoWindow } from '@react-google-maps/api';
 import RequestError from 'components/RequestError';
@@ -72,17 +72,17 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   }
 
   return (
-    <div className={classes.frame}>
-      <div className={classes.scroller}>
-        <div className={classes.list}>
-          {shops.map(({ _id, name, address, mainImage }) => {
+    <div className='grid lg:grid-cols-7 lg:h-[500px] gap-8'>
+      <div className='lg:col-span-2 overflow-y-hidden overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden'>
+        <div className='flex gap-6 lg:grid'>
+          {shops.map(({ _id, name, address, mainImage, contacts }) => {
             return (
-              <div
+              <LayoutCard
                 key={`${_id}`}
-                className={classes.listItem}
+                className='grid grid-cols-3 min-w-[310px] lg:min-w-0 overflow-hidden'
                 onClick={() => panTo(address.formattedCoordinates)}
               >
-                <div className={classes.listItemImage}>
+                <div className='col-span-1 relative shops-map-snippet'>
                   <Image
                     src={mainImage}
                     alt={name}
@@ -93,23 +93,37 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                   />
                 </div>
 
-                <div className={classes.listItemContent}>
-                  <div className={classes.listItemName}>{name}</div>
-                  <div className={classes.listItemAddress}>{address.formattedAddress}</div>
-                  <div className={classes.listItemBottom}>
+                <div className='col-span-2 py-[var(--lineGap-75)] px-[var(--lineGap-100)] lg:py-[var(--lineGap-100)] lg:px-[var(--lineGap-150)]'>
+                  <div className='font-bold mb-3'>{name}</div>
+                  <div className='mb-3'>{address.formattedAddress}</div>
+                  <div className='whitespace-nowrap flex flex-wrap gap-2 mb-3'>
+                    {contacts.formattedPhones.map((phone) => {
+                      return (
+                        <div key={phone.raw}>
+                          <a
+                            className='text-secondary-text hover:text-theme hover:no-underline'
+                            href={`tel:${phone.raw}`}
+                          >
+                            {phone.readable}
+                          </a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className='flex items-center justify-between'>
                     <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} />
                   </div>
                 </div>
-              </div>
+              </LayoutCard>
             );
           })}
         </div>
       </div>
-      <div className={classes.map}>
+      <div className='lg:col-span-5 relative h-[330px] lg:h-auto'>
         <GoogleMap
           onLoad={onLoad}
           mapContainerStyle={mapContainerStyle}
-          mapContainerClassName={classes.mapContainer}
+          mapContainerClassName='absolute inset-0 block w-full h-full'
           zoom={12}
           center={center}
           options={options}
@@ -141,8 +155,8 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
               onCloseClick={() => setSelected(null)}
             >
               <div>
-                <div className={classes.infoName}>{selected.name}</div>
-                <div className={classes.infoAddress}>{selected.address.formattedAddress}</div>
+                <div className='mb-3 font-bold text-xl text-black'>{selected.name}</div>
+                <div className='text-[1rem] text-black'>{selected.address.formattedAddress}</div>
               </div>
             </InfoWindow>
           ) : null}

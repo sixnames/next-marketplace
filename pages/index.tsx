@@ -2,7 +2,7 @@ import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
-import ShopsMap from 'components/ShopsMap/ShopsMap';
+import ShopsMap from 'components/ShopsMap';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
@@ -233,55 +233,6 @@ export async function getServerSideProps(
           },
         },
       },
-
-      // Lookup product attributes
-      /*{
-        $lookup: {
-          from: COL_PRODUCT_ATTRIBUTES,
-          as: 'attributes',
-          let: {
-            productId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$productId', '$productId'],
-                },
-                viewVariant: {
-                  $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_OPTIONS,
-                as: 'options',
-                let: {
-                  optionsGroupId: '$optionsGroupId',
-                  selectedOptionsIds: '$selectedOptionsIds',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $and: [
-                          {
-                            $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                          },
-                          {
-                            $in: ['$_id', '$$selectedOptionsIds'],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },*/
     ])
     .toArray();
 

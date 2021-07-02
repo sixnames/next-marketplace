@@ -68,7 +68,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     useMutationCallbacks({ withModal: true, reload: true });
 
   const addProductsPath = `${layoutBasePath}/${shop._id}/products/add/${rubricId}`;
-  const validationSchema = useValidationSchema({ schema: updateManyShopProductsSchema });
+  const validationSchema = useValidationSchema({
+    schema: updateManyShopProductsSchema,
+  });
 
   const withProducts = docs.length > 0;
 
@@ -126,6 +128,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               testId={`shop-product-available-${rowIndex}`}
               name={`input[${rowIndex}].available`}
               type={'number'}
+              min={0}
               low
             />
           </div>

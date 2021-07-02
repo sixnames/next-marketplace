@@ -1,6 +1,8 @@
 import { Menu } from '@headlessui/react';
 import { CounterStickerInterface } from 'components/CounterSticker/CounterSticker';
+import Icon from 'components/Icon';
 import * as React from 'react';
+import { IconType } from 'types/iconTypes';
 
 type CurrentAction = (menuItem: HeadlessMenuItemInterface) => boolean;
 
@@ -8,10 +10,11 @@ export interface HeadlessMenuItemInterface {
   _id: string;
   name: any;
   onSelect: (menuItem: HeadlessMenuItemInterface) => void;
-  current: boolean | CurrentAction;
+  current?: boolean | CurrentAction;
   hidden?: boolean;
   counter?: Omit<CounterStickerInterface, 'className'>;
   testId?: string;
+  icon?: IconType;
 }
 
 export interface HeadlessMenuGroupInterface {
@@ -91,7 +94,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
               <Menu.Items
                 className={`absolute ${
                   menuPosition === 'right' ? 'right-0' : 'left-0'
-                } min-w-[200px] mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                } min-w-[200px] max-h-[300px] overflow-x-hidden overflow-y-auto mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
               >
                 {config.map((group, groupIndex) => {
                   return (
@@ -105,7 +108,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                       ) : null}
 
                       {group.children.map((menuItem) => {
-                        const { name, _id, onSelect, hidden, testId } = menuItem;
+                        const { name, _id, onSelect, hidden, testId, icon } = menuItem;
                         const isSelected = _id === internalButtonText;
 
                         if (hidden) {
@@ -122,9 +125,10 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                                   }}
                                   data-cy={testId || name}
                                   className={`${
-                                    isSelected ? 'text-theme' : 'text-primary-text'
-                                  } group flex rounded-md items-center w-full px-4 py-2`}
+                                    isSelected ? 'text-theme' : 'text-primary-text hover:text-theme'
+                                  } group flex gap-4 rounded-md items-center w-full px-4 py-2`}
                                 >
+                                  {icon ? <Icon name={icon} className='w-4 h-4' /> : null}
                                   {name}
                                 </button>
                               )}

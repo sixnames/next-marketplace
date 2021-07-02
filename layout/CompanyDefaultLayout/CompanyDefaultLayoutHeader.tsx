@@ -383,7 +383,7 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
         </div>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:pt-2 lg:pt-4'>
+          <div className='flex justify-center py-7 lg:justify-between lg:py-4'>
             <div
               className={`hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex justify-start`}
             >
@@ -397,14 +397,13 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
 
             <Link
               href={`/`}
-              className='flex items-center flex-shrink-0 w-[var(--logo-width)]'
+              className='flex items-center flex-shrink-0 w-[5rem]'
               aria-label={'Главная страница'}
             >
               <img
                 className='w-full h-full object-contain'
                 src={siteLogoSrc}
-                width='150'
-                height='24'
+                width='100'
                 alt={`${configSiteName}`}
               />
             </Link>

@@ -1,3 +1,4 @@
+import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -76,9 +77,8 @@ export const Product = objectType({
       type: 'ProductAttribute',
       resolve: async (source): Promise<ProductAttributeModel[]> => {
         const { db } = await getDatabase();
-        const productAttributesCollection = db.collection<ProductAttributeModel>(
-          COL_PRODUCT_ATTRIBUTES,
-        );
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const attributes = await productAttributesCollection
           .find({ productId: source._id })
           .toArray();
@@ -89,9 +89,8 @@ export const Product = objectType({
       type: 'ProductConnection',
       resolve: async (source): Promise<ProductConnectionModel[]> => {
         const { db } = await getDatabase();
-        const productConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const connections = await productConnectionsCollection
           .find({
             'connectionProducts.productId': source._id,
@@ -125,7 +124,11 @@ export const Product = objectType({
       resolve: async (source): Promise<ProductCardPricesModel> => {
         try {
           if (source.cardPrices) {
-            return source.cardPrices;
+            return {
+              _id: new ObjectId(),
+              min: `${noNaN(source.cardPrices.min)}`,
+              max: `${noNaN(source.cardPrices.max)}`,
+            };
           }
 
           return {
@@ -194,9 +197,8 @@ export const Product = objectType({
           return null;
         }
         const { db } = await getDatabase();
-        const brandCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const brandCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
         const brandCollection = await brandCollectionsCollection.findOne({
           slug: source.brandCollectionSlug,
         });

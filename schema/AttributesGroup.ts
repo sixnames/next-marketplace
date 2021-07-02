@@ -1,4 +1,5 @@
 import { SORT_ASC } from 'config/common';
+import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -13,6 +14,7 @@ import {
   ProductAttributeModel,
   ProductConnectionModel,
   RubricAttributeModel,
+  RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -22,6 +24,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTIONS,
   COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
@@ -524,6 +527,9 @@ export const attributesGroupMutations = extendType({
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -633,6 +639,33 @@ export const attributesGroupMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add new attribute to the rubrics
+            const rubrics = await rubricsCollection
+              .find({
+                attributesGroupsIds: attributesGroupId,
+              })
+              .toArray();
+            const rubricAttributes: RubricAttributeModel[] = [];
+            for await (const rubric of rubrics) {
+              const rubricAttribute = await castAttributeForRubric({
+                attribute: createdAttribute,
+                rubricSlug: rubric.slug,
+                rubricId: rubric._id,
+              });
+              rubricAttributes.push(rubricAttribute);
+            }
+            const createdAttributesResult = await rubricAttributesCollection.insertMany(
+              rubricAttributes,
+            );
+            if (!createdAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
               };
               await session.abortTransaction();
               return;

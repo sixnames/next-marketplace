@@ -146,6 +146,7 @@ export interface NexusGenInputs {
   AddProductToCartInput: {
     // input type
     amount: number; // Int!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   AddProductToConnectionInput: {

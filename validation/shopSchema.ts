@@ -39,7 +39,7 @@ export const shopProductCommonFieldsSchema = (args: ValidationSchemaArgsInterfac
     available: requiredNumberSchema({
       ...args,
       slug: 'validation.shopProducts.available',
-      min: 1,
+      min: 0,
     }),
   };
 };

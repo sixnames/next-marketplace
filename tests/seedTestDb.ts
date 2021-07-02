@@ -1,5 +1,6 @@
 import {
   ASSETS_DIST_COMPANIES,
+  // ASSETS_DIST_CONFIGS,
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
 } from '../config/common';
@@ -82,6 +83,10 @@ const config = {
       `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
       `/${ASSETS_DIST_COMPANIES}`,
     );
+    /*await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
+      `/${ASSETS_DIST_CONFIGS}`,
+    );*/
   } catch (err) {
     console.log(err);
   }

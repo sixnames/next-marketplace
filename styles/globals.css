@@ -155,6 +155,16 @@
     opacity: 1;
   }
 
+  /* Shops */
+  .shops-map-snippet > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   /* Spinner */
   .spinner-circular {
     animation: rotate 1.5s linear infinite;

@@ -112,8 +112,7 @@ interface CartProductPropsInterface {
 
 const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
   const [isShopsVisible, setIsShopsVisible] = React.useState<boolean>(false);
-  const { updateProductInCart } = useSiteContext();
-  const { product, _id, amount } = cartProduct;
+  const { product, _id } = cartProduct;
   if (!product) {
     return null;
   }
@@ -139,31 +138,14 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
         </div>
       </div>
 
-      <div className='flex gap-6'>
-        <SpinnerInput
-          name={'amount'}
-          value={amount}
-          min={1}
-          testId={`cart-product-${testId}-amount`}
-          plusTestId={`cart-product-${testId}-plus`}
-          minusTestId={`cart-product-${testId}-minus`}
-          frameClassName='w-[var(--buttonMinWidth)]'
-          onChange={(e) => {
-            updateProductInCart({
-              amount: noNaN(e.target.value),
-              cartProductId: _id,
-            });
-          }}
-        />
-        <Button
-          onClick={() => {
-            setIsShopsVisible(true);
-          }}
-          testId={`cart-product-${testId}-show-shops`}
-        >
-          Выбрать винотеку
-        </Button>
-      </div>
+      <Button
+        onClick={() => {
+          setIsShopsVisible(true);
+        }}
+        testId={`cart-product-${testId}-show-shops`}
+      >
+        Выбрать винотеку
+      </Button>
     </CartProductFrame>
   );
 };

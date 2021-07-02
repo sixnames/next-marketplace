@@ -42,6 +42,7 @@ input AddOptionToGroupInput {
 
 input AddProductToCartInput {
   amount: Int!
+  productId: ObjectId!
   shopProductId: ObjectId!
 }
 

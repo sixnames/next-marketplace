@@ -1,3 +1,6 @@
+import { MapModalInterface } from 'components/Modal/MapModal';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -19,6 +22,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
+  const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available, productId } =
     shopProduct;
@@ -31,9 +35,10 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
   const {
     name,
     slug,
-    address: { formattedAddress },
+    address,
     contacts: { formattedPhones },
     mainImage,
+    logo,
   } = shop;
 
   const disabled = amount + noNaN(inCartCount) > available;
@@ -70,7 +75,28 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
           </div>
 
           <div className={classes.contacts}>
-            <div className={classes.address}>{formattedAddress}</div>
+            <div
+              className={`cursor-pointer hover:text-theme ${classes.address}`}
+              onClick={() => {
+                showModal<MapModalInterface>({
+                  variant: MAP_MODAL,
+                  props: {
+                    title: name,
+                    testId: `shop-map-modal`,
+                    markers: [
+                      {
+                        _id: shop._id,
+                        icon: logo.url,
+                        name,
+                        address,
+                      },
+                    ],
+                  },
+                });
+              }}
+            >
+              {address.formattedAddress}
+            </div>
             {(formattedPhones || []).map((phone, index) => {
               return <LinkPhone key={index} value={phone} />;
             })}

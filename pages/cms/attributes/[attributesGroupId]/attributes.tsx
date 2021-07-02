@@ -3,7 +3,7 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -308,6 +308,11 @@ export const getServerSideProps = async (
                 optionsGroup: {
                   $arrayElemAt: ['$optionsGroup', 0],
                 },
+              },
+            },
+            {
+              $sort: {
+                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
               },
             },
           ],

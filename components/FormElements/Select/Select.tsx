@@ -17,7 +17,6 @@ export interface SelectInterface extends InputLinePropsInterface {
   value?: any;
   notValid?: boolean;
   autoComplete?: OnOffType;
-  min?: number;
   placeholder?: string;
   firstOption?: string;
   setNameToValue?: boolean;

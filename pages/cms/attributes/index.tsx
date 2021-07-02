@@ -7,7 +7,7 @@ import Inner from 'components/Inner';
 import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -166,7 +166,7 @@ export const getServerSideProps = async (
     .aggregate([
       {
         $sort: {
-          _id: SORT_DESC,
+          [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
         },
       },
     ])

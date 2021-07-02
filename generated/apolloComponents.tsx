@@ -66,6 +66,7 @@ export type AddOptionToGroupInput = {
 };
 
 export type AddProductToCartInput = {
+  productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   amount: Scalars['Int'];
 };

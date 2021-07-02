@@ -226,7 +226,7 @@ export interface ManufacturerModel extends BaseModel, TimestampModel, CountersMo
 export interface CartProductModel {
   _id: ObjectIdModel;
   shopProductId?: ObjectIdModel | null;
-  productId?: ObjectIdModel | null;
+  productId: ObjectIdModel;
   amount: number;
 }
 

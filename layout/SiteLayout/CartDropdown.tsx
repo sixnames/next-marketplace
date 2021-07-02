@@ -167,23 +167,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   <div className='text-theme text-sm'>Винотека не выбрана</div>
 
                   <div className='flex items-center justify-between mt-4'>
-                    <SpinnerInput
-                      name={'amount'}
-                      value={amount}
-                      min={1}
-                      testId={`cart-dropdown-product-${index}-amount`}
-                      plusTestId={`cart-dropdown-product-${index}-plus`}
-                      minusTestId={`cart-dropdown-product-${index}-minus`}
-                      size={'small'}
-                      onChange={(e) => {
-                        updateProductInCart({
-                          amount: noNaN(e.target.value),
-                          cartProductId: _id,
-                        });
-                      }}
-                    />
-
-                    <div className='flex items-center justify-end'>
+                    <div className='flex items-center justify-end ml-auto'>
                       <div className='absolute top-0 right-0 z-[5]'>
                         <ButtonCross
                           testId={`cart-dropdown-product-${index}-remove-from-cart`}

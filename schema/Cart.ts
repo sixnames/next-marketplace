@@ -57,6 +57,7 @@ export const CartPayload = objectType({
 export const AddProductToCartInput = inputObjectType({
   name: 'AddProductToCartInput',
   definition(t) {
+    t.nonNull.objectId('productId');
     t.nonNull.objectId('shopProductId');
     t.nonNull.int('amount');
   },
@@ -130,13 +131,47 @@ export const CartMutations = extendType({
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
-          const { shopProductId, amount } = input;
+          const { shopProductId, amount, productId } = input;
+
+          // Set shop product to shopless cart product if shopless exist
+          const existingShoplessProduct = cart.cartProducts.find((cartProduct) => {
+            return cartProduct.productId.equals(productId) && !cartProduct.shopProductId;
+          });
+          if (existingShoplessProduct) {
+            const updatedCartResult = await cartsCollection.findOneAndUpdate(
+              { _id: cart._id },
+              {
+                $set: {
+                  'cartProducts.$[product].amount': amount,
+                  'cartProducts.$[product].shopProductId': shopProductId,
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                arrayFilters: [{ 'product._id': { $eq: existingShoplessProduct._id } }],
+                returnDocument: 'after',
+              },
+            );
+
+            const updatedCart = updatedCartResult.value;
+            if (!updatedCartResult.ok || !updatedCart) {
+              return {
+                success: false,
+                message: await getApiMessage('carts.addProduct.error'),
+              };
+            }
+
+            return {
+              success: true,
+              message: await getApiMessage('carts.addProduct.success'),
+            };
+          }
 
           // Increase product amount if product already exist in cart
-          const productExist = cart.cartProducts.find((cartProduct) => {
+          const existingShopProduct = cart.cartProducts.find((cartProduct) => {
             return cartProduct.shopProductId && cartProduct.shopProductId.equals(shopProductId);
           });
-          if (productExist) {
+          if (existingShopProduct) {
             const updatedCartResult = await cartsCollection.findOneAndUpdate(
               { _id: cart._id },
               {
@@ -176,6 +211,7 @@ export const CartMutations = extendType({
                   _id: new ObjectId(),
                   amount,
                   shopProductId,
+                  productId,
                 },
               },
               $set: {
@@ -236,35 +272,11 @@ export const CartMutations = extendType({
           const { input } = args;
           const { productId, amount } = input;
 
-          // Increase product amount if product already exist in cart
+          // Success if product already exist in cart
           const productExist = cart.cartProducts.find((cartProduct) => {
-            return cartProduct.productId && cartProduct.productId.equals(productId);
+            return cartProduct.productId.equals(productId);
           });
           if (productExist) {
-            const updatedCartResult = await cartsCollection.findOneAndUpdate(
-              { _id: cart._id },
-              {
-                $inc: {
-                  'cartProducts.$[product].amount': amount,
-                },
-                $set: {
-                  updatedAt: new Date(),
-                },
-              },
-              {
-                arrayFilters: [{ 'product.productId': { $eq: productId } }],
-                returnDocument: 'after',
-              },
-            );
-
-            const updatedCart = updatedCartResult.value;
-            if (!updatedCartResult.ok || !updatedCart) {
-              return {
-                success: false,
-                message: await getApiMessage('carts.addProduct.error'),
-              };
-            }
-
             return {
               success: true,
               message: await getApiMessage('carts.addProduct.success'),
@@ -665,6 +677,7 @@ export const CartMutations = extendType({
               _id: cartProduct ? cartProduct._id : new ObjectId(),
               amount: finalAmount,
               shopProductId,
+              productId,
             });
           }
 

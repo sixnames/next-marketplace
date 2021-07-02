@@ -180,6 +180,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                     if (shopProductsIds && shopProductsIds.length < 2) {
                       addProductToCart({
                         amount: 1,
+                        productId: _id,
                         shopProductId: `${shopProductsIds[0]}`,
                       });
                     } else {

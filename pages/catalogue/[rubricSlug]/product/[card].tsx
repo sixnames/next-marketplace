@@ -272,6 +272,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
                         if (shopProducts && shopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
+                            productId: _id,
                             shopProductId: `${shopProducts[0]._id}`,
                           });
                         } else {

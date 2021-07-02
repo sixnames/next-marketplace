@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { ConfigModel, ConfigVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import {
@@ -618,6 +617,8 @@ const defaultConfigs = getConfigTemplates({
   siteName: 'Default site',
   companySlug: DEFAULT_COMPANY_SLUG,
   assetsPath: DEFAULT_COMPANY_SLUG,
+  phone: ['+86667774433'],
+  email: ['default@email.com'],
 });
 
 const companyASlug = 'company_a';
@@ -625,6 +626,8 @@ const companyAConfigs = getConfigTemplates({
   siteName: 'Company A',
   companySlug: companyASlug,
   assetsPath: companyASlug,
+  phone: ['+86667774422'],
+  email: [`${companyASlug}@email.com`],
 });
 
 const companyBSlug = 'company_b';
@@ -632,6 +635,8 @@ const companyBConfigs = getConfigTemplates({
   siteName: 'Company B',
   companySlug: companyBSlug,
   assetsPath: companyBSlug,
+  phone: ['+86667774411'],
+  email: [`${companyBSlug}@email.com`],
 });
 
 // @ts-ignore

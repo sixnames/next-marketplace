@@ -3,6 +3,7 @@ import HeadlessMenuButton, {
   HeadlessMenuGroupInterface,
   HeadlessMenuItemInterface,
 } from 'components/HeadlessMenuButton';
+import Icon from 'components/Icon';
 import { SelectOptionFragment, useIconsOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
@@ -14,8 +15,6 @@ export interface FormikSelectInterface extends InputLinePropsInterface {
   className?: string;
   frameClass?: string;
   showInlineError?: boolean;
-  value?: any;
-  notValid?: boolean;
   firstOption?: string;
   testId?: string;
   disabled?: boolean;
@@ -32,11 +31,8 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
   isHorizontal,
   labelLink,
   label,
-  notValid,
-  value,
   wide,
   isRequired,
-  setNameToValue,
   testId,
   labelTag,
   labelClass,
@@ -45,7 +41,6 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
   theme = 'primary',
   showInlineError,
   disabled,
-  useIdField,
 }) => {
   const [options, setOptions] = React.useState<SelectOptionFragment[]>([]);
   const { data, loading, error } = useIconsOptionsQuery();
@@ -61,7 +56,14 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
       {({ field, form: { errors, setFieldValue } }: FieldProps) => {
         const error = get(errors, name);
         const notValid = Boolean(error);
-        console.log(notValid);
+
+        const additionalClassName = className ? className : '';
+        const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
+        const disabledClass = disabled ? 'cursor-default opacity-80' : '';
+        const inputBorder = notValid
+          ? 'border-red-500'
+          : `border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
+        const selectClassName = `relative z-20 flex gap-4 items-center w-full pl-input-padding-horizontal input-with-clear-padding w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] rounded-lg cursor-pointer bg-transparent border outline-none ${inputTheme} ${disabledClass} ${inputBorder} ${additionalClassName}`;
 
         const children: HeadlessMenuItemInterface[] = options.map((option) => {
           return {
@@ -112,7 +114,24 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
             showInlineError={showInlineError}
             error={error}
           >
-            <HeadlessMenuButton config={config} />
+            <HeadlessMenuButton
+              config={config}
+              testId={testId}
+              menuPosition={'left'}
+              buttonClassName='w-full'
+              buttonText={() => {
+                return (
+                  <span className={selectClassName}>
+                    <Icon name={field.value} className='w-4 h-4' />
+                    {field.value}
+                    <Icon
+                      className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
+                      name={'chevron-down'}
+                    />
+                  </span>
+                );
+              }}
+            />
           </InputLine>
         );
       }}

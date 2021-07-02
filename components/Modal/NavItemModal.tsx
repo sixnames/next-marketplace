@@ -1,5 +1,5 @@
 import Button from 'components/Button';
-import FormikIconSelect from 'components/FormElements/IconSelect/FormikIconSelect';
+import FormikIconSelect from 'components/FormElements/FormikIconSelect';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import ModalButtons from 'components/Modal/ModalButtons';
@@ -67,7 +67,13 @@ const NavItemModal = <TArgs extends Record<any, any>>({
                 label={'Порядковый номер'}
                 showInlineError
               />
-              <FormikIconSelect testId={'icon'} name={'icon'} label={'Иконка'} showInlineError />
+              <FormikIconSelect
+                testId={'icon'}
+                name={'icon'}
+                label={'Иконка'}
+                firstOption={'Не назначена'}
+                showInlineError
+              />
 
               <ModalButtons>
                 <Button testId={'nav-item-submit'} type={'submit'}>

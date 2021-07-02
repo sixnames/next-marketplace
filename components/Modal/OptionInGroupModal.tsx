@@ -21,7 +21,7 @@ import Spinner from 'components/Spinner';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from 'hooks/useValidationSchema';
-import FormikIconSelect from 'components/FormElements/IconSelect/FormikIconSelect';
+import FormikIconSelect from 'components/FormElements/FormikIconSelect';
 import { optionInGroupModalSchema } from 'validation/optionsGroupSchema';
 import {
   GENDER_ENUMS,
@@ -132,6 +132,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                 label={'Иконка'}
                 name={'icon'}
                 testId={'option-icon'}
+                firstOption={'Не назначена'}
                 disabled={groupVariant !== OPTIONS_GROUP_VARIANT_ICON}
                 isRequired={groupVariant === OPTIONS_GROUP_VARIANT_ICON}
                 showInlineError

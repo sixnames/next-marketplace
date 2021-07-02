@@ -1,8 +1,0 @@
-.iconSelectHolder {
-  display: flex;
-  align-items: flex-end;
-}
-
-.iconSelect {
-  flex-grow: 1;
-}

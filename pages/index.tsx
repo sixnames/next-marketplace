@@ -11,17 +11,17 @@ import {
   SORT_DESC,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
+  CATALOGUE_TOP_SHOPS_LIMIT,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import {
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from 'db/collectionNames';
-import { ShopProductModel } from 'db/dbModels';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, ShopInterface, TopFilterInterface } from 'db/uiInterfaces';
+import {
+  ProductInterface,
+  ShopInterface,
+  ShopProductInterface,
+  TopFilterInterface,
+} from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCatalogueTitle } from 'lib/catalogueUtils';
 import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
@@ -161,7 +161,8 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<HomeInterface>> {
   const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const { props } = await getSiteInitialData({
     context,
   });
@@ -181,42 +182,6 @@ export async function getServerSideProps(
         $match: {
           ...companyRubricsMatch,
           citySlug: sessionCity,
-        },
-      },
-      {
-        $sort: {
-          priorities: SORT_DESC,
-          views: SORT_DESC,
-          available: SORT_DESC,
-          _id: SORT_DESC,
-        },
-      },
-      {
-        $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
-      },
-
-      // Get shops
-      {
-        $lookup: {
-          from: COL_SHOPS,
-          as: 'shop',
-          let: {
-            shopId: '$shopId',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$shopId', '$_id'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          shop: { $arrayElemAt: ['$shop', 0] },
         },
       },
       {
@@ -240,23 +205,24 @@ export async function getServerSideProps(
           available: {
             $max: '$available',
           },
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
           shopProductsIds: {
             $addToSet: '$_id',
           },
-          shopProducts: {
-            $push: {
-              _id: '$_id',
-              price: '$price',
-              available: '$available',
-              shopId: '$shopId',
-              oldPrices: '$oldPrices',
-              shop: '$shop',
-              formattedPrice: '$formattedPrice',
-              formattedOldPrice: '$formattedOldPrice',
-              discountedPercent: '$discountedPercent',
-            },
-          },
         },
+      },
+      {
+        $sort: {
+          priorities: SORT_DESC,
+          views: SORT_DESC,
+          available: SORT_DESC,
+          _id: SORT_DESC,
+        },
+      },
+      {
+        $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
       },
       {
         $addFields: {
@@ -267,8 +233,9 @@ export async function getServerSideProps(
           },
         },
       },
+
       // Lookup product attributes
-      {
+      /*{
         $lookup: {
           from: COL_PRODUCT_ATTRIBUTES,
           as: 'attributes',
@@ -314,50 +281,12 @@ export async function getServerSideProps(
             },
           ],
         },
-      },
+      },*/
     ])
     .toArray();
 
-  const products: ProductInterface[] = [];
-  const topShops: ShopInterface[] = [];
-
-  for await (const product of shopProductsAggregation) {
-    const { attributes, shopProducts, ...restProduct } = product;
-
-    // shop products
-    (shopProducts || []).forEach((shopProduct) => {
-      const { shop } = shopProduct;
-
-      if (!shop) {
-        return;
-      }
-
-      const exist = topShops.some(({ _id }) => _id.equals(shop._id));
-
-      if (exist) {
-        return;
-      }
-
-      topShops.push({
-        ...shop,
-        address: {
-          ...shop.address,
-          formattedCoordinates: {
-            lat: shop.address.point.coordinates[1],
-            lng: shop.address.point.coordinates[0],
-          },
-        },
-        contacts: {
-          ...shop.contacts,
-          formattedPhones: shop.contacts.phones.map((phone) => {
-            return {
-              raw: phoneToRaw(phone),
-              readable: phoneToReadable(phone),
-            };
-          }),
-        },
-      });
-    });
+  const products = shopProductsAggregation.map((product) => {
+    const { attributes, ...restProduct } = product;
 
     // prices
     const minPrice = noNaN(product.cardPrices?.min);
@@ -382,15 +311,58 @@ export async function getServerSideProps(
       locale: sessionLocale,
     });
 
-    products.push({
+    return {
       ...restProduct,
       listFeatures,
       ratingFeatures,
       name: getFieldStringLocale(product.nameI18n, sessionLocale),
       cardPrices,
       connections: [],
-    });
-  }
+    };
+  });
+
+  // Get top shops
+  const shopsAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: {
+          ...companyRubricsMatch,
+          citySlug: sessionCity,
+        },
+      },
+      {
+        $sort: {
+          rating: SORT_DESC,
+          _id: SORT_DESC,
+        },
+      },
+      {
+        $limit: CATALOGUE_TOP_SHOPS_LIMIT,
+      },
+    ])
+    .toArray();
+
+  const topShops = shopsAggregation.map((shop) => {
+    return {
+      ...shop,
+      address: {
+        ...shop.address,
+        formattedCoordinates: {
+          lat: shop.address.point.coordinates[1],
+          lng: shop.address.point.coordinates[0],
+        },
+      },
+      contacts: {
+        ...shop.contacts,
+        formattedPhones: shop.contacts.phones.map((phone) => {
+          return {
+            raw: phoneToRaw(phone),
+            readable: phoneToReadable(phone),
+          };
+        }),
+      },
+    };
+  });
   // console.log(JSON.stringify(props.navRubrics, null, 2));
 
   const topFilters: TopFilterInterface[] = [];

@@ -611,6 +611,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   companyId: ObjectIdModel;
   mainImage: string;
   token?: string;
+  rating?: number;
 }
 
 export interface NotSyncedProductModel {

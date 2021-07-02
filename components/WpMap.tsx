@@ -36,6 +36,7 @@ export interface WpMapInterface {
   center?: WpMapCenterInterface;
   onMarkerClick?: (marker: WpMapMarkerInterface) => void;
   mapRef: React.MutableRefObject<any>;
+  className?: string;
 }
 
 const WpMap: React.FC<WpMapInterface> = ({
@@ -44,6 +45,7 @@ const WpMap: React.FC<WpMapInterface> = ({
   markers,
   onMarkerClick,
   center = defaultMapCenter,
+  className,
 }) => {
   const [selected, setSelected] = React.useState<WpMapMarkerInterface | null>(null);
   const { isDark } = useThemeContext();
@@ -82,7 +84,7 @@ const WpMap: React.FC<WpMapInterface> = ({
   }
 
   return (
-    <div data-cy={testId}>
+    <div className={`relative ${className ? className : 'h-[400px]'}`} data-cy={testId}>
       <GoogleMap
         onLoad={onLoad}
         mapContainerStyle={mapContainerStyle}

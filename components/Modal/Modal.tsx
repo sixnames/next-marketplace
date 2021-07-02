@@ -31,6 +31,7 @@ import {
   PAGES_GROUP_MODAL,
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+  MAP_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -41,6 +42,7 @@ const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModa
 const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const NavItemModal = dynamic(() => import('./NavItemModal'));
 const ConfirmModal = dynamic(() => import('components/Modal/ConfirmModal'));
+const MapModal = dynamic(() => import('components/Modal/MapModal'));
 const LanguageModal = dynamic(() => import('components/Modal/LanguageModal'));
 const OptionsGroupModal = dynamic(() => import('components/Modal/OptionsGroupModal'));
 const AttributesGroupModal = dynamic(() => import('components/Modal/AttributesGroupModal'));
@@ -81,6 +83,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
 
           {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
+
+          {modalType === MAP_MODAL && <MapModal {...modalProps} />}
 
           {modalType === LANGUAGE_MODAL && <LanguageModal {...modalProps} />}
 

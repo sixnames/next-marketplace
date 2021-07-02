@@ -94,11 +94,23 @@ export const SelectOptionsQueries = extendType({
       type: 'SelectOption',
       description: 'Should return icon options',
       resolve: async (): Promise<SelectOptionModel[]> => {
-        return iconTypesList.map((icon) => ({
-          _id: icon,
-          name: icon,
-          icon: icon,
-        }));
+        return iconTypesList
+          .map((icon) => ({
+            _id: icon,
+            name: icon,
+            icon: icon,
+          }))
+          .sort((a, b) => {
+            const nameA = a.name.toUpperCase();
+            const nameB = b.name.toUpperCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            if (nameA > nameB) {
+              return 1;
+            }
+            return 0;
+          });
       },
     });
   },

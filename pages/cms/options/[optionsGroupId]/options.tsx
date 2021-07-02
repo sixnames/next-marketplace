@@ -7,7 +7,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
 import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
@@ -310,6 +310,11 @@ export const getServerSideProps = async (
                 $expr: {
                   $eq: ['$optionsGroupId', '$$optionsGroupId'],
                 },
+              },
+            },
+            {
+              $sort: {
+                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
               },
             },
           ],

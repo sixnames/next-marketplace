@@ -150,6 +150,7 @@ export const ProductAttributeMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId, brandSlug } = input;
 
@@ -170,6 +171,7 @@ export const ProductAttributeMutations = extendType({
               $set: {
                 brandSlug,
                 brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                updatedAt: new Date(),
               },
             },
             {
@@ -178,6 +180,25 @@ export const ProductAttributeMutations = extendType({
           );
           const updatedProduct = updatedProductResult.value;
           if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedShopProduct = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                brandSlug,
+                brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProduct.result.ok) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
@@ -210,6 +231,7 @@ export const ProductAttributeMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId, brandCollectionSlug } = input;
 
@@ -229,6 +251,7 @@ export const ProductAttributeMutations = extendType({
             {
               $set: {
                 brandCollectionSlug,
+                updatedAt: new Date(),
               },
             },
             {
@@ -237,6 +260,24 @@ export const ProductAttributeMutations = extendType({
           );
           const updatedProduct = updatedProductResult.value;
           if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedShopProduct = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                brandCollectionSlug,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProduct.result.ok) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
@@ -269,6 +310,7 @@ export const ProductAttributeMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { productId, manufacturerSlug } = input;
 
@@ -288,6 +330,7 @@ export const ProductAttributeMutations = extendType({
             {
               $set: {
                 manufacturerSlug,
+                updatedAt: new Date(),
               },
             },
             {
@@ -296,6 +339,24 @@ export const ProductAttributeMutations = extendType({
           );
           const updatedProduct = updatedProductResult.value;
           if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('products.update.error'),
+            };
+          }
+
+          const updatedShopProduct = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            {
+              $set: {
+                manufacturerSlug,
+                updatedAt: new Date(),
+              },
+            },
+          );
+          if (!updatedShopProduct.result.ok) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
@@ -470,13 +531,13 @@ export const ProductAttributeMutations = extendType({
             },
             productUpdater,
           );
-          const updatedShopProduct = await shopProductsCollection.findOneAndUpdate(
+          const updatedShopProduct = await shopProductsCollection.updateMany(
             {
               productId,
             },
             productUpdater,
           );
-          if (!updatedProduct.ok || !updatedShopProduct.ok) {
+          if (!updatedProduct.ok || !updatedShopProduct.result.ok) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),

@@ -14,11 +14,11 @@ export const phoneToReadable = (phone?: string | null) => {
   if (!phone) {
     return '';
   }
-  const countryCode = phone.slice(0, 2);
-  const code = phone.slice(2, 5);
-  const phonePartA = phone.slice(5, 8);
-  const phonePartB = phone.slice(8, 10);
-  const phonePartC = phone.slice(10);
-  const finalNumber = `${countryCode} ${code} ${phonePartA} ${phonePartB} ${phonePartC}`;
-  return finalNumber.replace('+', '');
+  const initialPhone = phone.replace('+', '');
+  const countryCode = initialPhone.slice(0, 1);
+  const code = initialPhone.slice(1, 4);
+  const phonePartA = initialPhone.slice(4, 7);
+  const phonePartB = initialPhone.slice(7, 9);
+  const phonePartC = initialPhone.slice(9);
+  return `${countryCode} ${code} ${phonePartA}-${phonePartB}-${phonePartC}`;
 };

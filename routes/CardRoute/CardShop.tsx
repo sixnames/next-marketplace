@@ -7,7 +7,6 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import Button from 'components/Button';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
-import { useAppContext } from 'context/appContext';
 import Icon from 'components/Icon';
 import ProductShopPrices from 'components/Product/ProductShopPrices';
 import LayoutCard from 'layout/LayoutCard';
@@ -19,10 +18,10 @@ interface CardShopInterface {
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
-  const { isMobile } = useAppContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const [amount, setAmount] = React.useState<number>(1);
-  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
+  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available, productId } =
+    shopProduct;
   const inCartCount = getShopProductInCartCount(`${shopProduct._id}`);
 
   if (!shop) {
@@ -97,48 +96,50 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
             </div>
           </div>
 
-          {isMobile ? (
+          {/* Mobile */}
+          <Button
+            className={`flex lg:hidden ${classes.mobileButton}`}
+            disabled={disabled}
+            onClick={() => {
+              addProductToCart({
+                amount: 1,
+                productId,
+                shopProductId: shopProduct._id,
+              });
+            }}
+          >
+            <Icon name={'cart'} />
+          </Button>
+
+          {/* Desktop */}
+          <div className={`hidden lg:block ${classes.column} ${classes.columnLast}`}>
+            <SpinnerInput
+              plusTestId={`card-shops-${testId}-plus`}
+              minusTestId={`card-shops-${testId}-minus`}
+              testId={`card-shops-${slug}-input`}
+              onChange={(e) => {
+                setAmount(noNaN(e.target.value));
+              }}
+              className={classes.input}
+              min={1}
+              max={available}
+              name={'amount'}
+              value={amount}
+            />
             <Button
-              className={classes.mobileButton}
               disabled={disabled}
+              testId={`card-shops-${testId}-add-to-cart`}
               onClick={() => {
                 addProductToCart({
                   amount,
+                  productId,
                   shopProductId: shopProduct._id,
                 });
               }}
             >
-              <Icon name={'cart'} />
+              В корзину
             </Button>
-          ) : (
-            <div className={`${classes.column} ${classes.columnLast}`}>
-              <SpinnerInput
-                plusTestId={`card-shops-${testId}-plus`}
-                minusTestId={`card-shops-${testId}-minus`}
-                testId={`card-shops-${slug}-input`}
-                onChange={(e) => {
-                  setAmount(noNaN(e.target.value));
-                }}
-                className={classes.input}
-                min={1}
-                max={available}
-                name={'amount'}
-                value={amount}
-              />
-              <Button
-                disabled={disabled}
-                testId={`card-shops-${testId}-add-to-cart`}
-                onClick={() => {
-                  addProductToCart({
-                    amount,
-                    shopProductId: shopProduct._id,
-                  });
-                }}
-              >
-                В корзину
-              </Button>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </LayoutCard>

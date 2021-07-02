@@ -116,6 +116,7 @@ export async function getCardData({
               $push: {
                 _id: '$_id',
                 price: '$price',
+                productId: '$productId',
                 available: '$available',
                 shopId: '$shopId',
                 oldPrices: '$oldPrices',
@@ -236,7 +237,7 @@ export async function getCardData({
         {
           $lookup: {
             from: COL_RUBRICS,
-            as: 'rubrics',
+            as: 'rubric',
             let: {
               rubricId: '$rubricId',
             },
@@ -323,12 +324,7 @@ export async function getCardData({
               max: '$maxPrice',
             },
             shopsCount: { $size: '$shopProducts' },
-            rubric: { $arrayElemAt: ['$rubrics', 0] },
-          },
-        },
-        {
-          $project: {
-            rubrics: false,
+            rubric: { $arrayElemAt: ['$rubric', 0] },
           },
         },
       ])

@@ -224,7 +224,7 @@ function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [''],
+          [DEFAULT_LOCALE]: ['url.com'],
         },
       },
     },
@@ -240,7 +240,7 @@ function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [''],
+          [DEFAULT_LOCALE]: ['url.com'],
         },
       },
     },

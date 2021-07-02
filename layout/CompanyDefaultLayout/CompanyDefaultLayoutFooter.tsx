@@ -45,7 +45,8 @@ const CompanyDefaultLayoutFooter: React.FC<FooterInterface> = ({ footerPageGroup
           </div>
 
           {showSocials ? (
-            <div className='mt-auto pt-12'>
+            <div className='mt-auto pt-10'>
+              <div className='mb-2'>Мы в социальных сетях</div>
               <Socials
                 facebookLink={facebookLink}
                 instagramLink={instagramLink}

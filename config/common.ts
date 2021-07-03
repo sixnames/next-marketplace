@@ -206,6 +206,7 @@ export const CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES = '5';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
+export const RUBRIC_KEY = 'rubric';
 export const SORT_BY_KEY = 'sortBy';
 export const SORT_DIR_KEY = 'sortDir';
 export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];

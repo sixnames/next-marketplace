@@ -33,6 +33,7 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import {
   castCatalogueFilters,
+  castRubricsToCatalogueAttribute,
   getCatalogueAttributes,
   getCatalogueConfigs,
 } from 'lib/catalogueUtils';
@@ -115,11 +116,20 @@ export const getSearchData = async ({
       skip,
       limit,
       page: payloadPage,
+      rubricSlug,
     } = castCatalogueFilters({
       filters: restFilters,
       initialPage: page,
       initialLimit: CATALOGUE_PRODUCTS_LIMIT,
     });
+
+    const rubricsStage = rubricSlug
+      ? {
+          rubricSlug: {
+            $in: rubricSlug,
+          },
+        }
+      : {};
 
     const pricesStage =
       minPrice && maxPrice
@@ -169,6 +179,7 @@ export const getSearchData = async ({
               _id: {
                 $in: searchIds,
               },
+              ...rubricsStage,
               ...companyRubricsMatch,
               citySlug: city,
               ...optionsStage,
@@ -617,8 +628,10 @@ export const getSearchData = async ({
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
+
     // TODO group attributes
-    // TODO cast rubrics to attribute
+
+    // get price filters
     const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [getPriceAttribute()],
       locale,
@@ -629,6 +642,7 @@ export const getSearchData = async ({
       // visibleAttributesCount,
     });
 
+    // get attribute filters
     for await (const rubric of rubrics) {
       const rubricCastedAttributes = await getCatalogueAttributes({
         attributes: rubric.attributes || [],
@@ -647,6 +661,21 @@ export const getSearchData = async ({
         selectedAttributes.push(castedAttribute);
       });
     }
+
+    // cast rubrics to attribute
+    const rubricsAsFilters = castRubricsToCatalogueAttribute({
+      rubrics,
+      locale,
+      filters: restFilters,
+      basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
+      visibleOptionsCount,
+      // visibleAttributesCount,
+    });
+    castedAttributes.unshift(rubricsAsFilters);
+    if (rubricsAsFilters.isSelected) {
+      selectedAttributes.unshift(rubricsAsFilters);
+    }
+
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products

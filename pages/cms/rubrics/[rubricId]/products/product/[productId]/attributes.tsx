@@ -12,6 +12,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROUTE_CMS,
+  SORT_ASC,
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -446,6 +447,7 @@ export const getServerSideProps = async (
           pipeline: [
             {
               $match: {
+                showInProductAttributes: true,
                 $expr: {
                   $eq: ['$$rubricId', '$rubricId'],
                 },
@@ -454,6 +456,7 @@ export const getServerSideProps = async (
             {
               $sort: {
                 variant: SORT_DESC,
+                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
                 _id: SORT_DESC,
               },
             },

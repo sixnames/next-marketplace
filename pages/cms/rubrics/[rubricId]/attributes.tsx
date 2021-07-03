@@ -6,7 +6,13 @@ import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING, ROUTE_CMS } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_STRING,
+  ROUTE_CMS,
+  SORT_ASC,
+  SORT_DESC,
+} from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -320,6 +326,12 @@ export const getServerSideProps = async (
               },
             },
             {
+              $sort: {
+                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                _id: SORT_DESC,
+              },
+            },
+            {
               $lookup: {
                 from: COL_RUBRIC_ATTRIBUTES,
                 as: 'attributes',
@@ -333,6 +345,12 @@ export const getServerSideProps = async (
                           { $eq: ['$$rubricId', '$rubricId'] },
                         ],
                       },
+                    },
+                  },
+                  {
+                    $sort: {
+                      [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                      _id: SORT_DESC,
                     },
                   },
                 ],

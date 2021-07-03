@@ -27,12 +27,16 @@ interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
   products: ResultProducts;
   setIsSearchOpen: (value: boolean) => void;
+  isProductsFound: boolean;
+  string: string;
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
   rubrics,
   setIsSearchOpen,
   products,
+  isProductsFound,
+  string,
 }) => {
   return (
     <div className='grid gap-10 grid-cols-1 md:grid-cols-12'>
@@ -52,6 +56,20 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
             </li>
           );
         })}
+
+        <li>
+          {isProductsFound ? (
+            <Link
+              onClick={() => {
+                setIsSearchOpen(false);
+              }}
+              className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
+              href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
+            >
+              <span className='overflow-ellipsis whitespace-nowrap'>Показать все результаты</span>
+            </Link>
+          ) : null}
+        </li>
       </ul>
       <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-3'>
         {products.map((product) => {
@@ -100,16 +118,17 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
   const topProducts = initialTopProducts as ProductInterface[];
 
-  const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
-  const products = searchProducts && searchProducts.length ? searchProducts : topProducts;
+  const isProductsFound = searchProducts && searchProducts.length > 0;
+  const rubrics = searchRubrics && searchRubrics.length > 0 ? searchRubrics : topRubrics;
+  const products = isProductsFound ? searchProducts : topProducts;
 
   return (
     <div
-      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
+      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:pb-4 lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
       data-cy={'search-dropdown'}
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
-        <Inner>
+        <Inner lowBottom>
           <div className='pt-8 min-h-8 mb-8 text-xl font-medium text-center lg:hidden'>Поиск</div>
 
           <div className='flex'>
@@ -166,6 +185,8 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
                 setIsSearchOpen={setIsSearchOpen}
                 rubrics={rubrics}
                 products={products}
+                isProductsFound={isProductsFound}
+                string={string}
               />
             ) : null}
           </div>

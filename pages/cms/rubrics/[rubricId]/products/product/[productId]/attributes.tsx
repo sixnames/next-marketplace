@@ -40,6 +40,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -247,7 +248,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                       return {
                         attributeId: attribute.attributeId,
                         productAttributeId: attribute._id,
-                        number: attribute.number ?? null,
+                        number:
+                          attribute.number && `${attribute.number}`.length > 0
+                            ? noNaN(attribute.number)
+                            : null,
                       };
                     }),
                   },

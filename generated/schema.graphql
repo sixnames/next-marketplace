@@ -32,7 +32,7 @@ input AddCollectionToBrandInput {
 
 input AddOptionToGroupInput {
   color: String
-  gender: Gender!
+  gender: Gender
   icon: String
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!

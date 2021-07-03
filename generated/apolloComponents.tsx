@@ -62,7 +62,7 @@ export type AddOptionToGroupInput = {
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
-  gender: Gender;
+  gender?: Maybe<Gender>;
 };
 
 export type AddProductToCartInput = {

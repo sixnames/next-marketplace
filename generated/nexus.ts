@@ -136,7 +136,7 @@ export interface NexusGenInputs {
   AddOptionToGroupInput: {
     // input type
     color?: string | null; // String
-    gender: NexusGenEnums['Gender']; // Gender!
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!

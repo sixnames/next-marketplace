@@ -1,9 +1,5 @@
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import {
-  CATALOGUE_FILTER_VISIBLE_OPTIONS,
-  PRICE_ATTRIBUTE_SLUG,
-  ROUTE_CATALOGUE,
-} from 'config/common';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
@@ -98,6 +94,7 @@ interface CatalogueFilterInterface {
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
   companyId?: string;
+  route: string;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
@@ -108,6 +105,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   hideFilterHandler,
   isFilterVisible,
   companyId,
+  route,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -140,7 +138,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className='flex items-baseline justify-between mb-4'>
               <span className='text-lg font-bold'>Выбранные</span>
               <Link
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
+                href={`${route}/${rubricSlug}`}
                 className='font-medium text-theme'
                 onClick={hideFilterHandler}
               >

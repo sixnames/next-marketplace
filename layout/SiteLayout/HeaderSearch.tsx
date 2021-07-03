@@ -16,7 +16,6 @@ import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
-import qs from 'qs';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -119,10 +118,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
               onSubmit={(e) => {
                 e.preventDefault();
                 if (string && string.length > minSearchLength) {
-                  const params = qs.stringify({
-                    search: string,
-                  });
-                  router.push(`${ROUTE_SEARCH_RESULT}?${params}`).catch(console.log);
+                  router
+                    .push(`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`)
+                    .catch(console.log);
                 }
               }}
             >

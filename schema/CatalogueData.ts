@@ -433,7 +433,6 @@ export const CatalogueQueries = extendType({
             indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
             search,
           });
-
           if (searchIds.length < 1) {
             return {
               products: [],

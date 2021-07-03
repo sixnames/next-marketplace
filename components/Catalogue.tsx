@@ -40,12 +40,14 @@ interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
+  route: string;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   catalogueData,
   companyId,
   companySlug,
+  route,
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
@@ -269,6 +271,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            route={route}
             companyId={companyId}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
@@ -399,12 +402,14 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
 export interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
+  route: string;
 }
 
 const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
   company,
+  route,
   ...props
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -429,6 +434,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       {...props}
     >
       <CatalogueRoute
+        route={route}
         catalogueData={catalogueData}
         companySlug={company?.slug}
         companyId={company?._id ? `${company?._id}` : undefined}

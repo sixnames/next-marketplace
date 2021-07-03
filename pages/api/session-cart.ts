@@ -292,7 +292,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const sessionCart: CartInterface = {
       ...cart,
       productsCount: cart.cartProducts.length,
-      isWithShopless: cart.cartProducts.some(({ productId }) => !!productId),
+      isWithShopless: cart.cartProducts.some(({ shopProductId }) => !shopProductId),
       formattedTotalPrice: getCurrencyString(cart.totalPrice),
     };
 

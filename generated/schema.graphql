@@ -1105,6 +1105,11 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayload!
 
   """
+  Should toggle attribute in the rubric attribute showInProductAttributes field
+  """
+  toggleAttributeInProductAttributes(input: UpdateAttributeInRubricInput!): RubricPayload!
+
+  """
   Should toggle attribute in the rubric attribute showInCatalogueFilter field
   """
   toggleAttributeInRubricCatalogue(input: UpdateAttributeInRubricInput!): RubricPayload!
@@ -2035,6 +2040,7 @@ type RubricAttribute {
   priorities: JSONObject!
   showInCatalogueFilter: Boolean!
   showInCatalogueNav: Boolean!
+  showInProductAttributes: Boolean!
   slug: String
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!

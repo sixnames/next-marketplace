@@ -168,6 +168,15 @@ export const TOGGLE_ATTRIBUTE_IN_RUBRIC_NAV = gql`
   }
 `;
 
+export const TOGGLE_ATTRIBUTE_IN_PRODUCT_ATTRIBUTES = gql`
+  mutation ToggleAttributeInProductAttributes($input: UpdateAttributeInRubricInput!) {
+    toggleAttributeInProductAttributes(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const GET_ALL_PRODUCTS_QUERY = gql`
   query GetAllProducts($input: ProductsPaginationInput!) {
     getProductsList(input: $input) {

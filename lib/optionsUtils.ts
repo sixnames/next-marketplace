@@ -134,6 +134,7 @@ export async function castAttributeForRubric({
     attributesGroupId: new ObjectId(attributesGroup?._id),
     showInCatalogueFilter: visible,
     showInCatalogueNav: visible,
+    showInProductAttributes: true,
     ...DEFAULT_COUNTERS_OBJECT,
   };
 }

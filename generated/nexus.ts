@@ -1360,6 +1360,7 @@ export interface NexusGenFieldTypes {
     makeAnOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
+    toggleAttributeInProductAttributes: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricCatalogue: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricNav: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -1777,6 +1778,7 @@ export interface NexusGenFieldTypes {
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     showInCatalogueFilter: boolean; // Boolean!
     showInCatalogueNav: boolean; // Boolean!
+    showInProductAttributes: boolean; // Boolean!
     slug: string | null; // String
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
@@ -2397,6 +2399,7 @@ export interface NexusGenFieldTypeNames {
     makeAnOrder: 'MakeAnOrderPayload';
     repeatOrder: 'CartPayload';
     signUp: 'UserPayload';
+    toggleAttributeInProductAttributes: 'RubricPayload';
     toggleAttributeInRubricCatalogue: 'RubricPayload';
     toggleAttributeInRubricNav: 'RubricPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
@@ -2814,6 +2817,7 @@ export interface NexusGenFieldTypeNames {
     priorities: 'JSONObject';
     showInCatalogueFilter: 'Boolean';
     showInCatalogueNav: 'Boolean';
+    showInProductAttributes: 'Boolean';
     slug: 'String';
     variant: 'AttributeVariant';
     viewVariant: 'AttributeViewVariant';
@@ -3288,6 +3292,10 @@ export interface NexusGenArgTypes {
     signUp: {
       // args
       input: NexusGenInputs['SignUpInput']; // SignUpInput!
+    };
+    toggleAttributeInProductAttributes: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
     };
     toggleAttributeInRubricCatalogue: {
       // args

@@ -24,6 +24,7 @@ function getRubricAttributes(rubric: RubricModel): RubricAttributeModel[] {
       rubricId: rubric._id,
       attributeId: attribute._id,
       attributesGroupId: attribute.attributesGroupId,
+      showInProductAttributes: true,
     };
   });
 }

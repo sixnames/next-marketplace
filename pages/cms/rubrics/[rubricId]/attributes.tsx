@@ -17,6 +17,7 @@ import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
+  useToggleAttributeInProductAttributesMutation,
   useToggleAttributeInRubricCatalogueMutation,
   useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
@@ -62,6 +63,12 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const [toggleAttributeInProductAttributesMutation] =
+    useToggleAttributeInProductAttributesMutation({
+      onCompleted: (data) => onCompleteCallback(data.toggleAttributeInProductAttributes),
+      onError: onErrorCallback,
+    });
+
   const columns: TableColumn<RubricAttributeInterface>[] = [
     {
       accessor: 'name',
@@ -102,7 +109,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                     rubricId: rubric._id,
                   },
                 },
-              }).catch((e) => console.log(e));
+              }).catch(console.log);
             }}
           />
         );
@@ -131,7 +138,32 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                     rubricId: rubric._id,
                   },
                 },
-              }).catch((e) => console.log(e));
+              }).catch(console.log);
+            }}
+          />
+        );
+      },
+    },
+    {
+      accessor: '_id',
+      headTitle: 'Показывать в настройках товара',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <Checkbox
+            testId={`${dataItem.name}-nav`}
+            checked={dataItem.showInProductAttributes}
+            value={cellData}
+            name={'showInCatalogueNav'}
+            onChange={() => {
+              showLoading();
+              toggleAttributeInProductAttributesMutation({
+                variables: {
+                  input: {
+                    attributeId: cellData,
+                    rubricId: rubric._id,
+                  },
+                },
+              }).catch(console.log);
             }}
           />
         );

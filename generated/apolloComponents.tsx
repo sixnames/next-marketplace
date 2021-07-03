@@ -944,6 +944,8 @@ export type Mutation = {
   toggleAttributeInRubricCatalogue: RubricPayload;
   /** Should toggle attribute in the rubric attribute showInCatalogueNav field */
   toggleAttributeInRubricNav: RubricPayload;
+  /** Should toggle attribute in the rubric attribute showInProductAttributes field */
+  toggleAttributeInProductAttributes: RubricPayload;
   /** Should delete attributes group from rubric */
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should remove product from rubric */
@@ -1345,6 +1347,11 @@ export type MutationToggleAttributeInRubricCatalogueArgs = {
 
 
 export type MutationToggleAttributeInRubricNavArgs = {
+  input: UpdateAttributeInRubricInput;
+};
+
+
+export type MutationToggleAttributeInProductAttributesArgs = {
   input: UpdateAttributeInRubricInput;
 };
 
@@ -2301,6 +2308,7 @@ export type RubricAttribute = {
   _id: Scalars['ObjectId'];
   showInCatalogueFilter: Scalars['Boolean'];
   showInCatalogueNav: Scalars['Boolean'];
+  showInProductAttributes: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   slug?: Maybe<Scalars['String']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
@@ -3027,6 +3035,19 @@ export type ToggleAttributeInRubricNavMutationVariables = Exact<{
 export type ToggleAttributeInRubricNavMutation = (
   { __typename?: 'Mutation' }
   & { toggleAttributeInRubricNav: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type ToggleAttributeInProductAttributesMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type ToggleAttributeInProductAttributesMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleAttributeInProductAttributes: (
     { __typename?: 'RubricPayload' }
     & Pick<RubricPayload, 'success' | 'message'>
   ) }
@@ -5473,6 +5494,40 @@ export function useToggleAttributeInRubricNavMutation(baseOptions?: Apollo.Mutat
 export type ToggleAttributeInRubricNavMutationHookResult = ReturnType<typeof useToggleAttributeInRubricNavMutation>;
 export type ToggleAttributeInRubricNavMutationResult = Apollo.MutationResult<ToggleAttributeInRubricNavMutation>;
 export type ToggleAttributeInRubricNavMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
+export const ToggleAttributeInProductAttributesDocument = gql`
+    mutation ToggleAttributeInProductAttributes($input: UpdateAttributeInRubricInput!) {
+  toggleAttributeInProductAttributes(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ToggleAttributeInProductAttributesMutationFn = Apollo.MutationFunction<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>;
+
+/**
+ * __useToggleAttributeInProductAttributesMutation__
+ *
+ * To run a mutation, you first call `useToggleAttributeInProductAttributesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAttributeInProductAttributesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAttributeInProductAttributesMutation, { data, loading, error }] = useToggleAttributeInProductAttributesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleAttributeInProductAttributesMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>(ToggleAttributeInProductAttributesDocument, options);
+      }
+export type ToggleAttributeInProductAttributesMutationHookResult = ReturnType<typeof useToggleAttributeInProductAttributesMutation>;
+export type ToggleAttributeInProductAttributesMutationResult = Apollo.MutationResult<ToggleAttributeInProductAttributesMutation>;
+export type ToggleAttributeInProductAttributesMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductsPaginationInput!) {
   getProductsList(input: $input) {

@@ -547,6 +547,7 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   rubricSlug: string;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
+  showInProductAttributes: boolean;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {

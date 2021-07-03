@@ -17,6 +17,7 @@ interface CatalogueFilterAttributePropsInterface {
   companyId?: string;
   rubricSlug: string;
   onClick: () => void;
+  isSearchResult?: boolean;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
@@ -24,6 +25,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   companyId,
   rubricSlug,
   onClick,
+  isSearchResult,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -75,6 +77,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
                 companyId,
+                isSearchResult,
               },
             });
           }}
@@ -95,6 +98,7 @@ interface CatalogueFilterInterface {
   hideFilterHandler: () => void;
   companyId?: string;
   route: string;
+  isSearchResult?: boolean;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
@@ -106,6 +110,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   isFilterVisible,
   companyId,
   route,
+  isSearchResult,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -177,6 +182,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
               companyId={companyId}
               attribute={attribute}
               key={`${attribute._id}`}
+              isSearchResult={isSearchResult}
             />
           );
         })}

@@ -5,7 +5,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 
 const SearchResultPage: NextPage<CatalogueInterface> = ({ ...props }) => {
-  return <Catalogue {...props} route={ROUTE_SEARCH_RESULT} />;
+  return <Catalogue {...props} isSearchResult route={ROUTE_SEARCH_RESULT} />;
 };
 
 export async function getServerSideProps(

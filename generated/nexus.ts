@@ -200,6 +200,7 @@ export interface NexusGenInputs {
     attributeSlug: string; // String!
     companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     filter: string[]; // [String!]!
+    isSearchResult?: boolean | null; // Boolean
     rubricSlug: string; // String!
   };
   CatalogueDataInput: {

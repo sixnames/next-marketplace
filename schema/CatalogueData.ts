@@ -76,6 +76,7 @@ export const CatalogueAdditionalOptionsInput = inputObjectType({
   name: 'CatalogueAdditionalOptionsInput',
   definition(t) {
     t.objectId('companyId');
+    t.boolean('isSearchResult');
     t.nonNull.string('attributeSlug');
     t.nonNull.list.nonNull.string('filter');
     t.nonNull.string('rubricSlug');
@@ -99,11 +100,41 @@ export const CatalogueQueries = extendType({
         const { db } = await getDatabase();
         const { city } = await getRequestParams(context);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const { companyId, filter, attributeSlug, rubricSlug } = args.input;
+        const { companyId, filter, attributeSlug, rubricSlug, isSearchResult } = args.input;
 
-        const { minPrice, maxPrice, realFilterOptions, noFiltersSelected } = castCatalogueFilters({
+        const {
+          minPrice,
+          maxPrice,
+          realFilterOptions,
+          noFiltersSelected,
+          rubricSlug: filterRubrics,
+        } = castCatalogueFilters({
           filters: filter,
         });
+
+        const searchRubricsStage = filterRubrics
+          ? {
+              rubricSlug: {
+                $in: filterRubrics,
+              },
+            }
+          : {};
+
+        const rubricStage = isSearchResult ? searchRubricsStage : { rubricSlug };
+
+        let searchStage = {};
+        if (isSearchResult) {
+          // Get algolia search result
+          const searchIds = await getAlgoliaProductsSearch({
+            indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+            search: rubricSlug,
+          });
+          searchStage = {
+            _id: {
+              $in: searchIds,
+            },
+          };
+        }
 
         const pricesStage =
           minPrice && maxPrice
@@ -126,8 +157,9 @@ export const CatalogueQueries = extendType({
         const companyRubricsMatch = companyId ? { companyId } : {};
 
         const productsInitialMatch = {
+          ...searchStage,
+          ...rubricStage,
           ...companyRubricsMatch,
-          rubricSlug,
           citySlug: city,
           ...optionsStage,
           ...pricesStage,

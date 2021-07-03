@@ -264,6 +264,7 @@ input CatalogueAdditionalOptionsInput {
   attributeSlug: String!
   companyId: ObjectId
   filter: [String!]!
+  isSearchResult: Boolean
   rubricSlug: String!
 }
 

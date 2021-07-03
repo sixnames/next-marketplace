@@ -301,6 +301,7 @@ export type CartProduct = Base & {
 
 export type CatalogueAdditionalOptionsInput = {
   companyId?: Maybe<Scalars['ObjectId']>;
+  isSearchResult?: Maybe<Scalars['Boolean']>;
   attributeSlug: Scalars['String'];
   filter: Array<Scalars['String']>;
   rubricSlug: Scalars['String'];

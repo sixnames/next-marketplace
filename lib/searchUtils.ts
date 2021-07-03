@@ -24,6 +24,8 @@ import { ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CatalogueDataInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
   CatalogueProductsAggregationInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
@@ -43,6 +45,43 @@ import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtil
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+
+function groupSearchFilterAttributes(
+  initialAttributes: CatalogueFilterAttributeInterface[],
+): CatalogueFilterAttributeInterface[] {
+  return initialAttributes.reduce((acc: CatalogueFilterAttributeInterface[], attribute) => {
+    const existingAttributeIndex = acc.findIndex((item) => {
+      return item.slug === attribute.slug;
+    });
+
+    if (existingAttributeIndex > -1) {
+      const existingAttribute = acc[existingAttributeIndex];
+      if (!existingAttribute) {
+        return [...acc, attribute];
+      }
+
+      acc[existingAttributeIndex] = {
+        ...existingAttribute,
+        options: [...existingAttribute.options, ...attribute.options].reduce(
+          (optionAcc: CatalogueFilterAttributeOptionInterface[], option) => {
+            const existingOption = optionAcc.find((item) => {
+              return item.slug === option.slug;
+            });
+            if (existingOption) {
+              return optionAcc;
+            }
+            return [...optionAcc, option];
+          },
+          [],
+        ),
+      };
+
+      return acc;
+    }
+
+    return [...acc, attribute];
+  }, []);
+}
 
 export interface GetCatalogueDataInterface {
   locale: string;
@@ -628,9 +667,6 @@ export const getSearchData = async ({
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
-
-    // TODO group attributes
-
     // get price filters
     const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [getPriceAttribute()],
@@ -654,9 +690,12 @@ export const getSearchData = async ({
         // visibleAttributesCount,
       });
 
+      // add to casted attributes
       rubricCastedAttributes.castedAttributes.forEach((castedAttribute) => {
         castedAttributes.push(castedAttribute);
       });
+
+      // add to selected attributes
       rubricCastedAttributes.selectedAttributes.forEach((castedAttribute) => {
         selectedAttributes.push(castedAttribute);
       });
@@ -676,11 +715,14 @@ export const getSearchData = async ({
       selectedAttributes.unshift(rubricsAsFilters);
     }
 
+    const finalCastedAttributes = groupSearchFilterAttributes(castedAttributes);
+    const finalSelectedAttributes = groupSearchFilterAttributes(selectedAttributes);
+
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products
     const products = [];
-    const rubricListViewAttributes = castedAttributes.filter(({ viewVariant }) => {
+    const rubricListViewAttributes = finalCastedAttributes.filter(({ viewVariant }) => {
       return viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
     });
     for await (const product of shopProductsAggregationResult.docs) {
@@ -788,17 +830,19 @@ export const getSearchData = async ({
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
     // console.log('Total time: ', new Date().getTime() - timeStart);
 
+    const catalogueTitle = `Результаты поска по запросу "${search}"`;
+
     return {
       _id: new ObjectId(),
       clearSlug: `${ROUTE_SEARCH_RESULT}/${search}${sortPathname}`,
       filters: restFilters,
-      rubricName: '',
+      rubricName: catalogueTitle,
       rubricSlug: search,
       products,
-      catalogueTitle: `Результаты поска по запросу "${search}"`,
+      catalogueTitle: catalogueTitle,
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
-      attributes: castedAttributes,
-      selectedAttributes,
+      attributes: finalCastedAttributes,
+      selectedAttributes: finalSelectedAttributes,
       page: payloadPage,
     };
   } catch (e) {

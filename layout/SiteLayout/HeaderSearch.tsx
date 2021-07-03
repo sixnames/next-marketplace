@@ -1,10 +1,11 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import ControlButton from 'components/ControlButton';
+import { ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
 import Inner from 'components/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
-import Icon from 'components/Icon';
 import Input from 'components/FormElements/Input/Input';
 import {
   GetCatalogueSearchResultQuery,
@@ -15,6 +16,7 @@ import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import qs from 'qs';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -73,6 +75,7 @@ interface HeaderSearchInterface {
 }
 
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
+  const router = useRouter();
   const [string, setString] = React.useState<string>('');
   const [value] = useDebounce(string, 1000);
   const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
@@ -108,28 +111,38 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
         <Inner>
-          <div className='flex items-center justify-end pt-8 min-h-8 mb-8 text-xl font-medium lg:hidden'>
-            <div className='search-mobile-title overflow-ellipsis overflow-hidden whitespace-nowrap text-center'>
-              Поиск
-            </div>
-            <div
-              className='flex items-center justify-end h-[var(--formInputHeightSmall)] w-[var(--formInputHeightSmall)] text-secondary-text'
-              onClick={() => setIsSearchOpen(false)}
-            >
-              <Icon className='w-5 h-5' name={'cross'} />
-            </div>
-          </div>
+          <div className='pt-8 min-h-8 mb-8 text-xl font-medium text-center lg:hidden'>Поиск</div>
 
-          <form onSubmit={(e) => e.preventDefault()}>
-            <Input
-              onChange={(e) => setString(e.target.value)}
-              name={'search'}
-              icon={'search'}
-              value={string}
-              placeholder={'Я хочу найти...'}
-              testId={'search-input'}
-            />
-          </form>
+          <div className='flex'>
+            <form
+              className='flex-grow relative'
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (string && string.length > minSearchLength) {
+                  const params = qs.stringify({
+                    search: string,
+                  });
+                  router.push(`${ROUTE_SEARCH_RESULT}?${params}`).catch(console.log);
+                }
+              }}
+            >
+              <Input
+                onChange={(e) => setString(e.target.value)}
+                name={'search'}
+                icon={'search'}
+                value={string}
+                placeholder={'Я хочу найти...'}
+                testId={'search-input'}
+              />
+              <button
+                className='absolute z-30 top-0 right-0 overflow-hidden text-indent-full w-[var(--formInputHeight)] h-[var(--formInputHeight)]'
+                type={'submit'}
+              >
+                search
+              </button>
+            </form>
+            <ControlButton icon={'cross'} onClick={() => setIsSearchOpen(false)} />
+          </div>
 
           {!loading &&
           value.length > minSearchLength &&

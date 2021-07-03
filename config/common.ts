@@ -86,6 +86,7 @@ export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DE
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
 
 // profile
+export const ROUTE_SEARCH_RESULT = `/search-result`;
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;

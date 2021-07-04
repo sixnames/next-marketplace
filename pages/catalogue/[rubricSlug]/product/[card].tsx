@@ -21,6 +21,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { cityIn } from 'lvovich';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Image from 'next/image';
 import * as React from 'react';
@@ -484,14 +485,16 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
     );
   }
 
+  const siteName = getSiteConfigSingleValue('siteName');
   const prefixConfig = getSiteConfigSingleValue('cardMetaPrefix');
-  const prefix = prefixConfig ? `${prefixConfig} ` : '';
-  const cityDescription = currentCity ? ` в городе ${currentCity.name}` : '';
+  const prefix = prefixConfig ? ` ${prefixConfig}` : '';
+  const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
+  const siteNamePart = siteName ? ` в ${siteName}` : ``;
 
   return (
     <SiteLayoutProvider
       previewImage={cardData.mainImage}
-      title={`${prefix}${cardData.originalName}${cityDescription}`}
+      title={`${cardData.originalName}${prefix}${siteNamePart}${cityDescription}`}
       description={`${cardData.description}`}
       company={company}
       {...props}

@@ -6,7 +6,13 @@ import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING, ROUTE_CMS } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_STRING,
+  ROUTE_CMS,
+  SORT_ASC,
+  SORT_DESC,
+} from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -17,6 +23,7 @@ import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
+  useToggleAttributeInProductAttributesMutation,
   useToggleAttributeInRubricCatalogueMutation,
   useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
@@ -62,6 +69,12 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const [toggleAttributeInProductAttributesMutation] =
+    useToggleAttributeInProductAttributesMutation({
+      onCompleted: (data) => onCompleteCallback(data.toggleAttributeInProductAttributes),
+      onError: onErrorCallback,
+    });
+
   const columns: TableColumn<RubricAttributeInterface>[] = [
     {
       accessor: 'name',
@@ -102,7 +115,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                     rubricId: rubric._id,
                   },
                 },
-              }).catch((e) => console.log(e));
+              }).catch(console.log);
             }}
           />
         );
@@ -131,7 +144,32 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                     rubricId: rubric._id,
                   },
                 },
-              }).catch((e) => console.log(e));
+              }).catch(console.log);
+            }}
+          />
+        );
+      },
+    },
+    {
+      accessor: '_id',
+      headTitle: 'Показывать в настройках товара',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <Checkbox
+            testId={`${dataItem.name}-nav`}
+            checked={dataItem.showInProductAttributes}
+            value={cellData}
+            name={'showInCatalogueNav'}
+            onChange={() => {
+              showLoading();
+              toggleAttributeInProductAttributesMutation({
+                variables: {
+                  input: {
+                    attributeId: cellData,
+                    rubricId: rubric._id,
+                  },
+                },
+              }).catch(console.log);
             }}
           />
         );
@@ -288,6 +326,12 @@ export const getServerSideProps = async (
               },
             },
             {
+              $sort: {
+                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                _id: SORT_DESC,
+              },
+            },
+            {
               $lookup: {
                 from: COL_RUBRIC_ATTRIBUTES,
                 as: 'attributes',
@@ -301,6 +345,12 @@ export const getServerSideProps = async (
                           { $eq: ['$$rubricId', '$rubricId'] },
                         ],
                       },
+                    },
+                  },
+                  {
+                    $sort: {
+                      [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                      _id: SORT_DESC,
                     },
                   },
                 ],

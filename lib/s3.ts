@@ -49,6 +49,13 @@ export interface DeleteFileToS3Interface {
 
 export const deleteFileFromS3 = async ({ filePath }: DeleteFileToS3Interface): Promise<boolean> => {
   try {
+    if (
+      filePath === `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}` ||
+      filePath === `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`
+    ) {
+      return true;
+    }
+
     const filePathArr = filePath.split(`https://${process.env.OBJECT_STORAGE_DOMAIN}/`);
     const Key = filePathArr[1];
     const remove = await s3.Remove(Key);

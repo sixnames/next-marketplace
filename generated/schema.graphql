@@ -32,7 +32,7 @@ input AddCollectionToBrandInput {
 
 input AddOptionToGroupInput {
   color: String
-  gender: Gender!
+  gender: Gender
   icon: String
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
@@ -264,6 +264,7 @@ input CatalogueAdditionalOptionsInput {
   attributeSlug: String!
   companyId: ObjectId
   filter: [String!]!
+  isSearchResult: Boolean
   rubricSlug: String!
 }
 
@@ -1102,6 +1103,11 @@ type Mutation {
   Should sign up user
   """
   signUp(input: SignUpInput!): UserPayload!
+
+  """
+  Should toggle attribute in the rubric attribute showInProductAttributes field
+  """
+  toggleAttributeInProductAttributes(input: UpdateAttributeInRubricInput!): RubricPayload!
 
   """
   Should toggle attribute in the rubric attribute showInCatalogueFilter field
@@ -2034,6 +2040,7 @@ type RubricAttribute {
   priorities: JSONObject!
   showInCatalogueFilter: Boolean!
   showInCatalogueNav: Boolean!
+  showInProductAttributes: Boolean!
   slug: String
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!

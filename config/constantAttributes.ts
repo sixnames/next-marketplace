@@ -44,6 +44,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
     variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
     showAsBreadcrumb: false,
     showInCard: true,
+    showInProductAttributes: true,
     options: [
       {
         _id: new ObjectId(),

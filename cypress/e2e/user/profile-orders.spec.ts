@@ -1,9 +1,5 @@
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
-
 describe('Profile orders', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`/`);
   });
 

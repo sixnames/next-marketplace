@@ -33,6 +33,7 @@ export const RubricAttribute = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.boolean('showInCatalogueFilter');
     t.nonNull.boolean('showInCatalogueNav');
+    t.nonNull.boolean('showInProductAttributes');
     t.nonNull.json('nameI18n');
     t.string('slug');
     t.objectId('optionsGroupId');

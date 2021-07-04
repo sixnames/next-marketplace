@@ -174,7 +174,7 @@ export const AddOptionToGroupInput = inputObjectType({
     t.string('color');
     t.string('icon');
     t.nonNull.json('variants');
-    t.nonNull.field('gender', {
+    t.field('gender', {
       type: 'Gender',
     });
   },

@@ -1,10 +1,11 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import ControlButton from 'components/ControlButton';
+import { ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
 import Inner from 'components/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
-import Icon from 'components/Icon';
 import Input from 'components/FormElements/Input/Input';
 import {
   GetCatalogueSearchResultQuery,
@@ -26,12 +27,16 @@ interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
   products: ResultProducts;
   setIsSearchOpen: (value: boolean) => void;
+  isProductsFound: boolean;
+  string: string;
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
   rubrics,
   setIsSearchOpen,
   products,
+  isProductsFound,
+  string,
 }) => {
   return (
     <div className='grid gap-10 grid-cols-1 md:grid-cols-12'>
@@ -51,6 +56,20 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
             </li>
           );
         })}
+
+        <li>
+          {isProductsFound ? (
+            <Link
+              onClick={() => {
+                setIsSearchOpen(false);
+              }}
+              className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
+              href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
+            >
+              <span className='overflow-ellipsis whitespace-nowrap'>Показать все результаты</span>
+            </Link>
+          ) : null}
+        </li>
       </ul>
       <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-3'>
         {products.map((product) => {
@@ -73,8 +92,9 @@ interface HeaderSearchInterface {
 }
 
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
+  const router = useRouter();
   const [string, setString] = React.useState<string>('');
-  const [value] = useDebounce(string, 1000);
+  const [value] = useDebounce(string, 500);
   const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -98,38 +118,49 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
   const topProducts = initialTopProducts as ProductInterface[];
 
-  const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
-  const products = searchProducts && searchProducts.length ? searchProducts : topProducts;
+  const isProductsFound = searchProducts && searchProducts.length > 0;
+  const rubrics = searchRubrics && searchRubrics.length > 0 ? searchRubrics : topRubrics;
+  const products = isProductsFound ? searchProducts : topProducts;
 
   return (
     <div
-      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
+      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:pb-4 lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
       data-cy={'search-dropdown'}
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
-        <Inner>
-          <div className='flex items-center justify-end pt-8 min-h-8 mb-8 text-xl font-medium lg:hidden'>
-            <div className='search-mobile-title overflow-ellipsis overflow-hidden whitespace-nowrap text-center'>
-              Поиск
-            </div>
-            <div
-              className='flex items-center justify-end h-[var(--formInputHeightSmall)] w-[var(--formInputHeightSmall)] text-secondary-text'
-              onClick={() => setIsSearchOpen(false)}
-            >
-              <Icon className='w-5 h-5' name={'cross'} />
-            </div>
-          </div>
+        <Inner lowBottom>
+          <div className='pt-8 min-h-8 mb-8 text-xl font-medium text-center lg:hidden'>Поиск</div>
 
-          <form onSubmit={(e) => e.preventDefault()}>
-            <Input
-              onChange={(e) => setString(e.target.value)}
-              name={'search'}
-              icon={'search'}
-              value={string}
-              placeholder={'Я хочу найти...'}
-              testId={'search-input'}
-            />
-          </form>
+          <div className='flex'>
+            <form
+              className='flex-grow relative'
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (string && string.length > minSearchLength) {
+                  router
+                    .push(`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`)
+                    .catch(console.log);
+                }
+              }}
+            >
+              <Input
+                onChange={(e) => setString(e.target.value)}
+                name={'search'}
+                icon={'search'}
+                value={string}
+                placeholder={'Я хочу найти...'}
+                testId={'search-input'}
+                autoFocus
+              />
+              <button
+                className='absolute z-30 top-0 right-0 overflow-hidden text-indent-full w-[var(--formInputHeight)] h-[var(--formInputHeight)]'
+                type={'submit'}
+              >
+                search
+              </button>
+            </form>
+            <ControlButton icon={'cross'} onClick={() => setIsSearchOpen(false)} />
+          </div>
 
           {!loading &&
           value.length > minSearchLength &&
@@ -155,6 +186,8 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
                 setIsSearchOpen={setIsSearchOpen}
                 rubrics={rubrics}
                 products={products}
+                isProductsFound={isProductsFound}
+                string={string}
               />
             ) : null}
           </div>

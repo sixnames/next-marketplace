@@ -12,6 +12,7 @@ import {
 } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import {
+  AttributeViewVariantModel,
   ConfigModel,
   GenderModel,
   ObjectIdModel,
@@ -45,6 +46,7 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
   PAGE_DEFAULT,
+  RUBRIC_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -237,6 +239,91 @@ export function getRubricCatalogueOptions({
   });
 }
 
+interface CastRubricsToCatalogueAttributeInterface {
+  rubrics: RubricInterface[];
+  filters: string[];
+  locale: string;
+  basePath: string;
+  visibleAttributesCount?: number | null;
+  visibleOptionsCount?: number | null;
+}
+
+export function castRubricsToCatalogueAttribute({
+  rubrics,
+  filters,
+  locale,
+  basePath,
+  visibleOptionsCount,
+}: // visibleAttributesCount,
+CastRubricsToCatalogueAttributeInterface): CatalogueFilterAttributeInterface {
+  const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
+
+  const realFilter = filters.filter((filterItem) => {
+    const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
+    const filterName = filterItemArr[0];
+    return filterName !== QUERY_FILTER_PAGE;
+  });
+
+  rubrics.forEach((rubric) => {
+    const optionSlug = `${RUBRIC_KEY}${CATALOGUE_OPTION_SEPARATOR}${rubric.slug}`;
+    const isSelected = realFilter.includes(optionSlug);
+
+    const optionNextSlug = isSelected
+      ? [...realFilter]
+          .filter((pathArg) => {
+            return pathArg !== optionSlug;
+          })
+          .join('/')
+      : [...realFilter, optionSlug].join('/');
+
+    const castedOption = {
+      _id: rubric._id,
+      name: getFieldStringLocale(rubric.nameI18n, locale),
+      slug: rubric.slug,
+      nextSlug: `${basePath}/${optionNextSlug}`,
+      isSelected,
+    };
+
+    castedOptions.push(castedOption);
+  });
+
+  // attribute
+  const otherSelectedValues = realFilter.filter((param) => {
+    const castedParam = castCatalogueParamToObject(param);
+    return castedParam.slug !== RUBRIC_KEY;
+  });
+  const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
+
+  const isSelected = castedOptions.some(({ isSelected }) => isSelected);
+
+  const castedAttribute: CatalogueFilterAttributeInterface = {
+    _id: new ObjectId(),
+    attributeId: new ObjectId(),
+    clearSlug,
+    slug: RUBRIC_KEY,
+    name: getFieldStringLocale(
+      {
+        [DEFAULT_LOCALE]: 'Рубрика',
+      },
+      locale,
+    ),
+    options: castedOptions,
+    isSelected,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
+    notShowAsAlphabet: false,
+  };
+
+  // slice options if limit is specified
+  const finalCastedAttribute = visibleOptionsCount
+    ? {
+        ...castedAttribute,
+        options: castedAttribute.options.slice(0, visibleOptionsCount),
+      }
+    : castedAttribute;
+
+  return finalCastedAttribute;
+}
+
 export interface GetCatalogueAttributesInterface {
   filters: string[];
   attributes: RubricAttributeInterface[];
@@ -270,6 +357,7 @@ export async function getCatalogueAttributes({
     const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
     const filterName = filterItemArr[0];
     return filterName !== QUERY_FILTER_PAGE;
+    // return filterName !== QUERY_FILTER_PAGE && filterName !== RUBRIC_KEY;
   });
 
   for await (const attribute of attributes) {
@@ -437,6 +525,7 @@ interface CastCatalogueFiltersPayloadInterface {
   sortBy: string | null;
   sortDir: 1 | -1;
   sortFilterOptions: string[];
+  rubricSlug?: string[] | null;
   noFiltersSelected: boolean;
   page: number;
   skip: number;
@@ -473,11 +562,19 @@ export function castCatalogueFilters({
   let minPrice: number | null = null;
   let maxPrice: number | null = null;
 
+  // rubrics
+  const rubricSlug: string[] = [];
+
   filters.forEach((filterOption) => {
     const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
     const filterOptionName = splittedOption[0];
     const filterOptionValue = splittedOption[1];
     if (filterOptionName) {
+      if (filterOptionName === RUBRIC_KEY) {
+        rubricSlug.push(filterOptionValue);
+        return;
+      }
+
       if (filterOptionName === QUERY_FILTER_PAGE) {
         page = noNaN(filterOptionValue) || defaultPage;
         return;
@@ -517,6 +614,7 @@ export function castCatalogueFilters({
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
   return {
+    rubricSlug: rubricSlug.length > 0 ? rubricSlug : null,
     clearSlug: sortPathname,
     minPrice,
     maxPrice,
@@ -677,6 +775,9 @@ export const getCatalogueData = async ({
               selectedOptionsSlugs: {
                 $addToSet: '$selectedOptionsSlugs',
               },
+              shopsIds: {
+                $addToSet: '$shopId',
+              },
               shopProductsIds: {
                 $addToSet: '$_id',
               },
@@ -698,7 +799,7 @@ export const getCatalogueData = async ({
                 },
                 {
                   $addFields: {
-                    shopsCount: { $size: '$shopProductsIds' },
+                    shopsCount: { $size: '$shopsIds' },
                     cardPrices: {
                       min: '$minPrice',
                       max: '$maxPrice',
@@ -1094,7 +1195,10 @@ export async function getCatalogueServerSideProps(
   const { catalogue, rubricSlug } = query;
 
   const notFoundResponse = {
-    props,
+    props: {
+      ...props,
+      route: '',
+    },
     notFound: true,
   };
 
@@ -1118,14 +1222,14 @@ export async function getCatalogueServerSideProps(
   if (!rawCatalogueData) {
     return notFoundResponse;
   }
-  const catalogueData = castDbData(rawCatalogueData);
 
   // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
 
   return {
     props: {
       ...props,
-      catalogueData,
+      route: '',
+      catalogueData: castDbData(rawCatalogueData),
     },
   };
 }

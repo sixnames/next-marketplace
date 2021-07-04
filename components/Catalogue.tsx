@@ -40,12 +40,16 @@ interface CatalogueRouteInterface {
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
+  route: string;
+  isSearchResult?: boolean;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
   catalogueData,
   companyId,
   companySlug,
+  route,
+  isSearchResult,
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
@@ -269,6 +273,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            route={route}
             companyId={companyId}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
@@ -276,6 +281,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
             rubricSlug={state.rubricSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
+            isSearchResult={isSearchResult}
           />
 
           <div className='lg:col-span-5'>
@@ -399,12 +405,16 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
 export interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
+  route: string;
+  isSearchResult?: boolean;
 }
 
 const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
   company,
+  route,
+  isSearchResult,
   ...props
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -429,6 +439,8 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       {...props}
     >
       <CatalogueRoute
+        isSearchResult={isSearchResult}
+        route={route}
         catalogueData={catalogueData}
         companySlug={company?.slug}
         companyId={company?._id ? `${company?._id}` : undefined}

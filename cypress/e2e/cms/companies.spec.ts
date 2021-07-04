@@ -1,11 +1,9 @@
-import { ADULT_KEY, ADULT_TRUE, DEFAULT_CITY, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CITY, ROUTE_CMS } from 'config/common';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
 
 describe('Companies list', () => {
   const companiesPath = `${ROUTE_CMS}/companies`;
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(companiesPath);
   });
 

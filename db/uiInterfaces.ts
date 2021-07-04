@@ -332,6 +332,7 @@ export interface CatalogueProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   docs: ProductInterface[];
   rubric: RubricInterface;
+  rubrics?: RubricInterface[] | null;
 }
 
 export interface ProductsPaginationAggregationInterface {

@@ -1,5 +1,5 @@
 import OptionsModal, { OptionsModalInterface } from 'components/Modal/OptionsModal';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useGetCatalogueAdditionalOptionsQuery } from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -12,6 +12,7 @@ export interface CatalogueAdditionalOptionsModalInterface
   title: string;
   companyId?: string;
   rubricSlug: string;
+  isSearchResult?: boolean;
 }
 
 const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalInterface> = ({
@@ -20,17 +21,20 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
   companyId,
   notShowAsAlphabet,
   rubricSlug,
+  isSearchResult,
 }) => {
   const router = useRouter();
   const { hideModal } = useAppContext();
   const { query } = router;
   const { data, loading, error } = useGetCatalogueAdditionalOptionsQuery({
+    fetchPolicy: 'network-only',
     variables: {
       input: {
-        rubricSlug: `${query.rubricSlug}`,
         filter: alwaysArray(query.catalogue),
         attributeSlug,
         companyId,
+        isSearchResult,
+        rubricSlug,
       },
     },
   });
@@ -49,9 +53,13 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
           return `${attributeSlug}${CATALOGUE_OPTION_SEPARATOR}${slug}`;
         });
         const nextParams = [...alwaysArray(query.catalogue), ...selectedOptionsSlugs].join('/');
-        router.push(`${ROUTE_CATALOGUE}/${rubricSlug}/${nextParams}`).catch((e) => {
-          console.log(e);
-        });
+        router
+          .push(
+            `${isSearchResult ? ROUTE_SEARCH_RESULT : ROUTE_CATALOGUE}/${rubricSlug}/${nextParams}`,
+          )
+          .catch((e) => {
+            console.log(e);
+          });
       }}
     />
   );

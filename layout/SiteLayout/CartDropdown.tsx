@@ -33,6 +33,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const { showErrorNotification } = useNotificationsContext();
   const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
+  const minAmount = 1;
 
   return (
     <div
@@ -97,17 +98,21 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       <SpinnerInput
                         name={'amount'}
                         value={amount}
-                        min={1}
+                        min={minAmount}
+                        max={noNaN(shopProduct?.available)}
                         testId={`cart-dropdown-product-${index}-amount`}
                         plusTestId={`cart-dropdown-product-${index}-plus`}
                         minusTestId={`cart-dropdown-product-${index}-minus`}
                         frameClassName='w-[var(--buttonMinWidth)]'
                         size={'small'}
                         onChange={(e) => {
-                          updateProductInCart({
-                            amount: noNaN(e.target.value),
-                            cartProductId: _id,
-                          });
+                          const amount = noNaN(e.target.value);
+                          if (amount >= minAmount && amount <= noNaN(shopProduct?.available)) {
+                            updateProductInCart({
+                              amount,
+                              cartProductId: _id,
+                            });
+                          }
                         }}
                       />
 
@@ -199,6 +204,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           </div>
         </div>
         <Button
+          testId={'cart-dropdown-continue'}
           className='lg:w-full'
           onClick={() => {
             router.push(`/cart`).catch(() => {

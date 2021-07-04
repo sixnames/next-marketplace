@@ -153,6 +153,8 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
+  const minAmount = 1;
+
   if (!shopProduct) {
     return null;
   }
@@ -180,17 +182,20 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
           <SpinnerInput
             name={'amount'}
             value={amount}
-            min={1}
-            max={available}
+            min={minAmount}
+            max={noNaN(available)}
             testId={`cart-product-${testId}-amount`}
             plusTestId={`cart-product-${testId}-plus`}
             minusTestId={`cart-product-${testId}-minus`}
             frameClassName='w-[var(--buttonMinWidth)]'
             onChange={(e) => {
-              updateProductInCart({
-                amount: noNaN(e.target.value),
-                cartProductId: _id,
-              });
+              const amount = noNaN(e.target.value);
+              if (amount >= minAmount && amount <= noNaN(available)) {
+                updateProductInCart({
+                  amount,
+                  cartProductId: _id,
+                });
+              }
             }}
           />
         </div>

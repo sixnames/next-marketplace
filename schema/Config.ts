@@ -1,3 +1,5 @@
+import { alwaysArray } from 'lib/arrayUtils';
+import { phoneToRaw } from 'lib/phoneUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -142,13 +144,33 @@ export const ConfigMutations = extendType({
           const { input } = args;
           const { _id, ...values } = input;
 
+          // cast phone value
+          const castedValues =
+            values.variant === 'tel'
+              ? {
+                  ...values,
+                  cities: Object.keys(values.cities).reduce((acc: Record<string, any>, cityKey) => {
+                    const city = values.cities[cityKey];
+                    acc[cityKey] = Object.keys(city).reduce(
+                      (localeAcc: Record<string, any>, localeKey) => {
+                        const localeValue = alwaysArray(city[localeKey]);
+                        localeAcc[localeKey] = localeValue.map((phone) => phoneToRaw(phone));
+                        return localeAcc;
+                      },
+                      {},
+                    );
+                    return acc;
+                  }, {}),
+                }
+              : values;
+
           // Update config
           const updatedConfigResult = await configsCollection.findOneAndUpdate(
             {
               _id,
             },
             {
-              $set: values,
+              $set: castedValues,
             },
             {
               returnDocument: 'after',

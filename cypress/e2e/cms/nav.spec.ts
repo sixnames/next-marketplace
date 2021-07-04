@@ -22,7 +22,8 @@ describe('Nav items', () => {
     cy.getByCy(`slug`).type('slug');
     cy.getByCy(`path`).type('/path');
     cy.getByCy(`index`).type('100');
-    cy.getByCy(`icon`).select('burger');
+    cy.getByCy(`icon`).click();
+    cy.getByCy(`arrow-left`).click();
     cy.getByCy(`nav-item-submit`).click();
     cy.wait(1500);
 

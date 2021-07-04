@@ -46,7 +46,6 @@ describe('Cart', () => {
     // Add shopless product from card
     cy.getByCy(`cart-modal-close`).click();
     cy.get(`[data-cy=catalogue-item-3-name-row]`).invoke('removeAttr', 'target').click();
-    cy.getByCy(`card-plus`).click();
     cy.getByCy(`card-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '4');
 
@@ -83,10 +82,16 @@ describe('Cart', () => {
     cy.getByCy(`cart-dropdown-product-0-minus`).first().click();
     cy.getByCy(`cart-dropdown-product-0-amount`).first().should('have.value', '2');
 
-    // Should delete cart product form dropdown
+    // Should delete cart product form cart dropdown
     cy.getByCy(`cart-dropdown-product-0-remove-from-cart`).first().click();
 
     // Should remove all cart products
+    cy.getByCy(`header-cart-dropdown-trigger`).click();
+    cy.getByCy(`cart-dropdown`).should('exist');
+    cy.getByCy(`cart-dropdown-continue`).first().click();
+    cy.getByCy(`cart`).should('exist');
+    cy.getByCy(`cart-counter`).should('contain', '3');
+    cy.getByCy(`header-cart-dropdown-trigger`).click();
     cy.getByCy('clear-cart').first().click();
     cy.getByCy(`cart-dropdown`).should('not.exist');
     cy.getByCy(`cart-counter`).should('not.exist');

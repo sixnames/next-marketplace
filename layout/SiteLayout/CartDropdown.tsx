@@ -204,6 +204,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           </div>
         </div>
         <Button
+          testId={'cart-dropdown-continue'}
           className='lg:w-full'
           onClick={() => {
             router.push(`/cart`).catch(() => {

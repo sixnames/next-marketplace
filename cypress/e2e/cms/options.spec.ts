@@ -1,6 +1,4 @@
 import {
-  ADULT_KEY,
-  ADULT_TRUE,
   DEFAULT_LOCALE,
   GENDER_HE,
   GENDER_IT,
@@ -12,8 +10,6 @@ import {
 
 describe('Options Groups', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/options`);
   });
 

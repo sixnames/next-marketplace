@@ -1,9 +1,7 @@
-import { ADULT_KEY, ADULT_TRUE, CATALOGUE_DEFAULT_RUBRIC_SLUG } from 'config/common';
+import { CATALOGUE_DEFAULT_RUBRIC_SLUG } from 'config/common';
 
 describe('Catalogue filter', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.visit(`/`);
   });
 

@@ -1,14 +1,7 @@
-import {
-  ADULT_KEY,
-  ADULT_TRUE,
-  CATALOGUE_DEFAULT_RUBRIC_SLUG,
-  ROUTE_CATALOGUE,
-} from 'config/common';
+import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
 
 describe('Cart', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
   });
 

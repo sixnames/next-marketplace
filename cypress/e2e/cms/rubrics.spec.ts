@@ -1,17 +1,7 @@
-import {
-  ADULT_KEY,
-  ADULT_TRUE,
-  DEFAULT_LOCALE,
-  GENDER_HE,
-  GENDER_SHE,
-  ROUTE_CMS,
-  SECONDARY_LOCALE,
-} from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
 
 describe('Rubrics', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });
 

@@ -94,7 +94,7 @@ interface HeaderSearchInterface {
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
   const router = useRouter();
   const [string, setString] = React.useState<string>('');
-  const [value] = useDebounce(string, 1000);
+  const [value] = useDebounce(string, 500);
   const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
     fetchPolicy: 'network-only',
     variables: {

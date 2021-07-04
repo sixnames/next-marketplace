@@ -730,7 +730,7 @@ export const CatalogueMutations = extendType({
                 counterUpdater,
               );
 
-              const res = await productAttributesCollection.updateMany(
+              await productAttributesCollection.updateMany(
                 {
                   rubricId: rubric._id,
                   slug: {
@@ -739,9 +739,6 @@ export const CatalogueMutations = extendType({
                 },
                 counterUpdater,
               );
-
-              console.log(JSON.stringify(res, null, 2));
-              console.log(selectedAttributesSlugs);
 
               const selectedRubricAttributes = await rubricAttributesCollection
                 .find({

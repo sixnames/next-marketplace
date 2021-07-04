@@ -14,7 +14,7 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-rubric').should(($rubric) => {
       expect($rubric).to.have.length(3);
     });
-    cy.getByCy('search-product-name').should(($rubric) => {
+    cy.getByCy('search-product-name-grid').should(($rubric) => {
       expect($rubric).to.have.length(3);
     });
 
@@ -22,7 +22,7 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-rubric').should(($rubric) => {
       expect($rubric).to.have.length(3);
     });
-    cy.getByCy('search-product-name').should(($rubric) => {
+    cy.getByCy('search-product-name-grid').should(($rubric) => {
       expect($rubric).to.have.length(3);
     });
     cy.get('body').click(0, 0);
@@ -36,7 +36,10 @@ describe('Catalogue filter', () => {
     cy.getByCy('catalogue-title').contains('Вино');
 
     // Should update page title
-    cy.getByCy(`catalogue-option-000012`).click();
-    cy.getByCy(`catalogue-option-000007`).click();
+    cy.getByCy('sticky-nav').then((el: any) => {
+      el.css('position', 'relative');
+    });
+    cy.getByCy(`catalogue-option-1-1`).click();
+    cy.getByCy(`catalogue-option-2-1`).click();
   });
 });

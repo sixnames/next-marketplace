@@ -18,6 +18,7 @@ interface CatalogueFilterAttributePropsInterface {
   rubricSlug: string;
   onClick: () => void;
   isSearchResult?: boolean;
+  attributeIndex: number;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
@@ -26,6 +27,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   rubricSlug,
   onClick,
   isSearchResult,
+  attributeIndex,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -51,13 +53,13 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       </div>
 
       <div className='flex flex-wrap gap-2'>
-        {options.map((option) => {
-          const testId = `catalogue-option-${option.slug}`;
+        {options.map((option, optionIndex) => {
+          const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
           return (
             <FilterLink
               onClick={onClick}
               option={option}
-              key={testId}
+              key={option.slug}
               testId={testId}
               postfix={postfix}
             />
@@ -174,7 +176,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {attributes.map((attribute) => {
+        {attributes.map((attribute, attributeIndex) => {
           return (
             <CatalogueFilterAttribute
               onClick={hideFilterHandler}
@@ -183,6 +185,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
               attribute={attribute}
               key={`${attribute._id}`}
               isSearchResult={isSearchResult}
+              attributeIndex={attributeIndex}
             />
           );
         })}

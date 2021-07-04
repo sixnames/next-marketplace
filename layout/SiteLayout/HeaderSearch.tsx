@@ -150,6 +150,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
                 value={string}
                 placeholder={'Я хочу найти...'}
                 testId={'search-input'}
+                autoFocus
               />
               <button
                 className='absolute z-30 top-0 right-0 overflow-hidden text-indent-full w-[var(--formInputHeight)] h-[var(--formInputHeight)]'

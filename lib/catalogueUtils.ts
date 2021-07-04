@@ -775,6 +775,9 @@ export const getCatalogueData = async ({
               selectedOptionsSlugs: {
                 $addToSet: '$selectedOptionsSlugs',
               },
+              shopsIds: {
+                $addToSet: '$shopId',
+              },
               shopProductsIds: {
                 $addToSet: '$_id',
               },
@@ -796,7 +799,7 @@ export const getCatalogueData = async ({
                 },
                 {
                   $addFields: {
-                    shopsCount: { $size: '$shopProductsIds' },
+                    shopsCount: { $size: '$shopsIds' },
                     cardPrices: {
                       min: '$minPrice',
                       max: '$maxPrice',

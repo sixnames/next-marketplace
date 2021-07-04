@@ -138,7 +138,8 @@ describe('Options Groups', () => {
     cy.getByCy(`Сахар-update`).click();
     cy.wait(1500);
     cy.getByCy(`Сладкое-update`).click();
-    cy.getByCy(`option-icon`).should('have.value', 'burger').select('instagram');
+    cy.getByCy(`option-icon`).click();
+    cy.getByCy(`instagram`).click();
     cy.getByCy(`option-submit`).click();
   });
 });

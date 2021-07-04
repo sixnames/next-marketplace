@@ -1,14 +1,10 @@
 /// <reference types="cypress" />
 /// <reference path="../../types/index.d.ts" />
 
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
-
 export {};
 
 describe('Authorization', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.visit(`/`);
   });
 

@@ -1,9 +1,7 @@
-import { ADULT_KEY, ADULT_TRUE, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 
 describe('Rubric products', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });
 

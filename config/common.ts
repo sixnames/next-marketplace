@@ -86,6 +86,7 @@ export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DE
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
 
 // profile
+export const ROUTE_SEARCH_RESULT = `/search-result`;
 export const ROUTE_PROFILE = `/profile`;
 export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
@@ -205,6 +206,7 @@ export const CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES = '5';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
+export const RUBRIC_KEY = 'rubric';
 export const SORT_BY_KEY = 'sortBy';
 export const SORT_DIR_KEY = 'sortDir';
 export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];

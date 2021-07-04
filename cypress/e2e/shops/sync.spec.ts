@@ -1,4 +1,4 @@
-import { ADULT_KEY, ADULT_TRUE, ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
+import { ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
 import {
   SyncOrderResponseInterface,
   SyncOrderStatusesResponseInterface,
@@ -89,8 +89,6 @@ const errorCallback = (res: any) => {
 
 describe('Sync', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`/`);
   });
 

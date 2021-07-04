@@ -1,6 +1,4 @@
 import {
-  ADULT_KEY,
-  ADULT_TRUE,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
@@ -13,8 +11,6 @@ import {
 
 describe('Attributes Groups', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/attributes`);
   });
 

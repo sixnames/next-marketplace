@@ -1,11 +1,5 @@
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
-
-export {};
-
 describe('Profile details', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`/profile/details`);
   });
 

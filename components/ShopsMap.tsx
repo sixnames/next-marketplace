@@ -74,6 +74,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       {/* Map */}
       <div className='lg:col-span-5 relative h-[330px] lg:h-auto'>
         <WpMap
+          className='absolute inset-0'
           mapRef={mapRef}
           markers={shops.map((shop) => {
             return {

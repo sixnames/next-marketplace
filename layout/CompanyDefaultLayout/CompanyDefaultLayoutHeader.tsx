@@ -322,7 +322,7 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
-  const callbackPhone = company?.contacts.phones[0];
+  const callbackPhone = getSiteConfigSingleValue('phone');
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -372,9 +372,11 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
             </div>
 
             <div className='flex items-center gap-6'>
-              <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
-                {phoneToReadable(callbackPhone)}
-              </a>
+              {callbackPhone ? (
+                <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
+                  {phoneToReadable(callbackPhone)}
+                </a>
+              ) : null}
 
               <ThemeTrigger />
               <LanguageTrigger />

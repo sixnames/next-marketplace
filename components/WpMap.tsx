@@ -84,7 +84,7 @@ const WpMap: React.FC<WpMapInterface> = ({
   }
 
   return (
-    <div className={`relative ${className ? className : 'h-[400px]'}`} data-cy={testId}>
+    <div className={`${className ? className : 'relative h-[400px]'}`} data-cy={testId}>
       <GoogleMap
         onLoad={onLoad}
         mapContainerStyle={mapContainerStyle}

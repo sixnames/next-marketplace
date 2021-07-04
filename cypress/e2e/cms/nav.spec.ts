@@ -1,9 +1,7 @@
-import { ADULT_KEY, ADULT_TRUE, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
 
 describe('Nav items', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/nav`);
   });
 
@@ -22,7 +20,8 @@ describe('Nav items', () => {
     cy.getByCy(`slug`).type('slug');
     cy.getByCy(`path`).type('/path');
     cy.getByCy(`index`).type('100');
-    cy.getByCy(`icon`).select('burger');
+    cy.getByCy(`icon`).click();
+    cy.getByCy(`arrow-left`).click();
     cy.getByCy(`nav-item-submit`).click();
     cy.wait(1500);
 

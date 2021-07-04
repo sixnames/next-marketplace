@@ -1,6 +1,4 @@
 import {
-  ADULT_KEY,
-  ADULT_TRUE,
   DEFAULT_LOCALE,
   GENDER_HE,
   GENDER_IT,
@@ -12,8 +10,6 @@ import {
 
 describe('Options Groups', () => {
   beforeEach(() => {
-    cy.createTestData();
-    cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
     cy.testAuth(`${ROUTE_CMS}/options`);
   });
 
@@ -138,7 +134,8 @@ describe('Options Groups', () => {
     cy.getByCy(`Сахар-update`).click();
     cy.wait(1500);
     cy.getByCy(`Сладкое-update`).click();
-    cy.getByCy(`option-icon`).should('have.value', 'burger').select('instagram');
+    cy.getByCy(`option-icon`).click();
+    cy.getByCy(`instagram`).click();
     cy.getByCy(`option-submit`).click();
   });
 });

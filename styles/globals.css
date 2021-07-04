@@ -122,11 +122,6 @@
     clip: rect(0 0 0 0);
   }
 
-  /* Header search */
-  .search-mobile-title {
-    width: calc(100% - (var(--formInputHeightSmall) * 2));
-  }
-
   /* Catalogue */
   .catalogue .catalogue__list[class*='infinite-scroll-component'] {
     overflow: unset !important;

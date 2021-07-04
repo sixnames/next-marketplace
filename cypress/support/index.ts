@@ -15,6 +15,13 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+import { ADULT_KEY, ADULT_TRUE } from 'config/common';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// Seed db and set Adult cookie
+beforeEach(() => {
+  cy.createTestData();
+  cy.setLocalStorage(ADULT_KEY, ADULT_TRUE);
+});

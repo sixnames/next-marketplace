@@ -650,25 +650,28 @@ export const attributesGroupMutations = extendType({
                 attributesGroupsIds: attributesGroupId,
               })
               .toArray();
-            const rubricAttributes: RubricAttributeModel[] = [];
-            for await (const rubric of rubrics) {
-              const rubricAttribute = await castAttributeForRubric({
-                attribute: createdAttribute,
-                rubricSlug: rubric.slug,
-                rubricId: rubric._id,
-              });
-              rubricAttributes.push(rubricAttribute);
-            }
-            const createdAttributesResult = await rubricAttributesCollection.insertMany(
-              rubricAttributes,
-            );
-            if (!createdAttributesResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
-              };
-              await session.abortTransaction();
-              return;
+            if (rubrics.length > 0) {
+              const rubricAttributes: RubricAttributeModel[] = [];
+              for await (const rubric of rubrics) {
+                const rubricAttribute = await castAttributeForRubric({
+                  attribute: createdAttribute,
+                  rubricSlug: rubric.slug,
+                  rubricId: rubric._id,
+                });
+                rubricAttributes.push(rubricAttribute);
+              }
+
+              const createdAttributesResult = await rubricAttributesCollection.insertMany(
+                rubricAttributes,
+              );
+              if (!createdAttributesResult.result.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
+                };
+                await session.abortTransaction();
+                return;
+              }
             }
 
             mutationPayload = {

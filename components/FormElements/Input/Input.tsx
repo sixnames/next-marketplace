@@ -30,6 +30,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   onChange?: (e: InputEvent) => void;
   theme?: InputTheme;
   readOnly?: boolean;
+  autoFocus?: boolean;
 }
 
 const Input: React.FC<InputPropsInterface> = ({

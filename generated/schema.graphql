@@ -2376,6 +2376,8 @@ input UpdatePageInput {
   index: Int!
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
+  showAsMainBanner: Boolean
+  showAsSecondaryBanner: Boolean
   state: PageState!
 }
 

@@ -647,6 +647,8 @@ export interface NexusGenInputs {
     index: number; // Int!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    showAsMainBanner?: boolean | null; // Boolean
+    showAsSecondaryBanner?: boolean | null; // Boolean
     state: NexusGenEnums['PageState']; // PageState!
   };
   UpdatePagesGroupInput: {

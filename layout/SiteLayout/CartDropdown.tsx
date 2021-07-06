@@ -90,7 +90,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       discountedPercent={shopProduct.discountedPercent}
                     />
                     <div className='mb-[var(--textLineGap)]'>
-                      <span className='text-secondary-text'>винотека: </span>
+                      <span className='text-secondary-text'>магазин: </span>
                       <span className='font-medium'>{shopProduct?.shop?.name}</span>
                     </div>
 
@@ -169,7 +169,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     className='mb-[var(--textLineGap)]'
                     value={cardPrices?.min}
                   />
-                  <div className='text-theme text-sm'>Винотека не выбрана</div>
+                  <div className='text-theme text-sm'>Магазин не выбран</div>
 
                   <div className='flex items-center justify-between mt-4'>
                     <div className='flex items-center justify-end ml-auto'>

@@ -90,7 +90,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
               <div>
                 <div className={classes.shop}>
                   <div>
-                    <span>винотека: </span>
+                    <span>магазин: </span>
                     {shop?.name}
                   </div>
                   <div>{shop?.address.formattedAddress}</div>

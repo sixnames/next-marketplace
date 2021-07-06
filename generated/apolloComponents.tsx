@@ -2653,6 +2653,8 @@ export type UpdatePageInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  showAsMainBanner?: Maybe<Scalars['Boolean']>;
+  showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];

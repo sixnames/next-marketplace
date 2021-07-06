@@ -7,7 +7,6 @@ import { getDatabase } from 'db/mongodb';
 import { PageInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
-import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -32,11 +31,11 @@ interface CreatedPageInterface extends SiteLayoutProviderInterface, CreatedPageC
 
 const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   return (
-    <SiteLayoutProvider {...props}>
-      <Head>
-        <title>{`${page.name}`}</title>
-        <meta name={'description'} content={page.description ? page.description : `${page.name}`} />
-      </Head>
+    <SiteLayoutProvider
+      {...props}
+      title={`${page.name}`}
+      description={page.description ? page.description : `${page.name}`}
+    >
       <CreatedPageConsumer page={page} />
     </SiteLayoutProvider>
   );

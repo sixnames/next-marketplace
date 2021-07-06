@@ -93,7 +93,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
     shopsCount,
     shopProducts,
   } = cardData;
-  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -414,7 +414,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, compan
         {/*shops*/}
         <section id={`card-shops`} className='mb-28'>
           <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
-            <h2 className='text-2xl font-medium'>Наличие в винотеках</h2>
+            <h2 className='text-2xl font-medium'>Наличие в магазинах</h2>
 
             <ArrowTrigger
               arrowPosition={isMap ? 'left' : 'right'}

@@ -68,6 +68,8 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
+    t.boolean('showAsMainBanner');
+    t.boolean('showAsSecondaryBanner');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');

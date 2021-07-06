@@ -55,6 +55,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const configSeoText = getSiteConfigSingleValue('seoText');
   const sectionClassName = `mb-14 sm:mb-28`;
 
   return (
@@ -101,8 +102,14 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
         ) : null}
 
         {configTitle ? (
-          <div className='mb-14 sm:mb-20 max-w-[690px]'>
-            <Title>{configTitle}</Title>
+          <div className='mb-14 sm:mb-20'>
+            <Title textClassName='max-w-[690px]'>{configTitle}</Title>
+            {configSeoText ? (
+              <div
+                className='prose max-w-[70rem] md:prose-xl'
+                dangerouslySetInnerHTML={{ __html: configSeoText }}
+              />
+            ) : null}
           </div>
         ) : null}
 

@@ -3,10 +3,10 @@ import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
+import SlickSlider from 'components/SlickSlider';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ROUTE_CATALOGUE_DEFAULT_RUBRIC,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   SORT_DESC,
   CATALOGUE_OPTION_SEPARATOR,
@@ -57,23 +57,48 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   const sectionClassName = `mb-14 sm:mb-28`;
 
-  console.log({ sliderPages });
-
   return (
     <React.Fragment>
       <Inner testId={'main-page'}>
-        <div className='mb-14 sm:mb-20 overflow-hidden rounded-xl'>
-          <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
-            <img
-              className='w-full'
-              src={`https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/main-banner.jpg`}
-              width='1249'
-              height='432'
-              alt={'slider'}
-              title={'slider'}
-            />
-          </Link>
-        </div>
+        {sliderPages.length > 0 ? (
+          <div className='sm:mb-20 mb-14'>
+            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={4000}>
+              {sliderPages.map(({ slug, mainBanner, name, description }) => {
+                if (!mainBanner) {
+                  return null;
+                }
+                return (
+                  <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
+                    <Link
+                      target={'_blank'}
+                      className='relative block'
+                      href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                    >
+                      <img
+                        className='block relative w-full z-10'
+                        src={`${mainBanner.url}`}
+                        width='1250'
+                        height='435'
+                        alt={`${name}`}
+                        title={`${name}`}
+                      />
+                      <span className='absolute z-20 block inset-0 p-4 lg:p-8 text-white'>
+                        <span className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[480px]'>
+                          {name}
+                        </span>
+                        {description ? (
+                          <span className='font-medium hidden md:block text-2xl max-w-[480px] mt-8 md:mt-10 lg:mt-12'>
+                            {description}
+                          </span>
+                        ) : null}
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
+            </SlickSlider>
+          </div>
+        ) : null}
 
         {configTitle ? (
           <div className='mb-14 sm:mb-20 max-w-[690px]'>
@@ -111,24 +136,24 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 
                 return (
                   <div
-                    className='relative flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
+                    className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
                     key={`${secondaryBanner.url}`}
                   >
                     <Link
-                      className='block z-10'
+                      className='relative block'
                       target={'_blank'}
                       href={`${ROUTE_DOCS_PAGES}/${slug}`}
                     >
                       <img
-                        className='block'
+                        className='block relative z-10'
                         src={`${secondaryBanner.url}`}
                         width='526'
                         height='360'
                         alt={`${name}`}
                         title={`${name}`}
                       />
-                      <span className='absolute block inset-0 p-8 text-white'>
-                        <span className='block font-medium text-3xl max-h-[160px]'>{name}</span>
+                      <span className='absolute z-20 block inset-0 p-8 text-white'>
+                        <span className='block font-medium text-3xl max-w-[250px]'>{name}</span>
                       </span>
                     </Link>
                   </div>

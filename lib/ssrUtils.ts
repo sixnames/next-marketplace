@@ -779,6 +779,9 @@ async function getCatalogueCreatedPages({
           {
             ...page,
             name: getI18nLocaleValue(page.nameI18n, sessionLocale),
+            description: page.descriptionI18n
+              ? getI18nLocaleValue(page.descriptionI18n, sessionLocale)
+              : '',
           },
         ];
       }, []),

@@ -144,7 +144,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
         }}
         testId={`cart-product-${testId}-show-shops`}
       >
-        Выбрать винотеку
+        Выбрать магазин
       </Button>
     </CartProductFrame>
   );
@@ -212,7 +212,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
           <div className={classes.shop}>
             <div>
-              <span>винотека: </span>
+              <span>магазин: </span>
               {shop?.name}
             </div>
             <div>{shop?.address.formattedAddress}</div>

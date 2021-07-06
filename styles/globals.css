@@ -799,3 +799,31 @@ html [data-reach-menu], html [data-reach-menu-popover] {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
+
+/* Slick slider */
+.wp-slider .slick-dots {
+  bottom: -35px;
+}
+
+.wp-slider .slick-dots > li > button {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 24px;
+  padding: 0;
+  text-indent: -99em;
+  overflow: hidden;
+}
+
+.wp-slider .slick-dots > li > button:before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--wp-mid-gray-100);
+  border-radius: 4px;
+}
+
+.wp-slider .slick-dots > li.slick-active > button:before {
+  width: 16px;
+}

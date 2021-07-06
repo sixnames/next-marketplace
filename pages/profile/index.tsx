@@ -171,7 +171,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
                 {firstProduct.shop ? (
                   <div className=''>
                     <div className='text-secondary-text mb-2'>
-                      винотека:{' '}
+                      магазин:{' '}
                       <span className='text-primary-text font-medium'>
                         {firstProduct.shop.name}
                       </span>

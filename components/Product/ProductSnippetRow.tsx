@@ -38,7 +38,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     shopProductsIds,
   } = product;
 
-  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'винотеках' : 'винотеке';
+  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
 
   return (

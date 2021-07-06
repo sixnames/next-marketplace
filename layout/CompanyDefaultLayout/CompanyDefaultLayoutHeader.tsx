@@ -393,7 +393,7 @@ const CompanyDefaultLayoutHeader: React.FC<CompanyDefaultLayoutHeaderInterface> 
                 <div className={`relative mr-3`}>
                   <Icon name={'marker'} className='w-5 h-5' />
                 </div>
-                <span>Винотеки</span>
+                <span>Магазины</span>
               </div>
             </div>
 

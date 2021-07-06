@@ -3,20 +3,23 @@ import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
+import SlickSlider from 'components/SlickSlider';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ROUTE_CATALOGUE_DEFAULT_RUBRIC,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   SORT_DESC,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
   CATALOGUE_TOP_SHOPS_LIMIT,
+  ROUTE_DOCS_PAGES,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
+  PageInterface,
+  PagesGroupInterface,
   ProductInterface,
   ShopInterface,
   ShopProductInterface,
@@ -39,44 +42,74 @@ interface HomeRoutInterface {
   topProducts: ProductInterface[];
   topShops: ShopInterface[];
   topFilters: TopFilterInterface[];
+  sliderPages: PageInterface[];
+  bannerPages: PageInterface[];
 }
 
-const bannersConfig = [
-  {
-    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-1.jpg`,
-  },
-  {
-    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-2.jpg`,
-  },
-  {
-    src: `https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/banner-3.jpg`,
-  },
-];
-
-const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilters }) => {
+const HomeRoute: React.FC<HomeRoutInterface> = ({
+  topProducts,
+  topShops,
+  sliderPages,
+  bannerPages,
+  topFilters,
+}) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const configSeoText = getSiteConfigSingleValue('seoText');
   const sectionClassName = `mb-14 sm:mb-28`;
 
   return (
     <React.Fragment>
       <Inner testId={'main-page'}>
-        <div className='mb-14 sm:mb-20 overflow-hidden rounded-xl'>
-          <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
-            <img
-              className='w-full'
-              src={`https://${process.env.OBJECT_STORAGE_DOMAIN}/banners/main-banner.jpg`}
-              width='1249'
-              height='432'
-              alt={'slider'}
-              title={'slider'}
-            />
-          </Link>
-        </div>
+        {sliderPages.length > 0 ? (
+          <div className='sm:mb-20 mb-14'>
+            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={4000}>
+              {sliderPages.map(({ slug, mainBanner, name, description }) => {
+                if (!mainBanner) {
+                  return null;
+                }
+                return (
+                  <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
+                    <Link
+                      target={'_blank'}
+                      className='relative block'
+                      href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                    >
+                      <img
+                        className='block relative w-full z-10'
+                        src={`${mainBanner.url}`}
+                        width='1250'
+                        height='435'
+                        alt={`${name}`}
+                        title={`${name}`}
+                      />
+                      <span className='absolute z-20 block inset-0 p-4 lg:p-8 text-white'>
+                        <span className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[480px]'>
+                          {name}
+                        </span>
+                        {description ? (
+                          <span className='font-medium hidden md:block text-2xl max-w-[480px] mt-8 md:mt-10 lg:mt-12'>
+                            {description}
+                          </span>
+                        ) : null}
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
+            </SlickSlider>
+          </div>
+        ) : null}
 
         {configTitle ? (
-          <div className='mb-14 sm:mb-20 max-w-[690px]'>
-            <Title>{configTitle}</Title>
+          <div className='mb-14 sm:mb-20'>
+            <Title textClassName='max-w-[690px]'>{configTitle}</Title>
+            {configSeoText ? (
+              <div
+                className='prose max-w-[70rem] md:prose-xl'
+                dangerouslySetInnerHTML={{ __html: configSeoText }}
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -97,25 +130,45 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
           </section>
         ) : null}
 
-        <section className={sectionClassName}>
-          <div className='text-2xl mb-4 font-medium'>
-            <h2>Акции</h2>
-          </div>
-          <HorizontalScroll>
-            {bannersConfig.map(({ src }) => {
-              return (
-                <div
-                  className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
-                  key={`${src}`}
-                >
-                  <Link className='block' href={ROUTE_CATALOGUE_DEFAULT_RUBRIC}>
-                    <img src={src} width='526' height='360' alt={src} title={src} />
-                  </Link>
-                </div>
-              );
-            })}
-          </HorizontalScroll>
-        </section>
+        {bannerPages.length > 0 ? (
+          <section className={sectionClassName}>
+            <div className='text-2xl mb-4 font-medium'>
+              <h2>Акции</h2>
+            </div>
+            <HorizontalScroll>
+              {bannerPages.map(({ secondaryBanner, name, slug }) => {
+                if (!secondaryBanner) {
+                  return null;
+                }
+
+                return (
+                  <div
+                    className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
+                    key={`${secondaryBanner.url}`}
+                  >
+                    <Link
+                      className='relative block'
+                      target={'_blank'}
+                      href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                    >
+                      <img
+                        className='block relative z-10'
+                        src={`${secondaryBanner.url}`}
+                        width='526'
+                        height='360'
+                        alt={`${name}`}
+                        title={`${name}`}
+                      />
+                      <span className='absolute z-20 block inset-0 p-8 text-white'>
+                        <span className='block font-medium text-3xl max-w-[250px]'>{name}</span>
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
+            </HorizontalScroll>
+          </section>
+        ) : null}
 
         {topFilters.length > 0 ? (
           <section className={sectionClassName}>
@@ -137,7 +190,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
         {topShops.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
-              <h2>Винотеки</h2>
+              <h2>Магазины</h2>
             </div>
             <ShopsMap shops={topShops} />
           </section>
@@ -149,10 +202,23 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
 
 interface HomeInterface extends SiteLayoutProviderInterface, HomeRoutInterface {}
 
-const Home: NextPage<HomeInterface> = ({ topProducts, topShops, topFilters, ...props }) => {
+const Home: NextPage<HomeInterface> = ({
+  topProducts,
+  topShops,
+  topFilters,
+  bannerPages,
+  sliderPages,
+  ...props
+}) => {
   return (
     <SiteLayoutProvider {...props}>
-      <HomeRoute topProducts={topProducts} topFilters={topFilters} topShops={topShops} />
+      <HomeRoute
+        topProducts={topProducts}
+        topFilters={topFilters}
+        topShops={topShops}
+        sliderPages={sliderPages}
+        bannerPages={bannerPages}
+      />
     </SiteLayoutProvider>
   );
 };
@@ -173,7 +239,8 @@ export async function getServerSideProps(
     };
   }
 
-  const { companySlug, sessionCity, sessionLocale, company } = props;
+  const { companySlug, sessionCity, sessionLocale, company, footerPageGroups, headerPageGroups } =
+    props;
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopProductsAggregation = await shopProductsCollection
@@ -347,12 +414,44 @@ export async function getServerSideProps(
     });
   });
 
+  const allPageGroups: PagesGroupInterface[] = castDbData([
+    ...headerPageGroups,
+    ...footerPageGroups,
+  ]);
+  const sliderPages: PageInterface[] = [];
+  const bannerPages: PageInterface[] = [];
+
+  allPageGroups.forEach((pagesGroup) => {
+    const { pages } = pagesGroup;
+    (pages || []).forEach((page) => {
+      // main slide
+      const showAsMainBanner = page.showAsMainBanner && page.mainBanner?.url;
+      const existInSliderPages = sliderPages.find(({ _id }) => {
+        return _id === page._id;
+      });
+      if (!existInSliderPages && showAsMainBanner) {
+        sliderPages.push(page);
+      }
+
+      // banners
+      const showAsSecondaryBanner = page.showAsSecondaryBanner && page.secondaryBanner?.url;
+      const existInBannerPages = bannerPages.find(({ _id }) => {
+        return _id === page._id;
+      });
+      if (!existInBannerPages && showAsSecondaryBanner) {
+        bannerPages.push(page);
+      }
+    });
+  });
+
   return {
     props: {
       ...props,
       topFilters: castDbData(topFilters),
       topProducts: castDbData(products),
       topShops: castDbData(topShops),
+      sliderPages,
+      bannerPages,
     },
   };
 }

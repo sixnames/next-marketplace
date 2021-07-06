@@ -476,7 +476,9 @@ function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [''],
+          [DEFAULT_LOCALE]: [
+            `<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut autem consequuntur eligendi illum maiores, nihil obcaecati quibusdam reprehenderit saepe sint! Ab amet asperiores harum impedit in labore nobis odio voluptatum!</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus at autem blanditiis deserunt fuga impedit iusto maiores, maxime minus, neque pariatur perspiciatis quisquam ratione rerum, veniam. Quidem repellat rerum voluptate.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque consequuntur debitis distinctio eligendi et facilis fuga impedit molestias numquam officiis quis, quos repellat, saepe suscipit, tempore velit veniam voluptatum.</p>`,
+          ],
         },
       },
     },

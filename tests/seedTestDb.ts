@@ -1,5 +1,6 @@
 import {
   ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_PAGES,
   // ASSETS_DIST_CONFIGS,
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
@@ -82,6 +83,10 @@ const config = {
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
       `/${ASSETS_DIST_COMPANIES}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
+      `/${ASSETS_DIST_PAGES}`,
     );
     /*await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,

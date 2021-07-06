@@ -1,8 +1,10 @@
 import Button from 'components/Button';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import PageEditor from 'components/PageEditor';
 import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
@@ -18,6 +20,7 @@ import AppContentWrapper, {
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner';
@@ -46,12 +49,14 @@ const PAGE_STATE_OPTIONS = [
 ];
 
 const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ page, cities }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updatePageSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
+  const { onCompleteCallback, onErrorCallback, showLoading, hideLoading, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+    });
   const [updatePageMutation] = useUpdatePageMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updatePage),
@@ -79,6 +84,8 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
           validationSchema={validationSchema}
           initialValues={{
             ...page,
+            mainBanner: [page.mainBanner?.url],
+            secondaryBanner: [page.secondaryBanner?.url],
             content: JSON.parse(page.content),
           }}
           onSubmit={(values) => {
@@ -94,6 +101,8 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                   state: values.state as unknown as PageState,
                   citySlug: `${values.citySlug}`,
                   index: noNaN(values.index),
+                  showAsMainBanner: values.showAsMainBanner,
+                  showAsSecondaryBanner: values.showAsSecondaryBanner,
                 },
               },
             }).catch(console.log);
@@ -140,6 +149,88 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
                     options={PAGE_STATE_OPTIONS}
                     isRequired
                     showInlineError
+                  />
+
+                  <FormikCheckboxLine
+                    label={'Показывать в слайдере на главной странице'}
+                    name={'showAsMainBanner'}
+                  />
+
+                  <FormikImageUpload
+                    label={'Изображение слайда (1250 x 432)'}
+                    name={'mainBanner'}
+                    testId={'mainBanner'}
+                    width={'10rem'}
+                    height={'10rem'}
+                    setImageHandler={(files) => {
+                      if (files) {
+                        showLoading();
+                        const formData = new FormData();
+                        formData.append('assets', files[0]);
+                        formData.append('pageId', `${page._id}`);
+
+                        fetch('/api/update-page-main-banner', {
+                          method: 'POST',
+                          body: formData,
+                        })
+                          .then((res) => {
+                            return res.json();
+                          })
+                          .then((json) => {
+                            if (json.success) {
+                              router.reload();
+                              return;
+                            }
+                            hideLoading();
+                            showErrorNotification({ title: json.message });
+                          })
+                          .catch(() => {
+                            hideLoading();
+                            showErrorNotification({ title: 'error' });
+                          });
+                      }
+                    }}
+                  />
+
+                  <FormikCheckboxLine
+                    label={'Показывать в блоке Акции на главной странице'}
+                    name={'showAsSecondaryBanner'}
+                  />
+
+                  <FormikImageUpload
+                    label={'Изображение акции (512 x 360)'}
+                    name={'secondaryBanner'}
+                    testId={'secondaryBanner'}
+                    width={'10rem'}
+                    height={'10rem'}
+                    setImageHandler={(files) => {
+                      if (files) {
+                        showLoading();
+                        const formData = new FormData();
+                        formData.append('assets', files[0]);
+                        formData.append('pageId', `${page._id}`);
+
+                        fetch('/api/update-page-secondary-banner', {
+                          method: 'POST',
+                          body: formData,
+                        })
+                          .then((res) => {
+                            return res.json();
+                          })
+                          .then((json) => {
+                            if (json.success) {
+                              router.reload();
+                              return;
+                            }
+                            hideLoading();
+                            showErrorNotification({ title: json.message });
+                          })
+                          .catch(() => {
+                            hideLoading();
+                            showErrorNotification({ title: 'error' });
+                          });
+                      }
+                    }}
                   />
 
                   <InputLine labelTag={'div'}>

@@ -32,7 +32,7 @@ const OrderStepsDescription: React.FC = () => {
           Заказывайте на сайте, а мы всегда поможем вам сделать правильный выбор
         </OrderStepsDescriptionItem>
         <OrderStepsDescriptionItem icon={'marker-thin'}>
-          Получайте ваш заказ на следующий день в выбранной вами винотеке
+          Получайте ваш заказ на следующий день в выбранном вами магазине
         </OrderStepsDescriptionItem>
         <OrderStepsDescriptionItem icon={'payment'}>
           Оплачивайте при получении любым удобным для вас способом

@@ -137,7 +137,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({ topProducts, topShops, topFilt
         {topShops.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
-              <h2>Винотеки</h2>
+              <h2>Магазины</h2>
             </div>
             <ShopsMap shops={topShops} />
           </section>

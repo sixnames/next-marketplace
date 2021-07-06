@@ -665,10 +665,10 @@ export interface PageModel extends TimestampModel {
   content: string;
   state: PageStateModel;
   companySlug: string;
-  showAsMainBanner?: boolean;
-  showAsSecondaryBanner?: boolean;
-  mainBanner?: AssetModel;
-  secondaryBanner?: AssetModel;
+  showAsMainBanner?: boolean | null;
+  showAsSecondaryBanner?: boolean | null;
+  mainBanner?: AssetModel | null;
+  secondaryBanner?: AssetModel | null;
 }
 
 // Payload

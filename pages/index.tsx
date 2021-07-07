@@ -1,6 +1,7 @@
 import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
+import PageEditor from 'components/PageEditor';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
 import SlickSlider from 'components/SlickSlider';
@@ -58,7 +59,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
   const { getSiteConfigSingleValue } = useConfigContext();
-  const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const configTitle = getSiteConfigSingleValue('seoTextTitle');
   const configSeoText = getSiteConfigSingleValue('seoText');
   const sectionClassName = `mb-14 sm:mb-28`;
 
@@ -108,11 +109,8 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
         {configTitle ? (
           <div className='mb-14 sm:mb-20'>
             <Title textClassName='max-w-[690px]'>{configTitle}</Title>
-            {configSeoText ? (
-              <div
-                className='prose max-w-[70rem] md:prose-xl'
-                dangerouslySetInnerHTML={{ __html: configSeoText }}
-              />
+            {configSeoText && configSeoText.length > 0 ? (
+              <PageEditor value={JSON.parse(configSeoText)} readOnly />
             ) : null}
           </div>
         ) : null}
@@ -233,7 +231,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium flex items-baseline'>
               <h2>Магазины</h2>
-              <span className='ml-3 text-xl text-theme'>{topShops.length}</span>
+              <span className='ml-3 text-xl text-theme'>({topShops.length})</span>
             </div>
             <ShopsMap shops={topShops} />
           </section>

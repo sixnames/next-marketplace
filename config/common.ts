@@ -105,6 +105,7 @@ export const CONFIG_VARIANT_PHONE = 'tel';
 export const CONFIG_VARIANT_EMAIL = 'email';
 export const CONFIG_VARIANT_ASSET = 'asset';
 export const CONFIG_VARIANT_BOOLEAN = 'boolean';
+export const CONFIG_VARIANT_CONSTRUCTOR = 'constructor';
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -113,6 +114,7 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_EMAIL,
   CONFIG_VARIANT_ASSET,
   CONFIG_VARIANT_BOOLEAN,
+  CONFIG_VARIANT_CONSTRUCTOR,
 ];
 
 export const CONFIG_GROUP_GLOBALS = 'globals';
@@ -284,6 +286,7 @@ export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';
 export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_CONFIGS = 'configs';
 export const ASSETS_DIST_PAGES = 'pages';
+export const ASSETS_DIST_SEO = 'seo';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;

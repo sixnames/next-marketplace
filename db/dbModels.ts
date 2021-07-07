@@ -264,6 +264,7 @@ export enum ConfigVariantModel {
   tel = 'tel',
   asset = 'asset',
   boolean = 'boolean',
+  constructor = 'constructor',
 }
 
 // I18n model. Each key is locale with value for current locale

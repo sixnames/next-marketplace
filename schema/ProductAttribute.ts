@@ -557,6 +557,7 @@ export const ProductAttributeMutations = extendType({
             if (!productAttribute) {
               productAttribute = {
                 ...attribute,
+                _id: productAttributeId,
                 attributeId,
                 productId: product._id,
                 productSlug: product.slug,
@@ -760,6 +761,7 @@ export const ProductAttributeMutations = extendType({
 
               productAttribute = {
                 ...attribute,
+                _id: productAttributeId,
                 attributeId,
                 productId: product._id,
                 productSlug: product.slug,
@@ -873,6 +875,7 @@ export const ProductAttributeMutations = extendType({
 
               productAttribute = {
                 ...attribute,
+                _id: productAttributeId,
                 attributeId,
                 productId: product._id,
                 productSlug: product.slug,

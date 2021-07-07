@@ -45,6 +45,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
           companySlug={pageProps.companySlug}
           sessionCity={pageProps.sessionCity}
           isMobileDevice={pageProps.isMobileDevice}
+          configs={initialData?.configs || []}
         >
           <NotificationsProvider>
             <ConfigContextProvider

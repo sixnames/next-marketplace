@@ -394,6 +394,7 @@ Site config variant enum.
 """
 enum ConfigVariant {
   asset
+  boolean
   email
   number
   string

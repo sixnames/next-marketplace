@@ -185,6 +185,21 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'showAdultModal',
+      name: 'Показывать попап с предупреждением о совершеннолетии',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // Contacts
     {

@@ -1,6 +1,7 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import ButtonCross from 'components/ButtonCross';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
@@ -16,6 +17,7 @@ import { Form, Formik, useField, useFormikContext } from 'formik';
 import { useUpdateConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { alwaysArray } from 'lib/arrayUtils';
 import { get } from 'lodash';
 import * as React from 'react';
 import { InputType } from 'types/clientTypes';
@@ -24,9 +26,10 @@ import { updateConfigSchema } from 'validation/configSchema';
 interface ConfigInputInterface extends FormikInputPropsInterface {
   onRemoveHandler?: (values: any) => void;
   multi?: boolean;
+  variant: string;
 }
 
-const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId, type }) => {
+const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, testId, type }) => {
   const { showModal } = useAppContext();
   const [field, meta, { setValue }] = useField(name);
 
@@ -72,28 +75,36 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId, type
 
         return (
           <div className='flex items-center justify-center' key={index}>
-            <div style={multi ? inputWithStyles : inputFullWithStyles}>
-              <FormikInput name={fieldName} testId={fieldTestId} type={type} low />
-            </div>
+            {variant === 'boolean' ? (
+              <React.Fragment>
+                <FormikCheckboxLine label={'Показывать'} name={fieldName} testId={fieldTestId} />
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <div style={multi ? inputWithStyles : inputFullWithStyles}>
+                  <FormikInput name={fieldName} testId={fieldTestId} type={type} low />
+                </div>
 
-            {multi && (
-              <div className='flex items-center justify-end flex-shrink-0 w-[40px]'>
-                {isFirst ? (
-                  <Button
-                    onClick={addFieldHandler}
-                    size={'small'}
-                    theme={'secondary'}
-                    icon={'plus'}
-                    testId={`${fieldTestId}-add`}
-                    circle
-                  />
-                ) : (
-                  <ButtonCross
-                    testId={`${fieldTestId}-remove`}
-                    onClick={() => removeFieldHandler(index)}
-                  />
+                {multi && (
+                  <div className='flex items-center justify-end flex-shrink-0 w-[40px]'>
+                    {isFirst ? (
+                      <Button
+                        onClick={addFieldHandler}
+                        size={'small'}
+                        theme={'secondary'}
+                        icon={'plus'}
+                        testId={`${fieldTestId}-add`}
+                        circle
+                      />
+                    ) : (
+                      <ButtonCross
+                        testId={`${fieldTestId}-remove`}
+                        onClick={() => removeFieldHandler(index)}
+                      />
+                    )}
+                  </div>
                 )}
-              </div>
+              </React.Fragment>
             )}
           </div>
         );
@@ -104,6 +115,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId, type
 
 interface ConfigTranslationInputInterface extends FormikInputPropsInterface {
   multi?: boolean;
+  variant: string;
 }
 
 const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
@@ -219,7 +231,40 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
                 group: config.group,
                 multi: config.multi,
                 name: config.name,
-                cities: values.cities,
+                cities: Object.keys(values.cities).reduce(
+                  (cityAcc: Record<string, any>, cityKey) => {
+                    const city = values.cities[cityKey];
+                    if (!city) {
+                      return cityAcc;
+                    }
+
+                    cityAcc[cityKey] = Object.keys(city).reduce(
+                      (localeAcc: Record<string, any>, localeKey) => {
+                        const localeValueArray = city[localeKey];
+                        if (!localeValueArray) {
+                          localeAcc[localeKey] = [''];
+                          return localeAcc;
+                        }
+
+                        const localeValue = alwaysArray(localeValueArray).map((value) => {
+                          if (config.variant === 'boolean') {
+                            if (!value) {
+                              return '';
+                            }
+                            return `${value}`;
+                          }
+                          return `${value}`;
+                        });
+                        localeAcc[localeKey] = localeValue;
+                        return localeAcc;
+                      },
+                      {},
+                    );
+
+                    return cityAcc;
+                  },
+                  {},
+                ),
               },
             },
           }).catch((e) => console.log(e));
@@ -244,6 +289,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
                         testId={`${configSlug}-${slug}`}
                         multi={multi}
                         type={type}
+                        variant={variant}
                       />
                     </div>
                   </Accordion>

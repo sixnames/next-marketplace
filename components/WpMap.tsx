@@ -20,7 +20,7 @@ const mapContainerStyle = {
 
 interface WpMapMarkerInterface {
   _id: any;
-  icon?: string;
+  icon?: string | null;
   address?: AddressInterface;
   name: string;
 }

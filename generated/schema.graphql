@@ -737,6 +737,11 @@ type ManufacturersPaginationPayload implements PaginationPayload {
   totalPages: Int!
 }
 
+type MapMarker {
+  darkTheme: String
+  lightTheme: String
+}
+
 type Message {
   _id: ObjectId!
 
@@ -2134,6 +2139,7 @@ type Shop implements Base & Timestamp {
   createdAt: Date!
   itemId: String!
   logo: Asset!
+  mapMarker: MapMarker
   name: String!
   productsCount: Int!
   shopProducts(input: PaginationInput): ShopProductsPaginationPayload!

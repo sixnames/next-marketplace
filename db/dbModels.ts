@@ -21,6 +21,11 @@ export interface SelectOptionModel {
   icon?: string;
 }
 
+export interface MapMarkerModel {
+  lightTheme?: string | null;
+  darkTheme?: string | null;
+}
+
 export interface PayloadModel {
   success: boolean;
   message: string;
@@ -611,8 +616,9 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   mainImage: string;
-  token?: string;
-  rating?: number;
+  token?: string | null;
+  rating?: number | null;
+  mapMarker?: MapMarkerModel | null;
 }
 
 export interface NotSyncedProductModel {

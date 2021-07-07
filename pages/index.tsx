@@ -11,7 +11,6 @@ import {
   SORT_DESC,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
-  CATALOGUE_TOP_SHOPS_LIMIT,
   ROUTE_DOCS_PAGES,
   CATALOGUE_TOP_FILTERS_LIMIT,
 } from 'config/common';
@@ -232,8 +231,9 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 
         {topShops.length > 0 ? (
           <section className={sectionClassName}>
-            <div className='text-2xl mb-4 font-medium'>
+            <div className='text-2xl mb-4 font-medium flex items-baseline'>
               <h2>Магазины</h2>
+              <span className='ml-3 text-xl text-theme'>{topShops.length}</span>
             </div>
             <ShopsMap shops={topShops} />
           </section>
@@ -399,9 +399,9 @@ export async function getServerSideProps(
           _id: SORT_DESC,
         },
       },
-      {
+      /*{
         $limit: CATALOGUE_TOP_SHOPS_LIMIT,
-      },
+      },*/
     ])
     .toArray();
 

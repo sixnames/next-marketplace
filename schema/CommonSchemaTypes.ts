@@ -16,6 +16,14 @@ export const Gender = enumType({
   description: 'Gender enum.',
 });
 
+export const MapMarker = objectType({
+  name: 'MapMarker',
+  definition(t) {
+    t.string('lightTheme');
+    t.string('darkTheme');
+  },
+});
+
 export const FormattedPhone = objectType({
   name: 'FormattedPhone',
   definition(t) {

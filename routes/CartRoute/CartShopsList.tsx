@@ -1,7 +1,7 @@
 import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import { Disclosure } from '@headlessui/react';
 import Button from 'components/Button';
 import classes from './CartShopsList.module.css';
 import Image from 'next/image';
@@ -108,8 +108,6 @@ interface CartShopsInterface {
 }
 
 const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProducts }) => {
-  const [isShopsOpen, setIsShopsOpen] = React.useState<boolean>(false);
-
   // TODO cart shops count config
   const visibleShopsLimit = 4;
   const visibleShops = shopProducts.slice(0, visibleShopsLimit);
@@ -129,26 +127,32 @@ const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProduc
       })}
 
       {hiddenShops.length > 0 ? (
-        <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
-          <DisclosurePanel>
-            <div>
-              {hiddenShops.map((shopProduct, index) => {
-                return (
-                  <CartShop
-                    testId={index}
-                    key={`${shopProduct._id}`}
-                    shopProduct={shopProduct}
-                    cartProductId={cartProductId}
-                  />
-                );
-              })}
-            </div>
-          </DisclosurePanel>
-          <DisclosureButton as={'div'}>
-            <Button className={classes.moreShopsButton} theme={'secondary'}>
-              {isShopsOpen ? 'Показать меньше магазинов' : 'Показать больше магазинов'}
-            </Button>
-          </DisclosureButton>
+        <Disclosure>
+          {({ open }) => {
+            return (
+              <React.Fragment>
+                <Disclosure.Panel>
+                  <div>
+                    {hiddenShops.map((shopProduct, index) => {
+                      return (
+                        <CartShop
+                          testId={index}
+                          key={`${shopProduct._id}`}
+                          shopProduct={shopProduct}
+                          cartProductId={cartProductId}
+                        />
+                      );
+                    })}
+                  </div>
+                </Disclosure.Panel>
+                <Disclosure.Button as={React.Fragment}>
+                  <Button className={classes.moreShopsButton} theme={'secondary'}>
+                    {open ? 'Показать меньше магазинов' : 'Показать больше магазинов'}
+                  </Button>
+                </Disclosure.Button>
+              </React.Fragment>
+            );
+          }}
         </Disclosure>
       ) : null}
     </div>

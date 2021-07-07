@@ -468,16 +468,15 @@ function getConfigTemplates({
       _id: getObjectId(`${companySlug} seoText`),
       companySlug,
       group: 'seo',
-      variant: 'string' as ConfigVariantModel,
+      variant: 'constructor' as ConfigVariantModel,
       slug: 'seoText',
       name: 'SEO текст на главной странице сайта.',
-      description: 'Для корректного отображения текст должен быть в формате HTML',
       multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: [
-            `<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut autem consequuntur eligendi illum maiores, nihil obcaecati quibusdam reprehenderit saepe sint! Ab amet asperiores harum impedit in labore nobis odio voluptatum!</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus at autem blanditiis deserunt fuga impedit iusto maiores, maxime minus, neque pariatur perspiciatis quisquam ratione rerum, veniam. Quidem repellat rerum voluptate.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque consequuntur debitis distinctio eligendi et facilis fuga impedit molestias numquam officiis quis, quos repellat, saepe suscipit, tempore velit veniam voluptatum.</p>`,
+            `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"hzq58d","size":12,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header D"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]},"ru":{"slate":[{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
           ],
         },
       },

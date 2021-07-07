@@ -21,7 +21,7 @@ const CreatedPageConsumer: React.FC<CreatedPageConsumerInterface> = ({ page }) =
       <Breadcrumbs currentPageName={`${page.name}`} />
 
       <Inner lowTop>
-        <PageEditor pageId={`${page._id}`} value={JSON.parse(page.content)} readOnly />
+        <PageEditor value={JSON.parse(page.content)} readOnly />
       </Inner>
     </div>
   );

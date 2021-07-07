@@ -1,5 +1,6 @@
 import { ADULT_FALSE, ADULT_KEY, DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
 import { ADULT_MODAL } from 'config/modalVariants';
+import { ConfigInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
@@ -46,6 +47,7 @@ interface AppContextProviderInterface {
   isMobileDevice: boolean;
   sessionCity: string;
   companySlug: string;
+  configs: ConfigInterface[];
 }
 
 const AppContextProvider: React.FC<AppContextProviderInterface> = ({
@@ -53,6 +55,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   isMobileDevice,
   sessionCity,
   companySlug,
+  configs,
 }) => {
   const [state, setState] = React.useState<ContextState>(() => ({
     isMobile: isMobileDevice,
@@ -63,8 +66,12 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   }));
 
   React.useEffect(() => {
+    const adultModalConfig = configs.find(({ slug }) => {
+      return slug === 'showAdultModal';
+    });
+
     const inStorage = window.localStorage.getItem(ADULT_KEY);
-    if (!inStorage || inStorage === ADULT_FALSE) {
+    if ((!inStorage || inStorage === ADULT_FALSE) && adultModalConfig?.singleValue) {
       setState((prevState: ContextState) => ({
         ...prevState,
         isModal: {
@@ -74,7 +81,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
         },
       }));
     }
-  }, []);
+  }, [configs]);
 
   React.useEffect(() => {
     Router.events.on('routeChangeStart', () => {

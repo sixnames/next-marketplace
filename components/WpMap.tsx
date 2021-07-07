@@ -20,7 +20,7 @@ const mapContainerStyle = {
 
 interface WpMapMarkerInterface {
   _id: any;
-  icon?: string;
+  icon?: string | null;
   address?: AddressInterface;
   name: string;
 }
@@ -56,7 +56,6 @@ const WpMap: React.FC<WpMapInterface> = ({
   const onLoad = React.useCallback(
     (map) => {
       mapRef.current = map;
-      mapRef.current.setZoom(13);
 
       // Fit all markers in map window
       const bounds = new window.google.maps.LatLngBounds();
@@ -65,6 +64,8 @@ const WpMap: React.FC<WpMapInterface> = ({
           bounds.extend(address.formattedCoordinates);
         }
       });
+
+      map.fitBounds(bounds);
     },
     [mapRef, markers],
   );

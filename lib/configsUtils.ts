@@ -3,6 +3,7 @@ import {
   CONFIG_VARIANT_ASSET,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
 } from 'config/common';
 import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel, ConfigVariantModel } from 'db/dbModels';
@@ -182,6 +183,21 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['219, 83, 96'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'showAdultModal',
+      name: 'Показывать попап с предупреждением о совершеннолетии',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['true'],
         },
       },
     },
@@ -485,15 +501,15 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'seo',
-      variant: 'string' as ConfigVariantModel,
+      variant: 'constructor' as ConfigVariantModel,
       slug: 'seoText',
       name: 'SEO текст на главной странице сайта.',
-      description: 'Для корректного отображения текст должен быть в формате HTML',
+      description: '',
       multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [''],
+          [DEFAULT_LOCALE]: [PAGE_EDITOR_DEFAULT_VALUE_STRING],
         },
       },
     },

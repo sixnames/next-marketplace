@@ -1,4 +1,4 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import { Disclosure } from '@headlessui/react';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CounterSticker from 'components/CounterSticker/CounterSticker';
 import Icon from 'components/Icon';
@@ -222,12 +222,12 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           <LanguageTrigger />
         </div>
 
-        <ul>
+        <ul className='pb-20'>
           {navRubrics.map((rubric) => {
             const { catalogue = [], card = [] } = query;
             const realCatalogueQuery = alwaysArray(catalogue);
             const catalogueSlug = realCatalogueQuery[0];
-            const { name, slug, navItems } = rubric;
+            const { name, slug, attributes } = rubric;
 
             // Get rubric slug from product card path
             const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
@@ -252,9 +252,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                   {name}
                 </Link>
                 <Disclosure>
-                  <DisclosurePanel>
+                  <Disclosure.Panel>
                     <div>
-                      {(navItems || []).map(({ _id, options, name }) => {
+                      {(attributes || []).map(({ _id, options, name }) => {
                         return (
                           <div className='mt-4 mb-4' key={`${_id}`}>
                             <div className='mb-2 text-secondary-text'>{name}</div>
@@ -280,12 +280,12 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                         );
                       })}
                     </div>
-                  </DisclosurePanel>
-                  <DisclosureButton as={'div'}>
+                  </Disclosure.Panel>
+                  <Disclosure.Button as={'div'}>
                     <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text'>
                       <Icon name={'chevron-down'} className='w-5 h-5' />
                     </button>
-                  </DisclosureButton>
+                  </Disclosure.Button>
                 </Disclosure>
               </li>
             );

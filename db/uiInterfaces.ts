@@ -418,6 +418,11 @@ export interface TopFilterInterface {
   href: string;
 }
 
+export interface MobileTopFilters {
+  visible: TopFilterInterface[];
+  hidden: TopFilterInterface[];
+}
+
 export interface AppPaginationAggregationInterface<Model> {
   docs: Model[];
   totalDocs: number;

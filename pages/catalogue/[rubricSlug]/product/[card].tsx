@@ -67,13 +67,13 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
   );
 };
 
-interface CardRouteInterface {
+interface CardConsumerInterface {
   cardData: ProductInterface;
   companySlug?: string;
   companyId?: string | null;
 }
 
-const CardRoute: React.FC<CardRouteInterface> = ({ cardData, companySlug, companyId }) => {
+const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, companyId }) => {
   const {
     _id,
     rubricSlug,
@@ -498,7 +498,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
       company={company}
       {...props}
     >
-      <CardRoute
+      <CardConsumer
         cardData={cardData}
         companySlug={company?.slug}
         companyId={company ? `${company._id}` : null}

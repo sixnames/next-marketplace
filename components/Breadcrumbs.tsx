@@ -32,7 +32,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   }, [locale]);
 
   return (
-    <div className={lowWrapper ? '' : 'mb-10'}>
+    <div className={lowWrapper ? '' : 'mb-2 lg:mb-10'}>
       <Inner lowBottom={lowBottom} lowTop={lowTop}>
         <ul className='overflow-hidden whitespace-nowrap overflow-ellipsis'>
           {noMainPage ? null : (

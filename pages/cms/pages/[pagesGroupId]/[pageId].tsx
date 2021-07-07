@@ -241,10 +241,31 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({ p
 
                   <Title tag={'div'}>Контент страницы</Title>
                   <PageEditor
-                    pageId={`${page._id}`}
                     value={values.content}
                     setValue={(value) => {
                       setFieldValue('content', value);
+                    }}
+                    imageUpload={async (file) => {
+                      try {
+                        const formData = new FormData();
+                        formData.append('pageId', `${page._id}`);
+                        formData.append('assets', file);
+
+                        const responseFetch = await fetch('/api/add-page-asset', {
+                          method: 'POST',
+                          body: formData,
+                        });
+                        const responseJson = await responseFetch.json();
+
+                        return {
+                          url: responseJson.url,
+                        };
+                      } catch (e) {
+                        console.log(e);
+                        return {
+                          url: '',
+                        };
+                      }
                     }}
                   />
                 </div>

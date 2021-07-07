@@ -1,4 +1,5 @@
 import WpMap from 'components/WpMap';
+import { useThemeContext } from 'context/themeContext';
 import { ShopInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
@@ -12,6 +13,7 @@ interface ShopsMapInterface {
 const shopImageSize = 120;
 
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
+  const { isDark } = useThemeContext();
   const mapRef = React.useRef<any>(null);
   const panTo = React.useCallback((coords?: Coordinates) => {
     if (!coords) {
@@ -77,9 +79,12 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           className='absolute inset-0'
           mapRef={mapRef}
           markers={shops.map((shop) => {
+            const lightThemeMarker = shop.mapMarker?.lightTheme;
+            const darkThemeMarker = shop.mapMarker?.darkTheme;
+
             return {
               _id: shop._id,
-              icon: shop.logo.url,
+              icon: isDark ? darkThemeMarker : lightThemeMarker,
               name: shop.name,
               address: shop.address,
             };

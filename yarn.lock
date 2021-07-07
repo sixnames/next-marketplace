@@ -1432,17 +1432,6 @@
     "@reach/utils" "0.15.0"
     tslib "^2.1.0"
 
-"@reach/disclosure@0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@reach/disclosure/-/disclosure-0.15.0.tgz#8d9e42bf3f3217ec1a791004ece21de5a7d769fd"
-  integrity sha512-FOWgZHRA+HF3IDuaCS7XnXv/e4Cn+x3rvzzlF7Inyk9iXCgahxV7FMzpO7131ORKnjNF5J9ELQuuu2wHdglA4g==
-  dependencies:
-    "@reach/auto-id" "0.15.0"
-    "@reach/utils" "0.15.0"
-    prop-types "^15.7.2"
-    tiny-warning "^1.0.3"
-    tslib "^2.1.0"
-
 "@reach/menu-button@0.15.1":
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/@reach/menu-button/-/menu-button-0.15.1.tgz#500223d45db33ebc80e441a1458fba08c5432bfe"

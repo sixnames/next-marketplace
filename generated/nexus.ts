@@ -877,6 +877,7 @@ export interface NexusGenObjects {
   ManufacturerPayload: dbModels.ManufacturerPayloadModel;
   ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;
   ManufacturersPaginationPayload: dbModels.ManufacturersPaginationPayloadModel;
+  MapMarker: dbModels.MapMarkerModel;
   Message: dbModels.MessageModel;
   MessagesGroup: dbModels.MessagesGroupModel;
   Metric: dbModels.MetricModel;
@@ -1257,6 +1258,11 @@ export interface NexusGenFieldTypes {
     totalActiveDocs: number; // Int!
     totalDocs: number; // Int!
     totalPages: number; // Int!
+  };
+  MapMarker: {
+    // field return type
+    darkTheme: string | null; // String
+    lightTheme: string | null; // String
   };
   Message: {
     // field return type
@@ -1852,6 +1858,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     itemId: string; // String!
     logo: NexusGenRootTypes['Asset']; // Asset!
+    mapMarker: NexusGenRootTypes['MapMarker'] | null; // MapMarker
     name: string; // String!
     productsCount: number; // Int!
     shopProducts: NexusGenRootTypes['ShopProductsPaginationPayload']; // ShopProductsPaginationPayload!
@@ -2296,6 +2303,11 @@ export interface NexusGenFieldTypeNames {
     totalActiveDocs: 'Int';
     totalDocs: 'Int';
     totalPages: 'Int';
+  };
+  MapMarker: {
+    // field return type name
+    darkTheme: 'String';
+    lightTheme: 'String';
   };
   Message: {
     // field return type name
@@ -2891,6 +2903,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     itemId: 'String';
     logo: 'Asset';
+    mapMarker: 'MapMarker';
     name: 'String';
     productsCount: 'Int';
     shopProducts: 'ShopProductsPaginationPayload';

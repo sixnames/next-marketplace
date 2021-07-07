@@ -6,14 +6,14 @@ import * as React from 'react';
 import '@react-page/editor/lib/index.css';
 import '@react-page/plugins-image/lib/index.css';
 import '@react-page/plugins-slate/lib/index.css';
-import type { Value } from '@react-page/editor';
+import type { ImageUploadType, Value } from '@react-page/editor';
 import spacer from '@react-page/plugins-spacer';
 import divider from '@react-page/plugins-divider';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
 import { imagePlugin } from '@react-page/plugins-image';
 
-const cellPlugins = (pageId: string): CellPlugin[] => [
+const cellPlugins = (imageUpload?: ImageUploadType): CellPlugin[] => [
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   slate(),
@@ -24,39 +24,18 @@ const cellPlugins = (pageId: string): CellPlugin[] => [
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   imagePlugin({
-    imageUpload: async (file) => {
-      try {
-        const formData = new FormData();
-        formData.append('pageId', pageId);
-        formData.append('assets', file);
-
-        const responseFetch = await fetch('/api/add-page-asset', {
-          method: 'POST',
-          body: formData,
-        });
-        const responseJson = await responseFetch.json();
-
-        return {
-          url: responseJson.url,
-        };
-      } catch (e) {
-        console.log(e);
-        return {
-          url: '',
-        };
-      }
-    },
+    imageUpload,
   }),
 ];
 
 interface PageEditorInterface {
   readOnly?: boolean;
   value?: Value;
-  pageId: string;
   setValue?: (value: Value) => void;
+  imageUpload?: ImageUploadType;
 }
 
-const PageEditor: React.FC<PageEditorInterface> = ({ value, pageId, readOnly, setValue }) => {
+const PageEditor: React.FC<PageEditorInterface> = ({ value, readOnly, imageUpload, setValue }) => {
   const { languagesList, locale } = useLocaleContext();
   const languages: Languages = React.useMemo(() => {
     return languagesList.map((locale) => {
@@ -73,7 +52,7 @@ const PageEditor: React.FC<PageEditorInterface> = ({ value, pageId, readOnly, se
       allowMoveInEditMode
       allowResizeInEditMode
       readOnly={readOnly}
-      cellPlugins={cellPlugins(pageId)}
+      cellPlugins={cellPlugins(imageUpload)}
       value={value || PAGE_EDITOR_DEFAULT_VALUE}
       onChange={setValue}
       languages={languages}

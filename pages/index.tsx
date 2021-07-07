@@ -88,11 +88,11 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                         title={`${name}`}
                       />
                       <span className='absolute z-20 block inset-0 p-4 lg:p-8 text-white'>
-                        <span className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[480px]'>
+                        <span className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[520px]'>
                           {name}
                         </span>
                         {description ? (
-                          <span className='font-medium hidden md:block text-2xl max-w-[480px] mt-8 md:mt-10 lg:mt-12'>
+                          <span className='font-medium hidden md:block text-2xl max-w-[650px] mt-8 md:mt-10 lg:mt-12'>
                             {description}
                           </span>
                         ) : null}

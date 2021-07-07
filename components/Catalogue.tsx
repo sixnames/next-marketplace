@@ -427,15 +427,15 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   }
   const siteName = getSiteConfigSingleValue('siteName');
   const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
-  const prefix = prefixConfig ? prefixConfig : '';
+  const prefix = prefixConfig ? ` ${prefixConfig}` : '';
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
     <SiteLayoutProvider
       currentCity={currentCity}
       company={company}
-      title={`${catalogueData.catalogueTitle} ${prefix} в ${siteName}${cityDescription}`}
-      description={`${catalogueData.catalogueTitle} ${prefix} по лучшей цене в магазине ${siteName}${cityDescription}`}
+      title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
+      description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
       {...props}
     >
       <CatalogueRoute

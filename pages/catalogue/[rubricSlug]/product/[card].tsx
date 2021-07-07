@@ -486,15 +486,14 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   }
 
   const siteName = getSiteConfigSingleValue('siteName');
-  const prefixConfig = getSiteConfigSingleValue('cardMetaPrefix');
+  const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
-  const siteNamePart = siteName ? ` в ${siteName}` : ``;
 
   return (
     <SiteLayoutProvider
       previewImage={cardData.mainImage}
-      title={`${cardData.originalName}${prefix}${siteNamePart}${cityDescription}`}
+      title={`${cardData.originalName}${prefix} ${siteName}${cityDescription}`}
       description={`${cardData.description}`}
       company={company}
       {...props}

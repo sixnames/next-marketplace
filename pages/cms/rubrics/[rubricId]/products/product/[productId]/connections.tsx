@@ -151,14 +151,8 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     {
       accessor: 'option.name',
       headTitle: 'Значение',
-      render: ({ cellData, dataItem }) => {
-        return (
-          <div>
-            {cellData}
-            {' - '}
-            {dataItem.option?.slug}
-          </div>
-        );
+      render: ({ cellData }) => {
+        return <div>{cellData}</div>;
       },
     },
     {

@@ -11,13 +11,14 @@ import {
   SORT_DESC,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CATALOGUE,
-  CATALOGUE_TOP_SHOPS_LIMIT,
   ROUTE_DOCS_PAGES,
+  CATALOGUE_TOP_FILTERS_LIMIT,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
+  MobileTopFilters,
   PageInterface,
   PagesGroupInterface,
   ProductInterface,
@@ -42,6 +43,7 @@ interface HomeRoutInterface {
   topProducts: ProductInterface[];
   topShops: ShopInterface[];
   topFilters: TopFilterInterface[];
+  mobileTopFilters: MobileTopFilters;
   sliderPages: PageInterface[];
   bannerPages: PageInterface[];
 }
@@ -52,7 +54,9 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   sliderPages,
   bannerPages,
   topFilters,
+  mobileTopFilters,
 }) => {
+  const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
   const configSeoText = getSiteConfigSingleValue('seoText');
@@ -63,7 +67,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
       <Inner testId={'main-page'}>
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={4000}>
+            <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
               {sliderPages.map(({ slug, mainBanner, name, description }) => {
                 if (!mainBanner) {
                   return null;
@@ -175,7 +179,9 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
             <div className='text-2xl mb-4 font-medium'>
               <h2>Популярные разделы</h2>
             </div>
-            <div className='flex flex-wrap gap-3'>
+
+            {/*Desktop*/}
+            <div className='hidden lg:flex flex-wrap gap-3'>
               {topFilters.map(({ name, href }) => {
                 return (
                   <TagLink href={href} key={href}>
@@ -184,13 +190,50 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                 );
               })}
             </div>
+
+            {/*Mobile*/}
+            <div className='lg:hidden'>
+              <div className='flex flex-wrap gap-3'>
+                {mobileTopFilters.visible.map(({ name, href }) => {
+                  return (
+                    <TagLink href={href} key={href}>
+                      {name}
+                    </TagLink>
+                  );
+                })}
+              </div>
+
+              {topFiltersVisible ? (
+                <div className='flex flex-wrap gap-3 mt-3'>
+                  {mobileTopFilters.hidden.map(({ name, href }) => {
+                    return (
+                      <TagLink href={href} key={href}>
+                        {name}
+                      </TagLink>
+                    );
+                  })}
+                </div>
+              ) : null}
+
+              <div
+                className='mt-5 font-medium cursor-pointer text-theme'
+                onClick={() =>
+                  setTopFiltersVisible((prevState) => {
+                    return !prevState;
+                  })
+                }
+              >
+                {topFiltersVisible ? 'Скрыть' : 'Показать ещё'}
+              </div>
+            </div>
           </section>
         ) : null}
 
         {topShops.length > 0 ? (
           <section className={sectionClassName}>
-            <div className='text-2xl mb-4 font-medium'>
+            <div className='text-2xl mb-4 font-medium flex items-baseline'>
               <h2>Магазины</h2>
+              <span className='ml-3 text-xl text-theme'>{topShops.length}</span>
             </div>
             <ShopsMap shops={topShops} />
           </section>
@@ -208,6 +251,7 @@ const Home: NextPage<HomeInterface> = ({
   topFilters,
   bannerPages,
   sliderPages,
+  mobileTopFilters,
   ...props
 }) => {
   return (
@@ -218,6 +262,7 @@ const Home: NextPage<HomeInterface> = ({
         topShops={topShops}
         sliderPages={sliderPages}
         bannerPages={bannerPages}
+        mobileTopFilters={mobileTopFilters}
       />
     </SiteLayoutProvider>
   );
@@ -354,9 +399,9 @@ export async function getServerSideProps(
           _id: SORT_DESC,
         },
       },
-      {
+      /*{
         $limit: CATALOGUE_TOP_SHOPS_LIMIT,
-      },
+      },*/
     ])
     .toArray();
 
@@ -444,12 +489,18 @@ export async function getServerSideProps(
     });
   });
 
+  const mobileTopFilters: MobileTopFilters = {
+    visible: topFilters.slice(0, CATALOGUE_TOP_FILTERS_LIMIT),
+    hidden: topFilters.slice(CATALOGUE_TOP_FILTERS_LIMIT),
+  };
+
   return {
     props: {
       ...props,
       topFilters: castDbData(topFilters),
       topProducts: castDbData(products),
       topShops: castDbData(topShops),
+      mobileTopFilters: castDbData(mobileTopFilters),
       sliderPages,
       bannerPages,
     },

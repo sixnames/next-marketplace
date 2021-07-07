@@ -115,6 +115,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 $match: {
                   ...companyRubricsMatch,
                   citySlug: city,
+                  _id: {
+                    $ne: finalProductId,
+                  },
                   $expr: {
                     $and: [
                       { $gte: ['$price', '$$minFilterPrice'] },

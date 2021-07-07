@@ -2,6 +2,7 @@ import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import Notification from 'components/Notification/Notification';
 import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
 
@@ -46,6 +47,13 @@ const ShopMainFields: React.FC = () => {
         isRequired
         showInlineError
       />
+
+      <div className='mb-8 max-w-[980px]'>
+        <Notification
+          variant={'success'}
+          message={`Попробуйте дописать название города в поисковик адреса,если нет нужного результата.`}
+        />
+      </div>
 
       <FormikAddressInput
         label={'Адрес'}

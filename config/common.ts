@@ -219,6 +219,7 @@ export const CATALOGUE_VIEW_ROW = 'row';
 export const CATALOGUE_VIEW_GRID = 'grid';
 export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
 export const CATALOGUE_TOP_SHOPS_LIMIT = 10;
+export const CATALOGUE_TOP_FILTERS_LIMIT = 10;
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

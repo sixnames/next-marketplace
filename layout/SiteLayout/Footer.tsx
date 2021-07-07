@@ -34,7 +34,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
   return (
     <footer className='footer relative z-[100] pt-6 pb-mobile-nav-height lg:pb-8 bg-secondary'>
-      <Inner className='grid gap-x-8 gap-y-12 lg:grid-cols-6'>
+      <Inner className='grid gap-x-8 gap-y-12 lg:grid-cols-6 items-baseline'>
         <div className='flex flex-col lg:col-span-2 max-w-[480px]'>
           <div className='text-2xl font-medium mb-6'>
             Подписывайтесь на скидки <span className='inline-block'>и рекомендации</span>
@@ -117,12 +117,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           </div>
         </div>
 
-        <div className='grid sm:grid-cols-2 lg:grid-cols-4 lg:col-span-4 gap-x-6 gap-y-6 text-xs'>
-          <div className='hidden lg:block text-secondary-text' />
-          <div className='hidden lg:block text-secondary-text' />
-          <div className='hidden lg:block text-secondary-text' />
-          {/*<div className='text-secondary-text'>Карта сайта</div>*/}
-          {/*<div className='text-secondary-text'>Политика конфиденциальности</div>*/}
+        <div className='lg:col-span-4 flex lg:justify-end'>
           <small className='text-secondary-text text-[1em]'>
             {configSiteName} © {new Date().getFullYear()}
           </small>

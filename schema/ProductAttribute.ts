@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -742,12 +742,6 @@ export const ProductAttributeMutations = extendType({
           for await (const attributesItem of attributes) {
             const { number, attributeId, productAttributeId } = attributesItem;
 
-            // Delete product attribute if value is empty
-            if (!number && number !== 0) {
-              await productAttributesCollection.findOneAndDelete({ _id: productAttributeId });
-              continue;
-            }
-
             // Check if product attribute exist
             let productAttribute = await productAttributesCollection.findOne({
               _id: productAttributeId,
@@ -860,12 +854,6 @@ export const ProductAttributeMutations = extendType({
 
           for await (const attributesItem of attributes) {
             const { textI18n, attributeId, productAttributeId } = attributesItem;
-
-            // Delete product attribute if value is empty
-            if (!textI18n || !textI18n[DEFAULT_LOCALE]) {
-              await productAttributesCollection.findOneAndDelete({ _id: productAttributeId });
-              continue;
-            }
 
             // Check if product attribute exist
             let productAttribute = await productAttributesCollection.findOne({

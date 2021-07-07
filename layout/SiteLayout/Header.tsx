@@ -1,4 +1,5 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import { Disclosure } from '@headlessui/react';
+import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
@@ -251,16 +252,19 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
     <div className='fixed inset-0 bg-secondary z-[1] w-full pt-4 pb-8 overflow-y-auto'>
       <Inner className='pb-24'>
         <div className='flex items-center justify-between mb-8'>
-          <ThemeTrigger />
-          <LanguageTrigger />
+          <ButtonCross onClick={hideBurgerDropdown} />
+          <div className='flex items-center gap-5'>
+            <ThemeTrigger />
+            <LanguageTrigger />
+          </div>
         </div>
 
-        <ul>
+        <ul className='pb-20'>
           {navRubrics.map((rubric) => {
             const { catalogue = [], card = [] } = query;
             const realCatalogueQuery = alwaysArray(catalogue);
             const catalogueSlug = realCatalogueQuery[0];
-            const { name, slug, navItems } = rubric;
+            const { name, slug, attributes } = rubric;
 
             // Get rubric slug from product card path
             const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
@@ -285,9 +289,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                   {name}
                 </Link>
                 <Disclosure>
-                  <DisclosurePanel>
+                  <Disclosure.Panel>
                     <div>
-                      {(navItems || []).map(({ _id, options, name }) => {
+                      {(attributes || []).map(({ _id, options, name }) => {
                         return (
                           <div className='mt-4 mb-4' key={`${_id}`}>
                             <div className='mb-2 text-secondary-text'>{name}</div>
@@ -313,12 +317,12 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                         );
                       })}
                     </div>
-                  </DisclosurePanel>
-                  <DisclosureButton as={'div'}>
+                  </Disclosure.Panel>
+                  <Disclosure.Button as={'div'}>
                     <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text'>
                       <Icon name={'chevron-down'} className='w-5 h-5' />
                     </button>
-                  </DisclosureButton>
+                  </Disclosure.Button>
                 </Disclosure>
               </li>
             );

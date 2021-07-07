@@ -108,30 +108,32 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         ) : null}
       </Link>
 
-      <div
-        data-cy={'header-nav-dropdown'}
-        className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
-          isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
-        }`}
-      >
-        <Inner>
-          <div className='grid gap-4 pb-10 grid-cols-8'>
-            <div className='grid gap-4 grid-cols-4 col-span-5'>
-              {(attributes || []).map((attribute) => {
-                return (
-                  <StickyNavAttribute
-                    key={`${attribute._id}`}
-                    attribute={attribute}
-                    hideDropdownHandler={hideDropdownHandler}
-                    rubricSlug={slug}
-                  />
-                );
-              })}
+      {attributes && attributes.length > 0 ? (
+        <div
+          data-cy={'header-nav-dropdown'}
+          className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
+            isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
+          }`}
+        >
+          <Inner>
+            <div className='grid gap-4 pb-10 grid-cols-8'>
+              <div className='grid gap-4 grid-cols-4 col-span-5'>
+                {(attributes || []).map((attribute) => {
+                  return (
+                    <StickyNavAttribute
+                      key={`${attribute._id}`}
+                      attribute={attribute}
+                      hideDropdownHandler={hideDropdownHandler}
+                      rubricSlug={slug}
+                    />
+                  );
+                })}
+              </div>
+              <div className='col-span-3' />
             </div>
-            <div className='col-span-3' />
-          </div>
-        </Inner>
-      </div>
+          </Inner>
+        </div>
+      ) : null}
     </li>
   );
 };

@@ -29,8 +29,8 @@ const shops: ShopModel[] = [
       },
     ],
     mapMarker: {
-      lightTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
-      darkTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
+      lightTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/marker-light.png`,
+      darkTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/marker-dark.png`,
     },
     contacts: {
       emails: ['shopA@gmail.com'],

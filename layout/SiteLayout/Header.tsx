@@ -422,7 +422,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
         </div>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:py-4'>
+          <div className='flex justify-center py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
@@ -434,11 +434,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
             <Link
               href={`/`}
-              className='flex items-center flex-shrink-0 w-[var(--logo-width)]'
+              className='flex items-center flex-shrink-0 w-[var(--logo-width)] max-h-16 lg:max-h-24'
               aria-label={'Главная страница'}
             >
               <img
-                className='w-full h-auto'
+                className='w-full h-full object-contain'
                 src={siteLogoSrc}
                 width='150'
                 height='24'

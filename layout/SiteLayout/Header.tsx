@@ -2,11 +2,12 @@ import { Disclosure } from '@headlessui/react';
 import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
-import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { CartInterface, CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
+import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import StickyNav from 'layout/SiteLayout/StickyNav';
@@ -335,10 +336,11 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
 export interface HeaderInterface {
   headerPageGroups: PagesGroupInterface[];
+  company?: CompanyInterface | null;
 }
 
 const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
-const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
+const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -347,13 +349,17 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
   const { data } = useGetCatalogueSearchTopItemsQuery({
     ssr: false,
     variables: {
-      input: {},
+      input: {
+        companyId: company ? company._id : null,
+        companySlug: company ? company.slug : null,
+      },
     },
   });
 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const callbackPhone = getSiteConfigSingleValue('phone');
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -403,6 +409,12 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
             </div>
 
             <div className='flex gap-6 items-center'>
+              {callbackPhone ? (
+                <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
+                  {phoneToReadable(callbackPhone)}
+                </a>
+              ) : null}
+
               <ThemeTrigger />
               <LanguageTrigger />
             </div>

@@ -36,8 +36,11 @@ describe('Catalogue filter', () => {
     // Should update page title
     cy.getByCy('sticky-nav').then((el: any) => {
       el.css('position', 'relative');
+      cy.getByCy(`catalogue-option-1-0`).click();
     });
-    cy.getByCy(`catalogue-option-1-1`).click();
-    cy.getByCy(`catalogue-option-2-1`).click();
+    cy.getByCy('sticky-nav').then((el: any) => {
+      el.css('position', 'relative');
+      cy.getByCy(`catalogue-option-2-0`).click();
+    });
   });
 });

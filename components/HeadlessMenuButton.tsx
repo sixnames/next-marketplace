@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import { CounterStickerInterface } from 'components/CounterSticker/CounterSticker';
+import { CounterStickerInterface } from 'components/CounterSticker';
 import Icon from 'components/Icon';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
@@ -77,7 +77,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   }, [config, initialValue]);
 
   return (
-    <div className={`relative z-30 ${className ? className : ''}`}>
+    <div className={`headless-menu relative z-30 ${className ? className : ''}`}>
       <Menu as='div' className='relative'>
         {({ open }) => {
           return (

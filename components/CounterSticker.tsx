@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './CounterSticker.module.css';
 
 export interface CounterStickerInterface {
   value?: number | null | undefined;
@@ -13,7 +12,12 @@ const CounterSticker: React.FC<CounterStickerInterface> = ({ value, testId, clas
   }
 
   return (
-    <div className={`${classes.frame} ${className ? className : ''}`} data-cy={testId}>
+    <div
+      className={`absolute z-[5] -top-3 -right-3 flex items-center justify-center text-sm text-white font-medium bg-theme rounded-[10px] h-[20px] min-w-[20px] ${
+        className ? className : ''
+      }`}
+      data-cy={testId}
+    >
       {value}
     </div>
   );

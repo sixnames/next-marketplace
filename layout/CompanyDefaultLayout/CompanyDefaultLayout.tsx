@@ -5,9 +5,9 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { CompanyModel } from 'db/dbModels';
-import CompanyDefaultLayoutFooter from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutFooter';
-import CompanyDefaultLayoutHeader from 'layout/CompanyDefaultLayout/CompanyDefaultLayoutHeader';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
+import Footer from 'layout/SiteLayout/Footer';
+import Header from 'layout/SiteLayout/Header';
 import {
   SiteLayoutCatalogueCreatedPages,
   SiteLayoutProviderInterface,
@@ -40,17 +40,17 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
-    <div className='flex flex-col text-primary-text bg-primary min-h-full-height'>
+    <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
       <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
       <Meta title={title} description={description} pageUrls={pageUrls} />
-      <CompanyDefaultLayoutHeader headerPageGroups={headerPageGroups} company={company} />
+      <Header headerPageGroups={headerPageGroups} company={company} />
 
       <div className='flex flex-col flex-grow'>
         <main className='flex-grow'>
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>
 
-        <CompanyDefaultLayoutFooter footerPageGroups={footerPageGroups} />
+        <Footer footerPageGroups={footerPageGroups} />
       </div>
 
       {isLoading ? <Spinner /> : null}

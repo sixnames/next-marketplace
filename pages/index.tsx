@@ -77,11 +77,11 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                   <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
                     <Link
                       target={'_blank'}
-                      className='relative block'
+                      className='relative block h-[400px] md:h-auto'
                       href={`${ROUTE_DOCS_PAGES}/${slug}`}
                     >
                       <img
-                        className='block relative w-full z-10'
+                        className='block relative w-full h-full z-10 object-cover'
                         src={`${mainBanner.url}`}
                         width='1250'
                         height='435'
@@ -93,7 +93,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                           {name}
                         </span>
                         {description ? (
-                          <span className='font-medium hidden md:block text-2xl max-w-[650px] mt-8 md:mt-10 lg:mt-12'>
+                          <span className='font-medium block text-2xl max-w-[650px] mt-8 md:mt-10 lg:mt-12'>
                             {description}
                           </span>
                         ) : null}
@@ -123,7 +123,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
             <HorizontalScroll>
               {topProducts.map((product) => {
                 return (
-                  <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
+                  <div
+                    className='min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem]'
+                    key={`${product._id}`}
+                  >
                     <ProductSnippetGrid noAttributes noSecondaryName product={product} />
                   </div>
                 );
@@ -145,7 +148,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 
                 return (
                   <div
-                    className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
+                    className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
                     key={`${secondaryBanner.url}`}
                   >
                     <Link
@@ -397,6 +400,9 @@ export async function getServerSideProps(
           _id: SORT_DESC,
         },
       },
+      /*{
+        $limit: 1,
+      },*/
       /*{
         $limit: CATALOGUE_TOP_SHOPS_LIMIT,
       },*/

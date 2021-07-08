@@ -640,6 +640,7 @@ export const CompanyMutations = extendType({
               assets: [],
               mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               companyId: companyId,
+              rating: 0,
               createdAt: new Date(),
               updatedAt: new Date(),
               address: {

@@ -1,7 +1,7 @@
 import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import * as React from 'react';
-import CounterSticker from 'components/CounterSticker/CounterSticker';
+import CounterSticker from 'components/CounterSticker';
 
 interface AsideNavInterface {
   config: HeadlessMenuGroupInterface[];

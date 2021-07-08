@@ -14,6 +14,7 @@
     "cy:open": "cypress open",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
     "test": "cypress run",
+    "update-prod-shops": "ts-node --skip-project cypress/fixtures/utils/updateProductionShop.ts",
     "update-prod-api-messages": "ts-node --skip-project cypress/fixtures/utils/updateProductionApiMessages.ts",
     "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",
     "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts"
@@ -25,7 +26,6 @@
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4",
-    "@reach/menu-button": "0.15.1",
     "@reach/portal": "0.15.0",
     "@reach/tooltip": "0.15.0",
     "@react-google-maps/api": "2.2.0",

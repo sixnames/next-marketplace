@@ -19,7 +19,6 @@ import { useSiteContext } from 'context/siteContext';
 import HeaderSearch from 'layout/SiteLayout/HeaderSearch';
 import { useUserContext } from 'context/userContext';
 import CounterSticker from 'components/CounterSticker/CounterSticker';
-import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
@@ -67,20 +66,21 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
 
   if (me) {
     return (
-      <Menu>
+      <Popover className='relative'>
         {() => {
           return (
             <React.Fragment>
-              <MenuButton
+              <Popover.Button
                 className={`${middleLinkClassName} pr-2 pl-2`}
                 data-cy={`${testId}-user-dropdown-trigger`}
               >
                 <span className={`relative`}>
                   <Icon name={'user'} className='w-5 h-5' />
                 </span>
-              </MenuButton>
-              <MenuPopover>
-                <LayoutCard>
+              </Popover.Button>
+
+              <Popover.Panel className='absolute z-10 top-full right-0'>
+                <LayoutCard className='w-52 pb-4'>
                   <div className='pt-6 pb-6 pl-[var(--reachMenuItemHorizontalPadding)] pr-[var(--reachMenuItemHorizontalPadding)]'>
                     <div className='font-medium text-sm'>{me?.shortName}</div>
                   </div>
@@ -89,7 +89,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     <li>
                       <Link
                         testId={`${testId}-user-dropdown-profile-link`}
-                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                         href={ROUTE_PROFILE}
                       >
                         <span>Личный кабинет</span>
@@ -100,7 +100,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CMS}
                         >
                           <span>CMS</span>
@@ -112,7 +112,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-app-link`}
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
@@ -123,18 +123,18 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     <li onClick={signOut}>
                       <span
                         data-cy={`${testId}-sign-out-link`}
-                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
+                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
                       >
                         Выйти из аккаунта
                       </span>
                     </li>
                   </ul>
                 </LayoutCard>
-              </MenuPopover>
+              </Popover.Panel>
             </React.Fragment>
           );
         }}
-      </Menu>
+      </Popover>
     );
   }
 

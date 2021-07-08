@@ -68,7 +68,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
       <Inner testId={'main-page'}>
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
+            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={3000}>
               {sliderPages.map(({ slug, mainBanner, name, description }) => {
                 if (!mainBanner) {
                   return null;
@@ -123,7 +123,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
             <HorizontalScroll>
               {topProducts.map((product) => {
                 return (
-                  <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
+                  <div
+                    className='min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem]'
+                    key={`${product._id}`}
+                  >
                     <ProductSnippetGrid noAttributes noSecondaryName product={product} />
                   </div>
                 );
@@ -145,7 +148,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
 
                 return (
                   <div
-                    className='flex min-w-[80vw] sm:min-w-[30rem] overflow-hidden rounded-lg'
+                    className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
                     key={`${secondaryBanner.url}`}
                   >
                     <Link

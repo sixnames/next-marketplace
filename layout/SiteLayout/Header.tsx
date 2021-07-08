@@ -5,7 +5,6 @@ import ThemeTrigger from 'components/ThemeTrigger';
 import { CartInterface, CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
-import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
@@ -30,6 +29,7 @@ import {
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
   ROUTE_DOCS_PAGES,
+  CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
 
 interface HeaderSearchTriggerInterface {
@@ -244,7 +244,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 }) => {
   const { query, asPath } = useRouter();
   const { navRubrics } = useSiteContext();
-
+  const { rubricSlug } = query;
   if (!isBurgerDropdownOpen) {
     return null;
   }
@@ -262,25 +262,16 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
         <ul className='pb-20'>
           {navRubrics.map((rubric) => {
-            const { catalogue = [], card = [] } = query;
-            const realCatalogueQuery = alwaysArray(catalogue);
-            const catalogueSlug = realCatalogueQuery[0];
-            const { name, slug, attributes } = rubric;
+            const { name, attributes } = rubric;
 
             // Get rubric slug from product card path
-            const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
-            const cardSlugsParts = cardSlugs.map((slug) => {
-              return slug.split('-');
-            });
-            const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-            const rubricSlug = rubricSlugArr ? rubricSlugArr[1] : '';
-            const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
+            const isCurrent = rubric.slug === rubricSlug || rubricSlug === rubric.slug;
 
             return (
               <li className='relative' key={rubric.slug}>
                 <Link
                   prefetch={false}
-                  href={`${ROUTE_CATALOGUE}/${slug}`}
+                  href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
@@ -292,17 +283,17 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 <Disclosure>
                   <Disclosure.Panel>
                     <div>
-                      {(attributes || []).map(({ _id, options, name }) => {
+                      {(attributes || []).map((attribute) => {
                         return (
-                          <div className='mt-4 mb-4' key={`${_id}`}>
-                            <div className='mb-2 text-secondary-text'>{name}</div>
+                          <div className='mt-4 mb-4' key={`${attribute._id}`}>
+                            <div className='mb-2 text-secondary-text'>{attribute.name}</div>
                             <ul>
-                              {(options || []).map((option) => {
+                              {(attribute.options || []).map((option) => {
                                 const isCurrent = asPath === option.slug;
                                 return (
                                   <li key={`${option._id}`}>
                                     <Link
-                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${option.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex items-center h-10 ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'

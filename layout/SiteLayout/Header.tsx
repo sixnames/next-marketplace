@@ -310,7 +310,7 @@ export interface HeaderInterface {
 }
 
 const middleSideClassName =
-  'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-1 sm:gap-2';
+  'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-2';
 
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);

@@ -124,7 +124,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
 
   return (
     <div
-      className='fixed z-[110] inset-0 overflow-y-auto pb-[var(--mobileNavHeight)] bg-primary shadow-lg lg:pb-4 lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
+      className='fixed z-[110] inset-0 overflow-y-auto pb-8 bg-primary shadow-lg lg:pb-4 lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
       data-cy={'search-dropdown'}
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>

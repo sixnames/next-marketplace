@@ -37,7 +37,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
   return (
     <div
-      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 lg:relative lg:rounded-lg lg:bottom-auto lg:inset-x-auto lg:w-[30rem]'
+      className='fixed overflow-hidden inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 relative rounded-lg bottom-auto inset-x-auto w-[30rem]'
       style={cartDropdownCssVars}
       data-cy={'cart-dropdown'}
     >

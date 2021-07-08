@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react';
 import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
-import { CartInterface, CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
@@ -48,7 +48,7 @@ const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
     <div
       data-cy={`${testId}-search-trigger`}
       onClick={() => setIsSearchOpen(true)}
-      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+      className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <div className={`relative`}>
         <Icon name={'search'} className='w-5 h-5' />
@@ -72,7 +72,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
           return (
             <React.Fragment>
               <MenuButton
-                className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+                className={`${middleLinkClassName} pr-2 pl-2`}
                 data-cy={`${testId}-user-dropdown-trigger`}
               >
                 <span className={`relative`}>
@@ -143,42 +143,12 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
       ariaLabel={'Войти'}
       testId={`${testId}-sign-in-link`}
       href={ROUTE_SIGN_IN}
-      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+      className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
         <Icon name={'user'} className='w-5 h-5' />
       </span>
     </Link>
-  );
-};
-
-interface HeaderCartDropdownButtonInterface {
-  cart: CartInterface;
-  testId: string;
-}
-
-const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
-  cart,
-  testId,
-}) => {
-  return (
-    <React.Fragment>
-      <MenuButton>
-        <span
-          data-cy={`${testId}-cart-dropdown-trigger`}
-          className={`${middleLinkClassName} ml-2 pl-2`}
-        >
-          <span className={`relative mr-3`}>
-            <Icon name={'cart'} className='w-5 h-5' />
-            <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
-          </span>
-          <span>Корзина</span>
-        </span>
-      </MenuButton>
-      <MenuPopover>
-        <CartDropdown cart={cart} />
-      </MenuPopover>
-    </React.Fragment>
   );
 };
 
@@ -193,21 +163,36 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
     return (
       <Menu>
         {() => {
-          return <HeaderCartDropdownButton testId={testId} cart={cart} />;
+          return (
+            <React.Fragment>
+              <MenuButton>
+                <span
+                  data-cy={`${testId}-cart-dropdown-trigger`}
+                  className={`${middleLinkClassName} pl-2`}
+                >
+                  <span className={`relative mr-3`}>
+                    <Icon name={'cart'} className='w-5 h-5' />
+                    <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+                  </span>
+                  <span className='hidden lg:block'>Корзина</span>
+                </span>
+              </MenuButton>
+              <MenuPopover>
+                <CartDropdown cart={cart} />
+              </MenuPopover>
+            </React.Fragment>
+          );
         }}
       </Menu>
     );
   }
 
   return (
-    <span
-      data-cy={`${testId}-cart-dropdown-trigger`}
-      className={`${middleLinkClassName} ml-2 pl-2`}
-    >
+    <span data-cy={`${testId}-cart-dropdown-trigger`} className={`${middleLinkClassName} pl-2`}>
       <span className={`relative mr-3`}>
         <Icon name={'cart'} className='w-5 h-5' />
       </span>
-      <span>Корзина</span>
+      <span className='hidden lg:block'>Корзина</span>
     </span>
   );
 };
@@ -223,12 +208,11 @@ const HeaderBurgerDropdownTrigger: React.FC<HeaderBurgerDropdownTriggerInterface
     <div
       data-cy={`burger-trigger`}
       onClick={toggleBurgerDropdown}
-      className={`${middleLinkClassName}`}
+      className={`${middleLinkClassName} lg:hidden`}
     >
-      <div className={`relative mr-3`}>
-        <Icon name={'burger'} className={'w-5 h-5'} />
+      <div className={`relative`}>
+        <Icon name={'burger'} className={'w-6 h-6'} />
       </div>
-      <span>меню</span>
     </div>
   );
 };
@@ -250,7 +234,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   }
 
   return (
-    <div className='fixed inset-0 bg-secondary z-[1] w-full pt-4 pb-8 overflow-y-auto'>
+    <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto'>
       <Inner className='pb-24'>
         <div className='flex items-center justify-between mb-8'>
           <ButtonCross onClick={hideBurgerDropdown} />
@@ -330,7 +314,9 @@ export interface HeaderInterface {
   company?: CompanyInterface | null;
 }
 
-const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
+const middleSideClassName =
+  'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-1 sm:gap-2';
+
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
@@ -360,15 +346,9 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
     setIsBurgerDropdownOpen(false);
   }, []);
 
-  const headerVars = { '--logo-width': '10rem' } as React.CSSProperties;
-
   return (
     <React.Fragment>
-      <header
-        className='relative z-[130] bg-primary shadow-md lg:shadow-none'
-        style={headerVars}
-        ref={headerRef}
-      >
+      <header className='relative z-[130] bg-primary shadow-md lg:shadow-none' ref={headerRef}>
         <div className='relative z-[10] bg-secondary'>
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
             <div className='flex items-center'>
@@ -413,8 +393,8 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
         </div>
 
         <Inner lowTop lowBottom>
-          <div className='flex justify-center py-6 lg:justify-between lg:py-4'>
-            <div className={`${middleSideClassName} justify-start`}>
+          <div className='flex justify-between lg:justify-center py-6 lg:justify-between lg:py-4'>
+            <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
                   <Icon name={'marker'} className='w-5 h-5' />
@@ -425,11 +405,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
             <Link
               href={`/`}
-              className='flex items-center flex-shrink-0 w-[var(--logo-width)] max-h-16 lg:max-h-24'
+              className='flex items-center flex-shrink-0 w-[var(--logoWidth)] max-h-16 lg:max-h-24'
               aria-label={'Главная страница'}
             >
               <img
-                className='w-full h-full object-contain'
+                className='w-full h-full object-contain object-left lg:object-center'
                 src={siteLogoSrc}
                 width='150'
                 height='24'
@@ -441,19 +421,21 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
               <HeaderSearchTrigger testId={'header'} setIsSearchOpen={setIsSearchOpen} />
               <HeaderProfileLink testId={'header'} />
 
-              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
                 <div className={`relative`}>
                   <Icon name={'compare'} className='w-5 h-5' />
                 </div>
               </div>
 
-              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
                 <div className={`relative`}>
                   <Icon name={'heart'} className='w-5 h-5' />
                 </div>
               </div>
 
               <HeaderCartLink testId={'header'} />
+
+              <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
             </div>
           </div>
         </Inner>
@@ -465,24 +447,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 lg:hidden'>
-        <Inner
-          className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
-          lowTop
-        >
-          <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
-
-          <div className='flex items-center'>
-            <HeaderSearchTrigger testId={'mobile-nav'} setIsSearchOpen={setIsSearchOpen} />
-            <HeaderProfileLink testId={'mobile-nav'} />
-            <HeaderCartLink testId={'mobile-nav'} />
-          </div>
-        </Inner>
-        <BurgerDropdown
-          hideBurgerDropdown={hideBurgerDropdown}
-          isBurgerDropdownOpen={isBurgerDropdownOpen}
-        />
-      </div>
+      <BurgerDropdown
+        hideBurgerDropdown={hideBurgerDropdown}
+        isBurgerDropdownOpen={isBurgerDropdownOpen}
+      />
     </React.Fragment>
   );
 };

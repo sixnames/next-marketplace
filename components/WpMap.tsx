@@ -69,15 +69,25 @@ const WpMap: React.FC<WpMapInterface> = ({
     (map) => {
       mapRef.current = map;
 
-      // Fit all markers in map window
-      const bounds = new window.google.maps.LatLngBounds();
-      (markers || []).forEach(({ address }) => {
-        if (address && address.formattedCoordinates) {
-          bounds.extend(address.formattedCoordinates);
-        }
-      });
+      if (markers && markers.length > 1) {
+        // Fit all markers in map window
+        const bounds = new window.google.maps.LatLngBounds();
+        (markers || []).forEach(({ address }) => {
+          if (address && address.formattedCoordinates) {
+            bounds.extend(address.formattedCoordinates);
+          }
+        });
 
-      map.fitBounds(bounds);
+        map.fitBounds(bounds);
+      }
+
+      if (markers && markers.length === 1) {
+        const marker = markers[0];
+        map.setCenter({
+          lat: marker.address?.formattedCoordinates?.lat,
+          lng: marker.address?.formattedCoordinates?.lng,
+        });
+      }
     },
     [mapRef, markers],
   );
@@ -130,7 +140,7 @@ const WpMap: React.FC<WpMapInterface> = ({
                       strokeWeight: 0,
                       scaledSize: new window.google.maps.Size(40, 40),
                       anchor: new google.maps.Point(20, 40),
-                      // scale: 1,
+                      scale: 1,
                     }
               }
               onClick={() => {

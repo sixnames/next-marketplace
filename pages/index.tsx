@@ -401,6 +401,9 @@ export async function getServerSideProps(
         },
       },
       /*{
+        $limit: 1,
+      },*/
+      /*{
         $limit: CATALOGUE_TOP_SHOPS_LIMIT,
       },*/
     ])

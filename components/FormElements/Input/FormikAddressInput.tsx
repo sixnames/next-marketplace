@@ -37,8 +37,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
     const getGeoResult = async (value: string) => {
       try {
         const address = `address=${value}`;
-        const settings = `language=${locale}&result_type=street_address`;
-        // const settings = `language=${locale}&location_type=ROOFTOP&result_type=street_address`;
+        const settings = `language=${locale}&location_type=ROOFTOP&result_type=street_address`;
         const apiKey = `key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}`;
         const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
         const res = await fetch(url);

@@ -1,4 +1,4 @@
-import { Disclosure } from '@headlessui/react';
+import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
@@ -161,29 +161,24 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
 
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
-      <Menu>
-        {() => {
-          return (
-            <React.Fragment>
-              <MenuButton>
-                <span
-                  data-cy={`${testId}-cart-dropdown-trigger`}
-                  className={`${middleLinkClassName} pl-2`}
-                >
-                  <span className={`relative mr-3`}>
-                    <Icon name={'cart'} className='w-5 h-5' />
-                    <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
-                  </span>
-                  <span className='hidden lg:block'>Корзина</span>
-                </span>
-              </MenuButton>
-              <MenuPopover>
-                <CartDropdown cart={cart} />
-              </MenuPopover>
-            </React.Fragment>
-          );
-        }}
-      </Menu>
+      <Popover>
+        <Popover.Button>
+          <span
+            data-cy={`${testId}-cart-dropdown-trigger`}
+            className={`${middleLinkClassName} pl-2`}
+          >
+            <span className={`relative mr-3`}>
+              <Icon name={'cart'} className='w-5 h-5' />
+              <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+            </span>
+            <span className='hidden lg:block'>Корзина</span>
+          </span>
+        </Popover.Button>
+
+        <Popover.Panel className='absolute z-10 top-[90%] right-[var(--innerBlockHorizontalPadding)]'>
+          <CartDropdown cart={cart} />
+        </Popover.Panel>
+      </Popover>
     );
   }
 
@@ -392,7 +387,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
           </Inner>
         </div>
 
-        <Inner lowTop lowBottom>
+        <Inner lowTop lowBottom className='relative'>
           <div className='flex justify-between lg:justify-center py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               <div className={`${middleLinkClassName}`}>

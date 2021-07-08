@@ -18,7 +18,7 @@ import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import HeaderSearch from 'layout/SiteLayout/HeaderSearch';
 import { useUserContext } from 'context/userContext';
-import CounterSticker from 'components/CounterSticker/CounterSticker';
+import CounterSticker from 'components/CounterSticker';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
@@ -343,7 +343,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
   return (
     <React.Fragment>
-      <header className='relative z-[130] bg-primary shadow-md lg:shadow-none' ref={headerRef}>
+      <header
+        className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
+        ref={headerRef}
+      >
         <div className='relative z-[10] bg-secondary'>
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
             <div className='flex items-center'>

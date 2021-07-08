@@ -40,7 +40,7 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
-    <div className='flex flex-col text-primary-text bg-primary min-h-full-height'>
+    <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
       <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
       <Meta title={title} description={description} pageUrls={pageUrls} />
       <Header headerPageGroups={headerPageGroups} company={company} />

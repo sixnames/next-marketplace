@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import { CounterStickerInterface } from 'components/CounterSticker/CounterSticker';
+import { CounterStickerInterface } from 'components/CounterSticker';
 import Icon from 'components/Icon';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';

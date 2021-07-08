@@ -203,7 +203,7 @@ const PageDetailsPageConsumer: React.FC<PageDetailsPageConsumerInterface> = ({
                   />
 
                   <FormikImageUpload
-                    label={'Изображение акции (512 x 360)'}
+                    label={'Изображение акции (315 x 220)'}
                     name={'secondaryBanner'}
                     testId={'secondaryBanner'}
                     width={'10rem'}

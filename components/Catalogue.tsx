@@ -288,7 +288,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
             <div id={'catalogue-products'}>
               {/*Mobile controls*/}
               <div className='grid grid-cols-2 gap-10 grid lg:hidden'>
-                <Button theme={'secondary'} onClick={showFilterHandler}>
+                <Button theme={'secondary'} onClick={showFilterHandler} short>
                   Фильтр
                 </Button>
                 <HeadlessMenuButton
@@ -296,7 +296,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
                   buttonAs={'div'}
                   menuPosition={'left'}
                   buttonText={() => (
-                    <Button className='w-full' theme={'secondary'}>
+                    <Button className='w-full' theme={'secondary'} short>
                       Сортировать
                     </Button>
                   )}

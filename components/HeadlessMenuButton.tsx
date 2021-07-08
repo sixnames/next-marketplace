@@ -77,7 +77,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   }, [config, initialValue]);
 
   return (
-    <div className={`relative z-30 ${className ? className : ''}`}>
+    <div className={`headless-menu relative z-30 ${className ? className : ''}`}>
       <Menu as='div' className='relative'>
         {({ open }) => {
           return (

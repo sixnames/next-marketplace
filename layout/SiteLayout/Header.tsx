@@ -239,7 +239,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           </div>
         </div>
 
-        <ul className='pb-20'>
+        <ul className='headless-mobile-nav pb-20'>
           {navRubrics.map((rubric) => {
             const { name, attributes } = rubric;
 

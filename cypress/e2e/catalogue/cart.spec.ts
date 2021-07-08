@@ -71,21 +71,18 @@ describe('Cart', () => {
     cy.getByCy(`cart-dropdown`).should('exist');
 
     // Should update product amount in dropdown
-    // TODO remove .first() after reach-ui replacement
-    cy.getByCy(`cart-dropdown-product-0-minus`).first().click();
-    cy.getByCy(`cart-dropdown-product-0-amount`).first().should('have.value', '2');
+    cy.getByCy(`cart-dropdown-product-0-minus`).click();
+    cy.getByCy(`cart-dropdown-product-0-amount`).should('have.value', '2');
 
     // Should delete cart product form cart dropdown
-    cy.getByCy(`cart-dropdown-product-0-remove-from-cart`).first().click();
+    cy.getByCy(`cart-dropdown-product-0-remove-from-cart`).click();
 
     // Should remove all cart products
-    cy.getByCy(`header-cart-dropdown-trigger`).click();
-    cy.getByCy(`cart-dropdown`).should('exist');
-    cy.getByCy(`cart-dropdown-continue`).first().click();
+    cy.getByCy(`cart-dropdown-continue`).click();
     cy.getByCy(`cart`).should('exist');
-    cy.getByCy(`cart-counter`).should('contain', '3');
+    cy.getByCy(`cart-counter`).should('contain', '2');
     cy.getByCy(`header-cart-dropdown-trigger`).click();
-    cy.getByCy('clear-cart').first().click();
+    cy.getByCy('clear-cart').click();
     cy.getByCy(`cart-dropdown`).should('not.exist');
     cy.getByCy(`cart-counter`).should('not.exist');
     cy.shouldSuccess();

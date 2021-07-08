@@ -28,7 +28,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       {/* Shops list */}
       <div className='lg:col-span-2 overflow-y-hidden overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden'>
         <div className='flex gap-6 lg:grid'>
-          {shops.map(({ _id, name, address, mainImage, contacts }) => {
+          {shops.map(({ _id, name, address, mainImage, contacts, rating }) => {
             return (
               <LayoutCard
                 key={`${_id}`}
@@ -64,7 +64,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                     })}
                   </div>
                   <div className='flex items-center justify-between'>
-                    <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} />
+                    <RatingStars rating={rating} showRatingNumber={false} smallStars />
                   </div>
                 </div>
               </LayoutCard>

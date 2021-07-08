@@ -93,10 +93,6 @@
   }
 
   /* Header */
-  .header-aside {
-    width: calc((100% - (var(--logo-width) + 2rem)) / 2);
-  }
-
   .header-sub-nav-list {
     position: absolute;
     top: 100%;
@@ -232,6 +228,12 @@
   }
 }
 
+/* Headless UI*/
+.headless-mobile-nav [type=button],
+.headless-menu [type=button] {
+  -webkit-appearance: none;
+}
+
 /*noinspection ALL*/
 @font-face {
   font-family: 'Gilroy';
@@ -364,7 +366,7 @@
   --lineGap-500: calc(var(--lineGap-100) * 5);;
 
   /*Sizes*/
-  --logo-width: 10rem;
+  --logoWidth: 7rem;
   --innerBlockMaxWidth: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
@@ -386,8 +388,6 @@
   --tabsNavHeight: var(--formInputHeight);
   --tabsNavHeightSmall: var(--formInputHeightSmall);
   --tabsNavHeightSmaller: var(--formInputHeightSmaller);
-  --mobileNavHeight: 85px;
-  --mobileFooterPaddingBottom: calc(var(--mobileNavHeight) + 2rem);
 
   /*Catalogue*/
   --catalogue-filter-width: 325px;
@@ -487,6 +487,12 @@
   }
 }
 
+@media only screen and (min-width: 640px) {
+  :root {
+    --logoWidth: 10rem;
+  }
+}
+
 html {
   font-size: 15px;
 }
@@ -577,72 +583,6 @@ table {
 /* React Date Picker */
 .react-datepicker-wrapper {
   display: block !important;
-}
-
-/* Reach UI */
-html [data-reach-menu-button] {
-  outline: none;
-  display: flex;
-  align-items: center;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-html [data-reach-menu-list],
-html [data-reach-menu-items] {
-  display: block;
-  white-space: nowrap;
-  border: solid 0 transparent;
-  outline: none;
-  position: relative;
-  z-index: 2;
-  padding-top: 0;
-  padding-bottom: 0;
-  background-color: var(--wp-white);
-  box-shadow: var(--wp-shadow-100);
-  border-radius: var(--borderRadius);
-  overflow: hidden;
-}
-
-html.dark [data-reach-menu-items],
-html.dark [data-reach-menu-list] {
-  background-color: var(--secondaryBackground);
-}
-
-html [data-reach-menu-item] {
-  display: flex;
-  align-items: center;
-  padding-top: var(--reachMenuItemVerticalPadding);
-  padding-left: var(--reachMenuItemHorizontalPadding);
-  padding-bottom: var(--reachMenuItemVerticalPadding);
-  padding-right: var(--reachMenuItemHorizontalPadding);
-  font-size: 1rem;
-  color: var(--textColor);
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-html [data-reach-menu-item][data-selected] {
-  background-color: rgba(var(--themeRGB), 0.35);
-  color: var(--wp-white);
-}
-
-html .rui-selected-item[data-reach-menu-item] {
-  background-color: var(--theme);
-  color: var(--wp-white);
-  cursor: default;
-}
-
-html [data-reach-menu-item]:not(:first-child) {
-  border-top: 1px solid var(--lightGray);
-}
-
-html.dark [data-reach-menu-item]:not(:first-child) {
-  border-top: 1px solid var(--midGray);
-}
-
-html [data-reach-menu], html [data-reach-menu-popover] {
-  z-index: 9999;
 }
 
 /* NG Progressbar */

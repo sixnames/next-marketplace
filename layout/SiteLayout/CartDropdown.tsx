@@ -22,10 +22,9 @@ const cartDropdownCssVars = {
   '--textLineGap': '0.5rem',
 } as React.CSSProperties;
 
-const productClassName = 'relative grid grid-cols-8 pb-[4rem] pr-1 gap-4';
-const productImageClassName = 'relative min-h-[7rem] col-span-2';
-const productImageHolderClassName =
-  'absolute w-full h-full inset-0 flex items-center justify-center';
+const productClassName = 'relative grid grid-cols-8 pb-16 px-2 gap-4';
+const productImageClassName = 'relative col-span-2 flex items-center justify-center';
+const productImageHolderClassName = 'w-16';
 const productContentClassName = 'relative col-span-6';
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
@@ -37,7 +36,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
   return (
     <div
-      className='fixed overflow-hidden bottom-[var(--mobileNavHeight)] inset-x-0 w-full rounded-t-lg shadow-xl bg-primary dark:bg-wp-dark-gray-200 lg:relative lg:rounded-lg lg:bottom-auto lg:inset-x-auto lg:w-[30rem]'
+      className='shadow-xl overflow-hidden bg-primary dark:bg-wp-dark-gray-200 relative rounded-lg w-[30rem] max-w-[calc(100vw-(var(--innerBlockHorizontalPadding)*2))]'
       style={cartDropdownCssVars}
       data-cy={'cart-dropdown'}
     >

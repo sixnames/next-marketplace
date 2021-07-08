@@ -118,7 +118,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
 
   return (
     <div
-      className={`catalogue__filter lg:col-span-2 lg:flex lg:items-end inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative overflow-auto h-[calc(var(--fullHeight,100vh)-var(--mobileNavHeight))] lg:h-auto ${
+      className={`catalogue__filter lg:col-span-2 lg:flex lg:items-end inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative overflow-auto h-[var(--fullHeight,100vh)] lg:h-auto ${
         isFilterVisible ? 'block lg:flex' : 'hidden lg:flex'
       }`}
     >

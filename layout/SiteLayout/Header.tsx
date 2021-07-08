@@ -1,12 +1,12 @@
-import { Disclosure } from '@headlessui/react';
+import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
-import { CartInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
-import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
+import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import StickyNav from 'layout/SiteLayout/StickyNav';
@@ -18,8 +18,7 @@ import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import HeaderSearch from 'layout/SiteLayout/HeaderSearch';
 import { useUserContext } from 'context/userContext';
-import CounterSticker from 'components/CounterSticker/CounterSticker';
-import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
+import CounterSticker from 'components/CounterSticker';
 import CartDropdown from 'layout/SiteLayout/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
@@ -29,6 +28,7 @@ import {
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
   ROUTE_DOCS_PAGES,
+  CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
 
 interface HeaderSearchTriggerInterface {
@@ -47,7 +47,7 @@ const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
     <div
       data-cy={`${testId}-search-trigger`}
       onClick={() => setIsSearchOpen(true)}
-      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+      className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <div className={`relative`}>
         <Icon name={'search'} className='w-5 h-5' />
@@ -66,20 +66,21 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
 
   if (me) {
     return (
-      <Menu>
+      <Popover className='relative'>
         {() => {
           return (
             <React.Fragment>
-              <MenuButton
-                className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+              <Popover.Button
+                className={`${middleLinkClassName} pr-2 pl-2`}
                 data-cy={`${testId}-user-dropdown-trigger`}
               >
                 <span className={`relative`}>
                   <Icon name={'user'} className='w-5 h-5' />
                 </span>
-              </MenuButton>
-              <MenuPopover>
-                <LayoutCard>
+              </Popover.Button>
+
+              <Popover.Panel className='absolute z-10 top-full right-0'>
+                <LayoutCard className='w-52 pb-4'>
                   <div className='pt-6 pb-6 pl-[var(--reachMenuItemHorizontalPadding)] pr-[var(--reachMenuItemHorizontalPadding)]'>
                     <div className='font-medium text-sm'>{me?.shortName}</div>
                   </div>
@@ -88,7 +89,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     <li>
                       <Link
                         testId={`${testId}-user-dropdown-profile-link`}
-                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                         href={ROUTE_PROFILE}
                       >
                         <span>Личный кабинет</span>
@@ -99,7 +100,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CMS}
                         >
                           <span>CMS</span>
@@ -111,7 +112,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-app-link`}
-                          className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
                           href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
@@ -122,18 +123,18 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     <li onClick={signOut}>
                       <span
                         data-cy={`${testId}-sign-out-link`}
-                        className='flex items-center min-h-[var(--reachMenuItemMinimalHeight)] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
+                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
                       >
                         Выйти из аккаунта
                       </span>
                     </li>
                   </ul>
                 </LayoutCard>
-              </MenuPopover>
+              </Popover.Panel>
             </React.Fragment>
           );
         }}
-      </Menu>
+      </Popover>
     );
   }
 
@@ -142,42 +143,12 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
       ariaLabel={'Войти'}
       testId={`${testId}-sign-in-link`}
       href={ROUTE_SIGN_IN}
-      className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}
+      className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
         <Icon name={'user'} className='w-5 h-5' />
       </span>
     </Link>
-  );
-};
-
-interface HeaderCartDropdownButtonInterface {
-  cart: CartInterface;
-  testId: string;
-}
-
-const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
-  cart,
-  testId,
-}) => {
-  return (
-    <React.Fragment>
-      <MenuButton>
-        <span
-          data-cy={`${testId}-cart-dropdown-trigger`}
-          className={`${middleLinkClassName} ml-2 pl-2`}
-        >
-          <span className={`relative mr-3`}>
-            <Icon name={'cart'} className='w-5 h-5' />
-            <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
-          </span>
-          <span>Корзина</span>
-        </span>
-      </MenuButton>
-      <MenuPopover>
-        <CartDropdown cart={cart} />
-      </MenuPopover>
-    </React.Fragment>
   );
 };
 
@@ -190,23 +161,33 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
 
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
-      <Menu>
-        {() => {
-          return <HeaderCartDropdownButton testId={testId} cart={cart} />;
-        }}
-      </Menu>
+      <Popover>
+        <Popover.Button>
+          <span
+            data-cy={`${testId}-cart-dropdown-trigger`}
+            className={`${middleLinkClassName} pl-2`}
+          >
+            <span className={`relative mr-3`}>
+              <Icon name={'cart'} className='w-5 h-5' />
+              <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+            </span>
+            <span className='hidden lg:block'>Корзина</span>
+          </span>
+        </Popover.Button>
+
+        <Popover.Panel className='absolute z-10 top-[90%] right-[var(--innerBlockHorizontalPadding)]'>
+          <CartDropdown cart={cart} />
+        </Popover.Panel>
+      </Popover>
     );
   }
 
   return (
-    <span
-      data-cy={`${testId}-cart-dropdown-trigger`}
-      className={`${middleLinkClassName} ml-2 pl-2`}
-    >
+    <span data-cy={`${testId}-cart-dropdown-trigger`} className={`${middleLinkClassName} pl-2`}>
       <span className={`relative mr-3`}>
         <Icon name={'cart'} className='w-5 h-5' />
       </span>
-      <span>Корзина</span>
+      <span className='hidden lg:block'>Корзина</span>
     </span>
   );
 };
@@ -222,12 +203,11 @@ const HeaderBurgerDropdownTrigger: React.FC<HeaderBurgerDropdownTriggerInterface
     <div
       data-cy={`burger-trigger`}
       onClick={toggleBurgerDropdown}
-      className={`${middleLinkClassName}`}
+      className={`${middleLinkClassName} lg:hidden`}
     >
-      <div className={`relative mr-3`}>
-        <Icon name={'burger'} className={'w-5 h-5'} />
+      <div className={`relative`}>
+        <Icon name={'burger'} className={'w-6 h-6'} />
       </div>
-      <span>меню</span>
     </div>
   );
 };
@@ -243,13 +223,13 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 }) => {
   const { query, asPath } = useRouter();
   const { navRubrics } = useSiteContext();
-
+  const { rubricSlug } = query;
   if (!isBurgerDropdownOpen) {
     return null;
   }
 
   return (
-    <div className='fixed inset-0 bg-secondary z-[1] w-full pt-4 pb-8 overflow-y-auto'>
+    <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto'>
       <Inner className='pb-24'>
         <div className='flex items-center justify-between mb-8'>
           <ButtonCross onClick={hideBurgerDropdown} />
@@ -259,27 +239,18 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           </div>
         </div>
 
-        <ul className='pb-20'>
+        <ul className='headless-mobile-nav pb-20'>
           {navRubrics.map((rubric) => {
-            const { catalogue = [], card = [] } = query;
-            const realCatalogueQuery = alwaysArray(catalogue);
-            const catalogueSlug = realCatalogueQuery[0];
-            const { name, slug, attributes } = rubric;
+            const { name, attributes } = rubric;
 
             // Get rubric slug from product card path
-            const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
-            const cardSlugsParts = cardSlugs.map((slug) => {
-              return slug.split('-');
-            });
-            const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
-            const rubricSlug = rubricSlugArr ? rubricSlugArr[1] : '';
-            const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
+            const isCurrent = rubric.slug === rubricSlug || rubricSlug === rubric.slug;
 
             return (
               <li className='relative' key={rubric.slug}>
                 <Link
                   prefetch={false}
-                  href={`${ROUTE_CATALOGUE}/${slug}`}
+                  href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
@@ -291,17 +262,17 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 <Disclosure>
                   <Disclosure.Panel>
                     <div>
-                      {(attributes || []).map(({ _id, options, name }) => {
+                      {(attributes || []).map((attribute) => {
                         return (
-                          <div className='mt-4 mb-4' key={`${_id}`}>
-                            <div className='mb-2 text-secondary-text'>{name}</div>
+                          <div className='mt-4 mb-4' key={`${attribute._id}`}>
+                            <div className='mb-2 text-secondary-text'>{attribute.name}</div>
                             <ul>
-                              {(options || []).map((option) => {
+                              {(attribute.options || []).map((option) => {
                                 const isCurrent = asPath === option.slug;
                                 return (
                                   <li key={`${option._id}`}>
                                     <Link
-                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${option.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex items-center h-10 ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'
@@ -335,10 +306,13 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
 export interface HeaderInterface {
   headerPageGroups: PagesGroupInterface[];
+  company?: CompanyInterface | null;
 }
 
-const middleSideClassName = 'hidden shrink-0 header-aside min-h-[1rem] lg:inline-flex';
-const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
+const middleSideClassName =
+  'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-2';
+
+const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -347,13 +321,17 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
   const { data } = useGetCatalogueSearchTopItemsQuery({
     ssr: false,
     variables: {
-      input: {},
+      input: {
+        companyId: company ? company._id : null,
+        companySlug: company ? company.slug : null,
+      },
     },
   });
 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const callbackPhone = getSiteConfigSingleValue('phone');
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -363,13 +341,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
     setIsBurgerDropdownOpen(false);
   }, []);
 
-  const headerVars = { '--logo-width': '10rem' } as React.CSSProperties;
-
   return (
     <React.Fragment>
       <header
-        className='relative z-[130] bg-primary shadow-md lg:shadow-none'
-        style={headerVars}
+        className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
         ref={headerRef}
       >
         <div className='relative z-[10] bg-secondary'>
@@ -403,15 +378,21 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
             </div>
 
             <div className='flex gap-6 items-center'>
+              {callbackPhone ? (
+                <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
+                  {phoneToReadable(callbackPhone)}
+                </a>
+              ) : null}
+
               <ThemeTrigger />
               <LanguageTrigger />
             </div>
           </Inner>
         </div>
 
-        <Inner lowTop lowBottom>
-          <div className='flex justify-center pt-7 pb-7 lg:justify-between lg:py-4'>
-            <div className={`${middleSideClassName} justify-start`}>
+        <Inner lowTop lowBottom className='relative'>
+          <div className='flex justify-between lg:justify-center py-6 lg:justify-between lg:py-4'>
+            <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
                   <Icon name={'marker'} className='w-5 h-5' />
@@ -422,11 +403,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
 
             <Link
               href={`/`}
-              className='flex items-center flex-shrink-0 w-[var(--logo-width)]'
+              className='flex items-center flex-shrink-0 w-[var(--logoWidth)] max-h-16 lg:max-h-24'
               aria-label={'Главная страница'}
             >
               <img
-                className='w-full h-auto'
+                className='w-full h-full object-contain object-left lg:object-center'
                 src={siteLogoSrc}
                 width='150'
                 height='24'
@@ -438,19 +419,21 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
               <HeaderSearchTrigger testId={'header'} setIsSearchOpen={setIsSearchOpen} />
               <HeaderProfileLink testId={'header'} />
 
-              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
                 <div className={`relative`}>
                   <Icon name={'compare'} className='w-5 h-5' />
                 </div>
               </div>
 
-              <div className={`${middleLinkClassName} ml-2 mr-2 pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
                 <div className={`relative`}>
                   <Icon name={'heart'} className='w-5 h-5' />
                 </div>
               </div>
 
               <HeaderCartLink testId={'header'} />
+
+              <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
             </div>
           </div>
         </Inner>
@@ -462,24 +445,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups }) => {
 
       <StickyNav />
 
-      <div className='block fixed z-[200] inset-x-0 bottom-0 wp-shadow-top-100 lg:hidden'>
-        <Inner
-          className='relative z-[2] flex items-center justify-between h-[var(--mobileNavHeight)] bg-secondary'
-          lowTop
-        >
-          <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
-
-          <div className='flex items-center'>
-            <HeaderSearchTrigger testId={'mobile-nav'} setIsSearchOpen={setIsSearchOpen} />
-            <HeaderProfileLink testId={'mobile-nav'} />
-            <HeaderCartLink testId={'mobile-nav'} />
-          </div>
-        </Inner>
-        <BurgerDropdown
-          hideBurgerDropdown={hideBurgerDropdown}
-          isBurgerDropdownOpen={isBurgerDropdownOpen}
-        />
-      </div>
+      <BurgerDropdown
+        hideBurgerDropdown={hideBurgerDropdown}
+        isBurgerDropdownOpen={isBurgerDropdownOpen}
+      />
     </React.Fragment>
   );
 };

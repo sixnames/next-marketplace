@@ -683,6 +683,9 @@ export interface PageModel extends TimestampModel {
   secondaryBannerTextPadding?: number | null;
 }
 
+export type PagesGroupTemplateModel = PagesGroupModel;
+export type PagesTemplateModel = PageModel;
+
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;

@@ -2382,8 +2382,12 @@ input UpdatePageInput {
   content: String!
   descriptionI18n: JSONObject
   index: Int!
+  mainBannerTextColor: String
+  mainBannerTextPadding: Float
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
+  secondaryBannerTextColor: String
+  secondaryBannerTextPadding: Float
   showAsMainBanner: Boolean
   showAsSecondaryBanner: Boolean
   state: PageState!

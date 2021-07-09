@@ -1,3 +1,4 @@
+import ColorPreview from 'components/ColorPreview';
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
@@ -31,6 +32,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   theme?: InputTheme;
   readOnly?: boolean;
   autoFocus?: boolean;
+  isRGB?: boolean;
 }
 
 const Input: React.FC<InputPropsInterface> = ({
@@ -57,11 +59,14 @@ const Input: React.FC<InputPropsInterface> = ({
   readOnly,
   showInlineError,
   error,
+  isRGB,
+  description,
   ...props
 }) => {
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const inputBorder = notValid ? 'border-red-500' : `input-border`;
-  const inputPaddingLeft = icon ? 'input-with-icon-padding' : 'pl-input-padding-horizontal';
+  const inputPaddingLeft =
+    icon || isRGB ? 'input-with-icon-padding' : 'pl-input-padding-horizontal';
   const inputPaddingRight = onClear ? 'input-with-clear-padding' : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';
   const disabledClass = readOnly || disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
@@ -84,12 +89,19 @@ const Input: React.FC<InputPropsInterface> = ({
       lineIcon={lineIcon}
       showInlineError={showInlineError}
       error={error}
+      description={description}
     >
       {icon ? (
         <Icon
           name={icon}
           className='absolute top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'
         />
+      ) : null}
+
+      {isRGB ? (
+        <div className='absolute flex items-center justify-center top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'>
+          <ColorPreview isRGB color={currentValue} />
+        </div>
       ) : null}
 
       {type === 'tel' ? (

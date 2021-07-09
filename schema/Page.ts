@@ -68,8 +68,6 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
-    t.boolean('showAsMainBanner');
-    t.boolean('showAsSecondaryBanner');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');
@@ -77,6 +75,12 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.field('state', {
       type: 'PageState',
     });
+    t.boolean('showAsMainBanner');
+    t.string('mainBannerTextColor');
+    t.float('mainBannerTextPadding');
+    t.boolean('showAsSecondaryBanner');
+    t.string('secondaryBannerTextColor');
+    t.float('secondaryBannerTextPadding');
   },
 });
 

@@ -434,7 +434,9 @@ export enum ConfigVariant {
   Number = 'number',
   Tel = 'tel',
   Email = 'email',
-  Asset = 'asset'
+  Asset = 'asset',
+  Boolean = 'boolean',
+  Constructor = 'constructor'
 }
 
 export type Contacts = {
@@ -771,6 +773,12 @@ export type ManufacturersPaginationPayload = PaginationPayload & {
   hasPrevPage: Scalars['Boolean'];
   hasNextPage: Scalars['Boolean'];
   docs: Array<Manufacturer>;
+};
+
+export type MapMarker = {
+  __typename?: 'MapMarker';
+  lightTheme?: Maybe<Scalars['String']>;
+  darkTheme?: Maybe<Scalars['String']>;
 };
 
 export type Message = {
@@ -2407,6 +2415,7 @@ export type Shop = Base & Timestamp & {
   slug: Scalars['String'];
   citySlug: Scalars['String'];
   companyId: Scalars['ObjectId'];
+  mapMarker?: Maybe<MapMarker>;
   logo: Asset;
   assets: Array<Asset>;
   contacts: Contacts;
@@ -2653,13 +2662,17 @@ export type UpdatePageInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  showAsMainBanner?: Maybe<Scalars['Boolean']>;
-  showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
   content: Scalars['String'];
   state: PageState;
+  showAsMainBanner?: Maybe<Scalars['Boolean']>;
+  mainBannerTextColor?: Maybe<Scalars['String']>;
+  mainBannerTextPadding?: Maybe<Scalars['Float']>;
+  showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
+  secondaryBannerTextColor?: Maybe<Scalars['String']>;
+  secondaryBannerTextPadding?: Maybe<Scalars['Float']>;
 };
 
 export type UpdatePagesGroupInput = {

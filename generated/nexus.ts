@@ -645,8 +645,12 @@ export interface NexusGenInputs {
     content: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     index: number; // Int!
+    mainBannerTextColor?: string | null; // String
+    mainBannerTextPadding?: number | null; // Float
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    secondaryBannerTextColor?: string | null; // String
+    secondaryBannerTextPadding?: number | null; // Float
     showAsMainBanner?: boolean | null; // Boolean
     showAsSecondaryBanner?: boolean | null; // Boolean
     state: NexusGenEnums['PageState']; // PageState!

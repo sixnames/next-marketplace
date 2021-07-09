@@ -182,10 +182,9 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, breadcrumbs
                     />
 
                     <FormikInput
-                      label={'Цвет текскта слайда. В формате RGB'}
-                      description={'Пример 255, 255, 255 (Белый)'}
+                      label={'Цвет текскта слайда.'}
                       name={'mainBannerTextColor'}
-                      isRGB
+                      type={'color'}
                     />
 
                     <FormikInput
@@ -242,10 +241,9 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, breadcrumbs
                     />
 
                     <FormikInput
-                      label={'Цвет текскта акции. В формате RGB'}
-                      description={'Пример 255, 255, 255 (Белый)'}
+                      label={'Цвет текскта акции'}
                       name={'secondaryBannerTextColor'}
-                      isRGB
+                      type={'color'}
                     />
 
                     <FormikInput

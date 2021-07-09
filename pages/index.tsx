@@ -111,7 +111,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                             style={
                               mainBannerTextColor
                                 ? {
-                                    color: `rgb(${mainBannerTextColor})`,
+                                    color: mainBannerTextColor,
                                   }
                                 : undefined
                             }
@@ -124,7 +124,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                               style={
                                 mainBannerTextColor
                                   ? {
-                                      color: `rgb(${mainBannerTextColor})`,
+                                      color: mainBannerTextColor,
                                     }
                                   : undefined
                               }
@@ -222,7 +222,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                             style={
                               secondaryBannerTextColor
                                 ? {
-                                    color: `rgb(${secondaryBannerTextColor})`,
+                                    color: secondaryBannerTextColor,
                                   }
                                 : undefined
                             }

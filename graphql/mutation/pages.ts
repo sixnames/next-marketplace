@@ -19,8 +19,8 @@ export const UPDATE_PAGES_GROUP_MUTATION = gql`
 `;
 
 export const DELETE_PAGES_GROUP_MUTATION = gql`
-  mutation DeletePagesGroup($_id: ObjectId!) {
-    deletePagesGroup(_id: $_id) {
+  mutation DeletePagesGroup($input: DeletePagesGroupInput!) {
+    deletePagesGroup(input: $input) {
       success
       message
     }
@@ -46,8 +46,8 @@ export const UPDATE_PAGE_MUTATION = gql`
 `;
 
 export const DELETE_PAGE_MUTATION = gql`
-  mutation DeletePage($_id: ObjectId!) {
-    deletePage(_id: $_id) {
+  mutation DeletePage($input: DeletePageInput!) {
+    deletePage(input: $input) {
       success
       message
     }

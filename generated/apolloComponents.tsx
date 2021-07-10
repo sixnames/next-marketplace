@@ -541,6 +541,7 @@ export type CreatePageInput = {
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreatePagesGroupInput = {
@@ -549,6 +550,7 @@ export type CreatePagesGroupInput = {
   companySlug: Scalars['String'];
   showInFooter: Scalars['Boolean'];
   showInHeader: Scalars['Boolean'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateProductConnectionInput = {
@@ -638,6 +640,16 @@ export type DeleteCollectionFromBrandInput = {
 export type DeleteOptionFromGroupInput = {
   optionId: Scalars['ObjectId'];
   optionsGroupId: Scalars['ObjectId'];
+};
+
+export type DeletePageInput = {
+  _id: Scalars['ObjectId'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
+};
+
+export type DeletePagesGroupInput = {
+  _id: Scalars['ObjectId'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type DeleteProductAssetInput = {
@@ -1385,7 +1397,7 @@ export type MutationUpdatePagesGroupArgs = {
 
 
 export type MutationDeletePagesGroupArgs = {
-  _id: Scalars['ObjectId'];
+  input: DeletePagesGroupInput;
 };
 
 
@@ -1400,7 +1412,7 @@ export type MutationUpdatePageArgs = {
 
 
 export type MutationDeletePageArgs = {
-  _id: Scalars['ObjectId'];
+  input: DeletePageInput;
 };
 
 
@@ -2673,6 +2685,7 @@ export type UpdatePageInput = {
   showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
   secondaryBannerTextColor?: Maybe<Scalars['String']>;
   secondaryBannerTextPadding?: Maybe<Scalars['Float']>;
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePagesGroupInput = {
@@ -2681,6 +2694,7 @@ export type UpdatePagesGroupInput = {
   index: Scalars['Int'];
   showInFooter: Scalars['Boolean'];
   showInHeader: Scalars['Boolean'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateProductAssetIndexInput = {
@@ -3608,7 +3622,7 @@ export type UpdatePagesGroupMutation = (
 );
 
 export type DeletePagesGroupMutationVariables = Exact<{
-  _id: Scalars['ObjectId'];
+  input: DeletePagesGroupInput;
 }>;
 
 
@@ -3647,7 +3661,7 @@ export type UpdatePageMutation = (
 );
 
 export type DeletePageMutationVariables = Exact<{
-  _id: Scalars['ObjectId'];
+  input: DeletePageInput;
 }>;
 
 
@@ -6893,8 +6907,8 @@ export type UpdatePagesGroupMutationHookResult = ReturnType<typeof useUpdatePage
 export type UpdatePagesGroupMutationResult = Apollo.MutationResult<UpdatePagesGroupMutation>;
 export type UpdatePagesGroupMutationOptions = Apollo.BaseMutationOptions<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>;
 export const DeletePagesGroupDocument = gql`
-    mutation DeletePagesGroup($_id: ObjectId!) {
-  deletePagesGroup(_id: $_id) {
+    mutation DeletePagesGroup($input: DeletePagesGroupInput!) {
+  deletePagesGroup(input: $input) {
     success
     message
   }
@@ -6915,7 +6929,7 @@ export type DeletePagesGroupMutationFn = Apollo.MutationFunction<DeletePagesGrou
  * @example
  * const [deletePagesGroupMutation, { data, loading, error }] = useDeletePagesGroupMutation({
  *   variables: {
- *      _id: // value for '_id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -6995,8 +7009,8 @@ export type UpdatePageMutationHookResult = ReturnType<typeof useUpdatePageMutati
 export type UpdatePageMutationResult = Apollo.MutationResult<UpdatePageMutation>;
 export type UpdatePageMutationOptions = Apollo.BaseMutationOptions<UpdatePageMutation, UpdatePageMutationVariables>;
 export const DeletePageDocument = gql`
-    mutation DeletePage($_id: ObjectId!) {
-  deletePage(_id: $_id) {
+    mutation DeletePage($input: DeletePageInput!) {
+  deletePage(input: $input) {
     success
     message
   }
@@ -7017,7 +7031,7 @@ export type DeletePageMutationFn = Apollo.MutationFunction<DeletePageMutation, D
  * @example
  * const [deletePageMutation, { data, loading, error }] = useDeletePageMutation({
  *   variables: {
- *      _id: // value for '_id'
+ *      input: // value for 'input'
  *   },
  * });
  */

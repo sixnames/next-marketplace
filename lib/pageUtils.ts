@@ -22,7 +22,7 @@ import { ObjectId } from 'mongodb';
 interface GetPageGroupsSsrInterface {
   locale: string;
   companySlug: string;
-  isTemplate?: string;
+  isTemplate?: boolean;
 }
 
 export async function getPageGroupsSsr({
@@ -64,7 +64,7 @@ export async function getPageGroupsSsr({
 // Pages list
 interface GetPagesListSsrInterface {
   locale: string;
-  isTemplate?: string;
+  isTemplate?: boolean;
   pagesGroupId: string;
 }
 
@@ -174,7 +174,7 @@ export async function getPagesListSsr({
 interface GetPageSsrInterface {
   locale: string;
   pageId: string;
-  isTemplate?: string;
+  isTemplate?: boolean;
 }
 
 interface GetPageSsrPayloadInterface {

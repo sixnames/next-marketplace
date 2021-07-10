@@ -113,7 +113,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
     currentPageName: `${pagesGroup.name}`,
     config: [
       {
-        name: 'Группы страниц',
+        name: isTemplate ? 'Группы шаблонов страниц' : 'Группы страниц',
         href: basePath,
       },
     ],

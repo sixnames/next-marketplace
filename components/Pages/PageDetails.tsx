@@ -7,7 +7,16 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
-import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED } from 'config/common';
+import {
+  PAGE_STATE_DRAFT,
+  PAGE_STATE_PUBLISHED,
+  FLEX_CENTER,
+  FLEX_START,
+  FLEX_END,
+  TEXT_HORIZONTAL_LEFT,
+  TEXT_HORIZONTAL_CENTER,
+  TEXT_HORIZONTAL_RIGHT,
+} from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
@@ -31,6 +40,60 @@ const PAGE_STATE_OPTIONS = [
     _id: PAGE_STATE_PUBLISHED,
     slug: PAGE_STATE_PUBLISHED,
     name: 'Опубликована',
+  },
+];
+
+const TEXT_HORIZONTAL_ALIGN_OPTIONS = [
+  {
+    _id: TEXT_HORIZONTAL_LEFT,
+    slug: TEXT_HORIZONTAL_LEFT,
+    name: 'Слева',
+  },
+  {
+    _id: TEXT_HORIZONTAL_CENTER,
+    slug: TEXT_HORIZONTAL_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: TEXT_HORIZONTAL_RIGHT,
+    slug: TEXT_HORIZONTAL_RIGHT,
+    name: 'Справа',
+  },
+];
+
+const TEXT_HORIZONTAL_FLEX_OPTIONS = [
+  {
+    _id: FLEX_START,
+    slug: FLEX_START,
+    name: 'Слева',
+  },
+  {
+    _id: FLEX_CENTER,
+    slug: FLEX_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: FLEX_END,
+    slug: FLEX_END,
+    name: 'Справа',
+  },
+];
+
+const TEXT_VERTICAL_FLEX_OPTIONS = [
+  {
+    _id: FLEX_START,
+    slug: FLEX_START,
+    name: 'Сверху',
+  },
+  {
+    _id: FLEX_CENTER,
+    slug: FLEX_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: FLEX_END,
+    slug: FLEX_END,
+    name: 'Снизу',
   },
 ];
 
@@ -68,6 +131,17 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
             mainBanner: [page.mainBanner?.url],
             secondaryBanner: [page.secondaryBanner?.url],
             content: JSON.parse(page.content),
+            mainBannerTextAlign: page.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
+            mainBannerVerticalTextAlign:
+              page.mainBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
+            mainBannerHorizontalTextAlign:
+              page.mainBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerTextAlign:
+              page.secondaryBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
+            secondaryBannerVerticalTextAlign:
+              page.secondaryBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerHorizontalTextAlign:
+              page.secondaryBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
           }}
           onSubmit={(values) => {
             showLoading();
@@ -84,10 +158,18 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                   index: noNaN(values.index),
                   showAsMainBanner: values.showAsMainBanner,
                   mainBannerTextColor: values.mainBannerTextColor,
+                  mainBannerTextAlign: values.mainBannerTextAlign,
+                  mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
+                  mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
                   mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
+                  mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
                   showAsSecondaryBanner: values.showAsSecondaryBanner,
                   secondaryBannerTextColor: values.secondaryBannerTextColor,
+                  secondaryBannerTextAlign: values.secondaryBannerTextAlign,
+                  secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
+                  secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
                   secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
+                  secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
                   isTemplate,
                 },
               },
@@ -184,13 +266,37 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                     />
 
                     <FormikInput
-                      label={'Цвет текскта слайда.'}
+                      label={'Цвет текскта.'}
                       name={'mainBannerTextColor'}
                       type={'color'}
                     />
 
+                    <FormikSelect
+                      options={TEXT_HORIZONTAL_ALIGN_OPTIONS}
+                      label={'Выравнивание текскта.'}
+                      name={'mainBannerTextAlign'}
+                    />
+
+                    <FormikSelect
+                      options={TEXT_HORIZONTAL_FLEX_OPTIONS}
+                      label={'Позиционирование текскта по горизонтали.'}
+                      name={'mainBannerVerticalTextAlign'}
+                    />
+
+                    <FormikSelect
+                      options={TEXT_VERTICAL_FLEX_OPTIONS}
+                      label={'Позиционирование текскта по вертикали.'}
+                      name={'mainBannerHorizontalTextAlign'}
+                    />
+
                     <FormikInput
-                      label={'Отступ текста от верхнего края слайда (%)'}
+                      label={'Максимальная ширина текста (px)'}
+                      name={'mainBannerTextMaxWidth'}
+                      type={'number'}
+                    />
+
+                    <FormikInput
+                      label={'Отступ текста от верхнего края (%)'}
                       name={'mainBannerTextPadding'}
                       type={'number'}
                     />
@@ -243,13 +349,37 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                     />
 
                     <FormikInput
-                      label={'Цвет текскта акции'}
+                      label={'Цвет текскта'}
                       name={'secondaryBannerTextColor'}
                       type={'color'}
                     />
 
+                    <FormikSelect
+                      options={TEXT_HORIZONTAL_ALIGN_OPTIONS}
+                      label={'Выравнивание текскта.'}
+                      name={'secondaryBannerTextAlign'}
+                    />
+
+                    <FormikSelect
+                      options={TEXT_HORIZONTAL_FLEX_OPTIONS}
+                      label={'Позиционирование текскта по горизонтали.'}
+                      name={'secondaryBannerVerticalTextAlign'}
+                    />
+
+                    <FormikSelect
+                      options={TEXT_VERTICAL_FLEX_OPTIONS}
+                      label={'Позиционирование текскта по вертикали.'}
+                      name={'secondaryBannerHorizontalTextAlign'}
+                    />
+
                     <FormikInput
-                      label={'Отступ текста от верхнего края акции (%)'}
+                      label={'Максимальная ширина текста (px)'}
+                      name={'secondaryBannerTextMaxWidth'}
+                      type={'number'}
+                    />
+
+                    <FormikInput
+                      label={'Отступ текста от верхнего края (%)'}
                       name={'secondaryBannerTextPadding'}
                       type={'number'}
                     />

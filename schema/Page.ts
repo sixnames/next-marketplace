@@ -83,10 +83,18 @@ export const UpdatePageInput = inputObjectType({
     });
     t.boolean('showAsMainBanner');
     t.string('mainBannerTextColor');
+    t.string('mainBannerVerticalTextAlign');
+    t.string('mainBannerHorizontalTextAlign');
+    t.string('mainBannerTextAlign');
     t.float('mainBannerTextPadding');
+    t.float('mainBannerTextMaxWidth');
     t.boolean('showAsSecondaryBanner');
     t.string('secondaryBannerTextColor');
+    t.string('secondaryBannerVerticalTextAlign');
+    t.string('secondaryBannerHorizontalTextAlign');
+    t.string('secondaryBannerTextAlign');
     t.float('secondaryBannerTextPadding');
+    t.float('secondaryBannerTextMaxWidth');
     t.boolean('isTemplate');
   },
 });

@@ -68,7 +68,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
       <Inner testId={'main-page'}>
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
+            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={3000}>
               {sliderPages.map(
                 ({
                   slug,
@@ -77,8 +77,13 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                   description,
                   mainBannerTextColor,
                   mainBannerTextPadding,
+                  mainBannerVerticalTextAlign,
+                  mainBannerHorizontalTextAlign,
+                  mainBannerTextMaxWidth,
+                  mainBannerTextAlign,
+                  showAsMainBanner,
                 }) => {
-                  if (!mainBanner) {
+                  if (!mainBanner || !showAsMainBanner) {
                     return null;
                   }
                   return (
@@ -97,41 +102,48 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                           title={`${name}`}
                         />
                         <span
-                          className='absolute z-20 block inset-0 p-4 lg:p-8 text-white'
+                          className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
                           style={
-                            mainBannerTextPadding
-                              ? {
-                                  paddingTop: `${mainBannerTextPadding}%`,
-                                }
-                              : undefined
+                            {
+                              paddingTop: mainBannerTextPadding
+                                ? `${mainBannerTextPadding}%`
+                                : '2rem',
+                              justifyContent: mainBannerHorizontalTextAlign || 'flex-start',
+                              alignItems: mainBannerVerticalTextAlign || 'flex-start',
+                              textAlign: mainBannerTextAlign || 'left',
+                            } as React.CSSProperties
                           }
                         >
-                          <span
-                            className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[520px]'
-                            style={
-                              mainBannerTextColor
-                                ? {
-                                    color: mainBannerTextColor,
-                                  }
-                                : undefined
-                            }
-                          >
-                            {name}
-                          </span>
-                          {description ? (
+                          <span>
                             <span
-                              className='font-medium block text-2xl max-w-[650px] mt-8 md:mt-10 lg:mt-12'
-                              style={
-                                mainBannerTextColor
-                                  ? {
-                                      color: mainBannerTextColor,
-                                    }
-                                  : undefined
-                              }
+                              className='block font-medium text-2xl md:text-3xl lg:text-5xl'
+                              style={{
+                                color: mainBannerTextColor
+                                  ? mainBannerTextColor
+                                  : 'var(--textColor)',
+                                maxWidth: mainBannerTextMaxWidth
+                                  ? `${mainBannerTextMaxWidth}px`
+                                  : '520px',
+                              }}
                             >
-                              {description}
+                              {name}
                             </span>
-                          ) : null}
+                            {description ? (
+                              <span
+                                className='font-medium block text-2xl mt-8 md:mt-10 lg:mt-12'
+                                style={{
+                                  color: mainBannerTextColor
+                                    ? mainBannerTextColor
+                                    : 'var(--textColor)',
+                                  maxWidth: mainBannerTextMaxWidth
+                                    ? `${mainBannerTextMaxWidth}px`
+                                    : '650px',
+                                }}
+                              >
+                                {description}
+                              </span>
+                            ) : null}
+                          </span>
                         </span>
                       </Link>
                     </div>
@@ -184,8 +196,13 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                   slug,
                   secondaryBannerTextColor,
                   secondaryBannerTextPadding,
+                  secondaryBannerHorizontalTextAlign,
+                  secondaryBannerVerticalTextAlign,
+                  secondaryBannerTextAlign,
+                  secondaryBannerTextMaxWidth,
+                  showAsSecondaryBanner,
                 }) => {
-                  if (!secondaryBanner) {
+                  if (!secondaryBanner || !showAsSecondaryBanner) {
                     return null;
                   }
 
@@ -208,24 +225,28 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                           title={`${name}`}
                         />
                         <span
-                          className='absolute z-20 block inset-0 p-8 text-white'
+                          className='absolute z-20 flex flex-col inset-0 p-8 text-white'
                           style={
-                            secondaryBannerTextPadding
-                              ? {
-                                  paddingTop: `${secondaryBannerTextPadding}%`,
-                                }
-                              : undefined
+                            {
+                              paddingTop: secondaryBannerTextPadding
+                                ? `${secondaryBannerTextPadding}%`
+                                : '2rem',
+                              justifyContent: secondaryBannerHorizontalTextAlign || 'flex-start',
+                              alignItems: secondaryBannerVerticalTextAlign || 'flex-start',
+                              textAlign: secondaryBannerTextAlign || 'left',
+                            } as React.CSSProperties
                           }
                         >
                           <span
                             className='block font-medium text-3xl max-w-[250px]'
-                            style={
-                              secondaryBannerTextColor
-                                ? {
-                                    color: secondaryBannerTextColor,
-                                  }
-                                : undefined
-                            }
+                            style={{
+                              color: secondaryBannerTextColor
+                                ? secondaryBannerTextColor
+                                : 'var(--textColor)',
+                              maxWidth: secondaryBannerTextMaxWidth
+                                ? `${secondaryBannerTextMaxWidth}px`
+                                : '200px',
+                            }}
                           >
                             {name}
                           </span>

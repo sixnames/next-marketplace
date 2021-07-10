@@ -2681,10 +2681,18 @@ export type UpdatePageInput = {
   state: PageState;
   showAsMainBanner?: Maybe<Scalars['Boolean']>;
   mainBannerTextColor?: Maybe<Scalars['String']>;
+  mainBannerVerticalTextAlign?: Maybe<Scalars['String']>;
+  mainBannerHorizontalTextAlign?: Maybe<Scalars['String']>;
+  mainBannerTextAlign?: Maybe<Scalars['String']>;
   mainBannerTextPadding?: Maybe<Scalars['Float']>;
+  mainBannerTextMaxWidth?: Maybe<Scalars['Float']>;
   showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
   secondaryBannerTextColor?: Maybe<Scalars['String']>;
+  secondaryBannerVerticalTextAlign?: Maybe<Scalars['String']>;
+  secondaryBannerHorizontalTextAlign?: Maybe<Scalars['String']>;
+  secondaryBannerTextAlign?: Maybe<Scalars['String']>;
   secondaryBannerTextPadding?: Maybe<Scalars['Float']>;
+  secondaryBannerTextMaxWidth?: Maybe<Scalars['Float']>;
   isTemplate?: Maybe<Scalars['Boolean']>;
 };
 

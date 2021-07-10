@@ -2395,12 +2395,20 @@ input UpdatePageInput {
   descriptionI18n: JSONObject
   index: Int!
   isTemplate: Boolean
+  mainBannerHorizontalTextAlign: String
+  mainBannerTextAlign: String
   mainBannerTextColor: String
+  mainBannerTextMaxWidth: Float
   mainBannerTextPadding: Float
+  mainBannerVerticalTextAlign: String
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
+  secondaryBannerHorizontalTextAlign: String
+  secondaryBannerTextAlign: String
   secondaryBannerTextColor: String
+  secondaryBannerTextMaxWidth: Float
   secondaryBannerTextPadding: Float
+  secondaryBannerVerticalTextAlign: String
   showAsMainBanner: Boolean
   showAsSecondaryBanner: Boolean
   state: PageState!

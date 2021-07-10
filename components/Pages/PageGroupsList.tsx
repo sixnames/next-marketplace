@@ -7,7 +7,6 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import {
   CompanyInterface,
@@ -134,7 +133,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
               columns={columns}
               data={pagesGroups}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${ROUTE_CMS}/pages/${dataItem._id}`).catch(console.log);
+                router.push(`${basePath}/${dataItem._id}`).catch(console.log);
               }}
             />
           </div>

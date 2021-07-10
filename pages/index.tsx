@@ -68,7 +68,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
       <Inner testId={'main-page'}>
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={false} autoplaySpeed={3000}>
+            <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
               {sliderPages.map(
                 ({
                   slug,

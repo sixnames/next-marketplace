@@ -16,7 +16,9 @@ import {
 import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
@@ -28,6 +30,7 @@ export interface PageGroupsListInterface {
   basePath: string;
   companySlug: string;
   currentCompany?: CompanyInterface;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 const PageGroupsList: React.FC<PageGroupsListInterface> = ({
@@ -36,6 +39,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   isTemplate,
   basePath,
   companySlug,
+  breadcrumbs,
 }) => {
   const router = useRouter();
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
@@ -123,7 +127,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'page-groups-list'}>
+    <AppContentWrapper testId={'page-groups-list'} breadcrumbs={breadcrumbs}>
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='relative'>

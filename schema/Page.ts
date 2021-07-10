@@ -255,9 +255,11 @@ export const PageMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const pagesCollection = db.collection<PageModel>(COL_PAGES);
           const { input } = args;
-          const { _id, ...values } = input;
+          const { _id, isTemplate, ...values } = input;
+          const pagesCollection = db.collection<PageModel>(
+            isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+          );
 
           // Check page availability
           const page = await pagesCollection.findOne({ _id });
@@ -354,10 +356,12 @@ export const PageMutations = extendType({
           }
 
           const { input } = args;
-          const { _id } = input;
+          const { _id, isTemplate } = input;
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const pagesCollection = db.collection<PageModel>(COL_PAGES);
+          const pagesCollection = db.collection<PageModel>(
+            isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+          );
 
           // Check page availability
           const page = await pagesCollection.findOne({ _id });

@@ -1,172 +1,22 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
-import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
-import Table, { TableColumn } from 'components/Table';
-import { PAGE_STATE_DRAFT, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
+import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import { ROUTE_CMS, SORT_ASC } from 'config/common';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
-import { useDeletePageMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
+import { PagesGroupInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface PagesListPageConsumerInterface {
-  pagesGroup: PagesGroupInterface;
-}
-
-const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({ pagesGroup }) => {
-  const router = useRouter();
-  const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-
-  const [deletePageMutation] = useDeletePageMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deletePage),
-  });
-
-  const columns: TableColumn<PageInterface>[] = [
-    {
-      accessor: 'name',
-      headTitle: 'Название',
-      render: ({ cellData, dataItem }) => {
-        return (
-          <Link
-            testId={`${cellData}-link`}
-            className='text-primary-text hover:no-underline hover:text-link-text'
-            href={`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`}
-          >
-            {cellData}
-          </Link>
-        );
-      },
-    },
-    {
-      accessor: 'index',
-      headTitle: 'Порядковый номер',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'state',
-      headTitle: 'Опубликована',
-      render: ({ cellData }) => (cellData === PAGE_STATE_DRAFT ? 'Нет' : 'Да'),
-    },
-    {
-      accessor: 'city.name',
-      headTitle: 'Город',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      render: ({ dataItem }) => {
-        return (
-          <div className='flex justify-end'>
-            <ContentItemControls
-              testId={`${dataItem.name}`}
-              deleteTitle={'Удалить страницу'}
-              deleteHandler={() => {
-                showModal<ConfirmModalInterface>({
-                  variant: CONFIRM_MODAL,
-                  props: {
-                    testId: 'delete-page-modal',
-                    message: `Вы уверены, что хотите удалить страницу ${dataItem.name}`,
-                    confirm: () => {
-                      showLoading();
-                      deletePageMutation({
-                        variables: {
-                          input: {
-                            _id: dataItem._id,
-                          },
-                        },
-                      }).catch(console.log);
-                    },
-                  },
-                });
-              }}
-              updateTitle={'Редактировать страницу'}
-              updateHandler={() => {
-                router
-                  .push(`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`)
-                  .catch(console.log);
-              }}
-            />
-          </div>
-        );
-      },
-    },
-  ];
-
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${pagesGroup.name}`,
-    config: [
-      {
-        name: 'Группы страниц',
-        href: `${ROUTE_CMS}/pages`,
-      },
-    ],
-  };
-
-  return (
-    <AppContentWrapper testId={'pages-list'} breadcrumbs={breadcrumbs}>
-      <Inner>
-        <Title>{pagesGroup.name}</Title>
-        <div className='relative'>
-          <div className='overflow-x-auto overflow-y-hidden'>
-            <Table<PageInterface>
-              testIdKey={'name'}
-              columns={columns}
-              data={pagesGroup.pages || []}
-              onRowDoubleClick={(dataItem) => {
-                router
-                  .push(`${ROUTE_CMS}/pages/${pagesGroup._id}/${dataItem._id}`)
-                  .catch(console.log);
-              }}
-            />
-          </div>
-
-          <FixedButtons>
-            <Button
-              testId={'create-page'}
-              size={'small'}
-              onClick={() => {
-                showModal<CreatePageModalInterface>({
-                  variant: CREATE_PAGE_MODAL,
-                  props: {
-                    pagesGroupId: `${pagesGroup._id}`,
-                  },
-                });
-              }}
-            >
-              Добавить страницу
-            </Button>
-          </FixedButtons>
-        </div>
-      </Inner>
-    </AppContentWrapper>
-  );
-};
-
-interface PagesListPageInterface extends PagePropsInterface, PagesListPageConsumerInterface {}
+interface PagesListPageInterface extends PagePropsInterface, Omit<PagesListInterface, 'basePath'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup }) => {
   return (
     <CmsLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesListPageConsumer pagesGroup={pagesGroup} />
+      <PagesList basePath={`${ROUTE_CMS}/pages`} pagesGroup={pagesGroup} />
     </CmsLayout>
   );
 };

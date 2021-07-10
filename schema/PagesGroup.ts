@@ -1,7 +1,20 @@
-import { PagesGroupPayloadModel } from 'db/dbModels';
-import { createPagesGroup, deletePagesGroup, updatePagesGroup } from 'lib/pagesGroupUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
+import {
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PAGES_GROUP,
+  COL_PAGES_GROUP_TEMPLATES,
+} from 'db/collectionNames';
+import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
+import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { getDatabase } from 'db/mongodb';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
 
 export const PagesGroup = objectType({
   name: 'PagesGroup',
@@ -32,6 +45,7 @@ export const CreatePagesGroupInput = inputObjectType({
     t.nonNull.string('companySlug');
     t.nonNull.boolean('showInFooter');
     t.nonNull.boolean('showInHeader');
+    t.boolean('isTemplate');
   },
 });
 
@@ -43,6 +57,15 @@ export const UpdatePagesGroupInput = inputObjectType({
     t.nonNull.int('index');
     t.nonNull.boolean('showInFooter');
     t.nonNull.boolean('showInHeader');
+    t.boolean('isTemplate');
+  },
+});
+
+export const DeletePagesGroupInput = inputObjectType({
+  name: 'DeletePagesGroupInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.boolean('isTemplate');
   },
 });
 
@@ -71,7 +94,78 @@ export const PagesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
-        return createPagesGroup({ input: args.input, context });
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'createPagesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: createPagesGroupSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { input } = args;
+          const { isTemplate } = input;
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(
+            isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          );
+
+          // Check if pages group already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES_GROUP,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+            additionalQuery: {
+              companySlug: input.companySlug,
+            },
+            additionalOrQuery: [
+              {
+                index: input.index,
+                companySlug: input.companySlug,
+              },
+            ],
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.create.duplicate'),
+            };
+          }
+
+          const createdPagesGroupResult = await pagesGroupsCollection.insertOne({
+            ...input,
+          });
+          const createdPagesGroup = createdPagesGroupResult.ops[0];
+          if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.create.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pageGroups.create.success'),
+            payload: createdPagesGroup,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
       },
     });
 
@@ -87,7 +181,103 @@ export const PagesGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
-        return updatePagesGroup({ input: args.input, context });
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updatePagesGroup',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updatePagesGroupSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { input } = args;
+          const { _id, isTemplate, ...values } = input;
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(
+            isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          );
+
+          // Check pages group availability
+          const pagesGroup = await pagesGroupsCollection.findOne({ _id });
+          if (!pagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.notFound'),
+            };
+          }
+
+          // Check if pages group already exist
+          const exist = await findDocumentByI18nField({
+            collectionName: COL_PAGES_GROUP,
+            fieldName: 'nameI18n',
+            fieldArg: input.nameI18n,
+            additionalQuery: {
+              companySlug: pagesGroup.companySlug,
+              _id: {
+                $ne: _id,
+              },
+            },
+            additionalOrQuery: [
+              {
+                _id: {
+                  $ne: _id,
+                },
+                index: input.index,
+                companySlug: pagesGroup.companySlug,
+              },
+            ],
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.duplicate'),
+            };
+          }
+
+          const updatedPagesGroupResult = await pagesGroupsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+              },
+            },
+            {
+              returnDocument: 'after',
+            },
+          );
+          const updatedPagesGroup = updatedPagesGroupResult.value;
+          if (!updatedPagesGroupResult.ok || !updatedPagesGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('pageGroups.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('pageGroups.update.success'),
+            payload: updatedPagesGroup,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
       },
     });
 
@@ -96,14 +286,89 @@ export const PagesGroupMutations = extendType({
       type: 'PagesGroupPayload',
       description: 'Should delete pages group',
       args: {
-        _id: nonNull(
+        input: nonNull(
           arg({
-            type: 'ObjectId',
+            type: 'DeletePagesGroupInput',
           }),
         ),
       },
       resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
-        return deletePagesGroup({ _id: args._id, context });
+        const { getApiMessage } = await getRequestParams(context);
+        const { input } = args;
+        const { _id, isTemplate } = input;
+
+        const { db, client } = await getDatabase();
+        const pagesGroupsCollection = db.collection<PagesGroupModel>(
+          isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+        );
+        const pagesCollection = db.collection<PageModel>(
+          isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+        );
+
+        const session = client.startSession();
+
+        let mutationPayload: PagesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage('pageGroups.delete.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'deletePagesGroup',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete pages
+            const removedPagesResult = await pagesCollection.deleteMany({
+              pagesGroupId: _id,
+            });
+            if (!removedPagesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('pageGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete pages group
+            const removedPagesGroupResult = await pagesGroupsCollection.findOneAndDelete({
+              _id,
+            });
+            if (!removedPagesGroupResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('pageGroups.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('pageGroups.delete.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
       },
     });
   },

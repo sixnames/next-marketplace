@@ -292,6 +292,7 @@ export interface NexusGenInputs {
     citySlug: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -299,6 +300,7 @@ export interface NexusGenInputs {
     // input type
     companySlug: string; // String!
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showInFooter: boolean; // Boolean!
     showInHeader: boolean; // Boolean!
@@ -377,6 +379,16 @@ export interface NexusGenInputs {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  DeletePageInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    isTemplate?: boolean | null; // Boolean
+  };
+  DeletePagesGroupInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    isTemplate?: boolean | null; // Boolean
   };
   DeleteProductAssetInput: {
     // input type
@@ -645,6 +657,7 @@ export interface NexusGenInputs {
     content: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     mainBannerTextColor?: string | null; // String
     mainBannerTextPadding?: number | null; // Float
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -659,6 +672,7 @@ export interface NexusGenInputs {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showInFooter: boolean; // Boolean!
     showInHeader: boolean; // Boolean!
@@ -3246,11 +3260,11 @@ export interface NexusGenArgTypes {
     };
     deletePage: {
       // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
+      input: NexusGenInputs['DeletePageInput']; // DeletePageInput!
     };
     deletePagesGroup: {
       // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
+      input: NexusGenInputs['DeletePagesGroupInput']; // DeletePagesGroupInput!
     };
     deleteProductAsset: {
       // args

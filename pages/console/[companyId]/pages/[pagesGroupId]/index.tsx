@@ -1,6 +1,7 @@
 import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -8,7 +9,9 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
-interface PagesListPageInterface extends PagePropsInterface, Omit<PagesListInterface, 'basePath'> {
+interface PagesListPageInterface
+  extends PagePropsInterface,
+    Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {
   currentCompany: CompanyInterface;
 }
 
@@ -17,12 +20,20 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   pagesGroup,
   currentCompany,
 }) => {
+  const basePath = `${ROUTE_CONSOLE}/${currentCompany._id}/pages`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${pagesGroup.name}`,
+    config: [
+      {
+        name: 'Группы шаблонов страниц',
+        href: basePath,
+      },
+    ],
+  };
+
   return (
     <AppLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesList
-        basePath={`${ROUTE_CONSOLE}/${currentCompany._id}/pages`}
-        pagesGroup={pagesGroup}
-      />
+      <PagesList breadcrumbs={breadcrumbs} basePath={basePath} pagesGroup={pagesGroup} />
     </AppLayout>
   );
 };

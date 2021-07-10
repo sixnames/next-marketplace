@@ -1,5 +1,6 @@
 import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
 import { ROUTE_CMS } from 'config/common';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -7,12 +8,25 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface PagesListPageInterface extends PagePropsInterface, Omit<PagesListInterface, 'basePath'> {}
+interface PagesListPageInterface
+  extends PagePropsInterface,
+    Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup }) => {
+  const basePath = `${ROUTE_CMS}/pages`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${pagesGroup.name}`,
+    config: [
+      {
+        name: 'Группы страниц',
+        href: basePath,
+      },
+    ],
+  };
+
   return (
     <CmsLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesList basePath={`${ROUTE_CMS}/pages`} pagesGroup={pagesGroup} />
+      <PagesList basePath={basePath} breadcrumbs={breadcrumbs} pagesGroup={pagesGroup} />
     </CmsLayout>
   );
 };

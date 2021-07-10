@@ -1,26 +1,45 @@
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import { ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
 import { getPageSsr } from 'lib/pageUtils';
+import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {}
+export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
+  currentCompany: CompanyInterface;
+}
 
-const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
+const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
+  pageUrls,
+  currentCompany,
+  page,
+  cities,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Страницы`,
+    currentPageName: `${page.name}`,
     config: [
       {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: currentCompany.name,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+      },
+      {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/pages`,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages`,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/pages/${page.pagesGroup?._id}`,
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages/${page.pagesGroup?._id}`,
       },
     ],
   };
@@ -36,9 +55,20 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PageDetailsPageInterface>> => {
   const { query } = context;
-  const { pageId } = query;
+  const { pageId, companyId } = query;
   const { props } = await getAppInitialData({ context });
-  if (!props || !pageId) {
+  if (!props || !pageId || !companyId) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const company = await companiesCollection.findOne({
+    _id: new ObjectId(`${companyId}`),
+  });
+  if (!company) {
     return {
       notFound: true,
     };
@@ -60,6 +90,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(getPageSsrResult.page),
       cities: castDbData(getPageSsrResult.cities),
+      currentCompany: castDbData(company),
     },
   };
 };

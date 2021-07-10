@@ -43,7 +43,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
       <PageGroupsList
         companySlug={currentCompany.slug}
-        basePath={`${ROUTE_CMS}/pages`}
+        basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
         pagesGroups={pagesGroups}
         pageTitle={pageTitle}
         breadcrumbs={breadcrumbs}

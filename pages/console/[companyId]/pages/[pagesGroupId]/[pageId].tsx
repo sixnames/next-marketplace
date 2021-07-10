@@ -20,7 +20,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   cities,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Страницы`,
+    currentPageName: `${page.name}`,
     config: [
       {
         name: 'Группы страниц',

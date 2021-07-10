@@ -12,7 +12,7 @@ export interface PageDetailsPageInterface extends PagePropsInterface, PageDetail
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Страницы`,
+    currentPageName: `${page.name}`,
     config: [
       {
         name: 'Группы страниц',

@@ -27,9 +27,15 @@ export interface PagesListInterface {
   pagesGroup: PagesGroupInterface | PagesGroupTemplateInterface;
   isTemplate?: boolean;
   basePath: string;
+  breadcrumbs: AppContentWrapperBreadCrumbs;
 }
 
-const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, basePath }) => {
+const PagesList: React.FC<PagesListInterface> = ({
+  pagesGroup,
+  isTemplate,
+  breadcrumbs,
+  basePath,
+}) => {
   const router = useRouter();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -109,7 +115,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
     },
   ];
 
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+  /*const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
     config: [
       {
@@ -117,7 +123,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
         href: basePath,
       },
     ],
-  };
+  };*/
 
   return (
     <AppContentWrapper testId={'pages-list'} breadcrumbs={breadcrumbs}>

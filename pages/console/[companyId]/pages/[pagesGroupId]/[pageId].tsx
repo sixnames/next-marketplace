@@ -1,4 +1,4 @@
-import PageDetails, { PageDetailsInterface } from 'components/PageDetails';
+import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import { ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

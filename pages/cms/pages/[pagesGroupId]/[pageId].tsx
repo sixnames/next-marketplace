@@ -1,4 +1,4 @@
-import PageDetails, { PageDetailsInterface } from 'components/PageDetails';
+import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_CITIES, COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -12,7 +12,7 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {}
+export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {}
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

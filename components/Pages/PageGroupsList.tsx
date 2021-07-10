@@ -7,9 +7,13 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
-import { PagesGroupInterface, PagesGroupTemplateInterface } from 'db/uiInterfaces';
+import {
+  CompanyInterface,
+  PagesGroupInterface,
+  PagesGroupTemplateInterface,
+} from 'db/uiInterfaces';
 import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -23,6 +27,8 @@ export interface PageGroupsListInterface {
   pageTitle: string;
   isTemplate?: boolean;
   basePath: string;
+  companySlug: string;
+  currentCompany?: CompanyInterface;
 }
 
 const PageGroupsList: React.FC<PageGroupsListInterface> = ({
@@ -30,6 +36,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   pageTitle,
   isTemplate,
   basePath,
+  companySlug,
 }) => {
   const router = useRouter();
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
@@ -81,7 +88,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
-                    companySlug: DEFAULT_COMPANY_SLUG,
+                    companySlug,
                     validationSchema: updatePagesGroupValidationSchema,
                     pagesGroup: dataItem,
                     isTemplate,
@@ -140,7 +147,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
-                    companySlug: DEFAULT_COMPANY_SLUG,
+                    companySlug,
                     validationSchema: createPagesGroupValidationSchema,
                   },
                 });

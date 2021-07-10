@@ -148,6 +148,7 @@ export const PagesGroupMutations = extendType({
             ...input,
           });
           const createdPagesGroup = createdPagesGroupResult.ops[0];
+
           if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
             return {
               success: false,

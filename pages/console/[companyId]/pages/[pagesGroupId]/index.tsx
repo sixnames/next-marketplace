@@ -93,7 +93,9 @@ const PagesListPageConsumer: React.FC<PagesListPageConsumerInterface> = ({
                       showLoading();
                       deletePageMutation({
                         variables: {
-                          _id: dataItem._id,
+                          input: {
+                            _id: dataItem._id,
+                          },
                         },
                       }).catch(console.log);
                     },

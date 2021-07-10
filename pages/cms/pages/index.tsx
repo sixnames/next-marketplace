@@ -1,9 +1,6 @@
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { COL_PAGES_GROUP } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { PagesGroupInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -20,6 +17,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGrou
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
       <PageGroupsList
+        companySlug={DEFAULT_COMPANY_SLUG}
         basePath={`${ROUTE_CMS}/pages`}
         pagesGroups={pagesGroups}
         pageTitle={pageTitle}
@@ -38,29 +36,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const pagesGroupsCollection = db.collection<PagesGroupInterface>(COL_PAGES_GROUP);
-
-  const pagesGroupsAggregationResult = await pagesGroupsCollection
-    .aggregate([
-      {
-        $match: {
-          companySlug: DEFAULT_COMPANY_SLUG,
-        },
-      },
-      {
-        $sort: {
-          index: SORT_ASC,
-        },
-      },
-    ])
-    .toArray();
-
-  const pagesGroups: PagesGroupInterface[] = pagesGroupsAggregationResult.map((pagesGroup) => {
-    return {
-      ...pagesGroup,
-      name: getFieldStringLocale(pagesGroup.nameI18n, props.sessionLocale),
-    };
+  const pagesGroups = await getPageGroupsSsr({
+    locale: props.sessionLocale,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   return {

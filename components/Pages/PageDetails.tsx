@@ -8,7 +8,7 @@ import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import { PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED } from 'config/common';
-import { CityInterface, PageInterface } from 'db/uiInterfaces';
+import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -37,12 +37,13 @@ const PAGE_STATE_OPTIONS = [
 const sectionClassName = 'border-t border-border-color pt-8 mt-12';
 
 export interface PageDetailsInterface {
-  page: PageInterface;
+  page: PageInterface | PagesTemplateInterface;
   cities: CityInterface[];
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  isTemplate?: boolean;
 }
 
-const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, breadcrumbs }) => {
+const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate, breadcrumbs }) => {
   const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updatePageSchema,
@@ -87,6 +88,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, breadcrumbs
                   showAsSecondaryBanner: values.showAsSecondaryBanner,
                   secondaryBannerTextColor: values.secondaryBannerTextColor,
                   secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
+                  isTemplate,
                 },
               },
             }).catch(console.log);

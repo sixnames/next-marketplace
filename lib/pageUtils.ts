@@ -1,13 +1,20 @@
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC, SORT_DESC } from 'config/common';
 import {
   COL_CITIES,
+  COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
 } from 'db/collectionNames';
 import { PagesGroupModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { PagesGroupInterface, PagesGroupTemplateInterface } from 'db/uiInterfaces';
+import {
+  CityInterface,
+  PageInterface,
+  PagesGroupInterface,
+  PagesGroupTemplateInterface,
+  PagesTemplateInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 
@@ -80,7 +87,7 @@ export async function getPagesListSsr({
       },
       {
         $lookup: {
-          from: COL_PAGES,
+          from: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
           as: 'pages',
           let: {
             pagesGroupId: '$_id',
@@ -161,4 +168,88 @@ export async function getPagesListSsr({
   }
 
   return pagesGroup;
+}
+
+// Pages list
+interface GetPageSsrInterface {
+  locale: string;
+  pageId: string;
+  isTemplate?: string;
+}
+
+interface GetPageSsrPayloadInterface {
+  page: PageInterface | PagesTemplateInterface;
+  cities: CityInterface[];
+}
+
+export async function getPageSsr({
+  locale,
+  isTemplate,
+  pageId,
+}: GetPageSsrInterface): Promise<GetPageSsrPayloadInterface | null> {
+  const { db } = await getDatabase();
+  const pagesCollection = db.collection<PageInterface>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
+
+  const initialPageAggregation = await pagesCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${pageId}`) },
+      },
+      {
+        $lookup: {
+          from: isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          as: 'pagesGroup',
+          foreignField: '_id',
+          localField: 'pagesGroupId',
+        },
+      },
+      {
+        $addFields: {
+          pagesGroup: {
+            $arrayElemAt: ['$pagesGroup', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+
+  const initialPage = initialPageAggregation[0];
+  if (!initialPage) {
+    return null;
+  }
+
+  const initialCities = await citiesCollection
+    .find(
+      {},
+      {
+        sort: {
+          _id: SORT_DESC,
+        },
+      },
+    )
+    .toArray();
+
+  const page: PageInterface = {
+    ...initialPage,
+    name: getFieldStringLocale(initialPage.nameI18n, locale),
+    pagesGroup: initialPage.pagesGroup
+      ? {
+          ...initialPage.pagesGroup,
+          name: getFieldStringLocale(initialPage.pagesGroup.nameI18n, locale),
+        }
+      : null,
+  };
+
+  const cities: CityInterface[] = initialCities.map((city) => {
+    return {
+      ...city,
+      name: getFieldStringLocale(city.nameI18n, locale),
+    };
+  });
+
+  return {
+    page,
+    cities,
+  };
 }

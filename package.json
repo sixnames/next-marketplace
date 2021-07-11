@@ -14,6 +14,7 @@
     "cy:open": "cypress open",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
     "test": "cypress run",
+    "update-page-templates": "ts-node --skip-project cypress/fixtures/utils/updatePageTemplates.ts",
     "update-prod-shops": "ts-node --skip-project cypress/fixtures/utils/updateProductionShop.ts",
     "update-prod-api-messages": "ts-node --skip-project cypress/fixtures/utils/updateProductionApiMessages.ts",
     "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",

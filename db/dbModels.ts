@@ -673,11 +673,26 @@ export interface PageModel extends TimestampModel {
   content: string;
   state: PageStateModel;
   companySlug: string;
-  showAsMainBanner?: boolean | null;
-  showAsSecondaryBanner?: boolean | null;
   mainBanner?: AssetModel | null;
+  showAsMainBanner?: boolean | null;
+  mainBannerTextColor?: string | null;
+  mainBannerVerticalTextAlign?: string | null;
+  mainBannerHorizontalTextAlign?: string | null;
+  mainBannerTextAlign?: string | null;
+  mainBannerTextPadding?: number | null;
+  mainBannerTextMaxWidth?: number | null;
   secondaryBanner?: AssetModel | null;
+  showAsSecondaryBanner?: boolean | null;
+  secondaryBannerTextColor?: string | null;
+  secondaryBannerVerticalTextAlign?: string | null;
+  secondaryBannerHorizontalTextAlign?: string | null;
+  secondaryBannerTextAlign?: string | null;
+  secondaryBannerTextPadding?: number | null;
+  secondaryBannerTextMaxWidth?: number | null;
 }
+
+export type PagesGroupTemplateModel = PagesGroupModel;
+export type PagesTemplateModel = PageModel;
 
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;

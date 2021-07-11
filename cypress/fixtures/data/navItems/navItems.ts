@@ -189,25 +189,36 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} cms-pages`),
-    nameI18n: {
-      ru: 'Страницы',
-      en: 'Pages',
-    },
-    index: 11,
-    slug: 'cms-pages',
-    path: `${ROUTE_CMS}/pages`,
-    navGroup: ROUTE_CMS_NAV_GROUP,
-  },
-  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
     nameI18n: {
       ru: 'Ошибки синхронизации',
       en: 'Sync errors',
     },
-    index: 12,
+    index: 11,
     slug: 'cms-sync-errors',
     path: `${ROUTE_CMS}/sync-errors`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-pages`),
+    nameI18n: {
+      ru: 'Страницы',
+      en: 'Pages',
+    },
+    index: 96,
+    slug: 'cms-pages',
+    path: `${ROUTE_CMS}/pages`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-page-templates`),
+    nameI18n: {
+      ru: 'Шаблоны страниц',
+      en: 'Page templates',
+    },
+    index: 97,
+    slug: 'cms-page-templates',
+    path: `${ROUTE_CMS}/page-templates`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {

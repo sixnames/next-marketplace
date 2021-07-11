@@ -1,21 +1,16 @@
 import * as React from 'react';
-import classes from './ColorPreview.module.css';
 
 interface ColorPreviewInterface {
-  color: string;
+  color?: string;
   testId?: string;
 }
 
 const ColorPreview: React.FC<ColorPreviewInterface> = ({ color, testId, ...props }) => {
-  if (!color) {
-    return null;
-  }
-
   return (
     <React.Fragment>
       <div
-        className={classes.frame}
-        style={{ backgroundColor: `#${color}` }}
+        className='w-4 h-4 rounded-full'
+        style={color ? { backgroundColor: `${color}` } : undefined}
         data-cy={`${testId}-${color}`}
         {...props}
       />

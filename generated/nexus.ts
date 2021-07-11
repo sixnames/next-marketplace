@@ -292,6 +292,7 @@ export interface NexusGenInputs {
     citySlug: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -299,6 +300,7 @@ export interface NexusGenInputs {
     // input type
     companySlug: string; // String!
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showInFooter: boolean; // Boolean!
     showInHeader: boolean; // Boolean!
@@ -377,6 +379,16 @@ export interface NexusGenInputs {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  DeletePageInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    isTemplate?: boolean | null; // Boolean
+  };
+  DeletePagesGroupInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    isTemplate?: boolean | null; // Boolean
   };
   DeleteProductAssetInput: {
     // input type
@@ -645,8 +657,21 @@ export interface NexusGenInputs {
     content: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
+    mainBannerHorizontalTextAlign?: string | null; // String
+    mainBannerTextAlign?: string | null; // String
+    mainBannerTextColor?: string | null; // String
+    mainBannerTextMaxWidth?: number | null; // Float
+    mainBannerTextPadding?: number | null; // Float
+    mainBannerVerticalTextAlign?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    secondaryBannerHorizontalTextAlign?: string | null; // String
+    secondaryBannerTextAlign?: string | null; // String
+    secondaryBannerTextColor?: string | null; // String
+    secondaryBannerTextMaxWidth?: number | null; // Float
+    secondaryBannerTextPadding?: number | null; // Float
+    secondaryBannerVerticalTextAlign?: string | null; // String
     showAsMainBanner?: boolean | null; // Boolean
     showAsSecondaryBanner?: boolean | null; // Boolean
     state: NexusGenEnums['PageState']; // PageState!
@@ -655,6 +680,7 @@ export interface NexusGenInputs {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     index: number; // Int!
+    isTemplate?: boolean | null; // Boolean
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showInFooter: boolean; // Boolean!
     showInHeader: boolean; // Boolean!
@@ -3242,11 +3268,11 @@ export interface NexusGenArgTypes {
     };
     deletePage: {
       // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
+      input: NexusGenInputs['DeletePageInput']; // DeletePageInput!
     };
     deletePagesGroup: {
       // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
+      input: NexusGenInputs['DeletePagesGroupInput']; // DeletePagesGroupInput!
     };
     deleteProductAsset: {
       // args

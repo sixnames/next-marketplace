@@ -41,133 +41,14 @@ describe('Rubric products', () => {
     cy.visit(`${ROUTE_CMS}/rubrics`);
     cy.getByCy(`${mainRubricName}-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('products-search-input').type(updatedProductName);
+    cy.getByCy('products-search-input').clear().type(updatedProductName);
     cy.getByCy('products-search-submit').click();
     cy.wait(1500);
     cy.getByCy(`${updatedProductName}-delete`).click();
     cy.getByCy('confirm').click();
     cy.wait(1500);
-    cy.getByCy('products-search-input').type(updatedProductName);
+    cy.getByCy('products-search-input').clear().type(updatedProductName);
     cy.getByCy('products-search-submit').click();
     cy.getByCy(`${updatedProductName}-delete`).should('not.exist');
-  });
-
-  it('Should CRUD product attributes', () => {
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
-    cy.wait(1500);
-    cy.getByCy('attributes').click();
-    cy.getByCy('product-attributes-list').should('exist');
-
-    // clear select attribute
-    cy.getByCy('Объем-attribute-clear').click();
-    cy.wait(1500);
-
-    // open options modal
-    cy.getByCy('Объем-attribute').click();
-    cy.getByCy('select-attribute-options-modal').should('exist');
-    cy.getByCy('option-350').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-
-    // clear multi-select attribute
-    cy.getByCy('Виноград-attribute-clear').click();
-    cy.wait(1500);
-
-    // open options modal
-    cy.getByCy('Виноград-attribute').click();
-    cy.getByCy('multi-select-attribute-options-modal').should('exist');
-    cy.getByCy('option-Бага').click();
-    cy.getByCy('option-Бикал').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-
-    // update number attributes
-    cy.getByCy('Крепость-attribute').clear().type('10');
-    cy.getByCy('Количество в упаковке-attribute').clear().type('10');
-    cy.getByCy('submit-number-attributes').click();
-    cy.wait(1500);
-
-    // update text attributes
-    cy.getByCy('Описание-attribute-ru').clear().type('lorem');
-    cy.getByCy('submit-text-attributes').click();
-  });
-
-  it('Should CRUD product connections', () => {
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
-    cy.wait(1500);
-    cy.getByCy('connections').click();
-    cy.getByCy('product-connections-list').should('exist');
-    cy.getByCy('create-connection').click();
-    cy.getByCy('create-connection-modal').should('exist');
-    cy.selectOptionByTestId('attributeId', 'Объем');
-    cy.getByCy('create-connection-submit').click();
-    cy.wait(1500);
-    cy.getByCy('Объем-connection-product-create').click();
-    cy.getByCy('add-product-to-connection-modal').should('exist');
-    cy.getByCy('product-search-list-0-row').then(($row: any) => {
-      const button = $row.find('button');
-      cy.wrap(button).click();
-    });
-    cy.wait(1500);
-
-    // delete first product
-    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
-      const button = $row.find('button');
-      cy.wrap(button).click();
-    });
-    cy.getByCy('confirm').click();
-    cy.wait(1500);
-
-    // delete second product
-    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
-      const button = $row.find('button');
-      cy.wrap(button).click();
-    });
-    cy.getByCy('confirm').click();
-    cy.wait(1500);
-
-    cy.getByCy('Объем-connection-product-create').should('not.exist');
-  });
-
-  it('Should CRUD product brands', () => {
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
-    cy.wait(1500);
-    cy.getByCy('brands').click();
-    cy.getByCy('product-brands-list').should('exist');
-
-    // brand
-    cy.getByCy('clear-brand').click();
-    cy.wait(1500);
-    cy.getByCy('brand-collection-input').should('contain', 'Не назначено');
-    cy.getByCy('brand-input').click();
-    cy.getByCy('brand-options-modal').should('exist');
-    cy.getByCy('option-Brand B').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-    cy.getByCy('brand-input').should('contain', 'Brand B');
-
-    // brand collection
-    cy.getByCy('brand-collection-input').click();
-    cy.getByCy('brand-collection-options-modal').should('exist');
-    cy.getByCy('option-Brand collection B').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-    cy.getByCy('brand-collection-input').should('contain', 'Brand collection B');
-
-    // manufacturer
-    cy.getByCy('clear-manufacturer').click();
-    cy.wait(1500);
-    cy.getByCy('manufacturer-input').click();
-    cy.getByCy('manufacturer-options-modal').should('exist');
-    cy.getByCy('option-Manufacturer B').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-    cy.getByCy('manufacturer-input').should('contain', 'Manufacturer B');
   });
 });

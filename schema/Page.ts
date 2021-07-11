@@ -3,7 +3,12 @@ import {
   PAGE_STATE_DRAFT,
   PAGE_STATE_ENUMS,
 } from 'config/common';
-import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
+import {
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PAGES_GROUP,
+  COL_PAGES_GROUP_TEMPLATES,
+} from 'db/collectionNames';
 import { PageModel, PagePayloadModel, PagesGroupModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
@@ -59,6 +64,7 @@ export const CreatePageInput = inputObjectType({
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');
+    t.boolean('isTemplate');
   },
 });
 
@@ -68,8 +74,6 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
-    t.boolean('showAsMainBanner');
-    t.boolean('showAsSecondaryBanner');
     t.nonNull.int('index');
     t.nonNull.objectId('pagesGroupId');
     t.nonNull.string('citySlug');
@@ -77,6 +81,29 @@ export const UpdatePageInput = inputObjectType({
     t.nonNull.field('state', {
       type: 'PageState',
     });
+    t.boolean('showAsMainBanner');
+    t.string('mainBannerTextColor');
+    t.string('mainBannerVerticalTextAlign');
+    t.string('mainBannerHorizontalTextAlign');
+    t.string('mainBannerTextAlign');
+    t.float('mainBannerTextPadding');
+    t.float('mainBannerTextMaxWidth');
+    t.boolean('showAsSecondaryBanner');
+    t.string('secondaryBannerTextColor');
+    t.string('secondaryBannerVerticalTextAlign');
+    t.string('secondaryBannerHorizontalTextAlign');
+    t.string('secondaryBannerTextAlign');
+    t.float('secondaryBannerTextPadding');
+    t.float('secondaryBannerTextMaxWidth');
+    t.boolean('isTemplate');
+  },
+});
+
+export const DeletePageInput = inputObjectType({
+  name: 'DeletePageInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.boolean('isTemplate');
   },
 });
 
@@ -125,11 +152,16 @@ export const PageMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
+          const { input } = args;
+          const { isTemplate } = input;
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const pagesCollection = db.collection<PageModel>(COL_PAGES);
-          const pageGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
-          const { input } = args;
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(
+            isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          );
+          const pagesCollection = db.collection<PageModel>(
+            isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+          );
 
           // Check if page already exist
           const exist = await findDocumentByI18nField({
@@ -156,7 +188,7 @@ export const PageMutations = extendType({
           }
 
           // Get pages group
-          const pagesGroup = await pageGroupsCollection.findOne({ _id: input.pagesGroupId });
+          const pagesGroup = await pagesGroupsCollection.findOne({ _id: input.pagesGroupId });
           if (!pagesGroup) {
             return {
               success: false,
@@ -231,9 +263,11 @@ export const PageMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const pagesCollection = db.collection<PageModel>(COL_PAGES);
           const { input } = args;
-          const { _id, ...values } = input;
+          const { _id, isTemplate, ...values } = input;
+          const pagesCollection = db.collection<PageModel>(
+            isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+          );
 
           // Check page availability
           const page = await pagesCollection.findOne({ _id });
@@ -309,9 +343,9 @@ export const PageMutations = extendType({
       type: 'PagePayload',
       description: 'Should delete page',
       args: {
-        _id: nonNull(
+        input: nonNull(
           arg({
-            type: 'ObjectId',
+            type: 'DeletePageInput',
           }),
         ),
       },
@@ -329,10 +363,13 @@ export const PageMutations = extendType({
             };
           }
 
+          const { input } = args;
+          const { _id, isTemplate } = input;
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const pagesCollection = db.collection<PageModel>(COL_PAGES);
-          const { _id } = args;
+          const pagesCollection = db.collection<PageModel>(
+            isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+          );
 
           // Check page availability
           const page = await pagesCollection.findOne({ _id });

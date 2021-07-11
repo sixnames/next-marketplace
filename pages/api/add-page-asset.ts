@@ -1,4 +1,4 @@
-import { ASSETS_DIST_PAGES } from 'config/common';
+import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';
 import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const { fields, files } = formData;
-  const { pageId } = fields;
+  const { pageId, isTemplate } = fields;
   if (!pageId) {
     res.status(500).send({
       success: false,
@@ -56,7 +56,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // upload asset
   const assets = await storeRestApiUploads({
     files,
-    dist: ASSETS_DIST_PAGES,
+    dist: isTemplate ? ASSETS_DIST_TEMPLATES : ASSETS_DIST_PAGES,
     itemId: `${fields.page}`,
   });
   if (!assets) {

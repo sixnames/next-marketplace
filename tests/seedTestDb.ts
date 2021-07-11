@@ -4,6 +4,7 @@ import {
   // ASSETS_DIST_CONFIGS,
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
+  ASSETS_DIST_TEMPLATES,
 } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
@@ -29,7 +30,7 @@ export async function uploadTestAssets(srcPath: string, distPath = '/') {
       },
       distPath,
     );
-    console.log('Assets uploaded');
+    console.log(`${distPath} assets uploaded`);
   } catch (e) {
     console.log(e);
   }
@@ -87,6 +88,10 @@ const config = {
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
       `/${ASSETS_DIST_PAGES}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
+      `/${ASSETS_DIST_TEMPLATES}`,
     );
     /*await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,

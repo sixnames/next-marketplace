@@ -1,4 +1,9 @@
-import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
+import {
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PAGES_GROUP,
+  COL_PAGES_GROUP_TEMPLATES,
+} from 'db/collectionNames';
 import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
@@ -40,6 +45,7 @@ export const CreatePagesGroupInput = inputObjectType({
     t.nonNull.string('companySlug');
     t.nonNull.boolean('showInFooter');
     t.nonNull.boolean('showInHeader');
+    t.boolean('isTemplate');
   },
 });
 
@@ -51,6 +57,15 @@ export const UpdatePagesGroupInput = inputObjectType({
     t.nonNull.int('index');
     t.nonNull.boolean('showInFooter');
     t.nonNull.boolean('showInHeader');
+    t.boolean('isTemplate');
+  },
+});
+
+export const DeletePagesGroupInput = inputObjectType({
+  name: 'DeletePagesGroupInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.boolean('isTemplate');
   },
 });
 
@@ -100,9 +115,12 @@ export const PagesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
           const { input } = args;
+          const { isTemplate } = input;
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(
+            isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          );
 
           // Check if pages group already exist
           const exist = await findDocumentByI18nField({
@@ -130,6 +148,7 @@ export const PagesGroupMutations = extendType({
             ...input,
           });
           const createdPagesGroup = createdPagesGroupResult.ops[0];
+
           if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
             return {
               success: false,
@@ -184,10 +203,12 @@ export const PagesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
           const { input } = args;
-          const { _id, ...values } = input;
+          const { _id, isTemplate, ...values } = input;
+          const { db } = await getDatabase();
+          const pagesGroupsCollection = db.collection<PagesGroupModel>(
+            isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+          );
 
           // Check pages group availability
           const pagesGroup = await pagesGroupsCollection.findOne({ _id });
@@ -266,17 +287,24 @@ export const PagesGroupMutations = extendType({
       type: 'PagesGroupPayload',
       description: 'Should delete pages group',
       args: {
-        _id: nonNull(
+        input: nonNull(
           arg({
-            type: 'ObjectId',
+            type: 'DeletePagesGroupInput',
           }),
         ),
       },
       resolve: async (_root, args, context): Promise<PagesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
+        const { input } = args;
+        const { _id, isTemplate } = input;
+
         const { db, client } = await getDatabase();
-        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
-        const pagesCollection = db.collection<PageModel>(COL_PAGES);
+        const pagesGroupsCollection = db.collection<PagesGroupModel>(
+          isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
+        );
+        const pagesCollection = db.collection<PageModel>(
+          isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
+        );
 
         const session = client.startSession();
 
@@ -300,8 +328,6 @@ export const PagesGroupMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            const { _id } = args;
 
             // Delete pages
             const removedPagesResult = await pagesCollection.deleteMany({

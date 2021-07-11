@@ -434,7 +434,9 @@ export enum ConfigVariant {
   Number = 'number',
   Tel = 'tel',
   Email = 'email',
-  Asset = 'asset'
+  Asset = 'asset',
+  Boolean = 'boolean',
+  Constructor = 'constructor'
 }
 
 export type Contacts = {
@@ -539,6 +541,7 @@ export type CreatePageInput = {
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreatePagesGroupInput = {
@@ -547,6 +550,7 @@ export type CreatePagesGroupInput = {
   companySlug: Scalars['String'];
   showInFooter: Scalars['Boolean'];
   showInHeader: Scalars['Boolean'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateProductConnectionInput = {
@@ -636,6 +640,16 @@ export type DeleteCollectionFromBrandInput = {
 export type DeleteOptionFromGroupInput = {
   optionId: Scalars['ObjectId'];
   optionsGroupId: Scalars['ObjectId'];
+};
+
+export type DeletePageInput = {
+  _id: Scalars['ObjectId'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
+};
+
+export type DeletePagesGroupInput = {
+  _id: Scalars['ObjectId'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type DeleteProductAssetInput = {
@@ -771,6 +785,12 @@ export type ManufacturersPaginationPayload = PaginationPayload & {
   hasPrevPage: Scalars['Boolean'];
   hasNextPage: Scalars['Boolean'];
   docs: Array<Manufacturer>;
+};
+
+export type MapMarker = {
+  __typename?: 'MapMarker';
+  lightTheme?: Maybe<Scalars['String']>;
+  darkTheme?: Maybe<Scalars['String']>;
 };
 
 export type Message = {
@@ -1377,7 +1397,7 @@ export type MutationUpdatePagesGroupArgs = {
 
 
 export type MutationDeletePagesGroupArgs = {
-  _id: Scalars['ObjectId'];
+  input: DeletePagesGroupInput;
 };
 
 
@@ -1392,7 +1412,7 @@ export type MutationUpdatePageArgs = {
 
 
 export type MutationDeletePageArgs = {
-  _id: Scalars['ObjectId'];
+  input: DeletePageInput;
 };
 
 
@@ -2407,6 +2427,7 @@ export type Shop = Base & Timestamp & {
   slug: Scalars['String'];
   citySlug: Scalars['String'];
   companyId: Scalars['ObjectId'];
+  mapMarker?: Maybe<MapMarker>;
   logo: Asset;
   assets: Array<Asset>;
   contacts: Contacts;
@@ -2653,13 +2674,26 @@ export type UpdatePageInput = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  showAsMainBanner?: Maybe<Scalars['Boolean']>;
-  showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
   index: Scalars['Int'];
   pagesGroupId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
   content: Scalars['String'];
   state: PageState;
+  showAsMainBanner?: Maybe<Scalars['Boolean']>;
+  mainBannerTextColor?: Maybe<Scalars['String']>;
+  mainBannerVerticalTextAlign?: Maybe<Scalars['String']>;
+  mainBannerHorizontalTextAlign?: Maybe<Scalars['String']>;
+  mainBannerTextAlign?: Maybe<Scalars['String']>;
+  mainBannerTextPadding?: Maybe<Scalars['Float']>;
+  mainBannerTextMaxWidth?: Maybe<Scalars['Float']>;
+  showAsSecondaryBanner?: Maybe<Scalars['Boolean']>;
+  secondaryBannerTextColor?: Maybe<Scalars['String']>;
+  secondaryBannerVerticalTextAlign?: Maybe<Scalars['String']>;
+  secondaryBannerHorizontalTextAlign?: Maybe<Scalars['String']>;
+  secondaryBannerTextAlign?: Maybe<Scalars['String']>;
+  secondaryBannerTextPadding?: Maybe<Scalars['Float']>;
+  secondaryBannerTextMaxWidth?: Maybe<Scalars['Float']>;
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePagesGroupInput = {
@@ -2668,6 +2702,7 @@ export type UpdatePagesGroupInput = {
   index: Scalars['Int'];
   showInFooter: Scalars['Boolean'];
   showInHeader: Scalars['Boolean'];
+  isTemplate?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateProductAssetIndexInput = {
@@ -3595,7 +3630,7 @@ export type UpdatePagesGroupMutation = (
 );
 
 export type DeletePagesGroupMutationVariables = Exact<{
-  _id: Scalars['ObjectId'];
+  input: DeletePagesGroupInput;
 }>;
 
 
@@ -3634,7 +3669,7 @@ export type UpdatePageMutation = (
 );
 
 export type DeletePageMutationVariables = Exact<{
-  _id: Scalars['ObjectId'];
+  input: DeletePageInput;
 }>;
 
 
@@ -6880,8 +6915,8 @@ export type UpdatePagesGroupMutationHookResult = ReturnType<typeof useUpdatePage
 export type UpdatePagesGroupMutationResult = Apollo.MutationResult<UpdatePagesGroupMutation>;
 export type UpdatePagesGroupMutationOptions = Apollo.BaseMutationOptions<UpdatePagesGroupMutation, UpdatePagesGroupMutationVariables>;
 export const DeletePagesGroupDocument = gql`
-    mutation DeletePagesGroup($_id: ObjectId!) {
-  deletePagesGroup(_id: $_id) {
+    mutation DeletePagesGroup($input: DeletePagesGroupInput!) {
+  deletePagesGroup(input: $input) {
     success
     message
   }
@@ -6902,7 +6937,7 @@ export type DeletePagesGroupMutationFn = Apollo.MutationFunction<DeletePagesGrou
  * @example
  * const [deletePagesGroupMutation, { data, loading, error }] = useDeletePagesGroupMutation({
  *   variables: {
- *      _id: // value for '_id'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -6982,8 +7017,8 @@ export type UpdatePageMutationHookResult = ReturnType<typeof useUpdatePageMutati
 export type UpdatePageMutationResult = Apollo.MutationResult<UpdatePageMutation>;
 export type UpdatePageMutationOptions = Apollo.BaseMutationOptions<UpdatePageMutation, UpdatePageMutationVariables>;
 export const DeletePageDocument = gql`
-    mutation DeletePage($_id: ObjectId!) {
-  deletePage(_id: $_id) {
+    mutation DeletePage($input: DeletePageInput!) {
+  deletePage(input: $input) {
     success
     message
   }
@@ -7004,7 +7039,7 @@ export type DeletePageMutationFn = Apollo.MutationFunction<DeletePageMutation, D
  * @example
  * const [deletePageMutation, { data, loading, error }] = useDeletePageMutation({
  *   variables: {
- *      _id: // value for '_id'
+ *      input: // value for 'input'
  *   },
  * });
  */

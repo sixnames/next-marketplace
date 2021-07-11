@@ -442,6 +442,11 @@ export interface AppPaginationInterface<Model> {
   itemPath?: string;
 }
 
+export interface PagesGroupInterface extends PagesGroupModel {
+  name?: string | null;
+  pages?: PageInterface[];
+}
+
 export interface PageInterface extends PageModel {
   name?: string | null;
   description?: string | null;
@@ -449,7 +454,5 @@ export interface PageInterface extends PageModel {
   pagesGroup?: PagesGroupInterface | null;
 }
 
-export interface PagesGroupInterface extends PagesGroupModel {
-  name?: string | null;
-  pages?: PageInterface[];
-}
+export type PagesGroupTemplateInterface = PagesGroupInterface;
+export type PagesTemplateInterface = PageInterface;

@@ -287,9 +287,20 @@ export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_CONFIGS = 'configs';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_SEO = 'seo';
+export const ASSETS_DIST_TEMPLATES = 'templates';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
+
+// TEXT HORIZONTAL ALIGNMENT
+export const TEXT_HORIZONTAL_LEFT = 'left';
+export const TEXT_HORIZONTAL_CENTER = 'center';
+export const TEXT_HORIZONTAL_RIGHT = 'right';
+
+// FLEX ALIGNMENT
+export const FLEX_START = 'flex-start';
+export const FLEX_CENTER = 'center';
+export const FLEX_END = 'flex-end';
 
 // PAGES
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;

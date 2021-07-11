@@ -1,0 +1,54 @@
+import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { getPageGroupsSsr } from 'lib/pageUtils';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+
+const pageTitle = 'Группы шаблонов страниц';
+
+interface PageGroupsPageInterface
+  extends PagePropsInterface,
+    Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
+
+const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGroups }) => {
+  return (
+    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
+      <PageGroupsList
+        companySlug={DEFAULT_COMPANY_SLUG}
+        basePath={`${ROUTE_CMS}/page-templates`}
+        pagesGroups={pagesGroups}
+        pageTitle={pageTitle}
+        isTemplate
+      />
+    </CmsLayout>
+  );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<PageGroupsPageInterface>> => {
+  const { props } = await getAppInitialData({ context });
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const pagesGroups = await getPageGroupsSsr({
+    locale: props.sessionLocale,
+    companySlug: DEFAULT_COMPANY_SLUG,
+    isTemplate: true,
+  });
+
+  return {
+    props: {
+      ...props,
+      pagesGroups: castDbData(pagesGroups),
+    },
+  };
+};
+
+export default PageGroupsPage;

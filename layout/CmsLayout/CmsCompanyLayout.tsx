@@ -41,6 +41,13 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         exact: true,
       },
       {
+        name: 'Страницы',
+        testId: 'company-pages',
+        path: `${ROUTE_CMS}/companies/${company._id}/pages`,
+        disabled: !company.domain,
+        exact: true,
+      },
+      {
         name: 'Основные настройки',
         testId: 'company-global-config',
         path: `${ROUTE_CMS}/companies/${company._id}/config`,

@@ -61,6 +61,15 @@
 
 @layer base {
   /* Form elements */
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+  }
+
+
   .form-select,
   .form-input {
     transition: all 0.2s;
@@ -323,7 +332,6 @@
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
   --secondaryBackgroundLight: var(--wp-light-gray-200);
 
-  --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: var(--wp-mid-gray-100);
   --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
@@ -435,7 +443,6 @@
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
   --secondaryBackgroundLight: var(--wp-dark-gray-250);
 
-  --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: #25292b;
   --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 

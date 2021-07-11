@@ -57,12 +57,22 @@ const Input: React.FC<InputPropsInterface> = ({
   readOnly,
   showInlineError,
   error,
+  description,
+
   ...props
 }) => {
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const inputBorder = notValid ? 'border-red-500' : `input-border`;
-  const inputPaddingLeft = icon ? 'input-with-icon-padding' : 'pl-input-padding-horizontal';
-  const inputPaddingRight = onClear ? 'input-with-clear-padding' : 'pr-input-padding-horizontal';
+  const inputPaddingLeft = icon
+    ? 'input-with-icon-padding'
+    : type === 'color'
+    ? ''
+    : 'pl-input-padding-horizontal';
+  const inputPaddingRight = onClear
+    ? 'input-with-clear-padding'
+    : type === 'color'
+    ? ''
+    : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';
   const disabledClass = readOnly || disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
   const inputClassName = `relative form-input flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg border ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${additionalClass}`;
@@ -84,6 +94,7 @@ const Input: React.FC<InputPropsInterface> = ({
       lineIcon={lineIcon}
       showInlineError={showInlineError}
       error={error}
+      description={description}
     >
       {icon ? (
         <Icon

@@ -1,10 +1,16 @@
+import { deleteUpload } from 'lib/assets';
 import { getConfigTemplates } from 'lib/configsUtils';
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CompaniesPaginationPayloadModel,
   CompanyModel,
   CompanyPayloadModel,
   ConfigModel,
+  PageModel,
+  PagesGroupModel,
+  PagesGroupTemplateModel,
+  PagesTemplateModel,
   ShopModel,
   ShopProductModel,
   ShopsPaginationPayloadModel,
@@ -14,6 +20,10 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_COMPANIES,
   COL_CONFIGS,
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PAGES_GROUP,
+  COL_PAGES_GROUP_TEMPLATES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
@@ -233,97 +243,164 @@ export const CompanyMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+        const pagesCollection = db.collection<PageModel>(COL_PAGES);
+        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
+        const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_PAGE_TEMPLATES);
+        const pagesGroupTemplatesCollection =
+          db.collection<PagesGroupTemplateModel>(COL_PAGES_GROUP_TEMPLATES);
+
+        const session = client.startSession();
+
+        let mutationPayload: CompanyPayloadModel = {
+          success: false,
+          message: await getApiMessage('companies.create.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createCompany',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createCompany',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: createCompanySchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const { input } = args;
+
+            // Check if company already exist
+            const exist = await companiesCollection.findOne({
+              name: input.name,
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Store company logo
+            const itemId = await getNextItemId(COL_COMPANIES);
+
+            // Create company
+            const slug = generateCompanySlug({
+              name: input.name,
+              itemId,
+            });
+            const createdCompanyResult = await companiesCollection.insertOne({
+              ...input,
+              itemId,
+              slug,
+              logo: {
+                index: 1,
+                url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              },
+              shopsIds: [],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+
+            const createdCompany = createdCompanyResult.ops[0];
+            if (!createdCompanyResult.result.ok || !createdCompany) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create company configs
+            const configTemplates = getConfigTemplates({
+              companySlug: slug,
+              phone: input.contacts.phones,
+              email: input.contacts.emails,
+              siteName: input.name,
+            });
+            const createdCompanyConfigsResult = await configsCollection.insertMany(configTemplates);
+            if (!createdCompanyConfigsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create company pages
+            const pagesGroupTemplates = await pagesGroupTemplatesCollection.find({}).toArray();
+            for await (const pagesGroupTemplate of pagesGroupTemplates) {
+              const pageTemplates = await pageTemplatesCollection
+                .find({
+                  pagesGroupId: pagesGroupTemplate._id,
+                })
+                .toArray();
+
+              if (pageTemplates.length > 0) {
+                // insert group
+                const createdPagesGroupResult = await pagesGroupsCollection.insertOne({
+                  ...pagesGroupTemplate,
+                  _id: new ObjectId(),
+                  companySlug: createdCompany.slug,
+                });
+                const createdPagesGroup = createdPagesGroupResult.ops[0];
+                if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+                  continue;
+                }
+
+                // insert each page
+                for await (const pageTemplate of pageTemplates) {
+                  await pagesCollection.insertOne({
+                    ...pageTemplate,
+                    _id: new ObjectId(),
+                    pagesGroupId: createdPagesGroup._id,
+                    companySlug: createdCompany.slug,
+                    assetKeys: [],
+                    mainBanner: null,
+                    secondaryBanner: null,
+                    showAsMainBanner: false,
+                    showAsSecondaryBanner: false,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  });
+                }
+              }
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('companies.create.success'),
+              payload: createdCompany,
             };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: createCompanySchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const { input } = args;
-
-          // Check if company already exist
-          const exist = await companiesCollection.findOne({
-            name: input.name,
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.create.duplicate'),
-            };
-          }
-
-          // Store company logo
-          const itemId = await getNextItemId(COL_COMPANIES);
-
-          // Create company
-          const slug = generateCompanySlug({
-            name: input.name,
-            itemId,
-          });
-          const createdCompanyResult = await companiesCollection.insertOne({
-            ...input,
-            itemId,
-            slug,
-            logo: {
-              index: 1,
-              url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
-            },
-            shopsIds: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
           });
 
-          const createdCompany = createdCompanyResult.ops[0];
-          if (!createdCompanyResult.result.ok || !createdCompany) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.create.error'),
-            };
-          }
-
-          // Create company configs
-          const configTemplates = getConfigTemplates({
-            companySlug: slug,
-            phone: input.contacts.phones,
-            email: input.contacts.emails,
-            siteName: input.name,
-          });
-          const createdCompanyConfigsResult = await configsCollection.insertMany(configTemplates);
-          if (!createdCompanyConfigsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('companies.create.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('companies.create.success'),
-            payload: createdCompany,
-          };
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });
@@ -442,6 +519,8 @@ export const CompanyMutations = extendType({
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+        const pagesCollection = db.collection<PageModel>(COL_PAGES);
+        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
 
         const session = client.startSession();
 
@@ -518,7 +597,7 @@ export const CompanyMutations = extendType({
               return;
             }
 
-            // Set company as archived
+            // Set delete company
             const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
             if (!removedCompanyResult.ok) {
               mutationPayload = {
@@ -527,6 +606,33 @@ export const CompanyMutations = extendType({
               };
               await session.abortTransaction();
               return;
+            }
+
+            // Delete company page groups
+            const removedPageGroupsResult = await pagesGroupsCollection.deleteMany({
+              companySlug: company.slug,
+            });
+            if (!removedPageGroupsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.delete.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete company pages
+            const pages = await pagesCollection.find({ companySlug: company.slug }).toArray();
+            for await (const page of pages) {
+              // Delete page assets from cloud
+              for await (const filePath of page.assetKeys) {
+                await deleteUpload({
+                  filePath,
+                });
+              }
+              await pagesCollection.findOneAndDelete({
+                _id: page._id,
+              });
             }
 
             mutationPayload = {

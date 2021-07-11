@@ -18,9 +18,10 @@ import { useCreatePageMutation, useGetSessionCitiesQuery } from 'generated/apoll
 
 export interface CreatePageModalInterface {
   pagesGroupId: string;
+  isTemplate?: boolean;
 }
 
-const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) => {
+const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isTemplate }) => {
   const { showLoading, hideModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
   });
@@ -76,6 +77,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId }) =
                 ...values,
                 citySlug: `${values.citySlug}`,
                 index: noNaN(values.index),
+                isTemplate,
               },
             },
           }).catch(console.log);

@@ -498,6 +498,7 @@ input CreatePageInput {
   citySlug: String!
   descriptionI18n: JSONObject
   index: Int!
+  isTemplate: Boolean
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
 }
@@ -505,6 +506,7 @@ input CreatePageInput {
 input CreatePagesGroupInput {
   companySlug: String!
   index: Int!
+  isTemplate: Boolean
   nameI18n: JSONObject!
   showInFooter: Boolean!
   showInHeader: Boolean!
@@ -599,6 +601,16 @@ input DeleteCollectionFromBrandInput {
 input DeleteOptionFromGroupInput {
   optionId: ObjectId!
   optionsGroupId: ObjectId!
+}
+
+input DeletePageInput {
+  _id: ObjectId!
+  isTemplate: Boolean
+}
+
+input DeletePagesGroupInput {
+  _id: ObjectId!
+  isTemplate: Boolean
 }
 
 input DeleteProductAssetInput {
@@ -1029,12 +1041,12 @@ type Mutation {
   """
   Should delete page
   """
-  deletePage(_id: ObjectId!): PagePayload!
+  deletePage(input: DeletePageInput!): PagePayload!
 
   """
   Should delete pages group
   """
-  deletePagesGroup(_id: ObjectId!): PagesGroupPayload!
+  deletePagesGroup(input: DeletePagesGroupInput!): PagesGroupPayload!
 
   """
   Should update product assets
@@ -2382,8 +2394,21 @@ input UpdatePageInput {
   content: String!
   descriptionI18n: JSONObject
   index: Int!
+  isTemplate: Boolean
+  mainBannerHorizontalTextAlign: String
+  mainBannerTextAlign: String
+  mainBannerTextColor: String
+  mainBannerTextMaxWidth: Float
+  mainBannerTextPadding: Float
+  mainBannerVerticalTextAlign: String
   nameI18n: JSONObject!
   pagesGroupId: ObjectId!
+  secondaryBannerHorizontalTextAlign: String
+  secondaryBannerTextAlign: String
+  secondaryBannerTextColor: String
+  secondaryBannerTextMaxWidth: Float
+  secondaryBannerTextPadding: Float
+  secondaryBannerVerticalTextAlign: String
   showAsMainBanner: Boolean
   showAsSecondaryBanner: Boolean
   state: PageState!
@@ -2392,6 +2417,7 @@ input UpdatePageInput {
 input UpdatePagesGroupInput {
   _id: ObjectId!
   index: Int!
+  isTemplate: Boolean
   nameI18n: JSONObject!
   showInFooter: Boolean!
   showInHeader: Boolean!

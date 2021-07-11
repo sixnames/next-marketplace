@@ -21,12 +21,14 @@ export interface PagesGroupModalInterface {
   pagesGroup?: PagesGroupInterface;
   validationSchema: ResolverValidationSchema;
   companySlug: string;
+  isTemplate?: boolean;
 }
 
 const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
   pagesGroup,
   companySlug,
   validationSchema,
+  isTemplate,
 }) => {
   const { showLoading, hideModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
@@ -73,6 +75,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                   nameI18n: values.nameI18n,
                   showInFooter: values.showInFooter,
                   showInHeader: values.showInHeader,
+                  isTemplate,
                 },
               },
             }).catch(console.log);
@@ -85,6 +88,7 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
                   companySlug,
                   showInFooter: values.showInFooter,
                   showInHeader: values.showInHeader,
+                  isTemplate,
                 },
               },
             }).catch(console.log);

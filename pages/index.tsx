@@ -69,39 +69,87 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
             <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
-              {sliderPages.map(({ slug, mainBanner, name, description }) => {
-                if (!mainBanner) {
-                  return null;
-                }
-                return (
-                  <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
-                    <Link
-                      target={'_blank'}
-                      className='relative block h-[400px] md:h-auto'
-                      href={`${ROUTE_DOCS_PAGES}/${slug}`}
-                    >
-                      <img
-                        className='block relative w-full h-full z-10 object-cover'
-                        src={`${mainBanner.url}`}
-                        width='1250'
-                        height='435'
-                        alt={`${name}`}
-                        title={`${name}`}
-                      />
-                      <span className='absolute z-20 block inset-0 p-4 lg:p-8 text-white'>
-                        <span className='block font-medium text-2xl md:text-3xl lg:text-5xl max-w-[520px]'>
-                          {name}
-                        </span>
-                        {description ? (
-                          <span className='font-medium block text-2xl max-w-[650px] mt-8 md:mt-10 lg:mt-12'>
-                            {description}
+              {sliderPages.map(
+                ({
+                  slug,
+                  mainBanner,
+                  name,
+                  description,
+                  mainBannerTextColor,
+                  mainBannerTextPadding,
+                  mainBannerVerticalTextAlign,
+                  mainBannerHorizontalTextAlign,
+                  mainBannerTextMaxWidth,
+                  mainBannerTextAlign,
+                  showAsMainBanner,
+                }) => {
+                  if (!mainBanner || !showAsMainBanner) {
+                    return null;
+                  }
+                  return (
+                    <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
+                      <Link
+                        target={'_blank'}
+                        className='relative block h-[400px] md:h-auto'
+                        href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                      >
+                        <img
+                          className='block relative w-full h-full z-10 object-cover'
+                          src={`${mainBanner.url}`}
+                          width='1250'
+                          height='435'
+                          alt={`${name}`}
+                          title={`${name}`}
+                        />
+                        <span
+                          className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
+                          style={
+                            {
+                              paddingTop: mainBannerTextPadding
+                                ? `${mainBannerTextPadding}%`
+                                : '2rem',
+                              justifyContent: mainBannerHorizontalTextAlign || 'flex-start',
+                              alignItems: mainBannerVerticalTextAlign || 'flex-start',
+                              textAlign: mainBannerTextAlign || 'left',
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span>
+                            <span
+                              className='block font-medium text-2xl md:text-3xl lg:text-5xl'
+                              style={{
+                                color: mainBannerTextColor
+                                  ? mainBannerTextColor
+                                  : 'var(--textColor)',
+                                maxWidth: mainBannerTextMaxWidth
+                                  ? `${mainBannerTextMaxWidth}px`
+                                  : '520px',
+                              }}
+                            >
+                              {name}
+                            </span>
+                            {description ? (
+                              <span
+                                className='font-medium block text-2xl mt-8 md:mt-10 lg:mt-12'
+                                style={{
+                                  color: mainBannerTextColor
+                                    ? mainBannerTextColor
+                                    : 'var(--textColor)',
+                                  maxWidth: mainBannerTextMaxWidth
+                                    ? `${mainBannerTextMaxWidth}px`
+                                    : '650px',
+                                }}
+                              >
+                                {description}
+                              </span>
+                            ) : null}
                           </span>
-                        ) : null}
-                      </span>
-                    </Link>
-                  </div>
-                );
-              })}
+                        </span>
+                      </Link>
+                    </div>
+                  );
+                },
+              )}
             </SlickSlider>
           </div>
         ) : null}
@@ -141,36 +189,73 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
               <h2>Акции</h2>
             </div>
             <HorizontalScroll>
-              {bannerPages.map(({ secondaryBanner, name, slug }) => {
-                if (!secondaryBanner) {
-                  return null;
-                }
+              {bannerPages.map(
+                ({
+                  secondaryBanner,
+                  name,
+                  slug,
+                  secondaryBannerTextColor,
+                  secondaryBannerTextPadding,
+                  secondaryBannerHorizontalTextAlign,
+                  secondaryBannerVerticalTextAlign,
+                  secondaryBannerTextAlign,
+                  secondaryBannerTextMaxWidth,
+                  showAsSecondaryBanner,
+                }) => {
+                  if (!secondaryBanner || !showAsSecondaryBanner) {
+                    return null;
+                  }
 
-                return (
-                  <div
-                    className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
-                    key={`${secondaryBanner.url}`}
-                  >
-                    <Link
-                      className='relative block'
-                      target={'_blank'}
-                      href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                  return (
+                    <div
+                      className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
+                      key={`${secondaryBanner.url}`}
                     >
-                      <img
-                        className='block relative z-10'
-                        src={`${secondaryBanner.url}`}
-                        width='526'
-                        height='360'
-                        alt={`${name}`}
-                        title={`${name}`}
-                      />
-                      <span className='absolute z-20 block inset-0 p-8 text-white'>
-                        <span className='block font-medium text-3xl max-w-[250px]'>{name}</span>
-                      </span>
-                    </Link>
-                  </div>
-                );
-              })}
+                      <Link
+                        className='relative block'
+                        target={'_blank'}
+                        href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                      >
+                        <img
+                          className='block relative z-10'
+                          src={`${secondaryBanner.url}`}
+                          width='526'
+                          height='360'
+                          alt={`${name}`}
+                          title={`${name}`}
+                        />
+                        <span
+                          className='absolute z-20 flex flex-col inset-0 p-8 text-white'
+                          style={
+                            {
+                              paddingTop: secondaryBannerTextPadding
+                                ? `${secondaryBannerTextPadding}%`
+                                : '2rem',
+                              justifyContent: secondaryBannerHorizontalTextAlign || 'flex-start',
+                              alignItems: secondaryBannerVerticalTextAlign || 'flex-start',
+                              textAlign: secondaryBannerTextAlign || 'left',
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span
+                            className='block font-medium text-3xl max-w-[250px]'
+                            style={{
+                              color: secondaryBannerTextColor
+                                ? secondaryBannerTextColor
+                                : 'var(--textColor)',
+                              maxWidth: secondaryBannerTextMaxWidth
+                                ? `${secondaryBannerTextMaxWidth}px`
+                                : '200px',
+                            }}
+                          >
+                            {name}
+                          </span>
+                        </span>
+                      </Link>
+                    </div>
+                  );
+                },
+              )}
             </HorizontalScroll>
           </section>
         ) : null}

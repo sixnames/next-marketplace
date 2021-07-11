@@ -14,11 +14,8 @@ describe('Options Groups', () => {
   });
 
   it('Should CRUD options group', () => {
-    // const mockGroupName = mockData.optionsGroupColors.nameI18n[DEFAULT_LOCALE];
-    // const optionName = 'optionName';
     const createdGroupName = 'createdGroupName';
     const groupNewName = 'groupNewName';
-    // const optionColor = '333333';
     const fakeName = 'f';
 
     cy.getByCy(`create-options-group`).click();
@@ -61,7 +58,7 @@ describe('Options Groups', () => {
     const optionName = 'optionName';
     const childOptionName = 'childOptionName';
     const optionNewName = 'optionNewName';
-    const optionNewColor = '333333';
+    const optionNewColor = '#ff0000';
 
     // Should create top level option
     cy.getByCy(`Регион-update`).click();
@@ -120,14 +117,12 @@ describe('Options Groups', () => {
     cy.wait(1500);
     cy.getByCy(`Крепленое-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(optionNewName);
-    cy.getByCy(`option-color`).clear().type(optionNewColor);
+    cy.getByCy(`option-color`).invoke('val', optionNewColor).trigger('change');
     cy.getByCy(`option-gender`).select(GENDER_SHE);
     cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`option-submit`).click();
-    cy.wait(1500);
-    cy.getByCy(`option-${optionNewColor}`).should('not.exist');
 
     // Should update icon option
     cy.visit(`${ROUTE_CMS}/options`);

@@ -21,7 +21,7 @@ describe('Profile orders', () => {
         cy.getByCy(`cart-modal-close`).click();
 
         // Should add products to cart from old order
-        cy.get(`[data-cy=profile-order-0-product-0-add-to-cart]`).then(($el) => {
+        cy.get(`[data-cy=profile-order-1-product-0-add-to-cart]`).then(($el) => {
           if (!$el.prop('disabled')) {
             cy.wrap($el).click();
             cy.getByCy(`cart-modal`).should('exist');
@@ -30,7 +30,7 @@ describe('Profile orders', () => {
         });
 
         cy.getByCy(`profile-order-${orderItemIdB}-open`).click();
-        cy.get(`[data-cy=profile-order-1-product-0-add-to-cart]`).then(($el) => {
+        cy.get(`[data-cy=profile-order-2-product-0-add-to-cart]`).then(($el) => {
           if (!$el.prop('disabled')) {
             cy.wrap($el).click();
             cy.getByCy(`cart-modal`).should('exist');

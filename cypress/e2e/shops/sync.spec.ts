@@ -93,7 +93,7 @@ describe('Sync', () => {
   });
 
   it('Should sync shop orders with site', () => {
-    const currentDate = new Date().toISOString();
+    const currentDate = new Date('2021-07-10T09:47:09.087Z').toISOString();
 
     // Should return order statuses list
     cy.request({
@@ -106,8 +106,6 @@ describe('Sync', () => {
       expect(body.orderStatuses?.length).greaterThan(0);
     });
 
-    cy.makeAnOrder({});
-
     // should return shop new orders
     cy.request({
       method: 'GET',
@@ -119,6 +117,7 @@ describe('Sync', () => {
 
       expect(success).equals(true);
       expect(orders).to.have.length(1);
+      expect(order.products).to.have.length(2);
 
       // should update order product
       const updateProduct: SyncUpdateOrderProductInterface = {

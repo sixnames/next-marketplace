@@ -1,5 +1,5 @@
 import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'config/common';
-import { COL_PAGES } from 'db/collectionNames';
+import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
 import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
@@ -32,8 +32,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const pagesCollection = db.collection<PageModel>(COL_PAGES);
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 
@@ -51,6 +49,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { fields } = formData;
   const { isTemplate } = fields;
   const pageId = new ObjectId(`${formData.fields.pageId}`);
+  const { db } = await getDatabase();
+  const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
 
   // Check page availability
   const page = await pagesCollection.findOne({ _id: pageId });

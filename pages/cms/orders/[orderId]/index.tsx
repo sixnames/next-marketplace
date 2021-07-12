@@ -29,9 +29,10 @@ interface OrderPageConsumerInterface {
 
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { itemId } = order;
+  const title = `Заказ №${itemId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Заказ №${itemId}`,
+    currentPageName: title,
     config: [
       {
         name: 'Список заказов',
@@ -42,7 +43,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} />
+      <CmsOrderDetails order={order} title={title} />
     </AppContentWrapper>
   );
 };

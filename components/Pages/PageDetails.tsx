@@ -238,6 +238,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         const formData = new FormData();
                         formData.append('assets', files[0]);
                         formData.append('pageId', `${page._id}`);
+                        formData.append('isTemplate', `${isTemplate}`);
 
                         fetch('/api/update-page-main-banner', {
                           method: 'POST',
@@ -275,6 +276,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         formData.append('assets', files[0]);
                         formData.append('pageId', `${page._id}`);
                         formData.append('isMobile', `true`);
+                        formData.append('isTemplate', `${isTemplate}`);
 
                         fetch('/api/update-page-main-banner', {
                           method: 'POST',
@@ -358,6 +360,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         const formData = new FormData();
                         formData.append('assets', files[0]);
                         formData.append('pageId', `${page._id}`);
+                        formData.append('isTemplate', `${isTemplate}`);
 
                         fetch('/api/update-page-secondary-banner', {
                           method: 'POST',
@@ -438,6 +441,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         const formData = new FormData();
                         formData.append('assets', files[0]);
                         formData.append('pageId', `${page._id}`);
+                        formData.append('isTemplate', `${isTemplate}`);
 
                         fetch('/api/update-page-screenshot', {
                           method: 'POST',
@@ -477,6 +481,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         const formData = new FormData();
                         formData.append('pageId', `${page._id}`);
                         formData.append('assets', file);
+                        formData.append('isTemplate', `${isTemplate}`);
 
                         const responseFetch = await fetch('/api/add-page-asset', {
                           method: 'POST',

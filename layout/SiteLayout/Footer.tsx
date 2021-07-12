@@ -16,6 +16,7 @@ export interface FooterInterface {
 const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const configSiteName = getSiteConfigSingleValue('siteName');
+  const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
   const contactEmail = getSiteConfigSingleValue('contactEmail');
   const phone = getSiteConfigSingleValue('phone');
   const facebookLink = getSiteConfigSingleValue('facebook');
@@ -119,7 +120,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
         <div className='lg:col-span-4 flex lg:justify-end'>
           <small className='text-secondary-text text-[1em]'>
-            {configSiteName} © {new Date().getFullYear()}
+            {configSiteName} © {configFoundationYear || new Date().getFullYear()}
           </small>
         </div>
       </Inner>

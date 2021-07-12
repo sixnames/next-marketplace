@@ -73,7 +73,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Upload new company logo
   const uploadedAsset = await storeRestApiUploads({
     files: formData.files,
-    itemId: page.slug,
+    itemId: `${formData.fields.pageId}`,
     dist: isTemplate ? ASSETS_DIST_TEMPLATES : ASSETS_DIST_PAGES,
     startIndex: 0,
   });
@@ -100,10 +100,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  // Update company
+  // Update page
   const updatedPageResult = await pagesCollection.findOneAndUpdate(
     { _id: page._id },
     {
+      $addToSet: {
+        assetKeys: asset.url,
+      },
       $set: {
         secondaryBanner: asset,
         updatedAt: new Date(),

@@ -165,7 +165,7 @@ export const PageMutations = extendType({
 
           // Check if page already exist
           const exist = await findDocumentByI18nField({
-            collectionName: COL_PAGES,
+            collectionName: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {
@@ -280,7 +280,7 @@ export const PageMutations = extendType({
 
           // Check if page already exist
           const exist = await findDocumentByI18nField({
-            collectionName: COL_PAGES,
+            collectionName: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {

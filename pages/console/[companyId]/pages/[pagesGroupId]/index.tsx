@@ -1,7 +1,11 @@
+import Inner from 'components/Inner';
 import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -33,7 +37,12 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
 
   return (
     <AppLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesList breadcrumbs={breadcrumbs} basePath={basePath} pagesGroup={pagesGroup} />
+      <AppContentWrapper breadcrumbs={breadcrumbs}>
+        <Inner>
+          <Title>{pagesGroup.name}</Title>
+          <PagesList basePath={basePath} pagesGroup={pagesGroup} />
+        </Inner>
+      </AppContentWrapper>
     </AppLayout>
   );
 };

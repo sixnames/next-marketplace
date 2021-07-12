@@ -1,7 +1,11 @@
+import Inner from 'components/Inner';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getPageSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -35,7 +39,12 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
 
   return (
     <AppLayout title={`${page.name}`} pageUrls={pageUrls}>
-      <PageDetails page={page} cities={cities} breadcrumbs={breadcrumbs} />
+      <AppContentWrapper breadcrumbs={breadcrumbs}>
+        <Inner>
+          <Title>{page.name}</Title>
+          <PageDetails page={page} cities={cities} />
+        </Inner>
+      </AppContentWrapper>
     </AppLayout>
   );
 };

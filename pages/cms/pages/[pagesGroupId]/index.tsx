@@ -1,6 +1,10 @@
+import Inner from 'components/Inner';
 import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -26,7 +30,12 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup 
 
   return (
     <CmsLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <PagesList basePath={basePath} breadcrumbs={breadcrumbs} pagesGroup={pagesGroup} />
+      <AppContentWrapper breadcrumbs={breadcrumbs}>
+        <Inner>
+          <Title>{pagesGroup.name}</Title>
+          <PagesList basePath={basePath} pagesGroup={pagesGroup} />
+        </Inner>
+      </AppContentWrapper>
     </CmsLayout>
   );
 };

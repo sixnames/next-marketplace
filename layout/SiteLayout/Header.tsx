@@ -391,7 +391,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
         </div>
 
         <Inner lowTop lowBottom className='relative'>
-          <div className='flex justify-between lg:justify-center py-6 lg:justify-between lg:py-4'>
+          <div className='flex justify-between py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               <div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>

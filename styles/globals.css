@@ -440,7 +440,6 @@
 .dark {
   --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
   --primaryBackground: var(--wp-dark-gray-300);
-  /*--primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);*/
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
   --secondaryBackgroundLight: var(--wp-dark-gray-250);

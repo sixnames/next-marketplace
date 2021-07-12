@@ -129,6 +129,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
           initialValues={{
             ...page,
             mainBanner: [page.mainBanner?.url],
+            pageScreenshot: [page.pageScreenshot?.url],
             mainBannerMobile: [page.mainBannerMobile?.url],
             secondaryBanner: [page.secondaryBanner?.url],
             content: JSON.parse(page.content),
@@ -429,6 +430,44 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                     <Button type={'submit'} testId={'submit-page'}>
                       Сохранить
                     </Button>
+                  </div>
+
+                  <div className={sectionClassName}>
+                    <FormikImageUpload
+                      label={'Скриншот страницы'}
+                      name={'pageScreenshot'}
+                      testId={'pageScreenshot'}
+                      width={'10rem'}
+                      height={'10rem'}
+                      setImageHandler={(files) => {
+                        if (files) {
+                          showLoading();
+                          const formData = new FormData();
+                          formData.append('assets', files[0]);
+                          formData.append('pageId', `${page._id}`);
+
+                          fetch('/api/update-page-screenshot', {
+                            method: 'POST',
+                            body: formData,
+                          })
+                            .then((res) => {
+                              return res.json();
+                            })
+                            .then((json) => {
+                              if (json.success) {
+                                router.reload();
+                                return;
+                              }
+                              hideLoading();
+                              showErrorNotification({ title: json.message });
+                            })
+                            .catch(() => {
+                              hideLoading();
+                              showErrorNotification({ title: 'error' });
+                            });
+                        }
+                      }}
+                    />
                   </div>
 
                   <div className={sectionClassName}>

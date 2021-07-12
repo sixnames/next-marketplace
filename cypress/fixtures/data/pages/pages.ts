@@ -35,6 +35,10 @@ const pages: PageModel[] = [
       index: 1,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_a/main-banner.jpg`,
     },
+    mainBannerMobile: {
+      index: 1,
+      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_a/main-banner-mobile.jpg`,
+    },
     secondaryBanner: {
       index: 1,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/pages/page_a/secondary-banner-1.jpg`,

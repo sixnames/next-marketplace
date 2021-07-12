@@ -65,9 +65,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  // Delete page main banner
-  if (page.secondaryBanner) {
-    await deleteUpload({ filePath: page.secondaryBanner.url });
+  // Delete page screenshot
+  if (page.pageScreenshot) {
+    await deleteUpload({ filePath: page.pageScreenshot.url });
   }
 
   // Upload new company logo
@@ -108,7 +108,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         assetKeys: asset.url,
       },
       $set: {
-        secondaryBanner: asset,
+        pageScreenshot: asset,
         updatedAt: new Date(),
       },
     },

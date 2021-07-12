@@ -121,7 +121,6 @@ const Input: React.FC<InputPropsInterface> = ({
           value={currentValue}
           name={name}
           type={type ? type : 'text'}
-          step={type === 'number' ? '.01' : undefined}
           data-cy={testId}
           data-error={notValid ? name : ''}
           disabled={disabled}

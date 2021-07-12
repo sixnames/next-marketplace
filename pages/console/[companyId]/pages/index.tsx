@@ -1,5 +1,8 @@
+import Inner from 'components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
@@ -20,12 +23,16 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
 }) => {
   return (
     <AppLayout title={pageTitle} pageUrls={pageUrls}>
-      <PageGroupsList
-        companySlug={`${currentCompany?.slug}`}
-        basePath={`${ROUTE_CONSOLE}/${currentCompany?._id}/pages`}
-        pagesGroups={pagesGroups}
-        pageTitle={pageTitle}
-      />
+      <AppContentWrapper>
+        <Inner>
+          <Title>{pageTitle}</Title>
+          <PageGroupsList
+            companySlug={`${currentCompany?.slug}`}
+            basePath={`${ROUTE_CONSOLE}/${currentCompany?._id}/pages`}
+            pagesGroups={pagesGroups}
+          />
+        </Inner>
+      </AppContentWrapper>
     </AppLayout>
   );
 };

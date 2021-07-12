@@ -1,6 +1,10 @@
+import Inner from 'components/Inner';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, {
+  AppContentWrapperBreadCrumbs,
+} from 'layout/AppLayout/AppContentWrapper';
 import { getPageSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -27,7 +31,12 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, c
 
   return (
     <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
-      <PageDetails page={page} cities={cities} breadcrumbs={breadcrumbs} />
+      <AppContentWrapper breadcrumbs={breadcrumbs}>
+        <Inner>
+          <Title>{page.name}</Title>
+          <PageDetails page={page} cities={cities} />
+        </Inner>
+      </AppContentWrapper>
     </CmsLayout>
   );
 };

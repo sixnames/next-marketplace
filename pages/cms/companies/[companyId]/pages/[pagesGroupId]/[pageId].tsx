@@ -1,9 +1,11 @@
+import Inner from 'components/Inner';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getPageSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -46,7 +48,11 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
 
   return (
     <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
-      <PageDetails page={page} cities={cities} breadcrumbs={breadcrumbs} />
+      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+        <Inner>
+          <PageDetails page={page} cities={cities} />
+        </Inner>
+      </CmsCompanyLayout>
     </CmsLayout>
   );
 };

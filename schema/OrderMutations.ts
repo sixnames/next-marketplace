@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import uniqid from 'uniqid';
 import {
   DEFAULT_COMPANY_SLUG,
   ORDER_LOG_VARIANT_STATUS,
@@ -265,9 +266,12 @@ export const OrderMutations = extendType({
               });
 
               if (!existingOrder) {
+                const uniqueOrderId = uniqid.time();
+
                 // create new order
                 existingOrder = {
                   _id: new ObjectId(),
+                  orderId: uniqueOrderId,
                   itemId: await getNextItemId(COL_ORDERS),
                   statusId: initialStatus._id,
                   customerId: user._id,

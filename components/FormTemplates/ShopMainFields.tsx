@@ -2,7 +2,7 @@ import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import Notification from 'components/Notification/Notification';
+import Notification from 'components/Notification';
 import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
 

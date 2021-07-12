@@ -1,5 +1,8 @@
+import Inner from 'components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import Title from 'components/Title';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -16,12 +19,16 @@ interface PageGroupsPageInterface
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGroups }) => {
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
-      <PageGroupsList
-        companySlug={DEFAULT_COMPANY_SLUG}
-        basePath={`${ROUTE_CMS}/pages`}
-        pagesGroups={pagesGroups}
-        pageTitle={pageTitle}
-      />
+      <AppContentWrapper>
+        <Inner>
+          <Title>{pageTitle}</Title>
+          <PageGroupsList
+            companySlug={DEFAULT_COMPANY_SLUG}
+            basePath={`${ROUTE_CMS}/pages`}
+            pagesGroups={pagesGroups}
+          />
+        </Inner>
+      </AppContentWrapper>
     </CmsLayout>
   );
 };

@@ -60,16 +60,17 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
 interface CmsOrderDetailsInterface {
   order: OrderInterface;
+  title: string;
 }
 
-const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order }) => {
-  const { itemId, createdAt, totalPrice, status, products, shop, customer, comment } = order;
+const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) => {
+  const { createdAt, totalPrice, status, products, shop, customer, comment } = order;
 
   return (
     <Inner testId={`order-details`}>
       <div className='grid gap-4 md:flex justify-between items-baseline mb-12'>
         <div>
-          <Title low>Заказ №{itemId}</Title>
+          <Title low>{title}</Title>
           <div className='text-secondary-text'>
             от <FormattedDate value={createdAt} />
           </div>

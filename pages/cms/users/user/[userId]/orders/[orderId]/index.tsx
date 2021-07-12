@@ -30,8 +30,10 @@ interface UserOrderConsumerInterface {
 }
 
 const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order }) => {
+  const title = `Заказ №${order.itemId}`;
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Заказ №${order.itemId}`,
+    currentPageName: title,
     config: [
       {
         name: 'Пользователи',
@@ -50,7 +52,7 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order 
 
   return (
     <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} />
+      <CmsOrderDetails order={order} title={title} />
     </CmsUserLayout>
   );
 };

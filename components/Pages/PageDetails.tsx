@@ -131,11 +131,13 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
             mainBanner: [page.mainBanner?.url],
             secondaryBanner: [page.secondaryBanner?.url],
             content: JSON.parse(page.content),
+            mainBannerTextColor: page.mainBannerTextColor || '#000000',
             mainBannerTextAlign: page.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             mainBannerVerticalTextAlign:
               page.mainBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
             mainBannerHorizontalTextAlign:
               page.mainBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerTextColor: page.secondaryBannerTextColor || '#000000',
             secondaryBannerTextAlign:
               page.secondaryBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             secondaryBannerVerticalTextAlign:

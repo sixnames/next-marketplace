@@ -48,6 +48,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  const isMobile = formData.fields.isMobile;
+
   const { fields } = formData;
   const { isTemplate } = fields;
   const pageId = new ObjectId(`${formData.fields.pageId}`);
@@ -66,8 +68,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Delete page main banner
-  if (page.mainBanner) {
+  if (page.mainBanner && !isMobile) {
     await deleteUpload({ filePath: page.mainBanner.url });
+  }
+  if (page.mainBannerMobile && isMobile) {
+    await deleteUpload({ filePath: page.mainBannerMobile.url });
   }
 
   // Upload new company logo
@@ -100,6 +105,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  const updater = isMobile
+    ? {
+        mainBannerMobile: asset,
+      }
+    : {
+        mainBanner: asset,
+      };
+
   // Update page
   const updatedPageResult = await pagesCollection.findOneAndUpdate(
     { _id: page._id },
@@ -108,7 +121,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         assetKeys: asset.url,
       },
       $set: {
-        mainBanner: asset,
+        ...updater,
         updatedAt: new Date(),
       },
     },

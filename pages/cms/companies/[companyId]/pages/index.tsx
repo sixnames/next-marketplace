@@ -1,9 +1,11 @@
+import Inner from 'components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -41,13 +43,15 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
 
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
-      <PageGroupsList
-        companySlug={currentCompany.slug}
-        basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
-        pagesGroups={pagesGroups}
-        pageTitle={pageTitle}
-        breadcrumbs={breadcrumbs}
-      />
+      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+        <Inner>
+          <PageGroupsList
+            companySlug={currentCompany.slug}
+            basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
+            pagesGroups={pagesGroups}
+          />
+        </Inner>
+      </CmsCompanyLayout>
     </CmsLayout>
   );
 };

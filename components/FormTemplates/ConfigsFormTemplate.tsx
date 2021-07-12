@@ -1,6 +1,6 @@
 import ConfigsAssetInput from 'components/FormElements/FormikConfigAssetInput';
 import FormikConfigInput from 'components/FormElements/FormikConfigInput';
-import Notification from 'components/Notification/Notification';
+import Notification from 'components/Notification';
 import { ConfigModel } from 'db/dbModels';
 import * as React from 'react';
 

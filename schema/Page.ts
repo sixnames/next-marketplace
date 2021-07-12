@@ -1,7 +1,7 @@
 import {
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  PAGE_STATE_DRAFT,
   PAGE_STATE_ENUMS,
+  PAGE_STATE_PUBLISHED,
 } from 'config/common';
 import {
   COL_PAGE_TEMPLATES,
@@ -165,7 +165,7 @@ export const PageMutations = extendType({
 
           // Check if page already exist
           const exist = await findDocumentByI18nField({
-            collectionName: COL_PAGES,
+            collectionName: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {
@@ -202,7 +202,7 @@ export const PageMutations = extendType({
             slug: generateDefaultLangSlug(input.nameI18n),
             content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
             assetKeys: [],
-            state: PAGE_STATE_DRAFT,
+            state: PAGE_STATE_PUBLISHED,
             companySlug: pagesGroup.companySlug,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -280,7 +280,7 @@ export const PageMutations = extendType({
 
           // Check if page already exist
           const exist = await findDocumentByI18nField({
-            collectionName: COL_PAGES,
+            collectionName: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
             fieldName: 'nameI18n',
             fieldArg: input.nameI18n,
             additionalQuery: {

@@ -39,6 +39,7 @@
     "@tailwindcss/typography": "0.4.1",
     "@types/react-datepicker": "^3.1.8",
     "@types/react-slick": "^0.23.4",
+    "@types/uniqid": "^5.3.1",
     "add-zero": "^1.0.0",
     "algoliasearch": "^4.9.1",
     "apollo-link-context": "^1.0.20",
@@ -87,6 +88,7 @@
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1",
     "tldts": "5.7.38",
+    "uniqid": "^5.3.0",
     "use-debounce": "^6.0.0",
     "yup": "^0.32.9"
   },

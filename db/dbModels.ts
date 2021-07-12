@@ -435,6 +435,7 @@ export interface OrderCustomerModel extends TimestampModel {
 }
 
 export interface OrderModel extends TimestampModel, BaseModel {
+  orderId: string;
   statusId: ObjectIdModel;
   comment?: string | null;
   customerId: ObjectIdModel;

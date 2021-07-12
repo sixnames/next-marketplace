@@ -3,7 +3,7 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Portal from '@reach/portal';
-import Notification, { NotificationInterface } from 'components/Notification/Notification';
+import Notification, { NotificationInterface } from 'components/Notification';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
   createdAt: number;

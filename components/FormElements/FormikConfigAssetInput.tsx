@@ -1,4 +1,5 @@
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
+import Notification from 'components/Notification';
 import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
@@ -27,48 +28,52 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
 
         return (
           <Form>
-            <div className='mb-24'>
-              <FormikImageUpload
-                isHorizontal
-                label={name}
-                name={'file'}
-                testId={slug}
-                width={'10rem'}
-                height={'10rem'}
-                format={acceptedFormats}
-                description={description}
-                lineContentClass='flex items-start'
-                setImageHandler={(files) => {
-                  if (files) {
-                    showLoading();
-                    const formData = new FormData();
-                    formData.append('assets', files[0]);
-                    formData.append('config', JSON.stringify(config));
+            <div className='mb-24 grid lg:grid-cols-2 lg:gap-4'>
+              <div>
+                <FormikImageUpload
+                  isHorizontal
+                  label={name}
+                  name={'file'}
+                  testId={slug}
+                  width={'10rem'}
+                  height={'10rem'}
+                  format={acceptedFormats}
+                  lineContentClass='flex items-start'
+                  setImageHandler={(files) => {
+                    if (files) {
+                      showLoading();
+                      const formData = new FormData();
+                      formData.append('assets', files[0]);
+                      formData.append('config', JSON.stringify(config));
 
-                    fetch('/api/update-asset-config', {
-                      method: 'POST',
-                      body: formData,
-                    })
-                      .then((res) => {
-                        return res.json();
+                      fetch('/api/update-asset-config', {
+                        method: 'POST',
+                        body: formData,
                       })
-                      .then((json) => {
-                        onCompleteCallback(json);
-                      })
-                      .catch(() => {
-                        showErrorNotification({ title: 'error' });
-                      });
-                  }
-                }}
-              >
-                {isEmpty ? (
-                  <div className='pl-4'>
-                    <div className='font-medium text-red-700'>
-                      Изображение обязательно к заполнению
+                        .then((res) => {
+                          return res.json();
+                        })
+                        .then((json) => {
+                          onCompleteCallback(json);
+                        })
+                        .catch(() => {
+                          showErrorNotification({ title: 'error' });
+                        });
+                    }
+                  }}
+                >
+                  {isEmpty ? (
+                    <div className='pl-4'>
+                      <div className='font-medium text-red-700'>
+                        Изображение обязательно к заполнению
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </FormikImageUpload>
+                  ) : null}
+                </FormikImageUpload>
+              </div>
+              <div>
+                {description ? <Notification variant={'success'} message={description} /> : null}
+              </div>
             </div>
           </Form>
         );

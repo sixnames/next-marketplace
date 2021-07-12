@@ -1,12 +1,10 @@
 import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
-import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
 import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import {
   CompanyInterface,
@@ -16,30 +14,23 @@ import {
 import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
 
 export interface PageGroupsListInterface {
   pagesGroups: PagesGroupInterface[] | PagesGroupTemplateInterface[];
-  pageTitle: string;
   isTemplate?: boolean;
   basePath: string;
   companySlug: string;
   currentCompany?: CompanyInterface;
-  breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   pagesGroups,
-  pageTitle,
   isTemplate,
   basePath,
   companySlug,
-  breadcrumbs,
 }) => {
   const router = useRouter();
   const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
@@ -127,41 +118,36 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'page-groups-list'} breadcrumbs={breadcrumbs}>
-      <Inner>
-        <Title>{pageTitle}</Title>
-        <div className='relative'>
-          <div className='overflow-x-auto overflow-y-hidden'>
-            <Table<PagesGroupInterface | PagesGroupTemplateInterface>
-              testIdKey={'name'}
-              columns={columns}
-              data={pagesGroups}
-              onRowDoubleClick={(dataItem) => {
-                router.push(`${basePath}/${dataItem._id}`).catch(console.log);
-              }}
-            />
-          </div>
+    <div className='relative' data-cy={'page-groups-list'}>
+      <div className='overflow-x-auto overflow-y-hidden'>
+        <Table<PagesGroupInterface | PagesGroupTemplateInterface>
+          testIdKey={'name'}
+          columns={columns}
+          data={pagesGroups}
+          onRowDoubleClick={(dataItem) => {
+            router.push(`${basePath}/${dataItem._id}`).catch(console.log);
+          }}
+        />
+      </div>
 
-          <FixedButtons>
-            <Button
-              testId={'create-pages-group'}
-              size={'small'}
-              onClick={() => {
-                showModal<PagesGroupModalInterface>({
-                  variant: PAGES_GROUP_MODAL,
-                  props: {
-                    companySlug,
-                    validationSchema: createPagesGroupValidationSchema,
-                  },
-                });
-              }}
-            >
-              Добавить группу страниц
-            </Button>
-          </FixedButtons>
-        </div>
-      </Inner>
-    </AppContentWrapper>
+      <FixedButtons>
+        <Button
+          testId={'create-pages-group'}
+          size={'small'}
+          onClick={() => {
+            showModal<PagesGroupModalInterface>({
+              variant: PAGES_GROUP_MODAL,
+              props: {
+                companySlug,
+                validationSchema: createPagesGroupValidationSchema,
+              },
+            });
+          }}
+        >
+          Добавить группу страниц
+        </Button>
+      </FixedButtons>
+    </div>
   );
 };
 

@@ -19,7 +19,11 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
     <Inner lowTop>
       <div className={'border-b border-[var(--borderColor)] overflow-auto whitespace-nowrap'}>
         <div className={'flex items-baseline'}>
-          {navConfig.map(({ path, name, testId, shallow, disabled, exact }) => {
+          {navConfig.map(({ path, name, testId, shallow, disabled, hidden, exact }) => {
+            if (hidden) {
+              return null;
+            }
+
             const asPathArray = asPath.split('?');
             const cleanAasPath = asPathArray[0];
             const hrefArray = `${path}`.split('?');

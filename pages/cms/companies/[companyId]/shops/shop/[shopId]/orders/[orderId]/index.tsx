@@ -24,14 +24,14 @@ import ShopOrder, { ShopOrderInterface } from 'components/shops/ShopOrder';
 
 interface CompanyShopAssetsInterface
   extends PagePropsInterface,
-    Omit<ShopOrderInterface, 'basePath'> {}
+    Omit<ShopOrderInterface, 'basePath' | 'title'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop, order }) => {
-  const { itemId } = order;
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+  const title = `Заказ №${order.itemId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Заказ №${itemId}`,
+    currentPageName: title,
     config: [
       {
         name: 'Компании',
@@ -59,6 +59,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopOrder
+        title={title}
         order={order}
         breadcrumbs={breadcrumbs}
         basePath={`${companyBasePath}/shops/shop`}

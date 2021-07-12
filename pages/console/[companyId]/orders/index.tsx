@@ -33,7 +33,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
 
   const columns: TableColumn<OrderInterface>[] = [
     {
-      accessor: 'itemId',
+      accessor: 'orderId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
         <Link

@@ -116,7 +116,7 @@ interface ProfileOrderInterface {
 }
 
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) => {
-  const { itemId, createdAt, totalPrice, status, products } = order;
+  const { itemId, createdAt, totalPrice, status, products, orderId } = order;
   const { repeatAnOrder } = useSiteContext();
   const firstProduct = (products || [])[0];
 
@@ -134,7 +134,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
             </Disclosure.Button>
 
             <div className='grid gap-4 flex-grow items-baseline sm:grid-cols-2 lg:grid-cols-4 py-4'>
-              <div className='text-lg font-medium sm:pt-0'>{`№ ${itemId}`}</div>
+              <div className='text-lg font-medium sm:pt-0'>{`№ ${orderId}`}</div>
               <div className='text-sm'>
                 от <FormattedDate value={createdAt} />
               </div>

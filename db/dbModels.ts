@@ -674,6 +674,7 @@ export interface PageModel extends TimestampModel {
   state: PageStateModel;
   companySlug: string;
   mainBanner?: AssetModel | null;
+  pageScreenshot?: string | null;
   showAsMainBanner?: boolean | null;
   mainBannerTextColor?: string | null;
   mainBannerVerticalTextAlign?: string | null;

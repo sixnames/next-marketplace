@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
-import classes from './Notification.module.css';
 import ButtonCross from 'components/ButtonCross';
 import { IconType } from 'types/iconTypes';
 import { NotificationVariant } from 'types/clientTypes';
@@ -37,19 +36,25 @@ const Notification: React.FC<NotificationInterface> = ({
   return (
     <div
       style={{ borderColor: variantColor }}
-      className={`${classes.frame} ${className ? className : ''}`}
+      className={`'relative flex py-4 pr-[var(--controlButtonHeightSmall)] pl-3 min-w-[15rem] shadow-lg rounded-lg border-l-4 bg-primary dark:bg-secondary ${
+        className ? className : ''
+      }`}
       data-cy={testId}
     >
-      <Icon name={icon} className={classes.icon} style={{ fill: variantColor }} />
+      <Icon
+        name={icon}
+        className='w-4 h-4 mt-[1px] mr-[10px] flex-shrink-0'
+        style={{ fill: variantColor }}
+      />
 
-      <div className={classes.content}>
-        {title ? <div className={classes.title}>{title}</div> : null}
-        {message ? <div className={classes.message}>{message}</div> : null}
+      <div className='flex-grow grid gap-2'>
+        {title ? <div className='font-medium'>{title}</div> : null}
+        {message ? <div>{message}</div> : null}
       </div>
 
       {closeHandler ? (
         <ButtonCross
-          className={classes.close}
+          className='absolute top-0 right-0'
           size={'small'}
           iconSize={'smaller'}
           onClick={closeHandler}

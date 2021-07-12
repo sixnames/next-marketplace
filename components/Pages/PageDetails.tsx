@@ -129,13 +129,17 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
           initialValues={{
             ...page,
             mainBanner: [page.mainBanner?.url],
+            pageScreenshot: [page.pageScreenshot?.url],
+            mainBannerMobile: [page.mainBannerMobile?.url],
             secondaryBanner: [page.secondaryBanner?.url],
             content: JSON.parse(page.content),
+            mainBannerTextColor: page.mainBannerTextColor || '#000000',
             mainBannerTextAlign: page.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             mainBannerVerticalTextAlign:
               page.mainBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
             mainBannerHorizontalTextAlign:
               page.mainBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerTextColor: page.secondaryBannerTextColor || '#000000',
             secondaryBannerTextAlign:
               page.secondaryBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             secondaryBannerVerticalTextAlign:
@@ -241,6 +245,43 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                           const formData = new FormData();
                           formData.append('assets', files[0]);
                           formData.append('pageId', `${page._id}`);
+
+                          fetch('/api/update-page-main-banner', {
+                            method: 'POST',
+                            body: formData,
+                          })
+                            .then((res) => {
+                              return res.json();
+                            })
+                            .then((json) => {
+                              if (json.success) {
+                                router.reload();
+                                return;
+                              }
+                              hideLoading();
+                              showErrorNotification({ title: json.message });
+                            })
+                            .catch(() => {
+                              hideLoading();
+                              showErrorNotification({ title: 'error' });
+                            });
+                        }
+                      }}
+                    />
+
+                    <FormikImageUpload
+                      label={'Изображение слайда в мобильной версии (380 x 400)'}
+                      name={'mainBannerMobile'}
+                      testId={'mainBannerMobile'}
+                      width={'10rem'}
+                      height={'10rem'}
+                      setImageHandler={(files) => {
+                        if (files) {
+                          showLoading();
+                          const formData = new FormData();
+                          formData.append('assets', files[0]);
+                          formData.append('pageId', `${page._id}`);
+                          formData.append('isMobile', `true`);
 
                           fetch('/api/update-page-main-banner', {
                             method: 'POST',
@@ -389,6 +430,44 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate,
                     <Button type={'submit'} testId={'submit-page'}>
                       Сохранить
                     </Button>
+                  </div>
+
+                  <div className={sectionClassName}>
+                    <FormikImageUpload
+                      label={'Скриншот страницы'}
+                      name={'pageScreenshot'}
+                      testId={'pageScreenshot'}
+                      width={'10rem'}
+                      height={'10rem'}
+                      setImageHandler={(files) => {
+                        if (files) {
+                          showLoading();
+                          const formData = new FormData();
+                          formData.append('assets', files[0]);
+                          formData.append('pageId', `${page._id}`);
+
+                          fetch('/api/update-page-screenshot', {
+                            method: 'POST',
+                            body: formData,
+                          })
+                            .then((res) => {
+                              return res.json();
+                            })
+                            .then((json) => {
+                              if (json.success) {
+                                router.reload();
+                                return;
+                              }
+                              hideLoading();
+                              showErrorNotification({ title: json.message });
+                            })
+                            .catch(() => {
+                              hideLoading();
+                              showErrorNotification({ title: 'error' });
+                            });
+                        }
+                      }}
+                    />
                   </div>
 
                   <div className={sectionClassName}>

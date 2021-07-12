@@ -328,6 +328,7 @@
   /*Main styles*/
   --primaryBackground-RGB: var(--wp-white-RGB);
   --primaryBackground: var(--wp-white);
+  --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
   --secondaryBackgroundLight: var(--wp-light-gray-200);

@@ -44,7 +44,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   return (
     <LayoutCard className={`flex flex-col relative gap-4 ${className ? className : ''}`}>
       <div className='grid grid-cols-12 flex-grow'>
-        <div className='relative min-h-[100%] flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 snippet-image'>
+        <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 snippet-image'>
           <Image
             priority={true}
             src={mainImage}

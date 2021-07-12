@@ -72,9 +72,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
               {sliderPages.map(
                 ({
                   slug,
-                  mainBanner,
                   name,
                   description,
+                  mainBanner,
+                  mainBannerMobile,
                   mainBannerTextColor,
                   mainBannerTextPadding,
                   mainBannerVerticalTextAlign,
@@ -86,21 +87,30 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                   if (!mainBanner || !showAsMainBanner) {
                     return null;
                   }
+
                   return (
                     <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
                       <Link
                         target={'_blank'}
-                        className='relative block h-[400px] md:h-auto'
+                        className={`relative block ${
+                          mainBannerMobile ? '' : 'h-[400px] md:h-auto'
+                        }`}
                         href={`${ROUTE_DOCS_PAGES}/${slug}`}
                       >
-                        <img
-                          className='block relative w-full h-full z-10 object-cover'
-                          src={`${mainBanner.url}`}
-                          width='1250'
-                          height='435'
-                          alt={`${name}`}
-                          title={`${name}`}
-                        />
+                        <picture>
+                          {mainBannerMobile ? (
+                            <source media='(max-width:767px)' srcSet={mainBannerMobile.url} />
+                          ) : null}
+                          <source srcSet={mainBanner.url} />
+                          <img
+                            className='block relative w-full h-full z-10 object-cover'
+                            src={mainBanner.url}
+                            alt={`${name}`}
+                            title={`${name}`}
+                            width='1250'
+                            height='435'
+                          />
+                        </picture>
                         <span
                           className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
                           style={

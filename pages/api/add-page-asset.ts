@@ -57,7 +57,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeRestApiUploads({
     files,
     dist: isTemplate ? ASSETS_DIST_TEMPLATES : ASSETS_DIST_PAGES,
-    itemId: `${fields.page}`,
+    itemId: `${pageId}`,
   });
   if (!assets) {
     res.status(500).send({

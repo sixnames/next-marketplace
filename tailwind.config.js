@@ -41,6 +41,7 @@ module.exports = {
         'wp-light-gray-200': `var(--wp-light-gray-200)`,
         'wp-light-gray-300': `var(--wp-light-gray-300)`,
         primary: `var(--primaryBackground)`,
+        'primary-transparent': `var(--primaryBackgroundTransparent)`,
         secondary: {
           DEFAULT: `var(--secondaryBackground)`,
           light: `var(--secondaryBackgroundLight)`,

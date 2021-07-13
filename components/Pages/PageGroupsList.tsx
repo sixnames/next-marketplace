@@ -140,6 +140,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
               props: {
                 companySlug,
                 validationSchema: createPagesGroupValidationSchema,
+                isTemplate,
               },
             });
           }}

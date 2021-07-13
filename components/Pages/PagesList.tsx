@@ -126,6 +126,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
               variant: CREATE_PAGE_MODAL,
               props: {
                 pagesGroupId: `${pagesGroup._id}`,
+                isTemplate,
               },
             });
           }}

@@ -1,4 +1,7 @@
+import Button from 'components/Button';
 import CmsOrderDetails from 'components/CmsOrderDetails';
+import FixedButtons from 'components/FixedButtons';
+import Inner from 'components/Inner';
 import { ROUTE_CONSOLE } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
@@ -14,8 +17,8 @@ import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -44,7 +47,16 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} title={title} />
+      <div className='relative'>
+        <CmsOrderDetails order={order} title={title} />
+        {order.status?.isPending ? (
+          <Inner>
+            <FixedButtons>
+              <Button>Подтвердить заказ</Button>
+            </FixedButtons>
+          </Inner>
+        ) : null}
+      </div>
     </AppContentWrapper>
   );
 };
@@ -178,12 +190,10 @@ export const getServerSideProps = async (
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
       return acc + totalPrice;
     }, 0),
-    status: initialOrder.status
-      ? {
-          ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
-        }
-      : null,
+    status: castOrderStatus({
+      initialStatus: initialOrder.status,
+      locale: props.sessionLocale,
+    }),
     customer: initialOrder.customer
       ? {
           ...initialOrder.customer,

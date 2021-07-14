@@ -402,6 +402,10 @@ enum ConfigVariant {
   tel
 }
 
+input ConfirmOrderInput {
+  orderId: ObjectId!
+}
+
 type Contacts {
   emails: [EmailAddress!]!
   formattedPhones: [FormattedPhone!]!
@@ -867,6 +871,11 @@ type Mutation {
   Should delete all products from cart
   """
   clearCart: CartPayload!
+
+  """
+  Should confirm order
+  """
+  confirmOrder(input: ConfirmOrderInput!): MakeAnOrderPayload!
 
   """
   Should create attributes group
@@ -1461,7 +1470,14 @@ type OrderLog implements Timestamp {
 Order log variant enum.
 """
 enum OrderLogVariant {
+  confirm
   status
+}
+
+type OrderPayload implements Payload {
+  message: String!
+  payload: Order
+  success: Boolean!
 }
 
 type OrderProduct {

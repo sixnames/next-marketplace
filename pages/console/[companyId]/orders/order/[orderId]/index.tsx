@@ -13,6 +13,8 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
+import { useConfirmOrderMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
@@ -34,6 +36,13 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+  const [confirmOrderMutation] = useConfirmOrderMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.confirmOrder),
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
@@ -52,7 +61,20 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
         {order.status?.isPending ? (
           <Inner>
             <FixedButtons>
-              <Button>Подтвердить заказ</Button>
+              <Button
+                onClick={() => {
+                  showLoading();
+                  confirmOrderMutation({
+                    variables: {
+                      input: {
+                        orderId: order._id,
+                      },
+                    },
+                  }).catch(console.log);
+                }}
+              >
+                Подтвердить заказ
+              </Button>
             </FixedButtons>
           </Inner>
         ) : null}

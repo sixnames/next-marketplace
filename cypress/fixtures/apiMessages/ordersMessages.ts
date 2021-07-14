@@ -59,6 +59,34 @@ export const ordersMessages: MessageBaseInterface[] = [
     },
   },
   {
+    slug: 'orders.updateOrder.notFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Заказ не найден.`,
+      [SECONDARY_LOCALE]: `Order not found.`,
+    },
+  },
+  {
+    slug: 'orders.updateOrder.statusNotFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Статус заказа не найден.`,
+      [SECONDARY_LOCALE]: `Order status not found.`,
+    },
+  },
+  {
+    slug: 'orders.updateOrder.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка обновления заказа.`,
+      [SECONDARY_LOCALE]: `Order update error.`,
+    },
+  },
+  {
+    slug: 'orders.updateOrder.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Заказ обновлён.`,
+      [SECONDARY_LOCALE]: `Order updated.`,
+    },
+  },
+  {
     slug: 'validation.orders.reservationDate',
     messageI18n: {
       [DEFAULT_LOCALE]: `Дата отгрузки обязательна к заполнению.`,

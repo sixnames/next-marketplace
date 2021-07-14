@@ -387,6 +387,8 @@ export interface OrderStatusInterface extends OrderStatusModel {
 
 export interface OrderLogInterface extends OrderLogModel {
   user?: UserInterface | null;
+  status?: OrderStatusInterface | null;
+  prevStatus?: OrderStatusInterface | null;
 }
 
 export interface OrderCustomerInterface extends OrderCustomerModel {

@@ -392,6 +392,7 @@ export interface OrderStatusModel extends TimestampModel {
 // Order log variant
 export enum OrderLogVariantModel {
   status = 'status',
+  confirm = 'confirm',
 }
 
 export interface OrderLogModel {
@@ -399,6 +400,7 @@ export interface OrderLogModel {
   variant: OrderLogVariantModel;
   userId: ObjectIdModel;
   orderId: ObjectIdModel;
+  prevStatusId?: ObjectIdModel | null;
   statusId: ObjectIdModel;
   createdAt: DateModel;
 }
@@ -714,12 +716,12 @@ export type RubricPayloadModel = PayloadType<RubricModel>;
 export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
-export type OrderPayloadModel = PayloadType<OrderModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
+export type OrderPayloadModel = PayloadType<OrderModel>;
 export interface MakeAnOrderPayloadModel {
   success: boolean;
   message: string;

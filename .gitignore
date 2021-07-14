@@ -43,3 +43,6 @@ yarn-error.log*
 /data
 /db/initialData/parsed
 /db/initialData/parsedBigCollections
+
+# production
+domains

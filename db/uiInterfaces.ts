@@ -115,6 +115,8 @@ export interface CompanyInterface extends CompanyModel {
   shops?: ShopInterface[];
   owner?: UserInterface | null;
   staff?: UserInterface[] | null;
+  customers?: UserInterface[] | null;
+  orders?: OrderInterface[] | null;
 }
 
 export interface MessageBaseInterface {
@@ -402,6 +404,7 @@ export interface OrderProductInterface extends OrderProductModel {
 }
 
 export interface OrderInterface extends OrderModel {
+  user?: UserInterface | null;
   customer?: OrderCustomerInterface | null;
   products?: OrderProductInterface[] | null;
   logs?: OrderLogInterface[] | null;

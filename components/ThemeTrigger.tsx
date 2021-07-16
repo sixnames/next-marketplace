@@ -5,12 +5,14 @@ import { useThemeContext } from 'context/themeContext';
 interface ThemeTriggerInterface {
   className?: string;
   staticColors?: boolean;
+  style?: React.CSSProperties;
 }
 
-const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className, staticColors }) => {
+const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className, style, staticColors }) => {
   const { toggleTheme, isDark } = useThemeContext();
   return (
     <div
+      style={style}
       className={`flex items-center justify-center w-[30px] h-[30px] cursor-pointer ${
         staticColors ? 'text-[var(--wp-light-gray-100)]' : 'text-secondary-text'
       } ${className ? className : ''}`}

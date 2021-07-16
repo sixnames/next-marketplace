@@ -535,6 +535,10 @@ export type MessageSlug =
   | 'orders.makeAnOrder.error'
   | 'orders.makeAnOrder.empty'
   | 'orders.makeAnOrder.success'
+  | 'orders.updateOrder.notFound'
+  | 'orders.updateOrder.statusNotFound'
+  | 'orders.updateOrder.error'
+  | 'orders.updateOrder.success'
   // Orders validation
   | 'validation.orders.reservationDate'
 

@@ -1,4 +1,7 @@
+import Button from 'components/Button';
 import CmsOrderDetails from 'components/CmsOrderDetails';
+import FixedButtons from 'components/FixedButtons';
+import Inner from 'components/Inner';
 import { ROUTE_CONSOLE } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
@@ -10,12 +13,14 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
+import { useConfirmOrderMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -31,6 +36,13 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+  const [confirmOrderMutation] = useConfirmOrderMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.confirmOrder),
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
@@ -44,7 +56,29 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} title={title} />
+      <div className='relative'>
+        <CmsOrderDetails order={order} title={title} />
+        {order.status?.isPending ? (
+          <Inner>
+            <FixedButtons>
+              <Button
+                onClick={() => {
+                  showLoading();
+                  confirmOrderMutation({
+                    variables: {
+                      input: {
+                        orderId: order._id,
+                      },
+                    },
+                  }).catch(console.log);
+                }}
+              >
+                Подтвердить заказ
+              </Button>
+            </FixedButtons>
+          </Inner>
+        ) : null}
+      </div>
     </AppContentWrapper>
   );
 };
@@ -178,12 +212,10 @@ export const getServerSideProps = async (
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
       return acc + totalPrice;
     }, 0),
-    status: initialOrder.status
-      ? {
-          ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
-        }
-      : null,
+    status: castOrderStatus({
+      initialStatus: initialOrder.status,
+      locale: props.sessionLocale,
+    }),
     customer: initialOrder.customer
       ? {
           ...initialOrder.customer,

@@ -1,5 +1,5 @@
 import { deleteUpload } from 'lib/assets';
-import { getConfigTemplates } from 'lib/configsUtils';
+import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -200,6 +200,7 @@ export const AddShopToCompanyInput = inputObjectType({
     t.nonNull.objectId('companyId');
     t.nonNull.string('name');
     t.nonNull.string('citySlug');
+    t.string('license');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });

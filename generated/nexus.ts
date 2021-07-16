@@ -173,6 +173,7 @@ export interface NexusGenInputs {
     citySlug: string; // String!
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    license?: string | null; // String
     name: string; // String!
   };
   AddShoplessProductToCartInput: {
@@ -219,6 +220,10 @@ export interface NexusGenInputs {
     // input type
     companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     companySlug: string | null; // String
+  };
+  ConfirmOrderInput: {
+    // input type
+    orderId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   ContactsInput: {
     // input type
@@ -811,6 +816,7 @@ export interface NexusGenInputs {
     address: NexusGenInputs['AddressInput']; // AddressInput!
     citySlug: string; // String!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    license?: string | null; // String
     name: string; // String!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -923,6 +929,7 @@ export interface NexusGenObjects {
   Order: dbModels.OrderModel;
   OrderCustomer: dbModels.OrderCustomerModel;
   OrderLog: dbModels.OrderLogModel;
+  OrderPayload: dbModels.OrderPayloadModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
   Page: dbModels.PageModel;
@@ -1343,6 +1350,7 @@ export interface NexusGenFieldTypes {
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     clearCart: NexusGenRootTypes['CartPayload']; // CartPayload!
+    confirmOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     createAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     createBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     createCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -1522,6 +1530,12 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User'] | null; // User
     userId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OrderLogVariant']; // OrderLogVariant!
+  };
+  OrderPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['Order'] | null; // Order
+    success: boolean; // Boolean!
   };
   OrderProduct: {
     // field return type
@@ -2388,6 +2402,7 @@ export interface NexusGenFieldTypeNames {
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
     clearCart: 'CartPayload';
+    confirmOrder: 'MakeAnOrderPayload';
     createAttributesGroup: 'AttributesGroupPayload';
     createBrand: 'BrandPayload';
     createCompany: 'CompanyPayload';
@@ -2567,6 +2582,12 @@ export interface NexusGenFieldTypeNames {
     user: 'User';
     userId: 'ObjectId';
     variant: 'OrderLogVariant';
+  };
+  OrderPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'Order';
+    success: 'Boolean';
   };
   OrderProduct: {
     // field return type name
@@ -3129,6 +3150,10 @@ export interface NexusGenArgTypes {
     addShoplessProductToCart: {
       // args
       input: NexusGenInputs['AddShoplessProductToCartInput']; // AddShoplessProductToCartInput!
+    };
+    confirmOrder: {
+      // args
+      input: NexusGenInputs['ConfirmOrderInput']; // ConfirmOrderInput!
     };
     createAttributesGroup: {
       // args
@@ -3719,6 +3744,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'MetricPayload'
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
+    | 'OrderPayload'
     | 'PagePayload'
     | 'PagesGroupPayload'
     | 'ProductPayload'
@@ -3775,6 +3801,7 @@ export interface NexusGenTypeInterfaces {
   OptionsGroupPayload: 'Payload';
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';
+  OrderPayload: 'Payload';
   OrderStatus: 'Timestamp';
   PagePayload: 'Payload';
   PagesGroupPayload: 'Payload';

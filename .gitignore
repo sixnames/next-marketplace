@@ -32,6 +32,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.dev
+.env.prod
 
 # vercel
 .vercel
@@ -41,3 +43,6 @@ yarn-error.log*
 /data
 /db/initialData/parsed
 /db/initialData/parsedBigCollections
+
+# production
+domains

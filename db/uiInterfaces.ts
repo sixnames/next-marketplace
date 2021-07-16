@@ -115,6 +115,8 @@ export interface CompanyInterface extends CompanyModel {
   shops?: ShopInterface[];
   owner?: UserInterface | null;
   staff?: UserInterface[] | null;
+  customers?: UserInterface[] | null;
+  orders?: OrderInterface[] | null;
 }
 
 export interface MessageBaseInterface {
@@ -377,10 +379,16 @@ export interface ProductShopsCountAggregationInterface {
 
 export interface OrderStatusInterface extends OrderStatusModel {
   name?: string | null;
+  isPending?: boolean;
+  isConfirmed?: boolean;
+  isDone?: boolean;
+  isCanceled?: boolean;
 }
 
 export interface OrderLogInterface extends OrderLogModel {
   user?: UserInterface | null;
+  status?: OrderStatusInterface | null;
+  prevStatus?: OrderStatusInterface | null;
 }
 
 export interface OrderCustomerInterface extends OrderCustomerModel {
@@ -402,6 +410,7 @@ export interface OrderProductInterface extends OrderProductModel {
 }
 
 export interface OrderInterface extends OrderModel {
+  user?: UserInterface | null;
   customer?: OrderCustomerInterface | null;
   products?: OrderProductInterface[] | null;
   logs?: OrderLogInterface[] | null;

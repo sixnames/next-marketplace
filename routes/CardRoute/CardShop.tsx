@@ -39,6 +39,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
     contacts: { formattedPhones },
     mainImage,
     logo,
+    license,
   } = shop;
 
   const disabled = amount + noNaN(inCartCount) > available;
@@ -100,6 +101,13 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
             {(formattedPhones || []).map((phone, index) => {
               return <LinkPhone key={index} value={phone} />;
             })}
+
+            {license ? (
+              <div className='mt-3 text-sm text-secondary-text'>
+                Лицензия:
+                {` ${license}`}
+              </div>
+            ) : null}
           </div>
         </div>
 

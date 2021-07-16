@@ -16,7 +16,6 @@ interface OrderProductProductInterface {
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
   const { originalName, shopProduct, itemId, price, amount, totalPrice } = orderProduct;
-
   const productImageSrc = shopProduct
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
@@ -39,7 +38,19 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
         <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
-          <div className='text-lg font-bold flex-grow'>{originalName}</div>
+          <div>
+            <div className='text-lg font-bold flex-grow mb-4'>{originalName}</div>
+            <div>
+              {shopProduct ? (
+                <div>
+                  Доступно:
+                  {` ${shopProduct.available}`}
+                </div>
+              ) : (
+                <div className='text-red-500 font-medium'>Товар магазина не найден</div>
+              )}
+            </div>
+          </div>
 
           <div>
             <div className='flex items-baseline ml-auto flex-grow-0'>

@@ -8,6 +8,7 @@ export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, '
   frameClassName?: string;
   isOpenIcon?: IconType;
   isClosedIcon?: IconType;
+  style?: React.CSSProperties;
 }
 
 const iconClassName = 'w-3 h-3';
@@ -21,6 +22,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   isOpenIcon = 'chevron-up',
   isClosedIcon = 'chevron-down',
   buttonClassName,
+  style,
   ...props
 }) => {
   return (
@@ -33,6 +35,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
           return (
             <span
               className={`uppercase flex items-center ${buttonClassName ? buttonClassName : ''}`}
+              style={style}
             >
               {iconPosition === 'left' ? (
                 <Icon

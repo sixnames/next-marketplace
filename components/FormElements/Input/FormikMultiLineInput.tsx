@@ -66,7 +66,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
       lineContentClass={lineContentClass}
     >
       <div className={classes.inputsFrame}>
-        {field.value.map((_: any, index: number) => {
+        {(field.value || []).map((_: any, index: number) => {
           const isFirst = index === 0;
           const fieldName = `${name}[${index}]`;
           const fieldTestId = `${testId}-${index}`;

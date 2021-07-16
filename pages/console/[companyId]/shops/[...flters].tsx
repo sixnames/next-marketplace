@@ -1,20 +1,28 @@
+import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import FixedButtons from 'components/FixedButtons';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
 import { PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
 import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
+  CompanyInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
+import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import AppLayout from 'layout/AppLayout/AppLayout';
@@ -31,7 +39,9 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 const pageTitle = 'Магазины компании';
 
-type CompanyShopsPageConsumerInterface = AppPaginationInterface<ShopInterface>;
+interface CompanyShopsPageConsumerInterface extends AppPaginationInterface<ShopInterface> {
+  currentCompany: CompanyInterface;
+}
 
 const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   page,
@@ -39,10 +49,21 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   totalDocs,
   itemPath,
   docs,
+  currentCompany,
 }) => {
   const isPageLoading = usePageLoadingState();
   const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+      withModal: true,
+    });
+
+  const [deleteShopFromCompanyMutation] = useDeleteShopFromCompanyMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteShopFromCompany),
+    onError: onErrorCallback,
+  });
 
   const counterString = React.useMemo(() => {
     if (totalDocs < 1) {
@@ -89,11 +110,34 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
+            testId={dataItem.name}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
               router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
             }}
-            testId={dataItem.name}
+            deleteTitle={'Удалить магазин'}
+            deleteHandler={() => {
+              showModal<ConfirmModalInterface>({
+                variant: CONFIRM_MODAL,
+                props: {
+                  testId: 'delete-shop-modal',
+                  message: `Вы уверенны, что хотите удалить магазин ${dataItem.name}?`,
+                  confirm: () => {
+                    showLoading();
+                    deleteShopFromCompanyMutation({
+                      variables: {
+                        input: {
+                          shopId: dataItem._id,
+                          companyId: `${currentCompany._id}`,
+                        },
+                      },
+                    }).catch(() => {
+                      showErrorNotification();
+                    });
+                  },
+                },
+              });
+            }}
           />
         );
       },
@@ -107,16 +151,35 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
         <FormikRouterSearch testId={'shops'} />
 
-        <Table<ShopInterface>
-          columns={columns}
-          data={docs}
-          testIdKey={'name'}
-          onRowDoubleClick={(dataItem) => {
-            router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
-          }}
-        />
+        <div className={`relative overflow-x-auto overflow-y-hidden`}>
+          <Table<ShopInterface>
+            columns={columns}
+            data={docs}
+            testIdKey={'name'}
+            onRowDoubleClick={(dataItem) => {
+              router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
+            }}
+          />
 
-        {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+          {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+
+          <FixedButtons>
+            <Button
+              onClick={() => {
+                showModal<CreateShopModalInterface>({
+                  variant: CREATE_SHOP_MODAL,
+                  props: {
+                    companyId: `${currentCompany._id}`,
+                  },
+                });
+              }}
+              testId={'create-shop'}
+              size={'small'}
+            >
+              Добавить магазин
+            </Button>
+          </FixedButtons>
+        </div>
 
         <Pager
           page={page}
@@ -335,12 +398,19 @@ export const getServerSideProps = async (
     };
   });
 
+  if (!props.currentCompany) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
       itemPath,
       clearSlug,
       page,
+      currentCompany: props.currentCompany,
       hasPrevPage: shopsAggregation.hasPrevPage,
       hasNextPage: shopsAggregation.hasNextPage,
       totalPages: noNaN(shopsAggregation.totalPages),

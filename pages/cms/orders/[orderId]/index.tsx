@@ -14,8 +14,8 @@ import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -177,12 +177,10 @@ export const getServerSideProps = async (
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
       return acc + totalPrice;
     }, 0),
-    status: initialOrder.status
-      ? {
-          ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
-        }
-      : null,
+    status: castOrderStatus({
+      initialStatus: initialOrder.status,
+      locale: props.sessionLocale,
+    }),
     customer: initialOrder.customer
       ? {
           ...initialOrder.customer,

@@ -28,7 +28,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       {/* Shops list */}
       <div className='lg:col-span-2 overflow-y-hidden overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden'>
         <div className='flex gap-6 lg:grid'>
-          {shops.map(({ _id, name, address, mainImage, contacts, rating }) => {
+          {shops.map(({ _id, name, address, mainImage, contacts, rating, license }) => {
             return (
               <LayoutCard
                 key={`${_id}`}
@@ -66,6 +66,12 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                   <div className='flex items-center justify-between'>
                     <RatingStars rating={rating} showRatingNumber={false} smallStars />
                   </div>
+                  {license ? (
+                    <div className='mt-3 text-sm text-secondary-text'>
+                      Лицензия:
+                      {` ${license}`}
+                    </div>
+                  ) : null}
                 </div>
               </LayoutCard>
             );

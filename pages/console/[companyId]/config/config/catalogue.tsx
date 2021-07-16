@@ -1,24 +1,37 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_CONTACTS } from 'config/common';
-import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
+import { CONFIG_GROUP_CATALOGUE } from 'config/common';
+import { ConfigModel } from 'db/dbModels';
+import { CompanyInterface } from 'db/uiInterfaces';
+import AppCompanyLayout from 'layout/AppLayout/AppCompanyLayout';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
-  const router = useRouter();
+interface ConfigConsumerInterface {
+  currentCompany: CompanyInterface;
+  assetConfigs: ConfigModel[];
+  normalConfigs: ConfigModel[];
+}
+
+const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
+  currentCompany,
+  assetConfigs,
+  normalConfigs,
+}) => {
   return (
-    <AppConfigsLayout companyId={`${router.query.companyId}`}>
+    <AppCompanyLayout company={currentCompany}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
-    </AppConfigsLayout>
+    </AppCompanyLayout>
   );
 };
+
+interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterface {}
 
 const Config: NextPage<ConfigPageInterface> = (props) => {
   const { pageUrls } = props;
@@ -34,7 +47,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  if (!props) {
+  if (!props || !query.companyId) {
     return {
       notFound: true,
     };
@@ -42,10 +55,10 @@ export const getServerSideProps = async (
 
   const configsPayload = await getConfigPageData({
     companyId: `${query.companyId}`,
-    group: CONFIG_GROUP_CONTACTS,
+    group: CONFIG_GROUP_CATALOGUE,
   });
 
-  if (!configsPayload) {
+  if (!configsPayload || !props.currentCompany) {
     return {
       notFound: true,
     };
@@ -56,6 +69,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
+      currentCompany: props.currentCompany,
     },
   };
 };

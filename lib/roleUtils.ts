@@ -86,6 +86,7 @@ export type RoleRuleSlugType =
 
   // Order
   | 'deleteOrder'
+  | 'updateOrder'
 
   // Product
   | 'createPagesGroup' // done
@@ -567,10 +568,18 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
   // Order
   {
     allow: false,
+    slug: 'updateOrder',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление заказа',
+    },
+  },
+  {
+    allow: false,
     slug: 'deleteOrder',
     descriptionI18n: {},
     nameI18n: {
-      ru: 'Удаление каказа',
+      ru: 'Удаление заказа',
     },
   },
 

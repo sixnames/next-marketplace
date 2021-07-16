@@ -93,6 +93,7 @@ export type AddShopToCompanyInput = {
   companyId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
+  license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
 };
@@ -438,6 +439,10 @@ export enum ConfigVariant {
   Boolean = 'boolean',
   Constructor = 'constructor'
 }
+
+export type ConfirmOrderInput = {
+  orderId: Scalars['ObjectId'];
+};
 
 export type Contacts = {
   __typename?: 'Contacts';
@@ -1058,6 +1063,8 @@ export type Mutation = {
   repeatOrder: CartPayload;
   /** Should create order from session cart */
   makeAnOrder: MakeAnOrderPayload;
+  /** Should confirm order */
+  confirmOrder: MakeAnOrderPayload;
 };
 
 
@@ -1600,6 +1607,11 @@ export type MutationMakeAnOrderArgs = {
   input: MakeAnOrderInput;
 };
 
+
+export type MutationConfirmOrderArgs = {
+  input: ConfirmOrderInput;
+};
+
 export type NavItem = {
   __typename?: 'NavItem';
   _id: Scalars['ObjectId'];
@@ -1713,8 +1725,16 @@ export type OrderLog = Timestamp & {
 
 /** Order log variant enum. */
 export enum OrderLogVariant {
-  Status = 'status'
+  Status = 'status',
+  Confirm = 'confirm'
 }
+
+export type OrderPayload = Payload & {
+  __typename?: 'OrderPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<Order>;
+};
 
 export type OrderProduct = {
   __typename?: 'OrderProduct';
@@ -2830,6 +2850,7 @@ export type UpdateShopInput = {
   shopId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
+  license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
 };
@@ -3600,6 +3621,19 @@ export type DeleteOptionFromGroupMutation = (
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayload' }
     & Pick<OptionsGroupPayload, 'success' | 'message'>
+  ) }
+);
+
+export type ConfirmOrderMutationVariables = Exact<{
+  input: ConfirmOrderInput;
+}>;
+
+
+export type ConfirmOrderMutation = (
+  { __typename?: 'Mutation' }
+  & { confirmOrder: (
+    { __typename?: 'MakeAnOrderPayload' }
+    & Pick<MakeAnOrderPayload, 'success' | 'message'>
   ) }
 );
 
@@ -6846,6 +6880,40 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = Apollo.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const ConfirmOrderDocument = gql`
+    mutation ConfirmOrder($input: ConfirmOrderInput!) {
+  confirmOrder(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ConfirmOrderMutationFn = Apollo.MutationFunction<ConfirmOrderMutation, ConfirmOrderMutationVariables>;
+
+/**
+ * __useConfirmOrderMutation__
+ *
+ * To run a mutation, you first call `useConfirmOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmOrderMutation, { data, loading, error }] = useConfirmOrderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConfirmOrderMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmOrderMutation, ConfirmOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmOrderMutation, ConfirmOrderMutationVariables>(ConfirmOrderDocument, options);
+      }
+export type ConfirmOrderMutationHookResult = ReturnType<typeof useConfirmOrderMutation>;
+export type ConfirmOrderMutationResult = Apollo.MutationResult<ConfirmOrderMutation>;
+export type ConfirmOrderMutationOptions = Apollo.BaseMutationOptions<ConfirmOrderMutation, ConfirmOrderMutationVariables>;
 export const CreatePagesGroupDocument = gql`
     mutation CreatePagesGroup($input: CreatePagesGroupInput!) {
   createPagesGroup(input: $input) {

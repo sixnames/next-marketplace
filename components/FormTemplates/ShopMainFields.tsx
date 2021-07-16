@@ -48,12 +48,7 @@ const ShopMainFields: React.FC = () => {
         showInlineError
       />
 
-      <div className='mb-8 max-w-[980px]'>
-        <Notification
-          variant={'success'}
-          message={`Попробуйте дописать название города в поисковик адреса,если нет нужного результата.`}
-        />
-      </div>
+      <FormikInput label={'Лицензия'} name={'license'} testId={'license'} />
 
       <FormikAddressInput
         label={'Адрес'}
@@ -62,6 +57,13 @@ const ShopMainFields: React.FC = () => {
         showInlineError
         isRequired
       />
+
+      <div className='mb-8 flex max-w-[980px]'>
+        <Notification
+          variant={'success'}
+          message={`Попробуйте дописать название города в поисковик адреса,если нет нужного результата.`}
+        />
+      </div>
     </React.Fragment>
   );
 };

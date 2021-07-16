@@ -69,6 +69,7 @@ input AddShopToCompanyInput {
   citySlug: String!
   companyId: ObjectId!
   contacts: ContactsInput!
+  license: String
   name: String!
 }
 
@@ -395,11 +396,16 @@ Site config variant enum.
 enum ConfigVariant {
   asset
   boolean
+  color
   constructor
   email
   number
   string
   tel
+}
+
+input ConfirmOrderInput {
+  orderId: ObjectId!
 }
 
 type Contacts {
@@ -867,6 +873,11 @@ type Mutation {
   Should delete all products from cart
   """
   clearCart: CartPayload!
+
+  """
+  Should confirm order
+  """
+  confirmOrder(input: ConfirmOrderInput!): MakeAnOrderPayload!
 
   """
   Should create attributes group
@@ -1461,7 +1472,14 @@ type OrderLog implements Timestamp {
 Order log variant enum.
 """
 enum OrderLogVariant {
+  confirm
   status
+}
+
+type OrderPayload implements Payload {
+  message: String!
+  payload: Order
+  success: Boolean!
 }
 
 type OrderProduct {
@@ -2548,6 +2566,7 @@ input UpdateShopInput {
   address: AddressInput!
   citySlug: String!
   contacts: ContactsInput!
+  license: String
   name: String!
   shopId: ObjectId!
 }

@@ -4,7 +4,11 @@ import * as React from 'react';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import { useLocaleContext } from 'context/localeContext';
 
-const LanguageTrigger: React.FC = () => {
+interface LanguageTriggerInterface {
+  style?: React.CSSProperties;
+}
+
+const LanguageTrigger: React.FC<LanguageTriggerInterface> = ({ style }) => {
   const router = useRouter();
   const { languagesList, currentLocaleItem, locale } = useLocaleContext();
   const config = React.useMemo<HeadlessMenuGroupInterface[]>(() => {
@@ -35,6 +39,7 @@ const LanguageTrigger: React.FC = () => {
   return (
     <div className='relative'>
       <MenuButtonWithName
+        style={style}
         initialValue={currentLocaleItem?.nativeName}
         config={config}
         iconPosition={'right'}

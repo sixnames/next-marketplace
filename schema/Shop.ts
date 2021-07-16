@@ -284,6 +284,7 @@ export const UpdateShopInCompanyInput = inputObjectType({
     t.nonNull.objectId('shopId');
     t.nonNull.string('name');
     t.nonNull.string('citySlug');
+    t.string('license');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });

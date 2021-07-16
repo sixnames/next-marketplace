@@ -13,8 +13,8 @@ import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
+import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -202,12 +202,10 @@ export const getServerSideProps = async (
       totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
         return acc + totalPrice;
       }, 0),
-      status: order.status
-        ? {
-            ...order.status,
-            name: getFieldStringLocale(order.status.nameI18n, props.sessionLocale),
-          }
-        : null,
+      status: castOrderStatus({
+        initialStatus: order.status,
+        locale: props.sessionLocale,
+      }),
       customer: order.customer
         ? {
             ...order.customer,

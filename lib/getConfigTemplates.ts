@@ -165,6 +165,70 @@ export function getConfigTemplates({
       companySlug,
       group: 'ui',
       variant: 'color' as ConfigVariantModel,
+      slug: 'siteTopBarBgLightTheme',
+      name: 'Цвет фона вспомогательной навигации при светлой теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#f2f3f3'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'headerTopBarBgDarkTheme',
+      name: 'Цвет фона вспомогательной навигации при тёмной теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#2B3039'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'headerTopBarTextLightTheme',
+      name: 'Цвет текста вспомогательной навигации при светлой теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#2B3039'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'headerTopBarTextDarkTheme',
+      name: 'Цвет текста вспомогательной навигации при тёмной теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#ffffff'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
       slug: 'siteNavBarBgLightTheme',
       name: 'Цвет фона навигации при светлой теме',
       description: '',
@@ -172,7 +236,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#F2F3F3FF'],
+          [DEFAULT_LOCALE]: ['#F2F3F3'],
         },
       },
     },
@@ -188,7 +252,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#2B3039FF'],
+          [DEFAULT_LOCALE]: ['#2B3039'],
         },
       },
     },
@@ -204,7 +268,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#2B3039FF'],
+          [DEFAULT_LOCALE]: ['#2B3039'],
         },
       },
     },
@@ -236,7 +300,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#F2F3F3FF'],
+          [DEFAULT_LOCALE]: ['#F2F3F3'],
         },
       },
     },
@@ -252,7 +316,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#2B3039FF'],
+          [DEFAULT_LOCALE]: ['#2B3039'],
         },
       },
     },
@@ -268,7 +332,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#2B3039FF'],
+          [DEFAULT_LOCALE]: ['#2B3039'],
         },
       },
     },
@@ -300,7 +364,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#2B3039FF'],
+          [DEFAULT_LOCALE]: ['#2B3039'],
         },
       },
     },

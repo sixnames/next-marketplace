@@ -101,9 +101,17 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const textColorLightTheme = getSiteConfigSingleValue('siteNavBarTextLightTheme');
   const textColorDarkTheme = getSiteConfigSingleValue('siteNavBarTextDarkTheme');
+  const dropDownBgLightTheme = getSiteConfigSingleValue('siteNavDropdownBgLightTheme');
+  const dropDownBgDarkTheme = getSiteConfigSingleValue('siteNavDropdownBgDarkTheme');
 
-  const style = {
+  // styles
+  const linkStyle = {
     color: (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textColor)',
+  } as React.CSSProperties;
+
+  const dropdownStyle = {
+    backgroundColor:
+      (isDark ? dropDownBgDarkTheme : dropDownBgLightTheme) || 'var(--secondaryBackground)',
   } as React.CSSProperties;
 
   // Get rubric slug from product card path
@@ -127,7 +135,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
     >
       <Link
         href={path}
-        style={style}
+        style={linkStyle}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${rubric.slug}`}
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
@@ -140,6 +148,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 
       {attributes && attributes.length > 0 ? (
         <div
+          style={dropdownStyle}
           data-cy={'header-nav-dropdown'}
           className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
             isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'

@@ -313,11 +313,12 @@ const middleSideClassName =
   'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-2';
 
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
+  const { isDark } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
   const { data } = useGetCatalogueSearchTopItemsQuery({
     ssr: false,
     variables: {
@@ -341,13 +342,32 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
     setIsBurgerDropdownOpen(false);
   }, []);
 
+  // styles
+  const bgColorLightTheme = getSiteConfigSingleValue('siteTopBarBgLightTheme');
+  const bgColorDarkTheme = getSiteConfigSingleValue('headerTopBarBgDarkTheme');
+  const textColorLightTheme = getSiteConfigSingleValue('headerTopBarTextLightTheme');
+  const textColorDarkTheme = getSiteConfigSingleValue('headerTopBarTextDarkTheme');
+  const textColor =
+    (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textSecondaryColor)';
+
+  const topBarBgStyle = {
+    backgroundColor:
+      (isDark ? bgColorDarkTheme : bgColorLightTheme) || 'var(--secondaryBackground)',
+    color: textColor,
+  } as React.CSSProperties;
+
+  const topTextBgStyle = {
+    color: textColor,
+  } as React.CSSProperties;
+
   return (
     <React.Fragment>
       <header
         className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
         ref={headerRef}
       >
-        <div className='relative z-[10] bg-secondary'>
+        {/*top bar*/}
+        <div className='relative z-[10] bg-secondary' style={topBarBgStyle}>
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
             <div className='flex items-center'>
               {headerPageGroups.map(({ name, _id, pages }) => {
@@ -356,7 +376,12 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                     key={`${_id}`}
                     className='header-sub-nav font-sm relative mr-6 cursor-pointer'
                   >
-                    <div className='flex items-center h-[30px] text-secondary-text'>{name}</div>
+                    <div
+                      className='flex items-center h-[30px] text-secondary-text'
+                      style={topTextBgStyle}
+                    >
+                      {name}
+                    </div>
                     <ul className='header-sub-nav-list rounded-md bg-secondary shadow-md'>
                       {(pages || []).map(({ name, slug, _id }) => {
                         return (
@@ -379,13 +404,17 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
             <div className='flex gap-6 items-center'>
               {callbackPhone ? (
-                <a className='text-secondary-text' href={`tel:${callbackPhone}`}>
+                <a
+                  className='text-secondary-text'
+                  href={`tel:${callbackPhone}`}
+                  style={topTextBgStyle}
+                >
                   {phoneToReadable(callbackPhone)}
                 </a>
               ) : null}
 
-              <ThemeTrigger />
-              <LanguageTrigger />
+              <ThemeTrigger style={topTextBgStyle} />
+              <LanguageTrigger style={topTextBgStyle} />
             </div>
           </Inner>
         </div>

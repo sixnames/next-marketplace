@@ -17,6 +17,7 @@ const shops: ShopModel[] = [
     name: 'Shop A',
     citySlug: DEFAULT_CITY,
     companyId: getObjectId('company Company A'),
+    license: 'Shop A license 098324knlkajdf98798',
     logo: {
       index: 0,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
@@ -53,6 +54,7 @@ const shops: ShopModel[] = [
     slug: 'shop_b',
     name: 'Shop B',
     citySlug: DEFAULT_CITY,
+    license: 'Shop B license 098324knlkajdf98798',
     logo: {
       index: 0,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
@@ -87,6 +89,7 @@ const shops: ShopModel[] = [
     slug: 'shop_c',
     name: 'Shop C',
     citySlug: DEFAULT_CITY,
+    license: 'Shop C license 098324knlkajdf98798',
     logo: {
       index: 0,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
@@ -121,6 +124,7 @@ const shops: ShopModel[] = [
     slug: 'shop_d',
     name: 'Shop D',
     citySlug: DEFAULT_CITY,
+    license: 'Shop D license 098324knlkajdf98798',
     logo: {
       index: 0,
       url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,

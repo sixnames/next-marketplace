@@ -264,6 +264,7 @@ export enum ConfigVariantModel {
   tel = 'tel',
   asset = 'asset',
   boolean = 'boolean',
+  color = 'color',
   constructor = 'constructor',
 }
 
@@ -624,6 +625,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   token?: string | null;
   rating?: number | null;
   mapMarker?: MapMarkerModel | null;
+  license?: string | null;
 }
 
 export interface NotSyncedProductModel {

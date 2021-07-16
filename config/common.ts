@@ -106,6 +106,7 @@ export const CONFIG_VARIANT_EMAIL = 'email';
 export const CONFIG_VARIANT_ASSET = 'asset';
 export const CONFIG_VARIANT_BOOLEAN = 'boolean';
 export const CONFIG_VARIANT_CONSTRUCTOR = 'constructor';
+export const CONFIG_VARIANT_COLOR = 'color';
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -115,6 +116,7 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_ASSET,
   CONFIG_VARIANT_BOOLEAN,
   CONFIG_VARIANT_CONSTRUCTOR,
+  CONFIG_VARIANT_COLOR,
 ];
 
 export const CONFIG_GROUP_GLOBALS = 'globals';

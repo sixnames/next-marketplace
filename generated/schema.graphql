@@ -69,6 +69,7 @@ input AddShopToCompanyInput {
   citySlug: String!
   companyId: ObjectId!
   contacts: ContactsInput!
+  license: String
   name: String!
 }
 
@@ -395,6 +396,7 @@ Site config variant enum.
 enum ConfigVariant {
   asset
   boolean
+  color
   constructor
   email
   number
@@ -2564,6 +2566,7 @@ input UpdateShopInput {
   address: AddressInput!
   citySlug: String!
   contacts: ContactsInput!
+  license: String
   name: String!
   shopId: ObjectId!
 }

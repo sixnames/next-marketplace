@@ -93,6 +93,7 @@ export type AddShopToCompanyInput = {
   companyId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
+  license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
 };
@@ -1724,7 +1725,8 @@ export type OrderLog = Timestamp & {
 
 /** Order log variant enum. */
 export enum OrderLogVariant {
-  Status = 'status'
+  Status = 'status',
+  Confirm = 'confirm'
 }
 
 export type OrderPayload = Payload & {
@@ -2848,6 +2850,7 @@ export type UpdateShopInput = {
   shopId: Scalars['ObjectId'];
   name: Scalars['String'];
   citySlug: Scalars['String'];
+  license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
 };

@@ -173,6 +173,7 @@ export interface NexusGenInputs {
     citySlug: string; // String!
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    license?: string | null; // String
     name: string; // String!
   };
   AddShoplessProductToCartInput: {
@@ -815,6 +816,7 @@ export interface NexusGenInputs {
     address: NexusGenInputs['AddressInput']; // AddressInput!
     citySlug: string; // String!
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
+    license?: string | null; // String
     name: string; // String!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };

@@ -19,7 +19,6 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import {
@@ -48,11 +47,10 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   rubricId,
   ...props
 }) => {
-  const router = useRouter();
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
-  const layoutBasePath = `${ROUTE_CONSOLE}/shops/${router.query.companyId}`;
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop/${shop._id}`;
+  const layoutBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Добавление товаров',
@@ -63,15 +61,15 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: `${companyBasePath}`,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shop/${shop._id}/products`,
+        href: `${companyBasePath}/products`,
       },
       {
         name: rubricName,
-        href: `${companyBasePath}/shop/${shop._id}/products/${rubricId}`,
+        href: `${companyBasePath}/products/${rubricId}`,
       },
     ],
   };

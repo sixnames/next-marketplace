@@ -1,5 +1,6 @@
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
+import { useThemeContext } from 'context/themeContext';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -76,6 +77,14 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { asPath } = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { name, slug, attributes } = rubric;
+  const { isDark } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const textColorLightTheme = getSiteConfigSingleValue('siteNavBarTextLightTheme');
+  const textColorDarkTheme = getSiteConfigSingleValue('siteNavBarTextDarkTheme');
+
+  const style = {
+    color: (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textColor)',
+  } as React.CSSProperties;
 
   // Get rubric slug from product card path
   const path = `${ROUTE_CATALOGUE}/${slug}`;
@@ -98,6 +107,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
     >
       <Link
         href={path}
+        style={style}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${rubric.slug}`}
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
@@ -140,9 +150,19 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 
 const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
+  const { isDark } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const bgColorLightTheme = getSiteConfigSingleValue('siteNavBarBgLightTheme');
+  const bgColorDarkTheme = getSiteConfigSingleValue('siteNavBarBgDarkTheme');
+
+  const style = {
+    backgroundColor:
+      (isDark ? bgColorDarkTheme : bgColorLightTheme) || 'var(--secondaryBackground)',
+  } as React.CSSProperties;
 
   return (
     <nav
+      style={style}
       data-cy={'sticky-nav'}
       className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary lg:block'
     >

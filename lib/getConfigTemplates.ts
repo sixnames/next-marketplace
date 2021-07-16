@@ -172,7 +172,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#808080'],
+          [DEFAULT_LOCALE]: ['#F2F3F3FF'],
         },
       },
     },
@@ -188,7 +188,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#808080'],
+          [DEFAULT_LOCALE]: ['#2B3039FF'],
         },
       },
     },
@@ -204,7 +204,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['#ffffff'],
+          [DEFAULT_LOCALE]: ['#2B3039FF'],
         },
       },
     },
@@ -215,6 +215,102 @@ export function getConfigTemplates({
       variant: 'color' as ConfigVariantModel,
       slug: 'siteNavBarTextDarkTheme',
       name: 'Цвет текста навигации при тёмной теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#ffffff'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownBgLightTheme',
+      name: 'Цвет фона выпадающего меню при светлой теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#F2F3F3FF'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownBgDarkTheme',
+      name: 'Цвет фона выпадающего меню при тёмной теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#2B3039FF'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownTextLightTheme',
+      name: 'Цвет ссылок выпадающего меню при светлой теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#2B3039FF'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownTextDarkTheme',
+      name: 'Цвет ссылок выпадающего меню при тёмной теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#ffffff'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownAttributeLightTheme',
+      name: 'Цвет названия атрибута в выпадающем меню при светлой теме',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['#2B3039FF'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'color' as ConfigVariantModel,
+      slug: 'siteNavDropdownAttributeDarkTheme',
+      name: 'Цвет названия атрибута в выпадающем меню при тёмной теме',
       description: '',
       multi: false,
       acceptedFormats: [],

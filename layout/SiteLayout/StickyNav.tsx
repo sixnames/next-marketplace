@@ -20,18 +20,37 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdownHandler,
   rubricSlug,
 }) => {
+  const { isDark } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
   const visibleOptionsCount = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
   const showOptionsMoreLink = noNaN(visibleOptionsCount) === attribute.options?.length;
+
+  // styles
+  const linkColorLightTheme = getSiteConfigSingleValue('siteNavDropdownTextLightTheme');
+  const linkColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownTextDarkTheme');
+  const attributeColorLightTheme = getSiteConfigSingleValue('siteNavDropdownAttributeLightTheme');
+  const attributeColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownAttributeDarkTheme');
+
+  const linkStyle = {
+    color: (isDark ? linkColorDarkTheme : linkColorLightTheme) || 'var(--textSecondaryColor)',
+  } as React.CSSProperties;
+
+  const attributeStyle = {
+    color: (isDark ? attributeColorDarkTheme : attributeColorLightTheme) || 'var(--textColor)',
+  } as React.CSSProperties;
+
   if ((options || []).length < 1) {
     return null;
   }
 
   return (
     <div className='flex flex-col'>
-      <div className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'>
+      <div
+        style={attributeStyle}
+        className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'
+      >
         {name}
       </div>
       <ul className='flex-grow flex flex-col'>
@@ -39,11 +58,12 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           return (
             <li key={`${option._id}`}>
               <Link
+                style={linkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                 onClick={hideDropdownHandler}
-                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text hover:no-underline hover:text-theme'
+                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text'
               >
                 {option.name}
                 {postfix}

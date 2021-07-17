@@ -36,7 +36,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   };
 
   return (
-    <AppLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
+    <AppLayout title={`${pagesGroup.name}`} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{pagesGroup.name}</Title>

@@ -40,7 +40,7 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 const pageTitle = 'Магазины компании';
 
 interface CompanyShopsPageConsumerInterface extends AppPaginationInterface<ShopInterface> {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
@@ -128,7 +128,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
                       variables: {
                         input: {
                           shopId: dataItem._id,
-                          companyId: `${currentCompany._id}`,
+                          companyId: `${currentCompany?._id}`,
                         },
                       },
                     }).catch(() => {
@@ -169,7 +169,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
                   props: {
-                    companyId: `${currentCompany._id}`,
+                    companyId: `${currentCompany?._id}`,
                   },
                 });
               }}
@@ -195,9 +195,11 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
 
 interface CompanyShopsPageInterface extends PagePropsInterface, CompanyShopsPageConsumerInterface {}
 
-const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ pageUrls, ...props }) => {
+const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
+  const { pageUrls, currentCompany } = props;
+
   return (
-    <AppLayout title={'Магазины компании'} pageUrls={pageUrls}>
+    <AppLayout title={'Магазины компании'} pageUrls={pageUrls} company={currentCompany}>
       <CompanyShopsPageConsumer {...props} />
     </AppLayout>
   );

@@ -110,9 +110,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
 interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, ...props }) => {
+const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls} company={currentCompany}>
       <UsersConsumer {...props} />
     </AppLayout>
   );

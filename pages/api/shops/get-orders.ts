@@ -50,7 +50,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // get shop
   const shop = await shopsCollection.findOne({ token });
-  console.log(shop);
 
   if (!shop) {
     res.status(401).send({

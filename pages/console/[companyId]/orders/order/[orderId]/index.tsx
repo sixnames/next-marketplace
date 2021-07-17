@@ -85,9 +85,9 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
 interface OrderPageInterface extends PagePropsInterface, OrderPageConsumerInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order, currentCompany }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls} company={currentCompany}>
       <OrderPageConsumer order={order} />
     </AppLayout>
   );

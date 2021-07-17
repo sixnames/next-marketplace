@@ -12,7 +12,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
 }
@@ -34,9 +34,9 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterface {}
 
 const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls } = props;
+  const { pageUrls, currentCompany } = props;
   return (
-    <AppLayout title={'Настройки сайта'} pageUrls={pageUrls}>
+    <AppLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
       <ConfigConsumer {...props} />
     </AppLayout>
   );

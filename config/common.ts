@@ -81,6 +81,8 @@ export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;
 export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
+export const CMS_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CMS_NAV_GROUP}-orders`;
+export const CONSOLE_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CONSOLE_NAV_GROUP}-orders`;
 
 // query params
 export const QUERY_DATA_LAYOUT_PAGE = 'page';

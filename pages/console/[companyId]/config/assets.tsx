@@ -15,20 +15,19 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface CompanyAssetsConsumerInterface {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ currentCompany }) => {
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
-  const { logo } = currentCompany;
 
   return (
     <AppCompanyLayout company={currentCompany}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
-          initialValues={{ logo: [logo.url] }}
+          initialValues={{ logo: [currentCompany?.logo.url] }}
           onSubmit={(values) => console.log(values)}
         >
           {({ values: { logo } }) => {
@@ -47,7 +46,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                       showLoading();
                       const formData = new FormData();
                       formData.append('assets', files[0]);
-                      formData.append('companyId', `${currentCompany._id}`);
+                      formData.append('companyId', `${currentCompany?._id}`);
 
                       fetch('/api/update-company-logo', {
                         method: 'POST',
@@ -90,7 +89,7 @@ interface CompanyAssetsPageInterface extends PagePropsInterface, CompanyAssetsCo
 
 const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ currentCompany, ...props }) => {
   return (
-    <AppLayout {...props}>
+    <AppLayout {...props} company={currentCompany}>
       <CompanyAssetsConsumer currentCompany={currentCompany} />
     </AppLayout>
   );

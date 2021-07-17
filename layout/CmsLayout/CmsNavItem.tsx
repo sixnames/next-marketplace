@@ -1,4 +1,7 @@
+import CounterSticker from 'components/CounterSticker';
+import { CMS_ORDERS_NAV_ITEM_SLUG } from 'config/common';
 import { NavItemInterface } from 'db/uiInterfaces';
+import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from 'components/Icon';
@@ -22,6 +25,9 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, path, children, slug } = item;
   const iconType = icon as IconType;
+  const counter = useNewOrdersCounter({
+    allowFetch: item.slug === CMS_ORDERS_NAV_ITEM_SLUG,
+  });
 
   React.useEffect(() => {
     if (children) {
@@ -127,6 +133,10 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
               {name}
             </span>
+
+            {counter && counter > 0 ? (
+              <CounterSticker value={counter} className='ml-auto' isAbsolute={false} />
+            ) : null}
           </Link>
         </div>
       </Tooltip>

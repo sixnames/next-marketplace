@@ -3,7 +3,7 @@ import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider } from 'context/userContext';
 import { CompanyModel } from 'db/dbModels';
-import { CityInterface, UserInterface } from 'db/uiInterfaces';
+import { CityInterface, CompanyInterface, UserInterface } from 'db/uiInterfaces';
 import { PageUrlsInterface } from 'layout/Meta';
 import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
@@ -26,6 +26,7 @@ export interface PagePropsInterface {
   sessionUser?: UserInterface | null;
   currentCity?: CityInterface | null;
   pageUrls: PageUrlsInterface;
+  currentCompany?: CompanyInterface | null;
   companySlug: string;
 }
 

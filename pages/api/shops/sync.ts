@@ -68,7 +68,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       if (!barcode || barcode.length < 1) {
         return acc;
       }
-      return [...acc, barcode];
+      return [...acc, ...barcode];
     }, []);
 
     const products = await productsCollection
@@ -96,6 +96,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         continue;
       }
 
+      if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
+        continue;
+      }
+
       if (!bodyItem.available || !bodyItem.price) {
         notSyncedProducts.push({
           _id: new ObjectId(),
@@ -112,7 +116,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       // Check existing shop product
       const exitingShopProduct = await shopProductsCollection.findOne({
         shopId: shop._id,
-        barcode: bodyItem.barcode,
+        barcode: {
+          $in: bodyItem.barcode,
+        },
       });
       if (exitingShopProduct) {
         const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
@@ -150,37 +156,39 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       // Create new shop product
       const { available, price, barcode } = bodyItem;
 
-      const shopProduct: ShopProductModel = {
-        _id: new ObjectId(),
-        active: true,
-        available,
-        price,
-        formattedPrice: getCurrencyString(bodyItem.price),
-        formattedOldPrice: '',
-        discountedPercent: 0,
-        productId: product._id,
-        shopId: shop._id,
-        citySlug: shop.citySlug,
-        oldPrices: [],
-        rubricId: product.rubricId,
-        rubricSlug: product.rubricSlug,
-        companyId: shop.companyId,
-        itemId: product.itemId,
-        slug: product.slug,
-        originalName: product.originalName,
-        nameI18n: product.nameI18n,
-        descriptionI18n: product.descriptionI18n,
-        brandSlug: product.brandSlug,
-        brandCollectionSlug: product.brandCollectionSlug,
-        manufacturerSlug: product.manufacturerSlug,
-        mainImage: product.mainImage,
-        selectedOptionsSlugs: product.selectedOptionsSlugs,
-        barcode,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-        ...DEFAULT_COUNTERS_OBJECT,
-      };
-      shopProducts.push(shopProduct);
+      (barcode || []).forEach((barcodeItem) => {
+        const shopProduct: ShopProductModel = {
+          _id: new ObjectId(),
+          active: true,
+          available,
+          price,
+          formattedPrice: getCurrencyString(bodyItem.price),
+          formattedOldPrice: '',
+          discountedPercent: 0,
+          productId: product._id,
+          shopId: shop._id,
+          citySlug: shop.citySlug,
+          oldPrices: [],
+          rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
+          companyId: shop.companyId,
+          itemId: product.itemId,
+          slug: product.slug,
+          originalName: product.originalName,
+          nameI18n: product.nameI18n,
+          descriptionI18n: product.descriptionI18n,
+          brandSlug: product.brandSlug,
+          brandCollectionSlug: product.brandCollectionSlug,
+          manufacturerSlug: product.manufacturerSlug,
+          mainImage: product.mainImage,
+          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          barcode: barcodeItem,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          ...DEFAULT_COUNTERS_OBJECT,
+        };
+        shopProducts.push(shopProduct);
+      });
     }
 
     if (shopProducts.length > 0) {

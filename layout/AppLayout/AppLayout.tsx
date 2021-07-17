@@ -1,3 +1,4 @@
+import { CompanyInterface } from 'db/uiInterfaces';
 import AppNav from 'layout/AppLayout/AppNav';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
@@ -14,12 +15,18 @@ interface AppLayoutInterface {
   description?: string;
   title?: string;
   pageUrls: PageUrlsInterface;
+  company?: CompanyInterface | null;
 }
 
 const narrowContentClass = 'lg:pl-[220px]';
 const wideContentClass = 'lg:pl-[60px]';
 
-const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
+const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({
+  children,
+  company,
+  pageUrls,
+  title,
+}) => {
   const router = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
@@ -30,9 +37,9 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
     if (noNaN(me?.companies?.length) < 1) {
       router.push('/').catch((e) => console.log(e));
     }
-  }, [me, router]);
+  }, [me, router, company]);
 
-  if (!me) {
+  if (!me || !company) {
     return <Spinner />;
   }
 
@@ -40,7 +47,7 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <AppNav compact={compact} navItems={me.role?.appNavigation || []} />
+      <AppNav compact={compact} navItems={me.role?.appNavigation || []} company={company} />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] lg:pt-0 ${
@@ -56,9 +63,9 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({ children, pageUrls, t
   );
 };
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, company, pageUrls, title }) => {
   return (
-    <AppLayoutConsumer pageUrls={pageUrls} title={title}>
+    <AppLayoutConsumer pageUrls={pageUrls} title={title} company={company}>
       {children}
     </AppLayoutConsumer>
   );

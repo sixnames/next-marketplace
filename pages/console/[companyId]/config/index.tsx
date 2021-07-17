@@ -21,7 +21,7 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { updateCompanyClientSchema } from 'validation/companySchema';
 
 interface CompanyDetailsConsumerInterface {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ currentCompany }) => {
@@ -44,8 +44,8 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
           initialValues={{
             ...currentCompany,
             contacts: {
-              emails: currentCompany.contacts.emails[0] ? currentCompany.contacts.emails : [''],
-              phones: currentCompany.contacts.phones[0] ? currentCompany.contacts.phones : [''],
+              emails: currentCompany?.contacts.emails[0] ? currentCompany.contacts.emails : [''],
+              phones: currentCompany?.contacts.phones[0] ? currentCompany.contacts.phones : [''],
             },
           }}
           onSubmit={(values) => {
@@ -54,12 +54,12 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
               variables: {
                 input: {
                   domain: values.domain,
-                  name: values.name,
+                  name: `${values.name}`,
                   contacts: {
                     emails: values.contacts.emails,
                     phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
                   },
-                  companyId: currentCompany._id,
+                  companyId: `${currentCompany?._id}`,
                   ownerId: `${values.owner?._id}`,
                   staffIds: (values.staff || []).map(({ _id }) => _id),
                 },
@@ -87,10 +87,11 @@ interface CompanyDetailsPageInterface extends PagePropsInterface, CompanyDetails
 
 const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({
   currentCompany,
+  company,
   ...props
 }) => {
   return (
-    <AppLayout {...props}>
+    <AppLayout {...props} company={currentCompany}>
       <CompanyDetailsConsumer currentCompany={currentCompany} />
     </AppLayout>
   );

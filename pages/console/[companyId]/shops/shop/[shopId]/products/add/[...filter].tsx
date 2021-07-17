@@ -45,6 +45,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   shop,
   rubricName,
   rubricId,
+  company,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
@@ -93,7 +94,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <AppLayout pageUrls={pageUrls}>
+      <AppLayout pageUrls={pageUrls} company={company}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}

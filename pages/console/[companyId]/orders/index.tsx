@@ -118,9 +118,9 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
 
 interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders, currentCompany }) => {
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls} company={currentCompany}>
       <OrdersRoute orders={orders} />
     </AppLayout>
   );
@@ -129,7 +129,6 @@ const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
-  const { query } = context;
   const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getConsoleInitialData({ context });
@@ -139,11 +138,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const company = (props.sessionUser.companies || []).find(({ _id }) => {
-    return `${_id}` === `${query.companyId}`;
-  });
-
-  if (!company) {
+  if (!props.currentCompany) {
     return {
       notFound: true,
     };
@@ -153,7 +148,7 @@ export const getServerSideProps = async (
     .aggregate<OrderInterface>([
       {
         $match: {
-          companyId: new ObjectId(company._id),
+          companyId: new ObjectId(props.currentCompany._id),
         },
       },
       {
@@ -220,6 +215,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
+      currentCompany: props.currentCompany,
       orders: castDbData(orders),
     },
   };

@@ -11,7 +11,7 @@ jobs:
       - name: deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
-#          testing
+#          testing 2
           command: cd www && ls && cd winepoint && git pull && yarn && yarn build && pm2 reload all
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}

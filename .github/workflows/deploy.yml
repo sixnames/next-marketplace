@@ -12,7 +12,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
 #          testing 2
-          command: cd www && ls && cd winepoint && git pull && yarn && yarn build && pm2 reload all
+          command: cd www && cd winepoint && git pull && yarn install && yarn build && pm2 reload all
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

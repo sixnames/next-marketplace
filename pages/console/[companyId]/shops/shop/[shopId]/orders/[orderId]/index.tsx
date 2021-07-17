@@ -26,7 +26,12 @@ interface CompanyShopAssetsInterface
   extends PagePropsInterface,
     Omit<ShopOrderInterface, 'basePath' | 'title'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop, order }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
+  pageUrls,
+  currentCompany,
+  shop,
+  order,
+}) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const title = `Заказ №${order.orderId}`;
 
@@ -49,7 +54,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   };
 
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopOrder
         title={title}
         order={order}

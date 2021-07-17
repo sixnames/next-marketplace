@@ -25,7 +25,11 @@ interface CompanyShopAssetsInterface
   extends PagePropsInterface,
     Omit<ShopOrdersInterface, 'basePath'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
+  pageUrls,
+  currentCompany,
+  shop,
+}) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -43,7 +47,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   };
 
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <AppLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopOrders breadcrumbs={breadcrumbs} basePath={`${companyBasePath}/shop`} shop={shop} />
     </AppLayout>
   );

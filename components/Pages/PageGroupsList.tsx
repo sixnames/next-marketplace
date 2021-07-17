@@ -23,7 +23,7 @@ export interface PageGroupsListInterface {
   isTemplate?: boolean;
   basePath: string;
   companySlug: string;
-  currentCompany?: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const PageGroupsList: React.FC<PageGroupsListInterface> = ({

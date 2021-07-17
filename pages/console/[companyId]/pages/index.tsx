@@ -22,7 +22,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   currentCompany,
 }) => {
   return (
-    <AppLayout title={pageTitle} pageUrls={pageUrls}>
+    <AppLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>

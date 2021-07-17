@@ -1,4 +1,5 @@
 import { NavItemModel } from 'db/dbModels';
+import { CompanyInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import AppNavItem from 'layout/AppLayout/AppNavItem';
 import AppNavUser from 'layout/AppLayout/AppNavUser';
@@ -15,9 +16,10 @@ import { UseCompactReturnInterface } from 'hooks/useCompact';
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
   navItems: NavItemModel[];
+  company: CompanyInterface;
 }
 
-const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
+const AppNav: React.FC<AppNavInterface> = ({ compact, company, navItems }) => {
   const signOut = useSignOut();
   const { pathname } = useRouter();
   const { isMobile } = useAppContext();
@@ -52,6 +54,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                     pathname={pathname}
                     openNavHandler={openNavHandler}
                     closeNavHandler={closeNavHandler}
+                    companyId={`${company._id}`}
                   />
                 );
               })}

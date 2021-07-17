@@ -44,7 +44,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
@@ -132,7 +132,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
                       variables: {
                         input: {
                           shopId: dataItem._id,
-                          companyId: `${currentCompany._id}`,
+                          companyId: `${currentCompany?._id}`,
                         },
                       },
                     }).catch(() => {
@@ -156,8 +156,8 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: `${currentCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
       },
     ],
   };
@@ -186,7 +186,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
                   props: {
-                    companyId: `${currentCompany._id}`,
+                    companyId: `${currentCompany?._id}`,
                   },
                 });
               }}

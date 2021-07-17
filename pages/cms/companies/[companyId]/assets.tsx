@@ -17,13 +17,12 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface CompanyAssetsConsumerInterface {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ currentCompany }) => {
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
-  const { logo } = currentCompany;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Изображения',
@@ -33,8 +32,8 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: `${currentCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
       },
     ],
   };
@@ -44,7 +43,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
-          initialValues={{ logo: [logo.url] }}
+          initialValues={{ logo: [currentCompany?.logo.url] }}
           onSubmit={(values) => console.log(values)}
         >
           {({ values: { logo } }) => {
@@ -63,7 +62,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                       showLoading();
                       const formData = new FormData();
                       formData.append('assets', files[0]);
-                      formData.append('companyId', `${currentCompany._id}`);
+                      formData.append('companyId', `${currentCompany?._id}`);
 
                       fetch('/api/update-company-logo', {
                         method: 'POST',

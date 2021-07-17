@@ -201,7 +201,7 @@ describe('Sync', () => {
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
-  it.only('Should sync shop products with site catalogue', () => {
+  it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',

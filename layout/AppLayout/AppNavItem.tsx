@@ -1,5 +1,7 @@
-import { ROUTE_CONSOLE } from 'config/common';
+import CounterSticker from 'components/CounterSticker';
+import { CONSOLE_ORDERS_NAV_ITEM_SLUG, ROUTE_CONSOLE } from 'config/common';
 import { NavItemInterface } from 'db/uiInterfaces';
+import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from 'components/Icon';
@@ -15,14 +17,27 @@ interface AppNavItemInterface {
   pathname: string;
   openNavHandler: () => void;
   closeNavHandler: () => void;
+  companyId: string;
 }
 
-const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
+const AppNavItem: React.FC<AppNavItemInterface> = ({
+  item,
+  compact,
+  openNavHandler,
+  pathname,
+  companyId,
+}) => {
   const { asPath, query } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, path, children, _id } = item;
   const iconType = icon as IconType;
+  const counter = useNewOrdersCounter({
+    allowFetch: item.slug === CONSOLE_ORDERS_NAV_ITEM_SLUG,
+    input: {
+      companyId,
+    },
+  });
 
   React.useEffect(() => {
     if (children) {
@@ -128,6 +143,10 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
               {name}
             </span>
+
+            {counter && counter > 0 ? (
+              <CounterSticker value={counter} className='ml-auto' isAbsolute={false} />
+            ) : null}
           </Link>
         </div>
       </Tooltip>

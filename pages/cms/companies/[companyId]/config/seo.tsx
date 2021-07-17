@@ -13,7 +13,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
-  currentCompany: CompanyInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
@@ -29,8 +29,8 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: `${currentCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
       },
     ],
   };

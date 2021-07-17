@@ -11,7 +11,7 @@ import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsCompanyLayoutInterface {
-  company: CompanyInterface;
+  company?: CompanyInterface | null;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -25,67 +25,67 @@ const AppCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'company-details',
-        path: `${ROUTE_CONSOLE}/${company._id}/config`,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config`,
         exact: true,
       },
       {
         name: 'Изображения',
         testId: 'company-assets',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/assets`,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/assets`,
         exact: true,
       },
       {
         name: 'Основные настройки',
         testId: 'company-global-config',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config`,
+        hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Аналитика',
         testId: 'company-analytics',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config/analytics`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config/analytics`,
+        hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'company-ui',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config/ui`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config/ui`,
+        hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Контактные данные',
         testId: 'company-contacts',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config/contacts`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config/contacts`,
+        hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'company-seo',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config/seo`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config/seo`,
+        hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Каталог',
         testId: 'company-catalogue',
-        path: `${ROUTE_CONSOLE}/${company._id}/config/config/catalogue`,
-        hidden: !company.domain,
+        path: `${ROUTE_CONSOLE}/${company?._id}/config/config/catalogue`,
+        hidden: !company?.domain,
         exact: true,
       },
     ];
-  }, [company._id, company.domain]);
+  }, [company]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
-        <title>{company.name}</title>
+        <title>{company?.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{company.name}</Title>
+        <Title>{company?.name}</Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

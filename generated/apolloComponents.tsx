@@ -437,7 +437,8 @@ export enum ConfigVariant {
   Email = 'email',
   Asset = 'asset',
   Boolean = 'boolean',
-  Constructor = 'constructor'
+  Constructor = 'constructor',
+  Color = 'color'
 }
 
 export type ConfirmOrderInput = {
@@ -708,6 +709,12 @@ export enum Gender {
 
 export type GetAllRubricsInput = {
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
+};
+
+export type GetNewOrdersCounterInput = {
+  companyId?: Maybe<Scalars['ObjectId']>;
+  shopId?: Maybe<Scalars['ObjectId']>;
+  customerId?: Maybe<Scalars['ObjectId']>;
 };
 
 export type GetProductShopsInput = {
@@ -2085,6 +2092,8 @@ export type Query = {
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
   getAllCompanies?: Maybe<CompaniesPaginationPayload>;
+  /** Should return new orders counter */
+  getNewOrdersCounter: Scalars['Int'];
 };
 
 
@@ -2271,6 +2280,11 @@ export type QueryGetCompanyArgs = {
 
 export type QueryGetAllCompaniesArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetNewOrdersCounterArgs = {
+  input?: Maybe<GetNewOrdersCounterInput>;
 };
 
 export type RepeatOrderInput = {
@@ -4560,6 +4574,16 @@ export type GetOptionsGroupQuery = (
     { __typename?: 'OptionsGroup' }
     & OptionsGroupFragment
   ) }
+);
+
+export type GetNewOrdersCounterQueryVariables = Exact<{
+  input?: Maybe<GetNewOrdersCounterInput>;
+}>;
+
+
+export type GetNewOrdersCounterQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getNewOrdersCounter'>
 );
 
 export type RubricVariantFragment = (
@@ -8975,6 +8999,39 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
+export const GetNewOrdersCounterDocument = gql`
+    query GetNewOrdersCounter($input: GetNewOrdersCounterInput) {
+  getNewOrdersCounter(input: $input)
+}
+    `;
+
+/**
+ * __useGetNewOrdersCounterQuery__
+ *
+ * To run a query within a React component, call `useGetNewOrdersCounterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewOrdersCounterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewOrdersCounterQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetNewOrdersCounterQuery(baseOptions?: Apollo.QueryHookOptions<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>(GetNewOrdersCounterDocument, options);
+      }
+export function useGetNewOrdersCounterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>(GetNewOrdersCounterDocument, options);
+        }
+export type GetNewOrdersCounterQueryHookResult = ReturnType<typeof useGetNewOrdersCounterQuery>;
+export type GetNewOrdersCounterLazyQueryHookResult = ReturnType<typeof useGetNewOrdersCounterLazyQuery>;
+export type GetNewOrdersCounterQueryResult = Apollo.QueryResult<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

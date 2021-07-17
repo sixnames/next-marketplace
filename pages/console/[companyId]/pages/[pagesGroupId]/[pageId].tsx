@@ -38,7 +38,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   };
 
   return (
-    <AppLayout title={`${page.name}`} pageUrls={pageUrls}>
+    <AppLayout title={`${page.name}`} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{page.name}</Title>

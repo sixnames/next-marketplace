@@ -9,11 +9,16 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
     steps:
       - name: deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www && cd winepoint && nvm version && git pull && yarn && yarn build && pm2 reload all
+          node-version: ${{ matrix.node-version }}
+          command: cd www && cd winepoint && git pull && yarn && yarn build && pm2 reload all
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

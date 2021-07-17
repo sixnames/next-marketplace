@@ -11,7 +11,7 @@ export interface GetOrdersParamsInterface extends SyncParamsInterface {
 }
 
 export interface SyncProductInterface {
-  barcode?: string | null;
+  barcode?: string[] | null;
   available?: number;
   price?: number;
   name: string;
@@ -23,7 +23,7 @@ export interface SyncResponseInterface {
 }
 
 export interface SyncOrderProductInterface extends TimestampModel {
-  barcode?: string;
+  barcode?: string[];
   amount?: number;
   price?: number;
   status?: string;

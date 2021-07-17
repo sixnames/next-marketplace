@@ -53,7 +53,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // get products
-  const barcodeList = body.map(({ barcode }) => barcode);
+  const barcodeList = body.reduce((acc: string[], { barcode }) => {
+    if (barcode && barcode.length > 0) {
+      return [...acc, ...barcode];
+    }
+    return acc;
+  }, []);
+
   const products = await productsCollection
     .find({
       barcode: {
@@ -77,9 +83,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const { barcode } = bodyItem;
+    if (!barcode || barcode.length < 1) {
+      continue;
+    }
+
     const shopProduct = await shopProductsCollection.findOne({
       shopId: shop._id,
-      barcode,
+      barcode: {
+        $in: bodyItem.barcode,
+      },
     });
 
     if (!shopProduct) {

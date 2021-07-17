@@ -15,25 +15,25 @@ const errorBarcode = '9999999999999999';
 
 const initialBody: SyncProductInterface[] = [
   {
-    barcode: errorBarcode,
+    barcode: [errorBarcode],
     available: 999,
     price: 999,
     name: 'notFoundProduct',
   },
   {
-    barcode: '000003',
+    barcode: ['000003'],
     available: 10,
     price: 1890,
     name: '000003',
   },
   {
-    barcode: '000004',
+    barcode: ['000004'],
     available: 1,
     price: 800,
     name: '000004',
   },
   {
-    barcode: '000005',
+    barcode: ['000005'],
     available: 5,
     price: 650,
     name: '000005',
@@ -42,25 +42,25 @@ const initialBody: SyncProductInterface[] = [
 
 const secondarySyncBody: SyncProductInterface[] = [
   {
-    barcode: '000003',
+    barcode: ['000003'],
     available: 1,
     price: 1,
     name: '000003',
   },
   {
-    barcode: '000004',
+    barcode: ['000004'],
     available: 1,
     price: 1,
     name: '000004',
   },
   {
-    barcode: '000005',
+    barcode: ['000005'],
     available: 1,
     price: 1,
     name: '000005',
   },
   {
-    barcode: '000006',
+    barcode: ['000006'],
     available: 1,
     price: 1,
     name: '000006',
@@ -69,13 +69,13 @@ const secondarySyncBody: SyncProductInterface[] = [
 
 const updateBody: SyncProductInterface[] = [
   {
-    barcode: '000003',
+    barcode: ['000003'],
     available: 5,
     price: 890,
     name: '000003',
   },
   {
-    barcode: '000004',
+    barcode: ['000004'],
     available: 5,
     price: 1000,
     name: '000004',
@@ -201,7 +201,7 @@ describe('Sync', () => {
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
-  it('Should sync shop products with site catalogue', () => {
+  it.only('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: 'POST',

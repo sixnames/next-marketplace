@@ -58,12 +58,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
     const { barcode, available, price, originalName } = shopProduct;
-    shopProducts.push({
-      barcode,
-      available,
-      price,
-      name: originalName,
-    });
+    if (barcode) {
+      shopProducts.push({
+        barcode: [barcode],
+        available,
+        price,
+        name: originalName,
+      });
+    }
   });
   res.status(200).send({
     success: true,

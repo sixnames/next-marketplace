@@ -21,6 +21,7 @@ jobs:
       - run: yarn install
       - run: yarn build
         env:
+          DEV_ENV: true
           MONGO_URL: ${{ secrets.MONGO_URL }}
           MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
           MONGO_TEST_HOST: ${{ secrets.MONGO_TEST_HOST }}
@@ -32,20 +33,20 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_SIGNING_PRIVATE_KEY: ${{ secrets.JWT_SIGNING_PRIVATE_KEY }}
-          OBJECT_STORAGE_KEY_ID: ${{secrets.OBJECT_STORAGE_KEY_ID}}
-          OBJECT_STORAGE_KEY: ${{secrets.OBJECT_STORAGE_KEY}}
-          OBJECT_STORAGE_BUCKET_NAME: ${{secrets.OBJECT_STORAGE_BUCKET_NAME}}
-          OBJECT_STORAGE_DOMAIN: ${{secrets.OBJECT_STORAGE_DOMAIN}}
-          OBJECT_STORAGE_IMAGE_FALLBACK: ${{secrets.OBJECT_STORAGE_IMAGE_FALLBACK}}
-          OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: ${{secrets.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}}
-          NEXT_GOOGLE_MAPS_API_KEY: ${{secrets.NEXT_GOOGLE_MAPS_API_KEY}}
-          DEFAULT_CITY: ${{secrets.DEFAULT_CITY}}
-          DEFAULT_LOCALE: ${{secrets.DEFAULT_LOCALE}}
-          DEFAULT_DOMAIN: ${{secrets.DEFAULT_DOMAIN}}
-          EMAIL_HOST: ${{secrets.EMAIL_HOST}}
-          EMAIL_USER: ${{secrets.EMAIL_USER}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          ALGOLIA_APP_ID: ${{secrets.ALGOLIA_APP_ID}}
-          ALGOLIA_API_KEY: ${{secrets.ALGOLIA_API_KEY}}
-          ALG_INDEX_PRODUCTS: ${{secrets.ALG_INDEX_PRODUCTS}}
-          ALG_INDEX_SHOP_PRODUCTS: ${{secrets.ALG_INDEX_SHOP_PRODUCTS}}
+          OBJECT_STORAGE_KEY_ID: ${{ secrets.OBJECT_STORAGE_KEY_ID }}
+          OBJECT_STORAGE_KEY: ${{ secrets.OBJECT_STORAGE_KEY }}
+          OBJECT_STORAGE_BUCKET_NAME: ${{ secrets.OBJECT_STORAGE_BUCKET_NAME }}
+          OBJECT_STORAGE_DOMAIN: ${{ secrets.OBJECT_STORAGE_DOMAIN }}
+          OBJECT_STORAGE_IMAGE_FALLBACK: ${{ secrets.OBJECT_STORAGE_IMAGE_FALLBACK }}
+          OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK: ${{ secrets.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK }}
+          NEXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_GOOGLE_MAPS_API_KEY }}
+          DEFAULT_CITY: ${{ secrets.DEFAULT_CITY }}
+          DEFAULT_LOCALE: ${{ secrets.DEFAULT_LOCALE }}
+          DEFAULT_DOMAIN: ${{ secrets.DEFAULT_DOMAIN }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+          ALG_INDEX_PRODUCTS: ${{ secrets.ALG_INDEX_PRODUCTS }}
+          ALG_INDEX_SHOP_PRODUCTS: ${{ secrets.ALG_INDEX_SHOP_PRODUCTS }}

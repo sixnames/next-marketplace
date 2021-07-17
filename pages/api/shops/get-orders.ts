@@ -175,7 +175,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...acc,
             {
               status: status.slug,
-              barcode: `${barcode}`,
+              barcode: [`${barcode}`],
               name: originalName,
               amount,
               price,

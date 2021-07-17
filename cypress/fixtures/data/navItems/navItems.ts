@@ -31,7 +31,7 @@ const navItems: NavItemModel[] = [
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-customers`),
-    slug: 'console-orders',
+    slug: 'console-customers',
     nameI18n: {
       ru: 'Клиенты',
       en: 'Customers',

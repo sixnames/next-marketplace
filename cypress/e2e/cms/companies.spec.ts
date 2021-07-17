@@ -263,7 +263,7 @@ describe('Companies list', () => {
     cy.getByCy('shop-rubric-products-list').should('exist');
   });
 
-  it('Should update company configs', () => {
+  it.only('Should update company configs', () => {
     cy.getByCy(`company_a-update`).click();
     cy.wait(1500);
     cy.getByCy(`company-global-config`).click();
@@ -278,10 +278,6 @@ describe('Companies list', () => {
 
     cy.getByCy('siteFoundationYear-msk-ru-0').clear().type('1999');
     cy.getByCy('siteFoundationYear-submit').click();
-    cy.wait(1500);
-
-    cy.getByCy('siteLicense-msk-ru-0').clear().type('lorem');
-    cy.getByCy('siteLicense-submit').click();
     cy.wait(1500);
 
     cy.getByCy(`company-analytics`).click();

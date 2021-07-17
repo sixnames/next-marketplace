@@ -1,0 +1,17 @@
+name: Deploy to the production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd www/winepoint && git pull && yarn && yarn build && pm2 reload all
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          privateKey: ${{ secrets.PROD_PRIVATE_KEY}}

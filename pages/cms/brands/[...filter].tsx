@@ -10,10 +10,10 @@ import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ISO_LANGUAGES, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
-import { COL_BRANDS, COL_ROLES } from 'db/collectionNames';
+import { COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
-import { useDeleteUserMutation } from 'generated/apolloComponents';
+import { useDeleteBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -43,8 +43,8 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
     reload: true,
   });
 
-  const [deleteUserMutation] = useDeleteUserMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteUser),
+  const [deleteBrandMutation] = useDeleteBrandMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteBrand),
     onError: onErrorCallback,
   });
 
@@ -80,7 +80,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
                     message: `Вы уверены, что хотите удалить бренд ${dataItem.name}?`,
                     confirm: () => {
                       showLoading();
-                      deleteUserMutation({
+                      deleteBrandMutation({
                         variables: {
                           _id: dataItem._id,
                         },
@@ -244,32 +244,6 @@ export const getServerSideProps = async (
               },
               {
                 $limit: limit,
-              },
-              {
-                $lookup: {
-                  from: COL_ROLES,
-                  as: 'role',
-                  let: { roleId: '$roleId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$_id', '$$roleId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  role: { $arrayElemAt: ['$role', 0] },
-                },
-              },
-              {
-                $project: {
-                  password: false,
-                },
               },
             ],
             countAllDocs: [

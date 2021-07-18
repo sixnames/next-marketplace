@@ -347,6 +347,9 @@ export const BrandMutations = extendType({
           const itemId = await getNextItemId(COL_BRANDS);
           const createdBrandResult = await brandsCollection.insertOne({
             ...args.input,
+            url: (args.input.url || []).map((link) => {
+              return `${link}`;
+            }),
             slug,
             itemId,
             ...DEFAULT_COUNTERS_OBJECT,
@@ -445,6 +448,9 @@ export const BrandMutations = extendType({
             {
               $set: {
                 ...values,
+                url: (values.url || []).map((link) => {
+                  return `${link}`;
+                }),
               },
             },
             {

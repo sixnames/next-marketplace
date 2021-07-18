@@ -57,7 +57,7 @@ const CreateBrandModal: React.FC = () => {
             <Form>
               <BrandMainFields />
 
-              <Button type={'submit'} testId={'shop-submit'}>
+              <Button type={'submit'} testId={'submit-brand'}>
                 Создать
               </Button>
             </Form>

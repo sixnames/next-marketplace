@@ -66,7 +66,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
 
   if (me) {
     return (
-      <Popover className='relative'>
+      <Popover className='relative flex items-center'>
         {() => {
           return (
             <React.Fragment>
@@ -111,9 +111,12 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     {me?.role?.isCompanyStaff && (me?.role?.appNavigation || []).length > 0 ? (
                       <li>
                         <Link
+                          target={'_blank'}
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={ROUTE_CONSOLE}
+                          href={`${process.env.DEV_ENV ? 'http' : 'https'}://${
+                            process.env.DEFAULT_DOMAIN
+                          }${ROUTE_CONSOLE}`}
                         >
                           <span>Панель управления</span>
                         </Link>

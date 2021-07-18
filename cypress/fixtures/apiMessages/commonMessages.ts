@@ -117,8 +117,15 @@ export const commonMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.url',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Ссыдка обязательна.`,
+      [DEFAULT_LOCALE]: `Ссылка обязательна.`,
       [SECONDARY_LOCALE]: `Url is required.`,
+    },
+  },
+  {
+    slug: 'validation.domain',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Не валидный формат доменного имени`,
+      [SECONDARY_LOCALE]: `Invalid domain name`,
     },
   },
 ];

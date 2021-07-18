@@ -17,7 +17,6 @@ const BrandMainFields: React.FC = () => {
         label={'Описание'}
         name={'descriptionI18n'}
         testId={'descriptionI18n'}
-        isRequired
         showInlineError
       />
 

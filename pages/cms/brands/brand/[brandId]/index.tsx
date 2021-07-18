@@ -45,7 +45,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
     brandId: brand._id,
     nameI18n: brand.nameI18n,
     descriptionI18n: brand.descriptionI18n,
-    url: brand.url,
+    url: brand.url || [''],
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -80,16 +80,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
         <title>{brand.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title
-          testId={`${brand.itemId}-brand-title`}
-          subtitle={
-            <div className='flex'>
-              <div>{`ID ${brand.itemId}`}</div>
-            </div>
-          }
-        >
-          {brand.name}
-        </Title>
+        <Title testId={`${brand.itemId}-brand-title`}>{brand.name}</Title>
       </Inner>
 
       <AppSubNav navConfig={navConfig} />

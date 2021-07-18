@@ -32,6 +32,7 @@ import {
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
   MAP_MODAL,
+  CREATE_BRAND_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -52,6 +53,7 @@ const CreateRubricModal = dynamic(() => import('components/Modal/CreateRubricMod
 const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
 const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal'));
 const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal'));
+const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -127,6 +129,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CREATE_ROLE_MODAL && <CreateRoleModal {...modalProps} />}
 
           {modalType === CREATE_USER_MODAL && <CreateUserModal {...modalProps} />}
+
+          {modalType === CREATE_BRAND_MODAL && <CreateBrandModal {...modalProps} />}
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 

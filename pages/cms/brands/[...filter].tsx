@@ -8,8 +8,8 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
+import { ISO_LANGUAGES, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
 import { COL_BRANDS, COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
@@ -57,7 +57,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
       },
     },
     {
-      headTitle: 'Имя',
+      headTitle: 'Название',
       accessor: 'name',
       render: ({ cellData }) => cellData,
     },
@@ -130,7 +130,9 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
               testId={'create-brand'}
               size={'small'}
               onClick={() => {
-                console.log('Добавить бренд');
+                showModal({
+                  variant: CREATE_BRAND_MODAL,
+                });
               }}
             >
               Добавить бренд
@@ -192,16 +194,29 @@ export const getServerSideProps = async (
     $options: 'i',
   };
 
+  // TODO algolia
+  const nameSearch = search
+    ? ISO_LANGUAGES.map(({ slug }) => {
+        return {
+          [slug]: search,
+        };
+      })
+    : [];
+
   const searchStage = search
     ? [
         {
           $match: {
             $or: [
+              ...nameSearch,
               {
                 url: regexSearch,
               },
               {
                 slug: regexSearch,
+              },
+              {
+                itemId: regexSearch,
               },
             ],
           },

@@ -451,6 +451,7 @@ export const BrandMutations = extendType({
                 url: (values.url || []).map((link) => {
                   return `${link}`;
                 }),
+                updatedAt: new Date(),
               },
             },
             {

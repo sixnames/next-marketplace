@@ -275,6 +275,9 @@ export const ManufacturerMutations = extendType({
             ...input,
             itemId,
             slug,
+            url: (input.url || []).map((link) => {
+              return `${link}`;
+            }),
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -368,6 +371,9 @@ export const ManufacturerMutations = extendType({
             {
               $set: {
                 ...values,
+                url: (values.url || []).map((link) => {
+                  return `${link}`;
+                }),
                 updatedAt: new Date(),
               },
             },

@@ -17,6 +17,7 @@ export type MessageSlug =
   | 'validation.point.lat'
   | 'validation.point.lng'
   | 'validation.url'
+  | 'validation.domain'
 
   // Configs ----------
   | 'configs.update.success'

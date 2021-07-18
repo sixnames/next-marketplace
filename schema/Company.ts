@@ -1,4 +1,5 @@
 import { deleteUpload } from 'lib/assets';
+import { updateCompanyDomain } from 'lib/companyUtils';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -34,6 +35,7 @@ import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
+  getSessionUser,
 } from 'lib/sessionHelpers';
 import { generateCompanySlug, generateShopSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -438,11 +440,19 @@ export const CompanyMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
+          const sessionUser = await getSessionUser(context);
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const { input } = args;
           const { companyId, ...values } = input;
+
+          if (!sessionUser) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.update.error'),
+            };
+          }
 
           // Check company availability
           const company = await companiesCollection.findOne({ _id: companyId });
@@ -450,6 +460,19 @@ export const CompanyMutations = extendType({
             return {
               success: false,
               message: await getApiMessage('companies.update.notFound'),
+            };
+          }
+
+          // Update company domain
+          const updatedDomainResult = await updateCompanyDomain({
+            company,
+            newDomain: values.domain,
+            sessionUser,
+          });
+          if (!updatedDomainResult) {
+            return {
+              success: false,
+              message: await getApiMessage('companies.update.error'),
             };
           }
 

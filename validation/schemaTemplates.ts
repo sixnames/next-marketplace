@@ -184,6 +184,32 @@ export const notRequiredUrlSchema = (args: ValidationSchemaArgsInterface) => {
     .nullable();
 };
 
+// Not domain url schema
+const domainPatterns = {
+  domain: /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/,
+  cyrillicDomain:
+    /^((http|https):\/\/)?[a-zа-я0-9]+([\-\.]{1}[a-zа-я0-9]+)*\.[a-zа-я]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
+};
+export const notRequiredDomainSchema = (args: ValidationSchemaArgsInterface) => {
+  const domainRules = [domainPatterns.domain, domainPatterns.cyrillicDomain];
+
+  return Yup.string()
+    .test({
+      message: getFieldValidationMessage({ ...args, slug: 'validation.domain' }),
+      test: (value: any) => {
+        return (
+          value === null ||
+          value === '' ||
+          value === undefined ||
+          domainRules.some((regex) => {
+            return regex.test(value);
+          })
+        );
+      },
+    })
+    .nullable();
+};
+
 // Required string translation schema
 export const requiredStringTranslationSchema = (args: RequiredFieldSchemaInterface) => {
   return Yup.object({

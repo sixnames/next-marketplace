@@ -1,6 +1,11 @@
 import { shopFieldsSchema, shopIdSchema } from 'validation/shopSchema';
 import * as Yup from 'yup';
-import { contactsInputSchema, objectIdSchema, requiredStringSchema } from './schemaTemplates';
+import {
+  contactsInputSchema,
+  notRequiredDomainSchema,
+  objectIdSchema,
+  requiredStringSchema,
+} from './schemaTemplates';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 
 export const companyIdSchema = (args: ValidationSchemaArgsInterface) => {
@@ -33,6 +38,7 @@ export const createCompanyClientSchema = (args: ValidationSchemaArgsInterface) =
 
 export const updateCompanySchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
+    domain: notRequiredDomainSchema(args),
     companyId: companyIdSchema(args),
     ...companyCommonFieldsSchema(args),
   });
@@ -40,6 +46,7 @@ export const updateCompanySchema = (args: ValidationSchemaArgsInterface) => {
 
 export const updateCompanyClientSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
+    domain: notRequiredDomainSchema(args),
     ...companyCommonFieldsSchema(args),
   });
 };

@@ -7,7 +7,7 @@ const navItemsDefaultSlug = 'navItem';
 const navItems: NavItemModel[] = [
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-base`),
-    slug: 'console-orders',
+    slug: 'console',
     nameI18n: {
       ru: 'Панель управления',
       en: 'Console',

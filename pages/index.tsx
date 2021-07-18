@@ -57,7 +57,6 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   topFilters,
   mobileTopFilters,
 }) => {
-  console.log('app');
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('seoTextTitle');

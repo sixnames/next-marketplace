@@ -189,7 +189,6 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
 
   const usersAggregationResult = await ordersCollection
     .aggregate<UsersAggregationInterface>(
@@ -317,8 +316,26 @@ export const getServerSideProps = async (
 
   const usersResult = usersAggregationResult[0];
   if (!usersResult) {
+    const payload: UsersConsumerInterface = {
+      clearSlug,
+      totalDocs: 0,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPrevPage: false,
+      itemPath,
+      page,
+      docs: [],
+      filters: {
+        roles: [],
+      },
+    };
+
+    const castedPayload = castDbData(payload);
     return {
-      notFound: true,
+      props: {
+        ...props,
+        ...castedPayload,
+      },
     };
   }
 
@@ -340,27 +357,6 @@ export const getServerSideProps = async (
     });
   }
 
-  const rolesQueryResult = await rolesCollection
-    .find(
-      {},
-      {
-        projection: {
-          slug: false,
-        },
-        sort: {
-          _id: SORT_DESC,
-        },
-      },
-    )
-    .toArray();
-
-  const roles = rolesQueryResult.map((role) => {
-    return {
-      ...role,
-      name: getFieldStringLocale(role.nameI18n, locale),
-    };
-  });
-
   const payload: UsersConsumerInterface = {
     clearSlug,
     totalDocs: usersResult.totalDocs,
@@ -371,7 +367,7 @@ export const getServerSideProps = async (
     page,
     docs,
     filters: {
-      roles,
+      roles: [],
     },
   };
   const castedPayload = castDbData(payload);

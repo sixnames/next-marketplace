@@ -3,18 +3,19 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import FixedButtons from 'components/FixedButtons';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import { BrandCollectionModalInterface } from 'components/Modal/BrandCollectionModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ISO_LANGUAGES, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
+import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppPaginationInterface, BrandCollectionInterface, BrandInterface } from 'db/uiInterfaces';
 import { useDeleteCollectionFromBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper, {
   AppContentWrapperBreadCrumbs,
 } from 'layout/AppLayout/AppContentWrapper';
@@ -24,12 +25,12 @@ import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { addCollectionToBrandSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
 
 type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
 
@@ -42,7 +43,6 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
   brand,
   collections,
 }) => {
-  const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
   const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
     reload: true,
@@ -51,6 +51,26 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteCollectionFromBrand),
   });
+  const createValidationSchema = useValidationSchema({
+    schema: addCollectionToBrandSchema,
+  });
+  const updateValidationSchema = useValidationSchema({
+    schema: updateCollectionInBrandSchema,
+  });
+
+  const createBrandCollectionHandler = React.useCallback(
+    (dataItem: BrandCollectionInterface) => {
+      showModal<BrandCollectionModalInterface>({
+        variant: BRAND_COLLECTION_MODAL,
+        props: {
+          validationSchema: updateValidationSchema,
+          brandCollection: dataItem,
+          brandId: `${brand._id}`,
+        },
+      });
+    },
+    [brand._id, showModal, updateValidationSchema],
+  );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Коллекции',
@@ -87,7 +107,16 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
       headTitle: 'ID',
       accessor: 'itemId',
       render: ({ cellData, dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+        return (
+          <div
+            className='cursor-pointer text-theme hover:underline'
+            onClick={() => {
+              createBrandCollectionHandler(dataItem);
+            }}
+          >
+            {cellData}
+          </div>
+        );
       },
     },
     {
@@ -103,7 +132,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать коллекцию бренда'}
               updateHandler={() => {
-                router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                createBrandCollectionHandler(dataItem);
               }}
               deleteTitle={'Удалить коллекцию бренда'}
               deleteHandler={() => {
@@ -133,7 +162,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     },
   ];
 
-  const { docs, itemPath, page, totalPages } = collections;
+  const { docs, page, totalPages } = collections;
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
@@ -156,7 +185,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               data={docs}
               testIdKey={'name'}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                createBrandCollectionHandler(dataItem);
               }}
             />
           </div>
@@ -174,12 +203,16 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               testId={'create-brand'}
               size={'small'}
               onClick={() => {
-                showModal({
-                  variant: CREATE_BRAND_MODAL,
+                showModal<BrandCollectionModalInterface>({
+                  variant: BRAND_COLLECTION_MODAL,
+                  props: {
+                    validationSchema: createValidationSchema,
+                    brandId: `${brand._id}`,
+                  },
                 });
               }}
             >
-              Добавить бренд
+              Добавить коллекцию бренда
             </Button>
           </FixedButtons>
         </div>
@@ -244,7 +277,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: alwaysArray(filter),
   });
-  const itemPath = `${ROUTE_CMS}/brands/brand/${brand._id}/collections/collection`;
+  const itemPath = ``;
 
   const regexSearch = {
     $regex: search,

@@ -58,7 +58,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     schema: updateCollectionInBrandSchema,
   });
 
-  const createBrandCollectionHandler = React.useCallback(
+  const updateBrandCollectionHandler = React.useCallback(
     (dataItem: BrandCollectionInterface) => {
       showModal<BrandCollectionModalInterface>({
         variant: BRAND_COLLECTION_MODAL,
@@ -111,7 +111,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
           <div
             className='cursor-pointer text-theme hover:underline'
             onClick={() => {
-              createBrandCollectionHandler(dataItem);
+              updateBrandCollectionHandler(dataItem);
             }}
           >
             {cellData}
@@ -132,7 +132,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать коллекцию бренда'}
               updateHandler={() => {
-                createBrandCollectionHandler(dataItem);
+                updateBrandCollectionHandler(dataItem);
               }}
               deleteTitle={'Удалить коллекцию бренда'}
               deleteHandler={() => {
@@ -185,7 +185,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               data={docs}
               testIdKey={'name'}
               onRowDoubleClick={(dataItem) => {
-                createBrandCollectionHandler(dataItem);
+                updateBrandCollectionHandler(dataItem);
               }}
             />
           </div>

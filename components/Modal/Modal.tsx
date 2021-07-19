@@ -34,6 +34,7 @@ import {
   MAP_MODAL,
   CREATE_BRAND_MODAL,
   BRAND_COLLECTION_MODAL,
+  MANUFACTURER_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -56,6 +57,7 @@ const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal')
 const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal'));
 const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal'));
 const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollectionModal'));
+const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -135,6 +137,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CREATE_BRAND_MODAL && <CreateBrandModal {...modalProps} />}
 
           {modalType === BRAND_COLLECTION_MODAL && <BrandCollectionModal {...modalProps} />}
+
+          {modalType === MANUFACTURER_MODAL && <ManufacturerModal {...modalProps} />}
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 

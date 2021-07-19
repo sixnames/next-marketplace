@@ -3599,6 +3599,45 @@ export type DeleteLanguageMutation = (
   ) }
 );
 
+export type CreateManufacturerMutationVariables = Exact<{
+  input: CreateManufacturerInput;
+}>;
+
+
+export type CreateManufacturerMutation = (
+  { __typename?: 'Mutation' }
+  & { createManufacturer: (
+    { __typename?: 'ManufacturerPayload' }
+    & Pick<ManufacturerPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateManufacturerMutationVariables = Exact<{
+  input: UpdateManufacturerInput;
+}>;
+
+
+export type UpdateManufacturerMutation = (
+  { __typename?: 'Mutation' }
+  & { updateManufacturer: (
+    { __typename?: 'ManufacturerPayload' }
+    & Pick<ManufacturerPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteManufacturerMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteManufacturerMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteManufacturer: (
+    { __typename?: 'ManufacturerPayload' }
+    & Pick<ManufacturerPayload, 'success' | 'message'>
+  ) }
+);
+
 export type CreateNavItemMutationVariables = Exact<{
   input: CreateNavItemInput;
 }>;
@@ -6880,6 +6919,108 @@ export function useDeleteLanguageMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
 export type DeleteLanguageMutationResult = Apollo.MutationResult<DeleteLanguageMutation>;
 export type DeleteLanguageMutationOptions = Apollo.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export const CreateManufacturerDocument = gql`
+    mutation CreateManufacturer($input: CreateManufacturerInput!) {
+  createManufacturer(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateManufacturerMutationFn = Apollo.MutationFunction<CreateManufacturerMutation, CreateManufacturerMutationVariables>;
+
+/**
+ * __useCreateManufacturerMutation__
+ *
+ * To run a mutation, you first call `useCreateManufacturerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateManufacturerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createManufacturerMutation, { data, loading, error }] = useCreateManufacturerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<CreateManufacturerMutation, CreateManufacturerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateManufacturerMutation, CreateManufacturerMutationVariables>(CreateManufacturerDocument, options);
+      }
+export type CreateManufacturerMutationHookResult = ReturnType<typeof useCreateManufacturerMutation>;
+export type CreateManufacturerMutationResult = Apollo.MutationResult<CreateManufacturerMutation>;
+export type CreateManufacturerMutationOptions = Apollo.BaseMutationOptions<CreateManufacturerMutation, CreateManufacturerMutationVariables>;
+export const UpdateManufacturerDocument = gql`
+    mutation UpdateManufacturer($input: UpdateManufacturerInput!) {
+  updateManufacturer(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateManufacturerMutationFn = Apollo.MutationFunction<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>;
+
+/**
+ * __useUpdateManufacturerMutation__
+ *
+ * To run a mutation, you first call `useUpdateManufacturerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateManufacturerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateManufacturerMutation, { data, loading, error }] = useUpdateManufacturerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>(UpdateManufacturerDocument, options);
+      }
+export type UpdateManufacturerMutationHookResult = ReturnType<typeof useUpdateManufacturerMutation>;
+export type UpdateManufacturerMutationResult = Apollo.MutationResult<UpdateManufacturerMutation>;
+export type UpdateManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>;
+export const DeleteManufacturerDocument = gql`
+    mutation DeleteManufacturer($_id: ObjectId!) {
+  deleteManufacturer(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteManufacturerMutationFn = Apollo.MutationFunction<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>;
+
+/**
+ * __useDeleteManufacturerMutation__
+ *
+ * To run a mutation, you first call `useDeleteManufacturerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteManufacturerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteManufacturerMutation, { data, loading, error }] = useDeleteManufacturerMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>(DeleteManufacturerDocument, options);
+      }
+export type DeleteManufacturerMutationHookResult = ReturnType<typeof useDeleteManufacturerMutation>;
+export type DeleteManufacturerMutationResult = Apollo.MutationResult<DeleteManufacturerMutation>;
+export type DeleteManufacturerMutationOptions = Apollo.BaseMutationOptions<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>;
 export const CreateNavItemDocument = gql`
     mutation CreateNavItem($input: CreateNavItemInput!) {
   createNavItem(input: $input) {

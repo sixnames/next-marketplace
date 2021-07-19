@@ -154,14 +154,6 @@ const BrandsPage: NextPage<BrandsPageInterface> = ({ pageUrls, ...props }) => {
   );
 };
 
-interface BrandsAggregationInterface {
-  docs: BrandInterface[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<BrandsPageInterface>> => {
@@ -228,7 +220,7 @@ export const getServerSideProps = async (
   const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
 
   const brandsAggregationResult = await brandsCollection
-    .aggregate<BrandsAggregationInterface>(
+    .aggregate<BrandsConsumerInterface>(
       [
         ...searchStage,
         {

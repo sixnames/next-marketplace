@@ -69,7 +69,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
       {
         name: 'Коллекции',
         testId: 'brand-collections',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}/collection`,
+        path: `${ROUTE_CMS}/brands/brand/${brand._id}/collections/${brand._id}`,
       },
     ];
   }, [brand._id]);

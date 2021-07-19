@@ -74,6 +74,7 @@ export interface AttributesGroupInterface extends AttributesGroupModel {
 export interface BrandInterface extends BrandModel {
   name?: string | null;
   description?: string | null;
+  collections?: BrandCollectionInterface[] | null;
 }
 
 export interface BrandCollectionInterface extends BrandCollectionModel {

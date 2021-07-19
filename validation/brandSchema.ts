@@ -35,7 +35,7 @@ export const brandCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => 
     descriptionI18n: Yup.object({
       [DEFAULT_LOCALE]: Yup.string().nullable(),
     }).nullable(),
-    url: notRequiredUrlSchema(args),
+    url: Yup.array().of(notRequiredUrlSchema(args)),
   };
 };
 

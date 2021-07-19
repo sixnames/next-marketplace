@@ -7,7 +7,7 @@ const navItemsDefaultSlug = 'navItem';
 const navItems: NavItemModel[] = [
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-base`),
-    slug: 'console-orders',
+    slug: 'console',
     nameI18n: {
       ru: 'Панель управления',
       en: 'Console',
@@ -123,6 +123,17 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
+    nameI18n: {
+      ru: 'Ошибки синхронизации',
+      en: 'Sync errors',
+    },
+    index: 4,
+    slug: 'cms-sync-errors',
+    path: `${ROUTE_CMS}/sync-errors`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubric-variants`),
     nameI18n: {
       ru: 'Типы рубрик',
@@ -156,14 +167,25 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
-    _id: getObjectId(`${navItemsDefaultSlug} cms-languages`),
+    _id: getObjectId(`${navItemsDefaultSlug} cms-brands`),
     nameI18n: {
-      ru: 'Языки сайта',
-      en: 'Site languages',
+      ru: 'Бренды',
+      en: 'Brands',
     },
     index: 8,
-    slug: 'cms-languages',
-    path: `${ROUTE_CMS}/languages`,
+    slug: 'cms-brands',
+    path: `${ROUTE_CMS}/brands`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-manufacturers`),
+    nameI18n: {
+      ru: 'Производители',
+      en: 'Manufacturers',
+    },
+    index: 9,
+    slug: 'cms-manufacturers',
+    path: `${ROUTE_CMS}/manufacturers`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -172,31 +194,9 @@ const navItems: NavItemModel[] = [
       ru: 'Пользователи',
       en: 'Users',
     },
-    index: 9,
+    index: 10,
     slug: 'cms-users',
     path: `${ROUTE_CMS}/users`,
-    navGroup: ROUTE_CMS_NAV_GROUP,
-  },
-  {
-    _id: getObjectId(`${navItemsDefaultSlug} cms-nav-items`),
-    nameI18n: {
-      ru: 'Навигация',
-      en: 'Navigation',
-    },
-    index: 10,
-    slug: 'cms-nav-items',
-    path: `${ROUTE_CMS}/nav`,
-    navGroup: ROUTE_CMS_NAV_GROUP,
-  },
-  {
-    _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
-    nameI18n: {
-      ru: 'Ошибки синхронизации',
-      en: 'Sync errors',
-    },
-    index: 11,
-    slug: 'cms-sync-errors',
-    path: `${ROUTE_CMS}/sync-errors`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -205,7 +205,7 @@ const navItems: NavItemModel[] = [
       ru: 'Страницы',
       en: 'Pages',
     },
-    index: 96,
+    index: 94,
     slug: 'cms-pages',
     path: `${ROUTE_CMS}/pages`,
     navGroup: ROUTE_CMS_NAV_GROUP,
@@ -216,9 +216,31 @@ const navItems: NavItemModel[] = [
       ru: 'Шаблоны страниц',
       en: 'Page templates',
     },
-    index: 97,
+    index: 95,
     slug: 'cms-page-templates',
     path: `${ROUTE_CMS}/page-templates`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-languages`),
+    nameI18n: {
+      ru: 'Языки сайта',
+      en: 'Site languages',
+    },
+    index: 96,
+    slug: 'cms-languages',
+    path: `${ROUTE_CMS}/languages`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-nav-items`),
+    nameI18n: {
+      ru: 'Навигация',
+      en: 'Navigation',
+    },
+    index: 97,
+    slug: 'cms-nav-items',
+    path: `${ROUTE_CMS}/nav`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {

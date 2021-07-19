@@ -20,7 +20,7 @@ export const manufacturerCommonFieldsSchema = (args: ValidationSchemaArgsInterfa
     descriptionI18n: Yup.object({
       [DEFAULT_LOCALE]: Yup.string().nullable(),
     }).nullable(),
-    url: notRequiredUrlSchema(args),
+    url: Yup.array().of(notRequiredUrlSchema(args)),
   };
 };
 

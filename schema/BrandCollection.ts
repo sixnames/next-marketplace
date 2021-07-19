@@ -71,9 +71,8 @@ export const BrandCollectionQueries = extendType({
       },
       resolve: async (_root, args): Promise<BrandCollectionsAlphabetListModel[]> => {
         const { db } = await getDatabase();
-        const brandCollectionsCollection = db.collection<BrandCollectionModel>(
-          COL_BRAND_COLLECTIONS,
-        );
+        const brandCollectionsCollection =
+          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
         const { input } = args;
         let query: Record<string, any> = {};
         if (input) {

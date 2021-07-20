@@ -543,5 +543,21 @@ export type MessageSlug =
   // Orders validation
   | 'validation.orders.reservationDate'
 
+  // Order Statuses ----------
+  | 'orderStatuses.create.duplicate'
+  | 'orderStatuses.create.error'
+  | 'orderStatuses.create.success'
+  | 'orderStatuses.update.duplicate'
+  | 'orderStatuses.update.error'
+  | 'orderStatuses.update.success'
+  | 'orderStatuses.delete.used'
+  | 'orderStatuses.delete.error'
+  | 'orderStatuses.delete.success'
+  // Order statuses validation
+  | 'validation.orderStatuses.id'
+  | 'validation.orderStatuses.name'
+  | 'validation.orderStatuses.color'
+  | 'validation.orderStatuses.index'
+
   // Fallback for empty key
   | 'none';

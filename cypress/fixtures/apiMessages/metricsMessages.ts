@@ -65,4 +65,20 @@ export const metricsMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Metric deleted.`,
     },
   },
+
+  // validation
+  {
+    slug: 'validation.metrics.id',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `ID единицы измерения обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Metric ID is required.`,
+    },
+  },
+  {
+    slug: 'validation.metrics.name',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Название единицы измерения обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Metric name is required.`,
+    },
+  },
 ];

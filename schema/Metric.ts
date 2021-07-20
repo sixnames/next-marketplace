@@ -7,12 +7,10 @@ import {
 import {
   AttributeModel,
   MetricModel,
-  MetricsPaginationPayloadModel,
   MetricPayloadModel,
   ProductAttributeModel,
   RubricAttributeModel,
 } from 'db/dbModels';
-import { aggregatePagination } from 'db/aggregatePagination';
 import {
   COL_ATTRIBUTES,
   COL_METRICS,
@@ -42,40 +40,10 @@ export const Metric = objectType({
   },
 });
 
-export const MetricsPaginationPayload = objectType({
-  name: 'MetricsPaginationPayload',
-  definition(t) {
-    t.implements('PaginationPayload');
-    t.nonNull.list.nonNull.field('docs', {
-      type: 'Metric',
-    });
-  },
-});
-
 // Metric Queries
 export const MetricQueries = extendType({
   type: 'Query',
   definition(t) {
-    // Should return paginated metrics
-    t.nonNull.field('getAllMetrics', {
-      type: 'PaginationPayload',
-      description: 'Should return paginated metrics',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<MetricsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<MetricModel>({
-          input: args.input,
-          collectionName: COL_METRICS,
-          city,
-        });
-        return paginationResult;
-      },
-    });
-
     // Should return all metrics list
     t.nonNull.list.nonNull.field('getAllMetricsOptions', {
       type: 'Metric',

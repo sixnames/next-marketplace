@@ -85,7 +85,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
 
       <AppSubNav navConfig={navConfig} />
 
-      <Inner testId={'brand-details-page'}>
+      <Inner testId={'brand-details'}>
         <Formik
           enableReinitialize
           validationSchema={validationSchema}

@@ -45,7 +45,7 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
   };
 
   return (
-    <ModalFrame testId={'create-brand-collection-modal'}>
+    <ModalFrame testId={'brand-collection-modal'}>
       <ModalTitle>{brandCollection ? 'Обновление' : 'Создание'} коллекции бренда</ModalTitle>
       <Formik<CreateBrandInput>
         enableReinitialize

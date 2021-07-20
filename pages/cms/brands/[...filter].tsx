@@ -97,7 +97,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'users-list'}>
+    <AppContentWrapper testId={'brands-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>

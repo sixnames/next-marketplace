@@ -200,7 +200,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-brand'}
+              testId={'create-brand-collection'}
               size={'small'}
               onClick={() => {
                 showModal<BrandCollectionModalInterface>({

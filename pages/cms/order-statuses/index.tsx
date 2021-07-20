@@ -112,7 +112,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
         <title>{pageTitle}</title>
       </Head>
 
-      <Inner data-cy={'order-statuses-list'}>
+      <Inner testId={'order-statuses-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<OrderStatusInterface>

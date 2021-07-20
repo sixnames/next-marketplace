@@ -5,8 +5,8 @@ export const orderStatusesMessages: MessageBaseInterface[] = [
   {
     slug: 'orderStatuses.create.duplicate',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Статус заказа с таким именем уже существует.`,
-      [SECONDARY_LOCALE]: `Order status with same name is already exists.`,
+      [DEFAULT_LOCALE]: `Статус заказа с таким именем или порядковым номером уже существует.`,
+      [SECONDARY_LOCALE]: `Order status with same name or index is already exists.`,
     },
   },
   {
@@ -26,8 +26,8 @@ export const orderStatusesMessages: MessageBaseInterface[] = [
   {
     slug: 'orderStatuses.update.duplicate',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Статус заказа с таким именем уже существует.`,
-      [SECONDARY_LOCALE]: `Order status with same name is already exists.`,
+      [DEFAULT_LOCALE]: `Статус заказа с таким именем или порядковым номером уже существует.`,
+      [SECONDARY_LOCALE]: `Order status with same name or index is already exists.`,
     },
   },
   {

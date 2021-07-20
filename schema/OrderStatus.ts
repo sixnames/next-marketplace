@@ -108,6 +108,11 @@ export const OrderStatusMutations = extendType({
             fieldName: 'nameI18n',
             collectionName: COL_ORDER_STATUSES,
             fieldArg: input.nameI18n,
+            additionalOrQuery: [
+              {
+                index: input.index,
+              },
+            ],
           });
           if (exist) {
             return {
@@ -212,6 +217,11 @@ export const OrderStatusMutations = extendType({
               collectionName: COL_ORDER_STATUSES,
               fieldArg: input.nameI18n,
               additionalQuery: { _id: { $ne: orderStatusId } },
+              additionalOrQuery: [
+                {
+                  index: input.index,
+                },
+              ],
             });
             if (exist) {
               mutationPayload = {

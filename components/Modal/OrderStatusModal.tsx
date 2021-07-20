@@ -1,53 +1,115 @@
-import RoleMainFields from 'components/FormTemplates/RoleMainFields';
-import { useAppContext } from 'context/appContext';
-import { CreateRoleInput } from 'generated/apolloComponents';
-import useValidationSchema from 'hooks/useValidationSchema';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import { OrderStatusInterface } from 'db/uiInterfaces';
+import {
+  UpdateOrderStatusInput,
+  useCreateOrderStatusMutation,
+  useUpdateOrderStatusMutation,
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { ResolverValidationSchema } from 'lib/sessionHelpers';
 import * as React from 'react';
-import { createRoleSchema } from 'validation/roleSchema';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
 import Button from 'components/Button';
 
-export interface CreateRoleModalInterface {
-  confirm: (values: CreateRoleInput) => void;
+export interface OrderStatusModalInterface {
+  orderStatus?: OrderStatusInterface;
+  validationSchema: ResolverValidationSchema;
 }
 
-const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
-  const { hideModal } = useAppContext();
-  const validationSchema = useValidationSchema({
-    schema: createRoleSchema,
+const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
+  orderStatus,
+  validationSchema,
+}) => {
+  const { showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
   });
 
+  const [updateOrderStatusMutation] = useUpdateOrderStatusMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateOrderStatus),
+    onError: onErrorCallback,
+  });
+
+  const [createOrderStatusMutation] = useCreateOrderStatusMutation({
+    onCompleted: (data) => onCompleteCallback(data.createOrderStatus),
+    onError: onErrorCallback,
+  });
+
+  const initialValues: UpdateOrderStatusInput = {
+    orderStatusId: orderStatus ? orderStatus._id : 'null',
+    nameI18n: orderStatus?.nameI18n || {},
+    color: orderStatus?.color || '',
+    index: orderStatus?.index || 0,
+  };
+
   return (
-    <ModalFrame testId={'create-role-modal'}>
-      <ModalTitle>Создание роли</ModalTitle>
+    <ModalFrame testId={'order-status-modal'}>
+      <ModalTitle>{`${orderStatus ? 'Обновление' : 'Создание'} статуса заказа`}</ModalTitle>
 
       <Formik
         validationSchema={validationSchema}
-        initialValues={{
-          nameI18n: null,
-          descriptionI18n: null,
-          isStaff: false,
-          isCompanyStaff: false,
-        }}
+        initialValues={initialValues}
         onSubmit={(values) => {
-          confirm(values);
+          showLoading();
+          if (orderStatus) {
+            updateOrderStatusMutation({
+              variables: {
+                input: {
+                  orderStatusId: `${orderStatus._id}`,
+                  nameI18n: values.nameI18n,
+                  color: values.color,
+                  index: values.index,
+                },
+              },
+            }).catch(console.log);
+            return;
+          }
+
+          createOrderStatusMutation({
+            variables: {
+              input: {
+                nameI18n: values.nameI18n,
+                color: values.color,
+                index: values.index,
+              },
+            },
+          }).catch(console.log);
         }}
       >
         {() => {
           return (
             <Form>
-              <RoleMainFields />
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'nameI18n'}
+                testId={'nameI18n'}
+                showInlineError
+                isRequired
+              />
+
+              <FormikInput
+                label={'Цвет'}
+                name={'color'}
+                type={'color'}
+                isRequired
+                showInlineError
+              />
+
+              <FormikInput
+                label={'Порядковый номер'}
+                name={'index'}
+                type={'number'}
+                isRequired
+                showInlineError
+              />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'role-submit'}>
-                  Создать
-                </Button>
-
-                <Button theme={'secondary'} onClick={hideModal} testId={'role-decline'}>
-                  Отмена
+                <Button type={'submit'} testId={'order-status-submit'}>
+                  {orderStatus ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>
             </Form>
@@ -58,4 +120,4 @@ const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
   );
 };
 
-export default CreateRoleModal;
+export default OrderStatusModal;

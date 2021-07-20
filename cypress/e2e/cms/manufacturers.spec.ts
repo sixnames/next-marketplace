@@ -24,7 +24,6 @@ describe('Manufacturers', () => {
 
     // should update brand
     cy.getByCy(`${newManufacturerName}-update`).click();
-    cy.wait(1500);
     cy.getByCy('manufacturer-modal').should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedManufacturerName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(updatedManufacturerName);

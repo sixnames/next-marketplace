@@ -82,7 +82,7 @@ const MetricModal: React.FC<MetricModalInterface> = ({ metric, validationSchema 
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'metric-submit'}>
+                <Button type={'submit'} testId={'submit-metric'}>
                   {metric ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>

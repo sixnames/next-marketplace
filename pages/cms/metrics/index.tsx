@@ -101,7 +101,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
         <title>{pageTitle}</title>
       </Head>
 
-      <Inner data-cy={'metrics-list'}>
+      <Inner testId={'metrics-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<MetricInterface>

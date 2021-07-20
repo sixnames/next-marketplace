@@ -541,6 +541,12 @@ export type CreateOptionsGroupInput = {
   variant: OptionsGroupVariant;
 };
 
+export type CreateOrderStatusInput = {
+  nameI18n: Scalars['JSONObject'];
+  color: Scalars['String'];
+  index: Scalars['Int'];
+};
+
 export type CreatePageInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -836,20 +842,6 @@ export type MetricPayload = Payload & {
   payload?: Maybe<Metric>;
 };
 
-export type MetricsPaginationPayload = PaginationPayload & {
-  __typename?: 'MetricsPaginationPayload';
-  sortBy: Scalars['String'];
-  sortDir: SortDirection;
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  hasPrevPage: Scalars['Boolean'];
-  hasNextPage: Scalars['Boolean'];
-  docs: Array<Metric>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   /** Should create user */
@@ -1068,6 +1060,12 @@ export type Mutation = {
   clearCart: CartPayload;
   /** Should add all products to the cart from user's old order */
   repeatOrder: CartPayload;
+  /** Should create order status */
+  createOrderStatus: OrderStatusPayload;
+  /** Should update order status */
+  updateOrderStatus: OrderStatusPayload;
+  /** Should delete order status */
+  deleteOrderStatus: OrderStatusPayload;
   /** Should create order from session cart */
   makeAnOrder: MakeAnOrderPayload;
   /** Should confirm order */
@@ -1610,6 +1608,21 @@ export type MutationRepeatOrderArgs = {
 };
 
 
+export type MutationCreateOrderStatusArgs = {
+  input: CreateOrderStatusInput;
+};
+
+
+export type MutationUpdateOrderStatusArgs = {
+  input: UpdateOrderStatusInput;
+};
+
+
+export type MutationDeleteOrderStatusArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
 export type MutationMakeAnOrderArgs = {
   input: MakeAnOrderInput;
 };
@@ -1773,7 +1786,15 @@ export type OrderStatus = Timestamp & {
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
+  index: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type OrderStatusPayload = Payload & {
+  __typename?: 'OrderStatusPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<OrderStatus>;
 };
 
 export type Page = {
@@ -2018,8 +2039,6 @@ export type Query = {
   getRole?: Maybe<Role>;
   /** Should return all roles list */
   getAllRoles: Array<Role>;
-  /** Should return paginated metrics */
-  getAllMetrics: PaginationPayload;
   /** Should return all metrics list */
   getAllMetricsOptions: Array<Metric>;
   /** Should return options grouped by alphabet */
@@ -2139,11 +2158,6 @@ export type QueryGetAllCitiesArgs = {
 
 export type QueryGetRoleArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllMetricsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 
@@ -2702,6 +2716,13 @@ export type UpdateOptionsGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   variant: OptionsGroupVariant;
+};
+
+export type UpdateOrderStatusInput = {
+  orderStatusId: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  color: Scalars['String'];
+  index: Scalars['Int'];
 };
 
 export type UpdatePageInput = {
@@ -3638,6 +3659,45 @@ export type DeleteManufacturerMutation = (
   ) }
 );
 
+export type CreateMetricMutationVariables = Exact<{
+  input: CreateMetricInput;
+}>;
+
+
+export type CreateMetricMutation = (
+  { __typename?: 'Mutation' }
+  & { createMetric: (
+    { __typename?: 'MetricPayload' }
+    & Pick<MetricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateMetricMutationVariables = Exact<{
+  input: UpdateMetricInput;
+}>;
+
+
+export type UpdateMetricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMetric: (
+    { __typename?: 'MetricPayload' }
+    & Pick<MetricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteMetricMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteMetricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMetric: (
+    { __typename?: 'MetricPayload' }
+    & Pick<MetricPayload, 'success' | 'message'>
+  ) }
+);
+
 export type CreateNavItemMutationVariables = Exact<{
   input: CreateNavItemInput;
 }>;
@@ -3765,6 +3825,45 @@ export type ConfirmOrderMutation = (
   & { confirmOrder: (
     { __typename?: 'MakeAnOrderPayload' }
     & Pick<MakeAnOrderPayload, 'success' | 'message'>
+  ) }
+);
+
+export type CreateOrderStatusMutationVariables = Exact<{
+  input: CreateOrderStatusInput;
+}>;
+
+
+export type CreateOrderStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { createOrderStatus: (
+    { __typename?: 'OrderStatusPayload' }
+    & Pick<OrderStatusPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateOrderStatusMutationVariables = Exact<{
+  input: UpdateOrderStatusInput;
+}>;
+
+
+export type UpdateOrderStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOrderStatus: (
+    { __typename?: 'OrderStatusPayload' }
+    & Pick<OrderStatusPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteOrderStatusMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteOrderStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteOrderStatus: (
+    { __typename?: 'OrderStatusPayload' }
+    & Pick<OrderStatusPayload, 'success' | 'message'>
   ) }
 );
 
@@ -7021,6 +7120,108 @@ export function useDeleteManufacturerMutation(baseOptions?: Apollo.MutationHookO
 export type DeleteManufacturerMutationHookResult = ReturnType<typeof useDeleteManufacturerMutation>;
 export type DeleteManufacturerMutationResult = Apollo.MutationResult<DeleteManufacturerMutation>;
 export type DeleteManufacturerMutationOptions = Apollo.BaseMutationOptions<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>;
+export const CreateMetricDocument = gql`
+    mutation CreateMetric($input: CreateMetricInput!) {
+  createMetric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateMetricMutationFn = Apollo.MutationFunction<CreateMetricMutation, CreateMetricMutationVariables>;
+
+/**
+ * __useCreateMetricMutation__
+ *
+ * To run a mutation, you first call `useCreateMetricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMetricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMetricMutation, { data, loading, error }] = useCreateMetricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMetricMutation(baseOptions?: Apollo.MutationHookOptions<CreateMetricMutation, CreateMetricMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMetricMutation, CreateMetricMutationVariables>(CreateMetricDocument, options);
+      }
+export type CreateMetricMutationHookResult = ReturnType<typeof useCreateMetricMutation>;
+export type CreateMetricMutationResult = Apollo.MutationResult<CreateMetricMutation>;
+export type CreateMetricMutationOptions = Apollo.BaseMutationOptions<CreateMetricMutation, CreateMetricMutationVariables>;
+export const UpdateMetricDocument = gql`
+    mutation UpdateMetric($input: UpdateMetricInput!) {
+  updateMetric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateMetricMutationFn = Apollo.MutationFunction<UpdateMetricMutation, UpdateMetricMutationVariables>;
+
+/**
+ * __useUpdateMetricMutation__
+ *
+ * To run a mutation, you first call `useUpdateMetricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMetricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMetricMutation, { data, loading, error }] = useUpdateMetricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMetricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMetricMutation, UpdateMetricMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMetricMutation, UpdateMetricMutationVariables>(UpdateMetricDocument, options);
+      }
+export type UpdateMetricMutationHookResult = ReturnType<typeof useUpdateMetricMutation>;
+export type UpdateMetricMutationResult = Apollo.MutationResult<UpdateMetricMutation>;
+export type UpdateMetricMutationOptions = Apollo.BaseMutationOptions<UpdateMetricMutation, UpdateMetricMutationVariables>;
+export const DeleteMetricDocument = gql`
+    mutation DeleteMetric($_id: ObjectId!) {
+  deleteMetric(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteMetricMutationFn = Apollo.MutationFunction<DeleteMetricMutation, DeleteMetricMutationVariables>;
+
+/**
+ * __useDeleteMetricMutation__
+ *
+ * To run a mutation, you first call `useDeleteMetricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMetricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMetricMutation, { data, loading, error }] = useDeleteMetricMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteMetricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMetricMutation, DeleteMetricMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMetricMutation, DeleteMetricMutationVariables>(DeleteMetricDocument, options);
+      }
+export type DeleteMetricMutationHookResult = ReturnType<typeof useDeleteMetricMutation>;
+export type DeleteMetricMutationResult = Apollo.MutationResult<DeleteMetricMutation>;
+export type DeleteMetricMutationOptions = Apollo.BaseMutationOptions<DeleteMetricMutation, DeleteMetricMutationVariables>;
 export const CreateNavItemDocument = gql`
     mutation CreateNavItem($input: CreateNavItemInput!) {
   createNavItem(input: $input) {
@@ -7361,6 +7562,108 @@ export function useConfirmOrderMutation(baseOptions?: Apollo.MutationHookOptions
 export type ConfirmOrderMutationHookResult = ReturnType<typeof useConfirmOrderMutation>;
 export type ConfirmOrderMutationResult = Apollo.MutationResult<ConfirmOrderMutation>;
 export type ConfirmOrderMutationOptions = Apollo.BaseMutationOptions<ConfirmOrderMutation, ConfirmOrderMutationVariables>;
+export const CreateOrderStatusDocument = gql`
+    mutation CreateOrderStatus($input: CreateOrderStatusInput!) {
+  createOrderStatus(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateOrderStatusMutationFn = Apollo.MutationFunction<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>;
+
+/**
+ * __useCreateOrderStatusMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderStatusMutation, { data, loading, error }] = useCreateOrderStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>(CreateOrderStatusDocument, options);
+      }
+export type CreateOrderStatusMutationHookResult = ReturnType<typeof useCreateOrderStatusMutation>;
+export type CreateOrderStatusMutationResult = Apollo.MutationResult<CreateOrderStatusMutation>;
+export type CreateOrderStatusMutationOptions = Apollo.BaseMutationOptions<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>;
+export const UpdateOrderStatusDocument = gql`
+    mutation UpdateOrderStatus($input: UpdateOrderStatusInput!) {
+  updateOrderStatus(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateOrderStatusMutationFn = Apollo.MutationFunction<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>;
+
+/**
+ * __useUpdateOrderStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrderStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrderStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrderStatusMutation, { data, loading, error }] = useUpdateOrderStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>(UpdateOrderStatusDocument, options);
+      }
+export type UpdateOrderStatusMutationHookResult = ReturnType<typeof useUpdateOrderStatusMutation>;
+export type UpdateOrderStatusMutationResult = Apollo.MutationResult<UpdateOrderStatusMutation>;
+export type UpdateOrderStatusMutationOptions = Apollo.BaseMutationOptions<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>;
+export const DeleteOrderStatusDocument = gql`
+    mutation DeleteOrderStatus($_id: ObjectId!) {
+  deleteOrderStatus(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteOrderStatusMutationFn = Apollo.MutationFunction<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>;
+
+/**
+ * __useDeleteOrderStatusMutation__
+ *
+ * To run a mutation, you first call `useDeleteOrderStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOrderStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOrderStatusMutation, { data, loading, error }] = useDeleteOrderStatusMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>(DeleteOrderStatusDocument, options);
+      }
+export type DeleteOrderStatusMutationHookResult = ReturnType<typeof useDeleteOrderStatusMutation>;
+export type DeleteOrderStatusMutationResult = Apollo.MutationResult<DeleteOrderStatusMutation>;
+export type DeleteOrderStatusMutationOptions = Apollo.BaseMutationOptions<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>;
 export const CreatePagesGroupDocument = gql`
     mutation CreatePagesGroup($input: CreatePagesGroupInput!) {
   createPagesGroup(input: $input) {

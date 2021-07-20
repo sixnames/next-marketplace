@@ -185,7 +185,7 @@ const navItems: NavItemModel[] = [
     },
     index: 9,
     slug: 'cms-order-statuses',
-    path: `${ROUTE_CMS}/metrics`,
+    path: `${ROUTE_CMS}/order-statuses`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {

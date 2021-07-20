@@ -292,6 +292,12 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  CreateOrderStatusInput: {
+    // input type
+    color: string; // String!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+  };
   CreatePageInput: {
     // input type
     citySlug: string; // String!
@@ -661,6 +667,13 @@ export interface NexusGenInputs {
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OptionsGroupVariant']; // OptionsGroupVariant!
   };
+  UpdateOrderStatusInput: {
+    // input type
+    color: string; // String!
+    index: number; // Int!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    orderStatusId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdatePageInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -920,7 +933,6 @@ export interface NexusGenObjects {
   MessagesGroup: dbModels.MessagesGroupModel;
   Metric: dbModels.MetricModel;
   MetricPayload: dbModels.MetricPayloadModel;
-  MetricsPaginationPayload: dbModels.MetricsPaginationPayloadModel;
   Mutation: {};
   NavItem: dbModels.NavItemModel;
   NavItemPayload: dbModels.NavItemPayloadModel;
@@ -938,6 +950,7 @@ export interface NexusGenObjects {
   OrderPayload: dbModels.OrderPayloadModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
+  OrderStatusPayload: dbModels.OrderStatusPayloadModel;
   Page: dbModels.PageModel;
   PagePayload: dbModels.PagePayloadModel;
   PagesGroup: dbModels.PagesGroupModel;
@@ -1328,19 +1341,6 @@ export interface NexusGenFieldTypes {
     payload: NexusGenRootTypes['Metric'] | null; // Metric
     success: boolean; // Boolean!
   };
-  MetricsPaginationPayload: {
-    // field return type
-    docs: NexusGenRootTypes['Metric'][]; // [Metric!]!
-    hasNextPage: boolean; // Boolean!
-    hasPrevPage: boolean; // Boolean!
-    limit: number; // Int!
-    page: number; // Int!
-    sortBy: string; // String!
-    sortDir: NexusGenEnums['SortDirection']; // SortDirection!
-    totalActiveDocs: number; // Int!
-    totalDocs: number; // Int!
-    totalPages: number; // Int!
-  };
   Mutation: {
     // field return type
     addAttributeToGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -1367,6 +1367,7 @@ export interface NexusGenFieldTypes {
     createMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    createOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     createPage: NexusGenRootTypes['PagePayload']; // PagePayload!
     createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1391,6 +1392,7 @@ export interface NexusGenFieldTypes {
     deleteNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    deleteOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     deletePage: NexusGenRootTypes['PagePayload']; // PagePayload!
     deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1430,6 +1432,7 @@ export interface NexusGenFieldTypes {
     updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
+    updateOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     updatePage: NexusGenRootTypes['PagePayload']; // PagePayload!
     updatePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1569,10 +1572,17 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
+    index: number; // Int!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
+  };
+  OrderStatusPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['OrderStatus'] | null; // OrderStatus
+    success: boolean; // Boolean!
   };
   Page: {
     // field return type
@@ -1716,7 +1726,6 @@ export interface NexusGenFieldTypes {
     getAllCurrencies: NexusGenRootTypes['Currency'][]; // [Currency!]!
     getAllLanguages: NexusGenRootTypes['Language'][]; // [Language!]!
     getAllManufacturers: NexusGenRootTypes['ManufacturersPaginationPayload']; // ManufacturersPaginationPayload!
-    getAllMetrics: NexusGenRootTypes['PaginationPayload']; // PaginationPayload!
     getAllMetricsOptions: NexusGenRootTypes['Metric'][]; // [Metric!]!
     getAllOptionsGroups: NexusGenRootTypes['OptionsGroup'][]; // [OptionsGroup!]!
     getAllRoles: NexusGenRootTypes['Role'][]; // [Role!]!
@@ -2381,19 +2390,6 @@ export interface NexusGenFieldTypeNames {
     payload: 'Metric';
     success: 'Boolean';
   };
-  MetricsPaginationPayload: {
-    // field return type name
-    docs: 'Metric';
-    hasNextPage: 'Boolean';
-    hasPrevPage: 'Boolean';
-    limit: 'Int';
-    page: 'Int';
-    sortBy: 'String';
-    sortDir: 'SortDirection';
-    totalActiveDocs: 'Int';
-    totalDocs: 'Int';
-    totalPages: 'Int';
-  };
   Mutation: {
     // field return type name
     addAttributeToGroup: 'AttributesGroupPayload';
@@ -2420,6 +2416,7 @@ export interface NexusGenFieldTypeNames {
     createMetric: 'MetricPayload';
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
+    createOrderStatus: 'OrderStatusPayload';
     createPage: 'PagePayload';
     createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
@@ -2444,6 +2441,7 @@ export interface NexusGenFieldTypeNames {
     deleteNavItem: 'NavItemPayload';
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
+    deleteOrderStatus: 'OrderStatusPayload';
     deletePage: 'PagePayload';
     deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
@@ -2483,6 +2481,7 @@ export interface NexusGenFieldTypeNames {
     updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
+    updateOrderStatus: 'OrderStatusPayload';
     updatePage: 'PagePayload';
     updatePagesGroup: 'PagesGroupPayload';
     updateProduct: 'ProductPayload';
@@ -2622,10 +2621,17 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     color: 'String';
     createdAt: 'Date';
+    index: 'Int';
     name: 'String';
     nameI18n: 'JSONObject';
     slug: 'String';
     updatedAt: 'Date';
+  };
+  OrderStatusPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'OrderStatus';
+    success: 'Boolean';
   };
   Page: {
     // field return type name
@@ -2769,7 +2775,6 @@ export interface NexusGenFieldTypeNames {
     getAllCurrencies: 'Currency';
     getAllLanguages: 'Language';
     getAllManufacturers: 'ManufacturersPaginationPayload';
-    getAllMetrics: 'PaginationPayload';
     getAllMetricsOptions: 'Metric';
     getAllOptionsGroups: 'OptionsGroup';
     getAllRoles: 'Role';
@@ -3203,6 +3208,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOptionsGroupInput']; // CreateOptionsGroupInput!
     };
+    createOrderStatus: {
+      // args
+      input: NexusGenInputs['CreateOrderStatusInput']; // CreateOrderStatusInput!
+    };
     createPage: {
       // args
       input: NexusGenInputs['CreatePageInput']; // CreatePageInput!
@@ -3296,6 +3305,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['DeleteOptionFromGroupInput']; // DeleteOptionFromGroupInput!
     };
     deleteOptionsGroup: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deleteOrderStatus: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
@@ -3455,6 +3468,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateOptionsGroupInput']; // UpdateOptionsGroupInput!
     };
+    updateOrderStatus: {
+      // args
+      input: NexusGenInputs['UpdateOrderStatusInput']; // UpdateOrderStatusInput!
+    };
     updatePage: {
       // args
       input: NexusGenInputs['UpdatePageInput']; // UpdatePageInput!
@@ -3566,10 +3583,6 @@ export interface NexusGenArgTypes {
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
     getAllManufacturers: {
-      // args
-      input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
-    };
-    getAllMetrics: {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
@@ -3739,7 +3752,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'CitiesPaginationPayload'
     | 'CompaniesPaginationPayload'
     | 'ManufacturersPaginationPayload'
-    | 'MetricsPaginationPayload'
     | 'ShopProductsPaginationPayload'
     | 'ShopsPaginationPayload'
     | 'UsersPaginationPayload';
@@ -3757,6 +3769,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
     | 'OrderPayload'
+    | 'OrderStatusPayload'
     | 'PagePayload'
     | 'PagesGroupPayload'
     | 'ProductPayload'
@@ -3807,7 +3820,6 @@ export interface NexusGenTypeInterfaces {
   ManufacturersAlphabetList: 'AlphabetList';
   ManufacturersPaginationPayload: 'PaginationPayload';
   MetricPayload: 'Payload';
-  MetricsPaginationPayload: 'PaginationPayload';
   NavItemPayload: 'Payload';
   OptionsAlphabetList: 'AlphabetList';
   OptionsGroupPayload: 'Payload';
@@ -3815,6 +3827,7 @@ export interface NexusGenTypeInterfaces {
   OrderLog: 'Timestamp';
   OrderPayload: 'Payload';
   OrderStatus: 'Timestamp';
+  OrderStatusPayload: 'Payload';
   PagePayload: 'Payload';
   PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';

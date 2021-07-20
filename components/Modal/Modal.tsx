@@ -35,6 +35,8 @@ import {
   CREATE_BRAND_MODAL,
   BRAND_COLLECTION_MODAL,
   MANUFACTURER_MODAL,
+  METRIC_MODAL,
+  ORDER_STATUS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -75,6 +77,8 @@ const CreateShopModal = dynamic(() => import('components/Modal/CreateShopModal')
 const ShopProductModal = dynamic(() => import('components/Modal/ShopProductModal'));
 const CartModal = dynamic(() => import('components/Modal/CartModal'));
 const CreateRoleModal = dynamic(() => import('components/Modal/CreateRoleModal'));
+const MetricModal = dynamic(() => import('components/Modal/MetricModal'));
+const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal'));
 
 interface ModalInterface {
   modalType: string;
@@ -155,6 +159,10 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === PAGES_GROUP_MODAL && <PagesGroupModal {...modalProps} />}
 
           {modalType === CREATE_PAGE_MODAL && <CreatePageModal {...modalProps} />}
+
+          {modalType === METRIC_MODAL && <MetricModal {...modalProps} />}
+
+          {modalType === ORDER_STATUS_MODAL && <OrderStatusModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

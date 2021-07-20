@@ -124,7 +124,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'users-list'}>
+    <AppContentWrapper testId={'manufacturers-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
@@ -154,7 +154,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-brand'}
+              testId={'create-manufacturer'}
               size={'small'}
               onClick={() => {
                 showModal<ManufacturerModalInterface>({

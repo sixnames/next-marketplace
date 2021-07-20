@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
 
-describe('Languages', () => {
+describe('Brands', () => {
   beforeEach(() => {
     cy.testAuth(`${ROUTE_CMS}/brands`);
   });

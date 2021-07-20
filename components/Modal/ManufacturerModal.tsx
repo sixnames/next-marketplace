@@ -41,7 +41,7 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
     nameI18n: manufacturer?.nameI18n || {},
     descriptionI18n: manufacturer?.descriptionI18n || {},
     manufacturerId: manufacturer?._id,
-    url: manufacturer?.url || [''],
+    url: !manufacturer?.url || manufacturer?.url.length < 1 ? [''] : manufacturer.url,
   };
 
   return (

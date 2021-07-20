@@ -45,7 +45,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
     brandId: brand._id,
     nameI18n: brand.nameI18n,
     descriptionI18n: brand.descriptionI18n,
-    url: brand.url || [''],
+    url: !brand.url || brand.url.length < 1 ? [''] : brand.url,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

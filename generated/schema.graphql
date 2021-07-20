@@ -500,6 +500,12 @@ input CreateOptionsGroupInput {
   variant: OptionsGroupVariant!
 }
 
+input CreateOrderStatusInput {
+  color: String!
+  index: Int!
+  nameI18n: JSONObject!
+}
+
 input CreatePageInput {
   citySlug: String!
   descriptionI18n: JSONObject
@@ -801,19 +807,6 @@ type MetricPayload implements Payload {
   success: Boolean!
 }
 
-type MetricsPaginationPayload implements PaginationPayload {
-  docs: [Metric!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
-}
-
 type Mutation {
   """
   Should create attribute and add it to the attributes group
@@ -936,6 +929,11 @@ type Mutation {
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayload!
 
   """
+  Should create order status
+  """
+  createOrderStatus(input: CreateOrderStatusInput!): OrderStatusPayload!
+
+  """
   Should crate page
   """
   createPage(input: CreatePageInput!): PagePayload!
@@ -1054,6 +1052,11 @@ type Mutation {
   Should delete options group
   """
   deleteOptionsGroup(_id: ObjectId!): OptionsGroupPayload!
+
+  """
+  Should delete order status
+  """
+  deleteOrderStatus(_id: ObjectId!): OrderStatusPayload!
 
   """
   Should delete page
@@ -1249,6 +1252,11 @@ type Mutation {
   Should update options group
   """
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayload!
+
+  """
+  Should update order status
+  """
+  updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
 
   """
   Should update page
@@ -1513,10 +1521,17 @@ type OrderStatus implements Timestamp {
   _id: ObjectId!
   color: String!
   createdAt: Date!
+  index: Int!
   name: String!
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
+}
+
+type OrderStatusPayload implements Payload {
+  message: String!
+  payload: OrderStatus
+  success: Boolean!
 }
 
 type Page {
@@ -1781,11 +1796,6 @@ type Query {
   Should return paginated manufacturers
   """
   getAllManufacturers(input: PaginationInput): ManufacturersPaginationPayload!
-
-  """
-  Should return paginated metrics
-  """
-  getAllMetrics(input: PaginationInput): PaginationPayload!
 
   """
   Should return all metrics list
@@ -2415,6 +2425,13 @@ input UpdateOptionsGroupInput {
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   variant: OptionsGroupVariant!
+}
+
+input UpdateOrderStatusInput {
+  color: String!
+  index: Int!
+  nameI18n: JSONObject!
+  orderStatusId: ObjectId!
 }
 
 input UpdatePageInput {

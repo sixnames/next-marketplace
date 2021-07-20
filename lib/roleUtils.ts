@@ -71,6 +71,11 @@ export type RoleRuleSlugType =
   | 'updateMetric' // done
   | 'deleteMetric' // done
 
+  // OrderStatus
+  | 'createOrderStatus' // done
+  | 'updateOrderStatus' // done
+  | 'deleteOrderStatus' // done
+
   // NavItem
   | 'createNavItem' // done
   | 'updateNavItem' // done
@@ -486,6 +491,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление еденицы измерения',
+    },
+  },
+
+  // OrderStatus
+  {
+    allow: false,
+    slug: 'createOrderStatus',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание статуса заказа',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateOrderStatus',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление статуса заказа',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteOrderStatus',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление статуса заказа',
     },
   },
 

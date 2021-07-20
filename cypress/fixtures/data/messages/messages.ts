@@ -27,6 +27,7 @@ import { rubricVariantsMessages } from '../../apiMessages/rubricVariantsMessages
 import { shopProductsMessages } from '../../apiMessages/shopProductsMessages';
 import { shopsMessages } from '../../apiMessages/shopsMessages';
 import { usersMessages } from '../../apiMessages/usersMessages';
+import { orderStatusesMessages } from '../../apiMessages/orderStatusesMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -152,6 +153,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: pagesMessages,
     groupName: 'Страницы',
+  },
+  {
+    initialMessages: orderStatusesMessages,
+    groupName: 'Статусы заказа',
   },
 ];
 

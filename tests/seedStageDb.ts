@@ -1,7 +1,7 @@
 import {
   ASSETS_DIST_COMPANIES,
+  ASSETS_DIST_CONFIGS,
   ASSETS_DIST_PAGES,
-  // ASSETS_DIST_CONFIGS,
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
   ASSETS_DIST_TEMPLATES,
@@ -15,10 +15,10 @@ require('dotenv').config();
 export async function uploadTestAssets(srcPath: string, distPath = '/') {
   const s3 = new EasyYandexS3({
     auth: {
-      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
-      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
+      accessKeyId: `${process.env.STAGE_OBJECT_STORAGE_KEY_ID}`,
+      secretAccessKey: `${process.env.STAGE_OBJECT_STORAGE_KEY}`,
     },
-    Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
+    Bucket: `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`,
     // debug: true,
   });
 
@@ -93,10 +93,10 @@ const config = {
       `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
       `/${ASSETS_DIST_TEMPLATES}`,
     );
-    /*await uploadTestAssets(
+    await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
       `/${ASSETS_DIST_CONFIGS}`,
-    );*/
+    );
   } catch (err) {
     console.log(err);
   }

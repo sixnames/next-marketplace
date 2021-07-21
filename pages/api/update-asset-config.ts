@@ -59,8 +59,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeRestApiUploads({
     files: formData.files,
     dist: `${ASSETS_DIST_CONFIGS}/${config.companySlug}`,
-    itemId: `${fields.slug}`,
+    itemId: `${config.slug}`,
   });
+
   if (!assets) {
     res.status(500).send({
       success: false,

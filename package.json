@@ -15,8 +15,7 @@
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
     "test": "cypress run",
     "seed-stage-db": "ts-node --skip-project tests/seedStageDb.ts",
-    "update-nav-items": "ts-node --skip-project cypress/fixtures/utils/updateNavItems.ts",
-    "update-prod-api-messages": "ts-node --skip-project cypress/fixtures/utils/updateProductionApiMessages.ts",
+    "update-prods": "ts-node --skip-project cypress/fixtures/utils/updateProds.ts",
     "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",
     "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts"
   },
@@ -50,7 +49,7 @@
     "cookies": "^0.8.0",
     "cyrillic-to-translit-js": "^3.1.0",
     "easy-yandex-s3": "^1.1.6",
-    "file-type": "^16.5.0",
+    "ext-name": "^5.0.0",
     "formidable": "^1.2.2",
     "formik": "^2.2.6",
     "generate-password": "^1.6.0",

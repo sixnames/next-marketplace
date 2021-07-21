@@ -4,7 +4,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
 import imagemin from 'imagemin';
 // import imageminWebp from 'imagemin-webp';
-import FileType from 'file-type';
+import extName from 'ext-name';
 
 interface StoreRestApiUploadsAsset {
   buffer: Buffer;
@@ -37,6 +37,7 @@ export async function storeRestApiUploads({
       // const buffer = await fs.readFile(file[0].path);
       // console.log(file);
       // compress buffer
+
       const imageminResult = await imagemin(
         [file[0].path] /*{
         plugins: [
@@ -53,14 +54,16 @@ export async function storeRestApiUploads({
         break;
       }
 
-      const fileType = await FileType.fromBuffer(compressedBuffer);
-      if (!fileType) {
+      const fileTypeResult = extName(file[0]?.name);
+      const fileType = alwaysArray(fileTypeResult)[0];
+
+      if (!fileType || !fileType.ext) {
         break;
       }
 
       uploads.push({
         buffer: compressedBuffer,
-        ext: fileType.ext,
+        ext: `${fileType.ext}`.replace('.', ''),
       });
     }
 
@@ -71,6 +74,11 @@ export async function storeRestApiUploads({
       const finalIndex = finalStartIndex + fileIndex;
       const { buffer, ext } = file;
       const fileName = `${currentTimeStamp}-${finalIndex}${ext ? `.${ext}` : ''}`;
+
+      console.log({
+        fileName,
+        buffer,
+      });
 
       if (!buffer) {
         return null;

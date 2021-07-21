@@ -2,8 +2,8 @@ import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE, ROUTE_CMS } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -18,7 +18,11 @@ export interface AppConfigsLayoutInterface {
   isCms?: boolean;
 }
 
-const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms, companyId }) => {
+const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
+  children,
+  isCms,
+  companyId,
+}) => {
   const navConfig = React.useMemo(() => {
     return [
       {
@@ -81,4 +85,4 @@ const AppConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, isCms
   );
 };
 
-export default AppConfigsLayout;
+export default ConsoleConfigsLayout;

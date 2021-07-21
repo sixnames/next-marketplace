@@ -3,8 +3,8 @@ import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
-import AppCompanyLayout from 'layout/AppLayout/AppCompanyLayout';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -23,11 +23,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
 }) => {
   return (
-    <AppCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout company={currentCompany}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
-    </AppCompanyLayout>
+    </ConsoleCompanyLayout>
   );
 };
 
@@ -36,9 +36,9 @@ interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterfac
 const Config: NextPage<ConfigPageInterface> = (props) => {
   const { pageUrls, currentCompany } = props;
   return (
-    <AppLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
       <ConfigConsumer {...props} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

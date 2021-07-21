@@ -18,7 +18,7 @@ import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';

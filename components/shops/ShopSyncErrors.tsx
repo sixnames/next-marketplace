@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
 
 export interface ShopSyncErrorsInterface extends AppShopLayoutInterface, SyncErrorsListInterface {}
@@ -14,7 +14,7 @@ const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   showControls,
 }) => {
   return (
-    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-sync-errors-page'}>
         <SyncErrorsList
           notSyncedProducts={notSyncedProducts}
@@ -22,7 +22,7 @@ const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
           showControls={showControls}
         />
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

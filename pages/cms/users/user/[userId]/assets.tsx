@@ -6,7 +6,7 @@ import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

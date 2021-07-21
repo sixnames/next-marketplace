@@ -24,8 +24,8 @@ import {
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
@@ -199,9 +199,9 @@ const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
   const { pageUrls, currentCompany } = props;
 
   return (
-    <AppLayout title={'Магазины компании'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Магазины компании'} pageUrls={pageUrls} company={currentCompany}>
       <CompanyShopsPageConsumer {...props} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

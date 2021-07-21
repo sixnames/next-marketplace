@@ -11,8 +11,8 @@ import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS } from 'db/collecti
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getShortName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -120,9 +120,9 @@ interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
 const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders, currentCompany }) => {
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <OrdersRoute orders={orders} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

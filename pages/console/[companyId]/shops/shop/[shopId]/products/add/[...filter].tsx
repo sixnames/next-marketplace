@@ -11,8 +11,8 @@ import {
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -94,7 +94,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <AppLayout pageUrls={pageUrls} company={company}>
+      <ConsoleLayout pageUrls={pageUrls} company={company}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -107,12 +107,12 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
           shop={shop}
           {...props}
         />
-      </AppLayout>
+      </ConsoleLayout>
     );
   }
 
   return (
-    <AppLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
@@ -125,7 +125,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
         shop={shop}
         {...props}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -18,10 +18,8 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';

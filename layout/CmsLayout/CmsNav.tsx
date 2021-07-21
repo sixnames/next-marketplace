@@ -1,4 +1,6 @@
+import ControlButton from 'components/ControlButton';
 import { NavItemModel } from 'db/dbModels';
+import { CompanyInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import * as React from 'react';
 import CmsNavUser from 'layout/CmsLayout/CmsNavUser';
@@ -15,9 +17,11 @@ import { UseCompactReturnInterface } from 'hooks/useCompact';
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
   navItems: NavItemModel[];
+  basePath: string;
+  company?: CompanyInterface;
 }
 
-const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
+const CmsNav: React.FC<AppNavInterface> = ({ compact, basePath, company, navItems }) => {
   const signOut = useSignOut();
   const { pathname } = useRouter();
   const { isMobile } = useAppContext();
@@ -29,8 +33,13 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
 
   return (
     <nav className={classes.frame}>
-      <div className={`${classes.collapse}`} onClick={mobileNavHandler}>
-        <Icon name='burger' className={classes.collapseIcon} />
+      <div className={`${classes.collapse}`}>
+        {isCompact ? null : (
+          <div className='pl-[10px] text-secondary-text'>
+            <ThemeTrigger staticColors />
+          </div>
+        )}
+        <ControlButton icon={'burger'} onClick={mobileNavHandler} />
       </div>
 
       <div className={`${classes.nav} ${isCompact && classes.navCompact}`}>
@@ -42,6 +51,8 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
               {navItems.map((item) => {
                 return (
                   <CmsNavItem
+                    companyId={company ? `${company._id}` : undefined}
+                    basePath={basePath}
                     compact={isCompact}
                     key={`${item._id}`}
                     item={item}
@@ -93,14 +104,6 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                     </span>
                   </div>
                 </Tooltip>
-              </li>
-
-              <li className={`${classes.bottom} ${classes.bottom}`}>
-                <div
-                  className={`${classes.bottomLink} ${isCompact ? classes.bottomLinkCompact : ''}`}
-                >
-                  <ThemeTrigger staticColors />
-                </div>
               </li>
             </ul>
           </div>

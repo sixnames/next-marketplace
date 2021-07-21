@@ -9,7 +9,7 @@ import { Form, Formik } from 'formik';
 import { useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';

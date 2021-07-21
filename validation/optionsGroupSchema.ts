@@ -1,10 +1,6 @@
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import * as Yup from 'yup';
-import {
-  colorSchema,
-  objectIdSchema,
-  requiredStringTranslationSchema,
-} from 'validation/schemaTemplates';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 
 // Options group schemas
 export const optionsGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
@@ -46,7 +42,6 @@ export const optionInGroupCommonSchema = (args: ValidationSchemaArgsInterface) =
     ...args,
     slug: 'validation.option.name',
   }),
-  color: colorSchema(args),
 });
 
 export const addOptionToGroupSchema = (args: ValidationSchemaArgsInterface) => {

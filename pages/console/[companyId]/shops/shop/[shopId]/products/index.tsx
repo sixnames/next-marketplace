@@ -3,8 +3,8 @@ import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
@@ -40,14 +40,14 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   };
 
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
         basePath={`${companyBasePath}/shop`}
         breadcrumbs={breadcrumbs}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -14,7 +14,7 @@ import {
   useDeleteAttributeFromGroupMutation,
   useUpdateAttributeInGroupMutation,
 } from 'generated/apolloComponents';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import Button from 'components/Button';
@@ -24,9 +24,7 @@ import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/co
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';

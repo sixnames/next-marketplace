@@ -16,10 +16,8 @@ import { AppPaginationInterface, BrandCollectionInterface, BrandInterface } from
 import { useDeleteCollectionFromBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -200,7 +198,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-brand'}
+              testId={'create-brand-collection'}
               size={'small'}
               onClick={() => {
                 showModal<BrandCollectionModalInterface>({

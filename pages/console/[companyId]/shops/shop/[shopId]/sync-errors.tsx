@@ -3,8 +3,8 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -37,7 +37,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   };
 
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopSyncErrors
         showControls={false}
         showShopName={false}
@@ -46,7 +46,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
         breadcrumbs={breadcrumbs}
         shop={shop}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

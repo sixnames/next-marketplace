@@ -14,7 +14,7 @@ import { MetricInterface } from 'db/uiInterfaces';
 import { useDeleteMetricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
@@ -101,7 +101,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
         <title>{pageTitle}</title>
       </Head>
 
-      <Inner data-cy={'metrics-list'}>
+      <Inner testId={'metrics-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<MetricInterface>

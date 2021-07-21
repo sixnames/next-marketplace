@@ -2,8 +2,8 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -26,9 +26,9 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, currentCompany,
   };
 
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopDetails basePath={`${companyBasePath}/shop`} shop={shop} breadcrumbs={breadcrumbs} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

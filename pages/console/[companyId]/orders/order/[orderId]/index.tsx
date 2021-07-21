@@ -15,10 +15,8 @@ import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useConfirmOrderMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -87,9 +85,9 @@ interface OrderPageInterface extends PagePropsInterface, OrderPageConsumerInterf
 
 const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order, currentCompany }) => {
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <OrderPageConsumer order={order} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

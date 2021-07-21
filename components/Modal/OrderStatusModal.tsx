@@ -95,6 +95,7 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
                 label={'Цвет'}
                 name={'color'}
                 type={'color'}
+                testId={'color'}
                 isRequired
                 showInlineError
               />
@@ -102,13 +103,14 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
               <FormikInput
                 label={'Порядковый номер'}
                 name={'index'}
+                testId={'index'}
                 type={'number'}
                 isRequired
                 showInlineError
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'order-status-submit'}>
+                <Button type={'submit'} testId={'submit-order-status'}>
                   {orderStatus ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>

@@ -15,7 +15,7 @@ import { OrderStatusInterface } from 'db/uiInterfaces';
 import { useDeleteOrderStatusMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
@@ -112,7 +112,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
         <title>{pageTitle}</title>
       </Head>
 
-      <Inner data-cy={'order-statuses-list'}>
+      <Inner testId={'order-statuses-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<OrderStatusInterface>

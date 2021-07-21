@@ -2,7 +2,7 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
 import { RubricInterface } from 'db/uiInterfaces';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -45,7 +45,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-rubrics-list'}>
         <Table<RubricInterface>
           columns={columns}
@@ -59,7 +59,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
           }}
         />
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

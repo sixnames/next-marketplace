@@ -27,8 +27,8 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppShopLayout from 'layout/AppLayout/AppShopLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { useRouter } from 'next/router';
@@ -185,7 +185,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   }, [totalDocs]);
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`not-in-shop-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
@@ -248,7 +248,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
           </div>
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 
@@ -393,7 +393,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'not-in-shop-products-list-step-2'}>
         <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
@@ -455,6 +455,6 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
           </div>
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };

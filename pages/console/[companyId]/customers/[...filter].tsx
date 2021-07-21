@@ -13,8 +13,8 @@ import {
   RoleInterface,
   UserInterface,
 } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -112,9 +112,9 @@ interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface 
 
 const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <UsersConsumer {...props} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

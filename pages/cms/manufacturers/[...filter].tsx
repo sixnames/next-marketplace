@@ -16,7 +16,7 @@ import { AppPaginationInterface, ManufacturerInterface } from 'db/uiInterfaces';
 import { useDeleteManufacturerMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -124,7 +124,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'users-list'}>
+    <AppContentWrapper testId={'manufacturers-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
@@ -154,7 +154,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-brand'}
+              testId={'create-manufacturer'}
               size={'small'}
               onClick={() => {
                 showModal<ManufacturerModalInterface>({

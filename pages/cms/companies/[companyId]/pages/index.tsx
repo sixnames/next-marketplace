@@ -4,7 +4,7 @@ import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';

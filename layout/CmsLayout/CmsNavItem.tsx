@@ -1,5 +1,5 @@
 import CounterSticker from 'components/CounterSticker';
-import { CMS_ORDERS_NAV_ITEM_SLUG } from 'config/common';
+import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from 'config/common';
 import { NavItemInterface } from 'db/uiInterfaces';
 import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
 import { useRouter } from 'next/router';
@@ -17,16 +17,29 @@ interface AppNavItemInterface {
   pathname: string;
   openNavHandler: () => void;
   closeNavHandler: () => void;
+  basePath: string;
+  companyId?: string;
 }
 
-const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
+const CmsNavItem: React.FC<AppNavItemInterface> = ({
+  item,
+  basePath,
+  compact,
+  openNavHandler,
+  pathname,
+  companyId,
+}) => {
   const { asPath } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, path, children, slug } = item;
   const iconType = icon as IconType;
   const counter = useNewOrdersCounter({
-    allowFetch: item.slug === CMS_ORDERS_NAV_ITEM_SLUG,
+    allowFetch:
+      item.slug === CMS_ORDERS_NAV_ITEM_SLUG || item.slug === CONSOLE_ORDERS_NAV_ITEM_SLUG,
+    input: {
+      companyId,
+    },
   });
 
   React.useEffect(() => {
@@ -95,7 +108,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             return (
               <li className={classes.item} key={name} data-cy={`app-nav-item-${slug}`}>
                 <Link
-                  href={`${path}`}
+                  href={`${basePath}${path}`}
                   className={`${classes.complexLink} ${isCurrent ? classes.linkActive : ''}`}
                 >
                   <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
@@ -116,7 +129,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
       <Tooltip title={compact ? name : ''}>
         <div>
           <Link
-            href={`${path}`}
+            href={`${basePath}${path}`}
             className={`${classes.link} ${compact ? classes.linkCompact : ''} ${
               isCurrent ? classes.linkActive : ''
             }`}
@@ -135,7 +148,11 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             </span>
 
             {counter && counter > 0 ? (
-              <CounterSticker value={counter} className='ml-auto' isAbsolute={false} />
+              <CounterSticker
+                value={counter}
+                className={compact ? 'absolute top-0 right-0' : 'ml-auto'}
+                isAbsolute={false}
+              />
             ) : null}
           </Link>
         </div>

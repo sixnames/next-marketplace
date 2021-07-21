@@ -9,10 +9,8 @@ import { getDatabase } from 'db/mongodb';
 import { NavGroupInterface, RoleInterface, NavItemInterface } from 'db/uiInterfaces';
 import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';

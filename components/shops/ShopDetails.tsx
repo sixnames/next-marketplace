@@ -11,7 +11,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -57,7 +57,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-details-page'}>
         <div className='relative'>
           <Formik
@@ -210,7 +210,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
           ) : null}
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

@@ -2,10 +2,8 @@ import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
 

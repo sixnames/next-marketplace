@@ -31,7 +31,7 @@ const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) 
     <div className={`min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <CmsNav compact={compact} navItems={me.role?.cmsNavigation || []} />
+      <CmsNav compact={compact} basePath={''} navItems={me.role?.cmsNavigation || []} />
 
       <main
         className={`min-h-full-height pt-[36px] lg:pt-0 ${

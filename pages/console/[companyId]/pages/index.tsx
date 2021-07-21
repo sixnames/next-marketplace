@@ -2,8 +2,8 @@ import Inner from 'components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -22,7 +22,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   currentCompany,
 }) => {
   return (
-    <AppLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
@@ -33,7 +33,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
           />
         </Inner>
       </AppContentWrapper>
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

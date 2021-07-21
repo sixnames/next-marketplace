@@ -28,7 +28,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
@@ -218,7 +218,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   };
 
   return (
-    <AppShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`shop-rubric-products-list`}>
         <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
@@ -337,7 +337,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           </div>
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

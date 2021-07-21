@@ -13,7 +13,7 @@ import { getDatabase } from 'db/mongodb';
 import { RoleInterface } from 'db/uiInterfaces';
 import { useCreateRoleMutation, useDeleteRoleMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';

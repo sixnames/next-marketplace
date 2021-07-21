@@ -364,7 +364,14 @@ export async function getPageSessionUser({
                     input: '$navItems',
                     as: 'navItem',
                     cond: {
-                      $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
+                      $and: [
+                        {
+                          $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
+                        },
+                        {
+                          $ne: ['$$navItem.path', ''],
+                        },
+                      ],
                     },
                   },
                 },
@@ -373,7 +380,14 @@ export async function getPageSessionUser({
                     input: '$navItems',
                     as: 'navItem',
                     cond: {
-                      $eq: ['$$navItem.navGroup', ROUTE_CMS_NAV_GROUP],
+                      $and: [
+                        {
+                          $eq: ['$$navItem.navGroup', ROUTE_CMS_NAV_GROUP],
+                        },
+                        {
+                          $ne: ['$$navItem.path', ROUTE_CMS],
+                        },
+                      ],
                     },
                   },
                 },

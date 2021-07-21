@@ -1,7 +1,7 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_UI } from 'config/common';
-import AppConfigsLayout, { ConfigPageInterface } from 'layout/AppLayout/AppConfigsLayout';
+import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -10,11 +10,11 @@ import * as React from 'react';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
   return (
-    <AppConfigsLayout isCms={true}>
+    <ConsoleConfigsLayout isCms={true}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
-    </AppConfigsLayout>
+    </ConsoleConfigsLayout>
   );
 };
 

@@ -1,5 +1,6 @@
+import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
-import AppNav from 'layout/AppLayout/AppNav';
+import CmsNav from 'layout/CmsLayout/CmsNav';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -11,7 +12,7 @@ import Meta, { PageUrlsInterface } from '../Meta';
 import Modal from 'components/Modal/Modal';
 import useCompact from 'hooks/useCompact';
 
-interface AppLayoutInterface {
+interface ConsoleLayoutInterface {
   description?: string;
   title?: string;
   pageUrls: PageUrlsInterface;
@@ -21,7 +22,7 @@ interface AppLayoutInterface {
 const narrowContentClass = 'lg:pl-[220px]';
 const wideContentClass = 'lg:pl-[60px]';
 
-const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({
+const ConsoleLayoutConsumer: React.FC<ConsoleLayoutInterface> = ({
   children,
   company,
   pageUrls,
@@ -47,7 +48,12 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({
     <div className={`relative z-[1] min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
 
-      <AppNav compact={compact} navItems={me.role?.appNavigation || []} company={company} />
+      <CmsNav
+        compact={compact}
+        basePath={`${ROUTE_CONSOLE}/${company._id}`}
+        navItems={me.role?.appNavigation || []}
+        company={company}
+      />
 
       <main
         className={`relative z-[1] min-h-full-height pt-[36px] lg:pt-0 ${
@@ -63,12 +69,17 @@ const AppLayoutConsumer: React.FC<AppLayoutInterface> = ({
   );
 };
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, company, pageUrls, title }) => {
+const ConsoleLayout: React.FC<ConsoleLayoutInterface> = ({
+  children,
+  company,
+  pageUrls,
+  title,
+}) => {
   return (
-    <AppLayoutConsumer pageUrls={pageUrls} title={title} company={company}>
+    <ConsoleLayoutConsumer pageUrls={pageUrls} title={title} company={company}>
       {children}
-    </AppLayoutConsumer>
+    </ConsoleLayoutConsumer>
   );
 };
 
-export default AppLayout;
+export default ConsoleLayout;

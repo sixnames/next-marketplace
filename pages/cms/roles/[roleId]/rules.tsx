@@ -9,10 +9,8 @@ import { getDatabase } from 'db/mongodb';
 import { RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
 import { useUpdateRoleRuleMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getRoleRulesAst } from 'lib/roleUtils';
 import { ObjectId } from 'mongodb';

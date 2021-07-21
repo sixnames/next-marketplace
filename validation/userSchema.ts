@@ -2,8 +2,8 @@ import * as Yup from 'yup';
 import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
 import {
   phoneSchema,
-  minNameLength,
-  maxNameLength,
+  MIN_STRING_FIELD_LENGTH,
+  MAX_STRING_FIELD_LENGTH,
   emailSchema,
   objectIdSchema,
 } from './schemaTemplates';
@@ -20,18 +20,18 @@ export const userNameSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.string()
     .nullable()
     .min(
-      minNameLength,
+      MIN_STRING_FIELD_LENGTH,
       getFieldValidationMessage({
         ...args,
         slug: 'validation.string.min',
-      }) + ` ${minNameLength}`,
+      }) + ` ${MIN_STRING_FIELD_LENGTH}`,
     )
     .max(
-      maxNameLength,
+      MAX_STRING_FIELD_LENGTH,
       getFieldValidationMessage({
         ...args,
         slug: 'validation.string.max',
-      }) + ` ${maxNameLength}`,
+      }) + ` ${MAX_STRING_FIELD_LENGTH}`,
     )
     .trim()
     .required(
@@ -47,11 +47,11 @@ export const userLastNameSchema = (args: ValidationSchemaArgsInterface) => {
     .nullable()
     .trim()
     .max(
-      maxNameLength,
+      MAX_STRING_FIELD_LENGTH,
       getFieldValidationMessage({
         ...args,
         slug: 'validation.string.max',
-      }) + ` ${maxNameLength}`,
+      }) + ` ${MAX_STRING_FIELD_LENGTH}`,
     );
 };
 
@@ -60,11 +60,11 @@ export const userSecondNameSchema = (args: ValidationSchemaArgsInterface) => {
     .nullable()
     .trim()
     .max(
-      maxNameLength,
+      MAX_STRING_FIELD_LENGTH,
       getFieldValidationMessage({
         ...args,
         slug: 'validation.string.max',
-      }) + ` ${maxNameLength}`,
+      }) + ` ${MAX_STRING_FIELD_LENGTH}`,
     );
 };
 

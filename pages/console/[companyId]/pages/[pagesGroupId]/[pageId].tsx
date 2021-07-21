@@ -3,10 +3,8 @@ import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails'
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getPageSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -38,14 +36,14 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   };
 
   return (
-    <AppLayout title={`${page.name}`} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={`${page.name}`} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{page.name}</Title>
           <PageDetails page={page} cities={cities} />
         </Inner>
       </AppContentWrapper>
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

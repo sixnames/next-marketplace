@@ -10,8 +10,8 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, ShopInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppLayout/AppContentWrapper';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -54,7 +54,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <AppLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopOrder
         title={title}
         order={order}
@@ -62,7 +62,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         basePath={`${companyBasePath}/shop`}
         shop={shop}
       />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

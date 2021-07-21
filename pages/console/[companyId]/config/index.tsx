@@ -8,8 +8,8 @@ import { Form, Formik } from 'formik';
 import { useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppCompanyLayout from 'layout/AppLayout/AppCompanyLayout';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
@@ -37,7 +37,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
   });
 
   return (
-    <AppCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout company={currentCompany}>
       <Inner testId={'company-details'}>
         <Formik
           validationSchema={validationSchema}
@@ -79,7 +79,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
           }}
         </Formik>
       </Inner>
-    </AppCompanyLayout>
+    </ConsoleCompanyLayout>
   );
 };
 
@@ -91,9 +91,9 @@ const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({
   ...props
 }) => {
   return (
-    <AppLayout {...props} company={currentCompany}>
+    <ConsoleLayout {...props} company={currentCompany}>
       <CompanyDetailsConsumer currentCompany={currentCompany} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -21,10 +21,8 @@ import {
   useUpdateOptionInGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getOptionsTree } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';

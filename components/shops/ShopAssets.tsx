@@ -9,7 +9,7 @@ import {
   useUpdateShopAssetIndexMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -32,7 +32,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
   });
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-assets-list'}>
           <Formik
@@ -170,7 +170,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
           </Formik>
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

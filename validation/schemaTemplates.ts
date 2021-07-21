@@ -1,4 +1,4 @@
-import { colorRegEx, phoneRegEx } from 'validation/regExp';
+import { phoneRegEx } from 'validation/regExp';
 import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { MessageSlug } from 'types/messageSlugTypes';
@@ -8,28 +8,8 @@ import {
   GetFieldValidationMessageInterface,
 } from 'lib/getFieldValidationMessage';
 
-export const minDescriptionLength = 10;
-export const maxDescriptionLength = 1000;
-export const minNameLength = 2;
-export const maxNameLength = 150;
-export const minPrice = 1;
-
-// HEX color schema
-export const colorSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.lazy((value?: string | null) => {
-    return !value
-      ? Yup.string().nullable()
-      : Yup.string()
-          .trim()
-          .matches(
-            colorRegEx,
-            getFieldValidationMessage({
-              ...args,
-              slug: 'validation.color',
-            }),
-          );
-  });
-};
+export const MIN_STRING_FIELD_LENGTH = 1;
+export const MAX_STRING_FIELD_LENGTH = 250;
 
 // Email schema
 export const emailSchema = (args: ValidationSchemaArgsInterface) => {
@@ -118,8 +98,8 @@ export const requiredStringSchema = ({
   max,
   slug,
 }: RequiredFieldSchemaInterface) => {
-  const minLength = min || minNameLength;
-  const maxLength = max || maxNameLength;
+  const minLength = min || MIN_STRING_FIELD_LENGTH;
+  const maxLength = max || MAX_STRING_FIELD_LENGTH;
 
   return Yup.string()
     .min(

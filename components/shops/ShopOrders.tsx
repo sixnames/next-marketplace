@@ -6,7 +6,7 @@ import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import { OrderInterface } from 'db/uiInterfaces';
-import AppShopLayout, { AppShopLayoutInterface } from 'layout/AppLayout/AppShopLayout';
+import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -73,7 +73,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
   ];
 
   return (
-    <AppShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-orders-list'}>
           <div className='overflow-x-auto'>
@@ -91,7 +91,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
           <Pager page={1} setPage={() => undefined} totalPages={0} />
         </div>
       </Inner>
-    </AppShopLayout>
+    </ConsoleShopLayout>
   );
 };
 

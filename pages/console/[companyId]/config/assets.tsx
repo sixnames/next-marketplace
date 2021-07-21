@@ -5,8 +5,8 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppCompanyLayout from 'layout/AppLayout/AppCompanyLayout';
-import AppLayout from 'layout/AppLayout/AppLayout';
+import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -23,7 +23,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
   const router = useRouter();
 
   return (
-    <AppCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout company={currentCompany}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
@@ -81,7 +81,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
           }}
         </Formik>
       </Inner>
-    </AppCompanyLayout>
+    </ConsoleCompanyLayout>
   );
 };
 
@@ -89,9 +89,9 @@ interface CompanyAssetsPageInterface extends PagePropsInterface, CompanyAssetsCo
 
 const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ currentCompany, ...props }) => {
   return (
-    <AppLayout {...props} company={currentCompany}>
+    <ConsoleLayout {...props} company={currentCompany}>
       <CompanyAssetsConsumer currentCompany={currentCompany} />
-    </AppLayout>
+    </ConsoleLayout>
   );
 };
 

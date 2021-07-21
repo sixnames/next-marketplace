@@ -20,7 +20,12 @@ const BrandMainFields: React.FC = () => {
         showInlineError
       />
 
-      <FormikMultiLineInput name={'url'} label={'Ссылка на сайт бренда'} showInlineError />
+      <FormikMultiLineInput
+        name={'url'}
+        testId={'url'}
+        label={'Ссылка на сайт бренда'}
+        showInlineError
+      />
     </React.Fragment>
   );
 };

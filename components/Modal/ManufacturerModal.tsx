@@ -107,11 +107,12 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
 
               <FormikMultiLineInput
                 name={'url'}
+                testId={'url'}
                 label={'Ссылка на сайт производителя'}
                 showInlineError
               />
 
-              <Button type={'submit'} testId={'submit-brand-collection'}>
+              <Button type={'submit'} testId={'submit-manufacturer'}>
                 {manufacturer ? 'Сохранить' : 'Создать'}
               </Button>
             </Form>

@@ -2,7 +2,7 @@ import FixedButtons from 'components/FixedButtons';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { ROUTE_CMS } from 'config/common';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppSubNav from 'layout/AppLayout/AppSubNav';
+import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import Button from 'components/Button';
@@ -13,9 +13,7 @@ import { getDatabase } from 'db/mongodb';
 import { AttributesGroupInterface } from 'db/uiInterfaces';
 import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';

@@ -2,9 +2,7 @@ import Inner from 'components/Inner';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
-import AppContentWrapper, {
-  AppContentWrapperBreadCrumbs,
-} from 'layout/AppLayout/AppContentWrapper';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getPageSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';

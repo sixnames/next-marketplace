@@ -8,7 +8,7 @@ import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { storeRestApiUploads } from 'lib/assets';
+import { storeRestApiUploads } from 'lib/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';

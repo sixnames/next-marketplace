@@ -386,10 +386,14 @@ export async function getCardData({
     });
     // console.log(`card connections `, new Date().getTime() - startTime);
 
+    const initialProductAttributes = (product.attributes || []).filter(({ showInCard }) => {
+      return showInCard;
+    });
+
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
       excludedAttributesIds,
-      attributes: product.attributes || [],
+      attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale,
     });
@@ -398,7 +402,7 @@ export async function getCardData({
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
       excludedAttributesIds,
-      attributes: product.attributes || [],
+      attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       locale,
     });
@@ -407,7 +411,7 @@ export async function getCardData({
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
       excludedAttributesIds,
-      attributes: product.attributes || [],
+      attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       locale,
     });
@@ -416,7 +420,7 @@ export async function getCardData({
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
       excludedAttributesIds,
-      attributes: product.attributes || [],
+      attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       locale,
     });
@@ -425,7 +429,7 @@ export async function getCardData({
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
       excludedAttributesIds,
-      attributes: product.attributes || [],
+      attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale,
     });

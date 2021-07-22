@@ -82,6 +82,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         positioningInTitle: attribute.positioningInTitle || positioningInTitle,
         capitalise: attribute.capitalise,
         notShowAsAlphabet: attribute.notShowAsAlphabet,
+        showAsBreadcrumb: attribute.showAsBreadcrumb,
+        showInCard: attribute.showInCard,
       }
     : {
         nameI18n: {},
@@ -92,6 +94,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         positioningInTitle,
         capitalise: false,
         notShowAsAlphabet: true,
+        showAsBreadcrumb: false,
+        showInCard: true,
       };
 
   return (
@@ -107,7 +111,6 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       >
         {({ values }) => {
           const { variant } = values;
-          console.log(values.positioningInTitle);
           return (
             <Form>
               <FormikTranslationsInput
@@ -180,6 +183,13 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               <FormikCheckboxLine
                 label={'Не показывать опции атрибута сгруппированными по алфавиту'}
                 name={'notShowAsAlphabet'}
+              />
+
+              <FormikCheckboxLine label={'Показывать в карточке товара'} name={'showInCard'} />
+
+              <FormikCheckboxLine
+                label={'Показывать в крошках карточки товара'}
+                name={'showAsBreadcrumb'}
               />
 
               <ModalButtons>

@@ -21,7 +21,12 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import FormikTranslationsSelect from 'components/FormElements/Select/FormikTranslationsSelect';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { attributeInGroupModalSchema } from 'validation/attributesGroupSchema';
-import { ATTRIBUTE_VARIANT_MULTIPLE_SELECT, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  DEFAULT_LOCALE,
+} from 'config/common';
 
 type AddAttributeToGroupModalValuesType =
   | Omit<AddAttributeToGroupInput, 'attributesGroupId'>
@@ -63,6 +68,10 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
     getAttributeViewVariantsOptions,
   } = data;
 
+  const positioningInTitle = {
+    [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  };
+
   const initialValues: AddAttributeToGroupModalValuesType = attribute
     ? {
         nameI18n: attribute.nameI18n,
@@ -70,7 +79,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         viewVariant: `${attribute.viewVariant}` as AttributeViewVariant,
         metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
-        positioningInTitle: attribute.positioningInTitle,
+        positioningInTitle: attribute.positioningInTitle || positioningInTitle,
         capitalise: attribute.capitalise,
         notShowAsAlphabet: attribute.notShowAsAlphabet,
       }
@@ -80,7 +89,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         viewVariant: '' as AttributeViewVariant,
         metricId: null,
         optionsGroupId: null,
-        positioningInTitle: {},
+        positioningInTitle,
         capitalise: false,
         notShowAsAlphabet: true,
       };
@@ -98,7 +107,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       >
         {({ values }) => {
           const { variant } = values;
-
+          console.log(values.positioningInTitle);
           return (
             <Form>
               <FormikTranslationsInput
@@ -164,7 +173,6 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 options={getAttributePositioningOptions}
                 label={'Позиционирование в заголовке'}
                 showInlineError
-                firstOption={'Не выбрано'}
               />
 
               <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />

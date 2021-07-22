@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 import {
-  ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANTS_ENUMS,
@@ -52,14 +51,12 @@ export const attributePositioningInTitleSchema = (args: ValidationSchemaArgsInte
       return variant === ATTRIBUTE_VARIANT_SELECT;
     },
     then: Yup.object({
-      [DEFAULT_LOCALE]: Yup.mixed()
-        .oneOf(ATTRIBUTE_POSITION_IN_TITLE_ENUMS)
-        .required(
-          getFieldValidationMessage({
-            ...args,
-            slug: 'validation.attributes.position',
-          }),
-        ),
+      [DEFAULT_LOCALE]: Yup.string().required(
+        getFieldValidationMessage({
+          ...args,
+          slug: 'validation.attributes.position',
+        }),
+      ),
     }).nullable(),
     otherwise: Yup.object().nullable(),
   });

@@ -16,6 +16,7 @@
     "test": "cypress run",
     "seed-stage-db": "ts-node --skip-project tests/seedStageDb.ts",
     "update-prods": "ts-node --skip-project cypress/fixtures/utils/updateProds.ts",
+    "seed-new-db": "ts-node --skip-project cypress/fixtures/utils/seedNewDb.ts",
     "prepare-test-asset": "ts-node --skip-project tests/prepareTestAssets.ts",
     "seed-test-db": "ts-node --skip-project tests/seedTestDb.ts"
   },

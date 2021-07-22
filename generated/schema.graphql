@@ -9,6 +9,8 @@ input AddAttributeToGroupInput {
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
+  showAsBreadcrumb: Boolean!
+  showInCard: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }
@@ -2299,6 +2301,8 @@ input UpdateAttributeInGroupInput {
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
+  showAsBreadcrumb: Boolean!
+  showInCard: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }

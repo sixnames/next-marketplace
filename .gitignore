@@ -46,3 +46,4 @@ yarn-error.log*
 
 # production
 domains
+cypress/fixtures/initialData

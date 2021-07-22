@@ -66,18 +66,16 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
   }
 
   const { getGenderOptions } = data!;
-
   const initialValues: OptionInGroupModalValuesType = {
     nameI18n: option?.nameI18n || {},
-    color: option?.color || null,
+    color: option?.color || '#000000',
     icon: option?.icon || null,
     gender: option?.gender ? (`${option?.gender}` as Gender) : null,
     variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
       const currentOptionVariant = option?.variants[gender];
       if (currentOptionVariant) {
-        return {
-          [gender]: currentOptionVariant.gender,
-        };
+        acc[gender] = currentOptionVariant;
+        return acc;
       }
 
       acc[gender] = {};

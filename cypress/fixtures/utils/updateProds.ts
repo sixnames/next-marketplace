@@ -1,52 +1,14 @@
+import { dbsConfig, getProdDb, updateIndexes } from './getProdDb';
 import navItemTemplates from '../data/navItems/navItems';
 import { MessageModel, MessagesGroupModel, NavItemModel } from '../../../db/dbModels';
 import messagesGroupsTemplates from '../data/messagesGroups/messagesGroups';
 import messageTemplates from '../data/messages/messages';
-import path from 'path';
 import { COL_MESSAGES, COL_MESSAGES_GROUPS, COL_NAV_ITEMS } from '../../../db/collectionNames';
-import { MongoClient } from 'mongodb';
 require('dotenv').config();
-
-interface GetDatabaseInterface {
-  uri: string;
-  dbName: string;
-}
-
-async function getDatabase({ uri, dbName }: GetDatabaseInterface) {
-  const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
-
-  const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    authSource: dbName,
-    tls: true,
-    tlsCAFile,
-    replicaSet: process.env.MONGO_DB_RS,
-  };
-
-  // Create connection
-  const client = await MongoClient.connect(uri, options);
-  // Select the database through the connection
-  return {
-    db: client.db(dbName),
-    client,
-  };
-}
-
-const dbsConfig: GetDatabaseInterface[] = [
-  {
-    uri: `${process.env.WP_DB_URI}`,
-    dbName: `${process.env.WP_DB_NAME}`,
-  },
-  {
-    uri: `${process.env.SC_DB_URI}`,
-    dbName: `${process.env.SC_DB_NAME}`,
-  },
-];
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
-    const { db, client } = await getDatabase(dbConfig);
+    const { db, client } = await getProdDb(dbConfig);
 
     // Update api messages
     console.log(`Updating api messages in ${dbConfig.dbName} db`);
@@ -113,6 +75,12 @@ async function updateProds() {
     }
 
     console.log(`Nav items updated in ${dbConfig.dbName} db`);
+    console.log(' ');
+
+    // update indexes
+    console.log(`Updating indexes in ${dbConfig.dbName} db`);
+    await updateIndexes(db);
+    console.log(`Indexes updated in ${dbConfig.dbName} db`);
     console.log(' ');
 
     // disconnect form db

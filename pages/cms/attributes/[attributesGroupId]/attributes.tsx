@@ -144,6 +144,8 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       accessor: 'positioningInTitle',
       headTitle: 'Поз-ие в заголове',
       render: ({ cellData }) => {
+        // console.log(cellData);
+        // console.log(typeof cellData);
         if (!cellData) {
           return null;
         }

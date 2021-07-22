@@ -33,6 +33,8 @@ export type AddAttributeToGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCard?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -2589,6 +2591,8 @@ export type UpdateAttributeInGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCard?: Maybe<Scalars['Boolean']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;

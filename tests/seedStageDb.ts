@@ -12,13 +12,13 @@ const EasyYandexS3 = require('easy-yandex-s3');
 
 require('dotenv').config();
 
-export async function uploadTestAssets(srcPath: string, distPath = '/') {
+export async function uploadTestAssets(srcPath: string, bucketName: string, distPath = '/') {
   const s3 = new EasyYandexS3({
     auth: {
-      accessKeyId: `${process.env.STAGE_OBJECT_STORAGE_KEY_ID}`,
-      secretAccessKey: `${process.env.STAGE_OBJECT_STORAGE_KEY}`,
+      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
+      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
     },
-    Bucket: `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`,
+    Bucket: bucketName,
     // debug: true,
   });
 
@@ -73,28 +73,36 @@ const config = {
     console.log('Test data seeded');
     // await uploadTestAssets('./cypress/fixtures/assets');
 
+    const bucketName = `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`;
+
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
+      bucketName,
       `/${ASSETS_DIST_SHOPS_LOGOS}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
+      bucketName,
       `/${ASSETS_DIST_SHOPS}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
+      bucketName,
       `/${ASSETS_DIST_COMPANIES}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
+      bucketName,
       `/${ASSETS_DIST_PAGES}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
+      bucketName,
       `/${ASSETS_DIST_TEMPLATES}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
+      bucketName,
       `/${ASSETS_DIST_CONFIGS}`,
     );
   } catch (err) {

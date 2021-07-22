@@ -66,9 +66,10 @@ export function getStringValueFromOptionsList({
   const names: string[] = [];
 
   options.forEach((option) => {
-    const name = option.variants[gender]
-      ? getFieldStringLocale(option.variants[gender], locale)
-      : getFieldStringLocale(option.nameI18n, locale);
+    const name =
+      option.variants[gender] && option.variants[gender][locale]
+        ? getFieldStringLocale(option.variants[gender], locale)
+        : getFieldStringLocale(option.nameI18n, locale);
     names.push(name);
   });
 

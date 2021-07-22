@@ -1,5 +1,5 @@
 import { ASSETS_DIST_SEO } from 'config/common';
-import { storeRestApiUploads } from 'lib/assets';
+import { storeRestApiUploads } from 'lib/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';

@@ -359,6 +359,12 @@ export interface NexusGenInputs {
     // input type
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
+  CreateSupplierInput: {
+    // input type
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
+  };
   CreateUserInput: {
     // input type
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
@@ -531,6 +537,10 @@ export interface NexusGenInputs {
     password: string; // String!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
     secondName?: string | null; // String
+  };
+  SupplierAlphabetInput: {
+    // input type
+    slugs?: string[] | null; // [String!]
   };
   UpdateAttributeInGroupInput: {
     // input type
@@ -771,6 +781,11 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
   };
+  UpdateProductSupplierInput: {
+    // input type
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    supplierSlug?: string | null; // String
+  };
   UpdateProductTextAttributeInput: {
     // input type
     attributes: NexusGenInputs['UpdateProductTextAttributeItemInput'][]; // [UpdateProductTextAttributeItemInput!]!
@@ -850,6 +865,13 @@ export interface NexusGenInputs {
     price: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  UpdateSupplierInput: {
+    // input type
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    supplierId: NexusGenScalars['ObjectId']; // ObjectId!
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   UpdateUserInput: {
     // input type
@@ -989,6 +1011,10 @@ export interface NexusGenObjects {
   ShopProductPayload: dbModels.ShopProductPayloadModel;
   ShopProductsPaginationPayload: dbModels.ShopProductsPaginationPayloadModel;
   ShopsPaginationPayload: dbModels.ShopsPaginationPayloadModel;
+  Supplier: dbModels.SupplierModel;
+  SupplierPayload: dbModels.SupplierPayloadModel;
+  SuppliersAlphabetList: dbModels.SuppliersAlphabetListModel;
+  SuppliersPaginationPayload: dbModels.SuppliersPaginationPayloadModel;
   User: dbModels.UserModel;
   UserPayload: dbModels.UserPayloadModel;
   UsersPaginationPayload: dbModels.UsersPaginationPayloadModel;
@@ -1380,6 +1406,7 @@ export interface NexusGenFieldTypes {
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
+    createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     createUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     deleteAttributeFromGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -1409,6 +1436,7 @@ export interface NexusGenFieldTypes {
     deleteRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     deleteShopAsset: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteShopFromCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
+    deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     deleteUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     makeAnOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
@@ -1448,6 +1476,7 @@ export interface NexusGenFieldTypes {
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductNumberAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductSupplier: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
@@ -1458,6 +1487,7 @@ export interface NexusGenFieldTypes {
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopProduct: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
+    updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateUserPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
   };
@@ -1659,6 +1689,7 @@ export interface NexusGenFieldTypes {
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     shopsCount: number; // Int!
     slug: string; // String!
+    supplierSlug: string | null; // String
     updatedAt: NexusGenScalars['Date']; // Date!
   };
   ProductAssets: {
@@ -1736,6 +1767,7 @@ export interface NexusGenFieldTypes {
     getAllRubricVariants: NexusGenRootTypes['RubricVariant'][]; // [RubricVariant!]!
     getAllRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
+    getAllSuppliers: NexusGenRootTypes['SuppliersPaginationPayload']; // SuppliersPaginationPayload!
     getAllUsers: NexusGenRootTypes['UsersPaginationPayload']; // UsersPaginationPayload!
     getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributeVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -1774,6 +1806,9 @@ export interface NexusGenFieldTypes {
     getSessionCurrency: string; // String!
     getShop: NexusGenRootTypes['Shop']; // Shop!
     getShopBySlug: NexusGenRootTypes['Shop']; // Shop!
+    getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
+    getSupplierAlphabetLists: NexusGenRootTypes['SuppliersAlphabetList'][]; // [SuppliersAlphabetList!]!
+    getSupplierBySlug: NexusGenRootTypes['Supplier']; // Supplier!
     getUser: NexusGenRootTypes['User']; // User!
     getUserCompany: NexusGenRootTypes['Company'] | null; // Company
     getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
@@ -1978,6 +2013,43 @@ export interface NexusGenFieldTypes {
   ShopsPaginationPayload: {
     // field return type
     docs: NexusGenRootTypes['Shop'][]; // [Shop!]!
+    hasNextPage: boolean; // Boolean!
+    hasPrevPage: boolean; // Boolean!
+    limit: number; // Int!
+    page: number; // Int!
+    sortBy: string; // String!
+    sortDir: NexusGenEnums['SortDirection']; // SortDirection!
+    totalActiveDocs: number; // Int!
+    totalDocs: number; // Int!
+    totalPages: number; // Int!
+  };
+  Supplier: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    createdAt: NexusGenScalars['Date']; // Date!
+    description: string | null; // String
+    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    itemId: string; // String!
+    name: string; // String!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    slug: string; // String!
+    updatedAt: NexusGenScalars['Date']; // Date!
+    url: NexusGenScalars['URL'][] | null; // [URL!]
+  };
+  SupplierPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['Supplier'] | null; // Supplier
+    success: boolean; // Boolean!
+  };
+  SuppliersAlphabetList: {
+    // field return type
+    docs: NexusGenRootTypes['Supplier'][]; // [Supplier!]!
+    letter: string; // String!
+  };
+  SuppliersPaginationPayload: {
+    // field return type
+    docs: NexusGenRootTypes['Supplier'][]; // [Supplier!]!
     hasNextPage: boolean; // Boolean!
     hasPrevPage: boolean; // Boolean!
     limit: number; // Int!
@@ -2429,6 +2501,7 @@ export interface NexusGenFieldTypeNames {
     createRole: 'RolePayload';
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
+    createSupplier: 'SupplierPayload';
     createUser: 'UserPayload';
     deleteAttributeFromGroup: 'AttributesGroupPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
@@ -2458,6 +2531,7 @@ export interface NexusGenFieldTypeNames {
     deleteRubricVariant: 'RubricVariantPayload';
     deleteShopAsset: 'ShopPayload';
     deleteShopFromCompany: 'CompanyPayload';
+    deleteSupplier: 'SupplierPayload';
     deleteUser: 'UserPayload';
     generateShopToken: 'ShopPayload';
     makeAnOrder: 'MakeAnOrderPayload';
@@ -2497,6 +2571,7 @@ export interface NexusGenFieldTypeNames {
     updateProductManufacturer: 'ProductPayload';
     updateProductNumberAttribute: 'ProductPayload';
     updateProductSelectAttribute: 'ProductPayload';
+    updateProductSupplier: 'ProductPayload';
     updateProductTextAttribute: 'ProductPayload';
     updateProductWithSyncError: 'ProductPayload';
     updateRole: 'RolePayload';
@@ -2507,6 +2582,7 @@ export interface NexusGenFieldTypeNames {
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
     updateShopProduct: 'ShopProductPayload';
+    updateSupplier: 'SupplierPayload';
     updateUser: 'UserPayload';
     updateUserPassword: 'UserPayload';
   };
@@ -2708,6 +2784,7 @@ export interface NexusGenFieldTypeNames {
     shopProducts: 'ShopProduct';
     shopsCount: 'Int';
     slug: 'String';
+    supplierSlug: 'String';
     updatedAt: 'Date';
   };
   ProductAssets: {
@@ -2785,6 +2862,7 @@ export interface NexusGenFieldTypeNames {
     getAllRubricVariants: 'RubricVariant';
     getAllRubrics: 'Rubric';
     getAllShops: 'ShopsPaginationPayload';
+    getAllSuppliers: 'SuppliersPaginationPayload';
     getAllUsers: 'UsersPaginationPayload';
     getAttributePositioningOptions: 'SelectOption';
     getAttributeVariantsOptions: 'SelectOption';
@@ -2823,6 +2901,9 @@ export interface NexusGenFieldTypeNames {
     getSessionCurrency: 'String';
     getShop: 'Shop';
     getShopBySlug: 'Shop';
+    getSupplier: 'Supplier';
+    getSupplierAlphabetLists: 'SuppliersAlphabetList';
+    getSupplierBySlug: 'Supplier';
     getUser: 'User';
     getUserCompany: 'Company';
     getValidationMessages: 'Message';
@@ -3027,6 +3108,43 @@ export interface NexusGenFieldTypeNames {
   ShopsPaginationPayload: {
     // field return type name
     docs: 'Shop';
+    hasNextPage: 'Boolean';
+    hasPrevPage: 'Boolean';
+    limit: 'Int';
+    page: 'Int';
+    sortBy: 'String';
+    sortDir: 'SortDirection';
+    totalActiveDocs: 'Int';
+    totalDocs: 'Int';
+    totalPages: 'Int';
+  };
+  Supplier: {
+    // field return type name
+    _id: 'ObjectId';
+    createdAt: 'Date';
+    description: 'String';
+    descriptionI18n: 'JSONObject';
+    itemId: 'String';
+    name: 'String';
+    nameI18n: 'JSONObject';
+    slug: 'String';
+    updatedAt: 'Date';
+    url: 'URL';
+  };
+  SupplierPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'Supplier';
+    success: 'Boolean';
+  };
+  SuppliersAlphabetList: {
+    // field return type name
+    docs: 'Supplier';
+    letter: 'String';
+  };
+  SuppliersPaginationPayload: {
+    // field return type name
+    docs: 'Supplier';
     hasNextPage: 'Boolean';
     hasPrevPage: 'Boolean';
     limit: 'Int';
@@ -3248,6 +3366,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateRubricVariantInput']; // CreateRubricVariantInput!
     };
+    createSupplier: {
+      // args
+      input: NexusGenInputs['CreateSupplierInput']; // CreateSupplierInput!
+    };
     createUser: {
       // args
       input: NexusGenInputs['CreateUserInput']; // CreateUserInput!
@@ -3363,6 +3485,10 @@ export interface NexusGenArgTypes {
     deleteShopFromCompany: {
       // args
       input: NexusGenInputs['DeleteShopFromCompanyInput']; // DeleteShopFromCompanyInput!
+    };
+    deleteSupplier: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
     deleteUser: {
       // args
@@ -3520,6 +3646,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateProductSelectAttributeInput']; // UpdateProductSelectAttributeInput!
     };
+    updateProductSupplier: {
+      // args
+      input: NexusGenInputs['UpdateProductSupplierInput']; // UpdateProductSupplierInput!
+    };
     updateProductTextAttribute: {
       // args
       input: NexusGenInputs['UpdateProductTextAttributeInput']; // UpdateProductTextAttributeInput!
@@ -3560,6 +3690,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateShopProductInput']; // UpdateShopProductInput!
     };
+    updateSupplier: {
+      // args
+      input: NexusGenInputs['UpdateSupplierInput']; // UpdateSupplierInput!
+    };
     updateUser: {
       // args
       input: NexusGenInputs['UpdateUserInput']; // UpdateUserInput!
@@ -3595,6 +3729,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['GetAllRubricsInput'] | null; // GetAllRubricsInput
     };
     getAllShops: {
+      // args
+      input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
+    };
+    getAllSuppliers: {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
@@ -3715,6 +3853,18 @@ export interface NexusGenArgTypes {
       // args
       slug: string; // String!
     };
+    getSupplier: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    getSupplierAlphabetLists: {
+      // args
+      input?: NexusGenInputs['SupplierAlphabetInput'] | null; // SupplierAlphabetInput
+    };
+    getSupplierBySlug: {
+      // args
+      slug: string; // String!
+    };
     getUser: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3739,7 +3889,8 @@ export interface NexusGenAbstractTypeMembers {
     | 'BrandCollectionsAlphabetList'
     | 'BrandsAlphabetList'
     | 'ManufacturersAlphabetList'
-    | 'OptionsAlphabetList';
+    | 'OptionsAlphabetList'
+    | 'SuppliersAlphabetList';
   Base:
     | 'Brand'
     | 'BrandCollection'
@@ -3749,6 +3900,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'Order'
     | 'Product'
     | 'Shop'
+    | 'Supplier'
     | 'User';
   PaginationPayload:
     | 'BrandCollectionsPaginationPayload'
@@ -3758,6 +3910,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'ManufacturersPaginationPayload'
     | 'ShopProductsPaginationPayload'
     | 'ShopsPaginationPayload'
+    | 'SuppliersPaginationPayload'
     | 'UsersPaginationPayload';
   Payload:
     | 'AttributesGroupPayload'
@@ -3783,6 +3936,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'RubricVariantPayload'
     | 'ShopPayload'
     | 'ShopProductPayload'
+    | 'SupplierPayload'
     | 'UserPayload';
   Timestamp:
     | 'Brand'
@@ -3797,6 +3951,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'Shop'
     | 'ShopProduct'
     | 'ShopProductOldPrice'
+    | 'Supplier'
     | 'User';
 }
 
@@ -3848,6 +4003,10 @@ export interface NexusGenTypeInterfaces {
   ShopProductPayload: 'Payload';
   ShopProductsPaginationPayload: 'PaginationPayload';
   ShopsPaginationPayload: 'PaginationPayload';
+  Supplier: 'Base' | 'Timestamp';
+  SupplierPayload: 'Payload';
+  SuppliersAlphabetList: 'AlphabetList';
+  SuppliersPaginationPayload: 'PaginationPayload';
   User: 'Base' | 'Timestamp';
   UserPayload: 'Payload';
   UsersPaginationPayload: 'PaginationPayload';

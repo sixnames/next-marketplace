@@ -41,5 +41,15 @@ describe('Rubric products', () => {
     cy.getByCy('options-submit').click();
     cy.wait(1500);
     cy.getByCy('manufacturer-input').should('contain', 'Manufacturer B');
+
+    // supplier
+    cy.getByCy('clear-supplier').click();
+    cy.wait(1500);
+    cy.getByCy('supplier-input').click();
+    cy.getByCy('supplier-options-modal').should('exist');
+    cy.getByCy('option-Supplier B').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+    cy.getByCy('supplier-input').should('contain', 'Supplier B');
   });
 });

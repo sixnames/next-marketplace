@@ -13,6 +13,7 @@ import rubrics from '../rubrics/rubrics';
 import options from '../options/options';
 import rubricAttributes from '../rubricAttributes/rubricAttributes';
 import manufacturers from '../manufacturers/manufacturers';
+import suppliers from '../suppliers/suppliers';
 import brands from '../brands/brands';
 import brandCollections from '../brandCollections/brandCollections';
 
@@ -47,6 +48,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
 
 const maxProductsCount = 70;
 
+const suppliersAttributeSlug = 'suppliers';
 const manufacturersAttributeSlug = 'manufacturers';
 const brandsAttributeSlug = 'brands';
 const brandCollectionsAttributeSlug = 'brandCollections';
@@ -210,6 +212,17 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     });
     const manufacturer = manufacturers[manufacturerIndex];
 
+    // supplier
+    const supplierIndex = getNextOptionIndex({
+      optionsLength: suppliers.length,
+      attributeSlug: suppliersAttributeSlug,
+    });
+    setAddedOptionIndex({
+      attributeSlug: suppliersAttributeSlug,
+      optionIndex: manufacturerIndex,
+    });
+    const supplier = suppliers[supplierIndex];
+
     // brand
     const brandIndex = getNextOptionIndex({
       optionsLength: brands.length,
@@ -256,6 +269,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       brandSlug: brand?.slug,
       brandCollectionSlug: brandCollection?.slug,
       manufacturerSlug: manufacturer?.slug,
+      supplierSlug: supplier?.slug,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

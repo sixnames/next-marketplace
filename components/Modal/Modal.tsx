@@ -35,8 +35,10 @@ import {
   CREATE_BRAND_MODAL,
   BRAND_COLLECTION_MODAL,
   MANUFACTURER_MODAL,
+  SUPPLIER_MODAL,
   METRIC_MODAL,
   ORDER_STATUS_MODAL,
+  SUPPLIER_OPTIONS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -44,6 +46,7 @@ const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditio
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
+const SupplierOptionsModal = dynamic(() => import('./SupplierOptionsModal'));
 const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const NavItemModal = dynamic(() => import('./NavItemModal'));
 const ConfirmModal = dynamic(() => import('components/Modal/ConfirmModal'));
@@ -60,6 +63,7 @@ const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal')
 const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal'));
 const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollectionModal'));
 const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
+const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -144,6 +148,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === MANUFACTURER_MODAL && <ManufacturerModal {...modalProps} />}
 
+          {modalType === SUPPLIER_MODAL && <SupplierModal {...modalProps} />}
+
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 
           {modalType === NAV_ITEM_MODAL && <NavItemModal {...modalProps} />}
@@ -153,6 +159,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           )}
 
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
+
+          {modalType === SUPPLIER_OPTIONS_MODAL && <SupplierOptionsModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
 

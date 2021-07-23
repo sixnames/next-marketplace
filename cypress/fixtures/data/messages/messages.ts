@@ -17,6 +17,7 @@ import { currenciesMessages } from '../../apiMessages/currenciesMessages';
 import { languagesMessages } from '../../apiMessages/languagesMessages';
 import { navItemsMessages } from '../../apiMessages/navItemsMessages';
 import { manufacturersMessages } from '../../apiMessages/manufacturersMessages';
+import { suppliersMessages } from '../../apiMessages/suppliersMessages';
 import { metricsMessages } from '../../apiMessages/metricsMessages';
 import { optionsGroupsMessages } from '../../apiMessages/optionsGroupsMessages';
 import { ordersMessages } from '../../apiMessages/ordersMessages';
@@ -145,6 +146,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: manufacturersMessages,
     groupName: 'Производители',
+  },
+  {
+    initialMessages: suppliersMessages,
+    groupName: 'Поставщики',
   },
   {
     initialMessages: pageGroupsMessages,

@@ -4,7 +4,7 @@ import {
   deleteAlgoliaObjects,
   saveAlgoliaObjects,
 } from 'lib/algoliaUtils';
-import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import { getCurrencyString } from 'lib/i18n';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';

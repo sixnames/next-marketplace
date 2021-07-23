@@ -2,7 +2,7 @@ import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';
 import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { storeRestApiUploads } from 'lib/assetUtils';
+import { storeRestApiUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';

@@ -2,7 +2,7 @@ import { ASSETS_DIST_PRODUCTS } from 'config/common';
 import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ProductAssetsModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getMainImage, storeRestApiUploads } from 'lib/assetUtils';
+import { getMainImage, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

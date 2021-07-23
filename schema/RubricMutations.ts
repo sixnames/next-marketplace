@@ -1,5 +1,5 @@
 import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
-import { deleteUpload } from 'lib/assetUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {

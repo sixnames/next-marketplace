@@ -1,4 +1,4 @@
-import { deleteUpload } from 'lib/assetUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { updateCompanyDomain } from 'lib/companyUtils';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { ObjectId } from 'mongodb';

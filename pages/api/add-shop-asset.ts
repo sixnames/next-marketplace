@@ -3,7 +3,7 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { getMainImage, storeRestApiUploads } from 'lib/assetUtils';
+import { getMainImage, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';

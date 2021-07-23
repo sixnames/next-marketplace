@@ -30,7 +30,7 @@ import { generateProductSlug } from 'lib/slugUtils';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
-import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',

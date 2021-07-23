@@ -12,7 +12,7 @@ import {
 import { PageModel, PagePayloadModel, PagesGroupModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
-import { deleteUpload } from 'lib/assetUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,

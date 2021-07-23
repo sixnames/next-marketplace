@@ -513,6 +513,24 @@ export type MessageSlug =
   | 'validation.manufacturers.url'
   | 'validation.manufacturers.description'
 
+  // Manufacturers ----------
+  | 'suppliers.create.duplicate'
+  | 'suppliers.create.error'
+  | 'suppliers.create.success'
+  | 'suppliers.update.duplicate'
+  | 'suppliers.update.notFound'
+  | 'suppliers.update.error'
+  | 'suppliers.update.success'
+  | 'suppliers.delete.notFound'
+  | 'suppliers.delete.used'
+  | 'suppliers.delete.error'
+  | 'suppliers.delete.success'
+  // Manufacturers validation
+  | 'validation.suppliers.id'
+  | 'validation.suppliers.name'
+  | 'validation.suppliers.url'
+  | 'validation.suppliers.description'
+
   // Metrics ----------
   | 'metrics.create.duplicate'
   | 'metrics.create.error'

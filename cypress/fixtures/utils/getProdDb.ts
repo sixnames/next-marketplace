@@ -21,6 +21,7 @@ import {
   RubricModel,
   ShopModel,
   ShopProductModel,
+  SupplierModel,
   UserModel,
 } from '../../../db/dbModels';
 import {
@@ -45,6 +46,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_SUPPLIERS,
   COL_USERS,
 } from '../../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
@@ -169,6 +171,17 @@ export async function updateIndexes(db: Db) {
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   await manufacturersCollection.createIndex({ slug: 1 }, { unique: true });
   await manufacturersCollection.createIndex({
+    slug: -1,
+    priorities: -1,
+    views: -1,
+    _id: -1,
+  });
+
+  // Suppliers
+  await createCollectionIfNotExist(COL_SUPPLIERS);
+  const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+  await suppliersCollection.createIndex({ slug: 1 }, { unique: true });
+  await suppliersCollection.createIndex({
     slug: -1,
     priorities: -1,
     views: -1,

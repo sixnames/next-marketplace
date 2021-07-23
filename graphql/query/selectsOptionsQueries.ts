@@ -117,6 +117,19 @@ export const MANUFACTURER_ALPHABET_OPTIONS_QUERY = gql`
   }
 `;
 
+export const SUPPLIER_ALPHABET_OPTIONS_QUERY = gql`
+  query GetSupplierAlphabetLists($input: SupplierAlphabetInput) {
+    getSupplierAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        slug
+        name
+      }
+    }
+  }
+`;
+
 export const OPTIONS_ALPHABET_QUERY = gql`
   query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
     getOptionAlphabetLists(input: $input) {

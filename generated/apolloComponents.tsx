@@ -33,8 +33,8 @@ export type AddAttributeToGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
-  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
-  showInCard?: Maybe<Scalars['Boolean']>;
+  showAsBreadcrumb: Scalars['Boolean'];
+  showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -608,6 +608,12 @@ export type CreateRubricVariantInput = {
   nameI18n: Scalars['JSONObject'];
 };
 
+export type CreateSupplierInput = {
+  url?: Maybe<Array<Scalars['URL']>>;
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+};
+
 export type CreateUserInput = {
   name: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
@@ -860,68 +866,6 @@ export type Mutation = {
   signUp: UserPayload;
   /** Should delete user */
   deleteUser: UserPayload;
-  /** Should create currency */
-  createCurrency: CurrencyPayload;
-  /** Should update currency */
-  updateCurrency: CurrencyPayload;
-  /** Should delete currency */
-  deleteCurrency: CurrencyPayload;
-  /** Should create language */
-  createLanguage: LanguagePayload;
-  /** Should update language */
-  updateLanguage: LanguagePayload;
-  /** Should delete language */
-  deleteLanguage: LanguagePayload;
-  /** Should update catalogue counters */
-  updateCatalogueCounters: Scalars['Boolean'];
-  /** Should create country */
-  createCountry: CountryPayload;
-  /** Should update country */
-  updateCountry: CountryPayload;
-  /** Should delete country */
-  deleteCountry: CountryPayload;
-  /** Should create city and add it to the country */
-  addCityToCountry: CountryPayload;
-  /** Should update city */
-  updateCityInCountry: CountryPayload;
-  /** Should delete city */
-  deleteCityFromCountry: CountryPayload;
-  /** Should update config */
-  updateConfig: ConfigPayload;
-  /** Should update role rule */
-  updateRoleRule: RoleRulePayload;
-  /** Should create role */
-  createRole: RolePayload;
-  /** Should update role */
-  updateRole: RolePayload;
-  /** Should delete role */
-  deleteRole: RolePayload;
-  /** Should update role nav */
-  updateRoleNav: RolePayload;
-  /** Should create metric */
-  createMetric: MetricPayload;
-  /** Should update metric */
-  updateMetric: MetricPayload;
-  /** Should delete metric */
-  deleteMetric: MetricPayload;
-  /** Should create nav item */
-  createNavItem: NavItemPayload;
-  /** Should update nav item */
-  updateNavItem: NavItemPayload;
-  /** Should delete nav item */
-  deleteNavItem: NavItemPayload;
-  /** Should create options group */
-  createOptionsGroup: OptionsGroupPayload;
-  /** Should update options group */
-  updateOptionsGroup: OptionsGroupPayload;
-  /** Should delete options group */
-  deleteOptionsGroup: OptionsGroupPayload;
-  /** Should add option to the group */
-  addOptionToGroup: OptionsGroupPayload;
-  /** Should update option in the group */
-  updateOptionInGroup: OptionsGroupPayload;
-  /** Should delete option from the group */
-  deleteOptionFromGroup: OptionsGroupPayload;
   /** Should create attributes group */
   createAttributesGroup: AttributesGroupPayload;
   /** Should update attributes group */
@@ -946,18 +890,154 @@ export type Mutation = {
   updateCollectionInBrand: BrandPayload;
   /** Should delete brand collection from brand */
   deleteCollectionFromBrand: BrandPayload;
+  /** Should add product to the cart or should increase product amount if already exist in cart */
+  addProductToCart: CartPayload;
+  /** Should add shopless product to the cart or should increase product amount if already exist in cart */
+  addShoplessProductToCart: CartPayload;
+  /** Should add shop to the cart product */
+  addShopToCartProduct: CartPayload;
+  /** Should update cart product amount */
+  updateProductInCart: CartPayload;
+  /** Should delete product from cart */
+  deleteProductFromCart: CartPayload;
+  /** Should delete all products from cart */
+  clearCart: CartPayload;
+  /** Should add all products to the cart from user's old order */
+  repeatOrder: CartPayload;
+  /** Should update catalogue counters */
+  updateCatalogueCounters: Scalars['Boolean'];
+  /** Should create company */
+  createCompany: CompanyPayload;
+  /** Should update company */
+  updateCompany: CompanyPayload;
+  /** Should delete company */
+  deleteCompany: CompanyPayload;
+  /** Should create shop and add it to the company */
+  addShopToCompany: CompanyPayload;
+  /** Should delete shop from company and db */
+  deleteShopFromCompany: CompanyPayload;
+  /** Should update config */
+  updateConfig: ConfigPayload;
+  /** Should create country */
+  createCountry: CountryPayload;
+  /** Should update country */
+  updateCountry: CountryPayload;
+  /** Should delete country */
+  deleteCountry: CountryPayload;
+  /** Should create city and add it to the country */
+  addCityToCountry: CountryPayload;
+  /** Should update city */
+  updateCityInCountry: CountryPayload;
+  /** Should delete city */
+  deleteCityFromCountry: CountryPayload;
+  /** Should create currency */
+  createCurrency: CurrencyPayload;
+  /** Should update currency */
+  updateCurrency: CurrencyPayload;
+  /** Should delete currency */
+  deleteCurrency: CurrencyPayload;
+  /** Should create language */
+  createLanguage: LanguagePayload;
+  /** Should update language */
+  updateLanguage: LanguagePayload;
+  /** Should delete language */
+  deleteLanguage: LanguagePayload;
   /** Should create manufacturer */
   createManufacturer: ManufacturerPayload;
   /** Should update manufacturer */
   updateManufacturer: ManufacturerPayload;
   /** Should delete manufacturer */
   deleteManufacturer: ManufacturerPayload;
-  /** Should create rubric variant */
-  createRubricVariant: RubricVariantPayload;
-  /** Should update rubric variant */
-  updateRubricVariant: RubricVariantPayload;
-  /** Should delete rubric variant */
-  deleteRubricVariant: RubricVariantPayload;
+  /** Should create metric */
+  createMetric: MetricPayload;
+  /** Should update metric */
+  updateMetric: MetricPayload;
+  /** Should delete metric */
+  deleteMetric: MetricPayload;
+  /** Should create nav item */
+  createNavItem: NavItemPayload;
+  /** Should update nav item */
+  updateNavItem: NavItemPayload;
+  /** Should delete nav item */
+  deleteNavItem: NavItemPayload;
+  /** Should create options group */
+  createOptionsGroup: OptionsGroupPayload;
+  /** Should update options group */
+  updateOptionsGroup: OptionsGroupPayload;
+  /** Should delete options group */
+  deleteOptionsGroup: OptionsGroupPayload;
+  /** Should add option to the group */
+  addOptionToGroup: OptionsGroupPayload;
+  /** Should update option in the group */
+  updateOptionInGroup: OptionsGroupPayload;
+  /** Should delete option from the group */
+  deleteOptionFromGroup: OptionsGroupPayload;
+  /** Should create order from session cart */
+  makeAnOrder: MakeAnOrderPayload;
+  /** Should confirm order */
+  confirmOrder: MakeAnOrderPayload;
+  /** Should create order status */
+  createOrderStatus: OrderStatusPayload;
+  /** Should update order status */
+  updateOrderStatus: OrderStatusPayload;
+  /** Should delete order status */
+  deleteOrderStatus: OrderStatusPayload;
+  /** Should crate page */
+  createPage: PagePayload;
+  /** Should update page */
+  updatePage: PagePayload;
+  /** Should delete page */
+  deletePage: PagePayload;
+  /** Should create pages group */
+  createPagesGroup: PagesGroupPayload;
+  /** Should update pages group */
+  updatePagesGroup: PagesGroupPayload;
+  /** Should delete pages group */
+  deletePagesGroup: PagesGroupPayload;
+  /** Should update product brand */
+  updateProductBrand: ProductPayload;
+  /** Should update product brand collection */
+  updateProductBrandCollection: ProductPayload;
+  /** Should update product manufacturer */
+  updateProductManufacturer: ProductPayload;
+  /** Should update product supplier */
+  updateProductSupplier: ProductPayload;
+  /** Should update product select attribute */
+  updateProductSelectAttribute: ProductPayload;
+  /** Should update product number attribute */
+  updateProductNumberAttribute: ProductPayload;
+  /** Should update product text attribute */
+  updateProductTextAttribute: ProductPayload;
+  /** Should create product connection */
+  createProductConnection: ProductPayload;
+  /** Should create product connection */
+  addProductToConnection: ProductPayload;
+  /** Should delete product from connection and delete connection if there is no products left */
+  deleteProductFromConnection: ProductPayload;
+  /** Should create product */
+  createProduct: ProductPayload;
+  /** Should update product */
+  updateProduct: ProductPayload;
+  /** Should update product assets */
+  deleteProductAsset: ProductPayload;
+  /** Should update product asset index */
+  updateProductAssetIndex: ProductPayload;
+  /** Should update product with syn error and remove sync error */
+  updateProductWithSyncError: ProductPayload;
+  /** Should create product with syn error and remove sync error */
+  createProductWithSyncError: ProductPayload;
+  /** Should update product counter */
+  updateProductCounter: Scalars['Boolean'];
+  /** Should create role */
+  createRole: RolePayload;
+  /** Should update role */
+  updateRole: RolePayload;
+  /** Should delete role */
+  deleteRole: RolePayload;
+  /** Should update role nav */
+  updateRoleNav: RolePayload;
+  /** Should update role rule */
+  updateRoleRule: RoleRulePayload;
   /** Should create rubric */
   createRubric: RubricPayload;
   /** Should update rubric */
@@ -976,54 +1056,12 @@ export type Mutation = {
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should remove product from rubric */
   deleteProductFromRubric: RubricPayload;
-  /** Should create pages group */
-  createPagesGroup: PagesGroupPayload;
-  /** Should update pages group */
-  updatePagesGroup: PagesGroupPayload;
-  /** Should delete pages group */
-  deletePagesGroup: PagesGroupPayload;
-  /** Should crate page */
-  createPage: PagePayload;
-  /** Should update page */
-  updatePage: PagePayload;
-  /** Should delete page */
-  deletePage: PagePayload;
-  /** Should create product */
-  createProduct: ProductPayload;
-  /** Should update product */
-  updateProduct: ProductPayload;
-  /** Should update product assets */
-  deleteProductAsset: ProductPayload;
-  /** Should update product asset index */
-  updateProductAssetIndex: ProductPayload;
-  /** Should update product with syn error and remove sync error */
-  updateProductWithSyncError: ProductPayload;
-  /** Should create product with syn error and remove sync error */
-  createProductWithSyncError: ProductPayload;
-  /** Should update product counter */
-  updateProductCounter: Scalars['Boolean'];
-  /** Should update product brand */
-  updateProductBrand: ProductPayload;
-  /** Should update product brand collection */
-  updateProductBrandCollection: ProductPayload;
-  /** Should update product manufacturer */
-  updateProductManufacturer: ProductPayload;
-  /** Should update product select attribute */
-  updateProductSelectAttribute: ProductPayload;
-  /** Should update product number attribute */
-  updateProductNumberAttribute: ProductPayload;
-  /** Should update product text attribute */
-  updateProductTextAttribute: ProductPayload;
-  /** Should create product connection */
-  createProductConnection: ProductPayload;
-  /** Should create product connection */
-  addProductToConnection: ProductPayload;
-  /** Should delete product from connection and delete connection if there is no products left */
-  deleteProductFromConnection: ProductPayload;
-  /** Should update shop product */
-  updateShopProduct: ShopProductPayload;
-  /** Should update many shop products */
-  updateManyShopProducts: ShopProductPayload;
+  /** Should create rubric variant */
+  createRubricVariant: RubricVariantPayload;
+  /** Should update rubric variant */
+  updateRubricVariant: RubricVariantPayload;
+  /** Should delete rubric variant */
+  deleteRubricVariant: RubricVariantPayload;
   /** Should update shop */
   updateShop: ShopPayload;
   /** Should delete shop asset */
@@ -1038,40 +1076,16 @@ export type Mutation = {
   deleteProductFromShop: ShopPayload;
   /** Should generate shop token */
   generateShopToken: ShopPayload;
-  /** Should create company */
-  createCompany: CompanyPayload;
-  /** Should update company */
-  updateCompany: CompanyPayload;
-  /** Should delete company */
-  deleteCompany: CompanyPayload;
-  /** Should create shop and add it to the company */
-  addShopToCompany: CompanyPayload;
-  /** Should delete shop from company and db */
-  deleteShopFromCompany: CompanyPayload;
-  /** Should add product to the cart or should increase product amount if already exist in cart */
-  addProductToCart: CartPayload;
-  /** Should add shopless product to the cart or should increase product amount if already exist in cart */
-  addShoplessProductToCart: CartPayload;
-  /** Should add shop to the cart product */
-  addShopToCartProduct: CartPayload;
-  /** Should update cart product amount */
-  updateProductInCart: CartPayload;
-  /** Should delete product from cart */
-  deleteProductFromCart: CartPayload;
-  /** Should delete all products from cart */
-  clearCart: CartPayload;
-  /** Should add all products to the cart from user's old order */
-  repeatOrder: CartPayload;
-  /** Should create order status */
-  createOrderStatus: OrderStatusPayload;
-  /** Should update order status */
-  updateOrderStatus: OrderStatusPayload;
-  /** Should delete order status */
-  deleteOrderStatus: OrderStatusPayload;
-  /** Should create order from session cart */
-  makeAnOrder: MakeAnOrderPayload;
-  /** Should confirm order */
-  confirmOrder: MakeAnOrderPayload;
+  /** Should update shop product */
+  updateShopProduct: ShopProductPayload;
+  /** Should update many shop products */
+  updateManyShopProducts: ShopProductPayload;
+  /** Should create supplier */
+  createSupplier: SupplierPayload;
+  /** Should update supplier */
+  updateSupplier: SupplierPayload;
+  /** Should delete supplier */
+  deleteSupplier: SupplierPayload;
 };
 
 
@@ -1107,161 +1121,6 @@ export type MutationSignUpArgs = {
 
 export type MutationDeleteUserArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type MutationCreateCurrencyArgs = {
-  input: CreateCurrencyInput;
-};
-
-
-export type MutationUpdateCurrencyArgs = {
-  input: UpdateCurrencyInput;
-};
-
-
-export type MutationDeleteCurrencyArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationCreateLanguageArgs = {
-  input: CreateLanguageInput;
-};
-
-
-export type MutationUpdateLanguageArgs = {
-  input: UpdateLanguageInput;
-};
-
-
-export type MutationDeleteLanguageArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationUpdateCatalogueCountersArgs = {
-  input: CatalogueDataInput;
-};
-
-
-export type MutationCreateCountryArgs = {
-  input: CreateCountryInput;
-};
-
-
-export type MutationUpdateCountryArgs = {
-  input: UpdateCountryInput;
-};
-
-
-export type MutationDeleteCountryArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationAddCityToCountryArgs = {
-  input: AddCityToCountryInput;
-};
-
-
-export type MutationUpdateCityInCountryArgs = {
-  input: UpdateCityInCountryInput;
-};
-
-
-export type MutationDeleteCityFromCountryArgs = {
-  input: DeleteCityFromCountryInput;
-};
-
-
-export type MutationUpdateConfigArgs = {
-  input: UpdateConfigInput;
-};
-
-
-export type MutationUpdateRoleRuleArgs = {
-  input: UpdateRoleRuleInput;
-};
-
-
-export type MutationCreateRoleArgs = {
-  input: CreateRoleInput;
-};
-
-
-export type MutationUpdateRoleArgs = {
-  input: UpdateRoleInput;
-};
-
-
-export type MutationDeleteRoleArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationUpdateRoleNavArgs = {
-  input: UpdateRoleNavInput;
-};
-
-
-export type MutationCreateMetricArgs = {
-  input: CreateMetricInput;
-};
-
-
-export type MutationUpdateMetricArgs = {
-  input: UpdateMetricInput;
-};
-
-
-export type MutationDeleteMetricArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationCreateNavItemArgs = {
-  input: CreateNavItemInput;
-};
-
-
-export type MutationUpdateNavItemArgs = {
-  input: UpdateNavItemInput;
-};
-
-
-export type MutationDeleteNavItemArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationCreateOptionsGroupArgs = {
-  input: CreateOptionsGroupInput;
-};
-
-
-export type MutationUpdateOptionsGroupArgs = {
-  input: UpdateOptionsGroupInput;
-};
-
-
-export type MutationDeleteOptionsGroupArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationAddOptionToGroupArgs = {
-  input: AddOptionToGroupInput;
-};
-
-
-export type MutationUpdateOptionInGroupArgs = {
-  input: UpdateOptionInGroupInput;
-};
-
-
-export type MutationDeleteOptionFromGroupArgs = {
-  input: DeleteOptionFromGroupInput;
 };
 
 
@@ -1325,6 +1184,131 @@ export type MutationDeleteCollectionFromBrandArgs = {
 };
 
 
+export type MutationAddProductToCartArgs = {
+  input: AddProductToCartInput;
+};
+
+
+export type MutationAddShoplessProductToCartArgs = {
+  input: AddShoplessProductToCartInput;
+};
+
+
+export type MutationAddShopToCartProductArgs = {
+  input: AddShopToCartProductInput;
+};
+
+
+export type MutationUpdateProductInCartArgs = {
+  input: UpdateProductInCartInput;
+};
+
+
+export type MutationDeleteProductFromCartArgs = {
+  input: DeleteProductFromCartInput;
+};
+
+
+export type MutationRepeatOrderArgs = {
+  input: RepeatOrderInput;
+};
+
+
+export type MutationUpdateCatalogueCountersArgs = {
+  input: CatalogueDataInput;
+};
+
+
+export type MutationCreateCompanyArgs = {
+  input: CreateCompanyInput;
+};
+
+
+export type MutationUpdateCompanyArgs = {
+  input: UpdateCompanyInput;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationAddShopToCompanyArgs = {
+  input: AddShopToCompanyInput;
+};
+
+
+export type MutationDeleteShopFromCompanyArgs = {
+  input: DeleteShopFromCompanyInput;
+};
+
+
+export type MutationUpdateConfigArgs = {
+  input: UpdateConfigInput;
+};
+
+
+export type MutationCreateCountryArgs = {
+  input: CreateCountryInput;
+};
+
+
+export type MutationUpdateCountryArgs = {
+  input: UpdateCountryInput;
+};
+
+
+export type MutationDeleteCountryArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationAddCityToCountryArgs = {
+  input: AddCityToCountryInput;
+};
+
+
+export type MutationUpdateCityInCountryArgs = {
+  input: UpdateCityInCountryInput;
+};
+
+
+export type MutationDeleteCityFromCountryArgs = {
+  input: DeleteCityFromCountryInput;
+};
+
+
+export type MutationCreateCurrencyArgs = {
+  input: CreateCurrencyInput;
+};
+
+
+export type MutationUpdateCurrencyArgs = {
+  input: UpdateCurrencyInput;
+};
+
+
+export type MutationDeleteCurrencyArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreateLanguageArgs = {
+  input: CreateLanguageInput;
+};
+
+
+export type MutationUpdateLanguageArgs = {
+  input: UpdateLanguageInput;
+};
+
+
+export type MutationDeleteLanguageArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
 export type MutationCreateManufacturerArgs = {
   input: CreateManufacturerInput;
 };
@@ -1340,18 +1324,228 @@ export type MutationDeleteManufacturerArgs = {
 };
 
 
-export type MutationCreateRubricVariantArgs = {
-  input: CreateRubricVariantInput;
+export type MutationCreateMetricArgs = {
+  input: CreateMetricInput;
 };
 
 
-export type MutationUpdateRubricVariantArgs = {
-  input: UpdateRubricVariantInput;
+export type MutationUpdateMetricArgs = {
+  input: UpdateMetricInput;
 };
 
 
-export type MutationDeleteRubricVariantArgs = {
+export type MutationDeleteMetricArgs = {
   _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreateNavItemArgs = {
+  input: CreateNavItemInput;
+};
+
+
+export type MutationUpdateNavItemArgs = {
+  input: UpdateNavItemInput;
+};
+
+
+export type MutationDeleteNavItemArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreateOptionsGroupArgs = {
+  input: CreateOptionsGroupInput;
+};
+
+
+export type MutationUpdateOptionsGroupArgs = {
+  input: UpdateOptionsGroupInput;
+};
+
+
+export type MutationDeleteOptionsGroupArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationAddOptionToGroupArgs = {
+  input: AddOptionToGroupInput;
+};
+
+
+export type MutationUpdateOptionInGroupArgs = {
+  input: UpdateOptionInGroupInput;
+};
+
+
+export type MutationDeleteOptionFromGroupArgs = {
+  input: DeleteOptionFromGroupInput;
+};
+
+
+export type MutationMakeAnOrderArgs = {
+  input: MakeAnOrderInput;
+};
+
+
+export type MutationConfirmOrderArgs = {
+  input: ConfirmOrderInput;
+};
+
+
+export type MutationCreateOrderStatusArgs = {
+  input: CreateOrderStatusInput;
+};
+
+
+export type MutationUpdateOrderStatusArgs = {
+  input: UpdateOrderStatusInput;
+};
+
+
+export type MutationDeleteOrderStatusArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationCreatePageArgs = {
+  input: CreatePageInput;
+};
+
+
+export type MutationUpdatePageArgs = {
+  input: UpdatePageInput;
+};
+
+
+export type MutationDeletePageArgs = {
+  input: DeletePageInput;
+};
+
+
+export type MutationCreatePagesGroupArgs = {
+  input: CreatePagesGroupInput;
+};
+
+
+export type MutationUpdatePagesGroupArgs = {
+  input: UpdatePagesGroupInput;
+};
+
+
+export type MutationDeletePagesGroupArgs = {
+  input: DeletePagesGroupInput;
+};
+
+
+export type MutationUpdateProductBrandArgs = {
+  input: UpdateProductBrandInput;
+};
+
+
+export type MutationUpdateProductBrandCollectionArgs = {
+  input: UpdateProductBrandCollectionInput;
+};
+
+
+export type MutationUpdateProductManufacturerArgs = {
+  input: UpdateProductManufacturerInput;
+};
+
+
+export type MutationUpdateProductSupplierArgs = {
+  input: UpdateProductSupplierInput;
+};
+
+
+export type MutationUpdateProductSelectAttributeArgs = {
+  input: UpdateProductSelectAttributeInput;
+};
+
+
+export type MutationUpdateProductNumberAttributeArgs = {
+  input: UpdateProductNumberAttributeInput;
+};
+
+
+export type MutationUpdateProductTextAttributeArgs = {
+  input: UpdateProductTextAttributeInput;
+};
+
+
+export type MutationCreateProductConnectionArgs = {
+  input: CreateProductConnectionInput;
+};
+
+
+export type MutationAddProductToConnectionArgs = {
+  input: AddProductToConnectionInput;
+};
+
+
+export type MutationDeleteProductFromConnectionArgs = {
+  input: DeleteProductFromConnectionInput;
+};
+
+
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+
+export type MutationDeleteProductAssetArgs = {
+  input: DeleteProductAssetInput;
+};
+
+
+export type MutationUpdateProductAssetIndexArgs = {
+  input: UpdateProductAssetIndexInput;
+};
+
+
+export type MutationUpdateProductWithSyncErrorArgs = {
+  input: UpdateProductWithSyncErrorInput;
+};
+
+
+export type MutationCreateProductWithSyncErrorArgs = {
+  input: CreateProductWithSyncErrorInput;
+};
+
+
+export type MutationUpdateProductCounterArgs = {
+  input: UpdateProductCounterInput;
+};
+
+
+export type MutationCreateRoleArgs = {
+  input: CreateRoleInput;
+};
+
+
+export type MutationUpdateRoleArgs = {
+  input: UpdateRoleInput;
+};
+
+
+export type MutationDeleteRoleArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateRoleNavArgs = {
+  input: UpdateRoleNavInput;
+};
+
+
+export type MutationUpdateRoleRuleArgs = {
+  input: UpdateRoleRuleInput;
 };
 
 
@@ -1400,123 +1594,18 @@ export type MutationDeleteProductFromRubricArgs = {
 };
 
 
-export type MutationCreatePagesGroupArgs = {
-  input: CreatePagesGroupInput;
+export type MutationCreateRubricVariantArgs = {
+  input: CreateRubricVariantInput;
 };
 
 
-export type MutationUpdatePagesGroupArgs = {
-  input: UpdatePagesGroupInput;
+export type MutationUpdateRubricVariantArgs = {
+  input: UpdateRubricVariantInput;
 };
 
 
-export type MutationDeletePagesGroupArgs = {
-  input: DeletePagesGroupInput;
-};
-
-
-export type MutationCreatePageArgs = {
-  input: CreatePageInput;
-};
-
-
-export type MutationUpdatePageArgs = {
-  input: UpdatePageInput;
-};
-
-
-export type MutationDeletePageArgs = {
-  input: DeletePageInput;
-};
-
-
-export type MutationCreateProductArgs = {
-  input: CreateProductInput;
-};
-
-
-export type MutationUpdateProductArgs = {
-  input: UpdateProductInput;
-};
-
-
-export type MutationDeleteProductAssetArgs = {
-  input: DeleteProductAssetInput;
-};
-
-
-export type MutationUpdateProductAssetIndexArgs = {
-  input: UpdateProductAssetIndexInput;
-};
-
-
-export type MutationUpdateProductWithSyncErrorArgs = {
-  input: UpdateProductWithSyncErrorInput;
-};
-
-
-export type MutationCreateProductWithSyncErrorArgs = {
-  input: CreateProductWithSyncErrorInput;
-};
-
-
-export type MutationUpdateProductCounterArgs = {
-  input: UpdateProductCounterInput;
-};
-
-
-export type MutationUpdateProductBrandArgs = {
-  input: UpdateProductBrandInput;
-};
-
-
-export type MutationUpdateProductBrandCollectionArgs = {
-  input: UpdateProductBrandCollectionInput;
-};
-
-
-export type MutationUpdateProductManufacturerArgs = {
-  input: UpdateProductManufacturerInput;
-};
-
-
-export type MutationUpdateProductSelectAttributeArgs = {
-  input: UpdateProductSelectAttributeInput;
-};
-
-
-export type MutationUpdateProductNumberAttributeArgs = {
-  input: UpdateProductNumberAttributeInput;
-};
-
-
-export type MutationUpdateProductTextAttributeArgs = {
-  input: UpdateProductTextAttributeInput;
-};
-
-
-export type MutationCreateProductConnectionArgs = {
-  input: CreateProductConnectionInput;
-};
-
-
-export type MutationAddProductToConnectionArgs = {
-  input: AddProductToConnectionInput;
-};
-
-
-export type MutationDeleteProductFromConnectionArgs = {
-  input: DeleteProductFromConnectionInput;
-};
-
-
-export type MutationUpdateShopProductArgs = {
-  input: UpdateShopProductInput;
-};
-
-
-export type MutationUpdateManyShopProductsArgs = {
-  input: Array<UpdateShopProductInput>;
+export type MutationDeleteRubricVariantArgs = {
+  _id: Scalars['ObjectId'];
 };
 
 
@@ -1555,83 +1644,28 @@ export type MutationGenerateShopTokenArgs = {
 };
 
 
-export type MutationCreateCompanyArgs = {
-  input: CreateCompanyInput;
+export type MutationUpdateShopProductArgs = {
+  input: UpdateShopProductInput;
 };
 
 
-export type MutationUpdateCompanyArgs = {
-  input: UpdateCompanyInput;
+export type MutationUpdateManyShopProductsArgs = {
+  input: Array<UpdateShopProductInput>;
 };
 
 
-export type MutationDeleteCompanyArgs = {
+export type MutationCreateSupplierArgs = {
+  input: CreateSupplierInput;
+};
+
+
+export type MutationUpdateSupplierArgs = {
+  input: UpdateSupplierInput;
+};
+
+
+export type MutationDeleteSupplierArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type MutationAddShopToCompanyArgs = {
-  input: AddShopToCompanyInput;
-};
-
-
-export type MutationDeleteShopFromCompanyArgs = {
-  input: DeleteShopFromCompanyInput;
-};
-
-
-export type MutationAddProductToCartArgs = {
-  input: AddProductToCartInput;
-};
-
-
-export type MutationAddShoplessProductToCartArgs = {
-  input: AddShoplessProductToCartInput;
-};
-
-
-export type MutationAddShopToCartProductArgs = {
-  input: AddShopToCartProductInput;
-};
-
-
-export type MutationUpdateProductInCartArgs = {
-  input: UpdateProductInCartInput;
-};
-
-
-export type MutationDeleteProductFromCartArgs = {
-  input: DeleteProductFromCartInput;
-};
-
-
-export type MutationRepeatOrderArgs = {
-  input: RepeatOrderInput;
-};
-
-
-export type MutationCreateOrderStatusArgs = {
-  input: CreateOrderStatusInput;
-};
-
-
-export type MutationUpdateOrderStatusArgs = {
-  input: UpdateOrderStatusInput;
-};
-
-
-export type MutationDeleteOrderStatusArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationMakeAnOrderArgs = {
-  input: MakeAnOrderInput;
-};
-
-
-export type MutationConfirmOrderArgs = {
-  input: ConfirmOrderInput;
 };
 
 export type NavItem = {
@@ -1892,6 +1926,7 @@ export type Product = Base & Timestamp & {
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
+  supplierSlug?: Maybe<Scalars['String']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
@@ -2014,9 +2049,18 @@ export type Query = {
   getAllUsers: UsersPaginationPayload;
   /** Should return user company */
   getUserCompany?: Maybe<Company>;
-  getAllCurrencies: Array<Currency>;
-  /** Should all languages list */
-  getAllLanguages: Array<Language>;
+  getAttributesGroup: AttributesGroup;
+  getAllAttributesGroups: Array<AttributesGroup>;
+  /** Should return brand by _id */
+  getBrand: Brand;
+  /** Should return brand by slug */
+  getBrandBySlug?: Maybe<Brand>;
+  /** Should return paginated brands */
+  getAllBrands?: Maybe<BrandsPaginationPayload>;
+  /** Should return brands grouped by alphabet */
+  getBrandAlphabetLists: Array<BrandsAlphabetList>;
+  /** Should return brand collections grouped by alphabet */
+  getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
   getCatalogueAdditionalOptions?: Maybe<Array<OptionsAlphabetList>>;
   /** Should return top search items */
   getCatalogueSearchTopItems: CatalogueSearchResult;
@@ -2032,35 +2076,16 @@ export type Query = {
   getSessionCities: Array<City>;
   /** Should return currency for session locale */
   getSessionCurrency: Scalars['String'];
+  /** Should return company by given id */
+  getCompany?: Maybe<Company>;
+  /** Should return paginated companies */
+  getAllCompanies?: Maybe<CompaniesPaginationPayload>;
+  getAllConfigs: Array<Config>;
   /** Should return countries list */
   getAllCountries: Array<Country>;
-  getAllConfigs: Array<Config>;
-  /** Should return validation messages list */
-  getValidationMessages: Array<Message>;
-  /** Should return role by give id */
-  getRole?: Maybe<Role>;
-  /** Should return all roles list */
-  getAllRoles: Array<Role>;
-  /** Should return all metrics list */
-  getAllMetricsOptions: Array<Metric>;
-  /** Should return options grouped by alphabet */
-  getOptionAlphabetLists: Array<OptionsAlphabetList>;
-  /** Should return options group by given id */
-  getOptionsGroup: OptionsGroup;
-  /** Should return options groups list */
-  getAllOptionsGroups: Array<OptionsGroup>;
-  getAttributesGroup: AttributesGroup;
-  getAllAttributesGroups: Array<AttributesGroup>;
-  /** Should return brand collections grouped by alphabet */
-  getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
-  /** Should return brand by _id */
-  getBrand: Brand;
-  /** Should return brand by slug */
-  getBrandBySlug?: Maybe<Brand>;
-  /** Should return paginated brands */
-  getAllBrands?: Maybe<BrandsPaginationPayload>;
-  /** Should return brands grouped by alphabet */
-  getBrandAlphabetLists: Array<BrandsAlphabetList>;
+  getAllCurrencies: Array<Currency>;
+  /** Should all languages list */
+  getAllLanguages: Array<Language>;
   /** Should return manufacturer by given id */
   getManufacturer: Manufacturer;
   /** Should return manufacturer by given slug */
@@ -2069,16 +2094,40 @@ export type Query = {
   getAllManufacturers: ManufacturersPaginationPayload;
   /** Should return manufacturers grouped by alphabet */
   getManufacturerAlphabetLists: Array<ManufacturersAlphabetList>;
-  /** Should return rubric variant by given id */
-  getRubricVariant: RubricVariant;
-  /** Should return rubric variants list */
-  getAllRubricVariants: Array<RubricVariant>;
+  /** Should return validation messages list */
+  getValidationMessages: Array<Message>;
+  /** Should return all metrics list */
+  getAllMetricsOptions: Array<Metric>;
+  /** Should return options grouped by alphabet */
+  getOptionAlphabetLists: Array<OptionsAlphabetList>;
+  /** Should return options group by given id */
+  getOptionsGroup: OptionsGroup;
+  /** Should return options groups list */
+  getAllOptionsGroups: Array<OptionsGroup>;
+  /** Should return new orders counter */
+  getNewOrdersCounter: Scalars['Int'];
+  /** Should return product by given id */
+  getProduct?: Maybe<Product>;
+  /** Should return product by given slug */
+  getProductBySlug?: Maybe<Product>;
+  /** Should return shops products list for product card */
+  getProductShops: Array<ShopProduct>;
+  /** Should paginated products */
+  getProductsList: ProductsPaginationPayload;
+  /** Should return role by give id */
+  getRole?: Maybe<Role>;
+  /** Should return all roles list */
+  getAllRoles: Array<Role>;
   /** Should return rubric by given id */
   getRubric: Rubric;
   /** Should return rubric by given slug */
   getRubricBySlug: Rubric;
   /** Should return rubrics tree */
   getAllRubrics: Array<Rubric>;
+  /** Should return rubric variant by given id */
+  getRubricVariant: RubricVariant;
+  /** Should return rubric variants list */
+  getAllRubricVariants: Array<RubricVariant>;
   /** Should return gender options */
   getGenderOptions: Array<SelectOption>;
   /** Should return attribute variants options */
@@ -2093,14 +2142,6 @@ export type Query = {
   getISOLanguagesOptions: Array<SelectOption>;
   /** Should return icon options */
   getIconsOptions: Array<SelectOption>;
-  /** Should return product by given id */
-  getProduct?: Maybe<Product>;
-  /** Should return product by given slug */
-  getProductBySlug?: Maybe<Product>;
-  /** Should return shops products list for product card */
-  getProductShops: Array<ShopProduct>;
-  /** Should paginated products */
-  getProductsList: ProductsPaginationPayload;
   /** Should return shop by given id */
   getShop: Shop;
   /** Should return shop by given slug */
@@ -2109,12 +2150,14 @@ export type Query = {
   getAllShops: ShopsPaginationPayload;
   /** Should return paginated company shops list */
   getCompanyShops: ShopsPaginationPayload;
-  /** Should return company by given id */
-  getCompany?: Maybe<Company>;
-  /** Should return paginated companies */
-  getAllCompanies?: Maybe<CompaniesPaginationPayload>;
-  /** Should return new orders counter */
-  getNewOrdersCounter: Scalars['Int'];
+  /** Should return supplier by given id */
+  getSupplier: Supplier;
+  /** Should return supplier by given slug */
+  getSupplierBySlug: Supplier;
+  /** Should return paginated suppliers */
+  getAllSuppliers: SuppliersPaginationPayload;
+  /** Should return suppliers grouped by alphabet */
+  getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
 };
 
 
@@ -2125,6 +2168,41 @@ export type QueryGetUserArgs = {
 
 export type QueryGetAllUsersArgs = {
   input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetAttributesGroupArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetAllAttributesGroupsArgs = {
+  excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
+};
+
+
+export type QueryGetBrandArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBrandBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllBrandsArgs = {
+  input?: Maybe<PaginationInput>;
+};
+
+
+export type QueryGetBrandAlphabetListsArgs = {
+  input?: Maybe<BrandAlphabetInput>;
+};
+
+
+export type QueryGetBrandCollectionAlphabetListsArgs = {
+  input?: Maybe<BrandCollectionAlphabetInput>;
 };
 
 
@@ -2158,53 +2236,13 @@ export type QueryGetAllCitiesArgs = {
 };
 
 
-export type QueryGetRoleArgs = {
+export type QueryGetCompanyArgs = {
   _id: Scalars['ObjectId'];
 };
 
 
-export type QueryGetOptionAlphabetListsArgs = {
-  input: OptionAlphabetInput;
-};
-
-
-export type QueryGetOptionsGroupArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAttributesGroupArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllAttributesGroupsArgs = {
-  excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
-};
-
-
-export type QueryGetBrandCollectionAlphabetListsArgs = {
-  input?: Maybe<BrandCollectionAlphabetInput>;
-};
-
-
-export type QueryGetBrandArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetBrandBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllBrandsArgs = {
+export type QueryGetAllCompaniesArgs = {
   input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetBrandAlphabetListsArgs = {
-  input?: Maybe<BrandAlphabetInput>;
 };
 
 
@@ -2228,23 +2266,18 @@ export type QueryGetManufacturerAlphabetListsArgs = {
 };
 
 
-export type QueryGetRubricVariantArgs = {
+export type QueryGetOptionAlphabetListsArgs = {
+  input: OptionAlphabetInput;
+};
+
+
+export type QueryGetOptionsGroupArgs = {
   _id: Scalars['ObjectId'];
 };
 
 
-export type QueryGetRubricArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetRubricBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllRubricsArgs = {
-  input?: Maybe<GetAllRubricsInput>;
+export type QueryGetNewOrdersCounterArgs = {
+  input?: Maybe<GetNewOrdersCounterInput>;
 };
 
 
@@ -2265,6 +2298,31 @@ export type QueryGetProductShopsArgs = {
 
 export type QueryGetProductsListArgs = {
   input?: Maybe<ProductsPaginationInput>;
+};
+
+
+export type QueryGetRoleArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetRubricArgs = {
+  _id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetRubricBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllRubricsArgs = {
+  input?: Maybe<GetAllRubricsInput>;
+};
+
+
+export type QueryGetRubricVariantArgs = {
+  _id: Scalars['ObjectId'];
 };
 
 
@@ -2289,18 +2347,23 @@ export type QueryGetCompanyShopsArgs = {
 };
 
 
-export type QueryGetCompanyArgs = {
+export type QueryGetSupplierArgs = {
   _id: Scalars['ObjectId'];
 };
 
 
-export type QueryGetAllCompaniesArgs = {
+export type QueryGetSupplierBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllSuppliersArgs = {
   input?: Maybe<PaginationInput>;
 };
 
 
-export type QueryGetNewOrdersCounterArgs = {
-  input?: Maybe<GetNewOrdersCounterInput>;
+export type QueryGetSupplierAlphabetListsArgs = {
+  input?: Maybe<SupplierAlphabetInput>;
 };
 
 export type RepeatOrderInput = {
@@ -2577,6 +2640,51 @@ export enum SortDirection {
   Desc = 'DESC'
 }
 
+export type Supplier = Base & Timestamp & {
+  __typename?: 'Supplier';
+  _id: Scalars['ObjectId'];
+  itemId: Scalars['String'];
+  createdAt: Scalars['Date'];
+  updatedAt: Scalars['Date'];
+  url?: Maybe<Array<Scalars['URL']>>;
+  slug: Scalars['String'];
+  nameI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type SupplierAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
+};
+
+export type SupplierPayload = Payload & {
+  __typename?: 'SupplierPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<Supplier>;
+};
+
+export type SuppliersAlphabetList = AlphabetList & {
+  __typename?: 'SuppliersAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Supplier>;
+};
+
+export type SuppliersPaginationPayload = PaginationPayload & {
+  __typename?: 'SuppliersPaginationPayload';
+  sortBy: Scalars['String'];
+  sortDir: SortDirection;
+  totalDocs: Scalars['Int'];
+  totalActiveDocs: Scalars['Int'];
+  page: Scalars['Int'];
+  limit: Scalars['Int'];
+  totalPages: Scalars['Int'];
+  hasPrevPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean'];
+  docs: Array<Supplier>;
+};
+
 export type Timestamp = {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
@@ -2591,8 +2699,8 @@ export type UpdateAttributeInGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
-  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
-  showInCard?: Maybe<Scalars['Boolean']>;
+  showAsBreadcrumb: Scalars['Boolean'];
+  showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -2822,6 +2930,11 @@ export type UpdateProductSelectAttributeInput = {
   selectedOptionsIds: Array<Scalars['ObjectId']>;
 };
 
+export type UpdateProductSupplierInput = {
+  productId: Scalars['ObjectId'];
+  supplierSlug?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProductTextAttributeInput = {
   productId: Scalars['ObjectId'];
   attributes: Array<UpdateProductTextAttributeItemInput>;
@@ -2900,6 +3013,13 @@ export type UpdateShopProductInput = {
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   barcode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateSupplierInput = {
+  supplierId: Scalars['ObjectId'];
+  nameI18n: Scalars['JSONObject'];
+  url?: Maybe<Array<Scalars['URL']>>;
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
 };
 
 export type UpdateUserInput = {
@@ -4083,6 +4203,19 @@ export type UpdateProductManufacturerMutation = (
   ) }
 );
 
+export type UpdateProductSupplierMutationVariables = Exact<{
+  input: UpdateProductSupplierInput;
+}>;
+
+
+export type UpdateProductSupplierMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductSupplier: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateProductSelectAttributeMutationVariables = Exact<{
   input: UpdateProductSelectAttributeInput;
 }>;
@@ -4370,6 +4503,45 @@ export type CreateProductWithSyncErrorMutation = (
       { __typename?: 'Product' }
       & Pick<Product, '_id' | 'rubricId'>
     )> }
+  ) }
+);
+
+export type CreateSupplierMutationVariables = Exact<{
+  input: CreateSupplierInput;
+}>;
+
+
+export type CreateSupplierMutation = (
+  { __typename?: 'Mutation' }
+  & { createSupplier: (
+    { __typename?: 'SupplierPayload' }
+    & Pick<SupplierPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateSupplierMutationVariables = Exact<{
+  input: UpdateSupplierInput;
+}>;
+
+
+export type UpdateSupplierMutation = (
+  { __typename?: 'Mutation' }
+  & { updateSupplier: (
+    { __typename?: 'SupplierPayload' }
+    & Pick<SupplierPayload, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteSupplierMutationVariables = Exact<{
+  _id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteSupplierMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteSupplier: (
+    { __typename?: 'SupplierPayload' }
+    & Pick<SupplierPayload, 'success' | 'message'>
   ) }
 );
 
@@ -5007,6 +5179,23 @@ export type GetManufacturerAlphabetListsQuery = (
     & { docs: Array<(
       { __typename?: 'Manufacturer' }
       & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetSupplierAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<SupplierAlphabetInput>;
+}>;
+
+
+export type GetSupplierAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getSupplierAlphabetLists: Array<(
+    { __typename?: 'SuppliersAlphabetList' }
+    & Pick<SuppliersAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Supplier' }
+      & Pick<Supplier, '_id' | 'slug' | 'name'>
     )> }
   )> }
 );
@@ -8216,6 +8405,40 @@ export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.Mutati
 export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
+export const UpdateProductSupplierDocument = gql`
+    mutation UpdateProductSupplier($input: UpdateProductSupplierInput!) {
+  updateProductSupplier(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductSupplierMutationFn = Apollo.MutationFunction<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
+
+/**
+ * __useUpdateProductSupplierMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductSupplierMutation, { data, loading, error }] = useUpdateProductSupplierMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>(UpdateProductSupplierDocument, options);
+      }
+export type UpdateProductSupplierMutationHookResult = ReturnType<typeof useUpdateProductSupplierMutation>;
+export type UpdateProductSupplierMutationResult = Apollo.MutationResult<UpdateProductSupplierMutation>;
+export type UpdateProductSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
 export const UpdateProductSelectAttributeDocument = gql`
     mutation UpdateProductSelectAttribute($input: UpdateProductSelectAttributeInput!) {
   updateProductSelectAttribute(input: $input) {
@@ -8968,6 +9191,108 @@ export function useCreateProductWithSyncErrorMutation(baseOptions?: Apollo.Mutat
 export type CreateProductWithSyncErrorMutationHookResult = ReturnType<typeof useCreateProductWithSyncErrorMutation>;
 export type CreateProductWithSyncErrorMutationResult = Apollo.MutationResult<CreateProductWithSyncErrorMutation>;
 export type CreateProductWithSyncErrorMutationOptions = Apollo.BaseMutationOptions<CreateProductWithSyncErrorMutation, CreateProductWithSyncErrorMutationVariables>;
+export const CreateSupplierDocument = gql`
+    mutation CreateSupplier($input: CreateSupplierInput!) {
+  createSupplier(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateSupplierMutationFn = Apollo.MutationFunction<CreateSupplierMutation, CreateSupplierMutationVariables>;
+
+/**
+ * __useCreateSupplierMutation__
+ *
+ * To run a mutation, you first call `useCreateSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSupplierMutation, { data, loading, error }] = useCreateSupplierMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSupplierMutation(baseOptions?: Apollo.MutationHookOptions<CreateSupplierMutation, CreateSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSupplierMutation, CreateSupplierMutationVariables>(CreateSupplierDocument, options);
+      }
+export type CreateSupplierMutationHookResult = ReturnType<typeof useCreateSupplierMutation>;
+export type CreateSupplierMutationResult = Apollo.MutationResult<CreateSupplierMutation>;
+export type CreateSupplierMutationOptions = Apollo.BaseMutationOptions<CreateSupplierMutation, CreateSupplierMutationVariables>;
+export const UpdateSupplierDocument = gql`
+    mutation UpdateSupplier($input: UpdateSupplierInput!) {
+  updateSupplier(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateSupplierMutationFn = Apollo.MutationFunction<UpdateSupplierMutation, UpdateSupplierMutationVariables>;
+
+/**
+ * __useUpdateSupplierMutation__
+ *
+ * To run a mutation, you first call `useUpdateSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSupplierMutation, { data, loading, error }] = useUpdateSupplierMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSupplierMutation, UpdateSupplierMutationVariables>(UpdateSupplierDocument, options);
+      }
+export type UpdateSupplierMutationHookResult = ReturnType<typeof useUpdateSupplierMutation>;
+export type UpdateSupplierMutationResult = Apollo.MutationResult<UpdateSupplierMutation>;
+export type UpdateSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>;
+export const DeleteSupplierDocument = gql`
+    mutation DeleteSupplier($_id: ObjectId!) {
+  deleteSupplier(_id: $_id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteSupplierMutationFn = Apollo.MutationFunction<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
+
+/**
+ * __useDeleteSupplierMutation__
+ *
+ * To run a mutation, you first call `useDeleteSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSupplierMutation, { data, loading, error }] = useDeleteSupplierMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteSupplierMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSupplierMutation, DeleteSupplierMutationVariables>(DeleteSupplierDocument, options);
+      }
+export type DeleteSupplierMutationHookResult = ReturnType<typeof useDeleteSupplierMutation>;
+export type DeleteSupplierMutationResult = Apollo.MutationResult<DeleteSupplierMutation>;
+export type DeleteSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
 export const UpdateMyProfileDocument = gql`
     mutation UpdateMyProfile($input: UpdateMyProfileInput!) {
   updateMyProfile(input: $input) {
@@ -10222,6 +10547,46 @@ export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.La
 export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
 export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
 export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
+export const GetSupplierAlphabetListsDocument = gql`
+    query GetSupplierAlphabetLists($input: SupplierAlphabetInput) {
+  getSupplierAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSupplierAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetSupplierAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSupplierAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSupplierAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetSupplierAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
+      }
+export function useGetSupplierAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
+        }
+export type GetSupplierAlphabetListsQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsQuery>;
+export type GetSupplierAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsLazyQuery>;
+export type GetSupplierAlphabetListsQueryResult = Apollo.QueryResult<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>;
 export const GetOptionAlphabetListsDocument = gql`
     query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
   getOptionAlphabetLists(input: $input) {

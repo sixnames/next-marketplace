@@ -211,12 +211,23 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-suppliers`),
+    nameI18n: {
+      ru: 'Поставщики',
+      en: 'Suppliers',
+    },
+    index: 12,
+    slug: 'cms-suppliers',
+    path: `${ROUTE_CMS}/suppliers`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-users`),
     nameI18n: {
       ru: 'Пользователи',
       en: 'Users',
     },
-    index: 12,
+    index: 13,
     slug: 'cms-users',
     path: `${ROUTE_CMS}/users`,
     navGroup: ROUTE_CMS_NAV_GROUP,

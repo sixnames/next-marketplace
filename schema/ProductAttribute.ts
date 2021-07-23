@@ -87,6 +87,14 @@ export const UpdateProductManufacturerInput = inputObjectType({
   },
 });
 
+export const UpdateProductSupplierInput = inputObjectType({
+  name: 'UpdateProductSupplierInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.string('supplierSlug');
+  },
+});
+
 export const UpdateProductSelectAttributeInput = inputObjectType({
   name: 'UpdateProductSelectAttributeInput',
   definition(t) {
@@ -447,6 +455,119 @@ export const ProductAttributeMutations = extendType({
               {
                 $set: {
                   manufacturerSlug,
+                  updatedAt: new Date(),
+                },
+              },
+            );
+            if (!updatedShopProduct.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.update.success'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should update product supplier
+    t.nonNull.field('updateProductSupplier', {
+      type: 'ProductPayload',
+      description: 'Should update product supplier',
+      args: {
+        input: nonNull(arg({ type: 'UpdateProductSupplierInput' })),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { productId, supplierSlug } = input;
+
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  supplierSlug,
+                  updatedAt: new Date(),
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedShopProduct = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              {
+                $set: {
+                  supplierSlug,
                   updatedAt: new Date(),
                 },
               },

@@ -1,63 +1,60 @@
 import Button from 'components/Button';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { ManufacturerInterface } from 'db/uiInterfaces';
+import { SupplierInterface } from 'db/uiInterfaces';
 import { ResolverValidationSchema } from 'lib/sessionHelpers';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import {
-  CreateManufacturerInput,
-  useCreateManufacturerMutation,
-  useUpdateManufacturerMutation,
+  CreateSupplierInput,
+  useCreateSupplierMutation,
+  useUpdateSupplierMutation,
 } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 
-export interface ManufacturerModalInterface {
-  manufacturer?: ManufacturerInterface;
+export interface SupplierModalInterface {
+  supplier?: SupplierInterface;
   validationSchema: ResolverValidationSchema;
 }
 
-const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
-  validationSchema,
-  manufacturer,
-}) => {
+const SupplierModal: React.FC<SupplierModalInterface> = ({ validationSchema, supplier }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
     reload: true,
   });
-  const [createManufacturerMutation] = useCreateManufacturerMutation({
-    onCompleted: (data) => onCompleteCallback(data.createManufacturer),
+  const [createSupplierMutation] = useCreateSupplierMutation({
+    onCompleted: (data) => onCompleteCallback(data.createSupplier),
     onError: onErrorCallback,
   });
 
-  const [updateManufacturerMutation] = useUpdateManufacturerMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateManufacturer),
+  const [updateSupplierMutation] = useUpdateSupplierMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateSupplier),
     onError: onErrorCallback,
   });
 
   const initialValues = {
-    nameI18n: manufacturer?.nameI18n || {},
-    descriptionI18n: manufacturer?.descriptionI18n || {},
-    manufacturerId: manufacturer?._id,
-    url: !manufacturer?.url || manufacturer?.url.length < 1 ? [''] : manufacturer.url,
+    nameI18n: supplier?.nameI18n || {},
+    descriptionI18n: supplier?.descriptionI18n || {},
+    supplierId: supplier?._id,
+    url: !supplier?.url || supplier?.url.length < 1 ? [''] : supplier.url,
   };
 
   return (
-    <ModalFrame testId={'manufacturer-modal'}>
-      <ModalTitle>{manufacturer ? 'Обновление' : 'Создание'} производителя</ModalTitle>
-      <Formik<CreateManufacturerInput>
+    <ModalFrame testId={'supplier-modal'}>
+      <ModalTitle>{supplier ? 'Обновление' : 'Создание'} поставщика</ModalTitle>
+      <Formik<CreateSupplierInput>
         enableReinitialize
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          if (manufacturer) {
-            updateManufacturerMutation({
+          if (supplier) {
+            updateSupplierMutation({
               variables: {
                 input: {
-                  manufacturerId: manufacturer._id,
+                  supplierId: supplier._id,
                   nameI18n: values.nameI18n,
                   descriptionI18n: values.descriptionI18n,
                   url: (values.url || []).reduce((acc: string[], url) => {
@@ -71,7 +68,7 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
             }).catch(console.log);
             return;
           }
-          createManufacturerMutation({
+          createSupplierMutation({
             variables: {
               input: {
                 nameI18n: values.nameI18n,
@@ -108,12 +105,12 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
               <FormikMultiLineInput
                 name={'url'}
                 testId={'url'}
-                label={'Ссылка на сайт производителя'}
+                label={'Ссылка на сайт поставщика'}
                 showInlineError
               />
 
-              <Button type={'submit'} testId={'submit-manufacturer'}>
-                {manufacturer ? 'Сохранить' : 'Создать'}
+              <Button type={'submit'} testId={'submit-supplier'}>
+                {supplier ? 'Сохранить' : 'Создать'}
               </Button>
             </Form>
           );
@@ -123,4 +120,4 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
   );
 };
 
-export default ManufacturerModal;
+export default SupplierModal;

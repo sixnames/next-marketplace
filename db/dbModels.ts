@@ -228,6 +228,13 @@ export interface ManufacturerModel extends BaseModel, TimestampModel, CountersMo
   descriptionI18n?: TranslationModel | null;
 }
 
+export interface SupplierModel extends BaseModel, TimestampModel {
+  nameI18n: TranslationModel;
+  slug: string;
+  url?: URLModel[] | null;
+  descriptionI18n?: TranslationModel | null;
+}
+
 export interface CartProductModel {
   _id: ObjectIdModel;
   shopProductId?: ObjectIdModel | null;
@@ -489,6 +496,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   mainImage: string;
+  supplierSlug?: string | null;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -710,6 +718,7 @@ export type CountryPayloadModel = PayloadType<CountryModel>;
 export type CurrencyPayloadModel = PayloadType<CurrencyModel>;
 export type LanguagePayloadModel = PayloadType<LanguageModel>;
 export type ManufacturerPayloadModel = PayloadType<ManufacturerModel>;
+export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type MetricPayloadModel = PayloadType<MetricModel>;
 export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
 export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
@@ -737,6 +746,7 @@ export interface CartPayloadModel {
 
 // Lists payload
 export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
+export type SuppliersAlphabetListModel = AlphabetListModelType<SupplierModel>;
 export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
 export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
 export type OptionAlphabetListModel = AlphabetListModelType<OptionModel>;
@@ -747,6 +757,7 @@ export type BrandCollectionsPaginationPayloadModel = PaginationPayloadType<Brand
 export type CitiesPaginationPayloadModel = PaginationPayloadType<CityModel>;
 export type CompaniesPaginationPayloadModel = PaginationPayloadType<CompanyModel>;
 export type ManufacturersPaginationPayloadModel = PaginationPayloadType<ManufacturerModel>;
+export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierModel>;
 export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
 export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
 export type UsersPaginationPayloadModel = PaginationPayloadType<UserModel>;

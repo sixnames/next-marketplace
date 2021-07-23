@@ -7,6 +7,7 @@ import {
   COL_ORDERS,
   COL_PRODUCTS,
   COL_SHOPS,
+  COL_SUPPLIERS,
   COL_USERS,
 } from '../../../../db/collectionNames';
 import { IdCounterModel } from '../../../../db/dbModels';
@@ -30,6 +31,10 @@ const idCounters: IdCounterModel[] = [
   },
   {
     collection: COL_MANUFACTURERS,
+    counter: 999999,
+  },
+  {
+    collection: COL_SUPPLIERS,
     counter: 999999,
   },
   {

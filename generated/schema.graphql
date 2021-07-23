@@ -567,6 +567,12 @@ input CreateRubricVariantInput {
   nameI18n: JSONObject!
 }
 
+input CreateSupplierInput {
+  descriptionI18n: JSONObject
+  nameI18n: JSONObject!
+  url: [URL!]
+}
+
 input CreateUserInput {
   email: EmailAddress!
   lastName: String
@@ -976,6 +982,11 @@ type Mutation {
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayload!
 
   """
+  Should create supplier
+  """
+  createSupplier(input: CreateSupplierInput!): SupplierPayload!
+
+  """
   Should create user
   """
   createUser(input: CreateUserInput!): UserPayload!
@@ -1119,6 +1130,11 @@ type Mutation {
   Should delete shop from company and db
   """
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayload!
+
+  """
+  Should delete supplier
+  """
+  deleteSupplier(_id: ObjectId!): SupplierPayload!
 
   """
   Should delete user
@@ -1316,6 +1332,11 @@ type Mutation {
   updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
 
   """
+  Should update product supplier
+  """
+  updateProductSupplier(input: UpdateProductSupplierInput!): ProductPayload!
+
+  """
   Should update product text attribute
   """
   updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
@@ -1364,6 +1385,11 @@ type Mutation {
   Should update shop product
   """
   updateShopProduct(input: UpdateShopProductInput!): ShopProductPayload!
+
+  """
+  Should update supplier
+  """
+  updateSupplier(input: UpdateSupplierInput!): SupplierPayload!
 
   """
   Should update user
@@ -1655,6 +1681,7 @@ type Product implements Base & Timestamp {
   shopProducts: [ShopProduct!]!
   shopsCount: Int!
   slug: String!
+  supplierSlug: String
   updatedAt: Date!
 }
 
@@ -1828,6 +1855,11 @@ type Query {
   Should return shop by given slug
   """
   getAllShops(input: PaginationInput): ShopsPaginationPayload!
+
+  """
+  Should return paginated suppliers
+  """
+  getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
 
   """
   Should return paginated users
@@ -2012,6 +2044,21 @@ type Query {
   Should return shop by given slug
   """
   getShopBySlug(slug: String!): Shop!
+
+  """
+  Should return supplier by given id
+  """
+  getSupplier(_id: ObjectId!): Supplier!
+
+  """
+  Should return suppliers grouped by alphabet
+  """
+  getSupplierAlphabetLists(input: SupplierAlphabetInput): [SuppliersAlphabetList!]!
+
+  """
+  Should return supplier by given slug
+  """
+  getSupplierBySlug(slug: String!): Supplier!
 
   """
   Should return user by _id
@@ -2282,6 +2329,47 @@ enum SortDirection {
   DESC
 }
 
+type Supplier implements Base & Timestamp {
+  _id: ObjectId!
+  createdAt: Date!
+  description: String
+  descriptionI18n: JSONObject
+  itemId: String!
+  name: String!
+  nameI18n: JSONObject!
+  slug: String!
+  updatedAt: Date!
+  url: [URL!]
+}
+
+input SupplierAlphabetInput {
+  slugs: [String!]
+}
+
+type SupplierPayload implements Payload {
+  message: String!
+  payload: Supplier
+  success: Boolean!
+}
+
+type SuppliersAlphabetList implements AlphabetList {
+  docs: [Supplier!]!
+  letter: String!
+}
+
+type SuppliersPaginationPayload implements PaginationPayload {
+  docs: [Supplier!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Int!
+  page: Int!
+  sortBy: String!
+  sortDir: SortDirection!
+  totalActiveDocs: Int!
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 interface Timestamp {
   createdAt: Date!
   updatedAt: Date!
@@ -2531,6 +2619,11 @@ input UpdateProductSelectAttributeInput {
   selectedOptionsIds: [ObjectId!]!
 }
 
+input UpdateProductSupplierInput {
+  productId: ObjectId!
+  supplierSlug: String
+}
+
 input UpdateProductTextAttributeInput {
   attributes: [UpdateProductTextAttributeItemInput!]!
   productId: ObjectId!
@@ -2609,6 +2702,13 @@ input UpdateShopProductInput {
   price: Int!
   productId: ObjectId!
   shopProductId: ObjectId!
+}
+
+input UpdateSupplierInput {
+  descriptionI18n: JSONObject
+  nameI18n: JSONObject!
+  supplierId: ObjectId!
+  url: [URL!]
 }
 
 input UpdateUserInput {

@@ -1,4 +1,4 @@
-import { getSharpImage } from 'lib/assetUtils/getSharpImage';
+import { getSharpImage } from 'lib/assetUtils/sharpUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 import fs from 'fs';
@@ -36,15 +36,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
-
-  // Check if file exists
-  const exists = fs.existsSync(`${process.cwd()}${filePath}`);
-
-  if (!exists) {
-    res.status(404);
-    res.send({});
-    return;
-  }
 
   // Get the processed image
   const file = await getSharpImage({ path: filePath, format, width, height });

@@ -44,6 +44,7 @@ import {
   RubricVariantModel,
   ShopModel,
   ShopProductModel,
+  SupplierModel,
   TranslationModel,
   UserModel,
 } from 'db/dbModels';
@@ -84,6 +85,11 @@ export interface BrandCollectionInterface extends BrandCollectionModel {
 }
 
 export interface ManufacturerInterface extends ManufacturerModel {
+  name?: string | null;
+  description?: string | null;
+}
+
+export interface SupplierInterface extends SupplierModel {
   name?: string | null;
   description?: string | null;
 }

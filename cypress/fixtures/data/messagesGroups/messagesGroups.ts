@@ -141,6 +141,12 @@ const messagesGroups: MessagesGroupModel[] = [
     },
   },
   {
+    _id: getObjectId('messagesGroups Поставщики'),
+    nameI18n: {
+      ru: 'Поставщики',
+    },
+  },
+  {
     _id: getObjectId('messagesGroups Группы страниц'),
     nameI18n: {
       ru: 'Группы страниц',

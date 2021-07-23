@@ -58,6 +58,7 @@ export const Product = objectType({
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
+    t.string('supplierSlug');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');

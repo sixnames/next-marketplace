@@ -58,6 +58,11 @@ export type RoleRuleSlugType =
   | 'updateManufacturer' // done
   | 'deleteManufacturer' // done
 
+  // Supplier
+  | 'createSupplier' // done
+  | 'updateSupplier' // done
+  | 'deleteSupplier' // done
+
   // Message
   | 'createMessagesGroup'
   | 'updateMessagesGroup'
@@ -415,6 +420,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление производителя',
+    },
+  },
+
+  // Supplier
+  {
+    allow: false,
+    slug: 'createSupplier',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание поставщика',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateSupplier',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление поставщика',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteSupplier',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление поставщика',
     },
   },
 

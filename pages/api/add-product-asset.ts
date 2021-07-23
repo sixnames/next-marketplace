@@ -71,6 +71,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   });
   const firstAsset = sortedAssets[0];
   const startIndex = noNaN(firstAsset?.index);
+
+  /*const test = await storeUploads({
+    files: formData.files,
+    dist: `/${ASSETS_DIST_PRODUCTS}/${product.itemId}`,
+    startIndex,
+  });
+  console.log('test ', test);*/
+
   const assets = await storeRestApiUploads({
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,

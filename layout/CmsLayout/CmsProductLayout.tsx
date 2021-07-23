@@ -40,7 +40,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         exact: true,
       },
       {
-        name: 'Бренды / Производители',
+        name: 'Бренд / Производитель / Поставщик',
         testId: 'brands',
         path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/brands`,
         exact: true,

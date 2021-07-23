@@ -1332,6 +1332,11 @@ type Mutation {
   updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
 
   """
+  Should update product supplier
+  """
+  updateProductSupplier(input: UpdateProductSupplierInput!): ProductPayload!
+
+  """
   Should update product text attribute
   """
   updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
@@ -2612,6 +2617,11 @@ input UpdateProductSelectAttributeInput {
   productAttributeId: ObjectId!
   productId: ObjectId!
   selectedOptionsIds: [ObjectId!]!
+}
+
+input UpdateProductSupplierInput {
+  productId: ObjectId!
+  supplierSlug: String
 }
 
 input UpdateProductTextAttributeInput {

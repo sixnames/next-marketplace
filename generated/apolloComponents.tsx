@@ -1000,6 +1000,8 @@ export type Mutation = {
   updateProductBrandCollection: ProductPayload;
   /** Should update product manufacturer */
   updateProductManufacturer: ProductPayload;
+  /** Should update product supplier */
+  updateProductSupplier: ProductPayload;
   /** Should update product select attribute */
   updateProductSelectAttribute: ProductPayload;
   /** Should update product number attribute */
@@ -1449,6 +1451,11 @@ export type MutationUpdateProductBrandCollectionArgs = {
 
 export type MutationUpdateProductManufacturerArgs = {
   input: UpdateProductManufacturerInput;
+};
+
+
+export type MutationUpdateProductSupplierArgs = {
+  input: UpdateProductSupplierInput;
 };
 
 
@@ -2923,6 +2930,11 @@ export type UpdateProductSelectAttributeInput = {
   selectedOptionsIds: Array<Scalars['ObjectId']>;
 };
 
+export type UpdateProductSupplierInput = {
+  productId: Scalars['ObjectId'];
+  supplierSlug?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProductTextAttributeInput = {
   productId: Scalars['ObjectId'];
   attributes: Array<UpdateProductTextAttributeItemInput>;
@@ -4191,6 +4203,19 @@ export type UpdateProductManufacturerMutation = (
   ) }
 );
 
+export type UpdateProductSupplierMutationVariables = Exact<{
+  input: UpdateProductSupplierInput;
+}>;
+
+
+export type UpdateProductSupplierMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductSupplier: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateProductSelectAttributeMutationVariables = Exact<{
   input: UpdateProductSelectAttributeInput;
 }>;
@@ -5154,6 +5179,23 @@ export type GetManufacturerAlphabetListsQuery = (
     & { docs: Array<(
       { __typename?: 'Manufacturer' }
       & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetSupplierAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<SupplierAlphabetInput>;
+}>;
+
+
+export type GetSupplierAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getSupplierAlphabetLists: Array<(
+    { __typename?: 'SuppliersAlphabetList' }
+    & Pick<SuppliersAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Supplier' }
+      & Pick<Supplier, '_id' | 'slug' | 'name'>
     )> }
   )> }
 );
@@ -8363,6 +8405,40 @@ export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.Mutati
 export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
+export const UpdateProductSupplierDocument = gql`
+    mutation UpdateProductSupplier($input: UpdateProductSupplierInput!) {
+  updateProductSupplier(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductSupplierMutationFn = Apollo.MutationFunction<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
+
+/**
+ * __useUpdateProductSupplierMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductSupplierMutation, { data, loading, error }] = useUpdateProductSupplierMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>(UpdateProductSupplierDocument, options);
+      }
+export type UpdateProductSupplierMutationHookResult = ReturnType<typeof useUpdateProductSupplierMutation>;
+export type UpdateProductSupplierMutationResult = Apollo.MutationResult<UpdateProductSupplierMutation>;
+export type UpdateProductSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
 export const UpdateProductSelectAttributeDocument = gql`
     mutation UpdateProductSelectAttribute($input: UpdateProductSelectAttributeInput!) {
   updateProductSelectAttribute(input: $input) {
@@ -10471,6 +10547,46 @@ export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.La
 export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
 export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
 export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
+export const GetSupplierAlphabetListsDocument = gql`
+    query GetSupplierAlphabetLists($input: SupplierAlphabetInput) {
+  getSupplierAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSupplierAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetSupplierAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSupplierAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSupplierAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetSupplierAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
+      }
+export function useGetSupplierAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
+        }
+export type GetSupplierAlphabetListsQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsQuery>;
+export type GetSupplierAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsLazyQuery>;
+export type GetSupplierAlphabetListsQueryResult = Apollo.QueryResult<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>;
 export const GetOptionAlphabetListsDocument = gql`
     query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
   getOptionAlphabetLists(input: $input) {

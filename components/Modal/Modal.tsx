@@ -38,6 +38,7 @@ import {
   SUPPLIER_MODAL,
   METRIC_MODAL,
   ORDER_STATUS_MODAL,
+  SUPPLIER_OPTIONS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -45,6 +46,7 @@ const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditio
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
+const SupplierOptionsModal = dynamic(() => import('./SupplierOptionsModal'));
 const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const NavItemModal = dynamic(() => import('./NavItemModal'));
 const ConfirmModal = dynamic(() => import('components/Modal/ConfirmModal'));
@@ -157,6 +159,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           )}
 
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
+
+          {modalType === SUPPLIER_OPTIONS_MODAL && <SupplierOptionsModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_OPTIONS_MODAL && <AttributeOptionsModal {...modalProps} />}
 

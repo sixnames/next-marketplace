@@ -535,7 +535,7 @@ input CreateProductInput {
   active: Boolean!
   barcode: [String!]
   descriptionI18n: JSONObject!
-  nameI18n: JSONObject!
+  nameI18n: JSONObject
   originalName: String!
   rubricId: ObjectId!
 }
@@ -2591,7 +2591,7 @@ input UpdateProductInput {
   active: Boolean!
   barcode: [String!]
   descriptionI18n: JSONObject!
-  nameI18n: JSONObject!
+  nameI18n: JSONObject
   originalName: String!
   productId: ObjectId!
 }

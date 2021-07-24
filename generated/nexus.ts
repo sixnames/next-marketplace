@@ -328,7 +328,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -754,7 +754,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };

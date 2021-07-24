@@ -48,7 +48,7 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.boolean('active');
     t.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
   },
@@ -61,7 +61,7 @@ export const UpdateProductInput = inputObjectType({
     t.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
   },
 });
@@ -183,7 +183,7 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
+            const slug = generateProductSlug({ originalName: values.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...values,
@@ -337,7 +337,7 @@ export const ProductMutations = extendType({
 
             // Create new slug for product
             const updatedSlug = generateProductSlug({
-              nameI18n: values.nameI18n,
+              originalName: values.originalName,
               itemId: product.itemId,
             });
 
@@ -1135,7 +1135,7 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ nameI18n: productFields.nameI18n, itemId });
+            const slug = generateProductSlug({ originalName: productFields.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...productFields,

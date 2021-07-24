@@ -491,7 +491,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   active: boolean;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   descriptionI18n: TranslationModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
@@ -604,7 +604,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   itemId: string;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   descriptionI18n: TranslationModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;

@@ -24,13 +24,7 @@ const ProductMainFields: React.FC = () => {
 
   return (
     <React.Fragment>
-      <FormikTranslationsInput
-        label={'Название'}
-        name={'nameI18n'}
-        testId={'nameI18n'}
-        showInlineError
-        isRequired
-      />
+      <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
 
       <FormikInput
         isRequired

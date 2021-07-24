@@ -576,7 +576,7 @@ export type CreateProductInput = {
   active: Scalars['Boolean'];
   barcode?: Maybe<Array<Scalars['String']>>;
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
 };
@@ -2903,7 +2903,7 @@ export type UpdateProductInput = {
   barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
 };
 

@@ -1,22 +1,20 @@
 import AssetsManager from 'components/Assets/AssetsManager';
-import Button from 'components/Button';
-import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
+import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
 import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import { ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
 import {
   useDeleteProductAssetMutation,
   useUpdateProductAssetIndexMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -24,7 +22,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { addProductAssetsSchema } from 'validation/productSchema';
 
 interface ProductAssetsInterface {
   product: ProductInterface;
@@ -37,9 +34,6 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
     useMutationCallbacks({
       reload: true,
     });
-  const validationSchema = useValidationSchema({
-    schema: addProductAssetsSchema,
-  });
 
   const [deleteProductAssetMutation] = useDeleteProductAssetMutation({
     onError: onErrorCallback,
@@ -102,18 +96,17 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
           }}
         />
 
-        <Formik
-          enableReinitialize
-          validationSchema={validationSchema}
-          initialValues={{ assets: [], productId: product._id }}
-          onSubmit={(values) => {
-            if (values.assets) {
+        <WpDropZone
+          testId={'product-images'}
+          label={'Добавить изображения'}
+          onDropHandler={(acceptedFiles) => {
+            if (acceptedFiles) {
               showLoading();
               const formData = new FormData();
-              values.assets.forEach((file, index) => {
+              alwaysArray(acceptedFiles).forEach((file, index) => {
                 formData.append(`assets[${index}]`, file);
               });
-              formData.append('productId', `${values.productId}`);
+              formData.append('productId', `${product._id}`);
 
               fetch('/api/add-product-asset', {
                 method: 'POST',
@@ -136,24 +129,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
                 });
             }
           }}
-        >
-          {() => {
-            return (
-              <Form noValidate>
-                <FormikDropZone
-                  tooltip={'Подсказка для загрузки изображения'}
-                  label={'Добавить изображения'}
-                  name={'assets'}
-                  testId={'product-images'}
-                />
-
-                <Button testId={'submit-product'} type={'submit'}>
-                  Добавить
-                </Button>
-              </Form>
-            );
-          }}
-        </Formik>
+        />
       </Inner>
     </CmsProductLayout>
   );

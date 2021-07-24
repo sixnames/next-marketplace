@@ -15,7 +15,6 @@ describe('Nav items', () => {
     cy.getByCy('create-nav-item-modal').should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type('f');
     cy.getByCy('nav-item-submit').click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newNavItemName);
     cy.getByCy(`slug`).type('slug');
     cy.getByCy(`path`).type('/path');

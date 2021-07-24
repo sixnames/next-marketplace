@@ -3,7 +3,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_VARIANT_SELECT,
-  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
   ROUTE_CMS,
   SECONDARY_LOCALE,
@@ -17,7 +17,6 @@ describe('Attributes Groups', () => {
   it('Should CRUD attributes group', () => {
     const createdGroupName = 'createdGroupName';
     const updatedGroupName = 'updatedGroupName';
-    const fakeName = 'f';
 
     const mockAttributeNewName = 'mockAttributeNewName';
     const updatedAttributeName = 'updatedAttributeName';
@@ -25,32 +24,14 @@ describe('Attributes Groups', () => {
     cy.getByCy(`create-attributes-group`).click();
     cy.getByCy(`attributes-group-modal`).should('exist');
 
-    // Should show validation error on not valid attributes group name
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(fakeName);
-    cy.getByCy(`attributes-group-submit`).click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
-
     // Should create a new attributes group
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(createdGroupName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.wait(1500);
 
-    // Should show validation error on not valid attributes group update
-    cy.getByCy(`attributes-group-${createdGroupName}-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`sub-nav-details`).click();
-    cy.wait(1500);
-    cy.getByCy(`attributes-group-title`).contains(createdGroupName).should('exist');
-    cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)
-      .should('have.value', createdGroupName)
-      .clear()
-      .type(fakeName);
-    cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(fakeName);
-    cy.getByCy(`attributes-group-submit`).click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
-
     // Should update attributes group
+    cy.getByCy(`attributes-group-${createdGroupName}-update`).click();
+    cy.getByCy(`sub-nav-details`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedGroupName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.contains(updatedGroupName).should('exist');
@@ -60,24 +41,13 @@ describe('Attributes Groups', () => {
     cy.wait(1500);
     cy.getByCy(`attributes-list`).should('exist');
 
-    // Shouldn't create attribute in group on validation error
-    cy.getByCy(`create-attribute`).click();
-    cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
-    cy.getByCy(`viewVariant-error`).should('exist');
-    cy.getByCy(`variant-error`).should('exist');
-
-    cy.getByCy(`attribute-viewVariant`).select(ATTRIBUTE_VIEW_VARIANT_ICON);
-    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
-    cy.getByCy(`positioningInTitle.${DEFAULT_LOCALE}-error`).should('exist');
-
-    cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`optionsGroupId-error`).should('exist');
-
     // Should create attribute in group
+    cy.getByCy(`create-attribute`).click();
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockAttributeNewName);
     cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(mockAttributeNewName);
+    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
+    cy.getByCy(`attribute-viewVariant`).select(ATTRIBUTE_VIEW_VARIANT_LIST);
     cy.selectOptionByTestId(`attribute-options`, 'Год');
     cy.getByCy(`positioningInTitle-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`positioningInTitle-${DEFAULT_LOCALE}`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);

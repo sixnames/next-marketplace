@@ -16,8 +16,6 @@ describe('Users', () => {
     cy.getByCy('users-list').should('exist');
     cy.getByCy('create-user').click();
     cy.getByCy('create-user-modal').should('exist');
-    cy.getByCy('name').type('f');
-    cy.getByCy('name-error').should('exist');
     cy.getByCy('name').clear().type(newUserName);
     cy.getByCy('lastName').type(newUserName);
     cy.getByCy('secondName').type(newUserName);

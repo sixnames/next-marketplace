@@ -568,7 +568,6 @@ export const OptionsGroupMutations = extendType({
             ...values,
             slug: newOptionSlug,
             parentId,
-            variants: {},
             optionsGroupId,
           });
           const createdOption = createdOptionResult.ops[0];

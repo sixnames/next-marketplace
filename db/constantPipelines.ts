@@ -94,12 +94,26 @@ export function getCatalogueRubricPipeline(
     },
     {
       $group: {
-        _id: '$_id',
-        attributesSlugs: {
-          $addToSet: '$attributeSlug',
+        _id: '$attributeSlug',
+        rubricId: {
+          $first: '$_id',
         },
         optionsSlugs: {
           $addToSet: '$optionSlug',
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$rubricId',
+        attributesSlugs: {
+          $addToSet: '$_id',
+        },
+        attributeConfigs: {
+          $push: {
+            attributeSlug: '$_id',
+            optionSlugs: '$optionsSlugs',
+          },
         },
       },
     },
@@ -112,7 +126,7 @@ export function getCatalogueRubricPipeline(
         let: {
           rubricId: '$_id',
           attributesSlugs: '$attributesSlugs',
-          optionsSlugs: '$optionsSlugs',
+          attributeConfigs: '$attributeConfigs',
         },
         pipeline: [
           {
@@ -149,6 +163,26 @@ export function getCatalogueRubricPipeline(
                 },
                 ...attributesLimit,
                 {
+                  $addFields: {
+                    config: {
+                      $filter: {
+                        input: '$$attributeConfigs',
+                        as: 'config',
+                        cond: {
+                          $eq: ['$$config.attributeSlug', '$slug'],
+                        },
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    config: {
+                      $arrayElemAt: ['$config', 0],
+                    },
+                  },
+                },
+                {
                   $project: {
                     variant: false,
                     viewVariant: false,
@@ -165,7 +199,10 @@ export function getCatalogueRubricPipeline(
                   $lookup: {
                     from: COL_OPTIONS,
                     as: 'options',
-                    let: { optionsGroupId: '$optionsGroupId' },
+                    let: {
+                      optionsGroupId: '$optionsGroupId',
+                      optionsSlugs: '$config.optionSlugs',
+                    },
                     pipeline: [
                       {
                         $match: {

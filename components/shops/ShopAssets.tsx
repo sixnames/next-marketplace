@@ -1,7 +1,6 @@
 import AssetsManager from 'components/Assets/AssetsManager';
-import Button from 'components/Button';
-import FormikDropZone from 'components/FormElements/Upload/FormikDropZone';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
+import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
 import { Form, Formik } from 'formik';
 import {
@@ -10,6 +9,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -118,17 +118,17 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
             }}
           />
 
-          <Formik
-            enableReinitialize
-            initialValues={{ assets: [], shopId: _id }}
-            onSubmit={(values) => {
-              if (values.assets && values.assets.length > 0) {
+          <WpDropZone
+            label={'Добавить изображения'}
+            testId={'assets'}
+            onDropHandler={(acceptedFiles) => {
+              if (acceptedFiles) {
                 showLoading();
                 const formData = new FormData();
-                values.assets.forEach((file, index) => {
+                alwaysArray(acceptedFiles).forEach((file, index) => {
                   formData.append(`assets[${index}]`, file);
                 });
-                formData.append('shopId', `${values.shopId}`);
+                formData.append('shopId', `${_id}`);
 
                 fetch('/api/add-shop-asset', {
                   method: 'POST',
@@ -151,23 +151,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
                   });
               }
             }}
-          >
-            {() => {
-              return (
-                <Form noValidate>
-                  <FormikDropZone
-                    label={'Добавить изображения'}
-                    name={'assets'}
-                    testId={'assets'}
-                  />
-
-                  <Button testId={'submit-shop-assets'} type={'submit'}>
-                    Добавить
-                  </Button>
-                </Form>
-              );
-            }}
-          </Formik>
+          />
         </div>
       </Inner>
     </ConsoleShopLayout>

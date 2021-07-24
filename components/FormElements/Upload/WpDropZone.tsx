@@ -11,7 +11,6 @@ interface WpDropZoneInterface extends InputLinePropsInterface {
 
 const WpDropZone: React.FC<WpDropZoneInterface> = ({
   format,
-  name,
   label,
   isRequired,
   lineClass,
@@ -40,7 +39,6 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
   return (
     <InputLine
       isRequired={isRequired}
-      name={name}
       lineClass={lineClass}
       label={label}
       labelPostfix={labelPostfix}
@@ -48,6 +46,7 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
       low={low}
       error={error}
       showInlineError={showInlineError}
+      labelTag={'div'}
     >
       <div
         className={`relative cursor-pointer flex items-center justify-center h-16 w-full rounded-lg bg-secondary border-2 border-border-color] ${

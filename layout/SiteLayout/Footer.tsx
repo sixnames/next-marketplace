@@ -45,7 +45,13 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               <FakeInput value={'Введите Ваш E-mail'} low theme={'secondary'} />
             </div>
             <div className='flex-shrink-0 w-form-input-height ml-4'>
-              <Button className='w-full' icon={'arrow-right'} theme={'secondary-b'} short />
+              <Button
+                className='w-full'
+                icon={'arrow-right'}
+                theme={'secondary-b'}
+                ariaLabel={'submit'}
+                short
+              />
             </div>
           </div>
 

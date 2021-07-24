@@ -16,16 +16,9 @@ describe('Options Groups', () => {
   it('Should CRUD options group', () => {
     const createdGroupName = 'createdGroupName';
     const groupNewName = 'groupNewName';
-    const fakeName = 'f';
-
-    cy.getByCy(`create-options-group`).click();
-
-    // Should show validation error on not valid options group name
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(fakeName);
-    cy.getByCy(`options-group-submit`).click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
 
     // Should create group
+    cy.getByCy(`create-options-group`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(createdGroupName);
     cy.getByCy(`variant`).select(OPTIONS_GROUP_VARIANT_ICON);
     cy.getByCy(`options-group-submit`).click();

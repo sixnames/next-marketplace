@@ -28,13 +28,13 @@ export interface OptionsModalCommonPropsInterface {
   buttonText?: string;
   initialEmptyListMessage?: string;
   testId?: string;
+  notShowAsAlphabet?: boolean | null;
 }
 
 export interface OptionsModalInterface extends OptionsModalCommonPropsInterface {
   alphabet?: OptionsModalLetterInterface[] | null;
   loading?: boolean | null;
   error?: any | null;
-  notShowAsAlphabet?: boolean | null;
 }
 
 const defaultEmptyListMessage = 'Список пуст';

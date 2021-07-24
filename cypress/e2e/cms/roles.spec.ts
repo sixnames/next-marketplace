@@ -9,15 +9,8 @@ describe('User roles', () => {
     const newRoleName = 'newRoleName';
     const newRoleDescription = 'newRoleName very long description';
 
-    // Shouldn't create role on validation error
-    cy.getByCy('create-role').click();
-    cy.getByCy('create-role-modal').should('exist');
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type('f');
-    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type('b');
-    cy.getByCy('role-submit').click();
-    cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
-
     // Should create role
+    cy.getByCy('create-role').click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRoleName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRoleDescription);
     cy.getByCy('isStaff-checkbox').check();

@@ -31,30 +31,8 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
 
-interface HeaderSearchTriggerInterface {
-  setIsSearchOpen: (value: boolean) => void;
-  testId: string;
-}
-
 const middleLinkClassName =
   'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';
-
-const HeaderSearchTrigger: React.FC<HeaderSearchTriggerInterface> = ({
-  setIsSearchOpen,
-  testId,
-}) => {
-  return (
-    <div
-      data-cy={`${testId}-search-trigger`}
-      onClick={() => setIsSearchOpen(true)}
-      className={`${middleLinkClassName} pr-2 pl-2`}
-    >
-      <div className={`relative`}>
-        <Icon name={'search'} className='w-5 h-5' />
-      </div>
-    </div>
-  );
-};
 
 interface HeaderProfileLinkInterface {
   testId: string;
@@ -73,6 +51,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
               <Popover.Button
                 className={`${middleLinkClassName} pr-2 pl-2`}
                 data-cy={`${testId}-user-dropdown-trigger`}
+                aria-label={'profile'}
               >
                 <span className={`relative`}>
                   <Icon name={'user'} className='w-5 h-5' />
@@ -192,26 +171,6 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
       </span>
       <span className='hidden lg:block'>Корзина</span>
     </span>
-  );
-};
-
-interface HeaderBurgerDropdownTriggerInterface {
-  toggleBurgerDropdown: () => void;
-}
-
-const HeaderBurgerDropdownTrigger: React.FC<HeaderBurgerDropdownTriggerInterface> = ({
-  toggleBurgerDropdown,
-}) => {
-  return (
-    <div
-      data-cy={`burger-trigger`}
-      onClick={toggleBurgerDropdown}
-      className={`${middleLinkClassName} lg:hidden`}
-    >
-      <div className={`relative`}>
-        <Icon name={'burger'} className={'w-6 h-6'} />
-      </div>
-    </div>
   );
 };
 
@@ -448,7 +407,17 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
             </Link>
 
             <div className={`${middleSideClassName} justify-end`}>
-              <HeaderSearchTrigger testId={'header'} setIsSearchOpen={setIsSearchOpen} />
+              {/*search trigger*/}
+              <div
+                data-cy={`header-search-trigger`}
+                onClick={() => setIsSearchOpen(true)}
+                className={`${middleLinkClassName} pr-2 pl-2`}
+              >
+                <div className={`relative`}>
+                  <Icon name={'search'} className='w-5 h-5' />
+                </div>
+              </div>
+
               <HeaderProfileLink testId={'header'} />
 
               <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
@@ -465,7 +434,16 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
               <HeaderCartLink testId={'header'} />
 
-              <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
+              {/*Burger trigger*/}
+              <div
+                data-cy={`burger-trigger`}
+                onClick={toggleBurgerDropdown}
+                className={`${middleLinkClassName} lg:hidden`}
+              >
+                <div className={`relative`}>
+                  <Icon name={'burger'} className={'w-6 h-6'} />
+                </div>
+              </div>
             </div>
           </div>
         </Inner>

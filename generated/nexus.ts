@@ -237,6 +237,15 @@ export interface NexusGenInputs {
     lat: number; // Float!
     lng: number; // Float!
   };
+  CopyProductInput: {
+    // input type
+    active: boolean; // Boolean!
+    barcode?: string[] | null; // [String!]
+    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    originalName: string; // String!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   CreateAttributesGroupInput: {
     // input type
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1387,6 +1396,7 @@ export interface NexusGenFieldTypes {
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     clearCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     confirmOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
+    copyProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     createBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     createCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -2482,6 +2492,7 @@ export interface NexusGenFieldTypeNames {
     addShoplessProductToCart: 'CartPayload';
     clearCart: 'CartPayload';
     confirmOrder: 'MakeAnOrderPayload';
+    copyProduct: 'ProductPayload';
     createAttributesGroup: 'AttributesGroupPayload';
     createBrand: 'BrandPayload';
     createCompany: 'CompanyPayload';
@@ -3289,6 +3300,10 @@ export interface NexusGenArgTypes {
     confirmOrder: {
       // args
       input: NexusGenInputs['ConfirmOrderInput']; // ConfirmOrderInput!
+    };
+    copyProduct: {
+      // args
+      input: NexusGenInputs['CopyProductInput']; // CopyProductInput!
     };
     createAttributesGroup: {
       // args

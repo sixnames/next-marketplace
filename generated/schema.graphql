@@ -431,6 +431,15 @@ input CoordinatesInput {
   lng: Float!
 }
 
+input CopyProductInput {
+  active: Boolean!
+  barcode: [String!]
+  descriptionI18n: JSONObject!
+  nameI18n: JSONObject
+  originalName: String!
+  productId: ObjectId!
+}
+
 type Country {
   _id: ObjectId!
   cities: [City!]!
@@ -885,6 +894,11 @@ type Mutation {
   Should confirm order
   """
   confirmOrder(input: ConfirmOrderInput!): MakeAnOrderPayload!
+
+  """
+  Should copy product
+  """
+  copyProduct(input: CopyProductInput!): ProductPayload!
 
   """
   Should create attributes group

@@ -2,7 +2,7 @@ import Accordion from 'components/Accordion';
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
@@ -155,6 +155,16 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.originalName}`}
+              copyTitle={'Копировать товар'}
+              copyHandler={() => {
+                showModal<CreateNewProductModalInterface>({
+                  variant: CREATE_NEW_PRODUCT_MODAL,
+                  props: {
+                    rubricId: `${rubric._id}`,
+                    product: dataItem,
+                  },
+                });
+              }}
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
                 router.push(`${itemPath}/${dataItem._id}`).catch((e) => {

@@ -10,11 +10,10 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import { CreateProductInput } from 'generated/apolloComponents';
 import { get } from 'lodash';
 
-export type ProductFormValuesBaseType = Omit<CreateProductInput, 'assets' | 'rubricId'>;
+export type ProductFormValuesBaseType = Omit<CreateProductInput, 'rubricId'>;
 
 export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
-  assets?: any[] | null;
 }
 
 const ProductMainFields: React.FC = () => {

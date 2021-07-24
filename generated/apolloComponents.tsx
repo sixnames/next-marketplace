@@ -470,6 +470,15 @@ export type CoordinatesInput = {
   lng: Scalars['Float'];
 };
 
+export type CopyProductInput = {
+  productId: Scalars['ObjectId'];
+  barcode?: Maybe<Array<Scalars['String']>>;
+  active: Scalars['Boolean'];
+  originalName: Scalars['String'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
+  descriptionI18n: Scalars['JSONObject'];
+};
+
 export type Country = {
   __typename?: 'Country';
   _id: Scalars['ObjectId'];
@@ -1020,6 +1029,8 @@ export type Mutation = {
   updateProduct: ProductPayload;
   /** Should update product assets */
   deleteProductAsset: ProductPayload;
+  /** Should copy product */
+  copyProduct: ProductPayload;
   /** Should update product asset index */
   updateProductAssetIndex: ProductPayload;
   /** Should update product with syn error and remove sync error */
@@ -1501,6 +1512,11 @@ export type MutationUpdateProductArgs = {
 
 export type MutationDeleteProductAssetArgs = {
   input: DeleteProductAssetInput;
+};
+
+
+export type MutationCopyProductArgs = {
+  input: CopyProductInput;
 };
 
 
@@ -4116,6 +4132,23 @@ export type CreateProductMutationVariables = Exact<{
 export type CreateProductMutation = (
   { __typename?: 'Mutation' }
   & { createProduct: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, '_id' | 'rubricId'>
+    )> }
+  ) }
+);
+
+export type CopyProductMutationVariables = Exact<{
+  input: CopyProductInput;
+}>;
+
+
+export type CopyProductMutation = (
+  { __typename?: 'Mutation' }
+  & { copyProduct: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
     & { payload?: Maybe<(
@@ -8201,6 +8234,44 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const CopyProductDocument = gql`
+    mutation CopyProduct($input: CopyProductInput!) {
+  copyProduct(input: $input) {
+    success
+    message
+    payload {
+      _id
+      rubricId
+    }
+  }
+}
+    `;
+export type CopyProductMutationFn = Apollo.MutationFunction<CopyProductMutation, CopyProductMutationVariables>;
+
+/**
+ * __useCopyProductMutation__
+ *
+ * To run a mutation, you first call `useCopyProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCopyProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [copyProductMutation, { data, loading, error }] = useCopyProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCopyProductMutation(baseOptions?: Apollo.MutationHookOptions<CopyProductMutation, CopyProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CopyProductMutation, CopyProductMutationVariables>(CopyProductDocument, options);
+      }
+export type CopyProductMutationHookResult = ReturnType<typeof useCopyProductMutation>;
+export type CopyProductMutationResult = Apollo.MutationResult<CopyProductMutation>;
+export type CopyProductMutationOptions = Apollo.BaseMutationOptions<CopyProductMutation, CopyProductMutationVariables>;
 export const CreateProductConnectionDocument = gql`
     mutation CreateProductConnection($input: CreateProductConnectionInput!) {
   createProductConnection(input: $input) {

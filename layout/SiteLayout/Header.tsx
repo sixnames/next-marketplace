@@ -174,26 +174,6 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
   );
 };
 
-interface HeaderBurgerDropdownTriggerInterface {
-  toggleBurgerDropdown: () => void;
-}
-
-const HeaderBurgerDropdownTrigger: React.FC<HeaderBurgerDropdownTriggerInterface> = ({
-  toggleBurgerDropdown,
-}) => {
-  return (
-    <div
-      data-cy={`burger-trigger`}
-      onClick={toggleBurgerDropdown}
-      className={`${middleLinkClassName} lg:hidden`}
-    >
-      <div className={`relative`}>
-        <Icon name={'burger'} className={'w-6 h-6'} />
-      </div>
-    </div>
-  );
-};
-
 interface BurgerDropdownInterface {
   isBurgerDropdownOpen: boolean;
   hideBurgerDropdown: () => void;
@@ -454,7 +434,16 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
               <HeaderCartLink testId={'header'} />
 
-              <HeaderBurgerDropdownTrigger toggleBurgerDropdown={toggleBurgerDropdown} />
+              {/*Burger trigger*/}
+              <div
+                data-cy={`burger-trigger`}
+                onClick={toggleBurgerDropdown}
+                className={`${middleLinkClassName} lg:hidden`}
+              >
+                <div className={`relative`}>
+                  <Icon name={'burger'} className={'w-6 h-6'} />
+                </div>
+              </div>
             </div>
           </div>
         </Inner>

@@ -49,7 +49,7 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
       labelTag={'div'}
     >
       <div
-        className={`relative cursor-pointer flex items-center justify-center h-16 w-full rounded-lg bg-secondary border-2 border-border-color] ${
+        className={`relative cursor-pointer flex items-center justify-center h-16 w-full rounded-lg bg-secondary border-2 border-border-color ${
           disabled ? 'opacity-50 pointer-events-none' : ''
         }`}
         {...getRootProps()}

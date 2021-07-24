@@ -6,7 +6,7 @@ export interface ErrorBoundaryFallbackInterface {
 
 const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackInterface> = ({ statusCode }) => {
   return (
-    <div className='flex items-center justify-center h-[100vh] w-full py-12 px-8 bg-primary text-wp-error font-bold text-xl text-center'>
+    <div className='flex items-center justify-center h-[100vh] w-full py-12 px-8 bg-primary text-red-500 font-bold text-xl text-center'>
       <div>
         <p>УПС! Что-то пошло не так.</p>
         <p>Лог ошибки отправлен разработчикам.</p>

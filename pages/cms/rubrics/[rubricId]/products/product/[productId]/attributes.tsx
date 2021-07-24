@@ -161,6 +161,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             optionVariant: 'radio',
                             title: `${attribute.name}`,
+                            notShowAsAlphabet: attribute.notShowAsAlphabet,
                             onSubmit: (value) => {
                               showLoading();
                               updateProductSelectAttributeMutation({

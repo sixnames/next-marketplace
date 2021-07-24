@@ -736,6 +736,7 @@ export const getCatalogueData = async ({
     const rubricsPipeline = getCatalogueRubricPipeline({
       city,
       companySlug,
+      viewVariant: 'filter',
     });
 
     // const shopProductsStart = new Date().getTime();

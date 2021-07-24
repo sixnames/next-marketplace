@@ -75,13 +75,13 @@ const Meta: React.FC<MetaInterface> = ({
         />
         <meta name='application-name' content='Personal Website' />
 
-        <meta property='og:title' content={title} />
+        <meta property='og:title' content={`${pageTitle}`} />
         <meta property='og:type' content='website' />
         <meta property='og:image' content={pagePreviewImage} />
         <meta property='og:url' content={pageUrls.canonicalUrl} />
         <meta property='og:description' content={pageDescription} />
 
-        <meta name='twitter:title' content={title} />
+        <meta name='twitter:title' content={`${pageTitle}`} />
         <meta name='twitter:card' content='summary' />
         <meta name='twitter:image' content={pagePreviewImage} />
         <meta name='twitter:description' content={pageDescription} />

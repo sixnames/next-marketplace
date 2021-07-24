@@ -13,6 +13,7 @@ import {
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import {
   AttributeViewVariantModel,
+  CatalogueBreadcrumbModel,
   ConfigModel,
   GenderModel,
   ObjectIdModel,
@@ -442,6 +443,7 @@ export async function getCatalogueAttributes({
       metric: attribute.metric ? getFieldStringLocale(attribute.metric.nameI18n, locale) : null,
       viewVariant: attribute.viewVariant,
       notShowAsAlphabet: attribute.notShowAsAlphabet || false,
+      showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb,
     };
 
     if (isSelected) {
@@ -1029,6 +1031,7 @@ export const getCatalogueData = async ({
         totalProducts: 0,
         attributes: [],
         selectedAttributes: [],
+        breadcrumbs: [],
         page: 1,
       };
     }
@@ -1163,9 +1166,24 @@ export const getCatalogueData = async ({
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
     // console.log('Total time: ', new Date().getTime() - timeStart);
 
+    const breadcrumbs: CatalogueBreadcrumbModel[] = [];
+    selectedAttributes.forEach((selectedAttribute) => {
+      const { options, showAsCatalogueBreadcrumb } = selectedAttribute;
+
+      if (showAsCatalogueBreadcrumb) {
+        options.forEach((selectedOption) => {
+          breadcrumbs.push({
+            _id: selectedOption._id,
+            name: selectedOption.name,
+            href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
+          });
+        });
+      }
+    });
+
     return {
       _id: rubric._id,
-      clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}${sortPathname}`,
+      clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}/${sortPathname}`,
       filters,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricSlug: rubric.slug,
@@ -1175,6 +1193,7 @@ export const getCatalogueData = async ({
       attributes: castedAttributes,
       selectedAttributes,
       page: payloadPage,
+      breadcrumbs,
     };
   } catch (e) {
     console.log(e);

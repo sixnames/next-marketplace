@@ -36,7 +36,7 @@ import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'components/CatalogueFilter';
 
-interface CatalogueRouteInterface {
+interface CatalogueConsumerInterface {
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
@@ -44,7 +44,7 @@ interface CatalogueRouteInterface {
   isSearchResult?: boolean;
 }
 
-const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
+const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   catalogueData,
   companyId,
   companySlug,
@@ -247,7 +247,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
       },
     ];
   }, [router, showErrorNotification]);
-
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
@@ -262,7 +261,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({
 
   return (
     <div className='mb-12 catalogue'>
-      <Breadcrumbs currentPageName={catalogueData.rubricName} />
+      <Breadcrumbs config={state.breadcrumbs} currentPageName={catalogueData.rubricName} />
       <Inner lowTop testId={'catalogue'}>
         <Title
           testId={'catalogue-title'}
@@ -438,7 +437,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
       {...props}
     >
-      <CatalogueRoute
+      <CatalogueConsumer
         isSearchResult={isSearchResult}
         route={route}
         catalogueData={catalogueData}

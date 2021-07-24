@@ -7,6 +7,7 @@ import {
   BrandModel,
   CartModel,
   CartProductModel,
+  CatalogueBreadcrumbModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -322,6 +323,7 @@ export interface CatalogueDataInterface {
   products: ProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
+  breadcrumbs: CatalogueBreadcrumbModel[];
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
@@ -372,6 +374,7 @@ export interface CatalogueFilterAttributeInterface {
   notShowAsAlphabet: boolean;
   options: CatalogueFilterAttributeOptionInterface[];
   viewVariant: AttributeViewVariantModel;
+  showAsCatalogueBreadcrumb?: boolean | null;
 }
 
 export interface ProductCardPricesAggregationInterface {

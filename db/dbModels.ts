@@ -197,6 +197,7 @@ export interface AttributeModel {
   capitalise?: boolean | null;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
+  showAsCatalogueBreadcrumb?: boolean | null;
   notShowAsAlphabet?: boolean | null;
 }
 
@@ -523,6 +524,12 @@ export interface ProductCardPricesModel {
 }
 
 export interface ProductCardBreadcrumbModel {
+  _id: ObjectIdModel;
+  name: string;
+  href: string;
+}
+
+export interface CatalogueBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;
   href: string;

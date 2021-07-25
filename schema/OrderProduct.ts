@@ -1,5 +1,4 @@
 import { objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -15,20 +14,11 @@ export const OrderProduct = objectType({
     t.nonNull.int('amount');
     t.nonNull.string('slug');
     t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopProductId');
     t.nonNull.objectId('shopId');
     t.nonNull.objectId('companyId');
-
-    // OrderProduct name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
-      },
-    });
 
     // OrderProduct product field resolver
     t.field('product', {

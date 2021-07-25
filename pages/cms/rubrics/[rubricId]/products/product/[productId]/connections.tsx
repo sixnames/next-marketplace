@@ -1,7 +1,7 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';

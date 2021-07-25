@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   ProductAssetsModel,
+  ProductAttributeModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -21,6 +22,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -48,9 +50,21 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.boolean('active');
     t.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
+  },
+});
+
+export const CopyProductInput = inputObjectType({
+  name: 'CopyProductInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.list.nonNull.string('barcode');
+    t.nonNull.boolean('active');
+    t.nonNull.string('originalName');
+    t.json('nameI18n');
+    t.nonNull.json('descriptionI18n');
   },
 });
 
@@ -61,7 +75,7 @@ export const UpdateProductInput = inputObjectType({
     t.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
   },
 });
@@ -183,7 +197,7 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ nameI18n: values.nameI18n, itemId });
+            const slug = generateProductSlug({ originalName: values.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...values,
@@ -337,7 +351,7 @@ export const ProductMutations = extendType({
 
             // Create new slug for product
             const updatedSlug = generateProductSlug({
-              nameI18n: values.nameI18n,
+              originalName: values.originalName,
               itemId: product.itemId,
             });
 
@@ -627,6 +641,191 @@ export const ProductMutations = extendType({
               success: true,
               message: await getApiMessage('products.update.success'),
               payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should copy product
+    t.nonNull.field('copyProduct', {
+      type: 'ProductPayload',
+      description: 'Should copy product',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CopyProductInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.create.error`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'createProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateProductSchema,
+            });
+            await validationSchema.validate(args.input);
+
+            const { input } = args;
+            const { productId, ...values } = input;
+
+            // Get source product
+            const sourceProduct = await productsCollection.findOne({ _id: productId });
+            if (!sourceProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Get source product attributes
+            const sourceProductAttributes = await productAttributesCollection
+              .find({
+                productId,
+              })
+              .toArray();
+
+            // Create product
+            const itemId = await getNextItemId(COL_PRODUCTS);
+            const slug = generateProductSlug({ originalName: values.originalName, itemId });
+            const newProductId = new ObjectId();
+            const createdProductResult = await productsCollection.insertOne({
+              ...sourceProduct,
+              ...values,
+              _id: newProductId,
+              itemId,
+              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              slug,
+              rubricId: sourceProduct.rubricId,
+              rubricSlug: sourceProduct.slug,
+              active: true,
+              selectedOptionsSlugs: sourceProduct.selectedOptionsSlugs,
+              selectedAttributesIds: sourceProduct.selectedAttributesIds,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+            const createdProduct = createdProductResult.ops[0];
+            if (!createdProductResult.result.ok || !createdProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create product assets
+            const createdAssetsResult = await productAssetsCollection.insertOne({
+              productId: newProductId,
+              productSlug: slug,
+              assets: [
+                {
+                  index: 1,
+                  url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+                },
+              ],
+            });
+            const createdAssets = createdAssetsResult.ops[0];
+            if (!createdAssetsResult.result.ok || !createdAssets) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create product attributes
+            const createdProductAttributes: ProductAttributeModel[] = [];
+            for await (const productAttribute of sourceProductAttributes) {
+              createdProductAttributes.push({
+                ...productAttribute,
+                _id: new ObjectId(),
+                productId: createdProduct._id,
+                productSlug: createdProduct.slug,
+              });
+            }
+            const newAttributesResult = await productAttributesCollection.insertMany(
+              createdProductAttributes,
+            );
+            if (!newAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create algolia object
+            const algoliaResult = await saveAlgoliaObjects({
+              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+              objects: [
+                {
+                  _id: createdProduct._id.toHexString(),
+                  objectID: createdProduct._id.toHexString(),
+                  itemId: createdProduct.itemId,
+                  originalName: createdProduct.originalName,
+                  nameI18n: createdProduct.nameI18n,
+                  descriptionI18n: createdProduct.descriptionI18n,
+                  barcode: createdProduct.barcode,
+                },
+              ],
+            });
+            if (!algoliaResult) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('products.create.success'),
+              payload: createdProduct,
             };
           });
 
@@ -1135,7 +1334,7 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ nameI18n: productFields.nameI18n, itemId });
+            const slug = generateProductSlug({ originalName: productFields.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...productFields,

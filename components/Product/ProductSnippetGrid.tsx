@@ -1,4 +1,4 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -78,7 +78,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
                 {originalName}
               </Link>
             </div>
-            {noSecondaryName ? null : (
+            {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
               <div className='text-sm text-secondary-text mb-3'>{name}</div>
             )}
             <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>

@@ -34,6 +34,7 @@ export type AddAttributeToGroupInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
+  showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
@@ -470,6 +471,15 @@ export type CoordinatesInput = {
   lng: Scalars['Float'];
 };
 
+export type CopyProductInput = {
+  productId: Scalars['ObjectId'];
+  barcode?: Maybe<Array<Scalars['String']>>;
+  active: Scalars['Boolean'];
+  originalName: Scalars['String'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
+  descriptionI18n: Scalars['JSONObject'];
+};
+
 export type Country = {
   __typename?: 'Country';
   _id: Scalars['ObjectId'];
@@ -576,7 +586,7 @@ export type CreateProductInput = {
   active: Scalars['Boolean'];
   barcode?: Maybe<Array<Scalars['String']>>;
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
 };
@@ -1020,6 +1030,8 @@ export type Mutation = {
   updateProduct: ProductPayload;
   /** Should update product assets */
   deleteProductAsset: ProductPayload;
+  /** Should copy product */
+  copyProduct: ProductPayload;
   /** Should update product asset index */
   updateProductAssetIndex: ProductPayload;
   /** Should update product with syn error and remove sync error */
@@ -1504,6 +1516,11 @@ export type MutationDeleteProductAssetArgs = {
 };
 
 
+export type MutationCopyProductArgs = {
+  input: CopyProductInput;
+};
+
+
 export type MutationUpdateProductAssetIndexArgs = {
   input: UpdateProductAssetIndexInput;
 };
@@ -1800,12 +1817,11 @@ export type OrderProduct = {
   amount: Scalars['Int'];
   slug: Scalars['String'];
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   companyId: Scalars['ObjectId'];
-  name: Scalars['String'];
   product?: Maybe<Product>;
   shopProduct?: Maybe<ShopProduct>;
   shop?: Maybe<Shop>;
@@ -1927,7 +1943,7 @@ export type Product = Base & Timestamp & {
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
   supplierSlug?: Maybe<Scalars['String']>;
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
   rubricSlug: Scalars['String'];
@@ -1936,7 +1952,6 @@ export type Product = Base & Timestamp & {
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
-  name: Scalars['String'];
   description: Scalars['String'];
   cardPrices: ProductCardPrices;
   shopsCount: Scalars['Int'];
@@ -2700,6 +2715,7 @@ export type UpdateAttributeInGroupInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
+  showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
@@ -2903,7 +2919,7 @@ export type UpdateProductInput = {
   barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
 };
 
@@ -3087,7 +3103,7 @@ export type RubricInListFragment = (
 
 export type RubricProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'originalName' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
 );
 
 export type RubricProductsPaginationFragment = (
@@ -4125,6 +4141,23 @@ export type CreateProductMutation = (
   ) }
 );
 
+export type CopyProductMutationVariables = Exact<{
+  input: CopyProductInput;
+}>;
+
+
+export type CopyProductMutation = (
+  { __typename?: 'Mutation' }
+  & { copyProduct: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+    & { payload?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, '_id' | 'rubricId'>
+    )> }
+  ) }
+);
+
 export type CreateProductConnectionMutationVariables = Exact<{
   input: CreateProductConnectionInput;
 }>;
@@ -4788,7 +4821,7 @@ export type GetAppCompanyShopsQuery = (
 
 export type ShopProductNodeFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'mainImage'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'mainImage'>
 );
 
 export type ShopProductFragment = (
@@ -4999,7 +5032,7 @@ export type GetAllRubricVariantsQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -5306,7 +5339,7 @@ export const RubricProductFragmentDoc = gql`
   _id
   itemId
   nameI18n
-  name
+  originalName
   slug
   mainImage
   active
@@ -5442,7 +5475,7 @@ export const ShopProductNodeFragmentDoc = gql`
     fragment ShopProductNode on Product {
   _id
   itemId
-  name
+  originalName
   mainImage
 }
     `;
@@ -5560,7 +5593,6 @@ export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
   _id
   itemId
-  name
   originalName
   slug
   rubricSlug
@@ -8201,6 +8233,44 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const CopyProductDocument = gql`
+    mutation CopyProduct($input: CopyProductInput!) {
+  copyProduct(input: $input) {
+    success
+    message
+    payload {
+      _id
+      rubricId
+    }
+  }
+}
+    `;
+export type CopyProductMutationFn = Apollo.MutationFunction<CopyProductMutation, CopyProductMutationVariables>;
+
+/**
+ * __useCopyProductMutation__
+ *
+ * To run a mutation, you first call `useCopyProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCopyProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [copyProductMutation, { data, loading, error }] = useCopyProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCopyProductMutation(baseOptions?: Apollo.MutationHookOptions<CopyProductMutation, CopyProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CopyProductMutation, CopyProductMutationVariables>(CopyProductDocument, options);
+      }
+export type CopyProductMutationHookResult = ReturnType<typeof useCopyProductMutation>;
+export type CopyProductMutationResult = Apollo.MutationResult<CopyProductMutation>;
+export type CopyProductMutationOptions = Apollo.BaseMutationOptions<CopyProductMutation, CopyProductMutationVariables>;
 export const CreateProductConnectionDocument = gql`
     mutation CreateProductConnection($input: CreateProductConnectionInput!) {
   createProductConnection(input: $input) {

@@ -25,7 +25,6 @@ module.exports = {
         'primary-text': `var(--textColor)`,
         'secondary-text': `var(--textSecondaryColor)`,
         'border-color': `var(--borderColor)`,
-        'wp-error': `var(--wp-error)`,
         'wp-white': `var(--wp-white)`,
         'wp-dark-pink': `var(--wp-dark-pink)`,
         'wp-yellow': `var(--wp-yellow)`,

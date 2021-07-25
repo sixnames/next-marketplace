@@ -1,6 +1,6 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';

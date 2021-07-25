@@ -17,6 +17,7 @@ import {
   SORT_ASC,
   SORT_DESC,
   PAGE_STATE_PUBLISHED,
+  CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
 import {
   COL_CITIES,
@@ -25,19 +26,23 @@ import {
   COL_COUNTRIES,
   COL_LANGUAGES,
   COL_NAV_ITEMS,
+  COL_OPTIONS,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_ROLES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import {
   CityModel,
   CompanyModel,
   ConfigModel,
   CountryModel,
   LanguageModel,
+  ObjectIdModel,
+  RubricAttributeModel,
   RubricModel,
   ShopProductModel,
   UserModel,
@@ -73,6 +78,27 @@ export interface GetCatalogueNavRubricsInterface {
   company?: CompanyModel | null;
 }
 
+interface CatalogueNavConfigItemInterface {
+  attributeSlug: string;
+  optionSlug: string;
+}
+
+interface CatalogueGroupedNavConfigItemInterface {
+  attributeSlug: string;
+  optionSlugs: string[];
+}
+
+interface CatalogueGroupedNavConfigsInterface {
+  _id: ObjectIdModel;
+  attributeSlugs: string[];
+  attributeConfigs: CatalogueGroupedNavConfigItemInterface[];
+}
+
+interface CatalogueNavConfigsInterface {
+  _id: ObjectIdModel;
+  attributeConfigs: CatalogueNavConfigItemInterface[];
+}
+
 export const getCatalogueNavRubrics = async ({
   city,
   locale,
@@ -84,6 +110,8 @@ export const getCatalogueNavRubrics = async ({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // Get configs
@@ -110,17 +138,26 @@ export const getCatalogueNavRubrics = async ({
     _id: SORT_DESC,
   };
 
-  const rubricsPipeline = getCatalogueRubricPipeline({
-    city,
-    companySlug,
-    visibleAttributesCount,
-    visibleOptionsCount,
-    viewVariant: 'nav',
-  });
-
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
-  const shopRubricsAggregation = await shopProductsCollection
-    .aggregate<RubricInterface>([
+
+  const attributesLimit = visibleAttributesCount
+    ? [
+        {
+          $limit: visibleAttributesCount,
+        },
+      ]
+    : [];
+
+  const optionsLimit = visibleOptionsCount
+    ? [
+        {
+          $limit: visibleOptionsCount,
+        },
+      ]
+    : [];
+
+  const catalogueNavConfigs = await shopProductsCollection
+    .aggregate<CatalogueNavConfigsInterface>([
       {
         $match: {
           ...companyRubricsMatch,
@@ -133,43 +170,222 @@ export const getCatalogueNavRubrics = async ({
           rubricId: true,
         },
       },
-      ...rubricsPipeline,
       {
-        $sort: sortStage,
+        $unwind: {
+          path: '$selectedOptionsSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
-        $project: {
-          descriptionI18n: false,
-          shortDescriptionI18n: false,
-          attributesGroupsIds: false,
-          views: false,
-          priorities: false,
-          variantId: false,
+        $group: {
+          _id: '$rubricId',
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$selectedOptionsSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          slugArray: {
+            $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+          },
+        },
+      },
+      {
+        $addFields: {
+          attributeSlug: {
+            $arrayElemAt: ['$slugArray', 0],
+          },
+          optionSlug: {
+            $arrayElemAt: ['$slugArray', 1],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          attributesSlugs: {
+            $addToSet: '$attributeSlug',
+          },
+          attributeConfigs: {
+            $push: {
+              attributeSlug: '$attributeSlug',
+              optionSlug: '$optionSlug',
+            },
+          },
         },
       },
     ])
     .toArray();
-  // console.log(shopRubricsAggregation);
-  // console.log(JSON.stringify(shopRubricsAggregation, null, 2));
-  // console.log(JSON.stringify(shopRubricsAggregation[0], null, 2));
-  // console.log('After shopRubricsAggregation', new Date().getTime() - timeStart);
+
+  const catalogueGroupedNavConfigs: CatalogueGroupedNavConfigsInterface[] = catalogueNavConfigs.map(
+    (rubricConfig) => {
+      return {
+        _id: rubricConfig._id,
+        attributeSlugs: rubricConfig.attributeConfigs.map(({ attributeSlug }) => attributeSlug),
+        attributeConfigs: rubricConfig.attributeConfigs.reduce(
+          (acc: CatalogueGroupedNavConfigItemInterface[], config) => {
+            const existingConfigIndex = acc.findIndex(({ attributeSlug }) => {
+              return attributeSlug === config.attributeSlug;
+            });
+            if (existingConfigIndex > -1) {
+              acc[existingConfigIndex] = {
+                attributeSlug: config.attributeSlug,
+                optionSlugs: [...acc[existingConfigIndex].optionSlugs, config.optionSlug],
+              };
+              return acc;
+            }
+
+            return [
+              ...acc,
+              {
+                attributeSlug: config.attributeSlug,
+                optionSlugs: [config.optionSlug],
+              },
+            ];
+          },
+          [],
+        ),
+      };
+    },
+  );
+
+  const rubricsIds = catalogueGroupedNavConfigs.map(({ _id }) => _id);
+  const initialRubricsAggregation = await rubricsCollection
+    .aggregate([
+      {
+        $match: {
+          _id: {
+            $in: rubricsIds,
+          },
+        },
+      },
+      {
+        $sort: sortStage,
+      },
+    ])
+    .toArray();
 
   const rubrics: RubricInterface[] = [];
-  shopRubricsAggregation.forEach(({ nameI18n, attributes, ...restRubric }) => {
-    rubrics.push({
-      ...restRubric,
-      nameI18n: {},
-      name: getI18nLocaleValue<string>(nameI18n, locale),
-      attributes: getRubricNavAttributes({
-        attributes: attributes || [],
-        locale,
-      }),
+  for await (const rubric of initialRubricsAggregation) {
+    const rubricConfig = catalogueGroupedNavConfigs.find((config) => {
+      return rubric._id.equals(config._id);
     });
-  });
 
+    if (rubricConfig) {
+      const rubricAttributesAggregation = await rubricAttributesCollection
+        .aggregate([
+          {
+            $match: {
+              rubricId: rubric._id,
+              slug: {
+                $in: rubricConfig.attributeSlugs,
+              },
+            },
+          },
+          {
+            $sort: sortStage,
+          },
+          ...attributesLimit,
+          {
+            $project: {
+              variant: false,
+              viewVariant: false,
+              rubricId: false,
+              showInCatalogueNav: false,
+              showInCatalogueFilter: false,
+              views: false,
+              priorities: false,
+            },
+          },
+          {
+            $addFields: {
+              config: rubricConfig.attributeConfigs,
+            },
+          },
+          {
+            $addFields: {
+              config: {
+                $filter: {
+                  input: '$config',
+                  as: 'config',
+                  cond: {
+                    $eq: ['$$config.attributeSlug', '$slug'],
+                  },
+                },
+              },
+            },
+          },
+          {
+            $addFields: {
+              config: {
+                $arrayElemAt: ['$config', 0],
+              },
+            },
+          },
+          // Lookup rubric attribute options
+          {
+            $lookup: {
+              from: COL_OPTIONS,
+              as: 'options',
+              let: {
+                optionsGroupId: '$optionsGroupId',
+                optionsSlugs: '$config.optionSlugs',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                        },
+                        {
+                          $in: ['$slug', '$$optionsSlugs'],
+                        },
+                      ],
+                    },
+                    $or: [
+                      {
+                        parentId: {
+                          $exists: false,
+                        },
+                      },
+                      {
+                        parentId: null,
+                      },
+                    ],
+                  },
+                },
+                {
+                  $sort: sortStage,
+                },
+                ...optionsLimit,
+              ],
+            },
+          },
+        ])
+        .toArray();
+
+      rubrics.push({
+        ...rubric,
+        nameI18n: {},
+        name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
+        attributes: getRubricNavAttributes({
+          attributes: rubricAttributesAggregation || [],
+          locale,
+        }),
+      });
+    }
+  }
   // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
-  // return sortedRubrics;
   return rubrics;
 };
 

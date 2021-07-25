@@ -1,7 +1,7 @@
 import ProductSnippetGrid, {
   ProductSnippetGridInterface,
 } from 'components/Product/ProductSnippetGrid';
-import { ROUTE_CATALOGUE } from 'config/common';
+import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import * as React from 'react';
 import LayoutCard from 'layout/LayoutCard';
@@ -94,7 +94,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   {originalName}
                 </Link>
               </div>
-              <div className='text-secondary-text mb-6'>{name}</div>
+              {!name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
+                <div className='text-secondary-text mb-6'>{name}</div>
+              )}
               <div className='grid mb-6 grid-cols-12 gap-x-4 gap-y-2'>
                 {(listFeatures || []).map(({ name, _id, readableValue }) => {
                   return (

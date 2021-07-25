@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
 import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
 import Table, { TableColumn } from 'components/Table';

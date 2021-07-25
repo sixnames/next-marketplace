@@ -1,6 +1,6 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import Table, { TableColumn } from 'components/Table';

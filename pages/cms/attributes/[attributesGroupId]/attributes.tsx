@@ -1,5 +1,5 @@
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Table, { TableColumn } from 'components/Table';

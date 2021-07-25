@@ -6,7 +6,6 @@ import {
   requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
-import { DEFAULT_LOCALE } from 'config/common';
 import { attributeIdSchema } from 'validation/attributesGroupSchema';
 
 export const productIdSchema = (args: ValidationSchemaArgsInterface) => {
@@ -17,30 +16,8 @@ export const productConnectionIdSchema = (args: ValidationSchemaArgsInterface) =
   return objectIdSchema({ ...args, slug: 'validation.productConnections.id' });
 };
 
-export const productAttributeSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    showInCard: Yup.boolean(),
-    showAsBreadcrumb: Yup.boolean(),
-    attributeId: objectIdSchema({ ...args, slug: 'validation.products.attributeId' }),
-    attributeSlug: requiredStringSchema({
-      ...args,
-      slug: 'validation.products.attributeSlug',
-    }),
-    attributesGroupId: objectIdSchema({ ...args, slug: 'validation.products.attributesGroupId' }),
-    selectedOptionsSlugs: Yup.array().of(Yup.string()),
-    number: Yup.number(),
-    textI18n: Yup.object({
-      [DEFAULT_LOCALE]: Yup.string(),
-    }),
-  });
-};
-
 export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
-    nameI18n: requiredStringTranslationSchema({
-      ...args,
-      slug: 'validation.products.name',
-    }),
     originalName: requiredStringSchema({
       ...args,
       slug: 'validation.products.originalName',

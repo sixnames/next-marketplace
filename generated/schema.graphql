@@ -694,6 +694,7 @@ Gender enum.
 enum Gender {
   he
   it
+  plural
   she
 }
 

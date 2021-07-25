@@ -333,6 +333,7 @@ export interface GetCatalogueAttributesInterface {
   basePath: string;
   visibleAttributesCount?: number | null;
   visibleOptionsCount?: number | null;
+  rubricGender?: string;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -349,6 +350,7 @@ export async function getCatalogueAttributes({
   basePath,
   visibleOptionsCount,
   visibleAttributesCount,
+  rubricGender,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
@@ -371,6 +373,16 @@ export async function getCatalogueAttributes({
       // check if selected
       const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
       const isSelected = realFilter.includes(optionSlug);
+      let optionName = getFieldStringLocale(option.nameI18n, locale);
+      if (rubricGender) {
+        const optionVariantGender = option.variants[rubricGender];
+        if (optionVariantGender) {
+          optionName = optionVariantGender[locale];
+        }
+        if (!optionName) {
+          optionName = getFieldStringLocale(option.nameI18n, locale);
+        }
+      }
 
       const optionNextSlug = isSelected
         ? [...realFilter]
@@ -382,7 +394,7 @@ export async function getCatalogueAttributes({
 
       const castedOption = {
         _id: option._id,
-        name: getFieldStringLocale(option.nameI18n, locale),
+        name: optionName,
         slug: option.slug,
         nextSlug: `${basePath}/${optionNextSlug}`,
         isSelected,
@@ -1045,6 +1057,7 @@ export const getCatalogueData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount,
+      rubricGender: rubric.catalogueTitle.gender,
       // visibleAttributesCount,
     });
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);

@@ -197,6 +197,7 @@ export interface AttributeModel {
   capitalise?: boolean | null;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
+  showAsCatalogueBreadcrumb?: boolean | null;
   notShowAsAlphabet?: boolean | null;
 }
 
@@ -421,7 +422,7 @@ export interface OrderProductModel extends TimestampModel {
   totalPrice: number;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   productId: ObjectIdModel;
   customerId: ObjectIdModel;
   shopProductId: ObjectIdModel;
@@ -491,7 +492,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   active: boolean;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   descriptionI18n: TranslationModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
@@ -523,6 +524,12 @@ export interface ProductCardPricesModel {
 }
 
 export interface ProductCardBreadcrumbModel {
+  _id: ObjectIdModel;
+  name: string;
+  href: string;
+}
+
+export interface CatalogueBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;
   href: string;
@@ -604,7 +611,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   itemId: string;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   descriptionI18n: TranslationModel;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;

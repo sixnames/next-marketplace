@@ -18,7 +18,7 @@ export const rubricProductFragment = gql`
     _id
     itemId
     nameI18n
-    name
+    originalName
     slug
     mainImage
     active

@@ -40,6 +40,19 @@ export const CREATE_PRODUCT_MUTATION = gql`
   }
 `;
 
+export const COPY_PRODUCT_MUTATION = gql`
+  mutation CopyProduct($input: CopyProductInput!) {
+    copyProduct(input: $input) {
+      success
+      message
+      payload {
+        _id
+        rubricId
+      }
+    }
+  }
+`;
+
 export const CREATE_PRODUCT_CONNECTION_MUTATION = gql`
   mutation CreateProductConnection($input: CreateProductConnectionInput!) {
     createProductConnection(input: $input) {

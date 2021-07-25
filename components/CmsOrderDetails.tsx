@@ -105,7 +105,7 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) =
                   {status.name}
                 </div>
               ) : (
-                <div className='text-wp-error font-medium'>Статус не найден</div>
+                <div className='text-red-500 font-medium'>Статус не найден</div>
               )}
             </div>
 
@@ -123,7 +123,7 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) =
                   </div>
                 </div>
               ) : (
-                <div className='text-wp-error font-medium'>Заказчик не найден</div>
+                <div className='text-red-500 font-medium'>Заказчик не найден</div>
               )}
             </div>
 
@@ -145,7 +145,7 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) =
                   <div className='text-secondary-text'>{shop.address.formattedAddress}</div>
                 </div>
               ) : (
-                <div className='text-wp-error font-medium'>Магазин не найден</div>
+                <div className='text-red-500 font-medium'>Магазин не найден</div>
               )}
             </div>
 

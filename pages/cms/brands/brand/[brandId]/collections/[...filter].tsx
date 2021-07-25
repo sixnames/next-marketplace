@@ -1,5 +1,5 @@
 import Button from 'components/Button';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';

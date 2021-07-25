@@ -4,7 +4,6 @@ export const productSnippedFragment = gql`
   fragment ProductSnippet on Product {
     _id
     itemId
-    name
     originalName
     slug
     rubricSlug

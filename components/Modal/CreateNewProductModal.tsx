@@ -3,11 +3,12 @@ import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import { ROUTE_CMS } from 'config/common';
+import { ProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useCreateProductMutation } from 'generated/apolloComponents';
+import { useCopyProductMutation, useCreateProductMutation } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import { createProductSchema } from 'validation/productSchema';
 import ProductMainFields, {
@@ -16,9 +17,10 @@ import ProductMainFields, {
 
 export interface CreateNewProductModalInterface {
   rubricId: string;
+  product?: ProductInterface | null;
 }
 
-const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId }) => {
+const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId, product }) => {
   const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: createProductSchema,
@@ -53,11 +55,29 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
     onError: onErrorCallback,
   });
 
+  const [copyProductMutation] = useCopyProductMutation({
+    awaitRefetchQueries: true,
+    onCompleted: (data) => {
+      if (data.copyProduct.success) {
+        onCompleteCallback(data.copyProduct);
+        router
+          .push(
+            `${ROUTE_CMS}/rubrics/${rubricId}/products/product/${data.copyProduct.payload?._id}`,
+          )
+          .catch((e) => console.log(e));
+      } else {
+        hideLoading();
+        showErrorNotification({ title: data.copyProduct.message });
+      }
+    },
+    onError: onErrorCallback,
+  });
+
   const initialValues: ProductFormValuesInterface = {
     active: true,
-    nameI18n: {},
-    originalName: '',
-    descriptionI18n: {},
+    nameI18n: product?.nameI18n || {},
+    originalName: product?.originalName || '',
+    descriptionI18n: product?.descriptionI18n || {},
     barcode: [],
   };
 
@@ -69,7 +89,22 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          return createProductMutation({
+          if (product) {
+            copyProductMutation({
+              variables: {
+                input: {
+                  ...values,
+                  productId: product._id,
+                  barcode: (values.barcode || []).filter((currentBarcode) => {
+                    return Boolean(currentBarcode);
+                  }),
+                },
+              },
+            }).catch(console.log);
+            return;
+          }
+
+          createProductMutation({
             variables: {
               input: {
                 ...values,
@@ -79,7 +114,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
                 }),
               },
             },
-          });
+          }).catch(console.log);
         }}
       >
         {() => {

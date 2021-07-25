@@ -5,9 +5,7 @@ import { useFormikContext } from 'formik';
 import useUsersListColumns from '../../hooks/useUsersListColumns';
 import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from 'config/modalVariants';
-import ContentItemControls, {
-  ContentItemControlsInterface,
-} from '../../components/ContentItemControls/ContentItemControls';
+import ContentItemControls, { ContentItemControlsInterface } from 'components/ContentItemControls';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';

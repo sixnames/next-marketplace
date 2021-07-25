@@ -139,6 +139,7 @@ export const getSearchData = async ({
         totalProducts: 0,
         attributes: [],
         selectedAttributes: [],
+        breadcrumbs: [],
         page: 1,
       };
     }
@@ -664,6 +665,7 @@ export const getSearchData = async ({
         totalProducts: 0,
         attributes: [],
         selectedAttributes: [],
+        breadcrumbs: [],
         page: 1,
       };
     }
@@ -846,6 +848,7 @@ export const getSearchData = async ({
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
       attributes: finalCastedAttributes,
       selectedAttributes: finalSelectedAttributes,
+      breadcrumbs: [],
       page: payloadPage,
     };
   } catch (e) {

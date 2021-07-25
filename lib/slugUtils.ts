@@ -22,16 +22,12 @@ export const generateDefaultLangSlug = (languages: TranslationModel) => {
 };
 
 export interface GenerateProductSlugInterface {
-  nameI18n: TranslationModel;
+  originalName: string;
   itemId: string;
 }
 
-export const generateProductSlug = ({ nameI18n, itemId }: GenerateProductSlugInterface) => {
-  const defaultValue = nameI18n[DEFAULT_LOCALE];
-  if (!defaultValue) {
-    throw Error('defaultValue not found in generateDefaultLangSlug');
-  }
-  return generateSlug(`${defaultValue} ${itemId}`);
+export const generateProductSlug = ({ originalName, itemId }: GenerateProductSlugInterface) => {
+  return generateSlug(`${originalName} ${itemId}`);
 };
 
 export interface GenerateCompanySlugInterface {

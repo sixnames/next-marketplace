@@ -2,7 +2,7 @@ import Accordion from 'components/Accordion';
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';

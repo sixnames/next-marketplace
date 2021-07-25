@@ -52,7 +52,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
-    nameI18n,
+    nameI18n: nameI18n || {},
     originalName,
     descriptionI18n,
     active,

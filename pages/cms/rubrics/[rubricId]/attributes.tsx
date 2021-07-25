@@ -1,7 +1,7 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls/ContentItemControls';
+import ContentItemControls from 'components/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';

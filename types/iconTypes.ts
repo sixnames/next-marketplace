@@ -13,6 +13,7 @@ export const iconTypesList = [
   'chevron-right-thin',
   'chevron-up',
   'compare',
+  'copy',
   'cross',
   'cross-bold',
   'cross-thin',

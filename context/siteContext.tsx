@@ -173,15 +173,8 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const [makeAnOrderMutation] = useMakeAnOrderMutation({
     onCompleted: ({ makeAnOrder }) => {
       if (makeAnOrder.success) {
-        showLoading();
-        router
-          .push(ROUTE_THANK_YOU)
-          .then(() => {
-            refetchCartHandler();
-          })
-          .catch(() => {
-            showErrorNotification();
-          });
+        refetchCartHandler();
+        router.push(ROUTE_THANK_YOU).catch(console.log);
         return;
       }
       hideLoading();

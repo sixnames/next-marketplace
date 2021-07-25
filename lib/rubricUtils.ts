@@ -33,6 +33,10 @@ export function getRubricNavAttributes({
 }: GetRubricNavAttributesInterface): RubricAttributeInterface[] {
   const sortedAttributes: RubricAttributeInterface[] = [];
   attributes.forEach((attribute) => {
+    if ((attribute.options || []).length < 1) {
+      return;
+    }
+
     sortedAttributes.push({
       ...attribute,
       metric: attribute.metric

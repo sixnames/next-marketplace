@@ -1817,12 +1817,11 @@ export type OrderProduct = {
   amount: Scalars['Int'];
   slug: Scalars['String'];
   originalName: Scalars['String'];
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
   companyId: Scalars['ObjectId'];
-  name: Scalars['String'];
   product?: Maybe<Product>;
   shopProduct?: Maybe<ShopProduct>;
   shop?: Maybe<Shop>;
@@ -1944,7 +1943,7 @@ export type Product = Base & Timestamp & {
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
   supplierSlug?: Maybe<Scalars['String']>;
-  nameI18n: Scalars['JSONObject'];
+  nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
   rubricSlug: Scalars['String'];
@@ -1953,7 +1952,6 @@ export type Product = Base & Timestamp & {
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
-  name: Scalars['String'];
   description: Scalars['String'];
   cardPrices: ProductCardPrices;
   shopsCount: Scalars['Int'];
@@ -3105,7 +3103,7 @@ export type RubricInListFragment = (
 
 export type RubricProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'originalName' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
 );
 
 export type RubricProductsPaginationFragment = (
@@ -4823,7 +4821,7 @@ export type GetAppCompanyShopsQuery = (
 
 export type ShopProductNodeFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'mainImage'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'mainImage'>
 );
 
 export type ShopProductFragment = (
@@ -5034,7 +5032,7 @@ export type GetAllRubricVariantsQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -5341,7 +5339,7 @@ export const RubricProductFragmentDoc = gql`
   _id
   itemId
   nameI18n
-  name
+  originalName
   slug
   mainImage
   active
@@ -5477,7 +5475,7 @@ export const ShopProductNodeFragmentDoc = gql`
     fragment ShopProductNode on Product {
   _id
   itemId
-  name
+  originalName
   mainImage
 }
     `;
@@ -5595,7 +5593,6 @@ export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
   _id
   itemId
-  name
   originalName
   slug
   rubricSlug

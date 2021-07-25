@@ -1546,8 +1546,7 @@ type OrderProduct {
   formattedPrice: String!
   formattedTotalPrice: String!
   itemId: Int!
-  name: String!
-  nameI18n: JSONObject!
+  nameI18n: JSONObject
   originalName: String!
   price: Int!
   product: Product
@@ -1683,8 +1682,7 @@ type Product implements Base & Timestamp {
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
-  name: String!
-  nameI18n: JSONObject!
+  nameI18n: JSONObject
   originalName: String!
   rubric: Rubric!
   rubricId: ObjectId!

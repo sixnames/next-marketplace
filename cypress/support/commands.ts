@@ -169,12 +169,6 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
 
   // Add product #2
   cy.getByCy(`cart-modal-close`).click();
-  cy.visit(catalogueRoute);
-  cy.wait(1500);
-  cy.getByCy('catalogue').should('exist');
-  cy.get(`[data-cy=catalogue-item-1-name-row]`).invoke('removeAttr', 'target').click();
-  cy.wait(1500);
-  cy.getByCy(`card`).should('exist');
   cy.getByCy(`card-shops-1-1-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 
@@ -201,6 +195,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   // Should make an order and redirect to the Thank you page
   cy.getByCy(`cart-aside-confirm`).click();
   cy.wait(1500);
+
   cy.get(`[data-cy="thank-you"]`).then(() => {
     if (callback) {
       callback();

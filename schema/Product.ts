@@ -59,7 +59,7 @@ export const Product = objectType({
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
     t.string('supplierSlug');
-    t.nonNull.json('nameI18n');
+    t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.string('rubricSlug');
@@ -98,15 +98,6 @@ export const Product = objectType({
           })
           .toArray();
         return connections;
-      },
-    });
-
-    // Product name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
       },
     });
 

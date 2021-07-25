@@ -57,7 +57,13 @@ const useProductsListColumns = ({
         accessor: 'mainImage',
         headTitle: 'Фото',
         render: ({ cellData, dataItem }) => {
-          return <TableRowImage src={cellData} alt={dataItem.name} title={dataItem.name} />;
+          return (
+            <TableRowImage
+              src={cellData}
+              alt={dataItem.originalName}
+              title={dataItem.originalName}
+            />
+          );
         },
       },
       {
@@ -75,7 +81,7 @@ const useProductsListColumns = ({
           return (
             <div className='flex justify-end'>
               <ContentItemControls
-                testId={dataItem.name}
+                testId={dataItem.originalName}
                 createTitle={createTitle}
                 updateTitle={updateTitle}
                 deleteTitle={deleteTitle}

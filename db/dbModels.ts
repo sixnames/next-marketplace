@@ -422,7 +422,7 @@ export interface OrderProductModel extends TimestampModel {
   totalPrice: number;
   slug: string;
   originalName: string;
-  nameI18n: TranslationModel;
+  nameI18n?: TranslationModel | null;
   productId: ObjectIdModel;
   customerId: ObjectIdModel;
   shopProductId: ObjectIdModel;

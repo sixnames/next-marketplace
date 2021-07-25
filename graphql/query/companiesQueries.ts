@@ -132,7 +132,7 @@ export const shopProductNodeFragment = gql`
   fragment ShopProductNode on Product {
     _id
     itemId
-    name
+    originalName
     mainImage
   }
 `;

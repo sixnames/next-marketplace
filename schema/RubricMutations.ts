@@ -272,13 +272,11 @@ export const RubricMutations = extendType({
           }
 
           // Create rubric
-          const slug = generateDefaultLangSlug(values.nameI18n);
           const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
             { _id: rubricId },
             {
               $set: {
                 ...values,
-                slug,
               },
             },
             {

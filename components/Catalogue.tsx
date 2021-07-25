@@ -250,7 +250,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
-        <Breadcrumbs currentPageName={catalogueData.rubricName} />
+        <Breadcrumbs config={state.breadcrumbs} />
         <Inner lowTop testId={'catalogue'}>
           <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
@@ -261,7 +261,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
   return (
     <div className='mb-12 catalogue'>
-      <Breadcrumbs config={state.breadcrumbs} currentPageName={catalogueData.rubricName} />
+      <Breadcrumbs config={state.breadcrumbs} />
       <Inner lowTop testId={'catalogue'}>
         <Title
           testId={'catalogue-title'}

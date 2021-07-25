@@ -1166,34 +1166,35 @@ export const getCatalogueData = async ({
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
     // console.log('Total time: ', new Date().getTime() - timeStart);
 
-    const breadcrumbs: CatalogueBreadcrumbModel[] = [];
+    // get catalogue breadcrumbs
+    const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
+    const breadcrumbs: CatalogueBreadcrumbModel[] = [
+      {
+        _id: rubric._id,
+        name: rubricName,
+        href: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      },
+    ];
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb } = selectedAttribute;
       const postfix = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
 
-      options.forEach((selectedOption) => {
-        breadcrumbs.push({
-          _id: selectedOption._id,
-          name: `${selectedOption.name} ${postfix}`,
-          href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
-        });
-      });
       if (showAsCatalogueBreadcrumb) {
         options.forEach((selectedOption) => {
           breadcrumbs.push({
             _id: selectedOption._id,
-            name: `${selectedOption.name} ${postfix}`,
+            name: `${selectedOption.name}${postfix}`,
             href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
           });
         });
       }
     });
-    // TODO change breadcrumbs order
+
     return {
       _id: rubric._id,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}/${sortPathname}`,
       filters,
-      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+      rubricName,
       rubricSlug: rubric.slug,
       products,
       catalogueTitle,

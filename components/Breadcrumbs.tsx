@@ -9,7 +9,7 @@ export interface BreadcrumbsItemInterface extends LinkInterface {
 }
 
 export interface BreadcrumbsInterface {
-  currentPageName: string;
+  currentPageName?: string;
   config?: BreadcrumbsItemInterface[];
   noMainPage?: boolean;
   lowTop?: boolean;
@@ -45,7 +45,17 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
               </Link>
             </li>
           )}
-          {config.map((configItem, index) => {
+          {(config || []).map((configItem, index) => {
+            const isLastItem = index === (config || []).length - 1;
+
+            if (isLastItem && !currentPageName) {
+              return (
+                <li key={index} className='inline mr-1 text-secondary-text'>
+                  {configItem.name}
+                </li>
+              );
+            }
+
             return (
               <li className='inline mr-1' key={index}>
                 <Link
@@ -57,7 +67,10 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
               </li>
             );
           })}
-          <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
+
+          {currentPageName ? (
+            <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
+          ) : null}
         </ul>
       </Inner>
     </div>

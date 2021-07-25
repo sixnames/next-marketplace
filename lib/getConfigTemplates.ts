@@ -1,4 +1,9 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+  MAIN_BANNER_AUTOPLAY_SPEED,
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
+} from '../config/common';
 import { ConfigModel, ConfigVariantModel } from '../db/dbModels';
 import { ObjectId } from 'mongodb';
 
@@ -713,6 +718,22 @@ export function getConfigTemplates({
     },
 
     // Catalogue
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'mainBannerAutoplaySpeed',
+      name: 'Интервал времени между слайдами баннера на главной странице (миллисекунды)',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [`${MAIN_BANNER_AUTOPLAY_SPEED}`],
+        },
+      },
+    },
     {
       _id: new ObjectId(),
       companySlug,

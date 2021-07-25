@@ -61,6 +61,8 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   const { getSiteConfigSingleValue } = useConfigContext();
   const configTitle = getSiteConfigSingleValue('seoTextTitle');
   const configSeoText = getSiteConfigSingleValue('seoText');
+  const configAutoplaySpeed = getSiteConfigSingleValue('mainBannerAutoplaySpeed');
+  const autoplaySpeed = noNaN(configAutoplaySpeed);
   const sectionClassName = `mb-14 sm:mb-28`;
 
   return (
@@ -68,7 +70,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
       <Inner testId={'main-page'}>
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={true} autoplaySpeed={3000}>
+            <SlickSlider arrows={false} autoplay={autoplaySpeed > 0} autoplaySpeed={autoplaySpeed}>
               {sliderPages.map(
                 ({
                   slug,

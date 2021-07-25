@@ -1169,18 +1169,26 @@ export const getCatalogueData = async ({
     const breadcrumbs: CatalogueBreadcrumbModel[] = [];
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb } = selectedAttribute;
+      const postfix = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
 
+      options.forEach((selectedOption) => {
+        breadcrumbs.push({
+          _id: selectedOption._id,
+          name: `${selectedOption.name} ${postfix}`,
+          href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
+        });
+      });
       if (showAsCatalogueBreadcrumb) {
         options.forEach((selectedOption) => {
           breadcrumbs.push({
             _id: selectedOption._id,
-            name: selectedOption.name,
+            name: `${selectedOption.name} ${postfix}`,
             href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
           });
         });
       }
     });
-
+    // TODO change breadcrumbs order
     return {
       _id: rubric._id,
       clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}/${sortPathname}`,

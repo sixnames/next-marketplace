@@ -114,6 +114,7 @@ export interface NexusGenInputs {
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     showAsBreadcrumb: boolean; // Boolean!
+    showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
@@ -562,6 +563,7 @@ export interface NexusGenInputs {
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     showAsBreadcrumb: boolean; // Boolean!
+    showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!

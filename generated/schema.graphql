@@ -10,6 +10,7 @@ input AddAttributeToGroupInput {
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
+  showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
@@ -2404,6 +2405,7 @@ input UpdateAttributeInGroupInput {
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
+  showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!

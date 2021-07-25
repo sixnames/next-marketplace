@@ -1,3 +1,4 @@
+import { uploadTestAssets } from './uploadTestAssets';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_PAGES,
@@ -8,33 +9,7 @@ import {
 } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
-const EasyYandexS3 = require('easy-yandex-s3');
-
 require('dotenv').config();
-
-export async function uploadTestAssets(srcPath: string, distPath = '/') {
-  const s3 = new EasyYandexS3({
-    auth: {
-      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
-      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
-    },
-    Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
-    // debug: true,
-  });
-
-  try {
-    await s3.Upload(
-      {
-        path: srcPath,
-        save_name: true,
-      },
-      distPath,
-    );
-    console.log(`${distPath} assets uploaded`);
-  } catch (e) {
-    console.log(e);
-  }
-}
 
 // const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
@@ -68,6 +43,8 @@ const config = {
     },
   );
 
+  const bucketName = `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`;
+
   try {
     await seeder.import(collections);
     console.log('Test data seeded');
@@ -75,22 +52,27 @@ const config = {
 
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
+      bucketName,
       `/${ASSETS_DIST_SHOPS_LOGOS}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
+      bucketName,
       `/${ASSETS_DIST_SHOPS}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
+      bucketName,
       `/${ASSETS_DIST_COMPANIES}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
+      bucketName,
       `/${ASSETS_DIST_PAGES}`,
     );
     await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
+      bucketName,
       `/${ASSETS_DIST_TEMPLATES}`,
     );
     /*await uploadTestAssets(

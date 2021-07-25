@@ -7,7 +7,7 @@ const fs = require('fs');
 
 require('dotenv').config();
 
-function uploadTestAssets() {
+function prepareTestAssets() {
   const s3 = new EasyYandexS3({
     auth: {
       accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
@@ -32,7 +32,7 @@ function uploadTestAssets() {
     });
 }
 
-(function prepareTestAssets() {
+(function () {
   products.forEach(({ itemId }) => {
     const pathToSrc = path.join(process.cwd(), 'cypress/fixtures/test-image-0.png');
     const fileName = `${itemId}-0.png`;
@@ -48,5 +48,5 @@ function uploadTestAssets() {
     });
   });
 
-  uploadTestAssets();
+  prepareTestAssets();
 })();

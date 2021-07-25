@@ -1,3 +1,4 @@
+import { uploadTestAssets } from './uploadTestAssets';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_CONFIGS,
@@ -8,33 +9,6 @@ import {
 } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
-const EasyYandexS3 = require('easy-yandex-s3');
-
-require('dotenv').config();
-
-export async function uploadTestAssets(srcPath: string, bucketName: string, distPath = '/') {
-  const s3 = new EasyYandexS3({
-    auth: {
-      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
-      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
-    },
-    Bucket: bucketName,
-    // debug: true,
-  });
-
-  try {
-    await s3.Upload(
-      {
-        path: srcPath,
-        save_name: true,
-      },
-      distPath,
-    );
-    console.log(`${distPath} assets uploaded`);
-  } catch (e) {
-    console.log(e);
-  }
-}
 
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 

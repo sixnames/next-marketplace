@@ -1,5 +1,5 @@
 import { Seeder } from 'mongo-seeding';
-import { uploadTestAssets } from '../../../tests/seedStageDb';
+import { uploadTestAssets } from '../../../tests/uploadTestAssets';
 import { getProdDb, GetProdDd, updateIndexes } from './getProdDb';
 const path = require('path');
 require('dotenv').config();

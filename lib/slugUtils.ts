@@ -7,7 +7,7 @@ export const generateSlug = (name: string) => {
   const cleanString = name
     ? name
         .replace('-', ' ')
-        .replace(/[$-/:-?{-~!"^_`\[\]]/g, '')
+        .replace(/[$-/:-?{-~!"^_`[\]]/g, '')
         .toLocaleLowerCase()
     : '';
   return translit.transform(cleanString, '_');

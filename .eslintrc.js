@@ -6,15 +6,15 @@ module.exports = {
     'cypress/globals': true,
   },
   extends: [
-    'plugin:css-modules/recommended',
     'plugin:cypress/recommended',
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
+    // 'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-app/recommended',
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
     'prettier',
+    'plugin:@next/next/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -28,15 +28,18 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'react-hooks', 'css-modules'],
+  plugins: [
+    'react',
+    // '@typescript-eslint',
+    'react-hooks',
+  ],
   settings: {
     react: {
       version: 'latest',
     },
   },
   rules: {
-    'css-modules/no-unused-class': 'warn',
-    'css-modules/no-undef-class': [2, { camelCase: true }],
+    '@next/next/no-img-element': 'off',
     'react-app/jsx-a11y/anchor-is-valid': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

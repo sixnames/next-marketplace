@@ -1,15 +1,6 @@
 require('dotenv').config();
 
 module.exports = {
-  /*future: {
-    webpack5: false,
-  },*/
-  // TODO
-  eslint: {
-    // Warning: Dangerously allow production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
   i18n: {
     localeDetection: false,
     locales: ['ru', 'en'],

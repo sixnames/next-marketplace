@@ -248,6 +248,7 @@ export const CompanyMutations = extendType({
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
+        const sessionUser = await getSessionUser(context);
         const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
         const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
         const pagesCollection = db.collection<PageModel>(COL_PAGES);
@@ -324,6 +325,29 @@ export const CompanyMutations = extendType({
 
             const createdCompany = createdCompanyResult.ops[0];
             if (!createdCompanyResult.result.ok || !createdCompany) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Create company domain
+            if (!sessionUser) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const updatedDomainResult = await updateCompanyDomain({
+              company: createdCompany,
+              isNewCompany: true,
+              sessionUser,
+            });
+            if (!updatedDomainResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.create.error'),

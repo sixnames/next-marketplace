@@ -334,7 +334,6 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
             <div className='flex items-center'>
               {headerPageGroups.map(({ name, _id, pages }, index) => {
-                console.log(index);
                 return (
                   <div
                     key={`${_id}`}

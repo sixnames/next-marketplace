@@ -11,7 +11,11 @@ import OrderStepsDescription from 'components/OrderStepsDescription';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
 import Title from 'components/Title';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface, ShopInterface } from 'db/uiInterfaces';
@@ -41,7 +45,9 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
       <Title className='mb-1' low>
         {originalName}
       </Title>
-      {name ? <div className='text-secondary-text mb-4'>{name}</div> : null}
+      {name && name !== LOCALE_NOT_FOUND_FIELD_MESSAGE ? (
+        <div className='text-secondary-text mb-4'>{name}</div>
+      ) : null}
 
       <div className='flex justify-between items-center'>
         <div className='text-secondary-text text-sm'>Арт: {itemId}</div>

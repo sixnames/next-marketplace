@@ -1085,7 +1085,11 @@ export const getCatalogueData = async ({
         locale,
       });
 
-      const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
+      const visibleListFeatures = initialListFeatures.filter(({ showInSnippet }) => {
+        return showInSnippet;
+      });
+
+      const initialListFeaturesWithIndex = visibleListFeatures.map((listAttribute) => {
         const indexInRubric = rubricListViewAttributes.findIndex(
           ({ slug }) => slug === listAttribute.slug,
         );
@@ -1108,6 +1112,10 @@ export const getCatalogueData = async ({
         attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
+      });
+
+      const visibleRatingFeatures = ratingFeatures.filter(({ showInSnippet }) => {
+        return showInSnippet;
       });
 
       const castedConnections = (connections || []).reduce(
@@ -1162,7 +1170,7 @@ export const getCatalogueData = async ({
       products.push({
         ...restProduct,
         listFeatures,
-        ratingFeatures,
+        ratingFeatures: visibleRatingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         connections: castedConnections,

@@ -35,6 +35,7 @@ export type AddAttributeToGroupInput = {
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
+  showInSnippet: Scalars['Boolean'];
   showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
@@ -728,7 +729,8 @@ export type FormattedPhone = {
 export enum Gender {
   He = 'he',
   She = 'she',
-  It = 'it'
+  It = 'it',
+  Plural = 'plural'
 }
 
 export type GetAllRubricsInput = {
@@ -2716,6 +2718,7 @@ export type UpdateAttributeInGroupInput = {
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
+  showInSnippet: Scalars['Boolean'];
   showInCard: Scalars['Boolean'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;

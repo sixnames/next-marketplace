@@ -199,6 +199,7 @@ export interface AttributeModel {
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   showAsCatalogueBreadcrumb?: boolean | null;
+  showInSnippet?: boolean | null;
   notShowAsAlphabet?: boolean | null;
 }
 

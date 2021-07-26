@@ -88,6 +88,10 @@ export const dbsConfig: GetProdDd[] = [
     uri: `${process.env.SC_DB_URI}`,
     dbName: `${process.env.SC_DB_NAME}`,
   },
+  {
+    uri: `${process.env.AG_DB_URI}`,
+    dbName: `${process.env.AG_DB_NAME}`,
+  },
 ];
 
 export async function updateIndexes(db: Db) {

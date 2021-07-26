@@ -29,6 +29,7 @@ import {
   ROUTE_SIGN_IN,
   ROUTE_DOCS_PAGES,
   CATALOGUE_OPTION_SEPARATOR,
+  ROUTE_CONTACTS,
 } from 'config/common';
 
 const middleLinkClassName =
@@ -332,7 +333,8 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
         <div className='relative z-[10] bg-secondary' style={topBarBgStyle}>
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
             <div className='flex items-center'>
-              {headerPageGroups.map(({ name, _id, pages }) => {
+              {headerPageGroups.map(({ name, _id, pages }, index) => {
+                console.log(index);
                 return (
                   <div
                     key={`${_id}`}
@@ -358,6 +360,18 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                           </li>
                         );
                       })}
+
+                      {index === 0 ? (
+                        <li className=''>
+                          <Link
+                            target={'_blank'}
+                            className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
+                            href={ROUTE_CONTACTS}
+                          >
+                            Контакты
+                          </Link>
+                        </li>
+                      ) : null}
                     </ul>
                   </div>
                 );

@@ -84,7 +84,7 @@ export function getCityFieldLocaleString({
 }
 
 export const getCurrencyString = (value?: number | string | null): string => {
-  return new Intl.NumberFormat(DEFAULT_LOCALE).format(noNaN(value)).replace(',', ' ');
+  return new Intl.NumberFormat(DEFAULT_LOCALE).format(noNaN(value)).replace(/,/g, ' ');
 };
 
 export function getNumWord(value: number | undefined, words: string[]): string {

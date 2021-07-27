@@ -30,7 +30,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const disabledClassName = disabled ? 'opacity-50 pointer-events-none' : '';
   const inputBorder = `border border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
-  const inputClassName = `relative flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg ${inputBorder} ${inputTheme} ${disabledClassName}`;
+  const inputClassName = `relative flex items-center w-full min-h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg ${inputBorder} ${inputTheme} ${disabledClassName}`;
 
   return (
     <InputLine
@@ -45,7 +45,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
     >
       <div className={`${inputClassName} ${className ? className : ''}`} data-cy={testId}>
         <div
-          className='relative flex items-center z-10 h-form-input-height w-full px-input-padding-horizontal'
+          className='relative flex items-center z-10 min-h-[var(--formInputHeight)] w-full py-1 pl-input-padding-horizontal pr-control-button-height'
           onClick={onClick}
         >
           {value}

@@ -91,7 +91,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                   })}
 
                   {index === 0 ? (
-                    <li className='' key={`${_id}`}>
+                    <li className=''>
                       <Link
                         target={'_blank'}
                         className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'

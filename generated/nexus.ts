@@ -116,6 +116,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb: boolean; // Boolean!
     showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
+    showInSnippet: boolean; // Boolean!
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
   };
@@ -565,6 +566,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb: boolean; // Boolean!
     showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
+    showInSnippet: boolean; // Boolean!
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
   };
@@ -996,6 +998,7 @@ export interface NexusGenObjects {
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
+  ProductCardContent: dbModels.ProductCardContentModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;
   ProductConnection: dbModels.ProductConnectionModel;
   ProductConnectionItem: dbModels.ProductConnectionItemModel;
@@ -1721,6 +1724,13 @@ export interface NexusGenFieldTypes {
     showInCard: boolean; // Boolean!
     text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+  };
+  ProductCardContent: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    content: string; // String!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    productSlug: NexusGenScalars['ObjectId']; // ObjectId!
   };
   ProductCardPrices: {
     // field return type
@@ -2815,6 +2825,13 @@ export interface NexusGenFieldTypeNames {
     showInCard: 'Boolean';
     text: 'String';
     textI18n: 'JSONObject';
+  };
+  ProductCardContent: {
+    // field return type name
+    _id: 'ObjectId';
+    content: 'String';
+    productId: 'ObjectId';
+    productSlug: 'ObjectId';
   };
   ProductCardPrices: {
     // field return type name

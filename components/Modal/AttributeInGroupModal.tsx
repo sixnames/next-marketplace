@@ -84,6 +84,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         notShowAsAlphabet: attribute.notShowAsAlphabet,
         showAsBreadcrumb: attribute.showAsBreadcrumb,
         showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb || false,
+        showInSnippet: attribute.showInSnippet || false,
         showInCard: attribute.showInCard,
       }
     : {
@@ -97,6 +98,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         notShowAsAlphabet: true,
         showAsBreadcrumb: false,
         showAsCatalogueBreadcrumb: false,
+        showInSnippet: false,
         showInCard: true,
       };
 
@@ -198,6 +200,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 label={'Показывать в крошках каталога'}
                 name={'showAsCatalogueBreadcrumb'}
               />
+
+              <FormikCheckboxLine label={'Показывать в сниппете товара'} name={'showInSnippet'} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

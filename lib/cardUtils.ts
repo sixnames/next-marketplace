@@ -576,6 +576,7 @@ export async function getCardData({
       ratingFeatures,
       cardShopProducts,
       cardBreadcrumbs,
+      shopsCount: finalShopProducts.length,
     };
   } catch (e) {
     console.log(e);

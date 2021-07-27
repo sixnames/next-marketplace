@@ -49,8 +49,8 @@ export const constantTranslations = {
     },
   },
   catalogueTitleSeparator: {
-    [DEFAULT_LOCALE]: ' или ',
-    [SECONDARY_LOCALE]: ' or ',
+    [DEFAULT_LOCALE]: ' и ',
+    [SECONDARY_LOCALE]: ' and ',
   },
   catalogueFilter: {
     brands: {

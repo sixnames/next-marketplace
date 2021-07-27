@@ -64,6 +64,15 @@ function useConfigContext() {
     [getSiteConfig],
   );
 
+  const getSiteConfigBoolean = React.useCallback(
+    (configSlug: string) => {
+      const config = getSiteConfigSingleValue(configSlug);
+
+      return config === 'true';
+    },
+    [getSiteConfigSingleValue],
+  );
+
   const themeStyles = React.useMemo(() => {
     const themeColor = getSiteConfigSingleValue('siteThemeColor');
     const fallbackColor = `219, 83, 96`;
@@ -83,6 +92,7 @@ function useConfigContext() {
     getSiteConfig,
     getSiteConfigValue,
     getSiteConfigSingleValue,
+    getSiteConfigBoolean,
     themeStyles,
   };
 }

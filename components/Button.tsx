@@ -39,10 +39,10 @@ const Button: React.FC<ButtonPropsInterface> = ({
     theme === 'primary'
       ? 'text-wp-white bg-theme'
       : theme === 'secondary'
-      ? 'text-theme bg-secondary-button-background'
+      ? 'text-theme bg-secondary-button-background hover:border-2 hover:border-theme'
       : theme === 'secondary-b'
-      ? 'text-theme bg-secondary-b-button-background'
-      : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100';
+      ? 'text-theme bg-secondary-b-button-background hover:border-2 hover:border-theme'
+      : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100 hover:border-2 hover:border-theme';
 
   const noChildren = !children;
   const isSmall = size === 'small';

@@ -51,6 +51,12 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/assets`,
         exact: true,
       },
+      {
+        name: 'Контент карточки',
+        testId: 'constructor',
+        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/constructor`,
+        exact: true,
+      },
     ];
   }, [product._id, query.rubricId]);
 

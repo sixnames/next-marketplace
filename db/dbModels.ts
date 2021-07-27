@@ -523,7 +523,7 @@ export interface ProductCardContentModel {
   _id: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
-  content: string;
+  content: JSONObjectModel;
 }
 
 export interface ProductCardPricesModel {
@@ -739,6 +739,7 @@ export type MetricPayloadModel = PayloadType<MetricModel>;
 export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
 export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
 export type ProductPayloadModel = PayloadType<ProductModel>;
+export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
 export type ShopProductPayloadModel = PayloadType<ShopProductModel>;

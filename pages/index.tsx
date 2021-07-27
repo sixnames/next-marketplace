@@ -545,7 +545,7 @@ export async function getServerSideProps(
               options: [option],
             },
           ],
-          catalogueTitle,
+          rubricCatalogueTitleConfig: catalogueTitle,
           locale: sessionLocale,
         });
 

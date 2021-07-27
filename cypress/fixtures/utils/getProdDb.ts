@@ -15,6 +15,7 @@ import {
   OrderProductModel,
   ProductAssetsModel,
   ProductAttributeModel,
+  ProductCardContentModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -41,6 +42,7 @@ import {
   COL_ORDERS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
@@ -568,6 +570,13 @@ export async function updateIndexes(db: Db) {
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   await productAssetsCollection.createIndex({ productId: 1 });
   await productAssetsCollection.createIndex({ productSlug: 1 });
+
+  // Product card contents
+  await createCollectionIfNotExist(COL_PRODUCT_CARD_CONTENTS);
+  const productCardContentsCollection =
+    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+  await productCardContentsCollection.createIndex({ productId: 1 });
+  await productCardContentsCollection.createIndex({ productSlug: 1 });
 
   // Product attributes
   await createCollectionIfNotExist(COL_PRODUCT_ATTRIBUTES);

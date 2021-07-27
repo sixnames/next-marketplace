@@ -752,6 +752,13 @@ export interface NexusGenInputs {
     brandSlug?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateProductCardContentInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    content: NexusGenScalars['JSONObject']; // JSONObject!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    productSlug: string; // String!
+  };
   UpdateProductCounterInput: {
     // input type
     companySlug: string | null; // String
@@ -999,6 +1006,7 @@ export interface NexusGenObjects {
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
   ProductCardContent: dbModels.ProductCardContentModel;
+  ProductCardContentPayload: dbModels.ProductCardContentPayloadModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;
   ProductConnection: dbModels.ProductConnectionModel;
   ProductConnectionItem: dbModels.ProductConnectionItemModel;
@@ -1486,6 +1494,7 @@ export interface NexusGenFieldTypes {
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1728,9 +1737,15 @@ export interface NexusGenFieldTypes {
   ProductCardContent: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    content: string; // String!
+    content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    productSlug: NexusGenScalars['ObjectId']; // ObjectId!
+    productSlug: string; // String!
+  };
+  ProductCardContentPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['ProductCardContent'] | null; // ProductCardContent
+    success: boolean; // Boolean!
   };
   ProductCardPrices: {
     // field return type
@@ -2587,6 +2602,7 @@ export interface NexusGenFieldTypeNames {
     updateProductAssetIndex: 'ProductPayload';
     updateProductBrand: 'ProductPayload';
     updateProductBrandCollection: 'ProductPayload';
+    updateProductCardContent: 'ProductCardContentPayload';
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
@@ -2829,9 +2845,15 @@ export interface NexusGenFieldTypeNames {
   ProductCardContent: {
     // field return type name
     _id: 'ObjectId';
-    content: 'String';
+    content: 'JSONObject';
     productId: 'ObjectId';
-    productSlug: 'ObjectId';
+    productSlug: 'String';
+  };
+  ProductCardContentPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'ProductCardContent';
+    success: 'Boolean';
   };
   ProductCardPrices: {
     // field return type name
@@ -3656,6 +3678,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateProductBrandCollectionInput']; // UpdateProductBrandCollectionInput!
     };
+    updateProductCardContent: {
+      // args
+      input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
+    };
     updateProductCounter: {
       // args
       input: NexusGenInputs['UpdateProductCounterInput']; // UpdateProductCounterInput!
@@ -3959,6 +3985,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'OrderStatusPayload'
     | 'PagePayload'
     | 'PagesGroupPayload'
+    | 'ProductCardContentPayload'
     | 'ProductPayload'
     | 'RolePayload'
     | 'RoleRulePayload'
@@ -4020,6 +4047,7 @@ export interface NexusGenTypeInterfaces {
   PagePayload: 'Payload';
   PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
+  ProductCardContentPayload: 'Payload';
   ProductPayload: 'Payload';
   Role: 'Timestamp';
   RolePayload: 'Payload';

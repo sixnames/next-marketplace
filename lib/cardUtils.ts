@@ -5,7 +5,9 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   CATALOGUE_OPTION_SEPARATOR,
+  DEFAULT_CITY,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
   SORT_DESC,
 } from 'config/common';
@@ -13,6 +15,7 @@ import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_RUBRICS,
@@ -22,6 +25,7 @@ import {
 import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  ProductCardContentInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
@@ -260,6 +264,26 @@ export async function getCardData({
           },
         },
 
+        // Get product card content
+        {
+          $lookup: {
+            from: COL_PRODUCT_CARD_CONTENTS,
+            as: 'cardContent',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+
         // Get product attributes
         {
           $lookup: {
@@ -325,6 +349,7 @@ export async function getCardData({
             },
             shopsCount: { $size: '$shopProducts' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
+            cardContent: { $arrayElemAt: ['$cardContent', 0] },
           },
         },
       ])
@@ -512,8 +537,24 @@ export async function getCardData({
     });
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
+    // card content
+    const { rubric, cardContent, ...restProduct } = product;
+    let castedCardContent: ProductCardContentInterface | null = null;
+    if (cardContent) {
+      let contentCityValue = cardContent.content[city];
+      if (!contentCityValue) {
+        contentCityValue = cardContent.content[DEFAULT_CITY];
+      }
+      if (contentCityValue === PAGE_EDITOR_DEFAULT_VALUE_STRING) {
+        contentCityValue = null;
+      }
+      castedCardContent = {
+        ...cardContent,
+        value: contentCityValue,
+      };
+    }
+
     // cardBreadcrumbs
-    const { rubric, ...restProduct } = product;
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
@@ -577,6 +618,7 @@ export async function getCardData({
       cardShopProducts,
       cardBreadcrumbs,
       shopsCount: finalShopProducts.length,
+      cardContent: castedCardContent,
     };
   } catch (e) {
     console.log(e);

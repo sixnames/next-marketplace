@@ -32,6 +32,7 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
+  ProductCardContentModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -197,6 +198,10 @@ export interface ProductAttributesGroupASTInterface {
   attributes: ProductAttributeInterface[];
 }
 
+export interface ProductCardContentInterface extends ProductCardContentModel {
+  value?: string | null;
+}
+
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -223,7 +228,7 @@ export interface ProductInterface extends ProductModel {
   selectAttributesAST?: ProductAttributesGroupASTInterface | null;
   similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
-  cardContent?: string | null;
+  cardContent?: ProductCardContentInterface | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

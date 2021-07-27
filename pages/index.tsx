@@ -382,8 +382,15 @@ export async function getServerSideProps(
     };
   }
 
-  const { companySlug, sessionCity, sessionLocale, company, footerPageGroups, headerPageGroups } =
-    props;
+  const {
+    companySlug,
+    sessionCity,
+    sessionLocale,
+    initialData,
+    company,
+    footerPageGroups,
+    headerPageGroups,
+  } = props;
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopProductsAggregation = await shopProductsCollection
@@ -547,6 +554,7 @@ export async function getServerSideProps(
           ],
           rubricCatalogueTitleConfig: catalogueTitle,
           locale: sessionLocale,
+          currency: initialData.currency,
         });
 
         const exist = topFilters.some((topFilter) => topFilter.name === name);

@@ -7,6 +7,7 @@ import {
   AttributesGroupModel,
   ProductAssetsModel,
   ProductAttributeModel,
+  ProductCardContentModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -24,6 +25,7 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -974,6 +976,8 @@ export const RubricMutations = extendType({
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const productCardContentsCollection =
+          db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
 
         const session = client.startSession();
 
@@ -1069,6 +1073,7 @@ export const RubricMutations = extendType({
                 });
               }
             }
+
             // Delete product assets
             const removedProductAssetsResult = await productAssetsCollection.deleteMany({
               productId,
@@ -1087,6 +1092,19 @@ export const RubricMutations = extendType({
               productId,
             });
             if (!removedProductAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete product card content
+            const removedProductCardContents = await productCardContentsCollection.deleteMany({
+              productId,
+            });
+            if (!removedProductCardContents.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),

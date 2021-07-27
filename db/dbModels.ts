@@ -519,6 +519,13 @@ export interface ProductAssetsModel {
   assets: AssetModel[];
 }
 
+export interface ProductCardContentModel {
+  _id: ObjectIdModel;
+  productSlug: string;
+  productId: ObjectIdModel;
+  content: string;
+}
+
 export interface ProductCardPricesModel {
   _id: ObjectIdModel;
   min: string;

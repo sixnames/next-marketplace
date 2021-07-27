@@ -223,6 +223,7 @@ export interface ProductInterface extends ProductModel {
   selectAttributesAST?: ProductAttributesGroupASTInterface | null;
   similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
+  cardContent?: string | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

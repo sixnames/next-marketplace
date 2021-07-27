@@ -1729,6 +1729,13 @@ input ProductAttributesASTInput {
   rubricId: ObjectId!
 }
 
+type ProductCardContent {
+  _id: ObjectId!
+  content: String!
+  productId: ObjectId!
+  productSlug: ObjectId!
+}
+
 type ProductCardPrices {
   _id: ObjectId!
   max: String!

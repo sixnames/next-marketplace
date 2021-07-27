@@ -1006,6 +1006,8 @@ export type Mutation = {
   updatePagesGroup: PagesGroupPayload;
   /** Should delete pages group */
   deletePagesGroup: PagesGroupPayload;
+  /** Should update / create product card content */
+  updateProductCardContent: ProductCardContentPayload;
   /** Should update product brand */
   updateProductBrand: ProductPayload;
   /** Should update product brand collection */
@@ -1450,6 +1452,11 @@ export type MutationUpdatePagesGroupArgs = {
 
 export type MutationDeletePagesGroupArgs = {
   input: DeletePagesGroupInput;
+};
+
+
+export type MutationUpdateProductCardContentArgs = {
+  input: UpdateProductCardContentInput;
 };
 
 
@@ -1991,6 +1998,21 @@ export type ProductAttribute = {
 export type ProductAttributesAstInput = {
   productId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
+};
+
+export type ProductCardContent = {
+  __typename?: 'ProductCardContent';
+  _id: Scalars['ObjectId'];
+  productId: Scalars['ObjectId'];
+  productSlug: Scalars['String'];
+  content: Scalars['JSONObject'];
+};
+
+export type ProductCardContentPayload = Payload & {
+  __typename?: 'ProductCardContentPayload';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  payload?: Maybe<ProductCardContent>;
 };
 
 export type ProductCardPrices = {
@@ -2905,6 +2927,13 @@ export type UpdateProductBrandCollectionInput = {
 export type UpdateProductBrandInput = {
   productId: Scalars['ObjectId'];
   brandSlug?: Maybe<Scalars['String']>;
+};
+
+export type UpdateProductCardContentInput = {
+  _id: Scalars['ObjectId'];
+  productId: Scalars['ObjectId'];
+  productSlug: Scalars['String'];
+  content: Scalars['JSONObject'];
 };
 
 export type UpdateProductCounterInput = {
@@ -4288,6 +4317,19 @@ export type UpdateProductTextAttributeMutation = (
   & { updateProductTextAttribute: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductCardContentMutationVariables = Exact<{
+  input: UpdateProductCardContentInput;
+}>;
+
+
+export type UpdateProductCardContentMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductCardContent: (
+    { __typename?: 'ProductCardContentPayload' }
+    & Pick<ProductCardContentPayload, 'success' | 'message'>
   ) }
 );
 
@@ -8614,6 +8656,40 @@ export function useUpdateProductTextAttributeMutation(baseOptions?: Apollo.Mutat
 export type UpdateProductTextAttributeMutationHookResult = ReturnType<typeof useUpdateProductTextAttributeMutation>;
 export type UpdateProductTextAttributeMutationResult = Apollo.MutationResult<UpdateProductTextAttributeMutation>;
 export type UpdateProductTextAttributeMutationOptions = Apollo.BaseMutationOptions<UpdateProductTextAttributeMutation, UpdateProductTextAttributeMutationVariables>;
+export const UpdateProductCardContentDocument = gql`
+    mutation UpdateProductCardContent($input: UpdateProductCardContentInput!) {
+  updateProductCardContent(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductCardContentMutationFn = Apollo.MutationFunction<UpdateProductCardContentMutation, UpdateProductCardContentMutationVariables>;
+
+/**
+ * __useUpdateProductCardContentMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCardContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCardContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCardContentMutation, { data, loading, error }] = useUpdateProductCardContentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCardContentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCardContentMutation, UpdateProductCardContentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductCardContentMutation, UpdateProductCardContentMutationVariables>(UpdateProductCardContentDocument, options);
+      }
+export type UpdateProductCardContentMutationHookResult = ReturnType<typeof useUpdateProductCardContentMutation>;
+export type UpdateProductCardContentMutationResult = Apollo.MutationResult<UpdateProductCardContentMutation>;
+export type UpdateProductCardContentMutationOptions = Apollo.BaseMutationOptions<UpdateProductCardContentMutation, UpdateProductCardContentMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

@@ -82,6 +82,8 @@ async function updateProds() {
     await updateIndexes(db);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
     console.log(' ');
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
+    console.log(' ');
 
     // disconnect form db
     await client.close();

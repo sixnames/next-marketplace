@@ -40,6 +40,8 @@ interface CardTitleInterface {
 }
 
 const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId }) => {
+  const { getSiteConfigBoolean } = useConfigContext();
+  const showArticle = getSiteConfigBoolean('showCardArticle');
   return (
     <div className='mb-6'>
       <Title className='mb-1' low>
@@ -50,7 +52,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
       ) : null}
 
       <div className='flex justify-between items-center'>
-        <div className='text-secondary-text text-sm'>Арт: {itemId}</div>
+        {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
 
         {/*controls*/}
         <div className='flex'>

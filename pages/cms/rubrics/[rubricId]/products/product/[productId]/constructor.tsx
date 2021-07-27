@@ -76,6 +76,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
         <Formik<UpdateProductCardContentInput>
           initialValues={initialValues}
           onSubmit={(values) => {
+            console.log(values);
             showLoading();
             updateProductCardContentMutation({
               variables: {
@@ -110,7 +111,8 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
                             try {
                               const formData = new FormData();
                               formData.append('assets', file);
-                              formData.append('productSlug', product.slug);
+                              formData.append('productId', `${product._id}`);
+                              formData.append('productCardContentId', `${cardContent._id}`);
 
                               const responseFetch = await fetch('/api/add-card-content-asset', {
                                 method: 'POST',
@@ -206,6 +208,7 @@ export const getServerSideProps = async (
       _id: new ObjectId(),
       productId: product._id,
       productSlug: product.slug,
+      assetKeys: [],
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       },

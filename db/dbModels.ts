@@ -524,6 +524,7 @@ export interface ProductCardContentModel {
   productSlug: string;
   productId: ObjectIdModel;
   content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface ProductCardPricesModel {

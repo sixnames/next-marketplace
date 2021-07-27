@@ -1100,6 +1100,20 @@ export const RubricMutations = extendType({
               return;
             }
 
+            // Delete product card content assets from cloud
+            const productCardContents = await productCardContentsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            for await (const productCardContent of productCardContents) {
+              for await (const filePath of productCardContent.assetKeys) {
+                await deleteUpload({
+                  filePath,
+                });
+              }
+            }
+
             // Delete product card content
             const removedProductCardContents = await productCardContentsCollection.deleteMany({
               productId,

@@ -2006,6 +2006,7 @@ export type ProductCardContent = {
   productId: Scalars['ObjectId'];
   productSlug: Scalars['String'];
   content: Scalars['JSONObject'];
+  assetKeys: Array<Scalars['String']>;
 };
 
 export type ProductCardContentPayload = Payload & {
@@ -2934,6 +2935,7 @@ export type UpdateProductCardContentInput = {
   productId: Scalars['ObjectId'];
   productSlug: Scalars['String'];
   content: Scalars['JSONObject'];
+  assetKeys: Array<Scalars['String']>;
 };
 
 export type UpdateProductCounterInput = {

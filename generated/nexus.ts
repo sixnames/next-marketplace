@@ -755,6 +755,7 @@ export interface NexusGenInputs {
   UpdateProductCardContentInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
     content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
@@ -1737,6 +1738,7 @@ export interface NexusGenFieldTypes {
   ProductCardContent: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
     content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
@@ -2845,6 +2847,7 @@ export interface NexusGenFieldTypeNames {
   ProductCardContent: {
     // field return type name
     _id: 'ObjectId';
+    assetKeys: 'String';
     content: 'JSONObject';
     productId: 'ObjectId';
     productSlug: 'String';

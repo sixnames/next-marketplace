@@ -2,7 +2,9 @@ import { CatalogueInterface } from 'components/Catalogue';
 import { getPriceAttribute } from 'config/constantAttributes';
 import {
   COL_ATTRIBUTES,
+  COL_CITIES,
   COL_CONFIGS,
+  COL_COUNTRIES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
@@ -14,7 +16,9 @@ import { getCatalogueRubricPipeline } from 'db/constantPipelines';
 import {
   AttributeViewVariantModel,
   CatalogueBreadcrumbModel,
+  CityModel,
   ConfigModel,
+  CountryModel,
   GenderModel,
   ObjectIdModel,
   RubricCatalogueTitleModel,
@@ -48,6 +52,7 @@ import {
   SORT_DIR_KEY,
   PAGE_DEFAULT,
   RUBRIC_KEY,
+  DEFAULT_CURRENCY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -96,16 +101,23 @@ export interface SelectedFilterInterface {
 
 interface GetCatalogueTitleInterface {
   selectedFilters: SelectedFilterInterface[];
-  catalogueTitle: RubricCatalogueTitleModel;
+  rubricCatalogueTitleConfig: RubricCatalogueTitleModel;
   locale: string;
+  currency: string;
 }
 
 export function getCatalogueTitle({
   selectedFilters,
-  catalogueTitle,
+  rubricCatalogueTitleConfig,
   locale,
+  currency,
 }: GetCatalogueTitleInterface): string {
-  const { gender: rubricGender, defaultTitleI18n, keywordI18n, prefixI18n } = catalogueTitle;
+  const {
+    gender: rubricGender,
+    defaultTitleI18n,
+    keywordI18n,
+    prefixI18n,
+  } = rubricCatalogueTitleConfig;
 
   function castArrayToTitle(arr: any[]): string {
     const filteredArray = arr.filter((word) => word);
@@ -160,9 +172,13 @@ export function getCatalogueTitle({
   // Collect title parts
   selectedFilters.forEach((selectedFilter) => {
     const { attribute, options } = selectedFilter;
+    const isPrice = attribute.slug === PRICE_ATTRIBUTE_SLUG;
     const { positioningInTitle, metric } = attribute;
     const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-    const metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
+    let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
+    if (isPrice) {
+      metricValue = currency;
+    }
 
     const value = options
       .map(({ variants, nameI18n }) => {
@@ -178,6 +194,10 @@ export function getCatalogueTitle({
       })
       .join(titleSeparator);
 
+    if (isPrice) {
+      endOfTitle.push(value);
+      return;
+    }
     if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
       beginOfTitle.push(value);
     }
@@ -669,6 +689,15 @@ export const getCatalogueData = async ({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+
+    // Get location configs
+    const cityEntity = await citiesCollection.findOne({ slug: city });
+    const country = await countriesCollection.findOne({
+      citiesIds: cityEntity?._id,
+    });
+    const currency = country?.currency || DEFAULT_CURRENCY;
 
     // Args
     const { filters, page, rubricSlug } = input;
@@ -1085,7 +1114,11 @@ export const getCatalogueData = async ({
         locale,
       });
 
-      const initialListFeaturesWithIndex = initialListFeatures.map((listAttribute) => {
+      const visibleListFeatures = initialListFeatures.filter(({ showInSnippet }) => {
+        return showInSnippet;
+      });
+
+      const initialListFeaturesWithIndex = visibleListFeatures.map((listAttribute) => {
         const indexInRubric = rubricListViewAttributes.findIndex(
           ({ slug }) => slug === listAttribute.slug,
         );
@@ -1108,6 +1141,10 @@ export const getCatalogueData = async ({
         attributes: attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
+      });
+
+      const visibleRatingFeatures = ratingFeatures.filter(({ showInSnippet }) => {
+        return showInSnippet;
       });
 
       const castedConnections = (connections || []).reduce(
@@ -1162,7 +1199,7 @@ export const getCatalogueData = async ({
       products.push({
         ...restProduct,
         listFeatures,
-        ratingFeatures,
+        ratingFeatures: visibleRatingFeatures,
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         connections: castedConnections,
@@ -1171,9 +1208,10 @@ export const getCatalogueData = async ({
 
     // Get catalogue title
     const catalogueTitle = getCatalogueTitle({
-      catalogueTitle: rubric.catalogueTitle,
+      rubricCatalogueTitleConfig: rubric.catalogueTitle,
       selectedFilters,
       locale,
+      currency,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
@@ -1189,14 +1227,18 @@ export const getCatalogueData = async ({
       },
     ];
     selectedAttributes.forEach((selectedAttribute) => {
-      const { options, showAsCatalogueBreadcrumb } = selectedAttribute;
-      const postfix = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
+      const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
+      const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+      let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
+      if (isPrice) {
+        metricValue = currency;
+      }
 
-      if (showAsCatalogueBreadcrumb) {
+      if (showAsCatalogueBreadcrumb || isPrice) {
         options.forEach((selectedOption) => {
           breadcrumbs.push({
             _id: selectedOption._id,
-            name: `${selectedOption.name}${postfix}`,
+            name: `${selectedOption.name}${metricValue}`,
             href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
           });
         });

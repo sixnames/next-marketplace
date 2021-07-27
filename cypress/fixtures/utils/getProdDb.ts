@@ -3,6 +3,7 @@ import {
   BrandCollectionModel,
   BrandModel,
   CartModel,
+  CityModel,
   CompanyModel,
   ConfigModel,
   CountryModel,
@@ -28,6 +29,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CARTS,
+  COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
   COL_COUNTRIES,
@@ -87,6 +89,10 @@ export const dbsConfig: GetProdDd[] = [
   {
     uri: `${process.env.SC_DB_URI}`,
     dbName: `${process.env.SC_DB_NAME}`,
+  },
+  {
+    uri: `${process.env.AG_DB_URI}`,
+    dbName: `${process.env.AG_DB_NAME}`,
   },
 ];
 
@@ -215,6 +221,11 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_COUNTRIES);
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
   await countriesCollection.createIndex({ citiesIds: 1 });
+
+  // Cities
+  await createCollectionIfNotExist(COL_CITIES);
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  await citiesCollection.createIndex({ slug: 1 });
 
   // Companies
   await createCollectionIfNotExist(COL_COMPANIES);

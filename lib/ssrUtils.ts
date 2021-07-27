@@ -284,6 +284,7 @@ export const getCatalogueNavRubrics = async ({
           {
             $match: {
               rubricId: rubric._id,
+              showInCatalogueNav: true,
               slug: {
                 $in: rubricConfig.attributeSlugs,
               },

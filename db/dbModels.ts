@@ -199,6 +199,7 @@ export interface AttributeModel {
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   showAsCatalogueBreadcrumb?: boolean | null;
+  showInSnippet?: boolean | null;
   notShowAsAlphabet?: boolean | null;
 }
 
@@ -516,6 +517,13 @@ export interface ProductAssetsModel {
   productSlug: string;
   productId: ObjectIdModel;
   assets: AssetModel[];
+}
+
+export interface ProductCardContentModel {
+  _id: ObjectIdModel;
+  productSlug: string;
+  productId: ObjectIdModel;
+  content: string;
 }
 
 export interface ProductCardPricesModel {

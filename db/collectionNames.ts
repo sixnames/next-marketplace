@@ -29,6 +29,7 @@ export const COL_PAGES_GROUP_TEMPLATES = 'pagesGroupTemplates';
 export const COL_PAGE_TEMPLATES = 'pageTemplates';
 export const COL_PRODUCTS = 'products';
 export const COL_PRODUCT_ASSETS = 'productAssets';
+export const COL_PRODUCT_CARD_CONTENTS = 'productCardContents';
 export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';
 export const COL_PRODUCT_CONNECTIONS = 'productConnections';
 export const COL_PRODUCT_CONNECTION_ITEMS = 'productConnectionItems';

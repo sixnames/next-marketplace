@@ -27,6 +27,7 @@ export * from './OrderStatus';
 export * from './Page';
 export * from './PagesGroup';
 export * from './Product';
+export * from './ProductCardContent';
 export * from './ProductAttribute';
 export * from './ProductConnection';
 export * from './ProductMutations';

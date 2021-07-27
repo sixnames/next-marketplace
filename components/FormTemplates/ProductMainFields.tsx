@@ -23,8 +23,6 @@ const ProductMainFields: React.FC = () => {
 
   return (
     <React.Fragment>
-      <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
-
       <FormikInput
         isRequired
         label={'Оригинальное название'}
@@ -32,6 +30,8 @@ const ProductMainFields: React.FC = () => {
         testId={'originalName'}
         showInlineError
       />
+
+      <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
 
       {barcode.map((barcodeItem, index) => {
         return (

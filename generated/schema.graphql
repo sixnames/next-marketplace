@@ -12,6 +12,7 @@ input AddAttributeToGroupInput {
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInSnippet: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }
@@ -1728,6 +1729,13 @@ input ProductAttributesASTInput {
   rubricId: ObjectId!
 }
 
+type ProductCardContent {
+  _id: ObjectId!
+  content: String!
+  productId: ObjectId!
+  productSlug: ObjectId!
+}
+
 type ProductCardPrices {
   _id: ObjectId!
   max: String!
@@ -2406,6 +2414,7 @@ input UpdateAttributeInGroupInput {
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInSnippet: Boolean!
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }

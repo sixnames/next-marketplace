@@ -203,7 +203,8 @@ export const BrandQueries = extendType({
           type: 'BrandAlphabetInput',
         }),
       },
-      resolve: async (_root, args): Promise<BrandsAlphabetListModel[]> => {
+      resolve: async (_root, args, context): Promise<BrandsAlphabetListModel[]> => {
+        const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
         const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
         const { input } = args;
@@ -227,7 +228,10 @@ export const BrandQueries = extendType({
             },
           })
           .toArray();
-        return getAlphabetList<BrandModel>(brands);
+        return getAlphabetList<BrandModel>({
+          entityList: brands,
+          locale,
+        });
       },
     });
   },

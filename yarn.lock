@@ -9449,6 +9449,13 @@ react-masked-field@^2.1.0:
     prop-types "^15.7.2"
     tslib "^1.9.3"
 
+react-number-format@^4.6.4:
+  version "4.6.4"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.6.4.tgz#72534d62adee77eb959ba730fb4971cc770a164b"
+  integrity sha512-xHUtaN5wXBiFL4C2v2Sgn3Fut76UxHqJH3rzuVMwZvHZA8HkHtCZBvflvqAgmcEkFC2eoS27Iqpa0vNXrdt8GQ==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-onclickoutside@^6.10.0:
   version "6.11.2"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.11.2.tgz#790e2100b9a3589eefca1404ecbf0476b81b7928"

@@ -12,6 +12,7 @@ export const ProductCardContent = objectType({
     t.nonNull.objectId('productId');
     t.nonNull.string('productSlug');
     t.nonNull.json('content');
+    t.nonNull.list.nonNull.string('assetKeys');
   },
 });
 
@@ -32,6 +33,7 @@ export const UpdateProductCardContentInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.nonNull.string('productSlug');
     t.nonNull.json('content');
+    t.nonNull.list.nonNull.string('assetKeys');
   },
 });
 

@@ -22,8 +22,15 @@ import {
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
+import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
@@ -54,6 +61,7 @@ interface RubricProductsInterface extends AppPaginationInterface<ProductInterfac
   rubric: RubricInterface;
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  rubricAttributesCount: number;
 }
 
 const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
@@ -66,6 +74,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   page,
   totalPages,
   itemPath,
+  rubricAttributesCount,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -145,6 +154,19 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
                 </span>
               );
             })}
+          </div>
+        );
+      },
+    },
+    {
+      accessor: 'attributesCount',
+      headTitle: 'Атрибуты',
+      render: ({ cellData }) => {
+        return (
+          <div className='flex gap-2'>
+            <div>{noNaN(cellData)}</div>
+            <div>/</div>
+            <div>{noNaN(rubricAttributesCount)}</div>
           </div>
         );
       },
@@ -324,6 +346,7 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -389,6 +412,7 @@ export const getServerSideProps = async (
         clearSlug: basePath,
         totalDocs: 0,
         totalPages: 0,
+        rubricAttributesCount: 0,
         hasNextPage: false,
         hasPrevPage: false,
         attributes: [],
@@ -444,6 +468,27 @@ export const getServerSideProps = async (
               },
               {
                 $lookup: {
+                  from: COL_PRODUCT_ATTRIBUTES,
+                  as: 'attributesCount',
+                  let: { productId: '$_id' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$productId'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: true,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $lookup: {
                   from: COL_SHOP_PRODUCTS,
                   as: 'shopProducts',
                   let: { productId: '$_id' },
@@ -466,6 +511,9 @@ export const getServerSideProps = async (
               },
               {
                 $addFields: {
+                  attributesCount: {
+                    $size: '$attributesCount',
+                  },
                   shopsCount: {
                     $size: '$shopProducts',
                   },
@@ -584,6 +632,11 @@ export const getServerSideProps = async (
     });
   }
 
+  // count rubric attributes
+  const rubricAttributesCount = await rubricAttributesCollection.countDocuments({
+    rubricId: rubric._id,
+  });
+
   const payload: RubricProductsInterface = {
     rubric: {
       ...(rubric || {}),
@@ -596,6 +649,7 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
+    rubricAttributesCount,
     itemPath,
     selectedAttributes,
     page,

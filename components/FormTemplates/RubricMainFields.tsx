@@ -1,3 +1,4 @@
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import RequestError from 'components/RequestError';
@@ -82,6 +83,8 @@ const RubricMainFields: React.FC = () => {
         testId={'variantId'}
         options={data.getAllRubricVariants}
       />
+
+      <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
     </React.Fragment>
   );
 };

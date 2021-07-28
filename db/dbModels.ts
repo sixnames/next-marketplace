@@ -524,6 +524,7 @@ export interface ProductCardContentModel {
   productSlug: string;
   productId: ObjectIdModel;
   content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface ProductCardPricesModel {
@@ -606,6 +607,7 @@ export interface RubricModel extends CountersModel {
   active: boolean;
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
+  capitalise?: boolean | null;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {

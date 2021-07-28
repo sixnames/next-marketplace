@@ -70,6 +70,7 @@ export const CreateRubricInput = inputObjectType({
   name: 'CreateRubricInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.boolean('capitalise');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.objectId('variantId');
@@ -83,6 +84,7 @@ export const UpdateRubricInput = inputObjectType({
   name: 'UpdateRubricInput',
   definition(t) {
     t.nonNull.objectId('rubricId');
+    t.boolean('capitalise');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
@@ -1098,6 +1100,20 @@ export const RubricMutations = extendType({
               };
               await session.abortTransaction();
               return;
+            }
+
+            // Delete product card content assets from cloud
+            const productCardContents = await productCardContentsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            for await (const productCardContent of productCardContents) {
+              for await (const filePath of productCardContent.assetKeys) {
+                await deleteUpload({
+                  filePath,
+                });
+              }
             }
 
             // Delete product card content

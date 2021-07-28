@@ -360,6 +360,7 @@ export interface NexusGenInputs {
   };
   CreateRubricInput: {
     // input type
+    capitalise?: boolean | null; // Boolean
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -755,6 +756,7 @@ export interface NexusGenInputs {
   UpdateProductCardContentInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
     content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
@@ -851,6 +853,7 @@ export interface NexusGenInputs {
   UpdateRubricInput: {
     // input type
     active: boolean; // Boolean!
+    capitalise?: boolean | null; // Boolean
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1737,6 +1740,7 @@ export interface NexusGenFieldTypes {
   ProductCardContent: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    assetKeys: string[]; // [String!]!
     content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
@@ -1890,6 +1894,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
+    capitalise: boolean | null; // Boolean
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2845,6 +2850,7 @@ export interface NexusGenFieldTypeNames {
   ProductCardContent: {
     // field return type name
     _id: 'ObjectId';
+    assetKeys: 'String';
     content: 'JSONObject';
     productId: 'ObjectId';
     productSlug: 'String';
@@ -2998,6 +3004,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
+    capitalise: 'Boolean';
     catalogueTitle: 'RubricCatalogueTitle';
     description: 'String';
     descriptionI18n: 'JSONObject';

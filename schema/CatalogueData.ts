@@ -98,7 +98,7 @@ export const CatalogueQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionAlphabetListModel[] | null> => {
         const { db } = await getDatabase();
-        const { city } = await getRequestParams(context);
+        const { city, locale } = await getRequestParams(context);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const { companyId, filter, attributeSlug, rubricSlug, isSearchResult } = args.input;
 
@@ -230,7 +230,10 @@ export const CatalogueQueries = extendType({
           ])
           .toArray();
 
-        return getAlphabetList<OptionModel>(shopProductsAggregation);
+        return getAlphabetList<OptionModel>({
+          entityList: shopProductsAggregation,
+          locale,
+        });
       },
     });
 

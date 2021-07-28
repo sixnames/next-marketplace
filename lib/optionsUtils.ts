@@ -21,6 +21,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface, RubricOptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 
 interface GetOptionsTreeInterface {
@@ -140,10 +141,27 @@ export async function castAttributeForRubric({
   };
 }
 
-export async function getAlphabetList<TModel extends Record<string, any>>(entityList: TModel[]) {
+interface GetAlphabetListInterface<TModel> {
+  entityList: TModel[];
+  locale: string;
+}
+
+export async function getAlphabetList<TModel extends Record<string, any>>({
+  entityList,
+  locale,
+}: GetAlphabetListInterface<TModel>) {
   const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
+
+  function getOptionName(option: TModel) {
+    return option.nameI18n ? option.nameI18n[locale] || option.nameI18n[DEFAULT_LOCALE] : '';
+  }
+
+  const countOptionNames = entityList.reduce((acc: number, option) => {
+    return acc + noNaN(getOptionName(option));
+  }, 0);
+  const isNumber = countOptionNames > 0;
 
   const payload: AlphabetListModelType<TModel>[] = [];
   ALL_ALPHABETS.forEach((letter) => {
@@ -160,8 +178,12 @@ export async function getAlphabetList<TModel extends Record<string, any>>(entity
     });
 
     const sortedDocs = docs.sort((a, b) => {
-      const aName = a.nameI18n ? a.nameI18n[DEFAULT_LOCALE] || '' : '';
-      const bName = b.nameI18n ? b.nameI18n[DEFAULT_LOCALE] || '' : '';
+      if (isNumber) {
+        return noNaN(getOptionName(a)) - noNaN(getOptionName(b));
+      }
+
+      const aName = getOptionName(a);
+      const bName = getOptionName(b);
       return aName.localeCompare(bName);
     });
 

@@ -28,6 +28,7 @@ export const Rubric = objectType({
     t.nonNull.boolean('active');
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
+    t.boolean('capitalise');
     t.nonNull.json('priorities');
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',

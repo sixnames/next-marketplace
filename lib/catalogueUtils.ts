@@ -104,6 +104,7 @@ interface GetCatalogueTitleInterface {
   rubricCatalogueTitleConfig: RubricCatalogueTitleModel;
   locale: string;
   currency: string;
+  capitaliseKeyWord?: boolean | null;
 }
 
 export function getCatalogueTitle({
@@ -111,6 +112,7 @@ export function getCatalogueTitle({
   rubricCatalogueTitleConfig,
   locale,
   currency,
+  capitaliseKeyWord,
 }: GetCatalogueTitleInterface): string {
   const {
     gender: rubricGender,
@@ -123,7 +125,7 @@ export function getCatalogueTitle({
     const filteredArray = arr.filter((word) => word);
     const firstWord = filteredArray[0];
     const otherWords = filteredArray.slice(1);
-    return [capitalize(firstWord), ...otherWords].filter((value) => value).join(' ');
+    return [capitalize(firstWord), ...otherWords].join(' ');
   }
 
   // Return default rubric title if no filters selected
@@ -136,6 +138,8 @@ export function getCatalogueTitle({
   const rubricKeyword =
     rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE
       ? ''
+      : capitaliseKeyWord
+      ? rubricKeywordTranslation
       : rubricKeywordTranslation.toLowerCase();
 
   const finalPrefixTranslation = getFieldStringLocale(prefixI18n, locale);
@@ -205,10 +209,11 @@ export function getCatalogueTitle({
       beforeKeyword.push(value);
     }
     if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
+      const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
       if (finalKeyword === rubricKeyword) {
-        finalKeyword = value.toLowerCase();
+        finalKeyword = keywordValue;
       } else {
-        finalKeyword = finalKeyword + titleSeparator + value.toLowerCase();
+        finalKeyword = finalKeyword + titleSeparator + keywordValue;
       }
     }
     if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
@@ -1212,6 +1217,7 @@ export const getCatalogueData = async ({
       selectedFilters,
       locale,
       currency,
+      capitaliseKeyWord: rubric.capitalise,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

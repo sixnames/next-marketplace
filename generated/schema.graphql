@@ -567,6 +567,7 @@ input CreateRoleInput {
 }
 
 input CreateRubricInput {
+  capitalise: Boolean
   catalogueTitle: RubricCatalogueTitleInput!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
@@ -2155,6 +2156,7 @@ type RoleRulePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
+  capitalise: Boolean
   catalogueTitle: RubricCatalogueTitle!
   description: String!
   descriptionI18n: JSONObject!
@@ -2712,6 +2714,7 @@ input UpdateRoleRuleInput {
 
 input UpdateRubricInput {
   active: Boolean!
+  capitalise: Boolean
   catalogueTitle: RubricCatalogueTitleInput!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!

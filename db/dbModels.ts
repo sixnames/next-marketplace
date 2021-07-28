@@ -607,6 +607,7 @@ export interface RubricModel extends CountersModel {
   active: boolean;
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
+  capitalise?: boolean | null;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {

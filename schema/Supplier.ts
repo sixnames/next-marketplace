@@ -155,7 +155,8 @@ export const SupplierQueries = extendType({
           type: 'SupplierAlphabetInput',
         }),
       },
-      resolve: async (_root, args): Promise<SuppliersAlphabetListModel[]> => {
+      resolve: async (_root, args, context): Promise<SuppliersAlphabetListModel[]> => {
+        const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
         const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
         const { input } = args;
@@ -179,7 +180,10 @@ export const SupplierQueries = extendType({
             },
           })
           .toArray();
-        return getAlphabetList<SupplierModel>(suppliers);
+        return getAlphabetList<SupplierModel>({
+          entityList: suppliers,
+          locale,
+        });
       },
     });
   },

@@ -142,3 +142,12 @@ export const UPDATE_PRODUCT_TEXT_ATTRIBUTE_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT_CARD_CONTENT_MUTATION = gql`
+  mutation UpdateProductCardContent($input: UpdateProductCardContentInput!) {
+    updateProductCardContent(input: $input) {
+      success
+      message
+    }
+  }
+`;

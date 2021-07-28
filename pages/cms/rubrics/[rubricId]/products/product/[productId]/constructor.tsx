@@ -9,6 +9,11 @@ import { ProductCardContentModel, ProductModel, RubricModel } from 'db/dbModels'
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import {
+  UpdateProductCardContentInput,
+  useUpdateProductCardContentMutation,
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
@@ -33,6 +38,13 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   cardContent,
 }) => {
   const { cities } = useConfigContext();
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+  const [updateProductCardContentMutation] = useUpdateProductCardContentMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateProductCardContent),
+    onError: onErrorCallback,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
@@ -56,17 +68,21 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
     ],
   };
 
-  const initialValues = {
-    content: cardContent.content,
-  };
+  const initialValues: UpdateProductCardContentInput = cardContent;
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-card-constructor'}>
-        <Formik
+        <Formik<UpdateProductCardContentInput>
           initialValues={initialValues}
           onSubmit={(values) => {
             console.log(values);
+            showLoading();
+            updateProductCardContentMutation({
+              variables: {
+                input: values,
+              },
+            }).catch(console.log);
           }}
         >
           {({ values, setFieldValue }) => {
@@ -95,7 +111,8 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
                             try {
                               const formData = new FormData();
                               formData.append('assets', file);
-                              formData.append('productSlug', product.slug);
+                              formData.append('productId', `${product._id}`);
+                              formData.append('productCardContentId', `${cardContent._id}`);
 
                               const responseFetch = await fetch('/api/add-card-content-asset', {
                                 method: 'POST',
@@ -191,6 +208,7 @@ export const getServerSideProps = async (
       _id: new ObjectId(),
       productId: product._id,
       productSlug: product.slug,
+      assetKeys: [],
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       },

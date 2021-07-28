@@ -8,6 +8,7 @@ import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import OrderStepsDescription from 'components/OrderStepsDescription';
+import PageEditor from 'components/PageEditor';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
 import Title from 'components/Title';
@@ -100,6 +101,7 @@ const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, 
     cardShopProducts,
     shopsCount,
     shopProducts,
+    cardContent,
   } = cardData;
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
@@ -418,6 +420,12 @@ const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, 
             </div>
           </div>
         </div>
+
+        {cardContent && cardContent.value ? (
+          <section className='mb-28'>
+            <PageEditor value={JSON.parse(cardContent.value)} readOnly />
+          </section>
+        ) : null}
 
         {/*shops*/}
         <section id={`card-shops`} className='mb-28'>

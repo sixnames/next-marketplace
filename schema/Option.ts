@@ -67,8 +67,9 @@ export const OptionQueries = extendType({
           }),
         ),
       },
-      resolve: async (_root, args): Promise<OptionAlphabetListModel[]> => {
+      resolve: async (_root, args, context): Promise<OptionAlphabetListModel[]> => {
         const { db } = await getDatabase();
+        const { locale } = await getRequestParams(context);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
         const { input } = args;
         const { optionsGroupId, slugs, parentId } = input;
@@ -106,7 +107,10 @@ export const OptionQueries = extendType({
 
         const optionsTree = getOptionsTree({ options, parentId });
 
-        return getAlphabetList<OptionModel>(optionsTree);
+        return getAlphabetList<OptionModel>({
+          entityList: optionsTree,
+          locale,
+        });
       },
     });
   },

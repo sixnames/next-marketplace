@@ -39,7 +39,7 @@ import {
   getCatalogueAttributes,
   getCatalogueConfigs,
 } from 'lib/catalogueUtils';
-import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -737,8 +737,8 @@ export const getSearchData = async ({
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
         _id: new ObjectId(),
-        min: getCurrencyString(minPrice),
-        max: getCurrencyString(maxPrice),
+        min: `${minPrice}`,
+        max: `${maxPrice}`,
       };
 
       // listFeatures

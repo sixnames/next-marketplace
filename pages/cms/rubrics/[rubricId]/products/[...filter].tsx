@@ -48,7 +48,7 @@ import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
-import { getCurrencyString, getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -622,8 +622,8 @@ export const getServerSideProps = async (
   for await (const product of productsResult.docs) {
     const cardPrices = {
       _id: new ObjectId(),
-      min: getCurrencyString(product.cardPrices?.min),
-      max: getCurrencyString(product.cardPrices?.max),
+      min: `${noNaN(product.cardPrices?.min)}`,
+      max: `${noNaN(product.cardPrices?.max)}`,
     };
     docs.push({
       ...product,

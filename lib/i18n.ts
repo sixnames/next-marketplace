@@ -4,7 +4,6 @@ import {
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   SECONDARY_LOCALE,
 } from 'config/common';
-import { noNaN } from 'lib/numbers';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
   let translation: T = i18nField[locale];
@@ -82,10 +81,6 @@ export function getCityFieldLocaleString({
   }
   return cityLocale;
 }
-
-export const getCurrencyString = (value?: number | string | null): string => {
-  return new Intl.NumberFormat(DEFAULT_LOCALE).format(noNaN(value)).replace(/,/g, ' ');
-};
 
 export function getNumWord(value: number | undefined, words: string[]): string {
   if (!value) {

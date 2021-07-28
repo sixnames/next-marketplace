@@ -29,7 +29,7 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCatalogueTitle } from 'lib/catalogueUtils';
-import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -461,8 +461,8 @@ export async function getServerSideProps(
     const maxPrice = noNaN(product.cardPrices?.max);
     const cardPrices = {
       _id: new ObjectId(),
-      min: getCurrencyString(minPrice),
-      max: getCurrencyString(maxPrice),
+      min: `${minPrice}`,
+      max: `${maxPrice}`,
     };
 
     // listFeatures

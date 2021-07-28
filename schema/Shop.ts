@@ -5,7 +5,6 @@ import {
   saveAlgoliaObjects,
 } from 'lib/algoliaUtils';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
-import { getCurrencyString } from 'lib/i18n';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -694,7 +693,7 @@ export const ShopMutations = extendType({
             const createdShopProductResult = await shopProductsCollection.insertOne({
               ...values,
               active: true,
-              formattedPrice: getCurrencyString(values.price),
+              formattedPrice: `${values.price}`,
               formattedOldPrice: '',
               discountedPercent: 0,
               productId,
@@ -848,7 +847,7 @@ export const ShopMutations = extendType({
               const createdShopProductResult = await shopProductsCollection.insertOne({
                 ...values,
                 active: true,
-                formattedPrice: getCurrencyString(values.price),
+                formattedPrice: `${values.price}`,
                 formattedOldPrice: '',
                 discountedPercent: 0,
                 productId,

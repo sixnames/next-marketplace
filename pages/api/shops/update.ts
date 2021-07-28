@@ -2,7 +2,6 @@ import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
-import { getCurrencyString } from 'lib/i18n';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -111,7 +110,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         $set: {
           available: bodyItem.available,
           price: bodyItem.price,
-          formattedPrice: getCurrencyString(bodyItem.price),
+          formattedPrice: `${bodyItem.price}`,
           formattedOldPrice,
           discountedPercent,
           updatedAt: new Date(),

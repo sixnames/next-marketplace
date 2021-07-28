@@ -229,6 +229,7 @@ export interface ProductInterface extends ProductModel {
   similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
+  attributesCount?: number | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

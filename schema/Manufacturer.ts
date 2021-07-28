@@ -155,7 +155,8 @@ export const ManufacturerQueries = extendType({
           type: 'ManufacturerAlphabetInput',
         }),
       },
-      resolve: async (_root, args): Promise<ManufacturersAlphabetListModel[]> => {
+      resolve: async (_root, args, context): Promise<ManufacturersAlphabetListModel[]> => {
+        const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
         const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
         const { input } = args;
@@ -179,7 +180,10 @@ export const ManufacturerQueries = extendType({
             },
           })
           .toArray();
-        return getAlphabetList<ManufacturerModel>(manufacturers);
+        return getAlphabetList<ManufacturerModel>({
+          entityList: manufacturers,
+          locale,
+        });
       },
     });
   },

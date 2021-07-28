@@ -125,8 +125,14 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
         </div>
 
         <div className='lg:col-span-4 flex lg:justify-end'>
-          <small className='text-secondary-text text-[1em]'>
+          <small className='text-secondary-text text-[1em] text-right'>
             {configSiteName} © {configFoundationYear || new Date().getFullYear()}
+            <span className='block mt-2'>
+              {'Powered by '}
+              <a href={'https://supercharger.site'} target={'_blank'} rel='noreferrer'>
+                Supercharger
+              </a>
+            </span>
           </small>
         </div>
       </Inner>

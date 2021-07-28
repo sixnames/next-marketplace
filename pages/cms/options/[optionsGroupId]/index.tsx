@@ -81,7 +81,7 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
     currentPageName: `${optionsGroup.name}`,
     config: [
       {
-        name: 'Группы опцый',
+        name: 'Группы опций',
         href: `${ROUTE_CMS}/options`,
       },
     ],

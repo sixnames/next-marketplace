@@ -15,7 +15,6 @@ import {
   ShopProductInterface,
   ShopProductsGroupInterface,
 } from 'db/uiInterfaces';
-import { getCurrencyString } from 'lib/i18n';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -293,7 +292,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       ...cart,
       productsCount: cart.cartProducts.length,
       isWithShopless: cart.cartProducts.some(({ shopProductId }) => !shopProductId),
-      formattedTotalPrice: getCurrencyString(cart.totalPrice),
+      formattedTotalPrice: `${cart.totalPrice}`,
     };
 
     // Group cart products by shop and filter out shop products with different barcodes

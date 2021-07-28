@@ -68,7 +68,7 @@ import {
   RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -1108,8 +1108,8 @@ export const getCatalogueData = async ({
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
         _id: new ObjectId(),
-        min: getCurrencyString(minPrice),
-        max: getCurrencyString(maxPrice),
+        min: `${minPrice}`,
+        max: `${maxPrice}`,
       };
 
       // listFeatures

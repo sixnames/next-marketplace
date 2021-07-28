@@ -1,5 +1,4 @@
 import { ShopProductModel } from 'db/dbModels';
-import { getCurrencyString } from 'lib/i18n';
 import { getPercentage } from 'lib/numbers';
 
 interface GetUpdatedShopProductPricesInterface {
@@ -30,9 +29,7 @@ export function getUpdatedShopProductPrices({
       }
     : {};
 
-  const formattedOldPrice = priceChanged
-    ? getCurrencyString(shopProduct.price)
-    : shopProduct.formattedOldPrice;
+  const formattedOldPrice = priceChanged ? `${shopProduct.price}` : shopProduct.formattedOldPrice;
 
   const lastOldPrice = priceChanged
     ? { price: shopProduct.price }

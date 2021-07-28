@@ -1,4 +1,3 @@
-import { getCurrencyString } from 'lib/i18n';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
@@ -175,7 +174,7 @@ export const ShopProductMutations = extendType({
             {
               $set: {
                 ...values,
-                formattedPrice: getCurrencyString(values.price),
+                formattedPrice: `${values.price}`,
                 formattedOldPrice,
                 discountedPercent,
                 updatedAt: new Date(),
@@ -271,7 +270,7 @@ export const ShopProductMutations = extendType({
               {
                 $set: {
                   ...values,
-                  formattedPrice: getCurrencyString(values.price),
+                  formattedPrice: `${values.price}`,
                   formattedOldPrice,
                   discountedPercent,
                   updatedAt: new Date(),

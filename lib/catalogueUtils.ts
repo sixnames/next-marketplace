@@ -194,7 +194,7 @@ export function getCatalogueTitle({
           value = variantLocale;
         }
         const optionValue = `${value}${metricValue}`;
-        return attribute.capitalise ? capitalize(optionValue) : optionValue.toLocaleLowerCase();
+        return attribute.capitalise ? optionValue : optionValue.toLocaleLowerCase();
       })
       .join(titleSeparator);
 

@@ -13,6 +13,7 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
+import useCardFeatures from 'hooks/useCardFeatures';
 import useGetSimilarProducts from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
 import CardActions from 'layout/card/CardActions';
@@ -57,29 +58,24 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
   const { similarProducts } = useGetSimilarProducts({
     companyId,
     productId: cardData._id,
   });
+  const {
+    showFeaturesSection,
+    visibleListFeatures,
+    ratingFeatures,
+    textFeatures,
+    tagFeatures,
+    iconFeatures,
+  } = useCardFeatures(cardData);
 
   // update product counters
   useUpdateCardCounter({
     companySlug,
     shopProductIds: cardData.shopProductIds,
   });
-
-  // list features visible slice
-  const visibleListFeaturesCount = noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
-  const visibleListFeatures = React.useMemo(() => {
-    return (cardData.listFeatures || []).slice(0, visibleListFeaturesCount);
-  }, [cardData.listFeatures, visibleListFeaturesCount]);
-
-  const showFeaturesSection =
-    (cardData.iconFeatures || []).length > 0 ||
-    (cardData.tagFeatures || []).length > 0 ||
-    (cardData.textFeatures || []).length > 0 ||
-    (cardData.ratingFeatures || []).length > 0;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -246,7 +242,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           <div className='mb-28' id={`card-features`}>
             <div className='grid gap-8 md:grid-cols-7 mb-12'>
               <div className='md:col-span-2'>
-                {(cardData.iconFeatures || []).map((attribute) => {
+                {iconFeatures.map((attribute) => {
                   return (
                     <div key={`${attribute._id}`} className='mb-8'>
                       <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
@@ -273,7 +269,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   );
                 })}
 
-                {(cardData.tagFeatures || []).map((attribute) => {
+                {tagFeatures.map((attribute) => {
                   return (
                     <div key={`${attribute._id}`} className='mb-8'>
                       <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
@@ -299,7 +295,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   );
                 })}
 
-                {(cardData.ratingFeatures || []).length > 0 ? (
+                {ratingFeatures.length > 0 ? (
                   <div className=''>
                     <div className=''>Мнение экспертов:</div>
                     <ul className='flex flex-wrap gap-4'>
@@ -317,7 +313,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               <div className='md:col-span-5'>
-                {(cardData.textFeatures || []).map(({ _id, name, readableValue }) => {
+                {textFeatures.map(({ _id, name, readableValue }) => {
                   if (!readableValue) {
                     return null;
                   }

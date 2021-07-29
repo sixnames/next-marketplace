@@ -51,26 +51,12 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
         });
 
         return {
+          ...rubricAttribute,
           _id: getObjectId(`${product.slug} ${rubricAttribute.slug}`),
           productSlug: product.slug,
           productId: product._id,
-          attributeId: rubricAttribute.attributeId,
           selectedOptionsSlugs,
           selectedOptionsIds,
-          rubricId: rubricAttribute.rubricId,
-          rubricSlug: rubricAttribute.rubricSlug,
-          optionsGroupId: rubricAttribute.optionsGroupId,
-          slug: rubricAttribute.slug,
-          variant: rubricAttribute.variant,
-          attributesGroupId: rubricAttribute.attributesGroupId,
-          viewVariant: rubricAttribute.viewVariant,
-          nameI18n: rubricAttribute.nameI18n,
-          capitalise: rubricAttribute.capitalise,
-          metric: rubricAttribute.metric,
-          notShowAsAlphabet: rubricAttribute.notShowAsAlphabet,
-          positioningInTitle: rubricAttribute.positioningInTitle,
-          showInCard: rubricAttribute.showInCard,
-          showAsBreadcrumb: rubricAttribute.showAsBreadcrumb,
           textI18n:
             rubricAttribute.variant === ATTRIBUTE_VARIANT_STRING
               ? {

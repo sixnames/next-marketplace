@@ -6,7 +6,7 @@ import Percent from 'components/Percent';
 interface ProductPricesInterface {
   discountedPercent?: number | null;
   price?: string | number | null;
-  oldPrice?: string | null;
+  oldPrice?: string | number | null;
   className?: string;
   size?: 'small' | 'normal' | 'big';
 }

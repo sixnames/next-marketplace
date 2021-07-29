@@ -19,7 +19,8 @@ const Currency: React.FC<CurrencyInterface> = ({
   testId,
 }) => {
   const { currency } = useLocaleContext();
-  const finalValue = noNaN(value);
+  const castedPrice = `${value}`.replace(/\s/g, '');
+  const finalValue = noNaN(castedPrice);
 
   if (noZeroValue && finalValue === 0) {
     return null;

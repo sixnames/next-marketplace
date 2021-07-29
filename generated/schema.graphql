@@ -2298,9 +2298,8 @@ type ShopProduct implements Timestamp {
   citySlug: String!
   createdAt: Date!
   discountedPercent: Int
-  formattedOldPrice: String
-  formattedPrice: String!
   inCartCount: Int!
+  oldPrice: Int
   oldPrices: [ShopProductOldPrice!]!
   price: Int!
   product: Product!

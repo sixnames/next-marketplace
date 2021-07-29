@@ -343,6 +343,7 @@ export const getServerSideProps = async (
     hasNextPage: shopProductsResult.hasNextPage,
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
+    rubricAttributesCount: 0,
     basePath,
     selectedAttributes,
     page,

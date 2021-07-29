@@ -97,7 +97,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       continue;
     }
 
-    const { discountedPercent, formattedOldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+    const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
       shopProduct,
       newPrice: bodyItem.price,
     });
@@ -110,8 +110,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         $set: {
           available: bodyItem.available,
           price: bodyItem.price,
-          formattedPrice: `${bodyItem.price}`,
-          formattedOldPrice,
+          oldPrice,
           discountedPercent,
           updatedAt: new Date(),
         },

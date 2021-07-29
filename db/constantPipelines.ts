@@ -184,8 +184,6 @@ export function getCatalogueRubricPipeline(
                 },
                 {
                   $project: {
-                    variant: false,
-                    viewVariant: false,
                     rubricId: false,
                     showInCatalogueNav: false,
                     showInCatalogueFilter: false,

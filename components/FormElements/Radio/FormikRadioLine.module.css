@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-right: 15px;
-  min-height: var(--inputHeightNormal);
+  min-height: var(--formInputHeight);
 }
 
 .frame span {

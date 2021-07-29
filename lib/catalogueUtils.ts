@@ -1101,6 +1101,7 @@ export const getCatalogueData = async ({
     const rubricListViewAttributes = castedAttributes.filter(({ viewVariant }) => {
       return viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
     });
+
     for await (const product of shopProductsAggregationResult.docs) {
       // prices
       const { attributes, connections, ...restProduct } = product;

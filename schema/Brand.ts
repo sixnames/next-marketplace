@@ -637,7 +637,7 @@ export const BrandMutations = extendType({
 
             // Create brand collection
             const itemId = await getNextItemId(COL_BRAND_COLLECTIONS);
-            const slug = await generateDefaultLangSlug(values.nameI18n);
+            const slug = generateDefaultLangSlug(values.nameI18n);
             const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
               ...values,
               itemId,

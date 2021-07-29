@@ -23,7 +23,7 @@ const createSitemap = ({
           .map((slug) => {
             return `
                     <url>
-                        <loc>${`https://${host}/${slug}`}</loc>
+                        <loc>https://${host}/${slug}</loc>
                     </url>
                 `;
           })

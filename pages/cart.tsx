@@ -159,16 +159,8 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     return null;
   }
 
-  const {
-    formattedPrice,
-    formattedOldPrice,
-    discountedPercent,
-    available,
-    shop,
-    itemId,
-    originalName,
-    mainImage,
-  } = shopProduct;
+  const { price, oldPrice, discountedPercent, available, shop, itemId, originalName, mainImage } =
+    shopProduct;
   return (
     <CartProductFrame
       testId={testId}
@@ -202,8 +194,8 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
         <div className={classes.productGridRight}>
           <ProductShopPrices
-            price={`${formattedPrice}`}
-            oldPrice={formattedOldPrice}
+            price={price}
+            oldPrice={oldPrice}
             discountedPercent={discountedPercent}
           />
           <div className={classes.productConnections}>

@@ -6,9 +6,16 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_COMPANIES, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  COL_COMPANIES,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/constantPipelines';
-import { ShopProductModel } from 'db/dbModels';
+import { RubricAttributeModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CatalogueProductOptionInterface,
@@ -99,6 +106,7 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
   const { query } = context;
@@ -206,6 +214,7 @@ export const getServerSideProps = async (
         hasPrevPage: false,
         attributes: [],
         selectedAttributes: [],
+        rubricAttributesCount: 0,
         basePath,
         page,
         docs: [],
@@ -256,6 +265,34 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
+            },
+            {
+              $lookup: {
+                from: COL_PRODUCT_ATTRIBUTES,
+                as: 'attributesCount',
+                let: { productId: '$productId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$productId', '$productId'],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: true,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                attributesCount: {
+                  $size: '$attributesCount',
+                },
+              },
             },
           ],
           options: [
@@ -390,6 +427,11 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
+  // count rubric attributes
+  const rubricAttributesCount = await rubricAttributesCollection.countDocuments({
+    rubricId: rubric._id,
+  });
+
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
     shop,
@@ -401,6 +443,7 @@ export const getServerSideProps = async (
     hasNextPage: shopProductsResult.hasNextPage,
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
+    rubricAttributesCount,
     basePath,
     selectedAttributes,
     page,

@@ -55,14 +55,6 @@
   transition: all 0.15s;
 }
 
-.collapseIcon {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  fill: var(--gray);
-  transition: all 0.15s;
-}
-
 .bottom {
 }
 
@@ -205,11 +197,6 @@
     height: 36px;
     margin-left: auto;
     margin-right: 5px;
-  }
-
-  .collapseIcon {
-    width: 26px;
-    height: 26px;
   }
 
   .backdrop {

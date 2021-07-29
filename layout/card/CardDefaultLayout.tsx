@@ -2,7 +2,6 @@ import ArrowTrigger from 'components/ArrowTrigger';
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
-import Currency from 'components/Currency';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
@@ -19,6 +18,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
+import CardPrices from 'layout/card/CardPrices';
 import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -71,45 +71,25 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
 };
 
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
-  const {
-    _id,
-    rubricSlug,
-    mainImage,
-    name,
-    originalName,
-    cardPrices,
-    connections,
-    itemId,
-    listFeatures,
-    ratingFeatures,
-    textFeatures,
-    iconFeatures,
-    tagFeatures,
-    cardBreadcrumbs,
-    cardShopProducts,
-    shopsCount,
-    shopProducts,
-    cardContent,
-  } = cardData;
-  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
-  const isShopless = noNaN(shopsCount) < 1;
+  const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
+  const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
   const [isMap, setIsMap] = React.useState<boolean>(false);
 
   const shopsSnippets = React.useMemo(() => {
-    return (cardShopProducts || []).reduce((acc: ShopInterface[], { shop }) => {
+    return (cardData.cardShopProducts || []).reduce((acc: ShopInterface[], { shop }) => {
       if (!shop) {
         return acc;
       }
       return [...acc, shop];
     }, []);
-  }, [cardShopProducts]);
+  }, [cardData.cardShopProducts]);
 
   React.useEffect(() => {
     fetch(
-      `/api/catalogue/get-product-similar-items?productId=${_id}${
+      `/api/catalogue/get-product-similar-items?productId=${cardData._id}${
         companyId ? `&companyId=${companyId}` : ''
       }`,
     )
@@ -124,13 +104,13 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     return () => {
       setSimilarProducts([]);
     };
-  }, [_id, companyId]);
+  }, [cardData._id, companyId]);
 
   // list features visible slice
   const visibleListFeaturesCount = noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
   const visibleListFeatures = React.useMemo(() => {
-    return (listFeatures || []).slice(0, visibleListFeaturesCount);
-  }, [listFeatures, visibleListFeaturesCount]);
+    return (cardData.listFeatures || []).slice(0, visibleListFeaturesCount);
+  }, [cardData.listFeatures, visibleListFeaturesCount]);
 
   const [updateProductCounterMutation] = useUpdateProductCounterMutation();
   React.useEffect(() => {
@@ -145,14 +125,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   }, [cardData.shopProductIds, companySlug, updateProductCounterMutation]);
 
   const showFeaturesSection =
-    (iconFeatures || []).length > 0 ||
-    (tagFeatures || []).length > 0 ||
-    (textFeatures || []).length > 0 ||
-    (ratingFeatures || []).length > 0;
+    (cardData.iconFeatures || []).length > 0 ||
+    (cardData.tagFeatures || []).length > 0 ||
+    (cardData.textFeatures || []).length > 0 ||
+    (cardData.ratingFeatures || []).length > 0;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={cardData.originalName} config={cardData.cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
@@ -160,7 +140,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           <div className='relative'>
             {/*desktop title*/}
             <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
-              <CardTitle productId={_id} originalName={originalName} itemId={itemId} name={name} />
+              <CardTitle
+                productId={cardData._id}
+                originalName={cardData.originalName}
+                itemId={cardData.itemId}
+                name={cardData.name}
+              />
             </div>
 
             {/*content*/}
@@ -169,9 +154,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               <div className='md:col-span-1 md:order-2 lg:col-span-3 lg:flex lg:justify-center'>
                 <div className='relative h-[300px] w-[160px] md:h-[500px] lg:h-[600px]'>
                   <Image
-                    src={`${mainImage}`}
-                    alt={originalName}
-                    title={originalName}
+                    src={`${cardData.mainImage}`}
+                    alt={cardData.originalName}
+                    title={cardData.originalName}
                     layout='fill'
                     objectFit='contain'
                   />
@@ -183,17 +168,17 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 {/*desktop title*/}
                 <div className='hidden lg:block'>
                   <CardTitle
-                    productId={_id}
-                    originalName={originalName}
-                    itemId={itemId}
-                    name={name}
+                    productId={cardData._id}
+                    originalName={cardData.originalName}
+                    itemId={cardData.itemId}
+                    name={cardData.name}
                   />
                 </div>
 
                 {/*connections*/}
-                {(connections || []).length > 0 ? (
+                {(cardData.connections || []).length > 0 ? (
                   <div className='mb-8'>
-                    {(connections || []).map(({ _id, attribute, connectionProducts }) => {
+                    {(cardData.connections || []).map(({ _id, attribute, connectionProducts }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
@@ -211,7 +196,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${productSlug}`}
+                                  href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/product/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>
@@ -226,25 +211,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                 {/*price*/}
                 <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
-                  <div className='flex items-baseline'>
-                    {isShopless ? null : noNaN(shopsCount) > 1 ? (
-                      <React.Fragment>
-                        <div className='mr-2'>Цена от</div>
-                        <div className='flex items-baseline text-3xl sm:text-4xl'>
-                          <Currency value={cardPrices?.min} />
-                          <div className='text-lg mx-2'>до</div>
-                          <Currency value={cardPrices?.max} />
-                        </div>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <div className='mr-2'>Цена</div>
-                        <div className='flex items-baseline text-3xl sm:text-4xl'>
-                          <Currency value={cardPrices?.min} />
-                        </div>
-                      </React.Fragment>
-                    )}
-                  </div>
+                  <CardPrices cardPrices={cardData.cardPrices} shopsCount={cardData.shopsCount} />
 
                   {/*availability*/}
                   <a
@@ -265,7 +232,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   >
                     {isShopless
                       ? 'Нет в наличии'
-                      : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
+                      : `В наличии в ${cardData.shopsCount} ${shopsCounterPostfix}`}
                   </a>
                 </div>
 
@@ -274,16 +241,16 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
                     <Button
                       onClick={() => {
-                        if (shopProducts && shopProducts.length < 2) {
+                        if (cardData.shopProducts && cardData.shopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
-                            productId: _id,
-                            shopProductId: `${shopProducts[0]._id}`,
+                            productId: cardData._id,
+                            shopProductId: `${cardData.shopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({
                             amount: 1,
-                            productId: _id,
+                            productId: cardData._id,
                           });
                         }
                       }}
@@ -328,7 +295,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           <div className='mb-28' id={`card-features`}>
             <div className='grid gap-8 md:grid-cols-7 mb-12'>
               <div className='md:col-span-2'>
-                {(iconFeatures || []).map((attribute) => {
+                {(cardData.iconFeatures || []).map((attribute) => {
                   return (
                     <div key={`${attribute._id}`} className='mb-8'>
                       <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
@@ -342,7 +309,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             <li key={`${option?.name}`}>
                               <TagLink
                                 icon={option.icon}
-                                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                                href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                                 testId={`card-icon-option-${name}`}
                               >
                                 {name}
@@ -355,7 +322,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   );
                 })}
 
-                {(tagFeatures || []).map((attribute) => {
+                {(cardData.tagFeatures || []).map((attribute) => {
                   return (
                     <div key={`${attribute._id}`} className='mb-8'>
                       <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
@@ -368,7 +335,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                           return (
                             <li key={`${option?.name}`}>
                               <TagLink
-                                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                                href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                                 testId={`card-tag-option-${name}`}
                               >
                                 {name}
@@ -381,11 +348,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   );
                 })}
 
-                {(ratingFeatures || []).length > 0 ? (
+                {(cardData.ratingFeatures || []).length > 0 ? (
                   <div className=''>
                     <div className=''>Мнение экспертов:</div>
                     <ul className='flex flex-wrap gap-4'>
-                      {(ratingFeatures || []).map(({ _id, name, number }) => {
+                      {(cardData.ratingFeatures || []).map(({ _id, name, number }) => {
                         const optionName = `${name} ${number}`;
                         return (
                           <li key={`${_id}`}>
@@ -399,7 +366,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               <div className='md:col-span-5'>
-                {(textFeatures || []).map(({ _id, name, readableValue }) => {
+                {(cardData.textFeatures || []).map(({ _id, name, readableValue }) => {
                   if (!readableValue) {
                     return null;
                   }
@@ -417,9 +384,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           </div>
         ) : null}
 
-        {cardContent && cardContent.value ? (
+        {cardData.cardContent && cardData.cardContent.value ? (
           <section className='mb-28'>
-            <PageEditor value={JSON.parse(cardContent.value)} readOnly />
+            <PageEditor value={JSON.parse(cardData.cardContent.value)} readOnly />
           </section>
         ) : null}
 
@@ -442,7 +409,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
             ) : (
               <div data-cy={`card-shops-list`}>
-                {(cardShopProducts || []).map((shopProduct, index) => {
+                {(cardData.cardShopProducts || []).map((shopProduct, index) => {
                   return (
                     <CardShop
                       testId={`1-${index}`}

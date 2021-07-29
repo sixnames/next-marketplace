@@ -1,6 +1,6 @@
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { ProductAssetsModel } from 'db/dbModels';
+import { AssetModel } from 'db/dbModels';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AddProductToCartInput, AddShoplessProductToCartInput } from 'generated/apolloComponents';
 import useCardFeatures, { UseCardFeaturesPayloadInterface } from 'hooks/useCardFeatures';
@@ -20,7 +20,7 @@ interface UseCardDataPayloadInterface
   addProductToCart: (input: AddProductToCartInput) => void;
   showArticle: boolean;
   isSingleImage: boolean;
-  assets: ProductAssetsModel[];
+  assets: AssetModel[];
 }
 
 interface UseCardDataInterface {
@@ -64,8 +64,8 @@ const useCardData = ({
     shopProductIds: cardData.shopProductIds,
   });
 
-  const assets = React.useMemo(() => {
-    return cardData.assets || [];
+  const assets = React.useMemo<AssetModel[]>(() => {
+    return cardData.assets ? cardData.assets.assets : [];
   }, [cardData.assets]);
 
   const isSingleImage = React.useMemo(() => {

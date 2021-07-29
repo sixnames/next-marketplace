@@ -35,11 +35,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     addShoplessProductToCart,
     addProductToCart,
     showArticle,
+    assets,
   } = useCardData({
     cardData,
     companySlug,
     companyId,
   });
+
+  console.log(assets);
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>

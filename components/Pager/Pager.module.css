@@ -68,23 +68,6 @@
   justify-content: center;
 }
 
-.listbutn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 3px;
-}
-
-.listCurrent {
-  pointer-events: none;
-  border-color: var(--midGray);
-}
-
 .item {
   display: flex;
   align-items: center;
@@ -109,12 +92,7 @@
     width: 1.75rem;
     height: 1.75rem;
   }
-
-  .listButn {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
+  
   .item {
     width: 1.5rem;
     height: 1.5rem;

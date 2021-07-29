@@ -153,6 +153,38 @@ export function getConfigTemplates({
       companySlug,
       group: 'ui',
       variant: 'string' as ConfigVariantModel,
+      slug: 'siteLogoWidth',
+      name: 'Ширина логотипа в шаке сайта (px / em / rem / %)',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['10rem'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'string' as ConfigVariantModel,
+      slug: 'siteMobileLogoWidth',
+      name: 'Ширина логотипа в шаке сайта при мобильной версии (px / em / rem / %)',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['7rem'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'string' as ConfigVariantModel,
       slug: 'siteThemeColor',
       name: 'Акцент цвет сайта',
       description:

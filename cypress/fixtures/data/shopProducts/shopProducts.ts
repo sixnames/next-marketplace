@@ -1,4 +1,4 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from '../../../../config/common';
+import { DEFAULT_CITY } from '../../../../config/common';
 import { ShopProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import products from '../products/products';
@@ -8,14 +8,6 @@ import rubrics from '../rubrics/rubrics';
 
 const maxProductsCountForShop = 50;
 const shopProducts: ShopProductModel[] = [];
-
-const noNaN = (value: any) => {
-  return value && !isNaN(+value) ? +value : 0;
-};
-
-const getCurrencyString = (value?: number | string | null): string => {
-  return new Intl.NumberFormat(DEFAULT_LOCALE).format(noNaN(value)).replace(',', ' ');
-};
 
 shops.forEach((shop) => {
   if (shop.itemId === '000003') {
@@ -62,8 +54,7 @@ shops.forEach((shop) => {
             rubricSlug: product.rubricSlug,
             selectedOptionsSlugs: product.selectedOptionsSlugs,
             discountedPercent: withDiscount ? discountedPercent : 0,
-            formattedPrice: getCurrencyString(price),
-            formattedOldPrice: getCurrencyString(oldPrice),
+            oldPrice,
             price,
             available,
             oldPrices: withDiscount

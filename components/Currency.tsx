@@ -1,7 +1,6 @@
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import { useLocaleContext } from 'context/localeContext';
-import { getCurrencyString } from 'lib/i18n';
 import NumberFormat from 'react-number-format';
 
 interface CurrencyInterface {
@@ -20,16 +19,17 @@ const Currency: React.FC<CurrencyInterface> = ({
   testId,
 }) => {
   const { currency } = useLocaleContext();
-  const finalValue = typeof value === 'number' ? getCurrencyString(value) : value;
+  const castedPrice = `${value}`.replace(/\s/g, '');
+  const finalValue = noNaN(castedPrice);
 
-  if (noZeroValue && (!finalValue || finalValue === '0')) {
+  if (noZeroValue && finalValue === 0) {
     return null;
   }
 
   return (
     <span className={`inline-flex whitespace-nowrap items-baseline ${className ? className : ''}`}>
       <NumberFormat
-        value={noNaN(value)}
+        value={finalValue}
         thousandSeparator={true}
         displayType={'text'}
         renderText={(value: string) => {

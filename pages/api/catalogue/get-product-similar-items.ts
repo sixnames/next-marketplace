@@ -3,7 +3,7 @@ import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
-import { getCurrencyString, getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getSessionCity, getSessionCompanySlug, getSessionLocale } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -115,7 +115,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 $match: {
                   ...companyRubricsMatch,
                   citySlug: city,
-                  _id: {
+                  productId: {
                     $ne: finalProductId,
                   },
                   $expr: {
@@ -263,8 +263,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
         _id: new ObjectId(),
-        min: getCurrencyString(minPrice),
-        max: getCurrencyString(maxPrice),
+        min: `${minPrice}`,
+        max: `${maxPrice}`,
       };
 
       return [

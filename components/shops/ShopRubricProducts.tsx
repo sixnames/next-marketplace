@@ -45,6 +45,7 @@ export interface ShopRubricProductsInterface
   rubricName: string;
   rubricId: string;
   layoutBasePath: string;
+  rubricAttributesCount: number;
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -60,6 +61,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricId,
   layoutBasePath,
   breadcrumbs,
+  rubricAttributesCount,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -156,10 +158,25 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       render: ({ cellData }) => cellData,
     },
     {
+      accessor: 'attributesCount',
+      headTitle: 'Атрибуты',
+      isHidden: !me?.role?.isStaff,
+      render: ({ cellData }) => {
+        return (
+          <div className='flex gap-2'>
+            <div>{noNaN(cellData)}</div>
+            <div>/</div>
+            <div>{noNaN(rubricAttributesCount)}</div>
+          </div>
+        );
+      },
+    },
+    {
       render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
+            testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
               if (me?.role?.isStaff) {
@@ -192,7 +209,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 },
               });
             }}
-            testId={`shop-product-${rowIndex}`}
           />
         );
       },

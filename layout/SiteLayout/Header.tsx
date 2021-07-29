@@ -294,6 +294,8 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
   const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+  const configLogoWidth = getSiteConfigSingleValue('siteLogoWidth') || '10rem';
+  const configLogoMobileWidth = getSiteConfigSingleValue('siteMobileLogoWidth') || '7rem';
   const configSiteName = getSiteConfigSingleValue('siteName');
   const callbackPhone = getSiteConfigSingleValue('phone');
 
@@ -326,6 +328,12 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   return (
     <React.Fragment>
       <header
+        style={
+          {
+            '--logoWidth': configLogoWidth,
+            '--logoMobileWidth': configLogoMobileWidth,
+          } as React.CSSProperties
+        }
         className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
         ref={headerRef}
       >
@@ -407,7 +415,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
 
             <Link
               href={`/`}
-              className='flex items-center flex-shrink-0 w-[var(--logoWidth)] max-h-16 lg:max-h-24'
+              className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)] max-h-16 lg:max-h-24'
               aria-label={'Главная страница'}
             >
               <img

@@ -7,7 +7,6 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
-import OrderStepsDescription from 'components/OrderStepsDescription';
 import PageEditor from 'components/PageEditor';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
@@ -155,6 +154,12 @@ const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, 
       },
     }).catch((e) => console.log(e));
   }, [cardData.shopProductIds, companySlug, updateProductCounterMutation]);
+
+  const showFeaturesSection =
+    (iconFeatures || []).length > 0 ||
+    (tagFeatures || []).length > 0 ||
+    (textFeatures || []).length > 0 ||
+    (ratingFeatures || []).length > 0;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -330,96 +335,98 @@ const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, 
 
       <Inner lowTop lowBottom>
         {/* Features */}
-        <div className='mb-28' id={`card-features`}>
-          <div className='grid gap-8 md:grid-cols-7 mb-12'>
-            <div className='md:col-span-2'>
-              {(iconFeatures || []).map((attribute) => {
-                return (
-                  <div key={`${attribute._id}`} className='mb-8'>
-                    <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
-                    <ul className='flex flex-wrap gap-4'>
-                      {(attribute.options || []).map((option) => {
-                        const name = `${option?.name} ${
-                          attribute?.metric ? ` ${attribute.metric.name}` : ''
-                        }`;
+        {showFeaturesSection ? (
+          <div className='mb-28' id={`card-features`}>
+            <div className='grid gap-8 md:grid-cols-7 mb-12'>
+              <div className='md:col-span-2'>
+                {(iconFeatures || []).map((attribute) => {
+                  return (
+                    <div key={`${attribute._id}`} className='mb-8'>
+                      <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
+                      <ul className='flex flex-wrap gap-4'>
+                        {(attribute.options || []).map((option) => {
+                          const name = `${option?.name} ${
+                            attribute?.metric ? ` ${attribute.metric.name}` : ''
+                          }`;
 
-                        return (
-                          <li key={`${option?.name}`}>
-                            <TagLink
-                              icon={option.icon}
-                              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                              testId={`card-icon-option-${name}`}
-                            >
-                              {name}
-                            </TagLink>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
-
-              {(tagFeatures || []).map((attribute) => {
-                return (
-                  <div key={`${attribute._id}`} className='mb-8'>
-                    <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
-                    <ul className='flex flex-wrap gap-4'>
-                      {(attribute.options || []).map((option) => {
-                        const name = `${option?.name} ${
-                          attribute?.metric ? ` ${attribute.metric.name}` : ''
-                        }`;
-
-                        return (
-                          <li key={`${option?.name}`}>
-                            <TagLink
-                              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                              testId={`card-tag-option-${name}`}
-                            >
-                              {name}
-                            </TagLink>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
-
-              {(ratingFeatures || []).length > 0 ? (
-                <div className=''>
-                  <div className=''>Мнение экспертов:</div>
-                  <ul className='flex flex-wrap gap-4'>
-                    {(ratingFeatures || []).map(({ _id, name, number }) => {
-                      const optionName = `${name} ${number}`;
-                      return (
-                        <li key={`${_id}`}>
-                          <TagLink testId={`card-rating-option-${name}`}>{optionName}</TagLink>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-
-            <div className='md:col-span-5'>
-              {(textFeatures || []).map(({ _id, name, readableValue }) => {
-                if (!readableValue) {
-                  return null;
-                }
-                return (
-                  <section className='mb-8' key={`${_id}`}>
-                    <h2 className='text-2xl mb-4'>{name}</h2>
-                    <div className='prose max-w-full'>
-                      <p>{readableValue}</p>
+                          return (
+                            <li key={`${option?.name}`}>
+                              <TagLink
+                                icon={option.icon}
+                                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                                testId={`card-icon-option-${name}`}
+                              >
+                                {name}
+                              </TagLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
-                  </section>
-                );
-              })}
+                  );
+                })}
+
+                {(tagFeatures || []).map((attribute) => {
+                  return (
+                    <div key={`${attribute._id}`} className='mb-8'>
+                      <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
+                      <ul className='flex flex-wrap gap-4'>
+                        {(attribute.options || []).map((option) => {
+                          const name = `${option?.name} ${
+                            attribute?.metric ? ` ${attribute.metric.name}` : ''
+                          }`;
+
+                          return (
+                            <li key={`${option?.name}`}>
+                              <TagLink
+                                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                                testId={`card-tag-option-${name}`}
+                              >
+                                {name}
+                              </TagLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                })}
+
+                {(ratingFeatures || []).length > 0 ? (
+                  <div className=''>
+                    <div className=''>Мнение экспертов:</div>
+                    <ul className='flex flex-wrap gap-4'>
+                      {(ratingFeatures || []).map(({ _id, name, number }) => {
+                        const optionName = `${name} ${number}`;
+                        return (
+                          <li key={`${_id}`}>
+                            <TagLink testId={`card-rating-option-${name}`}>{optionName}</TagLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className='md:col-span-5'>
+                {(textFeatures || []).map(({ _id, name, readableValue }) => {
+                  if (!readableValue) {
+                    return null;
+                  }
+                  return (
+                    <section className='mb-8' key={`${_id}`}>
+                      <h2 className='text-2xl mb-4'>{name}</h2>
+                      <div className='prose max-w-full'>
+                        <p>{readableValue}</p>
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
 
         {cardContent && cardContent.value ? (
           <section className='mb-28'>
@@ -459,11 +466,6 @@ const CardConsumer: React.FC<CardConsumerInterface> = ({ cardData, companySlug, 
             )}
           </div>
         </section>
-
-        {/*order description*/}
-        <div className='mb-28'>
-          <OrderStepsDescription />
-        </div>
 
         {/*similar products*/}
         {similarProducts.length > 0 ? (

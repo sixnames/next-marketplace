@@ -8,7 +8,6 @@ import {
 import { NotSyncedProductModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
-import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
@@ -121,11 +120,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       if (exitingShopProduct) {
-        const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
-          getUpdatedShopProductPrices({
-            shopProduct: exitingShopProduct,
-            newPrice: bodyItem.price,
-          });
+        const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+          shopProduct: exitingShopProduct,
+          newPrice: bodyItem.price,
+        });
 
         const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
           {
@@ -135,8 +133,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             $set: {
               available: bodyItem.available,
               price: bodyItem.price,
-              formattedPrice: getCurrencyString(bodyItem.price),
-              formattedOldPrice,
+              oldPrice,
               discountedPercent,
               updatedAt: new Date(),
             },
@@ -162,8 +159,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           active: true,
           available,
           price,
-          formattedPrice: getCurrencyString(bodyItem.price),
-          formattedOldPrice: '',
           discountedPercent: 0,
           productId: product._id,
           shopId: shop._id,

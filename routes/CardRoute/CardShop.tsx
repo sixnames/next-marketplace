@@ -24,8 +24,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
-  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available, productId } =
-    shopProduct;
+  const { shop, oldPrice, price, discountedPercent, available, productId } = shopProduct;
   const inCartCount = getShopProductInCartCount(`${shopProduct._id}`);
 
   if (!shop) {
@@ -115,9 +114,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
           <div className={classes.column}>
             <ProductShopPrices
               className={classes.prices}
-              price={`${formattedPrice}`}
+              price={price}
               discountedPercent={discountedPercent}
-              oldPrice={formattedOldPrice}
+              oldPrice={oldPrice}
             />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 

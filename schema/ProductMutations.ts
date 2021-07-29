@@ -1,5 +1,4 @@
 import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
-import { getCurrencyString } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -1153,8 +1152,6 @@ export const ProductMutations = extendType({
               available,
               price,
               active: true,
-              formattedPrice: getCurrencyString(price),
-              formattedOldPrice: '',
               discountedPercent: 0,
               productId,
               shopId: shop._id,
@@ -1402,8 +1399,6 @@ export const ProductMutations = extendType({
               available,
               price,
               active: true,
-              formattedPrice: getCurrencyString(price),
-              formattedOldPrice: '',
               discountedPercent: 0,
               productId,
               shopId: shop._id,

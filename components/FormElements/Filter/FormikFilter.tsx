@@ -41,22 +41,26 @@ const FormikFilter: React.FC<FormikFilterInterface> = ({
         if (onSubmitHandler) {
           onSubmitHandler(values);
         }
-        router.replace({
-          pathname,
-          query: {
-            ...query,
-            ...values,
-          },
-        });
+        router
+          .replace({
+            pathname,
+            query: {
+              ...query,
+              ...values,
+            },
+          })
+          .catch(console.log);
       }}
     >
       {({ resetForm }) => {
         function onResetHandler() {
           resetForm(initialValues);
-          router.replace({
-            pathname,
-            query: initialQuery,
-          });
+          router
+            .replace({
+              pathname,
+              query: initialQuery,
+            })
+            .catch(console.log);
         }
 
         return <Form>{children({ onResetHandler })}</Form>;

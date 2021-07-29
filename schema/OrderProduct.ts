@@ -2,7 +2,6 @@ import { objectType } from 'nexus';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 
 export const OrderProduct = objectType({
@@ -57,7 +56,7 @@ export const OrderProduct = objectType({
     t.nonNull.field('formattedPrice', {
       type: 'String',
       resolve: async (source, _args): Promise<string> => {
-        return getCurrencyString(source.price);
+        return `${source.price}`;
       },
     });
 
@@ -67,7 +66,7 @@ export const OrderProduct = objectType({
       resolve: async (source, _args): Promise<string> => {
         const { price, amount } = source;
         const totalPrice = noNaN(price) * noNaN(amount);
-        return getCurrencyString(totalPrice);
+        return `${totalPrice}`;
       },
     });
 

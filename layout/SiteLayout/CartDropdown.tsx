@@ -84,8 +84,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                     <ProductShopPrices
                       className='mb-[var(--textLineGap)]'
-                      price={shopProduct.formattedPrice}
-                      oldPrice={shopProduct.formattedOldPrice}
+                      price={shopProduct.price}
+                      oldPrice={shopProduct.oldPrice}
                       discountedPercent={shopProduct.discountedPercent}
                     />
                     <div className='mb-[var(--textLineGap)]'>

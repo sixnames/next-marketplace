@@ -16,6 +16,7 @@ import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]
 import * as React from 'react';
 
 const dataSectionClassName = 'mb-12';
+const stickyClassName = 'sticky top-14';
 
 const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   cardData,
@@ -65,12 +66,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <div className='grid grid-cols-7 gap-8 mb-28'>
             {/*gallery*/}
             <div className='col-span-4'>
-              <div className='sticky top-12'>gallery</div>
+              <div className={stickyClassName}>gallery</div>
             </div>
 
             {/*data*/}
             <div className='col-span-3 relative'>
-              <div className='sticky top-12'>
+              <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
                   {/*price*/}

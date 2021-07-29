@@ -10,7 +10,6 @@ import {
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROUTE_CATALOGUE,
 } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -27,11 +26,10 @@ interface CardTitleInterface {
   name?: string | null;
   itemId: string;
   tag?: keyof JSX.IntrinsicElements;
+  showArticle: boolean;
 }
 
-const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId }) => {
-  const { getSiteConfigBoolean } = useConfigContext();
-  const showArticle = getSiteConfigBoolean('showCardArticle');
+const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, showArticle, itemId }) => {
   return (
     <div className='mb-6'>
       <Title className='mb-1' low>
@@ -64,6 +62,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     isShopless,
     addShoplessProductToCart,
     addProductToCart,
+    showArticle,
   } = useCardData({
     cardData,
     companySlug,
@@ -81,6 +80,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             {/*desktop title*/}
             <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
               <CardTitle
+                showArticle={showArticle}
                 productId={cardData._id}
                 originalName={cardData.originalName}
                 itemId={cardData.itemId}
@@ -108,6 +108,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 {/*desktop title*/}
                 <div className='hidden lg:block'>
                   <CardTitle
+                    showArticle={showArticle}
                     productId={cardData._id}
                     originalName={cardData.originalName}
                     itemId={cardData.itemId}
@@ -205,7 +206,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*list features*/}
               <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
-                {(visibleListFeatures || []).map(({ showInCard, _id, name, readableValue }) => {
+                {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
                   if (!showInCard) {
                     return null;
                   }
@@ -324,6 +325,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           </div>
         ) : null}
 
+        {/*dynamic content*/}
         <CardDynamicContent cardContent={cardData.cardContent} />
 
         {/*shops*/}

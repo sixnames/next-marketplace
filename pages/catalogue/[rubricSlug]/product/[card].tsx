@@ -16,8 +16,10 @@ export interface CardLayoutInterface {
 }
 
 const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
+// const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
+  // return <CardHalfColumnsLayout {...props} />;
   return <CardDefaultLayout {...props} />;
 };
 

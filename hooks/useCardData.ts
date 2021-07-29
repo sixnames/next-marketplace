@@ -1,13 +1,21 @@
+import { useSiteContext } from 'context/siteContext';
 import { ProductInterface } from 'db/uiInterfaces';
+import { AddProductToCartInput, AddShoplessProductToCartInput } from 'generated/apolloComponents';
 import useCardFeatures, { UseCardFeaturesPayloadInterface } from 'hooks/useCardFeatures';
 import useGetSimilarProducts, {
   UseGetSimilarProductsPayloadInterface,
 } from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
+import { noNaN } from 'lib/numbers';
 
 interface UseCardDataPayloadInterface
   extends UseCardFeaturesPayloadInterface,
-    UseGetSimilarProductsPayloadInterface {}
+    UseGetSimilarProductsPayloadInterface {
+  isShopless: boolean;
+  shopsCounterPostfix: string;
+  addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
+  addProductToCart: (input: AddProductToCartInput) => void;
+}
 
 interface UseCardDataInterface {
   cardData: ProductInterface;
@@ -20,6 +28,10 @@ const useCardData = ({
   companyId,
   companySlug,
 }: UseCardDataInterface): UseCardDataPayloadInterface => {
+  const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
+  const isShopless = noNaN(cardData.shopsCount) < 1;
+  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+
   const { similarProducts, loading } = useGetSimilarProducts({
     companyId,
     productId: cardData._id,
@@ -43,6 +55,10 @@ const useCardData = ({
   });
 
   return {
+    shopsCounterPostfix,
+    isShopless,
+    addShoplessProductToCart,
+    addProductToCart,
     listFeatures,
     visibleListFeaturesCount,
     showFeaturesSection,

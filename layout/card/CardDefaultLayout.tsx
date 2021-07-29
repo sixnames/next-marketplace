@@ -11,7 +11,6 @@ import {
   ROUTE_CATALOGUE,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -53,10 +52,6 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
 };
 
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
-  const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
-  const isShopless = noNaN(cardData.shopsCount) < 1;
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-
   const {
     similarProducts,
     showFeaturesSection,
@@ -65,6 +60,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     textFeatures,
     tagFeatures,
     iconFeatures,
+    shopsCounterPostfix,
+    isShopless,
+    addShoplessProductToCart,
+    addProductToCart,
   } = useCardData({
     cardData,
     companySlug,
@@ -177,7 +176,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   </a>
                 </div>
 
-                {/*cart action elements*/}
+                {/*cart button*/}
                 <div className='flex flex-wrap gap-4 mb-8'>
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
                     <Button

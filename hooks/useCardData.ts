@@ -1,5 +1,6 @@
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
+import { ProductAssetsModel } from 'db/dbModels';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AddProductToCartInput, AddShoplessProductToCartInput } from 'generated/apolloComponents';
 import useCardFeatures, { UseCardFeaturesPayloadInterface } from 'hooks/useCardFeatures';
@@ -8,6 +9,7 @@ import useGetSimilarProducts, {
 } from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
 import { noNaN } from 'lib/numbers';
+import * as React from 'react';
 
 interface UseCardDataPayloadInterface
   extends UseCardFeaturesPayloadInterface,
@@ -17,6 +19,8 @@ interface UseCardDataPayloadInterface
   addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
   addProductToCart: (input: AddProductToCartInput) => void;
   showArticle: boolean;
+  isSingleImage: boolean;
+  assets: ProductAssetsModel[];
 }
 
 interface UseCardDataInterface {
@@ -24,6 +28,8 @@ interface UseCardDataInterface {
   companyId?: any | null;
   companySlug?: string | null;
 }
+
+const minAssetsListCount = 2;
 
 const useCardData = ({
   cardData,
@@ -58,7 +64,17 @@ const useCardData = ({
     shopProductIds: cardData.shopProductIds,
   });
 
+  const assets = React.useMemo(() => {
+    return cardData.assets || [];
+  }, [cardData.assets]);
+
+  const isSingleImage = React.useMemo(() => {
+    return assets.length < minAssetsListCount;
+  }, [assets]);
+
   return {
+    assets,
+    isSingleImage,
     showArticle,
     shopsCounterPostfix,
     isShopless,

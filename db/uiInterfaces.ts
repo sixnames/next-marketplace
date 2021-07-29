@@ -206,7 +206,7 @@ export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
   available?: boolean;
-  assets?: ProductAssetsModel | null;
+  assets?: ProductAssetsModel[] | null;
   connections?: ProductConnectionInterface[];
   attributes?: ProductAttributeInterface[];
   listFeatures?: ProductAttributeInterface[];

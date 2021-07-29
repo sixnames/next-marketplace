@@ -14,11 +14,10 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { ProductInterface } from 'db/uiInterfaces';
-import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
+import useGetSimilarProducts from 'hooks/useGetSimilarProducts';
+import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
-import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
@@ -73,44 +72,22 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
+  const { similarProducts } = useGetSimilarProducts({
+    companyId,
+    productId: cardData._id,
+  });
 
-  React.useEffect(() => {
-    fetch(
-      `/api/catalogue/get-product-similar-items?productId=${cardData._id}${
-        companyId ? `&companyId=${companyId}` : ''
-      }`,
-    )
-      .then((res) => res.json())
-      .then((res: ProductInterface[]) => {
-        if (res && res.length > 0) {
-          setSimilarProducts(res);
-        }
-      })
-      .catch(console.log);
-
-    return () => {
-      setSimilarProducts([]);
-    };
-  }, [cardData._id, companyId]);
+  // update product counters
+  useUpdateCardCounter({
+    companySlug,
+    shopProductIds: cardData.shopProductIds,
+  });
 
   // list features visible slice
   const visibleListFeaturesCount = noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
   const visibleListFeatures = React.useMemo(() => {
     return (cardData.listFeatures || []).slice(0, visibleListFeaturesCount);
   }, [cardData.listFeatures, visibleListFeaturesCount]);
-
-  const [updateProductCounterMutation] = useUpdateProductCounterMutation();
-  React.useEffect(() => {
-    updateProductCounterMutation({
-      variables: {
-        input: {
-          shopProductIds: alwaysArray(cardData.shopProductIds),
-          companySlug,
-        },
-      },
-    }).catch((e) => console.log(e));
-  }, [cardData.shopProductIds, companySlug, updateProductCounterMutation]);
 
   const showFeaturesSection =
     (cardData.iconFeatures || []).length > 0 ||

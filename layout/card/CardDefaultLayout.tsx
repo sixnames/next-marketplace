@@ -1,4 +1,3 @@
-import ArrowTrigger from 'components/ArrowTrigger';
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
@@ -7,7 +6,6 @@ import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
-import ShopsMap from 'components/ShopsMap';
 import Title from 'components/Title';
 import {
   CATALOGUE_OPTION_SEPARATOR,
@@ -16,15 +14,15 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { ProductInterface, ShopInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
 import CardPrices from 'layout/card/CardPrices';
+import CardShopsList from 'layout/card/CardShopsList';
 import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
-import CardShop from 'routes/CardRoute/CardShop';
 
 interface CardTitleInterface {
   productId: any;
@@ -76,16 +74,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
-  const [isMap, setIsMap] = React.useState<boolean>(false);
-
-  const shopsSnippets = React.useMemo(() => {
-    return (cardData.cardShopProducts || []).reduce((acc: ShopInterface[], { shop }) => {
-      if (!shop) {
-        return acc;
-      }
-      return [...acc, shop];
-    }, []);
-  }, [cardData.cardShopProducts]);
 
   React.useEffect(() => {
     fetch(
@@ -391,37 +379,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         ) : null}
 
         {/*shops*/}
-        <section id={`card-shops`} className='mb-28'>
-          <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
-            <h2 className='text-2xl font-medium'>Наличие в магазинах</h2>
-
-            <ArrowTrigger
-              arrowPosition={isMap ? 'left' : 'right'}
-              name={isMap ? 'К списку магазинов' : 'Показать на карте'}
-              onClick={() => setIsMap((prevState) => !prevState)}
-            />
-          </div>
-
-          <div data-cy={`card-shops`}>
-            {isMap ? (
-              <div data-cy={`card-shops-map`}>
-                <ShopsMap shops={shopsSnippets} />
-              </div>
-            ) : (
-              <div data-cy={`card-shops-list`}>
-                {(cardData.cardShopProducts || []).map((shopProduct, index) => {
-                  return (
-                    <CardShop
-                      testId={`1-${index}`}
-                      key={`${shopProduct._id}`}
-                      shopProduct={shopProduct}
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </section>
+        <CardShopsList cardShopProducts={cardData.cardShopProducts} />
 
         {/*similar products*/}
         {similarProducts.length > 0 ? (

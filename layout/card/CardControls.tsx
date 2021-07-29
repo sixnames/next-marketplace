@@ -5,7 +5,7 @@ interface CardActionsInterface {
   className?: string;
 }
 
-const CardActions: React.FC<CardActionsInterface> = ({ className }) => {
+const CardControls: React.FC<CardActionsInterface> = ({ className }) => {
   return (
     <div className={`flex ${className ? className : ''}`}>
       <ControlButton
@@ -25,4 +25,4 @@ const CardActions: React.FC<CardActionsInterface> = ({ className }) => {
   );
 };
 
-export default CardActions;
+export default CardControls;

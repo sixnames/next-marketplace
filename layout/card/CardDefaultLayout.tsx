@@ -12,10 +12,8 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import useCardFeatures from 'hooks/useCardFeatures';
-import useGetSimilarProducts from 'hooks/useGetSimilarProducts';
-import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
-import CardActions from 'layout/card/CardActions';
+import useCardData from 'hooks/useCardData';
+import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
@@ -48,7 +46,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
         {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
 
         {/*controls*/}
-        <CardActions />
+        <CardControls />
       </div>
     </div>
   );
@@ -58,23 +56,19 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { similarProducts } = useGetSimilarProducts({
-    companyId,
-    productId: cardData._id,
-  });
+
   const {
+    similarProducts,
     showFeaturesSection,
     visibleListFeatures,
     ratingFeatures,
     textFeatures,
     tagFeatures,
     iconFeatures,
-  } = useCardFeatures(cardData);
-
-  // update product counters
-  useUpdateCardCounter({
+  } = useCardData({
+    cardData,
     companySlug,
-    shopProductIds: cardData.shopProductIds,
+    companyId,
   });
 
   return (

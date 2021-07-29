@@ -3,7 +3,6 @@ import Button from 'components/Button';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
-import PageEditor from 'components/PageEditor';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import Title from 'components/Title';
 import {
@@ -17,6 +16,7 @@ import useCardFeatures from 'hooks/useCardFeatures';
 import useGetSimilarProducts from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
 import CardActions from 'layout/card/CardActions';
+import CardDynamicContent from 'layout/card/CardDynamicContent';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
 import { noNaN } from 'lib/numbers';
@@ -331,11 +331,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           </div>
         ) : null}
 
-        {cardData.cardContent && cardData.cardContent.value ? (
-          <section className='mb-28'>
-            <PageEditor value={JSON.parse(cardData.cardContent.value)} readOnly />
-          </section>
-        ) : null}
+        <CardDynamicContent cardContent={cardData.cardContent} />
 
         {/*shops*/}
         <CardShopsList cardShopProducts={cardData.cardShopProducts} />

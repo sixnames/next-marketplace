@@ -1,6 +1,5 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
-import ControlButton from 'components/ControlButton';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
@@ -16,6 +15,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import useGetSimilarProducts from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
+import CardActions from 'layout/card/CardActions';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
 import { noNaN } from 'lib/numbers';
@@ -47,21 +47,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, itemId })
         {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
 
         {/*controls*/}
-        <div className='flex'>
-          <ControlButton
-            size={'small'}
-            icon={'compare'}
-            iconSize={'mid'}
-            ariaLabel={'Добавить в сравнение'}
-          />
-          <ControlButton
-            size={'small'}
-            icon={'heart'}
-            iconSize={'mid'}
-            ariaLabel={'Добавить в избранное'}
-          />
-          <ControlButton size={'small'} icon={'upload'} iconSize={'mid'} ariaLabel={'Поделиться'} />
-        </div>
+        <CardActions />
       </div>
     </div>
   );

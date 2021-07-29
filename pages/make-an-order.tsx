@@ -38,15 +38,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
     return null;
   }
 
-  const {
-    shop,
-    formattedOldPrice,
-    discountedPercent,
-    formattedPrice,
-    originalName,
-    itemId,
-    mainImage,
-  } = shopProduct;
+  const { shop, oldPrice, discountedPercent, price, originalName, itemId, mainImage } = shopProduct;
 
   return (
     <div className={classes.productHolder}>
@@ -74,8 +66,8 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                 <div className={classes.productTotals}>
                   <ProductShopPrices
                     className={classes.productTotalsPrice}
-                    price={`${formattedPrice}`}
-                    oldPrice={formattedOldPrice}
+                    price={price}
+                    oldPrice={oldPrice}
                     discountedPercent={discountedPercent}
                     size={'small'}
                   />

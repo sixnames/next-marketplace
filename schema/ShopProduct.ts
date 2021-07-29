@@ -34,12 +34,7 @@ export const ShopProduct = objectType({
     t.nonNull.list.nonNull.field('oldPrices', {
       type: 'ShopProductOldPrice',
     });
-    t.nonNull.field('formattedPrice', {
-      type: 'String',
-    });
-    t.field('formattedOldPrice', {
-      type: 'String',
-    });
+    t.int('oldPrice');
     t.field('discountedPercent', {
       type: 'Int',
     });
@@ -162,11 +157,10 @@ export const ShopProductMutations = extendType({
             };
           }
 
-          const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
-            getUpdatedShopProductPrices({
-              shopProduct,
-              newPrice: values.price,
-            });
+          const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+            shopProduct,
+            newPrice: values.price,
+          });
 
           // Update shop product
           const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
@@ -174,8 +168,7 @@ export const ShopProductMutations = extendType({
             {
               $set: {
                 ...values,
-                formattedPrice: `${values.price}`,
-                formattedOldPrice,
+                oldPrice,
                 discountedPercent,
                 updatedAt: new Date(),
               },
@@ -258,11 +251,10 @@ export const ShopProductMutations = extendType({
               break;
             }
 
-            const { discountedPercent, formattedOldPrice, oldPriceUpdater } =
-              getUpdatedShopProductPrices({
-                shopProduct,
-                newPrice: values.price,
-              });
+            const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+              shopProduct,
+              newPrice: values.price,
+            });
 
             // Update shop product
             const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
@@ -270,8 +262,7 @@ export const ShopProductMutations = extendType({
               {
                 $set: {
                   ...values,
-                  formattedPrice: `${values.price}`,
-                  formattedOldPrice,
+                  oldPrice,
                   discountedPercent,
                   updatedAt: new Date(),
                 },

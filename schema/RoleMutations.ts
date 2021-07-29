@@ -106,7 +106,7 @@ export const RoleMutations = extendType({
           }
 
           // Create role
-          const slug = await generateDefaultLangSlug(args.input.nameI18n);
+          const slug = generateDefaultLangSlug(args.input.nameI18n);
           const createdRoleResult = await rolesCollection.insertOne({
             ...args.input,
             isCompanyStaff: Boolean(args.input.isCompanyStaff),

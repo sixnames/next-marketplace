@@ -693,8 +693,6 @@ export const ShopMutations = extendType({
             const createdShopProductResult = await shopProductsCollection.insertOne({
               ...values,
               active: true,
-              formattedPrice: `${values.price}`,
-              formattedOldPrice: '',
               discountedPercent: 0,
               productId,
               shopId: shop._id,
@@ -847,8 +845,6 @@ export const ShopMutations = extendType({
               const createdShopProductResult = await shopProductsCollection.insertOne({
                 ...values,
                 active: true,
-                formattedPrice: `${values.price}`,
-                formattedOldPrice: '',
                 discountedPercent: 0,
                 productId,
                 shopId: shop._id,

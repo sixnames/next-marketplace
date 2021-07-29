@@ -2014,9 +2014,8 @@ export interface NexusGenFieldTypes {
     citySlug: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
     discountedPercent: number | null; // Int
-    formattedOldPrice: string | null; // String
-    formattedPrice: string; // String!
     inCartCount: number; // Int!
+    oldPrice: number | null; // Int
     oldPrices: NexusGenRootTypes['ShopProductOldPrice'][]; // [ShopProductOldPrice!]!
     price: number; // Int!
     product: NexusGenRootTypes['Product']; // Product!
@@ -3124,9 +3123,8 @@ export interface NexusGenFieldTypeNames {
     citySlug: 'String';
     createdAt: 'Date';
     discountedPercent: 'Int';
-    formattedOldPrice: 'String';
-    formattedPrice: 'String';
     inCartCount: 'Int';
+    oldPrice: 'Int';
     oldPrices: 'ShopProductOldPrice';
     price: 'Int';
     product: 'Product';

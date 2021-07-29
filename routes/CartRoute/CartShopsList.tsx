@@ -17,7 +17,7 @@ interface CartShopInterface {
 
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProductId }) => {
   const { addShopToCartProduct } = useSiteContext();
-  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
+  const { shop, oldPrice, price, discountedPercent, available } = shopProduct;
   if (!shop) {
     return null;
   }
@@ -73,9 +73,9 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
         <div className={`${classes.column}`}>
           <ProductShopPrices
             className={classes.prices}
-            price={`${formattedPrice}`}
+            price={price}
             discountedPercent={discountedPercent}
-            oldPrice={formattedOldPrice}
+            oldPrice={oldPrice}
           />
           <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 

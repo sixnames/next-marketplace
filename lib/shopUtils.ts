@@ -9,7 +9,7 @@ interface GetUpdatedShopProductPricesInterface {
 interface GetUpdatedShopProductPricesPayloadInterface {
   oldPriceUpdater: Record<string, any>;
   discountedPercent: number;
-  formattedOldPrice: string;
+  oldPrice?: number | null;
 }
 
 export function getUpdatedShopProductPrices({
@@ -29,12 +29,12 @@ export function getUpdatedShopProductPrices({
       }
     : {};
 
-  const formattedOldPrice = priceChanged ? `${shopProduct.price}` : shopProduct.formattedOldPrice;
-
   const lastOldPrice = priceChanged
     ? { price: shopProduct.price }
     : shopProduct.oldPrices[shopProduct.oldPrices.length - 1];
+
   const currentPrice = priceChanged ? newPrice : shopProduct.price;
+
   const discountedPercent =
     lastOldPrice && lastOldPrice.price > shopProduct.price
       ? getPercentage({
@@ -46,6 +46,6 @@ export function getUpdatedShopProductPrices({
   return {
     oldPriceUpdater,
     discountedPercent,
-    formattedOldPrice,
+    oldPrice: shopProduct.oldPrice,
   };
 }

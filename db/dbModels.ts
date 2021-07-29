@@ -616,8 +616,8 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   available: number;
   citySlug: string;
   price: number;
-  formattedPrice: string;
-  formattedOldPrice: string;
+  oldPrice?: number | null;
+  oldPrices: ShopProductOldPriceModel[];
   discountedPercent: number;
   itemId: string;
   slug: string;
@@ -627,7 +627,6 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-  oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;

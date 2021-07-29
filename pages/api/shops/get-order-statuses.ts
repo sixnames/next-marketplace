@@ -62,7 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     ])
     .toArray();
 
-  const locale = await getSessionLocale({ req, res });
+  const locale = getSessionLocale({ req, res });
   const orderStatuses: SyncOrderStatusInterface[] = orderStatusesAggregationResult.map((status) => {
     return {
       _id: status.slug,

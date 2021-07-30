@@ -12,11 +12,12 @@ import CardDynamicContent from 'layout/card/CardDynamicContent';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
 import { noNaN } from 'lib/numbers';
+import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
 
 const dataSectionClassName = 'mb-12';
-const stickyClassName = 'sticky top-14';
+const stickyClassName = 'sticky top-20';
 
 const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   cardData,
@@ -24,6 +25,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   companyId,
 }) => {
   const {
+    isSingleImage,
     similarProducts,
     showFeaturesSection,
     visibleListFeatures,
@@ -43,8 +45,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  console.log(assets);
-
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={cardData.originalName} config={cardData.cardBreadcrumbs} />
@@ -63,14 +63,48 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           </div>
 
           {/*columns*/}
-          <div className='grid grid-cols-7 gap-8 mb-28'>
+          <div className='lg:grid lg:grid-cols-7 gap-8 mb-28'>
             {/*gallery*/}
-            <div className='col-span-4'>
-              <div className={stickyClassName}>gallery</div>
+            <div className='lg:col-span-4 relative'>
+              {isSingleImage ? (
+                <div className={stickyClassName}>
+                  <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
+                    <Image
+                      src={`${cardData.mainImage}`}
+                      alt={cardData.originalName}
+                      title={cardData.originalName}
+                      width={480}
+                      height={480}
+                      objectFit='contain'
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={stickyClassName}>
+                  <div className='overflow-x-auto lg:overflow-x-auto max-w-full'>
+                    <div className='flex mb-12 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
+                      {assets.map(({ url }) => {
+                        return (
+                          <div key={url} className='min-w-[260px] lg:min-w-full'>
+                            <Image
+                              src={url}
+                              alt={cardData.originalName}
+                              title={cardData.originalName}
+                              width={400}
+                              height={400}
+                              objectFit='contain'
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/*data*/}
-            <div className='col-span-3 relative'>
+            <div className='lg:col-span-3 relative'>
               <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
@@ -133,14 +167,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <section className={`${dataSectionClassName}`}>
                   <h2 className='text-2xl mb-4'>Характеристики</h2>
 
-                  <ul>
+                  <ul className='space-y-6'>
                     {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
                       if (!showInCard) {
                         return null;
                       }
 
                       return (
-                        <li key={`${_id}`} className='mb-6'>
+                        <li key={`${_id}`} className='sm:flex justify-between'>
                           <div className='text-secondary-text mb-1 font-medium'>{name}</div>
                           <div>{readableValue}</div>
                         </li>
@@ -230,28 +264,30 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         </div>
                       ) : null}
                     </div>
-
-                    {/*text features*/}
-                    <div className={`${dataSectionClassName}`}>
-                      {textFeatures.map(({ _id, name, readableValue }) => {
-                        if (!readableValue) {
-                          return null;
-                        }
-                        return (
-                          <section className='mb-8' key={`${_id}`}>
-                            <h2 className='text-2xl mb-4'>{name}</h2>
-                            <div className='prose max-w-full'>
-                              <p>{readableValue}</p>
-                            </div>
-                          </section>
-                        );
-                      })}
-                    </div>
                   </React.Fragment>
                 ) : null}
               </div>
             </div>
           </div>
+
+          {/*text features*/}
+          {textFeatures.length > 0 ? (
+            <div className='mb-28'>
+              {textFeatures.map(({ _id, name, readableValue }) => {
+                if (!readableValue) {
+                  return null;
+                }
+                return (
+                  <section className='mb-8' key={`${_id}`}>
+                    <h2 className='text-2xl mb-4'>{name}</h2>
+                    <div className='prose max-w-full'>
+                      <p>{readableValue}</p>
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          ) : null}
 
           {/*dynamic content*/}
           <CardDynamicContent cardContent={cardData.cardContent} />

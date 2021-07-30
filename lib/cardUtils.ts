@@ -9,11 +9,13 @@ import {
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
+  SORT_ASC,
   SORT_DESC,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
+  COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
@@ -284,6 +286,31 @@ export async function getCardData({
           },
         },
 
+        // Get product assets
+        {
+          $lookup: {
+            from: COL_PRODUCT_ASSETS,
+            as: 'assets',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  index: SORT_ASC,
+                },
+              },
+            ],
+          },
+        },
+
         // Get product attributes
         {
           $lookup: {
@@ -349,6 +376,7 @@ export async function getCardData({
             },
             shopsCount: { $size: '$shopProducts' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
+            assets: { $arrayElemAt: ['$assets', 0] },
             cardContent: { $arrayElemAt: ['$cardContent', 0] },
           },
         },

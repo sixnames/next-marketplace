@@ -15,12 +15,12 @@ export interface CardLayoutInterface {
   companyId?: string | null;
 }
 
-// const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
-const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
+const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
+// const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
-  return <CardHalfColumnsLayout {...props} />;
-  // return <CardDefaultLayout {...props} />;
+  // return <CardHalfColumnsLayout {...props} />;
+  return <CardDefaultLayout {...props} />;
 };
 
 interface CardInterface extends SiteLayoutProviderInterface {

@@ -10,6 +10,7 @@ import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
+import CardIconFeatures from 'layout/card/CardIconFeatures';
 import CardPrices from 'layout/card/CardPrices';
 import CardShopsList from 'layout/card/CardShopsList';
 import { noNaN } from 'lib/numbers';
@@ -243,34 +244,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 {showFeaturesSection ? (
                   <React.Fragment>
                     {/*icon features*/}
-                    <div className={`${dataSectionClassName}`}>
-                      {iconFeatures.map((attribute) => {
-                        return (
-                          <div key={`${attribute._id}`} className='mb-8'>
-                            <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
-                            <ul className='flex flex-wrap gap-4'>
-                              {(attribute.options || []).map((option) => {
-                                const name = `${option?.name} ${
-                                  attribute?.metric ? ` ${attribute.metric.name}` : ''
-                                }`;
-
-                                return (
-                                  <li key={`${option?.name}`}>
-                                    <TagLink
-                                      icon={option.icon}
-                                      href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                                      testId={`card-icon-option-${name}`}
-                                    >
-                                      {name}
-                                    </TagLink>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <CardIconFeatures
+                      iconFeatures={iconFeatures}
+                      className={dataSectionClassName}
+                      rubricSlug={cardData.rubricSlug}
+                    />
 
                     {/*tag features*/}
                     <div className={`${dataSectionClassName}`}>

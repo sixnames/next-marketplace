@@ -863,7 +863,12 @@ export interface NexusGenInputs {
   };
   UpdateRubricVariantInput: {
     // input type
+    cardLayout?: string | null; // String
+    catalogueFilterLayout?: string | null; // String
+    catalogueNavLayout?: string | null; // String
+    gridSnippetLayout?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateShopAssetIndexInput: {
@@ -1965,8 +1970,13 @@ export interface NexusGenFieldTypes {
   RubricVariant: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    cardLayout: string | null; // String
+    catalogueFilterLayout: string | null; // String
+    catalogueNavLayout: string | null; // String
+    gridSnippetLayout: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    rowSnippetLayout: string | null; // String
   };
   RubricVariantPayload: {
     // field return type
@@ -3074,8 +3084,13 @@ export interface NexusGenFieldTypeNames {
   RubricVariant: {
     // field return type name
     _id: 'ObjectId';
+    cardLayout: 'String';
+    catalogueFilterLayout: 'String';
+    catalogueNavLayout: 'String';
+    gridSnippetLayout: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
+    rowSnippetLayout: 'String';
   };
   RubricVariantPayload: {
     // field return type name

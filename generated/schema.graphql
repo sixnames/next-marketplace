@@ -2246,8 +2246,13 @@ input RubricProductsCountersInput {
 
 type RubricVariant {
   _id: ObjectId!
+  cardLayout: String
+  catalogueFilterLayout: String
+  catalogueNavLayout: String
+  gridSnippetLayout: String
   name: String!
   nameI18n: JSONObject!
+  rowSnippetLayout: String
 }
 
 type RubricVariantPayload implements Payload {
@@ -2723,7 +2728,12 @@ input UpdateRubricInput {
 }
 
 input UpdateRubricVariantInput {
+  cardLayout: String
+  catalogueFilterLayout: String
+  catalogueNavLayout: String
+  gridSnippetLayout: String
   nameI18n: JSONObject!
+  rowSnippetLayout: String
   rubricVariantId: ObjectId!
 }
 

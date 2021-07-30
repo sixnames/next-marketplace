@@ -63,6 +63,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     addShoplessProductToCart,
     addProductToCart,
     showArticle,
+    connections,
   } = useCardData({
     cardData,
     companySlug,
@@ -117,9 +118,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 </div>
 
                 {/*connections*/}
-                {(cardData.connections || []).length > 0 ? (
+                {connections.length > 0 ? (
                   <div className='mb-8'>
-                    {(cardData.connections || []).map(({ _id, attribute, connectionProducts }) => {
+                    {connections.map(({ _id, attribute, connectionProducts }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>

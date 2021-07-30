@@ -1,7 +1,7 @@
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { AssetModel } from 'db/dbModels';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ProductConnectionInterface, ProductInterface } from 'db/uiInterfaces';
 import { AddProductToCartInput, AddShoplessProductToCartInput } from 'generated/apolloComponents';
 import useCardFeatures, { UseCardFeaturesPayloadInterface } from 'hooks/useCardFeatures';
 import useGetSimilarProducts, {
@@ -21,6 +21,7 @@ interface UseCardDataPayloadInterface
   showArticle: boolean;
   isSingleImage: boolean;
   assets: AssetModel[];
+  connections: ProductConnectionInterface[];
 }
 
 interface UseCardDataInterface {
@@ -68,6 +69,10 @@ const useCardData = ({
     return cardData.assets ? cardData.assets.assets : [];
   }, [cardData.assets]);
 
+  const connections = React.useMemo<ProductConnectionInterface[]>(() => {
+    return cardData.connections || [];
+  }, [cardData.connections]);
+
   const isSingleImage = React.useMemo(() => {
     return assets.length < minAssetsListCount;
   }, [assets]);
@@ -90,6 +95,7 @@ const useCardData = ({
     iconFeatures,
     loading,
     similarProducts,
+    connections,
   };
 };
 

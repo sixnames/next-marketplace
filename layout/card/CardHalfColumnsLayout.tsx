@@ -2,6 +2,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import Title from 'components/Title';
@@ -16,7 +17,7 @@ import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
 
-const dataSectionClassName = 'mb-12';
+const dataSectionClassName = 'mb-14';
 const stickyClassName = 'sticky top-20';
 
 const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
@@ -39,6 +40,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     addProductToCart,
     showArticle,
     assets,
+    connections,
   } = useCardData({
     cardData,
     companySlug,
@@ -162,6 +164,61 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     <CardControls />
                   </div>
                 </div>
+
+                {/*connections*/}
+                {connections.length > 0 ? (
+                  <div className={dataSectionClassName}>
+                    {connections.map(({ _id, attribute, connectionProducts }) => {
+                      return (
+                        <div key={`${_id}`} className='mb-12'>
+                          <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
+                          <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
+                            {(connectionProducts || []).map(
+                              ({ option, productSlug, shopProduct }) => {
+                                const mainImage = shopProduct?.mainImage;
+                                const isCurrent = productSlug === cardData.slug;
+                                const name = `${option?.name} ${
+                                  attribute?.metric ? ` ${attribute.metric.name}` : ''
+                                }`;
+
+                                if (!mainImage) {
+                                  return null;
+                                }
+
+                                return (
+                                  <div
+                                    key={`${option?.name}`}
+                                    className={`relative text-center ${
+                                      isCurrent ? 'text-theme' : 'hover:text-theme'
+                                    }`}
+                                  >
+                                    <div className='relative h-16 w-full'>
+                                      <Image
+                                        src={mainImage}
+                                        alt={name}
+                                        layout='fill'
+                                        objectFit='contain'
+                                      />
+                                    </div>
+                                    <div className='mt-3 text-sm'>{name}</div>
+                                    {isCurrent ? null : (
+                                      <Link
+                                        className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
+                                        href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/product/${productSlug}`}
+                                      >
+                                        {name}
+                                      </Link>
+                                    )}
+                                  </div>
+                                );
+                              },
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
 
                 {/*list features*/}
                 <section className={`${dataSectionClassName}`}>

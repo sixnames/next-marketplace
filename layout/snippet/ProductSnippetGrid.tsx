@@ -1,6 +1,6 @@
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Image from 'next/image';
 import Link from 'components/Link/Link';
@@ -9,15 +9,7 @@ import ControlButton from 'components/ControlButton';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import LayoutCard from 'layout/LayoutCard';
 
-export interface ProductSnippetGridInterface {
-  product: ProductInterface;
-  testId?: string;
-  className?: string;
-  noAttributes?: boolean;
-  noSecondaryName?: boolean;
-}
-
-const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
+const ProductSnippetGrid: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,

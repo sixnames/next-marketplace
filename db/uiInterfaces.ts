@@ -482,3 +482,11 @@ export interface PageInterface extends PageModel {
 
 export type PagesGroupTemplateInterface = PagesGroupInterface;
 export type PagesTemplateInterface = PageInterface;
+
+export interface ProductSnippetInterface {
+  product: ProductInterface;
+  testId?: string;
+  className?: string;
+  noAttributes?: boolean;
+  noSecondaryName?: boolean;
+}

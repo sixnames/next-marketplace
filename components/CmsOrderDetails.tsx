@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import ProductShopPrices from 'components/Product/ProductShopPrices';
+import ProductShopPrices from 'components/ProductShopPrices';
 import Title from 'components/Title';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import Image from 'next/image';

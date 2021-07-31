@@ -4,7 +4,7 @@ import ControlButtonChevron from 'components/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
-import ProductShopPrices from 'components/Product/ProductShopPrices';
+import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Tooltip from 'components/Tooltip';
 import { ROUTE_SIGN_IN } from 'config/common';

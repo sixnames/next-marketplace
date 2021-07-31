@@ -15,7 +15,7 @@ import {
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']

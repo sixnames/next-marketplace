@@ -6,7 +6,7 @@ import LayoutCard from 'layout/LayoutCard';
 import RatingStars from 'components/RatingStars';
 import Image from 'next/image';
 import Link from 'components/Link/Link';
-import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
+import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import { noNaN } from 'lib/numbers';

@@ -2,7 +2,7 @@ import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
 import SlickSlider from 'components/SlickSlider';
 import {

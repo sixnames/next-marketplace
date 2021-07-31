@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import ControlButton from 'components/ControlButton';
-import ProductSnippetPrice from 'components/Product/ProductSnippetPrice';
+import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import LayoutCard from 'layout/LayoutCard';
 
 export interface ProductSnippetGridInterface {

@@ -3,7 +3,7 @@ import Button from 'components/Button';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import Title from 'components/Title';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';

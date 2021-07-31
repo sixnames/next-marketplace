@@ -3,7 +3,7 @@ import Button from 'components/Button';
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';

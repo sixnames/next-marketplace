@@ -17,6 +17,9 @@ export interface BreadcrumbsInterface {
   lowWrapper?: boolean;
 }
 
+const linkClassName =
+  'text-primary-text hover:text-primary-text hover:no-underline whitespace-nowrap';
+
 const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   currentPageName,
   config = [],
@@ -34,13 +37,10 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   return (
     <div className={lowWrapper ? '' : 'mb-2 lg:mb-10'}>
       <Inner lowBottom={lowBottom} lowTop={lowTop}>
-        <ul className='overflow-hidden whitespace-nowrap overflow-ellipsis'>
+        <ul>
           {noMainPage ? null : (
             <li className='inline mr-1'>
-              <Link
-                className='text-primary-text hover:text-primary-text hover:no-underline'
-                href={`/`}
-              >
+              <Link className={linkClassName} href={`/`}>
                 <span className='hover:text-theme'>{mainPageName}</span> —
               </Link>
             </li>
@@ -50,7 +50,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             if (isLastItem && !currentPageName) {
               return (
-                <li key={index} className='inline mr-1 text-secondary-text'>
+                <li key={index} className='inline mr-1 text-secondary-text whitespace-nowrap'>
                   {configItem.name}
                 </li>
               );
@@ -58,10 +58,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             return (
               <li className='inline mr-1' key={index}>
-                <Link
-                  className='text-primary-text hover:text-primary-text hover:no-underline'
-                  href={configItem.href}
-                >
+                <Link className={linkClassName} href={configItem.href}>
                   <span className='hover:text-theme'>{configItem.name}</span> —
                 </Link>
               </li>
@@ -69,7 +66,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
           })}
 
           {currentPageName ? (
-            <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
+            <li className='inline mr-1 text-secondary-text whitespace-nowrap'>{currentPageName}</li>
           ) : null}
         </ul>
       </Inner>

@@ -1,4 +1,5 @@
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
+import { CARD_LAYOUT_HALF_COLUMNS, LAYOUT_DEFAULT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
@@ -16,10 +17,15 @@ export interface CardLayoutInterface {
 }
 
 const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
-// const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
+const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
-  // return <CardHalfColumnsLayout {...props} />;
+  const layoutVariant = props.cardData.rubric?.variant?.cardLayout || LAYOUT_DEFAULT;
+
+  if (layoutVariant === CARD_LAYOUT_HALF_COLUMNS) {
+    return <CardHalfColumnsLayout {...props} />;
+  }
+
   return <CardDefaultLayout {...props} />;
 };
 

@@ -104,8 +104,33 @@ export async function productsPaginationQuery({
     const excludedOptionsSlugsStage = excludedOptionsSlugs
       ? [
           {
+            $unwind: {
+              path: '$selectedOptionsSlugs',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $match: {
               selectedOptionsSlugs: { $nin: excludedOptionsSlugs },
+            },
+          },
+          {
+            $group: {
+              _id: '$_id',
+              doc: { $first: '$$ROOT' },
+              selectedOptionsSlugs: {
+                $push: '$selectedOptionsSlugs',
+              },
+            },
+          },
+          {
+            $addFields: {
+              'doc.selectedOptionsSlugs': '$selectedOptionsSlugs',
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: '$doc',
             },
           },
         ]
@@ -128,8 +153,33 @@ export async function productsPaginationQuery({
     const attributesStage = attributesIds
       ? [
           {
+            $unwind: {
+              path: '$selectedAttributesIds',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $match: {
               selectedAttributesIds: { $in: attributesIds },
+            },
+          },
+          {
+            $group: {
+              _id: '$_id',
+              doc: { $first: '$$ROOT' },
+              selectedAttributesIds: {
+                $push: '$selectedAttributesIds',
+              },
+            },
+          },
+          {
+            $addFields: {
+              'doc.selectedAttributesIds': '$selectedAttributesIds',
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: '$doc',
             },
           },
         ]

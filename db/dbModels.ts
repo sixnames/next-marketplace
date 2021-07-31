@@ -570,6 +570,11 @@ export interface RoleModel extends TimestampModel {
 export interface RubricVariantModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+  cardLayout?: string | null;
+  gridSnippetLayout?: string | null;
+  rowSnippetLayout?: string | null;
+  catalogueFilterLayout?: string | null;
+  catalogueNavLayout?: string | null;
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {

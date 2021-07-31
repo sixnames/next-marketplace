@@ -5,16 +5,16 @@ import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import Title from 'components/Title';
-import {
-  CATALOGUE_OPTION_SEPARATOR,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  ROUTE_CATALOGUE,
-} from 'config/common';
+import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
+import CardIconFeatures from 'layout/card/CardIconFeatures';
 import CardPrices from 'layout/card/CardPrices';
+import CardRatingFeatures from 'layout/card/CardRatingFeatures';
 import CardShopsList from 'layout/card/CardShopsList';
+import CardTagFeatures from 'layout/card/CardTagFeatures';
+import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
@@ -63,6 +63,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     addShoplessProductToCart,
     addProductToCart,
     showArticle,
+    connections,
   } = useCardData({
     cardData,
     companySlug,
@@ -117,9 +118,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 </div>
 
                 {/*connections*/}
-                {(cardData.connections || []).length > 0 ? (
+                {connections.length > 0 ? (
                   <div className='mb-8'>
-                    {(cardData.connections || []).map(({ _id, attribute, connectionProducts }) => {
+                    {connections.map(({ _id, attribute, connectionProducts }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
@@ -236,91 +237,26 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
           <div className='mb-28' id={`card-features`}>
             <div className='grid gap-8 md:grid-cols-7 mb-12'>
               <div className='md:col-span-2'>
-                {iconFeatures.map((attribute) => {
-                  return (
-                    <div key={`${attribute._id}`} className='mb-8'>
-                      <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
-                      <ul className='flex flex-wrap gap-4'>
-                        {(attribute.options || []).map((option) => {
-                          const name = `${option?.name} ${
-                            attribute?.metric ? ` ${attribute.metric.name}` : ''
-                          }`;
+                {/*icon features*/}
+                <CardIconFeatures
+                  className='mb-12'
+                  iconFeatures={iconFeatures}
+                  rubricSlug={cardData.rubricSlug}
+                />
 
-                          return (
-                            <li key={`${option?.name}`}>
-                              <TagLink
-                                icon={option.icon}
-                                href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                                testId={`card-icon-option-${name}`}
-                              >
-                                {name}
-                              </TagLink>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                })}
+                {/*tag features*/}
+                <CardTagFeatures
+                  className='mb-12'
+                  tagFeatures={tagFeatures}
+                  rubricSlug={cardData.rubricSlug}
+                />
 
-                {tagFeatures.map((attribute) => {
-                  return (
-                    <div key={`${attribute._id}`} className='mb-8'>
-                      <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
-                      <ul className='flex flex-wrap gap-4'>
-                        {(attribute.options || []).map((option) => {
-                          const name = `${option?.name} ${
-                            attribute?.metric ? ` ${attribute.metric.name}` : ''
-                          }`;
-
-                          return (
-                            <li key={`${option?.name}`}>
-                              <TagLink
-                                href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                                testId={`card-tag-option-${name}`}
-                              >
-                                {name}
-                              </TagLink>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                })}
-
-                {ratingFeatures.length > 0 ? (
-                  <div className=''>
-                    <div className=''>Мнение экспертов:</div>
-                    <ul className='flex flex-wrap gap-4'>
-                      {(cardData.ratingFeatures || []).map(({ _id, name, number }) => {
-                        const optionName = `${name} ${number}`;
-                        return (
-                          <li key={`${_id}`}>
-                            <TagLink testId={`card-rating-option-${name}`}>{optionName}</TagLink>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ) : null}
+                {/*rating features*/}
+                <CardRatingFeatures className='mb-12' ratingFeatures={ratingFeatures} />
               </div>
 
-              <div className='md:col-span-5'>
-                {textFeatures.map(({ _id, name, readableValue }) => {
-                  if (!readableValue) {
-                    return null;
-                  }
-                  return (
-                    <section className='mb-8' key={`${_id}`}>
-                      <h2 className='text-2xl mb-4'>{name}</h2>
-                      <div className='prose max-w-full'>
-                        <p>{readableValue}</p>
-                      </div>
-                    </section>
-                  );
-                })}
-              </div>
+              {/*text features*/}
+              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5' />
             </div>
           </div>
         ) : null}

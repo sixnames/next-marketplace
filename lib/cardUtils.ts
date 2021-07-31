@@ -20,6 +20,7 @@ import {
   COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -256,10 +257,31 @@ export async function getCardData({
                 },
               },
               {
+                $lookup: {
+                  from: COL_RUBRIC_VARIANTS,
+                  as: 'variant',
+                  let: {
+                    variantId: '$variantId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$variantId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
                 $project: {
                   _id: true,
                   slug: true,
                   nameI18n: true,
+                  variant: {
+                    $arrayElemAt: ['$variant', 0],
+                  },
                 },
               },
             ],
@@ -636,6 +658,7 @@ export async function getCardData({
       ...restProduct,
       connections: cardConnections,
       name,
+      rubric,
       description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
       cardPrices,
       listFeatures,

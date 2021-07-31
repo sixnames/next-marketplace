@@ -347,9 +347,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 ) : null}
 
                 <InfiniteScroll
-                  className={`catalogue__list grid gap-10 pt-8 ${
-                    isRowView ? '' : 'md:grid-cols-2'
-                  }`}
+                  className='catalogue__list grid gap-10 pt-8 grid-cols-12'
                   next={fetchMoreHandler}
                   hasMore={state.products.length < state.totalProducts}
                   dataLength={state.products.length}

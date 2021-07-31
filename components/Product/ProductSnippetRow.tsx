@@ -1,8 +1,6 @@
-import ProductSnippetGrid, {
-  ProductSnippetGridInterface,
-} from 'components/Product/ProductSnippetGrid';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import LayoutCard from 'layout/LayoutCard';
 import RatingStars from 'components/RatingStars';
@@ -13,13 +11,18 @@ import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import { noNaN } from 'lib/numbers';
 
-type ProductSnippetRowInterface = ProductSnippetGridInterface;
+interface ProductSnippetRowInterface {
+  product: ProductInterface;
+  testId?: string;
+  className?: string;
+  noAttributes?: boolean;
+  noSecondaryName?: boolean;
+}
 
 const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   product,
   testId,
   className,
-  ...props
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
@@ -43,16 +46,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
   return (
     <div>
-      {/*Mobile*/}
-      <ProductSnippetGrid className='lg:hidden' product={product} testId={testId} {...props} />
-
-      {/*Desktop*/}
       <LayoutCard
-        className={`hidden lg:grid relative grid-cols-12 pt-6 pb-6 pr-5 ${
-          className ? className : ''
-        }`}
+        className={`grid relative grid-cols-12 pt-6 pb-6 pr-5 ${className ? className : ''}`}
       >
-        <div className='relative flex flex-col items-center justify-center flex-grow pt-4 pl-5 pr-5 col-span-2 snippet-image'>
+        <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 snippet-image'>
           <div className='relative flex-grow pb-5 pt-5'>
             <Image
               priority={true}
@@ -80,10 +77,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
         </div>
 
-        <div className='col-span-10 flex flex-col'>
+        <div className='flex flex-col col-span-9 md:col-span-10'>
           <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
           <div className='grid gap-4 grid-cols-7 flex-grow'>
-            <div className='flex flex-col col-span-5'>
+            <div className='flex flex-col col-span-7 md:col-span-5'>
               <div className='text-2xl font-medium mb-1'>
                 <Link
                   testId={`${testId}-name-row`}
@@ -94,21 +91,23 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   {originalName}
                 </Link>
               </div>
+
               {!name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
                 <div className='text-secondary-text mb-6'>{name}</div>
               )}
-              <div className='grid mb-6 grid-cols-12 gap-x-4 gap-y-2'>
+
+              <div className='mb-6 space-y-2 md:space-y-4'>
                 {(listFeatures || []).map(({ name, _id, readableValue }) => {
                   return (
-                    <React.Fragment key={`${_id}`}>
+                    <div className='md:grid grid-cols-12 gap-x-4 gap-y-2' key={`${_id}`}>
                       <div className='col-span-5 text-secondary-text'>{name}</div>
                       <div className='col-span-7'>{readableValue}</div>
-                    </React.Fragment>
+                    </div>
                   );
                 })}
               </div>
 
-              <div className='flex items-center justify-between min-h-control-button-height mt-auto'>
+              {(ratingFeatures || []).length > 0 ? (
                 <div className='flex flex-wrap items-center min-h-control-button-height'>
                   {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
                     return (
@@ -121,20 +120,15 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                     );
                   })}
                 </div>
-
-                <div className='flex items-center justify-end'>
-                  <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
-                  <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
-                </div>
-              </div>
+              ) : null}
             </div>
 
-            <div className='flex flex-col col-span-2'>
+            <div className='flex flex-col col-span-7 md:col-span-2'>
               {isShopless ? null : (
                 <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
               )}
 
-              <div className='mt-2 mb-4'>
+              <div className='hidden md:block mt-2 mb-4'>
                 {(connections || []).map(({ _id, attribute, connectionProducts }) => {
                   return (
                     <div key={`${_id}`} className='mb-4'>
@@ -163,7 +157,18 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                   );
                 })}
               </div>
+            </div>
+          </div>
 
+          <div className='grid gap-4 grid-cols-7 flex-grow items-end'>
+            <div className='hidden md:flex flex-col col-span-7 md:col-span-5'>
+              <div className='flex items-center justify-end'>
+                <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+                <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+              </div>
+            </div>
+
+            <div className='flex flex-col col-span-7 md:col-span-2'>
               <div className='mt-auto'>
                 <div className='mb-3'>
                   {noNaN(shopsCount) > 0
@@ -171,30 +176,37 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                     : 'Нет в наличии'}
                 </div>
 
-                <Button
-                  className='w-full'
-                  disabled={isShopless}
-                  theme={'gray'}
-                  short
-                  testId={`${testId}-add-to-cart-row`}
-                  ariaLabel={'Добавить в корзину'}
-                  onClick={() => {
-                    if (shopProductsIds && shopProductsIds.length < 2) {
-                      addProductToCart({
-                        amount: 1,
-                        productId: _id,
-                        shopProductId: `${shopProductsIds[0]}`,
-                      });
-                    } else {
-                      addShoplessProductToCart({
-                        amount: 1,
-                        productId: _id,
-                      });
-                    }
-                  }}
-                >
-                  В корзину
-                </Button>
+                <div className='flex gap-2'>
+                  <Button
+                    className='w-full'
+                    disabled={isShopless}
+                    theme={'gray'}
+                    short
+                    testId={`${testId}-add-to-cart-row`}
+                    ariaLabel={'Добавить в корзину'}
+                    onClick={() => {
+                      if (shopProductsIds && shopProductsIds.length < 2) {
+                        addProductToCart({
+                          amount: 1,
+                          productId: _id,
+                          shopProductId: `${shopProductsIds[0]}`,
+                        });
+                      } else {
+                        addShoplessProductToCart({
+                          amount: 1,
+                          productId: _id,
+                        });
+                      }
+                    }}
+                  >
+                    В корзину
+                  </Button>
+
+                  <div className='flex md:hidden items-center justify-end'>
+                    <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+                    <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

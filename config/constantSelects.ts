@@ -7,14 +7,28 @@ export interface LayoutOptionInterface {
 
 export type LayoutOptionsType = LayoutOptionInterface[];
 
+// card
 export const CARD_LAYOUT_HALF_COLUMNS = 'half-columns';
 export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: LAYOUT_DEFAULT,
-    asset: '/layout/card/default.png',
+    asset: `/layout/card/${LAYOUT_DEFAULT}.png`,
   },
   {
     _id: CARD_LAYOUT_HALF_COLUMNS,
-    asset: '/layout/card/half-columns.png',
+    asset: `/layout/card/${CARD_LAYOUT_HALF_COLUMNS}.png`,
+  },
+];
+
+// row snippet
+export const ROW_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
+export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: LAYOUT_DEFAULT,
+    asset: `/layout/row-snippet/${LAYOUT_DEFAULT}.png`,
+  },
+  {
+    _id: CARD_LAYOUT_HALF_COLUMNS,
+    asset: `/layout/row-snippet/${ROW_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
   },
 ];

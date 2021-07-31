@@ -253,7 +253,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     </div>
                   </Disclosure.Panel>
                   <Disclosure.Button as={'div'}>
-                    <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text'>
+                    <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text outline-none focus:outline-none'>
                       <Icon name={'chevron-down'} className='w-5 h-5' />
                     </button>
                   </Disclosure.Button>

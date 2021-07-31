@@ -1,9 +1,11 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelect';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
+import { CARD_LAYOUT_OPTIONS, LAYOUT_DEFAULT } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RubricVariantInterface } from 'db/uiInterfaces';
@@ -67,6 +69,11 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
           initialValues={{
             rubricVariantId: rubricVariant._id,
             nameI18n: rubricVariant.nameI18n || {},
+            cardLayout: rubricVariant.cardLayout || LAYOUT_DEFAULT,
+            gridSnippetLayout: rubricVariant.gridSnippetLayout || LAYOUT_DEFAULT,
+            rowSnippetLayout: rubricVariant.rowSnippetLayout || LAYOUT_DEFAULT,
+            catalogueFilterLayout: rubricVariant.catalogueFilterLayout || LAYOUT_DEFAULT,
+            catalogueNavLayout: rubricVariant.catalogueNavLayout || LAYOUT_DEFAULT,
           }}
           onSubmit={(values) => {
             showLoading();
@@ -87,8 +94,38 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                   showInlineError
                 />
 
+                <FormikLayoutSelect
+                  name={'cardLayout'}
+                  label={'Дизайн карточки товара'}
+                  options={CARD_LAYOUT_OPTIONS}
+                />
+
+                <FormikLayoutSelect
+                  name={'gridSnippetLayout'}
+                  label={'Дизайн сниппета товара'}
+                  options={[]}
+                />
+
+                <FormikLayoutSelect
+                  name={'rowSnippetLayout'}
+                  label={'Дизайн горизонтального сниппета товара'}
+                  options={[]}
+                />
+
+                <FormikLayoutSelect
+                  name={'catalogueFilterLayout'}
+                  label={'Дизайн фильтра каталога'}
+                  options={[]}
+                />
+
+                <FormikLayoutSelect
+                  name={'catalogueNavLayout'}
+                  label={'Дизайн выпадающего меню навигации'}
+                  options={[]}
+                />
+
                 <FixedButtons>
-                  <Button type={'submit'} testId={'rubric-variant-submit'}>
+                  <Button size={'small'} type={'submit'} testId={'rubric-variant-submit'}>
                     Сохранить
                   </Button>
                 </FixedButtons>

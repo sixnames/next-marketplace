@@ -358,6 +358,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     if (isRowView) {
                       return (
                         <ProductSnippetRow
+                          rowSnippetLayout={`${state.rubricVariant?.rowSnippetLayout}`}
                           product={product}
                           key={`${product._id}`}
                           testId={`catalogue-item-${index}`}
@@ -367,6 +368,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                     return (
                       <ProductSnippetGrid
+                        gridSnippetLayout={`${state.rubricVariant?.gridSnippetLayout}`}
                         product={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${index}`}

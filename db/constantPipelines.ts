@@ -4,7 +4,12 @@ import {
   DEFAULT_CITY,
   SORT_DESC,
 } from 'config/common';
-import { COL_OPTIONS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_OPTIONS,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 
 interface GetCatalogueRubricPipelineInterface {
   companySlug?: string;
@@ -134,6 +139,26 @@ export function getCatalogueRubricPipeline(
               $expr: {
                 $eq: ['$_id', '$$rubricId'],
               },
+            },
+          },
+
+          // Lookup rubric variant
+          {
+            $lookup: {
+              from: COL_RUBRIC_VARIANTS,
+              as: 'variant',
+              let: {
+                variantId: '$variantId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$variantId', '$_id'],
+                    },
+                  },
+                },
+              ],
             },
           },
 

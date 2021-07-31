@@ -327,6 +327,7 @@ export interface CatalogueDataInterface {
   filters: string[];
   rubricName: string;
   rubricSlug: string;
+  rubricVariant?: RubricVariantInterface | null;
   products: ProductInterface[];
   totalProducts: number;
   catalogueTitle: string;

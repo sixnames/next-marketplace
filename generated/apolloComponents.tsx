@@ -2554,6 +2554,11 @@ export type RubricVariant = {
   __typename?: 'RubricVariant';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  cardLayout?: Maybe<Scalars['String']>;
+  gridSnippetLayout?: Maybe<Scalars['String']>;
+  rowSnippetLayout?: Maybe<Scalars['String']>;
+  catalogueFilterLayout?: Maybe<Scalars['String']>;
+  catalogueNavLayout?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
@@ -2617,8 +2622,7 @@ export type ShopProduct = Timestamp & {
   shopId: Scalars['ObjectId'];
   barcode?: Maybe<Scalars['String']>;
   oldPrices: Array<ShopProductOldPrice>;
-  formattedPrice: Scalars['String'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
+  oldPrice?: Maybe<Scalars['Int']>;
   discountedPercent?: Maybe<Scalars['Int']>;
   product: Product;
   shop: Shop;
@@ -3043,6 +3047,11 @@ export type UpdateRubricInput = {
 export type UpdateRubricVariantInput = {
   rubricVariantId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  cardLayout?: Maybe<Scalars['String']>;
+  gridSnippetLayout?: Maybe<Scalars['String']>;
+  rowSnippetLayout?: Maybe<Scalars['String']>;
+  catalogueFilterLayout?: Maybe<Scalars['String']>;
+  catalogueNavLayout?: Maybe<Scalars['String']>;
 };
 
 export type UpdateShopAssetIndexInput = {

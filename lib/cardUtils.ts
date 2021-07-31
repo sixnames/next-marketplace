@@ -9,15 +9,18 @@ import {
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
+  SORT_ASC,
   SORT_DESC,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
+  COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -254,10 +257,31 @@ export async function getCardData({
                 },
               },
               {
+                $lookup: {
+                  from: COL_RUBRIC_VARIANTS,
+                  as: 'variant',
+                  let: {
+                    variantId: '$variantId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$variantId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
                 $project: {
                   _id: true,
                   slug: true,
                   nameI18n: true,
+                  variant: {
+                    $arrayElemAt: ['$variant', 0],
+                  },
                 },
               },
             ],
@@ -278,6 +302,31 @@ export async function getCardData({
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
+                },
+              },
+            ],
+          },
+        },
+
+        // Get product assets
+        {
+          $lookup: {
+            from: COL_PRODUCT_ASSETS,
+            as: 'assets',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  index: SORT_ASC,
                 },
               },
             ],
@@ -349,6 +398,7 @@ export async function getCardData({
             },
             shopsCount: { $size: '$shopProducts' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
+            assets: { $arrayElemAt: ['$assets', 0] },
             cardContent: { $arrayElemAt: ['$cardContent', 0] },
           },
         },
@@ -608,6 +658,7 @@ export async function getCardData({
       ...restProduct,
       connections: cardConnections,
       name,
+      rubric,
       description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
       cardPrices,
       listFeatures,

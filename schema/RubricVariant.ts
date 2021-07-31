@@ -19,6 +19,11 @@ export const RubricVariant = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+    t.string('cardLayout');
+    t.string('gridSnippetLayout');
+    t.string('rowSnippetLayout');
+    t.string('catalogueFilterLayout');
+    t.string('catalogueNavLayout');
 
     // RubricVariant name translation field resolver
     t.nonNull.field('name', {
@@ -93,6 +98,11 @@ export const UpdateRubricVariantInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('rubricVariantId');
     t.nonNull.json('nameI18n');
+    t.string('cardLayout');
+    t.string('gridSnippetLayout');
+    t.string('rowSnippetLayout');
+    t.string('catalogueFilterLayout');
+    t.string('catalogueNavLayout');
   },
 });
 

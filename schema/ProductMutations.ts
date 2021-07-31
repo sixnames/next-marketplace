@@ -737,7 +737,7 @@ export const ProductMutations = extendType({
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
               slug,
               rubricId: sourceProduct.rubricId,
-              rubricSlug: sourceProduct.slug,
+              rubricSlug: sourceProduct.rubricSlug,
               active: true,
               selectedOptionsSlugs: sourceProduct.selectedOptionsSlugs,
               selectedAttributesIds: sourceProduct.selectedAttributesIds,

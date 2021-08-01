@@ -30,8 +30,12 @@ describe('Rubric variants', () => {
 
     // Should update rubric variant name
     cy.getByCy(`${newRubricVariantName}-update`).click();
+    cy.wait(1500);
+    cy.getByCy('rubric-variant-details').should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricVariantName);
     cy.getByCy('rubric-variant-submit').click();
+    cy.wait(1500);
+    cy.visit(`${ROUTE_CMS}/rubric-variants`);
     cy.wait(1500);
     cy.getByCy(`${newRubricVariantName}-row`).should('not.exist');
     cy.getByCy(`${updatedRubricVariantName}-row`).should('exist');

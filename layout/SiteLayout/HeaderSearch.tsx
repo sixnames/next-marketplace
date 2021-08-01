@@ -1,6 +1,7 @@
 import ControlButton from 'components/ControlButton';
 import { ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
+import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
@@ -15,7 +16,6 @@ import {
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -74,10 +74,11 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
       <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-3'>
         {products.map((product) => {
           return (
-            <ProductSnippetGrid
+            <ProductSnippetGridBigImage
               product={product}
               key={`${product._id}`}
               testId={`search-product`}
+              className='col-span-1'
             />
           );
         })}

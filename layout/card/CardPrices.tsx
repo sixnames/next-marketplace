@@ -10,6 +10,8 @@ interface CardPricesInterface {
 
 const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) => {
   const isShopless = noNaN(shopsCount) < 1;
+  const isMultiplePrice =
+    noNaN(cardPrices?.min) !== noNaN(cardPrices?.max) && noNaN(shopsCount) > 1;
 
   if (isShopless) {
     return null;
@@ -17,7 +19,7 @@ const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) =
 
   return (
     <div className='flex items-baseline'>
-      {noNaN(shopsCount) > 1 ? (
+      {isMultiplePrice ? (
         <React.Fragment>
           <div className='mr-2'>Цена от</div>
           <div className='flex items-baseline text-3xl sm:text-4xl'>

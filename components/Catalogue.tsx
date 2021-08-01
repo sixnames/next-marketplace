@@ -4,8 +4,8 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
-import ProductSnippetRow from 'components/Product/ProductSnippetRow';
+import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
+import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -247,6 +247,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       },
     ];
   }, [router, showErrorNotification]);
+
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
@@ -347,9 +348,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 ) : null}
 
                 <InfiniteScroll
-                  className={`catalogue__list grid gap-10 pt-8 ${
-                    isRowView ? '' : 'md:grid-cols-2'
-                  }`}
+                  className='catalogue__list pt-8 grid gap-6 sm:gap-10 sm:grid-cols-12'
                   next={fetchMoreHandler}
                   hasMore={state.products.length < state.totalProducts}
                   dataLength={state.products.length}
@@ -360,6 +359,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     if (isRowView) {
                       return (
                         <ProductSnippetRow
+                          rowSnippetLayout={`${state.rubricVariant?.rowSnippetLayout}`}
                           product={product}
                           key={`${product._id}`}
                           testId={`catalogue-item-${index}`}
@@ -369,6 +369,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                     return (
                       <ProductSnippetGrid
+                        gridSnippetLayout={`${state.rubricVariant?.gridSnippetLayout}`}
                         product={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${index}`}
@@ -394,7 +395,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           }}
           className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-30'
           icon={'chevron-up'}
-          // theme={'secondary'}
           circle
         />
       ) : null}

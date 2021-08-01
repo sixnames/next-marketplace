@@ -1265,6 +1265,7 @@ export const getCatalogueData = async ({
       selectedAttributes,
       page: payloadPage,
       breadcrumbs,
+      rubricVariant: rubric.variant,
     };
   } catch (e) {
     console.log(e);

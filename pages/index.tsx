@@ -2,7 +2,6 @@ import HorizontalScroll from 'components/HorizontalScroll';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
 import ShopsMap from 'components/ShopsMap';
 import SlickSlider from 'components/SlickSlider';
 import {
@@ -28,6 +27,7 @@ import {
   TopFilterInterface,
 } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { getCatalogueTitle } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -68,6 +68,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   return (
     <React.Fragment>
       <Inner testId={'main-page'}>
+        {/*main banner*/}
         {sliderPages.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
             <SlickSlider arrows={false} autoplay={autoplaySpeed > 0} autoplaySpeed={autoplaySpeed}>
@@ -166,6 +167,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           </div>
         ) : null}
 
+        {/*title*/}
         {configTitle ? (
           <div className='mb-14 sm:mb-20'>
             <Title textClassName='max-w-[690px]'>{configTitle}</Title>
@@ -175,6 +177,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           </div>
         ) : null}
 
+        {/*top products*/}
         {topProducts.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
@@ -183,11 +186,8 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
             <HorizontalScroll>
               {topProducts.map((product) => {
                 return (
-                  <div
-                    className='min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem]'
-                    key={`${product._id}`}
-                  >
-                    <ProductSnippetGrid noAttributes noSecondaryName product={product} />
+                  <div className='min-w-[280px]' key={`${product._id}`}>
+                    <ProductSnippetGridBigImage product={product} />
                   </div>
                 );
               })}
@@ -195,6 +195,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           </section>
         ) : null}
 
+        {/*promotions*/}
         {bannerPages.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
@@ -272,6 +273,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           </section>
         ) : null}
 
+        {/*top filters*/}
         {topFilters.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
@@ -327,6 +329,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
           </section>
         ) : null}
 
+        {/*top shops*/}
         {topShops.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium flex items-baseline'>

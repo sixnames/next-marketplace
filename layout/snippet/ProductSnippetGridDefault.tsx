@@ -40,6 +40,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       <div className='grid grid-cols-12 flex-grow'>
+        {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 snippet-image'>
           <Image
             priority={true}
@@ -64,6 +65,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
         <div className='col-span-9 flex flex-col pt-12 pr-5 gap-4 min-h-[235px]'>
           <div className='mb-auto'>
+            {/*original name*/}
             <div className='text-lg sm:text-xl font-medium mb-1'>
               <Link
                 testId={`${testId}-name-grid`}
@@ -74,10 +76,16 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 {originalName}
               </Link>
             </div>
+
+            {/*name translation*/}
             {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
               <div className='text-sm text-secondary-text mb-3'>{name}</div>
             )}
+
+            {/*art*/}
             <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+
+            {/*list features*/}
             {noAttributes ? null : (
               <div className='text-sm text-secondary-text'>
                 {(listFeatures || []).map(({ readableValue }, index) => {
@@ -96,11 +104,13 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             )}
           </div>
 
+          {/*price*/}
           <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>
 
       <div className='grid grid-cols-12'>
+        {/*rating*/}
         <div className='col-span-3 flex flex-col h-control-button-height'>
           <div className='flex items-center justify-center h-control-button-height'>
             <RatingStars size={'small'} rating={4.9} />
@@ -109,6 +119,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
         <div className='col-span-9 flex flex-col h-control-button-height'>
           <div className='flex items-end justify-between h-control-button-height'>
+            {/*rating features*/}
             <div className='flex flex-wrap items-center h-control-button-height'>
               {firstRatingFeature ? (
                 <div
@@ -120,6 +131,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
               ) : null}
             </div>
 
+            {/*controls*/}
             <div className='flex items-center justify-end'>
               <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
               <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />

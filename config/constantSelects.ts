@@ -32,3 +32,16 @@ export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
     asset: `/layout/row-snippet/${ROW_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
   },
 ];
+
+// grid snippet
+export const GRID_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
+export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: LAYOUT_DEFAULT,
+    asset: `/layout/grid-snippet/${LAYOUT_DEFAULT}.png`,
+  },
+  {
+    _id: GRID_SNIPPET_LAYOUT_BIG_IMAGE,
+    asset: `/layout/grid-snippet/${GRID_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
+  },
+];

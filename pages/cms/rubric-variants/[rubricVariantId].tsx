@@ -7,6 +7,7 @@ import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import {
   CARD_LAYOUT_OPTIONS,
+  GRID_SNIPPET_LAYOUT_OPTIONS,
   LAYOUT_DEFAULT,
   ROW_SNIPPET_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
@@ -107,7 +108,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikLayoutSelect
                   name={'gridSnippetLayout'}
                   label={'Дизайн сниппета товара'}
-                  options={[]}
+                  options={GRID_SNIPPET_LAYOUT_OPTIONS}
                 />
 
                 <FormikLayoutSelect

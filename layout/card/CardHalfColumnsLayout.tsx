@@ -226,7 +226,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <section className={`${dataSectionClassName}`}>
                   <h2 className='text-2xl mb-4'>Характеристики</h2>
 
-                  <ul className='space-y-6'>
+                  <ul className='space-y-2'>
                     {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
                       if (!showInCard) {
                         return null;

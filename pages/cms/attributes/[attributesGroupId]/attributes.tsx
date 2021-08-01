@@ -345,6 +345,12 @@ export const getServerSideProps = async (
                 }
               : null,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+            metric: attribute.metric
+              ? {
+                  ...attribute.metric,
+                  name: getFieldStringLocale(attribute.metric.nameI18n, props.sessionLocale),
+                }
+              : null,
           };
         }),
       }),

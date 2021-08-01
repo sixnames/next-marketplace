@@ -23,7 +23,7 @@ const ShopMainFields: React.FC = () => {
         label={'Город'}
         name={'citySlug'}
         testId={'citySlug'}
-        firstOption={'Не назначен'}
+        firstOption
         showInlineError
         isRequired
       />

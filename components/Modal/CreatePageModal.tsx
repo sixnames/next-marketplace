@@ -108,7 +108,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
                 isRequired
               />
               <FormikSelect
-                firstOption={'Не назначен'}
+                firstOption
                 label={'Город'}
                 name={'citySlug'}
                 testId={'citySlug'}

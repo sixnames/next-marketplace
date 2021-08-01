@@ -7,7 +7,7 @@ import { IconType } from 'types/iconTypes';
 type CurrentAction = (menuItem: HeadlessMenuItemInterface) => boolean;
 
 export interface HeadlessMenuItemInterface {
-  _id: string;
+  _id: string | null;
   name: any;
   onSelect: (menuItem: HeadlessMenuItemInterface) => void;
   current?: boolean | CurrentAction;
@@ -49,7 +49,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   testId,
   menuPosition = 'right',
 }) => {
-  const [internalButtonText, setInternalButtonText] = React.useState<string>(() => {
+  const [internalButtonText, setInternalButtonText] = React.useState<string | null>(() => {
     return `${config[0]?.children[0]?._id}`;
   });
 

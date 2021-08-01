@@ -38,6 +38,8 @@ import {
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
+  HEADER_SEARCH_PRODUCTS_LIMIT,
+  HEADER_SEARCH_RUBRICS_LIMIT,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -278,7 +280,9 @@ export const CatalogueQueries = extendType({
                   _id: SORT_BY_ID_DIRECTION,
                 },
               },
-              { $limit: 3 },
+              {
+                $limit: HEADER_SEARCH_RUBRICS_LIMIT,
+              },
             ])
             .toArray();
 
@@ -333,7 +337,9 @@ export const CatalogueQueries = extendType({
                   _id: SORT_DESC,
                 },
               },
-              { $limit: 3 },
+              {
+                $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
+              },
               {
                 $addFields: {
                   shopsCount: { $size: '$shopProductsIds' },
@@ -458,7 +464,9 @@ export const CatalogueQueries = extendType({
                   _id: SORT_BY_ID_DIRECTION,
                 },
               },
-              { $limit: 3 },
+              {
+                $limit: HEADER_SEARCH_RUBRICS_LIMIT,
+              },
             ])
             .toArray();
           // console.log('Search rubrics ', new Date().getTime() - rubricsStart);
@@ -524,7 +532,9 @@ export const CatalogueQueries = extendType({
                   _id: SORT_DESC,
                 },
               },
-              { $limit: 3 },
+              {
+                $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
+              },
               {
                 $addFields: {
                   shopsCount: { $size: '$shopProductsIds' },

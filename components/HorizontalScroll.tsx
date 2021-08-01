@@ -4,7 +4,7 @@ const HorizontalScroll: React.FC = ({ children }) => {
   return (
     <div className='relative'>
       <div className='overflow-x-auto relative'>
-        <div className='flex gap-4'>
+        <div className='flex gap-4 items-stretch'>
           {children}
           <div className='h-1 min-w-[3rem] sm:min-w-[7rem]' />
         </div>

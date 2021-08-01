@@ -85,19 +85,24 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 </div>
               ) : (
                 <div className={stickyClassName}>
-                  <div className='overflow-x-auto lg:overflow-x-auto max-w-full'>
-                    <div className='flex mb-12 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
+                  <div className='overflow-x-auto lg:overflow-x-auto max-w-full pb-6'>
+                    <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
                       {assets.map(({ url }) => {
                         return (
-                          <div key={url} className='min-w-[260px] lg:min-w-full'>
-                            <Image
-                              src={url}
-                              alt={cardData.originalName}
-                              title={cardData.originalName}
-                              width={400}
-                              height={400}
-                              objectFit='contain'
-                            />
+                          <div
+                            key={url}
+                            className='min-w-[260px] lg:min-w-full rounded-lg shadow-lg p-1'
+                          >
+                            <div className='relative'>
+                              <Image
+                                src={url}
+                                alt={cardData.originalName}
+                                title={cardData.originalName}
+                                width={400}
+                                height={400}
+                                objectFit='contain'
+                              />
+                            </div>
                           </div>
                         );
                       })}
@@ -279,11 +284,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <CardShopsList cardShopProducts={cardData.cardShopProducts} />
 
           {/*similar products*/}
-          {/*similar products*/}
-          <CardSimilarProducts
-            similarProducts={similarProducts}
-            gridSnippetLayout={`${cardData.rubric?.variant?.gridSnippetLayout}`}
-          />
+          <CardSimilarProducts similarProducts={similarProducts} />
         </Inner>
       </div>
     </article>

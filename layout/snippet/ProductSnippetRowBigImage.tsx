@@ -66,17 +66,17 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             {originalName}
           </Link>
         </div>
-
-        {/*rating*/}
-        <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
-          <RatingStars size={'small'} rating={4.9} />
-        </div>
       </div>
 
       {/*data*/}
-      <div className='md:col-span-8'>
-        {/*art*/}
-        <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+      <div className='md:col-span-8 flex flex-col'>
+        <div className='flex items-baseline gap-4 mb-5'>
+          {/*rating*/}
+          <RatingStars size={'small'} rating={4.9} />
+
+          {/*art*/}
+          <div className='text-secondary-text'>Артикул: {itemId}</div>
+        </div>
 
         {/*original name*/}
         <div className='text-2xl font-medium mb-1'>
@@ -159,7 +159,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         ) : null}
 
         {isShopless ? null : (
-          <div className='flex flex-wrap gap-4 items-baseline'>
+          <div className='flex flex-wrap gap-4 items-baseline mt-auto'>
             {/*price*/}
             <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
 
@@ -173,7 +173,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         )}
 
         {/*controls*/}
-        <div className='flex gap-2 justify-between mt-4'>
+        <div className='flex gap-2 justify-between'>
           <Button
             disabled={isShopless}
             theme={'gray'}

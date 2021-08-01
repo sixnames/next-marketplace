@@ -118,12 +118,6 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 <FormikLayoutSelect
-                  name={'rowSnippetLayout'}
-                  label={'Дизайн горизонтального сниппета товара'}
-                  options={ROW_SNIPPET_LAYOUT_OPTIONS}
-                />
-
-                <FormikLayoutSelect
                   name={'catalogueFilterLayout'}
                   label={'Дизайн фильтра каталога'}
                   options={[]}

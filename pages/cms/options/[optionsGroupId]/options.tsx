@@ -69,7 +69,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
         exact: true,
       },
       {
-        name: 'Общие',
+        name: 'Детали',
         testId: 'details',
         path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
         exact: true,
@@ -80,6 +80,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
   const renderOptions = React.useCallback(
     (option: OptionInterface) => {
       const { name, options } = option;
+
       return (
         <div>
           <div className='cms-option flex items-center'>
@@ -95,6 +96,10 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
+                addAssetTitle={'Добавить изображение'}
+                addAssetHandler={() => {
+                  console.log('asset');
+                }}
                 createTitle={'Добавить дочернюю опцию'}
                 createHandler={() => {
                   showModal<OptionInGroupModalInterface>({

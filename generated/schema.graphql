@@ -1451,10 +1451,10 @@ scalar ObjectId
 
 type Option {
   _id: ObjectId!
-  asset: Asset
   color: String
   gender: Gender
   icon: String
+  image: String
   name: String!
   nameI18n: JSONObject!
   options: [Option!]

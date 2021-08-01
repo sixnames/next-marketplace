@@ -1,4 +1,5 @@
 import HorizontalScroll from 'components/HorizontalScroll';
+import { GRID_SNIPPET_LAYOUT_BIG_IMAGE } from 'config/constantSelects';
 import { ProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import * as React from 'react';
@@ -12,6 +13,14 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({
   similarProducts,
   gridSnippetLayout,
 }) => {
+  const widthClassName = React.useMemo(() => {
+    if (gridSnippetLayout === GRID_SNIPPET_LAYOUT_BIG_IMAGE) {
+      return 'min-w-[280px]';
+    }
+
+    return 'min-w-[80vw] sm:min-w-[30rem]';
+  }, [gridSnippetLayout]);
+
   if (similarProducts.length < 1) {
     return null;
   }
@@ -23,7 +32,7 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({
       <HorizontalScroll>
         {similarProducts.map((product) => {
           return (
-            <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
+            <div className={`flex ${widthClassName}`} key={`${product._id}`}>
               <ProductSnippetGrid
                 gridSnippetLayout={gridSnippetLayout}
                 noAttributes

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import * as React from 'react';
 
 interface ProductSnippetGridInterface extends ProductSnippetInterface {
-  gridSnippetLayout: string;
+  gridSnippetLayout?: string | null;
 }
 
 const ProductSnippetGridDefault = dynamic(() => import('layout/snippet/ProductSnippetGridDefault'));

@@ -30,8 +30,8 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
   return (
     <LayoutCard
-      className={`col-span-12 sm:col-span-6 md:col-span-4 relative text-center ${
-        className ? className : ''
+      className={`relative text-center ${
+        className ? className : 'col-span-12 sm:col-span-6 md:col-span-4'
       }`}
     >
       <div className='px-4 pt-6'>

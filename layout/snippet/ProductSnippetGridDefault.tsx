@@ -35,8 +35,8 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
   return (
     <LayoutCard
-      className={`col-span-12 md:col-span-6 flex flex-col relative gap-4 ${
-        className ? className : ''
+      className={`flex flex-col relative gap-4 ${
+        className ? className : 'col-span-12 md:col-span-6'
       }`}
     >
       <div className='grid grid-cols-12 flex-grow'>

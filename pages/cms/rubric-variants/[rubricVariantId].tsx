@@ -9,6 +9,7 @@ import {
   CARD_LAYOUT_OPTIONS,
   GRID_SNIPPET_LAYOUT_OPTIONS,
   LAYOUT_DEFAULT,
+  NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
@@ -118,14 +119,14 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 <FormikLayoutSelect
-                  name={'catalogueFilterLayout'}
-                  label={'Дизайн фильтра каталога'}
-                  options={[]}
+                  name={'catalogueNavLayout'}
+                  label={'Дизайн выпадающего меню навигации'}
+                  options={NAV_DROPDOWN_LAYOUT_OPTIONS}
                 />
 
                 <FormikLayoutSelect
-                  name={'catalogueNavLayout'}
-                  label={'Дизайн выпадающего меню навигации'}
+                  name={'catalogueFilterLayout'}
+                  label={'Дизайн фильтра каталога'}
                   options={[]}
                 />
 

@@ -22,7 +22,6 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
     originalName,
     slug,
     cardPrices,
-    _id,
     itemId,
     listFeatures,
     ratingFeatures,
@@ -43,6 +42,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 snippet-image'>
+        {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
           <Image
             priority={true}
@@ -65,15 +65,19 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           </Link>
         </div>
 
+        {/*rating*/}
         <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
           <RatingStars size={'small'} rating={4.9} />
         </div>
       </div>
 
       <div className='flex flex-col col-span-9 md:col-span-10'>
+        {/*art*/}
         <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+
         <div className='grid gap-4 grid-cols-7 flex-grow'>
           <div className='flex flex-col col-span-7 md:col-span-5'>
+            {/*original name*/}
             <div className='text-2xl font-medium mb-1'>
               <Link
                 testId={`${testId}-name-row`}
@@ -85,11 +89,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
               </Link>
             </div>
 
+            {/*name translation*/}
             {!name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
               <div className='text-secondary-text mb-6'>{name}</div>
             )}
 
-            <div className='mb-6 space-y-2 md:space-y-4'>
+            {/*list features*/}
+            <div className='mb-6 space-y-2 md:space-y-2'>
               {(listFeatures || []).map(({ name, _id, readableValue }) => {
                 return (
                   <div className='md:grid grid-cols-12 gap-x-4 gap-y-2' key={`${_id}`}>
@@ -100,6 +106,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
               })}
             </div>
 
+            {/*rating features*/}
             {(ratingFeatures || []).length > 0 ? (
               <div className='flex flex-wrap items-center min-h-control-button-height'>
                 {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
@@ -117,42 +124,47 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           </div>
 
           <div className='flex flex-col col-span-7 md:col-span-2'>
+            {/*price*/}
             {isShopless ? null : (
               <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
             )}
 
-            <div className='hidden md:block mt-2 mb-4'>
-              {(connections || []).map(({ _id, attribute, connectionProducts }) => {
-                return (
-                  <div key={`${_id}`} className='mb-4'>
-                    <div className='mr-1 whitespace-nowrap'>{`${attribute?.name}:`}</div>
-                    <div>
-                      {(connectionProducts || []).map(({ option, productId }, index) => {
-                        const isLast = (connectionProducts || []).length - 1 === index;
-                        const isCurrent = productId === product._id;
+            {/*connections*/}
+            {(connections || []).length > 0 ? (
+              <div className='hidden md:block mt-2 mb-4'>
+                {(connections || []).map(({ _id, attribute, connectionProducts }) => {
+                  return (
+                    <div key={`${_id}`} className='mb-4'>
+                      <div className='mr-1 whitespace-nowrap'>{`${attribute?.name}:`}</div>
+                      <div>
+                        {(connectionProducts || []).map(({ option, productId }, index) => {
+                          const isLast = (connectionProducts || []).length - 1 === index;
+                          const isCurrent = productId === product._id;
 
-                        if (!option) {
-                          return null;
-                        }
-                        return (
-                          <span
-                            key={`${option?.name}`}
-                            className={`mr-1 ${
-                              isCurrent ? 'text-primary-text' : 'text-secondary-text'
-                            }`}
-                          >
-                            {isLast ? option?.name : `${option?.name}, `}
-                          </span>
-                        );
-                      })}
+                          if (!option) {
+                            return null;
+                          }
+                          return (
+                            <span
+                              key={`${option?.name}`}
+                              className={`mr-1 ${
+                                isCurrent ? 'text-primary-text' : 'text-secondary-text'
+                              }`}
+                            >
+                              {isLast ? option?.name : `${option?.name}, `}
+                            </span>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         </div>
 
+        {/*controls*/}
         <div className='grid gap-4 grid-cols-7 flex-grow items-end'>
           <div className='hidden md:flex flex-col col-span-7 md:col-span-5'>
             <div className='flex items-center justify-end'>
@@ -163,6 +175,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
 
           <div className='flex flex-col col-span-7 md:col-span-2'>
             <div className='mt-auto'>
+              {/*availability*/}
               <div className='mb-3'>
                 {noNaN(shopsCount) > 0
                   ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
@@ -181,13 +194,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                     if (shopProductsIds && shopProductsIds.length < 2) {
                       addProductToCart({
                         amount: 1,
-                        productId: _id,
+                        productId: product._id,
                         shopProductId: `${shopProductsIds[0]}`,
                       });
                     } else {
                       addShoplessProductToCart({
                         amount: 1,
-                        productId: _id,
+                        productId: product._id,
                       });
                     }
                   }}

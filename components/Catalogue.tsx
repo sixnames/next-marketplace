@@ -247,6 +247,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       },
     ];
   }, [router, showErrorNotification]);
+
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
@@ -347,7 +348,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 ) : null}
 
                 <InfiniteScroll
-                  className='catalogue__list grid gap-10 pt-8 grid-cols-12'
+                  className='catalogue__list pt-8 grid gap-6 sm:gap-10 sm:grid-cols-12'
                   next={fetchMoreHandler}
                   hasMore={state.products.length < state.totalProducts}
                   dataLength={state.products.length}
@@ -394,7 +395,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           }}
           className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-30'
           icon={'chevron-up'}
-          // theme={'secondary'}
           circle
         />
       ) : null}

@@ -28,7 +28,7 @@ export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
     asset: `/layout/row-snippet/${LAYOUT_DEFAULT}.png`,
   },
   {
-    _id: CARD_LAYOUT_HALF_COLUMNS,
+    _id: ROW_SNIPPET_LAYOUT_BIG_IMAGE,
     asset: `/layout/row-snippet/${ROW_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
   },
 ];

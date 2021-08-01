@@ -161,6 +161,13 @@ export function getCatalogueRubricPipeline(
               ],
             },
           },
+          {
+            $addFields: {
+              variant: {
+                $arrayElemAt: ['$variant', 0],
+              },
+            },
+          },
 
           // Lookup rubric attributes
           {

@@ -19,6 +19,9 @@ export const Option = objectType({
     t.field('gender', {
       type: 'Gender',
     });
+    t.field('asset', {
+      type: 'Asset',
+    });
     t.list.nonNull.field('options', {
       type: 'Option',
     });

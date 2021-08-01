@@ -1545,6 +1545,7 @@ export interface NexusGenFieldTypes {
   Option: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    asset: NexusGenRootTypes['Asset'] | null; // Asset
     color: string | null; // String
     gender: NexusGenEnums['Gender'] | null; // Gender
     icon: string | null; // String
@@ -2659,6 +2660,7 @@ export interface NexusGenFieldTypeNames {
   Option: {
     // field return type name
     _id: 'ObjectId';
+    asset: 'Asset';
     color: 'String';
     gender: 'Gender';
     icon: 'String';

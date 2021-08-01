@@ -1451,6 +1451,7 @@ scalar ObjectId
 
 type Option {
   _id: ObjectId!
+  asset: Asset
   color: String
   gender: Gender
   icon: String

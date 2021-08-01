@@ -370,6 +370,7 @@ export interface OptionModel {
   icon?: string | null;
   optionsGroupId: ObjectIdModel;
   parentId?: ObjectIdModel | null;
+  asset?: AssetModel | null;
 
   options?: OptionModel[] | null;
   level?: number | null;

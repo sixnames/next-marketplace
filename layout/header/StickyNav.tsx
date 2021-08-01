@@ -1,118 +1,64 @@
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
-import { noNaN } from 'lib/numbers';
+import dynamic from 'next/dynamic';
 import * as React from 'react';
 import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';
 
-export interface StickyNavAttributeInterface {
+interface AttributeStylesInterface {
+  attributeLinkStyle: React.CSSProperties;
+  attributeStyle: React.CSSProperties;
+}
+
+export interface StickyNavAttributeInterface extends AttributeStylesInterface {
   attribute: RubricAttributeInterface;
   hideDropdownHandler: () => void;
   rubricSlug: string;
 }
 
-const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
-  attribute,
-  hideDropdownHandler,
-  rubricSlug,
-}) => {
-  const { isDark } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const { options, name, metric } = attribute;
-  const postfix = metric ? ` ${metric.name}` : null;
-  const visibleOptionsCount = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
-  const showOptionsMoreLink = noNaN(visibleOptionsCount) === attribute.options?.length;
-
-  // styles
-  const linkColorLightTheme = getSiteConfigSingleValue('siteNavDropdownTextLightTheme');
-  const linkColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownTextDarkTheme');
-  const attributeColorLightTheme = getSiteConfigSingleValue('siteNavDropdownAttributeLightTheme');
-  const attributeColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownAttributeDarkTheme');
-
-  const linkStyle = {
-    color: (isDark ? linkColorDarkTheme : linkColorLightTheme) || 'var(--textSecondaryColor)',
-  } as React.CSSProperties;
-
-  const attributeStyle = {
-    color: (isDark ? attributeColorDarkTheme : attributeColorLightTheme) || 'var(--textColor)',
-  } as React.CSSProperties;
-
-  if ((options || []).length < 1) {
-    return null;
-  }
-
-  return (
-    <div className='flex flex-col'>
-      <div
-        style={attributeStyle}
-        className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'
-      >
-        {name}
-      </div>
-      <ul className='flex-grow flex flex-col'>
-        {(options || []).map((option) => {
-          return (
-            <li key={`${option._id}`}>
-              <Link
-                style={linkStyle}
-                testId={`header-nav-dropdown-option`}
-                prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                onClick={hideDropdownHandler}
-                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text'
-              >
-                {option.name}
-                {postfix}
-              </Link>
-            </li>
-          );
-        })}
-
-        {showOptionsMoreLink ? (
-          <li className='mt-auto'>
-            <Link
-              prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
-              onClick={hideDropdownHandler}
-              className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
-            >
-              Показать все
-            </Link>
-          </li>
-        ) : null}
-      </ul>
-    </div>
-  );
-};
-
-interface StickyNavItemInterface {
-  rubric: RubricInterface;
+interface StylesInterface extends AttributeStylesInterface {
+  dropdownStyle: React.CSSProperties;
 }
 
-const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
+export interface StickyNavDropdownInterface extends StylesInterface {
+  attributes: RubricAttributeInterface[] | null | undefined;
+  isDropdownOpen: boolean;
+  hideDropdownHandler: () => void;
+  rubricSlug: string;
+}
+
+export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInterface {
+  catalogueNavLayout: string;
+}
+
+const StickyNavDropdownDefault = dynamic(() => import('layout/header/StickyNavDropdownDefault'));
+
+const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
+  catalogueNavLayout,
+  ...props
+}) => {
+  return <StickyNavDropdownDefault {...props} />;
+};
+
+interface StickyNavItemInterface extends StylesInterface {
+  rubric: RubricInterface;
+  linkStyle: React.CSSProperties;
+}
+
+const StickyNavItem: React.FC<StickyNavItemInterface> = ({
+  rubric,
+  attributeStyle,
+  linkStyle,
+  attributeLinkStyle,
+  dropdownStyle,
+}) => {
   const { asPath } = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { name, slug, attributes } = rubric;
-  const { isDark } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const textColorLightTheme = getSiteConfigSingleValue('siteNavBarTextLightTheme');
-  const textColorDarkTheme = getSiteConfigSingleValue('siteNavBarTextDarkTheme');
-  const dropDownBgLightTheme = getSiteConfigSingleValue('siteNavDropdownBgLightTheme');
-  const dropDownBgDarkTheme = getSiteConfigSingleValue('siteNavDropdownBgDarkTheme');
-
-  // styles
-  const linkStyle = {
-    color: (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textColor)',
-  } as React.CSSProperties;
-
-  const dropdownStyle = {
-    backgroundColor:
-      (isDark ? dropDownBgDarkTheme : dropDownBgLightTheme) || 'var(--secondaryBackground)',
-  } as React.CSSProperties;
 
   // Get rubric slug from product card path
   const path = `${ROUTE_CATALOGUE}/${slug}`;
@@ -146,33 +92,16 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         ) : null}
       </Link>
 
-      {attributes && attributes.length > 0 ? (
-        <div
-          style={dropdownStyle}
-          data-cy={'header-nav-dropdown'}
-          className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
-            isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
-          }`}
-        >
-          <Inner>
-            <div className='grid gap-4 pb-10 grid-cols-8'>
-              <div className='grid gap-4 grid-cols-4 col-span-5'>
-                {(attributes || []).map((attribute) => {
-                  return (
-                    <StickyNavAttribute
-                      key={`${attribute._id}`}
-                      attribute={attribute}
-                      hideDropdownHandler={hideDropdownHandler}
-                      rubricSlug={slug}
-                    />
-                  );
-                })}
-              </div>
-              <div className='col-span-3' />
-            </div>
-          </Inner>
-        </div>
-      ) : null}
+      <StickyNavDropdown
+        attributeLinkStyle={attributeLinkStyle}
+        attributeStyle={attributeStyle}
+        dropdownStyle={dropdownStyle}
+        hideDropdownHandler={hideDropdownHandler}
+        isDropdownOpen={isDropdownOpen}
+        rubricSlug={slug}
+        attributes={attributes}
+        catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
+      />
     </li>
   );
 };
@@ -183,6 +112,32 @@ const StickyNav: React.FC = () => {
   const { getSiteConfigSingleValue } = useConfigContext();
   const bgColorLightTheme = getSiteConfigSingleValue('siteNavBarBgLightTheme');
   const bgColorDarkTheme = getSiteConfigSingleValue('siteNavBarBgDarkTheme');
+  const textColorLightTheme = getSiteConfigSingleValue('siteNavBarTextLightTheme');
+  const textColorDarkTheme = getSiteConfigSingleValue('siteNavBarTextDarkTheme');
+  const dropDownBgLightTheme = getSiteConfigSingleValue('siteNavDropdownBgLightTheme');
+  const dropDownBgDarkTheme = getSiteConfigSingleValue('siteNavDropdownBgDarkTheme');
+  const linkColorLightTheme = getSiteConfigSingleValue('siteNavDropdownTextLightTheme');
+  const linkColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownTextDarkTheme');
+  const attributeColorLightTheme = getSiteConfigSingleValue('siteNavDropdownAttributeLightTheme');
+  const attributeColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownAttributeDarkTheme');
+
+  // styles
+  const linkStyle = {
+    color: (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textColor)',
+  } as React.CSSProperties;
+
+  const dropdownStyle = {
+    backgroundColor:
+      (isDark ? dropDownBgDarkTheme : dropDownBgLightTheme) || 'var(--secondaryBackground)',
+  } as React.CSSProperties;
+
+  const attributeLinkStyle = {
+    color: (isDark ? linkColorDarkTheme : linkColorLightTheme) || 'var(--textSecondaryColor)',
+  } as React.CSSProperties;
+
+  const attributeStyle = {
+    color: (isDark ? attributeColorDarkTheme : attributeColorLightTheme) || 'var(--textColor)',
+  } as React.CSSProperties;
 
   const style = {
     backgroundColor:
@@ -198,7 +153,16 @@ const StickyNav: React.FC = () => {
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
           {navRubrics.map((rubric) => {
-            return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;
+            return (
+              <StickyNavItem
+                linkStyle={linkStyle}
+                attributeLinkStyle={attributeLinkStyle}
+                dropdownStyle={dropdownStyle}
+                attributeStyle={attributeStyle}
+                rubric={rubric}
+                key={`${rubric._id}`}
+              />
+            );
           })}
         </ul>
       </Inner>

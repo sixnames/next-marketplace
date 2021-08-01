@@ -1,4 +1,5 @@
 import { ROUTE_CATALOGUE } from 'config/common';
+import { NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
@@ -36,11 +37,18 @@ export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInter
 }
 
 const StickyNavDropdownDefault = dynamic(() => import('layout/header/StickyNavDropdownDefault'));
+const StickyNavDropdownOptionsOnly = dynamic(
+  () => import('layout/header/StickyNavDropdownOptionsOnly'),
+);
 
 const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   catalogueNavLayout,
   ...props
 }) => {
+  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY) {
+    return <StickyNavDropdownOptionsOnly {...props} />;
+  }
+
   return <StickyNavDropdownDefault {...props} />;
 };
 

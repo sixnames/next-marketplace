@@ -267,10 +267,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         <CardShopsList cardShopProducts={cardData.cardShopProducts} />
 
         {/*similar products*/}
-        <CardSimilarProducts
-          similarProducts={similarProducts}
-          gridSnippetLayout={`${cardData.rubric?.variant?.gridSnippetLayout}`}
-        />
+        <CardSimilarProducts similarProducts={similarProducts} />
       </Inner>
     </article>
   );

@@ -71,7 +71,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
           ) : null}
         </li>
       </ul>
-      <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-3'>
+      <div className='md:col-span-10 grid gap-10 items-stretch md:grid-cols-2 xl:grid-cols-4'>
         {products.map((product) => {
           return (
             <ProductSnippetGridBigImage

@@ -11,7 +11,7 @@ import Button from 'components/Button';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import Icon from 'components/Icon';
-import ProductShopPrices from 'components/Product/ProductShopPrices';
+import ProductShopPrices from 'components/ProductShopPrices';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 

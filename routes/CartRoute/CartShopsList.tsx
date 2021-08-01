@@ -7,7 +7,7 @@ import classes from './CartShopsList.module.css';
 import Image from 'next/image';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
-import ProductShopPrices from 'components/Product/ProductShopPrices';
+import ProductShopPrices from 'components/ProductShopPrices';
 
 interface CartShopInterface {
   shopProduct: ShopProductInterface;

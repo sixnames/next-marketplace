@@ -1,9 +1,8 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
-import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
-import ProductSnippetGrid from 'components/Product/ProductSnippetGrid';
+import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
@@ -268,21 +267,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         <CardShopsList cardShopProducts={cardData.cardShopProducts} />
 
         {/*similar products*/}
-        {similarProducts.length > 0 ? (
-          <section className='mb-28'>
-            <h2 className='text-2xl font-medium mb-6'>Вам может понравиться</h2>
-
-            <HorizontalScroll>
-              {similarProducts.map((product) => {
-                return (
-                  <div className='flex min-w-[80vw] sm:min-w-[30rem]' key={`${product._id}`}>
-                    <ProductSnippetGrid noAttributes noSecondaryName product={product} />
-                  </div>
-                );
-              })}
-            </HorizontalScroll>
-          </section>
-        ) : null}
+        <CardSimilarProducts
+          similarProducts={similarProducts}
+          gridSnippetLayout={`${cardData.rubric?.variant?.gridSnippetLayout}`}
+        />
       </Inner>
     </article>
   );

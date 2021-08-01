@@ -5,7 +5,12 @@ import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelec
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
-import { CARD_LAYOUT_OPTIONS, LAYOUT_DEFAULT } from 'config/constantSelects';
+import {
+  CARD_LAYOUT_OPTIONS,
+  GRID_SNIPPET_LAYOUT_OPTIONS,
+  LAYOUT_DEFAULT,
+  ROW_SNIPPET_LAYOUT_OPTIONS,
+} from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RubricVariantInterface } from 'db/uiInterfaces';
@@ -103,13 +108,19 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikLayoutSelect
                   name={'gridSnippetLayout'}
                   label={'Дизайн сниппета товара'}
-                  options={[]}
+                  options={GRID_SNIPPET_LAYOUT_OPTIONS}
                 />
 
                 <FormikLayoutSelect
                   name={'rowSnippetLayout'}
                   label={'Дизайн горизонтального сниппета товара'}
-                  options={[]}
+                  options={ROW_SNIPPET_LAYOUT_OPTIONS}
+                />
+
+                <FormikLayoutSelect
+                  name={'rowSnippetLayout'}
+                  label={'Дизайн горизонтального сниппета товара'}
+                  options={ROW_SNIPPET_LAYOUT_OPTIONS}
                 />
 
                 <FormikLayoutSelect

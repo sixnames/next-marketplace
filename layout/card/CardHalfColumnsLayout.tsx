@@ -178,7 +178,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     {connections.map(({ _id, attribute, connectionProducts }) => {
                       return (
                         <div key={`${_id}`} className='mb-12'>
-                          <div className='text-secondary-text mb-3 font-medium'>{`${attribute?.name}:`}</div>
+                          <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
                             {(connectionProducts || []).map(
                               ({ option, productSlug, shopProduct }) => {
@@ -239,7 +239,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
                       return (
                         <li key={`${_id}`} className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-medium'>{name}</div>
+                          <div className='text-secondary-text mb-1 font-bold'>{name}</div>
                           <div>{readableValue}</div>
                         </li>
                       );

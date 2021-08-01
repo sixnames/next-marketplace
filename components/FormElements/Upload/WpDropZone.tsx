@@ -2,11 +2,12 @@ import InputLine, { InputLinePropsInterface } from 'components/FormElements/Inpu
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 
-interface WpDropZoneInterface extends InputLinePropsInterface {
+export interface WpDropZoneInterface extends InputLinePropsInterface {
   onDropHandler: (acceptedFiles: any) => void;
   format?: string;
   testId?: string;
   disabled?: boolean;
+  maxFiles?: number;
 }
 
 const WpDropZone: React.FC<WpDropZoneInterface> = ({
@@ -22,6 +23,7 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
   disabled,
   error,
   showInlineError,
+  maxFiles,
 }) => {
   const onDrop = React.useCallback(
     (acceptedFiles) => {
@@ -34,6 +36,7 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
     onDrop,
     accept: format,
     disabled,
+    maxFiles,
   });
 
   return (

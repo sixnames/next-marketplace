@@ -40,7 +40,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       </span>
       {counter ? <span>{counter}</span> : null}
       {withCross ? (
-        <Icon className='w-2 h-2 ml-2 fill-theme cursor-pointer' name={'cross'} />
+        <Icon className='flex-shrink-0 w-3 h-3 ml-2 fill-theme cursor-pointer' name={'cross'} />
       ) : null}
     </TagLink>
   );

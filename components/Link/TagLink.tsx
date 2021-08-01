@@ -29,9 +29,11 @@ const TagLink: React.FC<TagLinkInterface> = ({
     ? `border-secondary`
     : `border-primary`;
   const variantClassName = theme === 'secondary' ? `bg-secondary` : `bg-primary`;
-  const tagSizeClassName = icon ? `h-16 rounded-3xl px-6 text-lg` : `h-9 rounded-2xl px-4`;
-  const tagClassName = `flex items-center border text-secondary-text whitespace-nowrap ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
-  const iconClassName = `w-10 h-10 mr-6`;
+  const tagSizeClassName = icon
+    ? `min-h-[4rem] rounded-3xl px-6 text-lg`
+    : `min-h-[2.5rem] rounded-2xl px-4`;
+  const tagClassName = `flex items-center border text-secondary-text py-1 ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
+  const iconClassName = `flex-shrink-0 w-10 h-10 mr-6`;
 
   if (href) {
     return (

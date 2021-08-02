@@ -5,7 +5,6 @@ import RatingStars from 'components/RatingStars';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
-import LayoutCard from 'layout/LayoutCard';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -15,6 +14,10 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
+  showSnippetBackground,
+  showSnippetButtonsOnHover,
+  showSnippetArticle,
+  showSnippetRating,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
@@ -35,9 +38,13 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
 
+  const bgClassName = showSnippetBackground
+    ? 'bg-secondary dark:shadow-md'
+    : 'transition-all hover:shadow-md';
+
   return (
-    <LayoutCard
-      className={`col-span-12 grid relative md:grid-cols-12 py-6 px-5 ${
+    <div
+      className={`group grid relative md:grid-cols-12 py-6 px-5 w-full ${bgClassName} ${
         className ? className : ''
       }`}
     >
@@ -70,13 +77,17 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
       {/*data*/}
       <div className='md:col-span-8 flex flex-col'>
-        <div className='flex items-baseline gap-4 mb-5'>
-          {/*rating*/}
-          <RatingStars size={'small'} rating={4.9} />
+        {showSnippetRating || showSnippetArticle ? (
+          <div className='flex items-baseline gap-4 mb-5'>
+            {/*rating*/}
+            {showSnippetRating ? <RatingStars size={'small'} rating={4.9} /> : null}
 
-          {/*art*/}
-          <div className='text-secondary-text'>Артикул: {itemId}</div>
-        </div>
+            {/*art*/}
+            {showSnippetArticle ? (
+              <div className='text-secondary-text'>Артикул: {itemId}</div>
+            ) : null}
+          </div>
+        ) : null}
 
         {/*original name*/}
         <div className='text-2xl font-medium mb-1'>
@@ -173,7 +184,11 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         )}
 
         {/*controls*/}
-        <div className='flex gap-2 justify-between'>
+        <div
+          className={`flex gap-2 justify-between ${
+            showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
+          }`}
+        >
           <Button
             disabled={isShopless}
             theme={'gray'}
@@ -203,7 +218,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
         </div>
       </div>
-    </LayoutCard>
+    </div>
   );
 };
 

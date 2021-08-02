@@ -44,7 +44,10 @@ import {
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
+import {
+  castProductAttributeForUi,
+  getProductCurrentViewCastedAttributes,
+} from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 
 const minAssetsListCount = 2;
@@ -732,11 +735,12 @@ export async function getCardData({
     const cardAttributesGroups = (attributesGroups || []).reduce(
       (acc: ProductAttributesGroupInterface[], attributesGroup) => {
         const visibleAttributes = attributesGroup.attributes.filter(
-          ({ showInCard, attributeId }) => {
+          ({ showInCard, attributeId, viewVariant }) => {
+            const isListViewAttribute = viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
             const excluded = excludedAttributesIds.some((excludedAttributeId) => {
               return excludedAttributeId.equals(attributeId);
             });
-            return showInCard && !excluded;
+            return showInCard && !excluded && isListViewAttribute;
           },
         );
 
@@ -745,7 +749,20 @@ export async function getCardData({
             ...acc,
             {
               ...attributesGroup,
-              attributes: visibleAttributes,
+              name: getFieldStringLocale(attributesGroup.nameI18n, locale),
+              attributes: visibleAttributes.reduce(
+                (acc: ProductAttributeInterface[], productAttribute) => {
+                  const castedAttribute = castProductAttributeForUi({
+                    productAttribute,
+                    locale,
+                  });
+                  if (!castedAttribute) {
+                    return acc;
+                  }
+                  return [...acc, castedAttribute];
+                },
+                [],
+              ),
             },
           ];
         }

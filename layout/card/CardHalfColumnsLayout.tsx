@@ -31,8 +31,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     isSingleImage,
     assets,
     similarProducts,
+    attributesGroups,
     showFeaturesSection,
-    visibleListFeatures,
     ratingFeatures,
     textFeatures,
     tagFeatures,
@@ -233,25 +233,27 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   </div>
                 ) : null}
 
-                {/*list features*/}
-                <section className={`${dataSectionClassName}`}>
-                  <h2 className='text-2xl mb-4'>Характеристики</h2>
+                {/*attributes groups*/}
+                {attributesGroups.map((attributesGroup) => {
+                  return (
+                    <section key={`${attributesGroup._id}`} className={`${dataSectionClassName}`}>
+                      <h2 className='text-2xl mb-4'>{attributesGroup.name}</h2>
 
-                  <ul className='space-y-2'>
-                    {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
-                      if (!showInCard) {
-                        return null;
-                      }
-
-                      return (
-                        <li key={`${_id}`} className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold'>{name}</div>
-                          <div>{readableValue}</div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
+                      <ul className='space-y-4 sm:space-y-2'>
+                        {attributesGroup.attributes.map(({ _id, name, readableValue }) => {
+                          return (
+                            <li key={`${_id}`} className='sm:flex justify-between'>
+                              <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                                {name}
+                              </div>
+                              <div className='sm:text-right sm:half-column'>{readableValue}</div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
+                  );
+                })}
 
                 {showFeaturesSection ? (
                   <React.Fragment>

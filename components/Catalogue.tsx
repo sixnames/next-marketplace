@@ -352,7 +352,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 ) : null}
 
                 <InfiniteScroll
-                  className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem] justify-between'
+                  className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem]'
                   // className='catalogue__list pt-8 grid sm:grid-cols-20 gap-6 sm:gap-10'
                   next={fetchMoreHandler}
                   hasMore={state.products.length < state.totalProducts}

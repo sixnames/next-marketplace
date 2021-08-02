@@ -48,6 +48,7 @@ export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
 
 // grid snippet
 export const GRID_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
+export const GRID_SNIPPET_LAYOUT_BIG_IMAGE_TRANSPARENT = 'big-image-transparent';
 export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: LAYOUT_DEFAULT,
@@ -56,5 +57,9 @@ export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: GRID_SNIPPET_LAYOUT_BIG_IMAGE,
     asset: `/layout/grid-snippet/${GRID_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
+  },
+  {
+    _id: GRID_SNIPPET_LAYOUT_BIG_IMAGE_TRANSPARENT,
+    asset: `/layout/grid-snippet/${GRID_SNIPPET_LAYOUT_BIG_IMAGE_TRANSPARENT}.png`,
   },
 ];

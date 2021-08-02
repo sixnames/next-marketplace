@@ -1,4 +1,7 @@
-import { GRID_SNIPPET_LAYOUT_BIG_IMAGE } from 'config/constantSelects';
+import {
+  GRID_SNIPPET_LAYOUT_BIG_IMAGE,
+  GRID_SNIPPET_LAYOUT_BIG_IMAGE_TRANSPARENT,
+} from 'config/constantSelects';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
@@ -11,6 +14,9 @@ const ProductSnippetGridDefault = dynamic(() => import('layout/snippet/ProductSn
 const ProductSnippetGridBigImage = dynamic(
   () => import('layout/snippet/ProductSnippetGridBigImage'),
 );
+const ProductSnippetGridBigImageTransparent = dynamic(
+  () => import('layout/snippet/ProductSnippetGridBigImageTransparent'),
+);
 
 const ProductSnippetRow: React.FC<ProductSnippetGridInterface> = ({
   gridSnippetLayout,
@@ -18,6 +24,10 @@ const ProductSnippetRow: React.FC<ProductSnippetGridInterface> = ({
 }) => {
   if (gridSnippetLayout === GRID_SNIPPET_LAYOUT_BIG_IMAGE) {
     return <ProductSnippetGridBigImage {...props} />;
+  }
+
+  if (gridSnippetLayout === GRID_SNIPPET_LAYOUT_BIG_IMAGE_TRANSPARENT) {
+    return <ProductSnippetGridBigImageTransparent {...props} />;
   }
 
   return <ProductSnippetGridDefault {...props} />;

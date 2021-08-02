@@ -654,20 +654,6 @@ export async function getCardData({
     const name = getFieldStringLocale(product.nameI18n, locale);
     const description = getFieldStringLocale(product.descriptionI18n, locale);
 
-    console.log(
-      JSON.stringify(
-        {
-          listFeatures,
-          textFeatures,
-          tagFeatures,
-          iconFeatures,
-          ratingFeatures,
-        },
-        null,
-        2,
-      ),
-    );
-
     return {
       ...restProduct,
       connections: cardConnections,

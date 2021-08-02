@@ -110,7 +110,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
 
               <FormikSelect
                 name={'gender'}
-                firstOption={'Не выбрано'}
+                firstOption
                 options={getGenderOptions}
                 testId={`option-gender`}
                 label={'Род названия'}
@@ -130,7 +130,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                 label={'Иконка'}
                 name={'icon'}
                 testId={'option-icon'}
-                firstOption={'Не назначена'}
+                firstOption
                 disabled={groupVariant !== OPTIONS_GROUP_VARIANT_ICON}
                 isRequired={groupVariant === OPTIONS_GROUP_VARIANT_ICON}
                 showInlineError

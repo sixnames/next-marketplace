@@ -18,7 +18,7 @@ export interface SelectInterface extends InputLinePropsInterface {
   notValid?: boolean;
   autoComplete?: OnOffType;
   placeholder?: string;
-  firstOption?: string;
+  firstOption?: boolean;
   setNameToValue?: boolean;
   options: SelectOptionInterface[];
   testId?: string;
@@ -60,7 +60,7 @@ const Select: React.FC<SelectInterface> = ({
         {
           _id: null,
           slug: null,
-          name: firstOption,
+          name: null,
         },
         ...options,
       ]

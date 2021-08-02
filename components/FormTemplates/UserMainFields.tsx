@@ -19,7 +19,7 @@ const UserMainFields: React.FC<UserMainFieldsInterface> = ({ roles }) => {
         testId={'role'}
         name={'roleId'}
         label={'Роль'}
-        firstOption={'Не назначена'}
+        firstOption
         options={roles}
         showInlineError
       />

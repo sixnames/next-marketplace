@@ -15,7 +15,7 @@ export interface FormikSelectInterface extends InputLinePropsInterface {
   className?: string;
   frameClass?: string;
   showInlineError?: boolean;
-  firstOption?: string;
+  firstOption?: boolean;
   testId?: string;
   disabled?: boolean;
   theme?: InputTheme;
@@ -84,10 +84,10 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
             children: firstOption
               ? [
                   {
-                    _id: '',
-                    name: firstOption,
+                    _id: null,
+                    name: null,
                     onSelect: () => {
-                      setFieldValue(name, '');
+                      setFieldValue(name, null);
                     },
                   },
                   ...children,

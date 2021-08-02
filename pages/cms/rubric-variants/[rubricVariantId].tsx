@@ -1,5 +1,7 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelect';
 import Inner from 'components/Inner';
@@ -9,6 +11,7 @@ import {
   CARD_LAYOUT_OPTIONS,
   GRID_SNIPPET_LAYOUT_OPTIONS,
   LAYOUT_DEFAULT,
+  NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
@@ -79,6 +82,12 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             rowSnippetLayout: rubricVariant.rowSnippetLayout || LAYOUT_DEFAULT,
             catalogueFilterLayout: rubricVariant.catalogueFilterLayout || LAYOUT_DEFAULT,
             catalogueNavLayout: rubricVariant.catalogueNavLayout || LAYOUT_DEFAULT,
+            showSnippetBackground: rubricVariant.showSnippetBackground || false,
+            showSnippetArticle: rubricVariant.showSnippetArticle || false,
+            showSnippetRating: rubricVariant.showSnippetRating || false,
+            showSnippetButtonsOnHover: rubricVariant.showSnippetButtonsOnHover || false,
+            showCardButtonsBackground: rubricVariant.showCardButtonsBackground || false,
+            gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
           }}
           onSubmit={(values) => {
             showLoading();
@@ -99,6 +108,42 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                   showInlineError
                 />
 
+                {/*booleans*/}
+                <FormikCheckboxLine
+                  label={'Показывать фон сниппета'}
+                  name={'showSnippetBackground'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать артикул в сниппете'}
+                  name={'showSnippetArticle'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать рейтинг в сниппете'}
+                  name={'showSnippetRating'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать кнопки сниппета при наведении'}
+                  name={'showSnippetButtonsOnHover'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать фон под кнопками карточки товара'}
+                  name={'showCardButtonsBackground'}
+                />
+
+                {/*numbers*/}
+                <FormikInput
+                  type={'number'}
+                  name={'gridCatalogueColumns'}
+                  label={'Количество колонок в каталоге'}
+                  min={2}
+                  max={5}
+                />
+
+                {/*layout*/}
                 <FormikLayoutSelect
                   name={'cardLayout'}
                   label={'Дизайн карточки товара'}
@@ -118,14 +163,14 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 <FormikLayoutSelect
-                  name={'catalogueFilterLayout'}
-                  label={'Дизайн фильтра каталога'}
-                  options={[]}
+                  name={'catalogueNavLayout'}
+                  label={'Дизайн выпадающего меню навигации'}
+                  options={NAV_DROPDOWN_LAYOUT_OPTIONS}
                 />
 
                 <FormikLayoutSelect
-                  name={'catalogueNavLayout'}
-                  label={'Дизайн выпадающего меню навигации'}
+                  name={'catalogueFilterLayout'}
+                  label={'Дизайн фильтра каталога'}
                   options={[]}
                 />
 

@@ -150,7 +150,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
                 label={'Рубрика'}
                 testId={'rubricId'}
                 name={'rubricId'}
-                firstOption={'Не назначено'}
+                firstOption
                 options={getAllRubrics}
                 useIdField
                 isRequired

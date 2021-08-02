@@ -1454,6 +1454,7 @@ type Option {
   color: String
   gender: Gender
   icon: String
+  image: String
   name: String!
   nameI18n: JSONObject!
   options: [Option!]
@@ -2249,10 +2250,16 @@ type RubricVariant {
   cardLayout: String
   catalogueFilterLayout: String
   catalogueNavLayout: String
+  gridCatalogueColumns: Int
   gridSnippetLayout: String
   name: String!
   nameI18n: JSONObject!
   rowSnippetLayout: String
+  showCardButtonsBackground: Boolean
+  showSnippetArticle: Boolean
+  showSnippetBackground: Boolean
+  showSnippetButtonsOnHover: Boolean
+  showSnippetRating: Boolean
 }
 
 type RubricVariantPayload implements Payload {
@@ -2731,10 +2738,16 @@ input UpdateRubricVariantInput {
   cardLayout: String
   catalogueFilterLayout: String
   catalogueNavLayout: String
+  gridCatalogueColumns: Int
   gridSnippetLayout: String
   nameI18n: JSONObject!
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
+  showCardButtonsBackground: Boolean
+  showSnippetArticle: Boolean
+  showSnippetBackground: Boolean
+  showSnippetButtonsOnHover: Boolean
+  showSnippetRating: Boolean
 }
 
 input UpdateShopAssetIndexInput {

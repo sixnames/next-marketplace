@@ -39,6 +39,7 @@ import {
   METRIC_MODAL,
   ORDER_STATUS_MODAL,
   SUPPLIER_OPTIONS_MODAL,
+  ADD_ASSETS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -64,6 +65,7 @@ const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal
 const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollectionModal'));
 const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
 const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
+const AddAssetsModal = dynamic(() => import('components/Modal/AddAssetsModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -171,6 +173,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === METRIC_MODAL && <MetricModal {...modalProps} />}
 
           {modalType === ORDER_STATUS_MODAL && <OrderStatusModal {...modalProps} />}
+
+          {modalType === ADD_ASSETS_MODAL && <AddAssetsModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

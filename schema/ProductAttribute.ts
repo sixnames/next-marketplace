@@ -768,14 +768,23 @@ export const ProductAttributeMutations = extendType({
             }
 
             // Update product
+            const attributeSlug = attribute.slug;
+            const otherAttributesOptions = product.selectedOptionsSlugs.filter((slug) => {
+              const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+              return slugParts[0] !== attributeSlug;
+            });
+
+            const attributeIdUpdater = selectedOptionsIds.length > 0 ? '$addToSet' : '$pull';
             const productUpdater = {
-              $addToSet: {
-                selectedOptionsSlugs: {
-                  $each: finalSelectedOptionsSlugs,
-                },
+              $set: {
+                selectedOptionsSlugs: [...otherAttributesOptions, ...finalSelectedOptionsSlugs],
+              },
+              [attributeIdUpdater]: {
                 selectedAttributesIds: attributeId,
               },
             };
+
+            console.log(JSON.stringify(productUpdater, null, 2));
 
             const updatedProduct = await productsCollection.findOneAndUpdate(
               {

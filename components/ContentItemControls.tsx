@@ -5,11 +5,13 @@ import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
 export interface ContentItemControlsInterface {
   createTitle?: string;
   copyTitle?: string;
+  addAssetTitle?: string;
   updateTitle?: string;
   deleteTitle?: string;
   size?: SizeType;
   createHandler?: () => void;
   copyHandler?: () => void;
+  addAssetHandler?: () => void;
   updateHandler?: () => void;
   deleteHandler?: () => void;
   className?: string;
@@ -21,17 +23,20 @@ export interface ContentItemControlsInterface {
   isCopyDisabled?: boolean;
   isUpdateDisabled?: boolean;
   isDeleteDisabled?: boolean;
+  isAddAssetDisabled?: boolean;
 }
 
 const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   createTitle,
   updateTitle,
   copyTitle,
+  addAssetTitle,
   deleteTitle,
   size = 'small',
   createHandler,
   updateHandler,
   copyHandler,
+  addAssetHandler,
   deleteHandler,
   className,
   justifyContent = 'flex-start',
@@ -40,6 +45,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   disabled,
   isCreateDisabled,
   isUpdateDisabled,
+  isAddAssetDisabled,
   isCopyDisabled,
   isDeleteDisabled,
 }) => {
@@ -60,6 +66,20 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           disabled={disabled || isCreateDisabled}
         />
       ) : null}
+
+      {addAssetHandler ? (
+        <Button
+          circle
+          size={size}
+          icon={'image'}
+          title={addAssetTitle}
+          onClick={addAssetHandler}
+          theme={theme}
+          testId={`${testId}-add-asset`}
+          disabled={disabled || isAddAssetDisabled}
+        />
+      ) : null}
+
       {updateHandler ? (
         <Button
           circle

@@ -84,7 +84,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
                 label={'Ключ языка'}
                 options={getISOLanguagesOptions}
                 name={'slug'}
-                firstOption={'На назначено'}
+                firstOption
                 testId={'language-slug'}
                 showInlineError
                 isRequired

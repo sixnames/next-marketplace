@@ -71,7 +71,7 @@ const NavItemModal = <TArgs extends Record<any, any>>({
                 testId={'icon'}
                 name={'icon'}
                 label={'Иконка'}
-                firstOption={'Не назначена'}
+                firstOption
                 showInlineError
               />
 

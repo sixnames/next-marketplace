@@ -9,17 +9,17 @@ import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import StickyNav from 'layout/SiteLayout/StickyNav';
+import StickyNav from 'layout/header/StickyNav';
 import Link from 'components/Link/Link';
 import { useThemeContext } from 'context/themeContext';
 import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
-import HeaderSearch from 'layout/SiteLayout/HeaderSearch';
+import HeaderSearch from 'layout/header/HeaderSearch';
 import { useUserContext } from 'context/userContext';
 import CounterSticker from 'components/CounterSticker';
-import CartDropdown from 'layout/SiteLayout/CartDropdown';
+import CartDropdown from 'layout/header/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import {
   ROUTE_CONSOLE,

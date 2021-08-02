@@ -1724,6 +1724,7 @@ export type Option = {
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
   options?: Maybe<Array<Option>>;
@@ -2559,6 +2560,12 @@ export type RubricVariant = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetBackground?: Maybe<Scalars['Boolean']>;
+  showSnippetArticle?: Maybe<Scalars['Boolean']>;
+  showSnippetRating?: Maybe<Scalars['Boolean']>;
+  showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
+  showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
+  gridCatalogueColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
 
@@ -3052,6 +3059,12 @@ export type UpdateRubricVariantInput = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetBackground?: Maybe<Scalars['Boolean']>;
+  showSnippetArticle?: Maybe<Scalars['Boolean']>;
+  showSnippetRating?: Maybe<Scalars['Boolean']>;
+  showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
+  showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
+  gridCatalogueColumns?: Maybe<Scalars['Int']>;
 };
 
 export type UpdateShopAssetIndexInput = {

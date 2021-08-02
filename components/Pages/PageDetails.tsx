@@ -199,7 +199,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                   isRequired
                 />
                 <FormikSelect
-                  firstOption={'Не назначен'}
+                  firstOption
                   label={'Город'}
                   name={'citySlug'}
                   testId={'citySlug'}

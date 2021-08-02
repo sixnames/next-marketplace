@@ -6,8 +6,8 @@ import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { CompanyModel } from 'db/dbModels';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
-import Footer from 'layout/SiteLayout/Footer';
-import Header from 'layout/SiteLayout/Header';
+import Footer from 'layout/footer/Footer';
+import Header from 'layout/header/Header';
 import {
   SiteLayoutCatalogueCreatedPages,
   SiteLayoutProviderInterface,

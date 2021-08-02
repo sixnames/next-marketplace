@@ -23,6 +23,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   autoComplete?: OnOffType;
   testId?: string;
   min?: number;
+  max?: number;
   placeholder?: string;
   disabled?: boolean;
   icon?: IconType;

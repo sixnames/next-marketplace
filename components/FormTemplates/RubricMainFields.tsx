@@ -65,7 +65,7 @@ const RubricMainFields: React.FC = () => {
       />
 
       <FormikSelect
-        firstOption={'Не назначено'}
+        firstOption
         name={`catalogueTitle.gender`}
         label={'Род ключевого слова'}
         testId={'catalogueTitle-gender'}
@@ -77,7 +77,7 @@ const RubricMainFields: React.FC = () => {
       <FormikSelect
         isRequired
         showInlineError
-        firstOption={'Не выбран'}
+        firstOption
         label={'Тип рубрики'}
         name={'variantId'}
         testId={'variantId'}

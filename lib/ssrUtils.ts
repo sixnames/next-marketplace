@@ -31,6 +31,7 @@ import {
   COL_PAGES_GROUP,
   COL_ROLES,
   COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
@@ -269,6 +270,32 @@ export const getCatalogueNavRubrics = async ({
       {
         $sort: sortStage,
       },
+      // Lookup rubric variant
+      {
+        $lookup: {
+          from: COL_RUBRIC_VARIANTS,
+          as: 'variant',
+          let: {
+            variantId: '$variantId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$variantId', '$_id'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          variant: {
+            $arrayElemAt: ['$variant', 0],
+          },
+        },
+      },
     ])
     .toArray();
 
@@ -368,6 +395,40 @@ export const getCatalogueNavRubrics = async ({
                   $sort: sortStage,
                 },
                 ...optionsLimit,
+
+                // Lookup nested options
+                {
+                  $lookup: {
+                    from: COL_OPTIONS,
+                    as: 'options',
+                    let: {
+                      parentId: '$_id',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              {
+                                $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                              },
+                              {
+                                $in: ['$slug', '$$optionsSlugs'],
+                              },
+                              {
+                                $eq: ['$parentId', '$$parentId'],
+                              },
+                            ],
+                          },
+                        },
+                      },
+                      {
+                        $sort: sortStage,
+                      },
+                      ...optionsLimit,
+                    ],
+                  },
+                },
               ],
             },
           },

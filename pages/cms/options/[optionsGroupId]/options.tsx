@@ -245,8 +245,11 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
     [
       addOptionToGroupMutation,
       deleteOptionFromGroupMutation,
+      hideLoading,
       optionsGroup._id,
       optionsGroup.variant,
+      router,
+      showErrorNotification,
       showLoading,
       showModal,
       updateOptionInGroupMutation,

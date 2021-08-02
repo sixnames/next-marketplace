@@ -63,6 +63,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     addProductToCart,
     showArticle,
     connections,
+    product,
+    cardBreadcrumbs,
+    cardPrices,
+    shopsCount,
+    shopProducts,
+    cardContent,
   } = useCardData({
     cardData,
     companySlug,
@@ -71,7 +77,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardData.originalName} config={cardData.cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
@@ -81,10 +87,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
               <CardTitle
                 showArticle={showArticle}
-                productId={cardData._id}
-                originalName={cardData.originalName}
-                itemId={cardData.itemId}
-                name={cardData.name}
+                productId={product._id}
+                originalName={product.originalName}
+                itemId={product.itemId}
+                name={product.name}
               />
             </div>
 
@@ -94,9 +100,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               <div className='md:col-span-1 md:order-2 lg:col-span-3 lg:flex lg:justify-center'>
                 <div className='relative h-[300px] w-[160px] md:h-[500px] lg:h-[600px]'>
                   <Image
-                    src={`${cardData.mainImage}`}
-                    alt={cardData.originalName}
-                    title={cardData.originalName}
+                    src={`${product.mainImage}`}
+                    alt={product.originalName}
+                    title={product.originalName}
                     layout='fill'
                     objectFit='contain'
                   />
@@ -109,10 +115,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 <div className='hidden lg:block'>
                   <CardTitle
                     showArticle={showArticle}
-                    productId={cardData._id}
-                    originalName={cardData.originalName}
-                    itemId={cardData.itemId}
-                    name={cardData.name}
+                    productId={product._id}
+                    originalName={product.originalName}
+                    itemId={product.itemId}
+                    name={product.name}
                   />
                 </div>
 
@@ -125,7 +131,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='flex flex-wrap gap-2'>
                             {(connectionProducts || []).map(({ option, productSlug }) => {
-                              const isCurrent = productSlug === cardData.slug;
+                              const isCurrent = productSlug === product.slug;
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -137,7 +143,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/product/${productSlug}`}
+                                  href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>
@@ -152,7 +158,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                 {/*price*/}
                 <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
-                  <CardPrices cardPrices={cardData.cardPrices} shopsCount={cardData.shopsCount} />
+                  <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
 
                   {/*availability*/}
                   <a
@@ -173,7 +179,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   >
                     {isShopless
                       ? 'Нет в наличии'
-                      : `В наличии в ${cardData.shopsCount} ${shopsCounterPostfix}`}
+                      : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
                   </a>
                 </div>
 
@@ -182,16 +188,16 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
                     <Button
                       onClick={() => {
-                        if (cardData.shopProducts && cardData.shopProducts.length < 2) {
+                        if (shopProducts && shopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
-                            productId: cardData._id,
-                            shopProductId: `${cardData.shopProducts[0]._id}`,
+                            productId: product._id,
+                            shopProductId: `${shopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({
                             amount: 1,
-                            productId: cardData._id,
+                            productId: product._id,
                           });
                         }
                       }}
@@ -240,14 +246,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 <CardIconFeatures
                   className='mb-12'
                   iconFeatures={iconFeatures}
-                  rubricSlug={cardData.rubricSlug}
+                  rubricSlug={product.rubricSlug}
                 />
 
                 {/*tag features*/}
                 <CardTagFeatures
                   className='mb-12'
                   tagFeatures={tagFeatures}
-                  rubricSlug={cardData.rubricSlug}
+                  rubricSlug={product.rubricSlug}
                 />
 
                 {/*rating features*/}
@@ -261,10 +267,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         ) : null}
 
         {/*dynamic content*/}
-        <CardDynamicContent cardContent={cardData.cardContent} />
+        <CardDynamicContent cardContent={cardContent} />
 
         {/*shops*/}
-        <CardShopsList cardShopProducts={cardData.cardShopProducts} />
+        <CardShopsList cardShopProducts={shopProducts} />
 
         {/*similar products*/}
         <CardSimilarProducts similarProducts={similarProducts} />

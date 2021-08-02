@@ -85,6 +85,48 @@ export function getAttributeReadableValue({
   return null;
 }
 
+export interface CastProductAttributeForUiInterface {
+  productAttribute: ProductAttributeInterface;
+  locale: string;
+}
+
+export function castProductAttributeForUi({
+  productAttribute,
+  locale,
+}: CastProductAttributeForUiInterface): ProductAttributeInterface | null {
+  const readableValue = getAttributeReadableValue({
+    productAttribute,
+    locale,
+  });
+
+  if (!readableValue) {
+    return null;
+  }
+
+  const metric = productAttribute.metric
+    ? {
+        ...productAttribute.metric,
+        name: getFieldStringLocale(productAttribute.metric.nameI18n, locale),
+      }
+    : null;
+
+  const castedAttribute: ProductAttributeInterface = {
+    ...productAttribute,
+    name: getFieldStringLocale(productAttribute.nameI18n, locale),
+    metric,
+    options: (productAttribute.options || []).map((option) => {
+      // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
+      return {
+        ...option,
+        name: `${getFieldStringLocale(option.nameI18n, locale)}${metric ? ` ${metric.name}` : ''}`,
+      };
+    }),
+    readableValue,
+  };
+
+  return castedAttribute;
+}
+
 export interface GetProductCurrentViewCastedAttributes {
   excludedAttributesIds?: ObjectIdModel[];
   attributes: ProductAttributeInterface[];
@@ -98,45 +140,24 @@ export function getProductCurrentViewCastedAttributes({
   viewVariant,
   locale,
 }: GetProductCurrentViewCastedAttributes): ProductAttributeInterface[] {
-  return getProductCurrentViewAttributes({
+  const currentViewAttributes = getProductCurrentViewAttributes({
     attributes,
     viewVariant,
-  }).reduce((acc: ProductAttributeInterface[], productAttribute) => {
+  });
+
+  return currentViewAttributes.reduce((acc: ProductAttributeInterface[], productAttribute) => {
     if ((excludedAttributesIds || []).some((_id) => _id.equals(productAttribute.attributeId))) {
       return acc;
     }
 
-    const readableValue = getAttributeReadableValue({
+    const castedAttribute = castProductAttributeForUi({
       productAttribute,
       locale,
     });
 
-    if (!readableValue) {
+    if (!castedAttribute) {
       return acc;
     }
-
-    const metric = productAttribute.metric
-      ? {
-          ...productAttribute.metric,
-          name: getFieldStringLocale(productAttribute.metric.nameI18n, locale),
-        }
-      : null;
-
-    const castedAttribute: ProductAttributeInterface = {
-      ...productAttribute,
-      name: getFieldStringLocale(productAttribute.nameI18n, locale),
-      metric,
-      options: (productAttribute.options || []).map((option) => {
-        // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
-        return {
-          ...option,
-          name: `${getFieldStringLocale(option.nameI18n, locale)}${
-            metric ? ` ${metric.name}` : ''
-          }`,
-        };
-      }),
-      readableValue,
-    };
 
     return [...acc, castedAttribute];
   }, []);

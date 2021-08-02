@@ -29,9 +29,10 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 }) => {
   const {
     isSingleImage,
+    assets,
     similarProducts,
+    attributesGroups,
     showFeaturesSection,
-    visibleListFeatures,
     ratingFeatures,
     textFeatures,
     tagFeatures,
@@ -41,8 +42,13 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     addShoplessProductToCart,
     addProductToCart,
     showArticle,
-    assets,
     connections,
+    product,
+    cardBreadcrumbs,
+    cardContent,
+    cardPrices,
+    shopsCount,
+    shopProducts,
   } = useCardData({
     cardData,
     companySlug,
@@ -51,17 +57,17 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardData.originalName} config={cardData.cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner lowBottom lowTop>
           {/*title*/}
           <div className='mb-8'>
-            <Title low>{cardData.originalName}</Title>
+            <Title low>{product.originalName}</Title>
             <div className='flex items-center gap-4 mt-4'>
               {/*article*/}
               {showArticle ? (
-                <div className='text-secondary-text text-sm'>Арт: {cardData.itemId}</div>
+                <div className='text-secondary-text text-sm'>Арт: {product.itemId}</div>
               ) : null}
             </div>
           </div>
@@ -74,9 +80,9 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <div className={stickyClassName}>
                   <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
                     <Image
-                      src={`${cardData.mainImage}`}
-                      alt={cardData.originalName}
-                      title={cardData.originalName}
+                      src={`${product.mainImage}`}
+                      alt={product.originalName}
+                      title={product.originalName}
                       width={480}
                       height={480}
                       objectFit='contain'
@@ -96,8 +102,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                             <div className='relative'>
                               <Image
                                 src={url}
-                                alt={cardData.originalName}
-                                title={cardData.originalName}
+                                alt={product.originalName}
+                                title={product.originalName}
                                 width={400}
                                 height={400}
                                 objectFit='contain'
@@ -119,7 +125,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
                   {/*price*/}
                   <div className='flex flex-wrap gap-6 items-baseline mb-8'>
-                    <CardPrices cardPrices={cardData.cardPrices} shopsCount={cardData.shopsCount} />
+                    <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
 
                     {/*availability*/}
                     <a
@@ -140,7 +146,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     >
                       {isShopless
                         ? 'Нет в наличии'
-                        : `В наличии в ${cardData.shopsCount} ${shopsCounterPostfix}`}
+                        : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
                     </a>
                   </div>
 
@@ -148,16 +154,16 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     {/*cart button*/}
                     <Button
                       onClick={() => {
-                        if (cardData.shopProducts && cardData.shopProducts.length < 2) {
+                        if (shopProducts && shopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
-                            productId: cardData._id,
-                            shopProductId: `${cardData.shopProducts[0]._id}`,
+                            productId: product._id,
+                            shopProductId: `${shopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({
                             amount: 1,
-                            productId: cardData._id,
+                            productId: product._id,
                           });
                         }
                       }}
@@ -183,7 +189,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                             {(connectionProducts || []).map(
                               ({ option, productSlug, shopProduct }) => {
                                 const mainImage = shopProduct?.mainImage;
-                                const isCurrent = productSlug === cardData.slug;
+                                const isCurrent = productSlug === product.slug;
                                 const name = `${option?.name} ${
                                   attribute?.metric ? ` ${attribute.metric.name}` : ''
                                 }`;
@@ -211,7 +217,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                     {isCurrent ? null : (
                                       <Link
                                         className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                        href={`${ROUTE_CATALOGUE}/${cardData.rubricSlug}/product/${productSlug}`}
+                                        href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
                                       >
                                         {name}
                                       </Link>
@@ -227,25 +233,27 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   </div>
                 ) : null}
 
-                {/*list features*/}
-                <section className={`${dataSectionClassName}`}>
-                  <h2 className='text-2xl mb-4'>Характеристики</h2>
+                {/*attributes groups*/}
+                {attributesGroups.map((attributesGroup) => {
+                  return (
+                    <section key={`${attributesGroup._id}`} className={`${dataSectionClassName}`}>
+                      <h2 className='text-2xl mb-4'>{attributesGroup.name}</h2>
 
-                  <ul className='space-y-2'>
-                    {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
-                      if (!showInCard) {
-                        return null;
-                      }
-
-                      return (
-                        <li key={`${_id}`} className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold'>{name}</div>
-                          <div>{readableValue}</div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
+                      <ul className='space-y-4 sm:space-y-2'>
+                        {attributesGroup.attributes.map(({ _id, name, readableValue }) => {
+                          return (
+                            <li key={`${_id}`} className='sm:flex justify-between'>
+                              <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                                {name}
+                              </div>
+                              <div className='sm:text-right sm:half-column'>{readableValue}</div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
+                  );
+                })}
 
                 {showFeaturesSection ? (
                   <React.Fragment>
@@ -253,14 +261,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     <CardIconFeatures
                       iconFeatures={iconFeatures}
                       className={dataSectionClassName}
-                      rubricSlug={cardData.rubricSlug}
+                      rubricSlug={product.rubricSlug}
                     />
 
                     {/*tag features*/}
                     <CardTagFeatures
                       tagFeatures={tagFeatures}
                       className={dataSectionClassName}
-                      rubricSlug={cardData.rubricSlug}
+                      rubricSlug={product.rubricSlug}
                     />
 
                     {/*rating features*/}
@@ -278,10 +286,10 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <CardTextFeatures textFeatures={textFeatures} className='mb-28' />
 
           {/*dynamic content*/}
-          <CardDynamicContent cardContent={cardData.cardContent} />
+          <CardDynamicContent cardContent={cardContent} />
 
           {/*shops*/}
-          <CardShopsList cardShopProducts={cardData.cardShopProducts} />
+          <CardShopsList cardShopProducts={shopProducts} />
 
           {/*similar products*/}
           <CardSimilarProducts similarProducts={similarProducts} />

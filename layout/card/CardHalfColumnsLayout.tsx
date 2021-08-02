@@ -237,7 +237,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 {attributesGroups.map((attributesGroup) => {
                   return (
                     <section key={`${attributesGroup._id}`} className={`${dataSectionClassName}`}>
-                      <h2 className='text-2xl mb-4'>{attributesGroup.name}</h2>
+                      <h2 className='text-2xl mb-4 font-medium'>{attributesGroup.name}</h2>
 
                       <ul className='space-y-4 sm:space-y-2'>
                         {attributesGroup.attributes.map(({ _id, name, readableValue }) => {

@@ -28,6 +28,16 @@ import {
 } from './common';
 
 export const constantTranslations = {
+  boolean: {
+    true: {
+      [DEFAULT_LOCALE]: 'Да',
+      [SECONDARY_LOCALE]: 'Yes',
+    },
+    false: {
+      [DEFAULT_LOCALE]: 'Нет',
+      [SECONDARY_LOCALE]: 'No',
+    },
+  },
   messages: {
     error: {
       [DEFAULT_LOCALE]: 'Что-то пошло не так. Попробуйте ещё раз.',
@@ -192,6 +202,23 @@ export const constantTranslations = {
   },
 };
 
+interface GetBooleanTranslationInterface {
+  value?: boolean | string | null;
+  locale: string;
+}
+
 export const getConstantTranslation = (path: string): string => {
   return `${get(constantTranslations, path)}`;
+};
+
+export const getBooleanTranslation = ({
+  value,
+  locale,
+}: GetBooleanTranslationInterface): string => {
+  let finalValue = value ? 'true' : 'false';
+  if (typeof value === 'string') {
+    finalValue = value;
+  }
+
+  return getConstantTranslation(`boolean.${finalValue}.${locale}`);
 };

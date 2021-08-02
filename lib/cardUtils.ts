@@ -14,6 +14,7 @@ import {
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -28,6 +29,7 @@ import {
 import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  ProductAttributeInterface,
   ProductCardContentInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
@@ -337,7 +339,7 @@ export async function getCardData({
         {
           $lookup: {
             from: COL_PRODUCT_ATTRIBUTES,
-            as: 'attributes',
+            as: 'attributesGroups',
             let: {
               productId: '$_id',
             },
@@ -387,9 +389,59 @@ export async function getCardData({
                   ],
                 },
               },
+
+              // get attributes group
+              {
+                $lookup: {
+                  from: COL_ATTRIBUTES_GROUPS,
+                  as: 'attributesGroup',
+                  let: {
+                    attributesGroupId: '$attributesGroupId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$attributesGroupId'],
+                        },
+                      },
+                    },
+                    {
+                      $sort: {
+                        views: SORT_DESC,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  attributesGroup: {
+                    $arrayElemAt: ['$attributesGroup', 0],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: '$attributesGroupId',
+                  nameI18n: {
+                    $first: '$attributesGroup.nameI18n',
+                  },
+                  attributes: {
+                    $push: '$$ROOT',
+                  },
+                },
+              },
+              {
+                $project: {
+                  'attributes.attributesGroup': false,
+                },
+              },
             ],
           },
         },
+
+        // final fields
         {
           $addFields: {
             cardPrices: {
@@ -461,9 +513,16 @@ export async function getCardData({
     });
     // console.log(`card connections `, new Date().getTime() - startTime);
 
-    const initialProductAttributes = (product.attributes || []).filter(({ showInCard }) => {
-      return showInCard;
-    });
+    const initialProductAttributes = (product.attributesGroups || []).reduce(
+      (acc: ProductAttributeInterface[], { attributes }) => {
+        const visibleAttributes = attributes.filter(({ showInCard }) => {
+          return showInCard;
+        });
+
+        return [...acc, ...visibleAttributes];
+      },
+      [],
+    );
 
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
@@ -670,6 +729,7 @@ export async function getCardData({
       cardBreadcrumbs,
       shopsCount: finalShopProducts.length,
       cardContent: castedCardContent,
+      attributesGroups: product.attributesGroups || [],
     };
   } catch (e) {
     console.log(e);

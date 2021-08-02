@@ -202,6 +202,12 @@ export interface ProductCardContentInterface extends ProductCardContentModel {
   value?: string | null;
 }
 
+export interface ProductAttributesGroupInterface extends AttributesGroupModel {
+  _id: ObjectIdModel;
+  name?: string | null;
+  attributes: ProductAttributeInterface[];
+}
+
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -209,6 +215,7 @@ export interface ProductInterface extends ProductModel {
   assets?: ProductAssetsModel | null;
   connections?: ProductConnectionInterface[];
   attributes?: ProductAttributeInterface[];
+  attributesGroups?: ProductAttributesGroupInterface[] | null;
   listFeatures?: ProductAttributeInterface[];
   textFeatures?: ProductAttributeInterface[];
   tagFeatures?: ProductAttributeInterface[];

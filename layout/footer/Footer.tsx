@@ -14,11 +14,11 @@ export interface FooterInterface {
 }
 
 const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { getSiteConfigSingleValue, getSiteConfigValue } = useConfigContext();
   const configSiteName = getSiteConfigSingleValue('siteName');
   const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
   const contactEmail = getSiteConfigSingleValue('contactEmail');
-  const phone = getSiteConfigSingleValue('phone');
+  const phonesList = getSiteConfigValue('phone');
   const facebookLink = getSiteConfigSingleValue('facebook');
   const instagramLink = getSiteConfigSingleValue('instagram');
   const vkontakteLink = getSiteConfigSingleValue('vkontakte');
@@ -110,12 +110,20 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
           <div className='lg:col-span-2'>
             <div className='grid gap-x-6 sm:grid-cols-2'>
-              <a
-                className='text-secondary-text hover:text-theme hover:no-underline'
-                href={`tel:${phone}`}
-              >
-                {phoneToReadable(phone)}
-              </a>
+              <div className='space-y-1'>
+                {(phonesList || []).map((phone) => {
+                  return (
+                    <div key={phone}>
+                      <a
+                        className='text-secondary-text hover:text-theme hover:no-underline'
+                        href={`tel:${phone}`}
+                      >
+                        {phoneToReadable(phone)}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
               <a
                 className='text-secondary-text hover:text-theme hover:no-underline'
                 href={`mailTo:${contactEmail}`}

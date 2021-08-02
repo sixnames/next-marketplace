@@ -571,11 +571,23 @@ export interface RoleModel extends TimestampModel {
 export interface RubricVariantModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+
+  // layouts
   cardLayout?: string | null;
   gridSnippetLayout?: string | null;
   rowSnippetLayout?: string | null;
   catalogueFilterLayout?: string | null;
   catalogueNavLayout?: string | null;
+
+  // booleans
+  showSnippetBackground?: boolean | null;
+  showSnippetArticle?: boolean | null;
+  showSnippetRating?: boolean | null;
+  showSnippetButtonsOnHover?: boolean | null;
+  showCardButtonsBackground?: boolean | null;
+
+  // numbers
+  gridCatalogueColumns?: number | null;
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {

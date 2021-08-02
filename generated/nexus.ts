@@ -866,10 +866,16 @@ export interface NexusGenInputs {
     cardLayout?: string | null; // String
     catalogueFilterLayout?: string | null; // String
     catalogueNavLayout?: string | null; // String
+    gridCatalogueColumns?: number | null; // Int
     gridSnippetLayout?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
+    showCardButtonsBackground?: boolean | null; // Boolean
+    showSnippetArticle?: boolean | null; // Boolean
+    showSnippetBackground?: boolean | null; // Boolean
+    showSnippetButtonsOnHover?: boolean | null; // Boolean
+    showSnippetRating?: boolean | null; // Boolean
   };
   UpdateShopAssetIndexInput: {
     // input type
@@ -1974,10 +1980,16 @@ export interface NexusGenFieldTypes {
     cardLayout: string | null; // String
     catalogueFilterLayout: string | null; // String
     catalogueNavLayout: string | null; // String
+    gridCatalogueColumns: number | null; // Int
     gridSnippetLayout: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout: string | null; // String
+    showCardButtonsBackground: boolean | null; // Boolean
+    showSnippetArticle: boolean | null; // Boolean
+    showSnippetBackground: boolean | null; // Boolean
+    showSnippetButtonsOnHover: boolean | null; // Boolean
+    showSnippetRating: boolean | null; // Boolean
   };
   RubricVariantPayload: {
     // field return type
@@ -3089,10 +3101,16 @@ export interface NexusGenFieldTypeNames {
     cardLayout: 'String';
     catalogueFilterLayout: 'String';
     catalogueNavLayout: 'String';
+    gridCatalogueColumns: 'Int';
     gridSnippetLayout: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     rowSnippetLayout: 'String';
+    showCardButtonsBackground: 'Boolean';
+    showSnippetArticle: 'Boolean';
+    showSnippetBackground: 'Boolean';
+    showSnippetButtonsOnHover: 'Boolean';
+    showSnippetRating: 'Boolean';
   };
   RubricVariantPayload: {
     // field return type name

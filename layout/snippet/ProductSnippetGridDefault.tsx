@@ -7,7 +7,6 @@ import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import ControlButton from 'components/ControlButton';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import LayoutCard from 'layout/LayoutCard';
 
 const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   product,
@@ -15,6 +14,11 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   className,
   noSecondaryName,
   noAttributes,
+  showSnippetBackground,
+  showSnippetButtonsOnHover,
+  showSnippetArticle,
+  showSnippetRating,
+  gridCatalogueColumns,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
@@ -33,10 +37,27 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   } = product;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
+  const bgClassName = showSnippetBackground
+    ? 'bg-secondary dark:shadow-md'
+    : 'transition-all hover:shadow-md';
+
+  const columnsClassName =
+    // 3
+    gridCatalogueColumns === 3
+      ? 'grid-snippet-3'
+      : // 4
+      gridCatalogueColumns === 4
+      ? 'grid-snippet-4'
+      : // 5
+      gridCatalogueColumns === 5
+      ? 'grid-snippet-5'
+      : // 2
+        `grid-snippet-2`;
+
   return (
-    <LayoutCard
-      className={`flex flex-col relative gap-4 ${
-        className ? className : 'col-span-12 md:col-span-6'
+    <div
+      className={`group rounded-md flex flex-col relative gap-4 grid-snippet ${bgClassName} ${
+        className ? className : columnsClassName
       }`}
     >
       <div className='grid grid-cols-12 flex-grow'>
@@ -83,7 +104,9 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             )}
 
             {/*art*/}
-            <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+            {showSnippetArticle ? (
+              <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+            ) : null}
 
             {/*list features*/}
             {noAttributes ? null : (
@@ -112,9 +135,11 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       <div className='grid grid-cols-12'>
         {/*rating*/}
         <div className='col-span-3 flex flex-col h-control-button-height'>
-          <div className='flex items-center justify-center h-control-button-height'>
-            <RatingStars size={'small'} rating={4.9} />
-          </div>
+          {showSnippetRating ? (
+            <div className='flex items-center justify-center h-control-button-height'>
+              <RatingStars size={'small'} rating={4.9} />
+            </div>
+          ) : null}
         </div>
 
         <div className='col-span-9 flex flex-col h-control-button-height'>
@@ -132,12 +157,21 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             </div>
 
             {/*controls*/}
-            <div className='flex items-center justify-end'>
+            <div
+              className={`flex items-center justify-end ${
+                showSnippetButtonsOnHover
+                  ? 'lg:opacity-0 group-hover:opacity-100 transition-all'
+                  : ''
+              }`}
+            >
               <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
               <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
               <ControlButton
                 ariaLabel={'Добавить в корзину'}
                 testId={`${testId}-add-to-cart-grid`}
+                theme={showSnippetBackground ? 'accent' : undefined}
+                icon={'cart'}
+                roundedTopLeft
                 onClick={() => {
                   if (shopProductsIds && shopProductsIds.length < 2) {
                     addProductToCart({
@@ -152,15 +186,12 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                     });
                   }
                 }}
-                icon={'cart'}
-                theme={'accent'}
-                roundedTopLeft
               />
             </div>
           </div>
         </div>
       </div>
-    </LayoutCard>
+    </div>
   );
 };
 

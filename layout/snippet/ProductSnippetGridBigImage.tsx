@@ -36,8 +36,11 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     : 'transition-all hover:shadow-md';
 
   const columnsClassName =
-    // 3
-    gridCatalogueColumns === 3
+    // 2
+    gridCatalogueColumns === 2
+      ? 'grid-snippet-2'
+      : // 3
+      gridCatalogueColumns === 3
       ? 'grid-snippet-3'
       : // 4
       gridCatalogueColumns === 4
@@ -45,8 +48,8 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       : // 5
       gridCatalogueColumns === 5
       ? 'grid-snippet-5'
-      : // 2
-        `grid-snippet-2`;
+      : // 1
+        ``;
 
   return (
     <div

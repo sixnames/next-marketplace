@@ -159,7 +159,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         ) : null}
 
         {isShopless ? null : (
-          <div className='flex flex-wrap gap-4 items-baseline mt-auto'>
+          <div className='flex flex-wrap gap-4 items-baseline mt-auto mb-3'>
             {/*price*/}
             <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
 

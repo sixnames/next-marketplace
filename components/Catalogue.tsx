@@ -4,6 +4,10 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
+import {
+  GRID_SNIPPET_LAYOUT_BIG_IMAGE,
+  ROW_SNIPPET_LAYOUT_BIG_IMAGE,
+} from 'config/constantSelects';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -359,7 +363,11 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     if (isRowView) {
                       return (
                         <ProductSnippetRow
-                          rowSnippetLayout={`${state.rubricVariant?.rowSnippetLayout}`}
+                          rowSnippetLayout={
+                            isSearchResult
+                              ? ROW_SNIPPET_LAYOUT_BIG_IMAGE
+                              : `${state.rubricVariant?.rowSnippetLayout}`
+                          }
                           product={product}
                           key={`${product._id}`}
                           testId={`catalogue-item-${index}`}
@@ -369,7 +377,11 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                     return (
                       <ProductSnippetGrid
-                        gridSnippetLayout={`${state.rubricVariant?.gridSnippetLayout}`}
+                        gridSnippetLayout={
+                          isSearchResult
+                            ? GRID_SNIPPET_LAYOUT_BIG_IMAGE
+                            : `${state.rubricVariant?.gridSnippetLayout}`
+                        }
                         product={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${index}`}

@@ -20,7 +20,12 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarPr
         {similarProducts.map((product) => {
           return (
             <div className='flex w-[270px] flex-shrink-0' key={`${product._id}`}>
-              <ProductSnippetGridBigImage noAttributes noSecondaryName product={product} />
+              <ProductSnippetGridBigImage
+                noAttributes
+                noSecondaryName
+                showSnippetBackground
+                product={product}
+              />
             </div>
           );
         })}

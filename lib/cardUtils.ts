@@ -12,8 +12,11 @@ import {
   SORT_ASC,
   SORT_DESC,
 } from 'config/common';
+import { LAYOUT_DEFAULT } from 'config/constantSelects';
+import { getConstantTranslation } from 'config/constantTranslations';
 import {
   COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -28,6 +31,9 @@ import {
 import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  InitialCardDataInterface,
+  ProductAttributeInterface,
+  ProductAttributesGroupInterface,
   ProductCardContentInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
@@ -36,9 +42,15 @@ import {
   ShopProductsGroupInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
+import {
+  castProductAttributeForUi,
+  getProductCurrentViewCastedAttributes,
+} from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
+
+const minAssetsListCount = 2;
 
 export interface GetCardDataInterface {
   locale: string;
@@ -52,7 +64,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
-}: GetCardDataInterface): Promise<ProductInterface | null> {
+}: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
@@ -337,7 +349,7 @@ export async function getCardData({
         {
           $lookup: {
             from: COL_PRODUCT_ATTRIBUTES,
-            as: 'attributes',
+            as: 'attributesGroups',
             let: {
               productId: '$_id',
             },
@@ -387,9 +399,59 @@ export async function getCardData({
                   ],
                 },
               },
+
+              // get attributes group
+              {
+                $lookup: {
+                  from: COL_ATTRIBUTES_GROUPS,
+                  as: 'attributesGroup',
+                  let: {
+                    attributesGroupId: '$attributesGroupId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$attributesGroupId'],
+                        },
+                      },
+                    },
+                    {
+                      $sort: {
+                        views: SORT_DESC,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  attributesGroup: {
+                    $arrayElemAt: ['$attributesGroup', 0],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: '$attributesGroupId',
+                  nameI18n: {
+                    $first: '$attributesGroup.nameI18n',
+                  },
+                  attributes: {
+                    $push: '$$ROOT',
+                  },
+                },
+              },
+              {
+                $project: {
+                  'attributes.attributesGroup': false,
+                },
+              },
             ],
           },
         },
+
+        // final fields
         {
           $addFields: {
             cardPrices: {
@@ -413,10 +475,20 @@ export async function getCardData({
     // console.log(JSON.stringify(product, null, 2));
     // console.log(`Shop products `, new Date().getTime() - shopProductsStartTime);
 
+    const {
+      rubric,
+      cardContent,
+      assets,
+      connections,
+      attributesGroups,
+      shopProducts,
+      ...restProduct
+    } = product;
+
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
     const cardConnections: ProductConnectionInterface[] = [];
-    (product.connections || []).forEach(({ attribute, ...connection }) => {
+    (connections || []).forEach(({ attribute, ...connection }) => {
       const connectionProducts = (connection.connectionProducts || []).reduce(
         (acc: ProductConnectionItemInterface[], connectionProduct) => {
           if (!connectionProduct.shopProduct) {
@@ -461,13 +533,22 @@ export async function getCardData({
     });
     // console.log(`card connections `, new Date().getTime() - startTime);
 
-    const initialProductAttributes = (product.attributes || []).filter(({ showInCard }) => {
-      return showInCard;
-    });
+    const initialProductAttributes = (attributesGroups || []).reduce(
+      (acc: ProductAttributeInterface[], { attributes }) => {
+        const visibleAttributes = attributes.filter(({ showInCard, attributeId }) => {
+          const excluded = excludedAttributesIds.some((excludedAttributeId) => {
+            return excludedAttributeId.equals(attributeId);
+          });
+          return showInCard && !excluded;
+        });
+
+        return [...acc, ...visibleAttributes];
+      },
+      [],
+    );
 
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
-      excludedAttributesIds,
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale,
@@ -476,7 +557,6 @@ export async function getCardData({
 
     // textFeatures
     const textFeatures = getProductCurrentViewCastedAttributes({
-      excludedAttributesIds,
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
       locale,
@@ -485,7 +565,6 @@ export async function getCardData({
 
     // tagFeatures
     const tagFeatures = getProductCurrentViewCastedAttributes({
-      excludedAttributesIds,
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
       locale,
@@ -494,7 +573,6 @@ export async function getCardData({
 
     // iconFeatures
     const iconFeatures = getProductCurrentViewCastedAttributes({
-      excludedAttributesIds,
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
       locale,
@@ -503,7 +581,6 @@ export async function getCardData({
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
-      excludedAttributesIds,
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale,
@@ -511,7 +588,7 @@ export async function getCardData({
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
     // cardShopProducts
-    const groupedByShops = (product.shopProducts || []).reduce(
+    const groupedByShops = (shopProducts || []).reduce(
       (acc: ShopProductsGroupInterface[], shopProduct) => {
         const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
         if (existingShopIndex > -1) {
@@ -588,7 +665,6 @@ export async function getCardData({
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // card content
-    const { rubric, cardContent, ...restProduct } = product;
     let castedCardContent: ProductCardContentInterface | null = null;
     if (cardContent) {
       let contentCityValue = cardContent.content[city];
@@ -608,7 +684,7 @@ export async function getCardData({
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
-    for await (const productAttribute of product.attributes || []) {
+    for await (const productAttribute of initialProductAttributes || []) {
       if (!productAttribute.showAsBreadcrumb) {
         continue;
       }
@@ -651,16 +727,66 @@ export async function getCardData({
     ];
     // console.log(`cardBreadcrumbs `, new Date().getTime() - startTime);
 
-    const name = getFieldStringLocale(product.nameI18n, locale);
-    const description = getFieldStringLocale(product.descriptionI18n, locale);
+    const name = getFieldStringLocale(restProduct.nameI18n, locale);
+    const description = getFieldStringLocale(restProduct.descriptionI18n, locale);
+    const shopsCount = finalShopProducts.length;
+    const isShopless = noNaN(shopsCount) < 1;
+    const cardAssets = assets ? assets.assets : [];
+    const cardAttributesGroups = (attributesGroups || []).reduce(
+      (acc: ProductAttributesGroupInterface[], attributesGroup) => {
+        const visibleAttributes = attributesGroup.attributes.filter(
+          ({ showInCard, attributeId, viewVariant }) => {
+            const isListViewAttribute = viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+            const excluded = excludedAttributesIds.some((excludedAttributeId) => {
+              return excludedAttributeId.equals(attributeId);
+            });
+            return showInCard && !excluded && isListViewAttribute;
+          },
+        );
+
+        if (visibleAttributes.length > 0) {
+          return [
+            ...acc,
+            {
+              ...attributesGroup,
+              name: getFieldStringLocale(attributesGroup.nameI18n, locale),
+              attributes: visibleAttributes.reduce(
+                (acc: ProductAttributeInterface[], productAttribute) => {
+                  const castedAttribute = castProductAttributeForUi({
+                    productAttribute,
+                    locale,
+                  });
+                  if (!castedAttribute) {
+                    return acc;
+                  }
+                  return [...acc, castedAttribute];
+                },
+                [],
+              ),
+            },
+          ];
+        }
+
+        return acc;
+      },
+      [],
+    );
+
+    const shopsCounterPostfix =
+      noNaN(shopsCount) > 1
+        ? getConstantTranslation(`shops.plural.${locale}`)
+        : getConstantTranslation(`shops.single.${locale}`);
 
     return {
-      ...restProduct,
-      connections: cardConnections,
-      name,
-      rubric,
-      description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
+      product: {
+        ...restProduct,
+        name,
+        description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
+      },
       cardPrices,
+      rubric,
+      cardLayout: rubric?.variant?.cardLayout || LAYOUT_DEFAULT,
+      connections: cardConnections,
       listFeatures,
       textFeatures,
       tagFeatures,
@@ -668,8 +794,19 @@ export async function getCardData({
       ratingFeatures,
       cardShopProducts,
       cardBreadcrumbs,
-      shopsCount: finalShopProducts.length,
+      shopsCount,
+      isShopless,
+      shopProducts: finalShopProducts,
       cardContent: castedCardContent,
+      shopsCounterPostfix,
+      attributesGroups: cardAttributesGroups,
+      assets: cardAssets,
+      isSingleImage: cardAssets.length < minAssetsListCount,
+      showFeaturesSection:
+        iconFeatures.length > 0 ||
+        tagFeatures.length > 0 ||
+        textFeatures.length > 0 ||
+        ratingFeatures.length > 0,
     };
   } catch (e) {
     console.log(e);

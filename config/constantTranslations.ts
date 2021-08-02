@@ -28,6 +28,16 @@ import {
 } from './common';
 
 export const constantTranslations = {
+  shops: {
+    single: {
+      [DEFAULT_LOCALE]: 'магазин',
+      [SECONDARY_LOCALE]: 'shop',
+    },
+    plural: {
+      [DEFAULT_LOCALE]: 'магазинах',
+      [SECONDARY_LOCALE]: 'shops',
+    },
+  },
   boolean: {
     true: {
       [DEFAULT_LOCALE]: 'Да',

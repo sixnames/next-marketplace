@@ -1,7 +1,7 @@
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import { CARD_LAYOUT_HALF_COLUMNS, LAYOUT_DEFAULT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
-import { ProductInterface } from 'db/uiInterfaces';
+import { InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getCardData } from 'lib/cardUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 import * as React from 'react';
 
 export interface CardLayoutInterface {
-  cardData: ProductInterface;
+  cardData: InitialCardDataInterface;
   companySlug?: string;
   companyId?: string | null;
 }
@@ -20,7 +20,7 @@ const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'))
 const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
-  const layoutVariant = props.cardData.rubric?.variant?.cardLayout || LAYOUT_DEFAULT;
+  const layoutVariant = props.cardData.cardLayout || LAYOUT_DEFAULT;
 
   if (layoutVariant === CARD_LAYOUT_HALF_COLUMNS) {
     return <CardHalfColumnsLayout {...props} />;
@@ -30,7 +30,7 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
 };
 
 interface CardInterface extends SiteLayoutProviderInterface {
-  cardData?: ProductInterface | null;
+  cardData?: InitialCardDataInterface | null;
 }
 
 const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
@@ -51,9 +51,9 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
 
   return (
     <SiteLayoutProvider
-      previewImage={cardData.mainImage}
-      title={`${cardData.originalName}${prefix} ${siteName}${cityDescription}`}
-      description={`${cardData.description}`}
+      previewImage={cardData.product.mainImage}
+      title={`${cardData.product.originalName}${prefix} ${siteName}${cityDescription}`}
+      description={`${cardData.product.description}`}
       company={company}
       {...props}
     >

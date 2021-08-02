@@ -1,5 +1,6 @@
 import {
   AddressModel,
+  AssetModel,
   AttributeModel,
   AttributesGroupModel,
   AttributeViewVariantModel,
@@ -33,6 +34,7 @@ import {
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
   ProductCardContentModel,
+  ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
@@ -512,4 +514,28 @@ export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
 
 export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
   layout?: string | null;
+}
+
+export interface InitialCardDataInterface {
+  product: ProductInterface;
+  listFeatures: ProductAttributeInterface[];
+  iconFeatures: ProductAttributeInterface[];
+  tagFeatures: ProductAttributeInterface[];
+  textFeatures: ProductAttributeInterface[];
+  ratingFeatures: ProductAttributeInterface[];
+  attributesGroups: ProductAttributesGroupInterface[];
+  connections: ProductConnectionInterface[];
+  showFeaturesSection: boolean;
+  isShopless: boolean;
+  shopsCounterPostfix: string;
+  isSingleImage: boolean;
+  assets: AssetModel[];
+  cardShopProducts: ShopProductInterface[];
+  cardBreadcrumbs: ProductCardBreadcrumbModel[];
+  shopsCount: number;
+  cardContent: ProductCardContentInterface | null;
+  cardLayout: string;
+  rubric: RubricInterface;
+  cardPrices: ProductCardPricesModel;
+  shopProducts: ShopProductInterface[];
 }

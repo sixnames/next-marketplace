@@ -484,10 +484,25 @@ export interface PageInterface extends PageModel {
 export type PagesGroupTemplateInterface = PagesGroupInterface;
 export type PagesTemplateInterface = PageInterface;
 
-export interface ProductSnippetInterface {
+export interface ProductSnippetConfigInterface {
+  // booleans
+  showSnippetBackground?: boolean | null;
+  showSnippetArticle?: boolean | null;
+  showSnippetRating?: boolean | null;
+  showSnippetButtonsOnHover?: boolean | null;
+
+  // numbers
+  gridCatalogueColumns?: number | null;
+}
+
+export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
   product: ProductInterface;
   testId?: string;
   className?: string;
   noAttributes?: boolean;
   noSecondaryName?: boolean;
+}
+
+export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
+  layout?: string | null;
 }

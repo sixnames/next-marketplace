@@ -4,7 +4,7 @@ import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInG
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Table, { TableColumn } from 'components/Table';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
+import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
@@ -131,6 +131,12 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
         getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
     },
     {
+      accessor: 'viewVariant',
+      headTitle: 'Тип',
+      render: ({ cellData }) =>
+        getConstantTranslation(`selectsOptions.attributeView.${cellData}.${locale}`),
+    },
+    {
       accessor: 'optionsGroup',
       headTitle: 'Опции',
       render: ({ cellData }) => cellData?.name || null,
@@ -144,14 +150,72 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       accessor: 'positioningInTitle',
       headTitle: 'Поз-ие в заголове',
       render: ({ cellData }) => {
-        // console.log(cellData);
-        // console.log(typeof cellData);
         if (!cellData) {
           return null;
         }
         return getConstantTranslation(
           `selectsOptions.attributePositioning.${cellData[locale]}.${locale}`,
         );
+      },
+    },
+    {
+      accessor: 'capitalise',
+      headTitle: 'С заглавной буквы в заголовке',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
+      accessor: 'notShowAsAlphabet',
+      headTitle: 'Не показывать опции атрибута сгруппированными по алфавиту',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
+      accessor: 'showInCard',
+      headTitle: 'Показывать в карточке товара',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
+      accessor: 'showAsBreadcrumb',
+      headTitle: 'Показывать в крошках карточки товара',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
+      accessor: 'showAsCatalogueBreadcrumb',
+      headTitle: 'Показывать в крошках каталога',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
+      accessor: 'showInSnippet',
+      headTitle: 'Показывать в сниппете товара',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
       },
     },
     {
@@ -345,6 +409,12 @@ export const getServerSideProps = async (
                 }
               : null,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+            metric: attribute.metric
+              ? {
+                  ...attribute.metric,
+                  name: getFieldStringLocale(attribute.metric.nameI18n, props.sessionLocale),
+                }
+              : null,
           };
         }),
       }),

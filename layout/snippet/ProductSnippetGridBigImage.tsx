@@ -3,7 +3,6 @@ import Link from 'components/Link/Link';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
-import LayoutCard from 'layout/LayoutCard';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import Image from 'next/image';
 import * as React from 'react';
@@ -13,6 +12,10 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   testId,
   className,
   noSecondaryName,
+  showSnippetBackground,
+  showSnippetButtonsOnHover,
+  showSnippetArticle,
+  gridCatalogueColumns,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
@@ -28,10 +31,27 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     shopProductsIds,
   } = product;
 
+  const bgClassName = showSnippetBackground
+    ? 'bg-secondary dark:shadow-md'
+    : 'transition-all hover:shadow-md';
+
+  const columnsClassName =
+    // 3
+    gridCatalogueColumns === 3
+      ? 'grid-snippet-3'
+      : // 4
+      gridCatalogueColumns === 4
+      ? 'grid-snippet-4'
+      : // 5
+      gridCatalogueColumns === 5
+      ? 'grid-snippet-5'
+      : // 2
+        `grid-snippet-2`;
+
   return (
-    <LayoutCard
-      className={`relative text-center flex flex-col ${
-        className ? className : 'col-span-12 sm:col-span-6 md:col-span-4'
+    <div
+      className={`group rounded-md relative text-center flex flex-col grid-snippet ${bgClassName} ${
+        className ? className : columnsClassName
       }`}
     >
       <div className='px-4 pt-6'>
@@ -75,7 +95,9 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         )}
 
         {/*art*/}
-        <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+        {showSnippetArticle ? (
+          <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+        ) : null}
       </div>
 
       {/*price*/}
@@ -84,10 +106,14 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       </div>
 
       {/*controls*/}
-      <div className='flex items-center justify-between'>
+      <div
+        className={`flex items-center justify-between ${
+          showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
+        }`}
+      >
         <ControlButton
           icon={'cart'}
-          theme={'accent'}
+          theme={showSnippetBackground ? 'accent' : undefined}
           roundedTopRight
           ariaLabel={'Добавить в корзину'}
           testId={`${testId}-add-to-cart-grid`}
@@ -109,7 +135,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
         <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
       </div>
-    </LayoutCard>
+    </div>
   );
 };
 

@@ -20,6 +20,19 @@ export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
+// nav dropdown
+export const NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY = 'options-only';
+export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: LAYOUT_DEFAULT,
+    asset: `/layout/nav-dropdown/${LAYOUT_DEFAULT}.png`,
+  },
+  {
+    _id: NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
+    asset: `/layout/nav-dropdown/${NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY}.png`,
+  },
+];
+
 // row snippet
 export const ROW_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
 export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [

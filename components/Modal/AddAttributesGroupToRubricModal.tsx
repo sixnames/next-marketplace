@@ -70,7 +70,7 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
                 name={'attributesGroupId'}
                 options={getAllAttributesGroups}
                 testId={'attributes-groups'}
-                firstOption={'Не выбрано'}
+                firstOption
               />
 
               <ModalButtons>

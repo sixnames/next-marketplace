@@ -86,7 +86,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
                 name={'attributeId'}
                 testId={'attributeId'}
                 options={attributesOptions}
-                firstOption={'Не выбрана'}
+                firstOption
                 label={'Атрибут'}
                 showInlineError
                 isRequired

@@ -5,8 +5,8 @@ import {
 } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 import ErrorBoundary from 'components/ErrorBoundary';
-import Footer from 'layout/SiteLayout/Footer';
-import Header from 'layout/SiteLayout/Header';
+import Footer from 'layout/footer/Footer';
+import Header from 'layout/header/Header';
 import Spinner from 'components/Spinner';
 import Meta, { PageUrlsInterface } from '../Meta';
 import { useAppContext } from 'context/appContext';

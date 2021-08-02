@@ -19,11 +19,23 @@ export const RubricVariant = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+
+    // layouts
     t.string('cardLayout');
     t.string('gridSnippetLayout');
     t.string('rowSnippetLayout');
     t.string('catalogueFilterLayout');
     t.string('catalogueNavLayout');
+
+    // booleans
+    t.boolean('showSnippetBackground');
+    t.boolean('showSnippetArticle');
+    t.boolean('showSnippetRating');
+    t.boolean('showSnippetButtonsOnHover');
+    t.boolean('showCardButtonsBackground');
+
+    // numbers
+    t.int('gridCatalogueColumns');
 
     // RubricVariant name translation field resolver
     t.nonNull.field('name', {
@@ -98,11 +110,23 @@ export const UpdateRubricVariantInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('rubricVariantId');
     t.nonNull.json('nameI18n');
+
+    // layouts
     t.string('cardLayout');
     t.string('gridSnippetLayout');
     t.string('rowSnippetLayout');
     t.string('catalogueFilterLayout');
     t.string('catalogueNavLayout');
+
+    // booleans
+    t.boolean('showSnippetBackground');
+    t.boolean('showSnippetArticle');
+    t.boolean('showSnippetRating');
+    t.boolean('showSnippetButtonsOnHover');
+    t.boolean('showCardButtonsBackground');
+
+    // numbers
+    t.int('gridCatalogueColumns');
   },
 });
 

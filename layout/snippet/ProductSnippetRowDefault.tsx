@@ -5,7 +5,6 @@ import RatingStars from 'components/RatingStars';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
-import LayoutCard from 'layout/LayoutCard';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -15,6 +14,10 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
+  showSnippetBackground,
+  showSnippetButtonsOnHover,
+  showSnippetArticle,
+  showSnippetRating,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
@@ -35,9 +38,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
 
+  const bgClassName = showSnippetBackground
+    ? 'bg-secondary dark:shadow-md'
+    : 'transition-all hover:shadow-md';
+
   return (
-    <LayoutCard
-      className={`col-span-12 grid relative grid-cols-12 pt-6 pb-6 pr-5 ${
+    <div
+      className={`group grid relative md:grid-cols-12 py-6 px-5 w-full ${bgClassName} ${
         className ? className : ''
       }`}
     >
@@ -66,14 +73,18 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
         </div>
 
         {/*rating*/}
-        <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
-          <RatingStars size={'small'} rating={4.9} />
-        </div>
+        {showSnippetRating ? (
+          <div className='pl-5 pr-5 flex items-center justify-center h-control-button-height mt-auto'>
+            <RatingStars size={'small'} rating={4.9} />
+          </div>
+        ) : null}
       </div>
 
       <div className='flex flex-col col-span-9 md:col-span-10'>
         {/*art*/}
-        <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+        {showSnippetArticle ? (
+          <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+        ) : null}
 
         <div className='grid gap-4 grid-cols-7 flex-grow'>
           <div className='flex flex-col col-span-7 md:col-span-5'>
@@ -166,7 +177,11 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
 
         {/*controls*/}
         <div className='grid gap-4 grid-cols-7 flex-grow items-end'>
-          <div className='hidden md:flex flex-col col-span-7 md:col-span-5'>
+          <div
+            className={`hidden md:flex flex-col col-span-7 md:col-span-5 ${
+              showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
+            }`}
+          >
             <div className='flex items-center justify-end'>
               <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
               <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
@@ -182,7 +197,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                   : 'Нет в наличии'}
               </div>
 
-              <div className='flex gap-2'>
+              <div
+                className={`flex gap-2 ${
+                  showSnippetButtonsOnHover
+                    ? 'lg:opacity-0 group-hover:opacity-100 transition-all'
+                    : ''
+                }`}
+              >
                 <Button
                   className='w-full'
                   disabled={isShopless}
@@ -217,7 +238,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           </div>
         </div>
       </div>
-    </LayoutCard>
+    </div>
   );
 };
 

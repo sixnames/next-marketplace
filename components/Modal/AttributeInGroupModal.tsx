@@ -127,7 +127,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
               <FormikSelect
                 isRequired
-                firstOption={'Не выбрано'}
+                firstOption
                 label={'Тип отображения атрибута'}
                 name={'viewVariant'}
                 options={getAttributeViewVariantsOptions || []}
@@ -137,7 +137,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
               <FormikSelect
                 isRequired
-                firstOption={'Не выбрано'}
+                firstOption
                 label={'Тип атрибута'}
                 name={'variant'}
                 options={getAttributeVariantsOptions || []}
@@ -146,7 +146,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <FormikSelect
-                firstOption={'Не выбрано'}
+                firstOption
                 label={'Единица измерения'}
                 name={'metricId'}
                 options={getAllMetricsOptions}
@@ -162,7 +162,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                   variant !== ATTRIBUTE_VARIANT_SELECT &&
                   variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
                 }
-                firstOption={'Не выбрано'}
+                firstOption
                 label={'Группа опций'}
                 name={'optionsGroupId'}
                 options={getAllOptionsGroups}

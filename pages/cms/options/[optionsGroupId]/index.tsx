@@ -57,7 +57,7 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
         exact: true,
       },
       {
-        name: 'Общие',
+        name: 'Детали',
         testId: 'details',
         path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
         exact: true,

@@ -21,6 +21,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     <React.Fragment>
       {(options || []).map((option) => {
         const childOptions = option.options || [];
+        const isCentered = childOptions.length < 1;
 
         return (
           <div key={`${option._id}`}>
@@ -36,7 +37,11 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                   <img src={option.image} width='100' height='100' alt={`${option.name}`} />
                 </span>
               ) : null}
-              <span className='block text-xl font-medium text-primary-text'>
+              <span
+                className={`block text-xl font-medium text-primary-text ${
+                  isCentered ? 'text-center' : ''
+                }`}
+              >
                 {option.name}
                 {postfix}
               </span>

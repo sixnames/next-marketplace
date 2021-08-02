@@ -33,8 +33,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               onClick={hideDropdownHandler}
             >
               {option.image ? (
-                <span className='block mb-4 w-[120px]'>
-                  <img src={option.image} width='100' height='100' alt={`${option.name}`} />
+                <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
+                  <span className='block w-[120px]'>
+                    <img src={option.image} width='100' height='100' alt={`${option.name}`} />
+                  </span>
                 </span>
               ) : null}
               <span

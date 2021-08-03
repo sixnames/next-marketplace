@@ -42,12 +42,12 @@ export function getCatalogueRubricPipeline(
     : [];
 
   const optionsLimit = visibleOptionsCount
-    ? [
-        {
-          $limit: visibleOptionsCount,
+    ? {
+        options: {
+          $slice: ['$options', visibleOptionsCount],
         },
-      ]
-    : [];
+      }
+    : {};
 
   const rubricAttributesViewVariant =
     viewVariant === 'filter'
@@ -261,8 +261,16 @@ export function getCatalogueRubricPipeline(
                       {
                         $sort: sortStage,
                       },
-                      ...optionsLimit,
                     ],
+                  },
+                },
+
+                {
+                  $addFields: {
+                    totalOptionsCount: {
+                      $size: '$options',
+                    },
+                    ...optionsLimit,
                   },
                 },
               ],

@@ -270,6 +270,7 @@ export interface RubricAttributeInterface extends RubricAttributeModel, Attribut
   name?: string | null;
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;
+  totalOptionsCount?: number | null;
 }
 
 export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {
@@ -390,6 +391,7 @@ export interface CatalogueFilterAttributeInterface {
   isSelected: boolean;
   notShowAsAlphabet: boolean;
   options: CatalogueFilterAttributeOptionInterface[];
+  totalOptionsCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
 }

@@ -1,3 +1,4 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -29,6 +30,7 @@ const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ nameI18n, c
       <Formik
         initialValues={{
           nameI18n: nameI18n || {},
+          companySlug: DEFAULT_COMPANY_SLUG,
         }}
         onSubmit={(values) => {
           confirm(values);

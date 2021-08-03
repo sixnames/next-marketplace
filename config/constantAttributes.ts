@@ -114,9 +114,105 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: 'От 50 000',
+          ru: '50 000 – 100 000',
         },
-        slug: `50000_100000000`,
+        slug: `50000_100000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '100 000 – 150 000',
+        },
+        slug: `100000_150000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '150 000 – 200 000',
+        },
+        slug: `150000_200000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '200 000 – 250 000',
+        },
+        slug: `200000_250000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '250 000 – 500 000',
+        },
+        slug: `250000_500000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '500 000 – 1000 000',
+        },
+        slug: `500000_1000000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '1000 000 – 1500 000',
+        },
+        slug: `1000000_1500000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '1500 000 – 3000 000',
+        },
+        slug: `1500000_3000000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '3000 000 – 3500 000',
+        },
+        slug: `3000000_3500000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '3500 000 – 4000 000',
+        },
+        slug: `3500000_4000000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '4000 000 – 4500 000',
+        },
+        slug: `4000000_4500000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '4500 000 – 5000 000',
+        },
+        slug: `4500000_5000000`,
+      },
+      {
+        _id: new ObjectId(),
+        ...commonOptionFields,
+        nameI18n: {
+          ru: '5000 000 – 10 000 000',
+        },
+        slug: `5000000_10000000`,
       },
     ],
   };

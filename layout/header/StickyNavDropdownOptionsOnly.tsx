@@ -34,7 +34,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             >
               {option.image ? (
                 <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
-                  <span className='block w-[120px]'>
+                  <span className='block w-[100px] mx-auto'>
                     <img src={option.image} width='100' height='100' alt={`${option.name}`} />
                   </span>
                 </span>

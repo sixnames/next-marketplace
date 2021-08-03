@@ -1,3 +1,5 @@
+import { DEFAULT_COMPANY_SLUG, SORT_ASC } from 'config/common';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -19,6 +21,8 @@ export const RubricVariant = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
 
     // layouts
     t.string('cardLayout');
@@ -81,7 +85,28 @@ export const RubricVariantQueries = extendType({
       resolve: async (): Promise<RubricVariantModel[]> => {
         const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-        const rubricVariants = await rubricVariantsCollection.find({}).toArray();
+        const rubricVariants = await rubricVariantsCollection
+          .aggregate([
+            {
+              $addFields: {
+                index: {
+                  $cond: {
+                    if: {
+                      $eq: ['$slug', DEFAULT_COMPANY_SLUG],
+                    },
+                    then: 0,
+                    else: 1,
+                  },
+                },
+              },
+            },
+            {
+              $sort: {
+                index: SORT_ASC,
+              },
+            },
+          ])
+          .toArray();
         return rubricVariants;
       },
     });
@@ -102,6 +127,7 @@ export const CreateRubricVariantInput = inputObjectType({
   name: 'CreateRubricVariantInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.nonNull.string('companySlug');
   },
 });
 
@@ -185,8 +211,10 @@ export const RubricVariantMutations = extendType({
           }
 
           // Create rubric variant
+          const slug = generateDefaultLangSlug(input.nameI18n);
           const createdRubricVariantResult = await rubricVariantsCollection.insertOne({
             ...input,
+            slug,
           });
           const createdRubricVariant = createdRubricVariantResult.ops[0];
           if (!createdRubricVariantResult.result.ok || !createdRubricVariant) {

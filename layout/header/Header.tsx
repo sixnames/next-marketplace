@@ -144,7 +144,7 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
 
   if (cart && noNaN(cart.productsCount) > 0) {
     return (
-      <Popover>
+      <Popover as={'div'} className='flex items-center'>
         <Popover.Button>
           <span
             data-cy={`${testId}-cart-dropdown-trigger`}

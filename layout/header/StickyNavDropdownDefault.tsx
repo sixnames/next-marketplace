@@ -89,22 +89,19 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
       }`}
     >
       <Inner>
-        <div className='grid gap-4 pb-10 grid-cols-8'>
-          <div className='grid gap-4 grid-cols-4 col-span-5'>
-            {(attributes || []).map((attribute) => {
-              return (
-                <StickyNavAttribute
-                  key={`${attribute._id}`}
-                  attribute={attribute}
-                  hideDropdownHandler={hideDropdownHandler}
-                  rubricSlug={rubricSlug}
-                  attributeStyle={attributeStyle}
-                  attributeLinkStyle={attributeLinkStyle}
-                />
-              );
-            })}
-          </div>
-          <div className='col-span-3' />
+        <div className='grid gap-4 grid-cols-5'>
+          {(attributes || []).map((attribute) => {
+            return (
+              <StickyNavAttribute
+                key={`${attribute._id}`}
+                attribute={attribute}
+                hideDropdownHandler={hideDropdownHandler}
+                rubricSlug={rubricSlug}
+                attributeStyle={attributeStyle}
+                attributeLinkStyle={attributeLinkStyle}
+              />
+            );
+          })}
         </div>
       </Inner>
     </div>

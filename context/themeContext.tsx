@@ -33,14 +33,17 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   const [theme, setTheme] = React.useState<Theme>(initialTheme);
 
   React.useEffect(() => {
-    if (initialTheme === THEME_DARK) {
-      document.documentElement.setAttribute('data-theme', initialTheme);
-      document.documentElement.classList.remove(THEME_LIGHT);
-      document.documentElement.classList.add(initialTheme);
-    } else {
-      document.documentElement.setAttribute('data-theme', initialTheme);
-      document.documentElement.classList.remove(THEME_DARK);
-      document.documentElement.classList.add(initialTheme);
+    const themeProvider = document.querySelector('#theme-provider');
+    if (themeProvider) {
+      if (initialTheme === THEME_DARK) {
+        themeProvider.setAttribute('data-theme', initialTheme);
+        themeProvider.classList.remove(THEME_LIGHT);
+        themeProvider.classList.add(initialTheme);
+      } else {
+        themeProvider.setAttribute('data-theme', initialTheme);
+        themeProvider.classList.remove(THEME_DARK);
+        themeProvider.classList.add(initialTheme);
+      }
     }
   }, [initialTheme]);
 
@@ -73,10 +76,12 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   const toggleThemeValues = React.useCallback((prevTheme: string, theme: string) => {
     if (theme !== 'undefined' && prevTheme !== theme) {
       setCookie(null, THEME_COOKIE_KEY, theme);
-
-      document.documentElement.setAttribute('data-theme', theme);
-      document.documentElement.classList.remove(`${prevTheme}`);
-      document.documentElement.classList.add(theme);
+      const themeProvider = document.querySelector('#theme-provider');
+      if (themeProvider) {
+        themeProvider.setAttribute('data-theme', theme);
+        themeProvider.classList.remove(`${prevTheme}`);
+        themeProvider.classList.add(theme);
+      }
     }
   }, []);
 

@@ -44,7 +44,12 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
 
   return (
     <Provider session={session}>
-      <div className='min-h-[100vh]' style={themeStyle}>
+      <div
+        className={`min-h-[100vh] ${initialTheme}`}
+        id={'theme-provider'}
+        data-theme={initialTheme}
+        style={themeStyle}
+      >
         <ApolloProvider client={apolloClient}>
           <AppContextProvider
             companySlug={pageProps.companySlug}

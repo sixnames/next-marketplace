@@ -20,7 +20,7 @@ const rubricVariants: RubricVariantModel[] = [
   },
   {
     _id: getObjectId('rubricVariant alcohol'),
-    slug: DEFAULT_COMPANY_SLUG,
+    slug: 'alcohol',
     companySlug: DEFAULT_COMPANY_SLUG,
     showCardButtonsBackground: true,
     showSnippetArticle: true,

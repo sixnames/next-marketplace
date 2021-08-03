@@ -1,3 +1,4 @@
+import { DEFAULT_COMPANY_SLUG, SORT_ASC } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -84,7 +85,28 @@ export const RubricVariantQueries = extendType({
       resolve: async (): Promise<RubricVariantModel[]> => {
         const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-        const rubricVariants = await rubricVariantsCollection.find({}).toArray();
+        const rubricVariants = await rubricVariantsCollection
+          .aggregate([
+            {
+              $addFields: {
+                index: {
+                  $cond: {
+                    if: {
+                      $eq: ['$slug', DEFAULT_COMPANY_SLUG],
+                    },
+                    then: 0,
+                    else: 1,
+                  },
+                },
+              },
+            },
+            {
+              $sort: {
+                index: SORT_ASC,
+              },
+            },
+          ])
+          .toArray();
         return rubricVariants;
       },
     });

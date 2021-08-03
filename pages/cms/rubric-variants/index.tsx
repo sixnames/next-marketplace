@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'config/modalVariants';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -65,6 +65,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
               router.push(`${ROUTE_CMS}/rubric-variants/${dataItem._id}`).catch(console.log);
             }}
             deleteTitle={'Удалить тип рубрики'}
+            isDeleteDisabled={dataItem.slug === DEFAULT_COMPANY_SLUG}
             deleteHandler={() => {
               showModal({
                 variant: CONFIRM_MODAL,
@@ -118,6 +119,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
                       variables: {
                         input: {
                           nameI18n: values.nameI18n,
+                          companySlug: DEFAULT_COMPANY_SLUG,
                         },
                       },
                     });

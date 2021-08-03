@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { useConfigContext } from './configContext';
 import { THEME_COOKIE_KEY, THEME_DARK, THEME_LIGHT } from 'config/common';
 import { Theme } from 'types/clientTypes';
+import { setCookie } from 'nookies';
 
 interface ThemeContextInterface {
   theme: Theme;
@@ -13,25 +13,39 @@ interface ThemeContextInterface {
 }
 
 const ThemeContext = React.createContext<ThemeContextInterface>({
-  theme: 'undefined',
+  theme: THEME_LIGHT,
   isDark: false,
   isLight: true,
   logoSlug: 'siteLogo',
 });
 
-const ThemeContextProvider: React.FC = ({ children }) => {
+export interface ThemeContextProviderInterface {
+  initialTheme: Theme;
+}
+
+const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
+  children,
+  initialTheme,
+}) => {
   const [vh, setVh] = React.useState(() =>
     typeof window !== 'undefined' ? window.innerHeight * 0.01 : 0,
   );
-  const [theme, setTheme] = React.useState<Theme>('undefined');
-  const { themeStyles } = useConfigContext();
+  const [theme, setTheme] = React.useState<Theme>(initialTheme);
 
   React.useEffect(() => {
-    const localStorageTheme = window.localStorage.getItem(THEME_COOKIE_KEY) as Theme;
-    if (localStorageTheme && localStorageTheme !== 'undefined') {
-      setTheme(localStorageTheme);
+    const themeProvider = document.querySelector('#theme-provider');
+    if (themeProvider) {
+      if (initialTheme === THEME_DARK) {
+        themeProvider.setAttribute('data-theme', initialTheme);
+        themeProvider.classList.remove(THEME_LIGHT);
+        themeProvider.classList.add(initialTheme);
+      } else {
+        themeProvider.setAttribute('data-theme', initialTheme);
+        themeProvider.classList.remove(THEME_DARK);
+        themeProvider.classList.add(initialTheme);
+      }
     }
-  }, []);
+  }, [initialTheme]);
 
   React.useEffect(() => {
     function resizeHandler() {
@@ -51,32 +65,39 @@ const ThemeContextProvider: React.FC = ({ children }) => {
     const themeStyle = `
       --vh: ${vh}px;
       --fullHeight: calc(${vh}px * 100);
-      ${themeStyles}
       `;
 
     const pageHtml = document.querySelector('html');
     if (pageHtml) {
       pageHtml.setAttribute('style', themeStyle);
     }
-  }, [vh, theme, themeStyles]);
+  }, [vh, theme]);
 
-  React.useEffect(() => {
-    const localStorageTheme = window.localStorage.getItem(THEME_COOKIE_KEY);
-    if (theme !== 'undefined' && localStorageTheme !== theme) {
-      window.localStorage.setItem(THEME_COOKIE_KEY, theme);
-      document.documentElement.setAttribute('data-theme', theme);
-      document.documentElement.classList.remove(`${localStorageTheme}`);
-      document.documentElement.classList.add(theme);
+  const toggleThemeValues = React.useCallback((prevTheme: string, theme: string) => {
+    if (theme !== 'undefined' && prevTheme !== theme) {
+      setCookie(null, THEME_COOKIE_KEY, theme);
+      const themeProvider = document.querySelector('#theme-provider');
+      if (themeProvider) {
+        themeProvider.setAttribute('data-theme', theme);
+        themeProvider.classList.remove(`${prevTheme}`);
+        themeProvider.classList.add(theme);
+      }
     }
-  }, [theme]);
+  }, []);
 
   const toggleTheme = React.useCallback(() => {
     if (theme === THEME_DARK) {
-      setTheme(THEME_LIGHT);
+      setTheme((prevTheme) => {
+        toggleThemeValues(prevTheme, THEME_LIGHT);
+        return THEME_LIGHT;
+      });
     } else {
-      setTheme(THEME_DARK);
+      setTheme((prevTheme) => {
+        toggleThemeValues(prevTheme, THEME_DARK);
+        return THEME_DARK;
+      });
     }
-  }, [theme]);
+  }, [toggleThemeValues, theme]);
 
   const value = React.useMemo(() => {
     const isDark = theme === THEME_DARK;

@@ -618,6 +618,7 @@ export type CreateRubricInput = {
 
 export type CreateRubricVariantInput = {
   nameI18n: Scalars['JSONObject'];
+  companySlug: Scalars['String'];
 };
 
 export type CreateSupplierInput = {
@@ -2555,6 +2556,8 @@ export type RubricVariant = {
   __typename?: 'RubricVariant';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  slug: Scalars['String'];
+  companySlug: Scalars['String'];
   cardLayout?: Maybe<Scalars['String']>;
   gridSnippetLayout?: Maybe<Scalars['String']>;
   rowSnippetLayout?: Maybe<Scalars['String']>;

@@ -369,6 +369,7 @@ export interface NexusGenInputs {
   };
   CreateRubricVariantInput: {
     // input type
+    companySlug: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateSupplierInput: {
@@ -1980,6 +1981,7 @@ export interface NexusGenFieldTypes {
     cardLayout: string | null; // String
     catalogueFilterLayout: string | null; // String
     catalogueNavLayout: string | null; // String
+    companySlug: string; // String!
     gridCatalogueColumns: number | null; // Int
     gridSnippetLayout: string | null; // String
     name: string; // String!
@@ -1990,6 +1992,7 @@ export interface NexusGenFieldTypes {
     showSnippetBackground: boolean | null; // Boolean
     showSnippetButtonsOnHover: boolean | null; // Boolean
     showSnippetRating: boolean | null; // Boolean
+    slug: string; // String!
   };
   RubricVariantPayload: {
     // field return type
@@ -3101,6 +3104,7 @@ export interface NexusGenFieldTypeNames {
     cardLayout: 'String';
     catalogueFilterLayout: 'String';
     catalogueNavLayout: 'String';
+    companySlug: 'String';
     gridCatalogueColumns: 'Int';
     gridSnippetLayout: 'String';
     name: 'String';
@@ -3111,6 +3115,7 @@ export interface NexusGenFieldTypeNames {
     showSnippetBackground: 'Boolean';
     showSnippetButtonsOnHover: 'Boolean';
     showSnippetRating: 'Boolean';
+    slug: 'String';
   };
   RubricVariantPayload: {
     // field return type name

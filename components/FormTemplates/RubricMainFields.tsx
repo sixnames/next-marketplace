@@ -77,7 +77,6 @@ const RubricMainFields: React.FC = () => {
       <FormikSelect
         isRequired
         showInlineError
-        firstOption
         label={'Тип рубрики'}
         name={'variantId'}
         testId={'variantId'}

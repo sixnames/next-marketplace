@@ -189,10 +189,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     },
   ];
 
+  if (!connection.attribute) {
+    return null;
+  }
+
   return (
     <Accordion
-      testId={`${connection.attribute?.name}-connection`}
-      title={`${connection.attribute?.name}`}
+      testId={`${connection.attribute.name}-connection`}
+      title={`${connection.attribute.name}`}
       isOpen
       className='mb-8'
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
@@ -201,7 +205,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
         <Table<ProductConnectionItemModel>
           columns={columns}
           data={connectionProducts}
-          tableTestId={`${connection.attribute?.name}-connection-list`}
+          tableTestId={`${connection.attribute.name}-connection-list`}
           testIdKey={'product.name'}
         />
       </div>

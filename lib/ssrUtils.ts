@@ -18,6 +18,8 @@ import {
   SORT_DESC,
   PAGE_STATE_PUBLISHED,
   CATALOGUE_OPTION_SEPARATOR,
+  THEME_COOKIE_KEY,
+  THEME_LIGHT,
 } from 'config/common';
 import {
   COL_CITIES,
@@ -72,6 +74,7 @@ import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
 import nookies from 'nookies';
+import { Theme } from 'types/clientTypes';
 
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
@@ -793,13 +796,39 @@ export async function getPageInitialState({
     sameSite: 'strict',
   });
 
+  // Site theme accent color
+  const themeConfig = rawInitialData.configs.find(({ slug }) => {
+    return slug === 'siteThemeColor';
+  });
+  const themeColor = themeConfig?.singleValue;
+  const fallbackColor = `219, 83, 96`;
+  const themeRGB = themeColor ? themeColor.split(',').map((num) => noNaN(num)) : fallbackColor;
+  const toShort = themeRGB.length < 3;
+  const finalThemeColor = toShort ? fallbackColor : themeColor;
+
+  const themeR = toShort ? '219' : themeRGB[0];
+  const themeG = toShort ? '83' : themeRGB[1];
+  const themeB = toShort ? '96' : themeRGB[2];
+  const themeStyle = {
+    '--theme': `rgb(${finalThemeColor})`,
+    '--themeR': `${themeR}`,
+    [`--themeG`]: `${themeG}`,
+    [`--themeB`]: `${themeB}`,
+  };
+
+  // Theme
+  const cookies = nookies.get(context);
+  const theme = cookies?.[THEME_COOKIE_KEY] || THEME_LIGHT;
+
   return {
     db,
+    initialTheme: theme as Theme,
     path,
     host,
     domain,
     session,
     initialData,
+    themeStyle,
     company: castDbData(company),
     companySlug: company ? company.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
@@ -887,6 +916,8 @@ export async function getConsoleInitialData({
     initialData,
     companySlug,
     session,
+    themeStyle,
+    initialTheme,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
@@ -919,10 +950,12 @@ export async function getConsoleInitialData({
 
   return {
     props: {
+      initialTheme,
       companySlug,
       initialData,
       currentCity,
       sessionCity,
+      themeStyle,
       sessionUser: castDbData(sessionUser),
       currentCompany: currentCompany ? castDbData(currentCompany) : null,
       sessionLocale,
@@ -953,6 +986,8 @@ export async function getAppInitialData({
     initialData,
     companySlug,
     session,
+    themeStyle,
+    initialTheme,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
@@ -985,6 +1020,8 @@ export async function getAppInitialData({
 
   return {
     props: {
+      initialTheme,
+      themeStyle,
       companySlug,
       initialData,
       currentCity,
@@ -1124,6 +1161,8 @@ export async function getSiteInitialData({
     company,
     sessionUser,
     companySlug,
+    themeStyle,
+    initialTheme,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1144,6 +1183,8 @@ export async function getSiteInitialData({
   return {
     props: {
       ...catalogueCreatedPages,
+      initialTheme,
+      themeStyle,
       companySlug,
       initialData,
       navRubrics,

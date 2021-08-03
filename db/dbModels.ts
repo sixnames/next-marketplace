@@ -571,6 +571,8 @@ export interface RoleModel extends TimestampModel {
 export interface RubricVariantModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+  slug: string;
+  companySlug: string;
 
   // layouts
   cardLayout?: string | null;

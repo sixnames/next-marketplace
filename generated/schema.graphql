@@ -576,6 +576,7 @@ input CreateRubricInput {
 }
 
 input CreateRubricVariantInput {
+  companySlug: String!
   nameI18n: JSONObject!
 }
 
@@ -2250,6 +2251,7 @@ type RubricVariant {
   cardLayout: String
   catalogueFilterLayout: String
   catalogueNavLayout: String
+  companySlug: String!
   gridCatalogueColumns: Int
   gridSnippetLayout: String
   name: String!
@@ -2260,6 +2262,7 @@ type RubricVariant {
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean
   showSnippetRating: Boolean
+  slug: String!
 }
 
 type RubricVariantPayload implements Payload {

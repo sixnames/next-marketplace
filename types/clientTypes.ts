@@ -1,6 +1,6 @@
 import { IconType } from 'types/iconTypes';
 
-export type Theme = 'light' | 'dark' | 'undefined';
+export type Theme = 'light' | 'dark';
 export type ButtonTheme = 'primary' | 'secondary' | 'secondary-b' | 'gray';
 export type InputTheme = 'primary' | 'secondary';
 export type SizeType = 'small' | 'normal';

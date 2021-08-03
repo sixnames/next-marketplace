@@ -16,6 +16,7 @@ import Router from 'next/router';
 import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
 import NProgress from 'nprogress';
+import { Theme } from 'types/clientTypes';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;
@@ -28,6 +29,8 @@ export interface PagePropsInterface {
   pageUrls: PageUrlsInterface;
   currentCompany?: CompanyInterface | null;
   companySlug: string;
+  themeStyle: Record<string, any>;
+  initialTheme: Theme;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -36,38 +39,40 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
-  const { session, initialData, currentCity } = pageProps;
+  const { session, initialData, currentCity, themeStyle, initialTheme } = pageProps;
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
     <Provider session={session}>
-      <ApolloProvider client={apolloClient}>
-        <AppContextProvider
-          companySlug={pageProps.companySlug}
-          sessionCity={pageProps.sessionCity}
-          isMobileDevice={pageProps.isMobileDevice}
-          configs={initialData?.configs || []}
-        >
-          <NotificationsProvider>
-            <ConfigContextProvider
-              currentCity={currentCity}
-              configs={initialData?.configs || []}
-              cities={initialData?.cities || []}
-            >
-              <ThemeContextProvider>
-                <LocaleContextProvider
-                  languagesList={initialData?.languages || []}
-                  currency={initialData?.currency || ''}
-                >
-                  <UserContextProvider sessionUser={pageProps.sessionUser}>
-                    <Component {...pageProps} />
-                  </UserContextProvider>
-                </LocaleContextProvider>
-              </ThemeContextProvider>
-            </ConfigContextProvider>
-          </NotificationsProvider>
-        </AppContextProvider>
-      </ApolloProvider>
+      <div className='min-h-[100vh]' style={themeStyle}>
+        <ApolloProvider client={apolloClient}>
+          <AppContextProvider
+            companySlug={pageProps.companySlug}
+            sessionCity={pageProps.sessionCity}
+            isMobileDevice={pageProps.isMobileDevice}
+            configs={initialData?.configs || []}
+          >
+            <NotificationsProvider>
+              <ConfigContextProvider
+                currentCity={currentCity}
+                configs={initialData?.configs || []}
+                cities={initialData?.cities || []}
+              >
+                <ThemeContextProvider initialTheme={initialTheme}>
+                  <LocaleContextProvider
+                    languagesList={initialData?.languages || []}
+                    currency={initialData?.currency || ''}
+                  >
+                    <UserContextProvider sessionUser={pageProps.sessionUser}>
+                      <Component {...pageProps} />
+                    </UserContextProvider>
+                  </LocaleContextProvider>
+                </ThemeContextProvider>
+              </ConfigContextProvider>
+            </NotificationsProvider>
+          </AppContextProvider>
+        </ApolloProvider>
+      </div>
     </Provider>
   );
 }

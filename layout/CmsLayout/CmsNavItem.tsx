@@ -17,7 +17,12 @@ interface CmsNavItemNameInterface {
   counter?: number | null;
 }
 
-const CmsNavItemName: React.FC<CmsNavItemNameInterface> = ({ icon, name, counter, compact }) => {
+export const CmsNavItemName: React.FC<CmsNavItemNameInterface> = ({
+  icon,
+  name,
+  counter,
+  compact,
+}) => {
   const iconType = icon as IconType;
   return (
     <span
@@ -132,7 +137,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
                   <Link
                     href={`${basePath}${path}`}
                     className={`block ${
-                      isCurrent ? 'bg-theme text-white' : 'text-secondary-text hover:text-theme'
+                      isCurrent ? 'bg-theme text-white' : 'text-white hover:text-theme'
                     }`}
                   >
                     <span className='pr-[10px] py-[10px]'>{name}</span>
@@ -154,7 +159,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
           <Link
             href={`${basePath}${path}`}
             className={`block hover:no-underline ${
-              isCurrent ? 'bg-theme text-white' : 'text-secondary-text hover:text-theme'
+              isCurrent ? 'bg-theme text-white' : 'text-white hover:text-theme'
             }`}
           >
             <CmsNavItemName name={name} compact={isCompact} icon={icon} counter={counter} />

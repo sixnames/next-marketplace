@@ -1,20 +1,27 @@
 import ControlButton from 'components/ControlButton';
 import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
-import ImageGallery from 'react-image-gallery';
+import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
 
-interface CardImageSliderInterface {
+interface CardImageSliderInterface extends Omit<ReactImageGalleryProps, 'items'> {
   assets: AssetModel[];
+  className?: string;
+  controlButtonClassName?: string;
 }
 
-const CardImageSlider: React.FC<CardImageSliderInterface> = ({ assets }) => {
-  const items = assets.map(({ url }) => {
+const CardImageSlider: React.FC<CardImageSliderInterface> = ({
+  assets,
+  controlButtonClassName = 'text-theme',
+  className,
+}) => {
+  const items: ReactImageGalleryItem[] = assets.map(({ url }) => {
     return {
       original: url,
     };
   });
+
   return (
-    <div>
+    <div className={`${className ? className : ''}`}>
       <ImageGallery
         showPlayButton={false}
         showBullets
@@ -24,7 +31,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({ assets }) => {
             <div className='absolute top-half left-6 z-40'>
               <ControlButton
                 icon={'chevron-left'}
-                className='text-theme'
+                className={controlButtonClassName}
                 onClick={onClick}
                 disabled={disabled}
               />
@@ -36,7 +43,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({ assets }) => {
             <div className='absolute top-half right-6 z-40'>
               <ControlButton
                 icon={'chevron-right'}
-                className='text-theme'
+                className={controlButtonClassName}
                 onClick={onClick}
                 disabled={disabled}
               />

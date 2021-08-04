@@ -37,7 +37,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
   }
 
   return (
-    <div className={className}>
+    <div className={`${className ? className : ''}`}>
       <div className='overflow-x-auto lg:overflow-x-auto max-w-full pb-6'>
         <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
           {assets.map(({ url }, index) => {

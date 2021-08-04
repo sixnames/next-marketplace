@@ -80,6 +80,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
+  const { brand, brandCollection, manufacturer } = product;
+
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
@@ -279,7 +281,79 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               {/*text features*/}
-              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5' />
+              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5'>
+                {/*brand / brand collection / manufacturer as features*/}
+                {brand || manufacturer || brandCollection ? (
+                  <section className='mb-8 max-w-[30rem]'>
+                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+
+                    <ul className='space-y-4 sm:space-y-2'>
+                      {brand ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Бренд
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                        </li>
+                      ) : null}
+
+                      {brand?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={brand.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {brand.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+
+                      {brandCollection ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Линейка бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Производитель
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт производителя
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={manufacturer.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {manufacturer.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+                    </ul>
+                  </section>
+                ) : null}
+              </CardTextFeatures>
             </div>
           </div>
         ) : null}

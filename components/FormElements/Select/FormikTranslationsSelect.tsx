@@ -5,7 +5,6 @@ import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
 import Accordion from 'components/Accordion';
 import InputLine from '../Input/InputLine';
-import classes from './FormikTranslationsSelect.module.css';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { TranslationModel } from 'db/dbModels';
@@ -65,7 +64,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
       isHorizontal={isHorizontal}
       labelTag={'div'}
       label={label}
-      labelClass={classes.listLabel}
+      labelClass='mb-2'
     >
       {dbLocales.map((localeSlug, index) => {
         const value: string | undefined = currentField[localeSlug];
@@ -73,7 +72,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
         const notEmpty = value && value.length;
         const accordionIcon = notEmpty ? 'check' : 'cross';
         const accordionIconTooltip = notEmpty ? 'Поле заполнено' : 'Поле не заполнено';
-        const accordionIconClass = notEmpty ? classes.iconDone : classes.iconEmpty;
+        const accordionIconClass = notEmpty ? 'text-green-700' : 'text-red-500';
         const name = `${inputName}.${localeSlug}`;
         const isDefault = defaultLocale === localeSlug;
         const isNotLast = index !== dbLocales.length - 1;
@@ -86,13 +85,13 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
               title={localeSlug}
               titleRight={
                 <Tooltip title={accordionIconTooltip}>
-                  <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
-                    <Icon name={accordionIcon} />
+                  <div className={accordionIconClass}>
+                    <Icon className='w-4 h-4' name={accordionIcon} />
                   </div>
                 </Tooltip>
               }
             >
-              <div className={classes.languageInput}>
+              <div className='mt-3 mb-6'>
                 <FormikSelect
                   {...props}
                   options={options}

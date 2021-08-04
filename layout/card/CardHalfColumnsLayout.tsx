@@ -15,9 +15,12 @@ import CardShopsList from 'layout/card/CardShopsList';
 import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
+
+const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
 
 const dataSectionClassName = 'mb-14';
 const stickyClassName = 'sticky top-20';
@@ -56,8 +59,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  console.log(showCardImagesSlider);
-
   const { brand, brandCollection, manufacturer } = product;
 
   return (
@@ -81,6 +82,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <div className='lg:grid lg:grid-cols-7 gap-8 mb-28'>
             {/*gallery*/}
             <div className='lg:col-span-4 relative'>
+              {showCardImagesSlider ? <CardImageSlider assets={assets} /> : null}
+
               {isSingleImage ? (
                 <div className={stickyClassName}>
                   <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>

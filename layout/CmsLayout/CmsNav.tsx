@@ -32,7 +32,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, basePath, company, navItem
   const openNavHandler = React.useCallback(setCompactOff, [setCompactOff]);
 
   return (
-    <nav className={classes.frame}>
+    <nav className={`${classes.frame}`}>
       <div className={`${classes.collapse}`}>
         {isCompact ? null : (
           <div className='pl-[10px] text-secondary-text'>
@@ -53,7 +53,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, basePath, company, navItem
                   <CmsNavItem
                     companyId={company ? `${company._id}` : undefined}
                     basePath={basePath}
-                    compact={isCompact}
+                    isCompact={isCompact}
                     key={`${item._id}`}
                     item={item}
                     pathname={pathname}

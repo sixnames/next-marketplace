@@ -6,14 +6,46 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
-import classes from 'layout/CmsLayout/CmsNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
 import Tooltip from 'components/Tooltip';
 import { IconType } from 'types/iconTypes';
 
+interface CmsNavItemNameInterface {
+  icon?: string | null;
+  name?: string | null;
+  compact?: boolean;
+  counter?: number | null;
+}
+
+const CmsNavItemName: React.FC<CmsNavItemNameInterface> = ({ icon, name, counter, compact }) => {
+  const iconType = icon as IconType;
+  return (
+    <span
+      className={`flex items-center gap-[10px] min-h-[44px] ${
+        compact ? 'py-[10px] justify-center' : 'px-[20px] py-[10px]'
+      }`}
+    >
+      {icon ? (
+        <span>
+          <Icon className='w-[18px] h-[18px]' name={iconType} />
+        </span>
+      ) : null}
+      {compact ? null : <span className=''>{name}</span>}
+
+      {counter && counter > 0 ? (
+        <CounterSticker
+          value={counter}
+          className={compact ? 'absolute top-0 right-0' : 'ml-auto'}
+          isAbsolute={false}
+        />
+      ) : null}
+    </span>
+  );
+};
+
 interface AppNavItemInterface {
   item: NavItemInterface;
-  compact?: boolean;
+  isCompact?: boolean;
   pathname: string;
   openNavHandler: () => void;
   closeNavHandler: () => void;
@@ -21,19 +53,24 @@ interface AppNavItemInterface {
   companyId?: string;
 }
 
+const itemClassName = 'relative';
+
 const CmsNavItem: React.FC<AppNavItemInterface> = ({
   item,
   basePath,
-  compact,
+  isCompact,
   openNavHandler,
   pathname,
   companyId,
 }) => {
   const { asPath } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
-  const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
+  const {
+    isCompact: innerIsCompact,
+    setCompactOn,
+    toggleCompactHandler,
+  } = useCompact(isDropdownActive);
   const { name, icon, path, children, slug } = item;
-  const iconType = icon as IconType;
   const counter = useNewOrdersCounter({
     allowFetch:
       item.slug === CMS_ORDERS_NAV_ITEM_SLUG || item.slug === CONSOLE_ORDERS_NAV_ITEM_SLUG,
@@ -67,7 +104,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
   );
 
   function dropdownNavHandler() {
-    if (compact) {
+    if (isCompact) {
       openNavHandler();
       setCompactOn();
     } else {
@@ -77,83 +114,50 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
 
   if (children && children.length) {
     return (
-      <li className={classes.item} data-cy={`app-nav-item-${slug}`}>
-        <Tooltip title={compact ? name : null}>
-          <div
-            className={`${classes.complexItem} ${compact ? classes.complexItemCompact : ''} ${
-              isDropdownActive ? classes.complexItemActive : ''
-            }`}
-            onClick={dropdownNavHandler}
-          >
-            {icon ? (
-              <span className={`${classes.linkIcon}`}>
-                <Icon name={iconType} />
-              </span>
-            ) : null}
-            <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-              {name}
-            </span>
+      <li className={itemClassName} data-cy={`app-nav-item-${slug}`}>
+        <Tooltip title={isCompact ? name : null}>
+          <div onClick={dropdownNavHandler}>
+            <CmsNavItemName name={name} compact={isCompact} icon={icon} />
           </div>
         </Tooltip>
 
-        <ul
-          className={`${classes.dropdown} ${isCompact ? classes.dropdownActive : ''} ${
-            compact ? classes.dropdownCompact : ''
-          }`}
-        >
-          {children.map((dropdownItem) => {
-            const { name, path } = dropdownItem;
-            const isCurrent = checkIsCurrent(`${path}`);
+        {innerIsCompact || isCompact ? null : (
+          <ul className='pb-10px pl-[38px]'>
+            {children.map((dropdownItem) => {
+              const { name, path } = dropdownItem;
+              const isCurrent = checkIsCurrent(`${path}`);
 
-            return (
-              <li className={classes.item} key={name} data-cy={`app-nav-item-${slug}`}>
-                <Link
-                  href={`${basePath}${path}`}
-                  className={`${classes.complexLink} ${isCurrent ? classes.linkActive : ''}`}
-                >
-                  <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-                    {name}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+              return (
+                <li key={name} data-cy={`app-nav-item-${slug}`}>
+                  <Link
+                    href={`${basePath}${path}`}
+                    className={`block ${
+                      isCurrent ? 'bg-theme text-white' : 'text-secondary-text hover:text-theme'
+                    }`}
+                  >
+                    <span className='pr-[10px] py-[10px]'>{name}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </li>
     );
   }
 
   const isCurrent = checkIsCurrent(`${path}`);
   return (
-    <li className={classes.item} data-cy={`app-nav-item-${slug}`}>
-      <Tooltip title={compact ? name : ''}>
+    <li className={itemClassName} data-cy={`app-nav-item-${slug}`}>
+      <Tooltip title={isCompact ? name : null}>
         <div>
           <Link
             href={`${basePath}${path}`}
-            className={`${classes.link} ${compact ? classes.linkCompact : ''} ${
-              isCurrent ? classes.linkActive : ''
+            className={`block hover:no-underline ${
+              isCurrent ? 'bg-theme text-white' : 'text-secondary-text hover:text-theme'
             }`}
           >
-            {icon ? (
-              <span className={`${classes.linkIcon}`}>
-                {icon && (
-                  <span className={`${classes.linkIcon}`}>
-                    <Icon name={iconType} />
-                  </span>
-                )}
-              </span>
-            ) : null}
-            <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-              {name}
-            </span>
-
-            {counter && counter > 0 ? (
-              <CounterSticker
-                value={counter}
-                className={compact ? 'absolute top-0 right-0' : 'ml-auto'}
-                isAbsolute={false}
-              />
-            ) : null}
+            <CmsNavItemName name={name} compact={isCompact} icon={icon} counter={counter} />
           </Link>
         </div>
       </Tooltip>

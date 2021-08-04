@@ -14,7 +14,7 @@ interface AppLayoutInterface {
   pageUrls: PageUrlsInterface;
 }
 
-const narrowContentClass = 'lg:pl-[220px]';
+const narrowContentClass = 'lg:pl-[250px]';
 const wideContentClass = 'lg:pl-[60px]';
 
 const CmsLayout: React.FC<AppLayoutInterface> = ({ children, pageUrls, title }) => {

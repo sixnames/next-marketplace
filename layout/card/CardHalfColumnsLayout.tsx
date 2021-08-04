@@ -15,9 +15,13 @@ import CardShopsList from 'layout/card/CardShopsList';
 import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
+
+const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
+const CardSimpleGallery = dynamic(() => import('layout/card/CardSimpleGallery'));
 
 const dataSectionClassName = 'mb-14';
 const stickyClassName = 'sticky top-20';
@@ -49,11 +53,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     cardPrices,
     shopsCount,
     shopProducts,
+    showCardImagesSlider,
   } = useCardData({
     cardData,
     companySlug,
     companyId,
   });
+
+  const { brand, brandCollection, manufacturer } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -76,45 +83,17 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <div className='lg:grid lg:grid-cols-7 gap-8 mb-28'>
             {/*gallery*/}
             <div className='lg:col-span-4 relative'>
-              {isSingleImage ? (
-                <div className={stickyClassName}>
-                  <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
-                    <Image
-                      src={`${product.mainImage}`}
-                      alt={product.originalName}
-                      title={product.originalName}
-                      width={480}
-                      height={480}
-                      objectFit='contain'
-                    />
-                  </div>
-                </div>
+              {showCardImagesSlider ? (
+                <CardImageSlider assets={assets} className={stickyClassName} />
               ) : (
-                <div className={stickyClassName}>
-                  <div className='overflow-x-auto lg:overflow-x-auto max-w-full pb-6'>
-                    <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
-                      {assets.map(({ url }) => {
-                        return (
-                          <div
-                            key={url}
-                            className='min-w-[260px] lg:min-w-full rounded-lg shadow-lg p-1'
-                          >
-                            <div className='relative'>
-                              <Image
-                                src={url}
-                                alt={product.originalName}
-                                title={product.originalName}
-                                width={400}
-                                height={400}
-                                objectFit='contain'
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+                <CardSimpleGallery
+                  mainImage={product.mainImage}
+                  className={stickyClassName}
+                  alt={product.originalName}
+                  title={product.originalName}
+                  assets={assets}
+                  isSingleImage={isSingleImage}
+                />
               )}
             </div>
 
@@ -123,6 +102,30 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
               <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
+                  {/*brand preview*/}
+                  {brand && brand.logo ? (
+                    <div className='flex items-center mb-6 gap-4 relative'>
+                      <img
+                        className='object-contain w-[70px] h-[70px]'
+                        src={brand.logo}
+                        width='70'
+                        height='70'
+                        alt={`${brand.name}`}
+                      />
+                      <div>{brand.name}</div>
+                      {brand.mainUrl ? (
+                        <a
+                          target={'_blank'}
+                          href={brand.mainUrl}
+                          className='block absolute z-10 inset-0 text-indent-full overflow-hidden'
+                          rel='noreferrer'
+                        >
+                          {brand.name}
+                        </a>
+                      ) : null}
+                    </div>
+                  ) : null}
+
                   {/*price*/}
                   <div className='flex flex-wrap gap-6 items-baseline mb-8'>
                     <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
@@ -254,6 +257,78 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     </section>
                   );
                 })}
+
+                {/*brand / brand collection / manufacturer as features*/}
+                {brand || manufacturer || brandCollection ? (
+                  <section className={`${dataSectionClassName}`}>
+                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+
+                    <ul className='space-y-4 sm:space-y-2'>
+                      {brand ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Бренд
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                        </li>
+                      ) : null}
+
+                      {brand?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={brand.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {brand.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+
+                      {brandCollection ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Линейка бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Производитель
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт производителя
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={manufacturer.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {manufacturer.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+                    </ul>
+                  </section>
+                ) : null}
 
                 {showFeaturesSection ? (
                   <React.Fragment>

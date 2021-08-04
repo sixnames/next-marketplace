@@ -15,9 +15,12 @@ import CardShopsList from 'layout/card/CardShopsList';
 import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
+
+const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
 
 interface CardTitleInterface {
   productId: any;
@@ -69,11 +72,15 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     shopsCount,
     shopProducts,
     cardContent,
+    assets,
+    showCardImagesSlider,
   } = useCardData({
     cardData,
     companySlug,
     companyId,
   });
+
+  const { brand, brandCollection, manufacturer } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -97,16 +104,29 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             {/*content*/}
             <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
               {/*image*/}
-              <div className='md:col-span-1 md:order-2 lg:col-span-3 lg:flex lg:justify-center'>
-                <div className='relative h-[300px] w-[160px] md:h-[500px] lg:h-[600px]'>
-                  <Image
-                    src={`${product.mainImage}`}
-                    alt={product.originalName}
-                    title={product.originalName}
-                    layout='fill'
-                    objectFit='contain'
-                  />
-                </div>
+              <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center'>
+                {showCardImagesSlider ? (
+                  <div className='relative w-[160px] min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
+                    <CardImageSlider
+                      assets={assets}
+                      showBullets={false}
+                      showFullscreenButton={false}
+                      arrowLeftClassName={'absolute top-half -left-14 z-40'}
+                      arrowRightClassName={'absolute top-half -right-14 z-40'}
+                      additionalClass='standard-card-image-slider'
+                    />
+                  </div>
+                ) : (
+                  <div className='relative w-[160px] md:h-[500px] lg:h-[600px]'>
+                    <Image
+                      src={`${product.mainImage}`}
+                      alt={product.originalName}
+                      title={product.originalName}
+                      layout='fill'
+                      objectFit='contain'
+                    />
+                  </div>
+                )}
               </div>
 
               {/*main data*/}
@@ -261,7 +281,79 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               {/*text features*/}
-              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5' />
+              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5'>
+                {/*brand / brand collection / manufacturer as features*/}
+                {brand || manufacturer || brandCollection ? (
+                  <section className='mb-8 max-w-[30rem]'>
+                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+
+                    <ul className='space-y-4 sm:space-y-2'>
+                      {brand ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Бренд
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                        </li>
+                      ) : null}
+
+                      {brand?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={brand.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {brand.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+
+                      {brandCollection ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Линейка бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Производитель
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт производителя
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={manufacturer.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {manufacturer.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+                    </ul>
+                  </section>
+                ) : null}
+              </CardTextFeatures>
             </div>
           </div>
         ) : null}

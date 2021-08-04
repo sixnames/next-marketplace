@@ -3,7 +3,6 @@ import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
 import ShopsMap from 'components/ShopsMap';
-import SlickSlider from 'components/SlickSlider';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
@@ -39,6 +38,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Title from 'components/Title';
 import Inner from 'components/Inner';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
 
 interface HomeRoutInterface {
   topProducts: ProductInterface[];
@@ -65,105 +65,120 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   const autoplaySpeed = noNaN(configAutoplaySpeed);
   const sectionClassName = `mb-14 sm:mb-28`;
 
+  const sliderItems = sliderPages.reduce(
+    (
+      acc: ReactImageGalleryItem[],
+      {
+        slug,
+        name,
+        description,
+        mainBanner,
+        mainBannerMobile,
+        mainBannerTextColor,
+        mainBannerTextPadding,
+        mainBannerVerticalTextAlign,
+        mainBannerHorizontalTextAlign,
+        mainBannerTextMaxWidth,
+        mainBannerTextAlign,
+        showAsMainBanner,
+      },
+    ) => {
+      if (!mainBanner || !showAsMainBanner) {
+        return acc;
+      }
+
+      return [
+        ...acc,
+        {
+          original: `${mainBanner?.url}`,
+          renderItem(): React.ReactNode {
+            return (
+              <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
+                <Link
+                  target={'_blank'}
+                  href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                  className={`relative block ${mainBannerMobile ? '' : 'h-[400px] md:h-auto'}`}
+                >
+                  {/*image*/}
+                  <picture>
+                    {mainBannerMobile ? (
+                      <source media='(max-width:767px)' srcSet={mainBannerMobile.url} />
+                    ) : null}
+                    <source srcSet={mainBanner.url} />
+                    <img
+                      className='block relative w-full h-full z-10 object-cover'
+                      src={mainBanner.url}
+                      alt={`${name}`}
+                      title={`${name}`}
+                      width='1250'
+                      height='435'
+                    />
+                  </picture>
+
+                  {/*text*/}
+                  <span
+                    className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
+                    style={
+                      {
+                        paddingTop: mainBannerTextPadding ? `${mainBannerTextPadding}%` : '2rem',
+                        justifyContent: mainBannerHorizontalTextAlign || 'flex-start',
+                        alignItems: mainBannerVerticalTextAlign || 'flex-start',
+                        textAlign: mainBannerTextAlign || 'left',
+                      } as React.CSSProperties
+                    }
+                  >
+                    <span className='max-w-full block whitespace-normal'>
+                      <span
+                        className='block font-medium text-2xl md:text-3xl lg:text-5xl'
+                        style={{
+                          color: mainBannerTextColor ? mainBannerTextColor : 'var(--textColor)',
+                          maxWidth: mainBannerTextMaxWidth
+                            ? `${mainBannerTextMaxWidth}px`
+                            : '520px',
+                        }}
+                      >
+                        {name}
+                      </span>
+                      {description ? (
+                        <span
+                          className='font-medium block text-2xl mt-8 md:mt-10 lg:mt-12'
+                          style={{
+                            color: mainBannerTextColor ? mainBannerTextColor : 'var(--textColor)',
+                            maxWidth: mainBannerTextMaxWidth
+                              ? `${mainBannerTextMaxWidth}px`
+                              : '650px',
+                          }}
+                        >
+                          {description}
+                        </span>
+                      ) : null}
+                    </span>
+                  </span>
+                </Link>
+              </div>
+            );
+          },
+        },
+      ];
+    },
+    [],
+  );
+
   return (
     <React.Fragment>
       <Inner testId={'main-page'}>
         {/*main banner*/}
-        {sliderPages.length > 0 ? (
+        {sliderItems.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
-            <SlickSlider arrows={false} autoplay={autoplaySpeed > 0} autoplaySpeed={autoplaySpeed}>
-              {sliderPages.map(
-                ({
-                  slug,
-                  name,
-                  description,
-                  mainBanner,
-                  mainBannerMobile,
-                  mainBannerTextColor,
-                  mainBannerTextPadding,
-                  mainBannerVerticalTextAlign,
-                  mainBannerHorizontalTextAlign,
-                  mainBannerTextMaxWidth,
-                  mainBannerTextAlign,
-                  showAsMainBanner,
-                }) => {
-                  if (!mainBanner || !showAsMainBanner) {
-                    return null;
-                  }
-
-                  return (
-                    <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
-                      <Link
-                        target={'_blank'}
-                        className={`relative block ${
-                          mainBannerMobile ? '' : 'h-[400px] md:h-auto'
-                        }`}
-                        href={`${ROUTE_DOCS_PAGES}/${slug}`}
-                      >
-                        <picture>
-                          {mainBannerMobile ? (
-                            <source media='(max-width:767px)' srcSet={mainBannerMobile.url} />
-                          ) : null}
-                          <source srcSet={mainBanner.url} />
-                          <img
-                            className='block relative w-full h-full z-10 object-cover'
-                            src={mainBanner.url}
-                            alt={`${name}`}
-                            title={`${name}`}
-                            width='1250'
-                            height='435'
-                          />
-                        </picture>
-                        <span
-                          className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
-                          style={
-                            {
-                              paddingTop: mainBannerTextPadding
-                                ? `${mainBannerTextPadding}%`
-                                : '2rem',
-                              justifyContent: mainBannerHorizontalTextAlign || 'flex-start',
-                              alignItems: mainBannerVerticalTextAlign || 'flex-start',
-                              textAlign: mainBannerTextAlign || 'left',
-                            } as React.CSSProperties
-                          }
-                        >
-                          <span>
-                            <span
-                              className='block font-medium text-2xl md:text-3xl lg:text-5xl'
-                              style={{
-                                color: mainBannerTextColor
-                                  ? mainBannerTextColor
-                                  : 'var(--textColor)',
-                                maxWidth: mainBannerTextMaxWidth
-                                  ? `${mainBannerTextMaxWidth}px`
-                                  : '520px',
-                              }}
-                            >
-                              {name}
-                            </span>
-                            {description ? (
-                              <span
-                                className='font-medium block text-2xl mt-8 md:mt-10 lg:mt-12'
-                                style={{
-                                  color: mainBannerTextColor
-                                    ? mainBannerTextColor
-                                    : 'var(--textColor)',
-                                  maxWidth: mainBannerTextMaxWidth
-                                    ? `${mainBannerTextMaxWidth}px`
-                                    : '650px',
-                                }}
-                              >
-                                {description}
-                              </span>
-                            ) : null}
-                          </span>
-                        </span>
-                      </Link>
-                    </div>
-                  );
-                },
-              )}
-            </SlickSlider>
+            <ImageGallery
+              showBullets
+              autoPlay
+              slideInterval={autoplaySpeed}
+              showFullscreenButton={false}
+              showPlayButton={false}
+              showNav={false}
+              items={sliderItems}
+            />
           </div>
         ) : null}
 

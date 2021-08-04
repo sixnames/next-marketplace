@@ -87,6 +87,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showSnippetRating: rubricVariant.showSnippetRating || false,
             showSnippetButtonsOnHover: rubricVariant.showSnippetButtonsOnHover || false,
             showCardButtonsBackground: rubricVariant.showCardButtonsBackground || false,
+            showCardImagesSlider: rubricVariant.showCardImagesSlider || false,
             gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
           }}
           onSubmit={(values) => {
@@ -132,6 +133,11 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikCheckboxLine
                   label={'Показывать фон под кнопками карточки товара'}
                   name={'showCardButtonsBackground'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать фото товра в виде слайдера в карточке товара'}
+                  name={'showCardImagesSlider'}
                 />
 
                 {/*numbers*/}

@@ -2001,6 +2001,13 @@
     date-fns "^2.0.1"
     popper.js "^1.14.1"
 
+"@types/react-image-gallery@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-image-gallery/-/react-image-gallery-1.0.4.tgz#da1fc9d85ebc223d0f5c72d7a78493be3d381398"
+  integrity sha512-BirrX9wEPIH/6XhScYNyQywxBaVmkO9EJPpjJP0l971k81gE/81tZJnxQcZ8O0zfSGGh0frx3PT62A1aX/W7gQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-outside-click-handler@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/react-outside-click-handler/-/react-outside-click-handler-1.3.0.tgz#ccf0014032fc6ec286210f8a05d26a5c1f94cc96"
@@ -9423,6 +9430,11 @@ react-fast-compare@^3.0.1:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
+react-image-gallery@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/react-image-gallery/-/react-image-gallery-1.2.6.tgz#51cfa208191b505d612f1073e6a63cdb8e3df022"
+  integrity sha512-+uL8RB3YrsXOtL95KY9oLWup2jww95qvvwsHOkRdV1SOImUO4qGuYh/0+M+vuqzBy7AB7G19+KhgucOPetn6+Q==
 
 react-infinite-scroll-component@^6.0.0:
   version "6.1.0"

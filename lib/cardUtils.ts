@@ -844,6 +844,9 @@ export async function getCardData({
       [],
     );
 
+    const isSingleImage = cardAssets.length < minAssetsListCount;
+    const showCardImagesSlider = !isSingleImage && Boolean(rubric?.variant?.showCardImagesSlider);
+
     const shopsCounterPostfix =
       noNaN(shopsCount) > 1
         ? getConstantTranslation(`shops.plural.${locale}`)
@@ -896,7 +899,8 @@ export async function getCardData({
       shopsCounterPostfix,
       attributesGroups: cardAttributesGroups,
       assets: cardAssets,
-      isSingleImage: cardAssets.length < minAssetsListCount,
+      isSingleImage,
+      showCardImagesSlider,
       showFeaturesSection:
         iconFeatures.length > 0 ||
         tagFeatures.length > 0 ||

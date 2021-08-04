@@ -588,6 +588,7 @@ export interface RubricVariantModel {
   showSnippetRating?: boolean | null;
   showSnippetButtonsOnHover?: boolean | null;
   showCardButtonsBackground?: boolean | null;
+  showCardImagesSlider?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;

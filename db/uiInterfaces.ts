@@ -533,6 +533,7 @@ export interface InitialCardDataInterface {
   attributesGroups: ProductAttributesGroupInterface[];
   connections: ProductConnectionInterface[];
   showFeaturesSection: boolean;
+  showCardImagesSlider: boolean;
   isShopless: boolean;
   shopsCounterPostfix: string;
   isSingleImage: boolean;

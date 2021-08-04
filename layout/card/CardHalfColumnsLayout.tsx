@@ -49,11 +49,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     cardPrices,
     shopsCount,
     shopProducts,
+    showCardImagesSlider,
   } = useCardData({
     cardData,
     companySlug,
     companyId,
   });
+
+  console.log(showCardImagesSlider);
 
   const { brand, brandCollection, manufacturer } = product;
 

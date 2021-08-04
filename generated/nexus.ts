@@ -873,6 +873,7 @@ export interface NexusGenInputs {
     rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
     showCardButtonsBackground?: boolean | null; // Boolean
+    showCardImagesSlider?: boolean | null; // Boolean
     showSnippetArticle?: boolean | null; // Boolean
     showSnippetBackground?: boolean | null; // Boolean
     showSnippetButtonsOnHover?: boolean | null; // Boolean
@@ -1988,6 +1989,7 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout: string | null; // String
     showCardButtonsBackground: boolean | null; // Boolean
+    showCardImagesSlider: boolean | null; // Boolean
     showSnippetArticle: boolean | null; // Boolean
     showSnippetBackground: boolean | null; // Boolean
     showSnippetButtonsOnHover: boolean | null; // Boolean
@@ -3111,6 +3113,7 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     rowSnippetLayout: 'String';
     showCardButtonsBackground: 'Boolean';
+    showCardImagesSlider: 'Boolean';
     showSnippetArticle: 'Boolean';
     showSnippetBackground: 'Boolean';
     showSnippetButtonsOnHover: 'Boolean';

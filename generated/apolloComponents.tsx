@@ -2568,6 +2568,7 @@ export type RubricVariant = {
   showSnippetRating?: Maybe<Scalars['Boolean']>;
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
+  showCardImagesSlider?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
@@ -3067,6 +3068,7 @@ export type UpdateRubricVariantInput = {
   showSnippetRating?: Maybe<Scalars['Boolean']>;
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
+  showCardImagesSlider?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
 };
 

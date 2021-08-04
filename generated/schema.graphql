@@ -2258,6 +2258,7 @@ type RubricVariant {
   nameI18n: JSONObject!
   rowSnippetLayout: String
   showCardButtonsBackground: Boolean
+  showCardImagesSlider: Boolean
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean
@@ -2747,6 +2748,7 @@ input UpdateRubricVariantInput {
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
   showCardButtonsBackground: Boolean
+  showCardImagesSlider: Boolean
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean

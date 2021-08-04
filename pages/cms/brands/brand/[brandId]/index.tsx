@@ -1,5 +1,6 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
@@ -16,6 +17,7 @@ import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -28,12 +30,14 @@ interface BrandDetailsConsumerInterface {
 }
 
 const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateBrandSchema,
   });
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
+  const { onErrorCallback, onCompleteCallback, showLoading, hideLoading, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+    });
   const [updateBrandMutation] = useUpdateBrandMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateBrand),
@@ -84,6 +88,40 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
       <AppSubNav navConfig={navConfig} />
 
       <Inner testId={'brand-details'}>
+        <WpImageUpload
+          name={'logo'}
+          width={'10rem'}
+          height={'10rem'}
+          previewUrl={brand.logo}
+          uploadImageHandler={(files) => {
+            if (files) {
+              showLoading();
+              const formData = new FormData();
+              formData.append('assets', files[0]);
+              formData.append('brandId', `${brand._id}`);
+
+              fetch('/api/add-brand-logo', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
+          }}
+        />
         <Formik
           enableReinitialize
           validationSchema={validationSchema}

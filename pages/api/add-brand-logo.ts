@@ -1,4 +1,4 @@
-import { ASSETS_DIST_OPTIONS } from 'config/common';
+import { ASSETS_DIST_BRANDS } from 'config/common';
 import { COL_BRANDS } from 'db/collectionNames';
 import { BrandModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -69,7 +69,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const assets = await storeRestApiUploads({
     files: formData.files,
-    dist: ASSETS_DIST_OPTIONS,
+    dist: ASSETS_DIST_BRANDS,
     itemId: `${brand.slug}`,
   });
 

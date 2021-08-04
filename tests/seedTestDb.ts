@@ -44,7 +44,7 @@ const config = {
     },
   );
 
-  const bucketName = `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`;
+  const bucketName = `${process.env.OBJECT_STORAGE_BUCKET_NAME}`;
 
   try {
     await seeder.import(collections);

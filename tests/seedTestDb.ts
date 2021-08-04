@@ -2,6 +2,7 @@ import { uploadTestAssets } from './uploadTestAssets';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_PAGES,
+  ASSETS_DIST_BRANDS,
   // ASSETS_DIST_CONFIGS,
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
@@ -74,6 +75,11 @@ const config = {
       `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
       bucketName,
       `/${ASSETS_DIST_TEMPLATES}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_BRANDS}`,
+      bucketName,
+      `/${ASSETS_DIST_BRANDS}`,
     );
     /*await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,

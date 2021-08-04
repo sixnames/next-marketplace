@@ -214,6 +214,7 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
+  logo?: string;
 }
 
 export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {

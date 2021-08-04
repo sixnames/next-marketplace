@@ -28,7 +28,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, isMobile, basePath, compan
         }
       }}
     >
-      <ul className='pb-20'>
+      <ul className='pb-20 pt-8'>
         {navItems.map((item) => {
           return (
             <CmsNavItem

@@ -21,6 +21,7 @@ import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]
 import * as React from 'react';
 
 const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
+const CardSimpleGallery = dynamic(() => import('layout/card/CardSimpleGallery'));
 
 const dataSectionClassName = 'mb-14';
 const stickyClassName = 'sticky top-20';
@@ -82,47 +83,17 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <div className='lg:grid lg:grid-cols-7 gap-8 mb-28'>
             {/*gallery*/}
             <div className='lg:col-span-4 relative'>
-              {showCardImagesSlider ? <CardImageSlider assets={assets} /> : null}
-
-              {isSingleImage ? (
-                <div className={stickyClassName}>
-                  <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
-                    <Image
-                      src={`${product.mainImage}`}
-                      alt={product.originalName}
-                      title={product.originalName}
-                      width={480}
-                      height={480}
-                      objectFit='contain'
-                    />
-                  </div>
-                </div>
+              {showCardImagesSlider ? (
+                <CardImageSlider assets={assets} />
               ) : (
-                <div className={stickyClassName}>
-                  <div className='overflow-x-auto lg:overflow-x-auto max-w-full pb-6'>
-                    <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
-                      {assets.map(({ url }) => {
-                        return (
-                          <div
-                            key={url}
-                            className='min-w-[260px] lg:min-w-full rounded-lg shadow-lg p-1'
-                          >
-                            <div className='relative'>
-                              <Image
-                                src={url}
-                                alt={product.originalName}
-                                title={product.originalName}
-                                width={400}
-                                height={400}
-                                objectFit='contain'
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+                <CardSimpleGallery
+                  mainImage={product.mainImage}
+                  className={stickyClassName}
+                  alt={product.originalName}
+                  title={product.originalName}
+                  assets={assets}
+                  isSingleImage={isSingleImage}
+                />
               )}
             </div>
 

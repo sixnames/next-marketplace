@@ -80,6 +80,7 @@ export interface BrandInterface extends BrandModel {
   name?: string | null;
   description?: string | null;
   collections?: BrandCollectionInterface[] | null;
+  mainUrl?: string | null;
 }
 
 export interface BrandCollectionInterface extends BrandCollectionModel {
@@ -91,6 +92,7 @@ export interface BrandCollectionInterface extends BrandCollectionModel {
 export interface ManufacturerInterface extends ManufacturerModel {
   name?: string | null;
   description?: string | null;
+  mainUrl?: string | null;
 }
 
 export interface SupplierInterface extends SupplierModel {
@@ -215,6 +217,9 @@ export interface ProductInterface extends ProductModel {
   description?: string | null;
   available?: boolean;
   assets?: ProductAssetsModel | null;
+  brand?: BrandInterface | null;
+  brandCollection?: BrandCollectionInterface | null;
+  manufacturer?: ManufacturerInterface | null;
   connections?: ProductConnectionInterface[];
   attributes?: ProductAttributeInterface[];
   attributesGroups?: ProductAttributesGroupInterface[] | null;

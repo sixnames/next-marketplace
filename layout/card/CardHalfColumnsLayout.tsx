@@ -55,6 +55,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
+  const { brand, brandCollection, manufacturer } = product;
+
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
@@ -123,6 +125,30 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
               <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
+                  {/*brand preview*/}
+                  {brand && brand.logo ? (
+                    <div className='flex items-center mb-6 gap-4 relative'>
+                      <img
+                        className='object-contain w-[70px] h-[70px]'
+                        src={brand.logo}
+                        width='70'
+                        height='70'
+                        alt={`${brand.name}`}
+                      />
+                      <div>{brand.name}</div>
+                      {brand.mainUrl ? (
+                        <a
+                          target={'_blank'}
+                          href={brand.mainUrl}
+                          className='block absolute z-10 inset-0 text-indent-full overflow-hidden'
+                          rel='noreferrer'
+                        >
+                          {brand.name}
+                        </a>
+                      ) : null}
+                    </div>
+                  ) : null}
+
                   {/*price*/}
                   <div className='flex flex-wrap gap-6 items-baseline mb-8'>
                     <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
@@ -254,6 +280,78 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     </section>
                   );
                 })}
+
+                {/*brand / brand collection / manufacturer as features*/}
+                {brand || manufacturer || brandCollection ? (
+                  <section className={`${dataSectionClassName}`}>
+                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+
+                    <ul className='space-y-4 sm:space-y-2'>
+                      {brand ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Бренд
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                        </li>
+                      ) : null}
+
+                      {brand?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={brand.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {brand.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+
+                      {brandCollection ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Линейка бренда
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Производитель
+                          </div>
+                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                        </li>
+                      ) : null}
+
+                      {manufacturer?.mainUrl ? (
+                        <li className='sm:flex justify-between'>
+                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            Сайт производителя
+                          </div>
+                          <div className='sm:text-right sm:half-column'>
+                            <a
+                              className='text-primary-text'
+                              target={'_blank'}
+                              href={manufacturer.mainUrl}
+                              rel='noreferrer'
+                            >
+                              {manufacturer.mainUrl}
+                            </a>
+                          </div>
+                        </li>
+                      ) : null}
+                    </ul>
+                  </section>
+                ) : null}
 
                 {showFeaturesSection ? (
                   <React.Fragment>

@@ -11,6 +11,7 @@ const brands: BrandModel[] = [
     nameI18n: {
       ru: 'Brand A',
     },
+    url: ['https://brandA.com'],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...DEFAULT_COUNTERS_OBJECT,
@@ -23,6 +24,7 @@ const brands: BrandModel[] = [
     nameI18n: {
       ru: 'Brand B',
     },
+    url: ['https://brandB.com'],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...DEFAULT_COUNTERS_OBJECT,

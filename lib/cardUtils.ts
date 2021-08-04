@@ -17,6 +17,9 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -122,6 +125,9 @@ export async function getCardData({
             descriptionI18n: { $first: `descriptionI18n` },
             rubricId: { $first: `$rubricId` },
             rubricSlug: { $first: `$rubricSlug` },
+            manufacturerSlug: { $first: `$manufacturerSlug` },
+            brandSlug: { $first: `$brandSlug` },
+            brandCollectionSlug: { $first: `$brandCollectionSlug` },
             minPrice: {
               $min: '$price',
             },
@@ -451,6 +457,66 @@ export async function getCardData({
           },
         },
 
+        // Get product manufacturer
+        {
+          $lookup: {
+            from: COL_MANUFACTURERS,
+            as: 'manufacturer',
+            let: {
+              manufacturerSlug: '$manufacturerSlug',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$manufacturerSlug', '$slug'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+
+        // Get product brand
+        {
+          $lookup: {
+            from: COL_BRANDS,
+            as: 'brand',
+            let: {
+              brandSlug: '$brandSlug',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$brandSlug', '$slug'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+
+        // Get product brand collection
+        {
+          $lookup: {
+            from: COL_BRAND_COLLECTIONS,
+            as: 'brandCollection',
+            let: {
+              brandCollectionSlug: '$brandCollectionSlug',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$brandCollectionSlug', '$slug'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+
         // final fields
         {
           $addFields: {
@@ -460,6 +526,9 @@ export async function getCardData({
             },
             shopsCount: { $size: '$shopProducts' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
+            brand: { $arrayElemAt: ['$brand', 0] },
+            brandCollection: { $arrayElemAt: ['$brandCollection', 0] },
+            manufacturer: { $arrayElemAt: ['$manufacturer', 0] },
             assets: { $arrayElemAt: ['$assets', 0] },
             cardContent: { $arrayElemAt: ['$cardContent', 0] },
           },
@@ -482,6 +551,9 @@ export async function getCardData({
       connections,
       attributesGroups,
       shopProducts,
+      brand,
+      brandCollection,
+      manufacturer,
       ...restProduct
     } = product;
 
@@ -772,6 +844,9 @@ export async function getCardData({
       [],
     );
 
+    const isSingleImage = cardAssets.length < minAssetsListCount;
+    const showCardImagesSlider = !isSingleImage && Boolean(rubric?.variant?.showCardImagesSlider);
+
     const shopsCounterPostfix =
       noNaN(shopsCount) > 1
         ? getConstantTranslation(`shops.plural.${locale}`)
@@ -782,6 +857,29 @@ export async function getCardData({
         ...restProduct,
         name,
         description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
+        brand: brand
+          ? {
+              ...brand,
+              mainUrl: (brand.url || []).length > 0 ? (brand.url || [])[0] : null,
+              name: getFieldStringLocale(brand.nameI18n, locale),
+              description: getFieldStringLocale(brand.descriptionI18n, locale),
+            }
+          : null,
+        brandCollection: brandCollection
+          ? {
+              ...brandCollection,
+              name: getFieldStringLocale(brandCollection.nameI18n, locale),
+              description: getFieldStringLocale(brandCollection.descriptionI18n, locale),
+            }
+          : null,
+        manufacturer: manufacturer
+          ? {
+              ...manufacturer,
+              mainUrl: (manufacturer.url || []).length > 0 ? (manufacturer.url || [])[0] : null,
+              name: getFieldStringLocale(manufacturer.nameI18n, locale),
+              description: getFieldStringLocale(manufacturer.descriptionI18n, locale),
+            }
+          : null,
       },
       cardPrices,
       rubric,
@@ -801,7 +899,8 @@ export async function getCardData({
       shopsCounterPostfix,
       attributesGroups: cardAttributesGroups,
       assets: cardAssets,
-      isSingleImage: cardAssets.length < minAssetsListCount,
+      isSingleImage,
+      showCardImagesSlider,
       showFeaturesSection:
         iconFeatures.length > 0 ||
         tagFeatures.length > 0 ||

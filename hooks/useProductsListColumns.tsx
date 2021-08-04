@@ -67,7 +67,7 @@ const useProductsListColumns = ({
         },
       },
       {
-        accessor: 'name',
+        accessor: 'originalName',
         headTitle: 'Название',
         render: ({ cellData }) => cellData,
       },

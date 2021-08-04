@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "~react-image-gallery/styles/css/image-gallery.css";
 
 @layer components {
   .input-border {
@@ -64,6 +65,7 @@
   input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0;
   }
+
   input[type="color"]::-webkit-color-swatch {
     border: none;
     border-radius: 0.5rem;
@@ -699,6 +701,7 @@ table {
     -webkit-transform: rotate(360deg);
   }
 }
+
 @keyframes nprogress-spinner {
   0% {
     transform: rotate(0deg);
@@ -809,4 +812,24 @@ table {
 
 .wp-slider .slick-dots > li.slick-active > button:before {
   width: 16px;
+}
+
+/* React image gallery */
+.standard-card-image-slider,
+.standard-card-image-slider .image-gallery-slide-wrapper,
+.standard-card-image-slider .image-gallery-content {
+  position: static;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .image-gallery-bullets .image-gallery-bullet.active:hover {
+    background: var(--theme);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .image-gallery-bullets .image-gallery-bullet:hover {
+    background: var(--theme);
+    border: 1px solid var(--theme);
+  }
 }

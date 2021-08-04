@@ -2001,6 +2001,13 @@
     date-fns "^2.0.1"
     popper.js "^1.14.1"
 
+"@types/react-image-gallery@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-image-gallery/-/react-image-gallery-1.0.4.tgz#da1fc9d85ebc223d0f5c72d7a78493be3d381398"
+  integrity sha512-BirrX9wEPIH/6XhScYNyQywxBaVmkO9EJPpjJP0l971k81gE/81tZJnxQcZ8O0zfSGGh0frx3PT62A1aX/W7gQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-outside-click-handler@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/react-outside-click-handler/-/react-outside-click-handler-1.3.0.tgz#ccf0014032fc6ec286210f8a05d26a5c1f94cc96"
@@ -2024,13 +2031,6 @@
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
-
-"@types/react-slick@^0.23.4":
-  version "0.23.4"
-  resolved "https://registry.yarnpkg.com/@types/react-slick/-/react-slick-0.23.4.tgz#c97e2a9e7e3d1933c68593b8e82752fab1e8ce53"
-  integrity sha512-vXoIy4GUfB7/YgqubR4H7RALo+pRdMYCeLgWwV3MPwl5pggTlEkFBTF19R7u+LJc85uMqC7RfsbkqPLMQ4ab+A==
-  dependencies:
-    "@types/react" "*"
 
 "@types/react-transition-group@^4.2.0":
   version "4.4.1"
@@ -4873,11 +4873,6 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0, end-of-stream@^1.4.1:
   dependencies:
     once "^1.4.0"
 
-enquire.js@^2.1.6:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/enquire.js/-/enquire.js-2.1.6.tgz#3e8780c9b8b835084c3f60e166dbc3c2a3c89814"
-  integrity sha1-PoeAybi4NQhMP2DhZtvDwqPImBQ=
-
 enquirer@^2.3.5, enquirer@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/enquirer/-/enquirer-2.3.6.tgz#2a7fe5dd634a1e4125a975ec994ff5456dc3734d"
@@ -7116,13 +7111,6 @@ json-to-pretty-yaml@^1.2.2:
   dependencies:
     remedial "^1.0.7"
     remove-trailing-spaces "^1.0.6"
-
-json2mq@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/json2mq/-/json2mq-0.2.0.tgz#b637bd3ba9eabe122c83e9720483aeb10d2c904a"
-  integrity sha1-tje9O6nqvhIsg+lyBIOusQ0skEo=
-  dependencies:
-    string-convert "^0.2.0"
 
 json5@^1.0.1:
   version "1.0.1"
@@ -9424,6 +9412,11 @@ react-fast-compare@^3.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
+react-image-gallery@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/react-image-gallery/-/react-image-gallery-1.2.6.tgz#51cfa208191b505d612f1073e6a63cdb8e3df022"
+  integrity sha512-+uL8RB3YrsXOtL95KY9oLWup2jww95qvvwsHOkRdV1SOImUO4qGuYh/0+M+vuqzBy7AB7G19+KhgucOPetn6+Q==
+
 react-infinite-scroll-component@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-infinite-scroll-component/-/react-infinite-scroll-component-6.1.0.tgz#7e511e7aa0f728ac3e51f64a38a6079ac522407f"
@@ -9532,17 +9525,6 @@ react-resizable@^1.11.0:
   dependencies:
     prop-types "15.x"
     react-draggable "^4.0.3"
-
-react-slick@^0.28.1:
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.28.1.tgz#12c18d991b59432df9c3757ba540a227b3fb85b9"
-  integrity sha512-JwRQXoWGJRbUTE7eZI1rGIHaXX/4YuwX6gn7ulfvUZ4vFDVQAA25HcsHSYaUiRCduTr6rskyIuyPMpuG6bbluw==
-  dependencies:
-    classnames "^2.2.5"
-    enquire.js "^2.1.6"
-    json2mq "^0.2.0"
-    lodash.debounce "^4.0.8"
-    resize-observer-polyfill "^1.5.0"
 
 react-transition-group@^4.4.0:
   version "4.4.2"
@@ -9853,7 +9835,7 @@ require_optional@^1.0.1:
     resolve-from "^2.0.0"
     semver "^5.1.0"
 
-resize-observer-polyfill@^1.5.0, resize-observer-polyfill@^1.5.1:
+resize-observer-polyfill@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
   integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
@@ -10562,11 +10544,6 @@ strict-uri-encode@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
-
-string-convert@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/string-convert/-/string-convert-0.2.1.tgz#6982cc3049fbb4cd85f8b24568b9d9bf39eeff97"
-  integrity sha1-aYLMMEn7tM2F+LJFaLnZvznu/5c=
 
 string-env-interpolation@1.0.1, string-env-interpolation@^1.0.1:
   version "1.0.1"

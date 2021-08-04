@@ -109,23 +109,15 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           </div>
 
           <div className='lg:col-span-2'>
-            <div className='grid gap-x-6 sm:grid-cols-2'>
-              <div className='space-y-1'>
-                {(phonesList || []).map((phone) => {
-                  return (
-                    <div key={phone}>
-                      <a
-                        className='text-secondary-text hover:text-theme hover:no-underline'
-                        href={`tel:${phone}`}
-                      >
-                        {phoneToReadable(phone)}
-                      </a>
-                    </div>
-                  );
-                })}
+            <div className='grid gap-x-6 gap-y-2 sm:grid-cols-2'>
+              <div>
+                <small className='text-secondary-text text-[1em]'>
+                  {configSiteName} © {configFoundationYear || new Date().getFullYear()}
+                </small>
               </div>
+
               <a
-                className='text-secondary-text hover:text-theme hover:no-underline'
+                className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
                 href={`mailTo:${contactEmail}`}
               >
                 {contactEmail}
@@ -134,9 +126,20 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           </div>
 
           <div className='lg:col-span-4 flex lg:justify-end'>
-            <small className='text-secondary-text text-[1em]'>
-              {configSiteName} © {configFoundationYear || new Date().getFullYear()}
-            </small>
+            <div className='space-y-1'>
+              {(phonesList || []).map((phone) => {
+                return (
+                  <div key={phone}>
+                    <a
+                      className='text-secondary-text hover:text-theme hover:no-underline'
+                      href={`tel:${phone}`}
+                    >
+                      {phoneToReadable(phone)}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 

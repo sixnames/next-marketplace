@@ -3,16 +3,24 @@ import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
 
-interface CardImageSliderInterface extends Omit<ReactImageGalleryProps, 'items'> {
+interface CardImageSliderInterface
+  extends Omit<ReactImageGalleryProps, 'items' | 'renderLeftNav' | 'renderRightNav'> {
   assets: AssetModel[];
   className?: string;
-  controlButtonClassName?: string;
+  arrowClassName?: string;
+  arrowLeftClassName?: string;
+  arrowRightClassName?: string;
 }
 
 const CardImageSlider: React.FC<CardImageSliderInterface> = ({
   assets,
-  controlButtonClassName = 'text-theme',
+  arrowClassName = 'text-theme',
   className,
+  arrowLeftClassName = 'absolute top-half left-6 z-40',
+  arrowRightClassName = 'absolute top-half right-6 z-40',
+  showPlayButton = false,
+  showBullets = true,
+  ...props
 }) => {
   const items: ReactImageGalleryItem[] = assets.map(({ url }) => {
     return {
@@ -23,15 +31,15 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
   return (
     <div className={`${className ? className : ''}`}>
       <ImageGallery
-        showPlayButton={false}
-        showBullets
+        showPlayButton={showPlayButton}
+        showBullets={showBullets}
         items={items}
         renderLeftNav={(onClick, disabled) => {
           return (
-            <div className='absolute top-half left-6 z-40'>
+            <div className={arrowLeftClassName}>
               <ControlButton
                 icon={'chevron-left'}
-                className={controlButtonClassName}
+                className={arrowClassName}
                 onClick={onClick}
                 disabled={disabled}
               />
@@ -40,16 +48,17 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
         }}
         renderRightNav={(onClick, disabled) => {
           return (
-            <div className='absolute top-half right-6 z-40'>
+            <div className={arrowRightClassName}>
               <ControlButton
                 icon={'chevron-right'}
-                className={controlButtonClassName}
+                className={arrowClassName}
                 onClick={onClick}
                 disabled={disabled}
               />
             </div>
           );
         }}
+        {...props}
       />
     </div>
   );

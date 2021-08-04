@@ -15,9 +15,12 @@ import CardShopsList from 'layout/card/CardShopsList';
 import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
+
+const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
 
 interface CardTitleInterface {
   productId: any;
@@ -69,6 +72,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     shopsCount,
     shopProducts,
     cardContent,
+    assets,
+    showCardImagesSlider,
   } = useCardData({
     cardData,
     companySlug,
@@ -97,16 +102,29 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             {/*content*/}
             <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
               {/*image*/}
-              <div className='md:col-span-1 md:order-2 lg:col-span-3 lg:flex lg:justify-center'>
-                <div className='relative h-[300px] w-[160px] md:h-[500px] lg:h-[600px]'>
-                  <Image
-                    src={`${product.mainImage}`}
-                    alt={product.originalName}
-                    title={product.originalName}
-                    layout='fill'
-                    objectFit='contain'
-                  />
-                </div>
+              <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center'>
+                {showCardImagesSlider ? (
+                  <div className='relative w-[160px] min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
+                    <CardImageSlider
+                      assets={assets}
+                      showBullets={false}
+                      showFullscreenButton={false}
+                      arrowLeftClassName={'absolute top-half -left-14 z-40'}
+                      arrowRightClassName={'absolute top-half -right-14 z-40'}
+                      additionalClass='standard-card-image-slider'
+                    />
+                  </div>
+                ) : (
+                  <div className='relative w-[160px] md:h-[500px] lg:h-[600px]'>
+                    <Image
+                      src={`${product.mainImage}`}
+                      alt={product.originalName}
+                      title={product.originalName}
+                      layout='fill'
+                      objectFit='contain'
+                    />
+                  </div>
+                )}
               </div>
 
               {/*main data*/}

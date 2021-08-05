@@ -54,6 +54,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     shopsCount,
     shopProducts,
     showCardImagesSlider,
+    showCardBrands,
+    cardBrandsLabel,
   } = useCardData({
     cardData,
     companySlug,
@@ -259,9 +261,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 })}
 
                 {/*brand / brand collection / manufacturer as features*/}
-                {brand || manufacturer || brandCollection ? (
+                {showCardBrands && (brand || manufacturer || brandCollection) ? (
                   <section className={`${dataSectionClassName}`}>
-                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+                    {cardBrandsLabel ? (
+                      <h2 className='text-2xl mb-4 font-medium'>{cardBrandsLabel}</h2>
+                    ) : null}
 
                     <ul className='space-y-4 sm:space-y-2'>
                       {brand ? (

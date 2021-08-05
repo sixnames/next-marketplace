@@ -2746,6 +2746,7 @@ input UpdateRubricInput {
 }
 
 input UpdateRubricVariantInput {
+  cardBrandsLabelI18n: JSONObject
   cardLayout: String
   catalogueFilterLayout: String
   catalogueNavLayout: String
@@ -2754,8 +2755,10 @@ input UpdateRubricVariantInput {
   nameI18n: JSONObject!
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
+  showCardBrands: Boolean
   showCardButtonsBackground: Boolean
   showCardImagesSlider: Boolean
+  showCatalogueFilterBrands: Boolean
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean

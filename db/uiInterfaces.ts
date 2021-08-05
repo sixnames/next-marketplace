@@ -263,6 +263,7 @@ export interface RoleInterface extends RoleModel {
 
 export interface RubricVariantInterface extends RubricVariantModel {
   name?: string | null;
+  cardBrandsLabel?: string | null;
 }
 
 export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
@@ -534,6 +535,8 @@ export interface InitialCardDataInterface {
   connections: ProductConnectionInterface[];
   showFeaturesSection: boolean;
   showCardImagesSlider: boolean;
+  showCardBrands: boolean;
+  cardBrandsLabel: string;
   isShopless: boolean;
   shopsCounterPostfix: string;
   isSingleImage: boolean;

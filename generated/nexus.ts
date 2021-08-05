@@ -871,6 +871,7 @@ export interface NexusGenInputs {
   };
   UpdateRubricVariantInput: {
     // input type
+    cardBrandsLabelI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     cardLayout?: string | null; // String
     catalogueFilterLayout?: string | null; // String
     catalogueNavLayout?: string | null; // String
@@ -879,8 +880,10 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
+    showCardBrands?: boolean | null; // Boolean
     showCardButtonsBackground?: boolean | null; // Boolean
     showCardImagesSlider?: boolean | null; // Boolean
+    showCatalogueFilterBrands?: boolean | null; // Boolean
     showSnippetArticle?: boolean | null; // Boolean
     showSnippetBackground?: boolean | null; // Boolean
     showSnippetButtonsOnHover?: boolean | null; // Boolean

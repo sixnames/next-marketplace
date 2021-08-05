@@ -3076,7 +3076,10 @@ export type UpdateRubricVariantInput = {
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
   showCardImagesSlider?: Maybe<Scalars['Boolean']>;
+  showCardBrands?: Maybe<Scalars['Boolean']>;
+  showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
+  cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };
 
 export type UpdateShopAssetIndexInput = {

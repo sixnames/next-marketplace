@@ -593,9 +593,14 @@ export interface RubricVariantModel {
   showSnippetButtonsOnHover?: boolean | null;
   showCardButtonsBackground?: boolean | null;
   showCardImagesSlider?: boolean | null;
+  showCardBrands?: boolean | null;
+  showCatalogueFilterBrands?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;
+
+  // strings
+  cardBrandsLabelI18n?: TranslationModel | null;
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {

@@ -564,6 +564,7 @@ export const getSsrConfigs = async ({
   const mainBannerAutoplaySpeed =
     noNaN(getCurrentConfig('mainBannerAutoplaySpeed')?.singleValue) || 5000;
   const showCardArticle = getConfigBooleanValue('showCardArticle');
+  const useUniqueConstructor = getConfigBooleanValue('useUniqueConstructor');
   const stickyNavVisibleAttributesCount =
     noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
   const stickyNavVisibleOptionsCount =
@@ -624,6 +625,7 @@ export const getSsrConfigs = async ({
     seoText,
     mainBannerAutoplaySpeed,
     showCardArticle,
+    useUniqueConstructor,
     stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount,
     catalogueFilterVisibleAttributesCount,

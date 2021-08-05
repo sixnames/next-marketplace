@@ -604,6 +604,7 @@ export interface SsrConfigsInterface {
   /// Catalogue
   mainBannerAutoplaySpeed: number;
   showCardArticle: boolean;
+  useUniqueConstructor: boolean;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
   catalogueFilterVisibleAttributesCount: number;

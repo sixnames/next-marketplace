@@ -36,6 +36,7 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
   uploadImageHandler,
   removeImageHandler,
   format,
+  error,
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -58,6 +59,7 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
       isHorizontal={isHorizontal}
       description={description}
       lineContentClass={lineContentClass}
+      error={error}
     >
       <Tooltip title={tooltip}>
         <div

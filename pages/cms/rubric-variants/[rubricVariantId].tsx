@@ -88,6 +88,9 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showSnippetButtonsOnHover: rubricVariant.showSnippetButtonsOnHover || false,
             showCardButtonsBackground: rubricVariant.showCardButtonsBackground || false,
             showCardImagesSlider: rubricVariant.showCardImagesSlider || false,
+            showCatalogueFilterBrands: rubricVariant.showCatalogueFilterBrands || false,
+            showCardBrands: rubricVariant.showCardBrands || false,
+            cardBrandsLabelI18n: rubricVariant.cardBrandsLabelI18n || {},
             gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
           }}
           onSubmit={(values) => {
@@ -138,6 +141,24 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikCheckboxLine
                   label={'Показывать фото товра в виде слайдера в карточке товара'}
                   name={'showCardImagesSlider'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать бренды / линейки брендов / производителей в фильтре каталога'}
+                  name={'showCatalogueFilterBrands'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать бренд / линейку бренда / производителя в карточке товара'}
+                  name={'showCardBrands'}
+                />
+
+                {/*strings*/}
+                <FormikTranslationsInput
+                  name={'cardBrandsLabelI18n'}
+                  label={
+                    'Заголовок секции с информацией о бренде / линейке бренда / производителе в карточке товара'
+                  }
                 />
 
                 {/*numbers*/}

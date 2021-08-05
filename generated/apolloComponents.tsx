@@ -33,6 +33,9 @@ export type AddAttributeToGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];
@@ -2756,6 +2759,9 @@ export type UpdateAttributeInGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];
@@ -2951,6 +2957,7 @@ export type UpdateProductCardContentInput = {
   _id: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
   productSlug: Scalars['String'];
+  companySlug: Scalars['String'];
   content: Scalars['JSONObject'];
   assetKeys: Array<Scalars['String']>;
 };
@@ -3069,7 +3076,10 @@ export type UpdateRubricVariantInput = {
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
   showCardImagesSlider?: Maybe<Scalars['Boolean']>;
+  showCardBrands?: Maybe<Scalars['Boolean']>;
+  showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
+  cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };
 
 export type UpdateShopAssetIndexInput = {

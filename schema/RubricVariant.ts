@@ -152,9 +152,14 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.boolean('showSnippetButtonsOnHover');
     t.boolean('showCardButtonsBackground');
     t.boolean('showCardImagesSlider');
+    t.boolean('showCardBrands');
+    t.boolean('showCatalogueFilterBrands');
 
     // numbers
     t.int('gridCatalogueColumns');
+
+    // strings
+    t.json('cardBrandsLabelI18n');
   },
 });
 

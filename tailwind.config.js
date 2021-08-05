@@ -80,7 +80,6 @@ module.exports = {
         'tabs-nav-height': 'var(--formInputHeight)',
         'tabs-nav-height-s': 'var(--formInputHeightSmall)',
         'tabs-nav-height-xs': 'var(--formInputHeightSmaller)',
-        'mobile-nav-height': '85px',
         'input-icon-size': 'var(--inputIconSize)',
       },
       typography: {

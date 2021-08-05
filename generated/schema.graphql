@@ -13,6 +13,9 @@ input AddAttributeToGroupInput {
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   showInSnippet: Boolean!
+  showNameInSelectedAttributes: Boolean
+  showNameInSnippetTitle: Boolean
+  showNameInTitle: Boolean
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }
@@ -2444,6 +2447,9 @@ input UpdateAttributeInGroupInput {
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   showInSnippet: Boolean!
+  showNameInSelectedAttributes: Boolean
+  showNameInSnippetTitle: Boolean
+  showNameInTitle: Boolean
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }
@@ -2633,6 +2639,7 @@ input UpdateProductBrandInput {
 input UpdateProductCardContentInput {
   _id: ObjectId!
   assetKeys: [String!]!
+  companySlug: String!
   content: JSONObject!
   productId: ObjectId!
   productSlug: String!
@@ -2739,6 +2746,7 @@ input UpdateRubricInput {
 }
 
 input UpdateRubricVariantInput {
+  cardBrandsLabelI18n: JSONObject
   cardLayout: String
   catalogueFilterLayout: String
   catalogueNavLayout: String
@@ -2747,8 +2755,10 @@ input UpdateRubricVariantInput {
   nameI18n: JSONObject!
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
+  showCardBrands: Boolean
   showCardButtonsBackground: Boolean
   showCardImagesSlider: Boolean
+  showCatalogueFilterBrands: Boolean
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean

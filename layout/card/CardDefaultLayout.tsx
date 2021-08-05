@@ -109,6 +109,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <div className='relative w-[160px] min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
                     <CardImageSlider
                       assets={assets}
+                      showThumbnails={false}
                       showBullets={false}
                       showFullscreenButton={false}
                       arrowLeftClassName={'absolute top-half -left-14 z-40'}

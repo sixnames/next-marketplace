@@ -177,7 +177,10 @@ export function getCatalogueTitle({
   selectedFilters.forEach((selectedFilter) => {
     const { attribute, options } = selectedFilter;
     const isPrice = attribute.slug === PRICE_ATTRIBUTE_SLUG;
-    const { positioningInTitle, metric } = attribute;
+    const { positioningInTitle, metric, showNameInTitle } = attribute;
+    const attributeName = showNameInTitle
+      ? `${getFieldStringLocale(attribute.nameI18n, locale)} `
+      : '';
     const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
     let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
     if (isPrice) {
@@ -193,7 +196,7 @@ export function getCatalogueTitle({
         if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
           value = variantLocale;
         }
-        const optionValue = `${value}${metricValue}`;
+        const optionValue = `${attributeName}${value}${metricValue}`;
         return attribute.capitalise ? optionValue : optionValue.toLocaleLowerCase();
       })
       .join(titleSeparator);
@@ -488,7 +491,14 @@ export async function getCatalogueAttributes({
     if (isSelected) {
       selectedAttributes.push({
         ...castedAttribute,
-        options: selectedFilterOptions,
+        options: attribute.showNameInSelectedAttributes
+          ? selectedFilterOptions.map((option) => {
+              return {
+                ...option,
+                name: `${getFieldStringLocale(attribute.nameI18n, locale)} ${option.name}`,
+              };
+            })
+          : selectedFilterOptions,
       });
 
       // Add selected items to the catalogue title config

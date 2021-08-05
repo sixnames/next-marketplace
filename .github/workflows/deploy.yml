@@ -14,7 +14,7 @@ jobs:
       - name: deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www/winepoint && git pull && yarn install && yarn build && cd && cd www/toysforjoys && git pull && yarn install && yarn build && cd && cd www/aroundgrill && git pull && yarn install && yarn build && pm2 reload all
+          command: cd www/winepoint && git pull && yarn install && yarn build && cd && cd www/toysforjoys && git pull && yarn install && yarn build && cd && cd www/aroundgrill && git pull && yarn install && yarn build && cd && cd www/kolesabu && git pull && yarn install && yarn build && pm2 reload all
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

@@ -84,6 +84,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         notShowAsAlphabet: attribute.notShowAsAlphabet,
         showAsBreadcrumb: attribute.showAsBreadcrumb,
         showNameInTitle: attribute.showNameInTitle,
+        showNameInSelectedAttributes: attribute.showNameInSelectedAttributes,
+        showNameInSnippetTitle: attribute.showNameInSnippetTitle,
         showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb || false,
         showInSnippet: attribute.showInSnippet || false,
         showInCard: attribute.showInCard,
@@ -99,6 +101,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         notShowAsAlphabet: true,
         showAsBreadcrumb: false,
         showNameInTitle: false,
+        showNameInSelectedAttributes: false,
+        showNameInSnippetTitle: false,
         showAsCatalogueBreadcrumb: false,
         showInSnippet: false,
         showInCard: true,
@@ -206,6 +210,16 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               <FormikCheckboxLine
                 label={'Показывать название атрибута в заголовке каталога'}
                 name={'showNameInTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в выбраных фильтрах каталога'}
+                name={'showNameInSelectedAttributes'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в заголовке сниппета'}
+                name={'showNameInSnippetTitle'}
               />
 
               <FormikCheckboxLine label={'Показывать в сниппете товара'} name={'showInSnippet'} />

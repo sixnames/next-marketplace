@@ -491,7 +491,7 @@ export async function getCatalogueAttributes({
     if (isSelected) {
       selectedAttributes.push({
         ...castedAttribute,
-        options: attribute.showNameInTitle
+        options: attribute.showNameInSelectedAttributes
           ? selectedFilterOptions.map((option) => {
               return {
                 ...option,

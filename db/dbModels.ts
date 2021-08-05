@@ -202,6 +202,8 @@ export interface AttributeModel {
   showInSnippet?: boolean | null;
   notShowAsAlphabet?: boolean | null;
   showNameInTitle?: boolean | null;
+  showNameInSelectedAttributes?: boolean | null;
+  showNameInSnippetTitle?: boolean | null;
 }
 
 export interface AttributesGroupModel {

@@ -34,6 +34,8 @@ export type AddAttributeToGroupInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];
@@ -2758,6 +2760,8 @@ export type UpdateAttributeInGroupInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];

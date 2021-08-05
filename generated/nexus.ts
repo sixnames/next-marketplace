@@ -117,6 +117,8 @@ export interface NexusGenInputs {
     showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
     showInSnippet: boolean; // Boolean!
+    showNameInSelectedAttributes?: boolean | null; // Boolean
+    showNameInSnippetTitle?: boolean | null; // Boolean
     showNameInTitle?: boolean | null; // Boolean
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
@@ -570,6 +572,8 @@ export interface NexusGenInputs {
     showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
     showInSnippet: boolean; // Boolean!
+    showNameInSelectedAttributes?: boolean | null; // Boolean
+    showNameInSnippetTitle?: boolean | null; // Boolean
     showNameInTitle?: boolean | null; // Boolean
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!

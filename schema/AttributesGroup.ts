@@ -160,6 +160,8 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.boolean('capitalise');
     t.boolean('notShowAsAlphabet');
     t.boolean('showNameInTitle');
+    t.boolean('showNameInSelectedAttributes');
+    t.boolean('showNameInSnippetTitle');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.boolean('showAsCatalogueBreadcrumb');
     t.nonNull.boolean('showInSnippet');
@@ -185,6 +187,8 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.boolean('capitalise');
     t.boolean('notShowAsAlphabet');
     t.boolean('showNameInTitle');
+    t.boolean('showNameInSelectedAttributes');
+    t.boolean('showNameInSnippetTitle');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.boolean('showAsCatalogueBreadcrumb');
     t.nonNull.boolean('showInSnippet');

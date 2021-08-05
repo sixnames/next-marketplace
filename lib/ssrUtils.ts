@@ -479,9 +479,6 @@ export const getSsrConfigs = async ({
           companySlug: companySlug || DEFAULT_COMPANY_SLUG,
         },
       },
-      {
-        $sort: { _id: SORT_ASC },
-      },
     ])
     .toArray();
   const configs = initialConfigs.map((config) => {

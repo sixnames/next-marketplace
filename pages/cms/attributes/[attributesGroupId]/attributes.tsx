@@ -219,6 +219,16 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       },
     },
     {
+      accessor: 'showNameInTitle',
+      headTitle: 'Показывать название атрибута в заголовке каталога',
+      render: ({ cellData }) => {
+        return getBooleanTranslation({
+          value: cellData,
+          locale,
+        });
+      },
+    },
+    {
       render: ({ dataItem }) => {
         const { name } = dataItem;
         return (

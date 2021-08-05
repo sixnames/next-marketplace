@@ -33,6 +33,7 @@ export type AddAttributeToGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];
@@ -2756,6 +2757,7 @@ export type UpdateAttributeInGroupInput = {
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
   showAsBreadcrumb: Scalars['Boolean'];
   showAsCatalogueBreadcrumb: Scalars['Boolean'];
   showInSnippet: Scalars['Boolean'];

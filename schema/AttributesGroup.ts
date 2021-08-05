@@ -159,6 +159,7 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.objectId('metricId');
     t.boolean('capitalise');
     t.boolean('notShowAsAlphabet');
+    t.boolean('showNameInTitle');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.boolean('showAsCatalogueBreadcrumb');
     t.nonNull.boolean('showInSnippet');
@@ -183,6 +184,7 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.objectId('metricId');
     t.boolean('capitalise');
     t.boolean('notShowAsAlphabet');
+    t.boolean('showNameInTitle');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.boolean('showAsCatalogueBreadcrumb');
     t.nonNull.boolean('showInSnippet');

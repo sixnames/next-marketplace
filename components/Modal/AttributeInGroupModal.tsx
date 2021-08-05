@@ -83,6 +83,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         capitalise: attribute.capitalise,
         notShowAsAlphabet: attribute.notShowAsAlphabet,
         showAsBreadcrumb: attribute.showAsBreadcrumb,
+        showNameInTitle: attribute.showNameInTitle,
         showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb || false,
         showInSnippet: attribute.showInSnippet || false,
         showInCard: attribute.showInCard,
@@ -97,6 +98,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         capitalise: false,
         notShowAsAlphabet: true,
         showAsBreadcrumb: false,
+        showNameInTitle: false,
         showAsCatalogueBreadcrumb: false,
         showInSnippet: false,
         showInCard: true,
@@ -199,6 +201,11 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               <FormikCheckboxLine
                 label={'Показывать в крошках каталога'}
                 name={'showAsCatalogueBreadcrumb'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в заголовке каталога'}
+                name={'showNameInTitle'}
               />
 
               <FormikCheckboxLine label={'Показывать в сниппете товара'} name={'showInSnippet'} />

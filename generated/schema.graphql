@@ -13,6 +13,7 @@ input AddAttributeToGroupInput {
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   showInSnippet: Boolean!
+  showNameInTitle: Boolean
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }
@@ -2444,6 +2445,7 @@ input UpdateAttributeInGroupInput {
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   showInSnippet: Boolean!
+  showNameInTitle: Boolean
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
 }

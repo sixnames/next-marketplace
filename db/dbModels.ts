@@ -201,6 +201,7 @@ export interface AttributeModel {
   showAsCatalogueBreadcrumb?: boolean | null;
   showInSnippet?: boolean | null;
   notShowAsAlphabet?: boolean | null;
+  showNameInTitle?: boolean | null;
 }
 
 export interface AttributesGroupModel {

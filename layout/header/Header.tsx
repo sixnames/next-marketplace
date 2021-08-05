@@ -21,6 +21,7 @@ import { useUserContext } from 'context/userContext';
 import CounterSticker from 'components/CounterSticker';
 import CartDropdown from 'layout/header/CartDropdown';
 import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
+import { get } from 'lodash';
 import {
   ROUTE_CONSOLE,
   ROUTE_CATALOGUE,
@@ -277,7 +278,7 @@ const middleSideClassName =
 
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const { isDark } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -292,12 +293,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
     },
   });
 
-  const siteLogoConfig = getSiteConfigSingleValue(logoSlug);
-  const siteLogoSrc = siteLogoConfig || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
-  const configLogoWidth = getSiteConfigSingleValue('siteLogoWidth') || '10rem';
-  const configLogoMobileWidth = getSiteConfigSingleValue('siteMobileLogoWidth') || '7rem';
-  const configSiteName = getSiteConfigSingleValue('siteName');
-  const callbackPhone = getSiteConfigSingleValue('phone');
+  const siteLogoSrc = get(configs, logoSlug) || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+  const configLogoWidth = configs.siteLogoWidth || '10rem';
+  const configLogoMobileWidth = configs.siteMobileLogoWidth || '7rem';
+  const configSiteName = configs.siteName;
+  const callbackPhone = configs.phone[0];
 
   const toggleBurgerDropdown = React.useCallback(() => {
     setIsBurgerDropdownOpen((prevState) => !prevState);
@@ -308,10 +308,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   }, []);
 
   // styles
-  const bgColorLightTheme = getSiteConfigSingleValue('siteTopBarBgLightTheme');
-  const bgColorDarkTheme = getSiteConfigSingleValue('headerTopBarBgDarkTheme');
-  const textColorLightTheme = getSiteConfigSingleValue('headerTopBarTextLightTheme');
-  const textColorDarkTheme = getSiteConfigSingleValue('headerTopBarTextDarkTheme');
+  const bgColorLightTheme = configs.siteTopBarBgLightTheme;
+  const bgColorDarkTheme = configs.headerTopBarBgDarkTheme;
+  const textColorLightTheme = configs.headerTopBarTextLightTheme;
+  const textColorDarkTheme = configs.headerTopBarTextDarkTheme;
   const textColor =
     (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textSecondaryColor)';
 

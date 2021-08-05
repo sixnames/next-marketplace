@@ -31,8 +31,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
+  const { configs } = useConfigContext();
+  const maxVisibleOptionsString = configs.catalogueFilterVisibleOptionsCount;
   const maxVisibleOptions = maxVisibleOptionsString
     ? noNaN(maxVisibleOptionsString)
     : noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);

@@ -13,10 +13,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attributeStyle,
   attributeLinkStyle,
 }) => {
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
-  const visibleOptionsCount = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
+  const visibleOptionsCount = configs.stickyNavVisibleOptionsCount;
   const showOptionsMoreLink = noNaN(visibleOptionsCount) === attribute.options?.length;
 
   if ((options || []).length < 1) {

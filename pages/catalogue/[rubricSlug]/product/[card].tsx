@@ -35,7 +35,7 @@ interface CardInterface extends SiteLayoutProviderInterface {
 
 const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   const { currentCity } = props;
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   if (!cardData) {
     return (
       <SiteLayoutProvider {...props}>
@@ -44,8 +44,8 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
     );
   }
 
-  const siteName = getSiteConfigSingleValue('siteName');
-  const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
+  const siteName = configs.siteName;
+  const prefixConfig = configs.catalogueMetaPrefix;
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 

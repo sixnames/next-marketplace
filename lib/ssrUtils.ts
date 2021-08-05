@@ -57,6 +57,7 @@ import {
   PageInterface,
   PagesGroupInterface,
   RubricInterface,
+  SsrConfigsInterface,
   UserInterface,
 } from 'db/uiInterfaces';
 import {
@@ -460,8 +461,182 @@ export interface GetPageInitialDataInterface {
   companySlug?: string;
 }
 
+export interface GetSsrConfigsInterface extends GetPageInitialDataInterface {
+  db: Db;
+}
+
+export const getSsrConfigs = async ({
+  locale,
+  city,
+  companySlug,
+  db,
+}: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const initialConfigs = await configsCollection
+    .aggregate([
+      {
+        $match: {
+          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
+        },
+      },
+      {
+        $sort: { _id: SORT_ASC },
+      },
+    ])
+    .toArray();
+  const configs = initialConfigs.map((config) => {
+    const value = getCityFieldLocaleString({ cityField: config.cities, city, locale });
+    const singleValue = (value || [])[0];
+    return {
+      ...config,
+      value,
+      singleValue,
+    };
+  });
+
+  const getCurrentConfig = (slug: string): ConfigInterface | undefined => {
+    return configs.find((config) => config.slug === slug);
+  };
+
+  const getConfigBooleanValue = (slug: string): boolean => {
+    const config = getCurrentConfig(slug);
+    return config?.singleValue === 'true';
+  };
+
+  // Site globals
+  const siteName = getCurrentConfig('siteName')?.singleValue || '';
+  const siteFoundationYear = noNaN(getCurrentConfig('siteFoundationYear')?.singleValue);
+  const yaVerification = getCurrentConfig('yaVerification')?.singleValue || '';
+  const yaMetrica = getCurrentConfig('yaMetrica')?.singleValue || '';
+  const googleAnalytics = getCurrentConfig('googleAnalytics')?.singleValue || '';
+
+  // Site ui
+  const siteLogo = getCurrentConfig('siteLogo')?.singleValue || '';
+  const siteLogoDark = getCurrentConfig('siteLogoDark')?.singleValue || '';
+  const siteLogoWidth = getCurrentConfig('siteLogoWidth')?.singleValue || '';
+  const siteMobileLogoWidth = getCurrentConfig('siteMobileLogoWidth')?.singleValue || '';
+  const siteThemeColor = getCurrentConfig('siteThemeColor')?.singleValue || '';
+  const siteTopBarBgLightTheme = getCurrentConfig('siteTopBarBgLightTheme')?.singleValue || '';
+  const headerTopBarBgDarkTheme = getCurrentConfig('headerTopBarBgDarkTheme')?.singleValue || '';
+  const headerTopBarTextLightTheme =
+    getCurrentConfig('headerTopBarTextLightTheme')?.singleValue || '';
+  const headerTopBarTextDarkTheme =
+    getCurrentConfig('headerTopBarTextDarkTheme')?.singleValue || '';
+  const siteNavBarBgLightTheme = getCurrentConfig('siteNavBarBgLightTheme')?.singleValue || '';
+  const siteNavBarBgDarkTheme = getCurrentConfig('siteNavBarBgDarkTheme')?.singleValue || '';
+  const siteNavBarTextLightTheme = getCurrentConfig('siteNavBarTextLightTheme')?.singleValue || '';
+  const siteNavBarTextDarkTheme = getCurrentConfig('siteNavBarTextDarkTheme')?.singleValue || '';
+  const siteNavDropdownBgLightTheme =
+    getCurrentConfig('siteNavDropdownBgLightTheme')?.singleValue || '';
+  const siteNavDropdownBgDarkTheme =
+    getCurrentConfig('siteNavDropdownBgDarkTheme')?.singleValue || '';
+  const siteNavDropdownTextLightTheme =
+    getCurrentConfig('siteNavDropdownTextLightTheme')?.singleValue || '';
+  const siteNavDropdownTextDarkTheme =
+    getCurrentConfig('siteNavDropdownTextDarkTheme')?.singleValue || '';
+  const siteNavDropdownAttributeLightTheme =
+    getCurrentConfig('siteNavDropdownAttributeLightTheme')?.singleValue || '';
+  const siteNavDropdownAttributeDarkTheme =
+    getCurrentConfig('siteNavDropdownAttributeDarkTheme')?.singleValue || '';
+  const showAdultModal = getConfigBooleanValue('showAdultModal');
+
+  // Contacts
+  const contactEmail = getCurrentConfig('contactEmail')?.value || [];
+  const phone = getCurrentConfig('phone')?.value || [];
+  const facebook = getCurrentConfig('facebook')?.singleValue || '';
+  const instagram = getCurrentConfig('instagram')?.singleValue || '';
+  const vkontakte = getCurrentConfig('vkontakte')?.singleValue || '';
+  const odnoklassniki = getCurrentConfig('odnoklassniki')?.singleValue || '';
+  const youtube = getCurrentConfig('youtube')?.singleValue || '';
+  const twitter = getCurrentConfig('twitter')?.singleValue || '';
+  const pageDefaultPreviewImage = getCurrentConfig('pageDefaultPreviewImage')?.singleValue || '';
+  const androidChrome192 = getCurrentConfig('android-chrome-192x192')?.singleValue || '';
+  const androidChrome512 = getCurrentConfig('android-chrome-512x512')?.singleValue || '';
+  const appleTouchIcon = getCurrentConfig('apple-touch-icon')?.singleValue || '';
+  const faviconIco = getCurrentConfig('favicon.ico')?.singleValue || '';
+  const iconSvg = getCurrentConfig('icon.svg')?.singleValue || '';
+  const pageDefaultTitle = getCurrentConfig('pageDefaultTitle')?.singleValue || '';
+  const pageDefaultDescription = getCurrentConfig('pageDefaultDescription')?.singleValue || '';
+  const seoTextTitle = getCurrentConfig('seoTextTitle')?.singleValue || '';
+  const seoText = getCurrentConfig('seoText')?.singleValue || '';
+
+  /// Catalogue
+  const mainBannerAutoplaySpeed =
+    noNaN(getCurrentConfig('mainBannerAutoplaySpeed')?.singleValue) || 5000;
+  const showCardArticle = getConfigBooleanValue('showCardArticle');
+  const stickyNavVisibleAttributesCount =
+    noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
+  const stickyNavVisibleOptionsCount =
+    noNaN(getCurrentConfig('stickyNavVisibleOptionsCount')?.singleValue) || 5;
+  const catalogueFilterVisibleAttributesCount =
+    noNaN(getCurrentConfig('catalogueFilterVisibleAttributesCount')?.singleValue) || 10;
+  const catalogueFilterVisibleOptionsCount =
+    noNaN(getCurrentConfig('catalogueFilterVisibleOptionsCount')?.singleValue) || 5;
+  const snippetAttributesCount =
+    noNaN(getCurrentConfig('snippetAttributesCount')?.singleValue) || 5;
+  const cardListFeaturesCount = noNaN(getCurrentConfig('cardListFeaturesCount')?.singleValue) || 5;
+  const catalogueMetaPrefix = getCurrentConfig('catalogueMetaPrefix')?.singleValue || '';
+  const cardMetaPrefix = getCurrentConfig('cardMetaPrefix')?.singleValue || '';
+
+  return {
+    siteName,
+    siteFoundationYear,
+    yaVerification,
+    yaMetrica,
+    googleAnalytics,
+    siteLogo,
+    siteLogoDark,
+    siteLogoWidth,
+    siteMobileLogoWidth,
+    siteThemeColor,
+    siteTopBarBgLightTheme,
+    headerTopBarBgDarkTheme,
+    headerTopBarTextLightTheme,
+    headerTopBarTextDarkTheme,
+    siteNavBarBgLightTheme,
+    siteNavBarBgDarkTheme,
+    siteNavBarTextLightTheme,
+    siteNavBarTextDarkTheme,
+    siteNavDropdownBgLightTheme,
+    siteNavDropdownBgDarkTheme,
+    siteNavDropdownTextLightTheme,
+    siteNavDropdownTextDarkTheme,
+    siteNavDropdownAttributeLightTheme,
+    siteNavDropdownAttributeDarkTheme,
+    showAdultModal,
+    contactEmail,
+    phone,
+    facebook,
+    instagram,
+    vkontakte,
+    odnoklassniki,
+    youtube,
+    twitter,
+    pageDefaultPreviewImage,
+    androidChrome192,
+    androidChrome512,
+    appleTouchIcon,
+    faviconIco,
+    iconSvg,
+    pageDefaultTitle,
+    pageDefaultDescription,
+    seoTextTitle,
+    seoText,
+    mainBannerAutoplaySpeed,
+    showCardArticle,
+    stickyNavVisibleAttributesCount,
+    stickyNavVisibleOptionsCount,
+    catalogueFilterVisibleAttributesCount,
+    catalogueFilterVisibleOptionsCount,
+    snippetAttributesCount,
+    cardListFeaturesCount,
+    catalogueMetaPrefix,
+    cardMetaPrefix,
+  };
+};
+
 export interface PageInitialDataPayload {
-  configs: ConfigInterface[];
+  configs: SsrConfigsInterface;
   cities: CityInterface[];
   languages: LanguageModel[];
   currency: string;
@@ -478,25 +653,11 @@ export const getPageInitialData = async ({
   const { db } = await getDatabase();
 
   // configs
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection
-    .aggregate([
-      {
-        $match: {
-          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
-        },
-      },
-      {
-        $sort: { _id: SORT_ASC },
-      },
-    ])
-    .toArray();
-  const configs = initialConfigs.map((config) => {
-    return {
-      ...config,
-      value: getCityFieldLocaleString({ cityField: config.cities, city, locale }),
-      singleValue: getCityFieldLocaleString({ cityField: config.cities, city, locale })[0],
-    };
+  const configs = await getSsrConfigs({
+    db,
+    city,
+    locale,
+    companySlug,
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
 
@@ -797,10 +958,7 @@ export async function getPageInitialState({
   });
 
   // Site theme accent color
-  const themeConfig = rawInitialData.configs.find(({ slug }) => {
-    return slug === 'siteThemeColor';
-  });
-  const themeColor = themeConfig?.singleValue;
+  const themeColor = rawInitialData.configs.siteThemeColor;
   const fallbackColor = `219, 83, 96`;
   const themeRGB = themeColor ? themeColor.split(',').map((num) => noNaN(num)) : fallbackColor;
   const toShort = themeRGB.length < 3;

@@ -57,13 +57,13 @@ const WpMap: React.FC<WpMapInterface> = ({
   center = defaultMapCenter,
   className,
 }) => {
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   const [selected, setSelected] = React.useState<WpMapMarkerInterface | null>(null);
   const { isDark } = useThemeContext();
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: `${process.env.NEXT_GOOGLE_MAPS_API_KEY}`,
   });
-  const siteThemeColor = getSiteConfigSingleValue('siteThemeColor');
+  const siteThemeColor = configs.siteThemeColor;
 
   const onLoad = React.useCallback(
     (map) => {

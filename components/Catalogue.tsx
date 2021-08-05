@@ -437,7 +437,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   isSearchResult,
   ...props
 }) => {
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
       <SiteLayoutProvider {...props}>
@@ -445,8 +445,8 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       </SiteLayoutProvider>
     );
   }
-  const siteName = getSiteConfigSingleValue('siteName');
-  const prefixConfig = getSiteConfigSingleValue('catalogueMetaPrefix');
+  const siteName = configs.siteName;
+  const prefixConfig = configs.catalogueMetaPrefix;
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 

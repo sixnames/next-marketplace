@@ -550,3 +550,66 @@ export interface InitialCardDataInterface {
   cardPrices: ProductCardPricesModel;
   shopProducts: ShopProductInterface[];
 }
+
+export interface SsrConfigsInterface {
+  // Site globals
+  siteName: string;
+  siteFoundationYear: number;
+  yaVerification: string;
+  yaMetrica: string;
+  googleAnalytics: string;
+
+  // Site ui
+  siteLogo: string;
+  siteLogoDark: string;
+  siteLogoWidth: string;
+  siteMobileLogoWidth: string;
+  siteThemeColor: string;
+  siteTopBarBgLightTheme: string;
+  headerTopBarBgDarkTheme: string;
+  headerTopBarTextLightTheme: string;
+  headerTopBarTextDarkTheme: string;
+  siteNavBarBgLightTheme: string;
+  siteNavBarBgDarkTheme: string;
+  siteNavBarTextLightTheme: string;
+  siteNavBarTextDarkTheme: string;
+  siteNavDropdownBgLightTheme: string;
+  siteNavDropdownBgDarkTheme: string;
+  siteNavDropdownTextLightTheme: string;
+  siteNavDropdownTextDarkTheme: string;
+  siteNavDropdownAttributeLightTheme: string;
+  siteNavDropdownAttributeDarkTheme: string;
+  showAdultModal: boolean;
+
+  // Contacts
+  contactEmail: string[];
+  phone: string[];
+  facebook: string;
+  instagram: string;
+  vkontakte: string;
+  odnoklassniki: string;
+  youtube: string;
+  twitter: string;
+  pageDefaultPreviewImage: string;
+  androidChrome192: string;
+  androidChrome512: string;
+  appleTouchIcon: string;
+  faviconIco: string;
+  iconSvg: string;
+  pageDefaultTitle: string;
+  pageDefaultDescription: string;
+  seoTextTitle: string;
+  seoText: string;
+
+  /// Catalogue
+  mainBannerAutoplaySpeed: number;
+  showCardArticle: boolean;
+  stickyNavVisibleAttributesCount: number;
+  stickyNavVisibleOptionsCount: number;
+  catalogueFilterVisibleAttributesCount: number;
+  catalogueFilterVisibleOptionsCount: number;
+  snippetAttributesCount: number;
+  cardListFeaturesCount: number;
+  catalogueMetaPrefix: string;
+  cardMetaPrefix: string;
+}

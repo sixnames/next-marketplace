@@ -1,6 +1,6 @@
 import { ADULT_FALSE, ADULT_KEY, DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
 import { ADULT_MODAL } from 'config/modalVariants';
-import { ConfigInterface } from 'db/uiInterfaces';
+import { SsrConfigsInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
@@ -47,7 +47,7 @@ interface AppContextProviderInterface {
   isMobileDevice: boolean;
   sessionCity: string;
   companySlug: string;
-  configs: ConfigInterface[];
+  configs: SsrConfigsInterface;
 }
 
 const AppContextProvider: React.FC<AppContextProviderInterface> = ({
@@ -66,12 +66,8 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   }));
 
   React.useEffect(() => {
-    const adultModalConfig = configs.find(({ slug }) => {
-      return slug === 'showAdultModal';
-    });
-
     const inStorage = window.localStorage.getItem(ADULT_KEY);
-    if ((!inStorage || inStorage === ADULT_FALSE) && adultModalConfig?.singleValue) {
+    if ((!inStorage || inStorage === ADULT_FALSE) && configs.showAdultModal) {
       setState((prevState: ContextState) => ({
         ...prevState,
         isModal: {

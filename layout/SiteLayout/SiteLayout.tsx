@@ -29,16 +29,15 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   headerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
 
   // Metrics
-  const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
-  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
-  const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
+  const yaMetrica = configs.yaMetrica;
+  const googleAnalytics = configs.googleAnalytics;
 
   return (
     <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
-      <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
+      <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
       <Meta title={title} description={description} pageUrls={pageUrls} />
 

@@ -59,6 +59,7 @@ export interface GetCardDataInterface {
   locale: string;
   city: string;
   slug: string;
+  companySlug: string;
   companyId?: string | ObjectId | null;
 }
 
@@ -67,6 +68,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
+  companySlug,
 }: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
@@ -317,6 +319,7 @@ export async function getCardData({
             pipeline: [
               {
                 $match: {
+                  companySlug,
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },

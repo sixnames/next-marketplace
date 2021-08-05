@@ -60,7 +60,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
         assetUrl: result.draggableId,
       });
     },
-    [assets],
+    [assets, onReorderHandler],
   );
 
   return (

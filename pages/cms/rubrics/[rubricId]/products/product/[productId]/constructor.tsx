@@ -206,6 +206,7 @@ export const getServerSideProps = async (
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!cardContent) {

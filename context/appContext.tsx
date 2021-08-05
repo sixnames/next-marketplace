@@ -97,7 +97,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
       setState((prevState) => {
         return {
           ...prevState,
-          isMobile: window.matchMedia(`(max-width: ${1024}px)`).matches,
+          isMobile: window.matchMedia(`(max-width: ${1023}px)`).matches,
         };
       });
     }

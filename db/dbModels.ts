@@ -201,6 +201,9 @@ export interface AttributeModel {
   showAsCatalogueBreadcrumb?: boolean | null;
   showInSnippet?: boolean | null;
   notShowAsAlphabet?: boolean | null;
+  showNameInTitle?: boolean | null;
+  showNameInSelectedAttributes?: boolean | null;
+  showNameInSnippetTitle?: boolean | null;
 }
 
 export interface AttributesGroupModel {
@@ -523,6 +526,7 @@ export interface ProductAssetsModel {
 
 export interface ProductCardContentModel {
   _id: ObjectIdModel;
+  companySlug: string;
   productSlug: string;
   productId: ObjectIdModel;
   content: JSONObjectModel;
@@ -589,9 +593,14 @@ export interface RubricVariantModel {
   showSnippetButtonsOnHover?: boolean | null;
   showCardButtonsBackground?: boolean | null;
   showCardImagesSlider?: boolean | null;
+  showCardBrands?: boolean | null;
+  showCatalogueFilterBrands?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;
+
+  // strings
+  cardBrandsLabelI18n?: TranslationModel | null;
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {

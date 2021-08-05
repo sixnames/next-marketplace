@@ -9,7 +9,6 @@ export interface UseCompactReturnInterface {
 
 function useCompact(initial = true): UseCompactReturnInterface {
   const [isCompact, setIsCompact] = React.useState(() => initial);
-
   React.useEffect(() => {
     setIsCompact(initial);
   }, [initial]);

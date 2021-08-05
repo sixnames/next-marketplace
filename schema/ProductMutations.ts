@@ -4,6 +4,7 @@ import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
+  ProductCardContentModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -22,6 +23,7 @@ import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -670,6 +672,8 @@ export const ProductMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productCardContentsCollection =
+          db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -717,13 +721,6 @@ export const ProductMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // Get source product attributes
-            const sourceProductAttributes = await productAttributesCollection
-              .find({
-                productId,
-              })
-              .toArray();
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
@@ -775,6 +772,12 @@ export const ProductMutations = extendType({
               return;
             }
 
+            // Get source product attributes
+            const sourceProductAttributes = await productAttributesCollection
+              .find({
+                productId,
+              })
+              .toArray();
             // Create product attributes
             const createdProductAttributes: ProductAttributeModel[] = [];
             for await (const productAttribute of sourceProductAttributes) {
@@ -789,6 +792,34 @@ export const ProductMutations = extendType({
               createdProductAttributes,
             );
             if (!newAttributesResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Get source product card contents
+            const sourceCardContents = await productCardContentsCollection
+              .find({
+                productId,
+              })
+              .toArray();
+            // Create product card contents
+            const createdProductCardContents: ProductCardContentModel[] = [];
+            for await (const productCardContent of sourceCardContents) {
+              createdProductCardContents.push({
+                ...productCardContent,
+                _id: new ObjectId(),
+                productId: createdProduct._id,
+                productSlug: createdProduct.slug,
+              });
+            }
+            const newCardContentsResult = await productCardContentsCollection.insertMany(
+              createdProductCardContents,
+            );
+            if (!newCardContentsResult.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),

@@ -1,4 +1,5 @@
 import ControlButton from 'components/ControlButton';
+import { useAppContext } from 'context/appContext';
 import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
@@ -19,12 +20,16 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
   arrowLeftClassName = 'absolute top-half left-6 z-40',
   arrowRightClassName = 'absolute top-half right-6 z-40',
   showPlayButton = false,
-  showBullets = true,
+  showBullets = false,
+  showFullscreenButton = false,
+  showThumbnails = true,
   ...props
 }) => {
+  const { isMobile } = useAppContext();
   const items: ReactImageGalleryItem[] = assets.map(({ url }) => {
     return {
       original: url,
+      thumbnail: url,
     };
   });
 
@@ -33,7 +38,11 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
       <ImageGallery
         showPlayButton={showPlayButton}
         showBullets={showBullets}
+        showFullscreenButton={showFullscreenButton}
+        showThumbnails={showThumbnails}
+        thumbnailPosition={isMobile ? 'bottom' : 'left'}
         items={items}
+        disableThumbnailScroll
         renderLeftNav={(onClick, disabled) => {
           return (
             <div className={arrowLeftClassName}>

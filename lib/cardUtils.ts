@@ -59,6 +59,7 @@ export interface GetCardDataInterface {
   locale: string;
   city: string;
   slug: string;
+  companySlug: string;
   companyId?: string | ObjectId | null;
 }
 
@@ -67,6 +68,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
+  companySlug,
 }: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
@@ -317,6 +319,7 @@ export async function getCardData({
             pipeline: [
               {
                 $match: {
+                  companySlug,
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
@@ -846,6 +849,8 @@ export async function getCardData({
 
     const isSingleImage = cardAssets.length < minAssetsListCount;
     const showCardImagesSlider = !isSingleImage && Boolean(rubric?.variant?.showCardImagesSlider);
+    const showCardBrands = Boolean(rubric?.variant?.showCardBrands);
+    const cardBrandsLabel = getFieldStringLocale(rubric?.variant?.cardBrandsLabelI18n, locale);
 
     const shopsCounterPostfix =
       noNaN(shopsCount) > 1
@@ -901,6 +906,8 @@ export async function getCardData({
       assets: cardAssets,
       isSingleImage,
       showCardImagesSlider,
+      showCardBrands,
+      cardBrandsLabel,
       showFeaturesSection:
         iconFeatures.length > 0 ||
         tagFeatures.length > 0 ||

@@ -34,7 +34,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
     twitterLink;
 
   return (
-    <footer className='footer relative z-[100] pt-6 pb-mobile-nav-height lg:pb-8 bg-secondary'>
+    <footer className='footer relative z-[100] pt-6 pb-8 bg-secondary'>
       <Inner className='flex flex-col gap-8'>
         <div className='grid gap-x-8 gap-y-6 lg:gap-y-12 lg:grid-cols-6 items-baseline'>
           <div className='flex flex-col lg:col-span-2 max-w-[480px]'>

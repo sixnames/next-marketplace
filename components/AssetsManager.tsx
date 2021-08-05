@@ -12,7 +12,6 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
-import classes from './AssetsManager.module.css';
 
 interface AssetItem {
   url: string;
@@ -61,7 +60,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
         assetUrl: result.draggableId,
       });
     },
-    [assets],
+    [assets, onReorderHandler],
   );
 
   return (
@@ -70,7 +69,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
         <Droppable droppableId={'assets'} direction='horizontal'>
           {(provided) => (
             <div
-              className={classes.assetPreviewsList}
+              className='flex flex-wrap gap-8'
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
@@ -79,7 +78,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
                   {(draggableProvided) => (
                     <div
                       key={url}
-                      className={classes.assetPreview}
+                      className='w-40 h-40 relative'
                       data-cy={`asset-preview-${draggableIndex}`}
                       ref={draggableProvided.innerRef}
                       {...draggableProvided.dragHandleProps}
@@ -96,7 +95,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
                         <ButtonCross
                           iconSize={'smaller'}
                           size={'smaller'}
-                          className={classes.assetPreviewRemove}
+                          className='absolute top-0 right-0 z-30'
                           onClick={() => {
                             showModal<ConfirmModalInterface>({
                               variant: CONFIRM_MODAL,

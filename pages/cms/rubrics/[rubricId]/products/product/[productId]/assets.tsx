@@ -1,4 +1,4 @@
-import AssetsManager from 'components/Assets/AssetsManager';
+import AssetsManager from 'components/AssetsManager';
 import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';

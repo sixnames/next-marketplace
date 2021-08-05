@@ -66,7 +66,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
           })}
 
           {currentPageName ? (
-            <li className='inline mr-1 text-secondary-text whitespace-nowrap'>{currentPageName}</li>
+            <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
           ) : null}
         </ul>
       </Inner>

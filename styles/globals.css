@@ -821,6 +821,25 @@ table {
   position: static;
 }
 
+.image-gallery-thumbnail {
+  outline: none;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 8px;
+}
+
+.image-gallery-thumbnail:hover {
+  border-width: 2px;
+  border-color: rgba(var(--themeRGB), 0.5);
+}
+
+.image-gallery-thumbnail.active,
+.image-gallery-thumbnail:focus {
+  border-width: 2px;
+  border-color: var(--theme);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .image-gallery-bullets .image-gallery-bullet.active:hover {
     background: var(--theme);

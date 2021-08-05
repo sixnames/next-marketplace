@@ -84,7 +84,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
             {/*gallery*/}
             <div className='lg:col-span-4 relative'>
               {showCardImagesSlider ? (
-                <CardImageSlider assets={assets} className={stickyClassName} />
+                <CardImageSlider assets={assets} className={`mb-8 lg:mb-0 ${stickyClassName}`} />
               ) : (
                 <CardSimpleGallery
                   mainImage={product.mainImage}

@@ -86,6 +86,7 @@ export async function getServerSideProps(
     slug: `${query.card}`,
     companyId: props.company?._id,
     companySlug: props.companySlug,
+    useUniqueConstructor: props.initialData.configs.useUniqueConstructor,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

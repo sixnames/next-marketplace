@@ -2,7 +2,12 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
+  ROUTE_CMS,
+} from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import { ProductCardContentModel, ProductModel, RubricModel } from 'db/dbModels';
@@ -208,6 +213,7 @@ export const getServerSideProps = async (
       _id: new ObjectId(),
       productId: product._id,
       productSlug: product.slug,
+      companySlug: DEFAULT_COMPANY_SLUG,
       assetKeys: [],
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,

@@ -758,6 +758,7 @@ export interface NexusGenInputs {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     assetKeys: string[]; // [String!]!
+    companySlug: string; // String!
     content: NexusGenScalars['JSONObject']; // JSONObject!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!

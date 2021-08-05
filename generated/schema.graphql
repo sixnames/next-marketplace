@@ -2633,6 +2633,7 @@ input UpdateProductBrandInput {
 input UpdateProductCardContentInput {
   _id: ObjectId!
   assetKeys: [String!]!
+  companySlug: String!
   content: JSONObject!
   productId: ObjectId!
   productSlug: String!

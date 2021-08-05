@@ -2951,6 +2951,7 @@ export type UpdateProductCardContentInput = {
   _id: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
   productSlug: Scalars['String'];
+  companySlug: Scalars['String'];
   content: Scalars['JSONObject'];
   assetKeys: Array<Scalars['String']>;
 };

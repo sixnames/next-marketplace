@@ -32,6 +32,7 @@ export const UpdateProductCardContentInput = inputObjectType({
     t.nonNull.objectId('_id');
     t.nonNull.objectId('productId');
     t.nonNull.string('productSlug');
+    t.nonNull.string('companySlug');
     t.nonNull.json('content');
     t.nonNull.list.nonNull.string('assetKeys');
   },

@@ -523,6 +523,7 @@ export interface ProductAssetsModel {
 
 export interface ProductCardContentModel {
   _id: ObjectIdModel;
+  companySlug: string;
   productSlug: string;
   productId: ObjectIdModel;
   content: JSONObjectModel;

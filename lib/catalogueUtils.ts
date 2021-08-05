@@ -491,7 +491,14 @@ export async function getCatalogueAttributes({
     if (isSelected) {
       selectedAttributes.push({
         ...castedAttribute,
-        options: selectedFilterOptions,
+        options: attribute.showNameInTitle
+          ? selectedFilterOptions.map((option) => {
+              return {
+                ...option,
+                name: `${getFieldStringLocale(attribute.nameI18n, locale)} ${option.name}`,
+              };
+            })
+          : selectedFilterOptions,
       });
 
       // Add selected items to the catalogue title config

@@ -2,7 +2,10 @@ import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/Catal
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
-import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
+import {
+  CatalogueFilterAttributePropsInterface,
+  CatalogueFilterInterface,
+} from 'layout/catalogue/CatalogueFilter';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import FilterLink from 'components/Link/FilterLink';
@@ -11,15 +14,6 @@ import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
-
-interface CatalogueFilterAttributePropsInterface {
-  attribute: CatalogueFilterAttributeInterface;
-  companyId?: string;
-  rubricSlug: string;
-  onClick: () => void;
-  isSearchResult?: boolean;
-  attributeIndex: number;
-}
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
@@ -91,19 +85,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   );
 };
 
-interface CatalogueFilterInterface {
-  attributes: CatalogueFilterAttributeInterface[];
-  selectedAttributes: CatalogueFilterAttributeInterface[];
-  catalogueCounterString: string;
-  rubricSlug: string;
-  isFilterVisible: boolean;
-  hideFilterHandler: () => void;
-  companyId?: string;
-  route: string;
-  isSearchResult?: boolean;
-}
-
-const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
+const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   attributes,
   selectedAttributes,
   rubricSlug,
@@ -194,4 +176,4 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   );
 };
 
-export default CatalogueFilter;
+export default CatalogueFilterDefault;

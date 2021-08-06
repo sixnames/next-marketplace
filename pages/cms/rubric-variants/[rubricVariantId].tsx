@@ -10,7 +10,7 @@ import { ROUTE_CMS } from 'config/common';
 import {
   CARD_LAYOUT_OPTIONS,
   GRID_SNIPPET_LAYOUT_OPTIONS,
-  LAYOUT_DEFAULT,
+  DEFAULT_LAYOUT,
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
@@ -77,11 +77,11 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
           initialValues={{
             rubricVariantId: rubricVariant._id,
             nameI18n: rubricVariant.nameI18n || {},
-            cardLayout: rubricVariant.cardLayout || LAYOUT_DEFAULT,
-            gridSnippetLayout: rubricVariant.gridSnippetLayout || LAYOUT_DEFAULT,
-            rowSnippetLayout: rubricVariant.rowSnippetLayout || LAYOUT_DEFAULT,
-            catalogueFilterLayout: rubricVariant.catalogueFilterLayout || LAYOUT_DEFAULT,
-            catalogueNavLayout: rubricVariant.catalogueNavLayout || LAYOUT_DEFAULT,
+            cardLayout: rubricVariant.cardLayout || DEFAULT_LAYOUT,
+            gridSnippetLayout: rubricVariant.gridSnippetLayout || DEFAULT_LAYOUT,
+            rowSnippetLayout: rubricVariant.rowSnippetLayout || DEFAULT_LAYOUT,
+            catalogueFilterLayout: rubricVariant.catalogueFilterLayout || DEFAULT_LAYOUT,
+            catalogueNavLayout: rubricVariant.catalogueNavLayout || DEFAULT_LAYOUT,
             showSnippetBackground: rubricVariant.showSnippetBackground || false,
             showSnippetArticle: rubricVariant.showSnippetArticle || false,
             showSnippetRating: rubricVariant.showSnippetRating || false,

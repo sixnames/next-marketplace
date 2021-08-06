@@ -1,5 +1,6 @@
 import { CatalogueInterface } from 'components/Catalogue';
 import { getPriceAttribute } from 'config/constantAttributes';
+import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_ATTRIBUTES,
   COL_CITIES,
@@ -1082,6 +1083,7 @@ export const getCatalogueData = async ({
         rubricSlug,
         products: [],
         catalogueTitle: 'Товары не найдены',
+        catalogueFilterLayout: DEFAULT_LAYOUT,
         totalProducts: 0,
         attributes: [],
         selectedAttributes: [],
@@ -1268,6 +1270,7 @@ export const getCatalogueData = async ({
       rubricSlug: rubric.slug,
       products,
       catalogueTitle,
+      catalogueFilterLayout: rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT,
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
       attributes: castedAttributes,
       selectedAttributes,

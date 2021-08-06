@@ -13,7 +13,7 @@ import {
   SORT_ASC,
   SORT_DESC,
 } from 'config/common';
-import { LAYOUT_DEFAULT } from 'config/constantSelects';
+import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
 import {
   COL_ATTRIBUTES,
@@ -891,7 +891,7 @@ export async function getCardData({
       },
       cardPrices,
       rubric,
-      cardLayout: rubric?.variant?.cardLayout || LAYOUT_DEFAULT,
+      cardLayout: rubric?.variant?.cardLayout || DEFAULT_LAYOUT,
       connections: cardConnections,
       listFeatures,
       textFeatures,

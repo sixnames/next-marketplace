@@ -343,6 +343,7 @@ export interface CatalogueDataInterface {
   filters: string[];
   rubricName: string;
   rubricSlug: string;
+  catalogueFilterLayout: string;
   rubricVariant?: RubricVariantInterface | null;
   products: ProductInterface[];
   totalProducts: number;

@@ -324,6 +324,7 @@ export const getServerSideProps = async (
   }
 
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
+    selectedOptionsSlugs: [],
     attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,

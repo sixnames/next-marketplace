@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
-import classes from './Checkbox.module.css';
 import { FormikHandlers } from 'formik/dist/types';
 
 export interface CheckboxInterface {
@@ -23,23 +22,25 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   disabled,
   ...props
 }) => {
-  const checkedClassName = checked ? classes.checked : '';
   const additionalClassName = className ? className : '';
-  const errorClassName = notValid ? classes.error : '';
-  const disabledClassName = disabled ? classes.disabled : '';
-  const checkboxClassName = `${classes.frame} ${checkedClassName} ${additionalClassName} ${errorClassName} ${disabledClassName}`;
+  const errorClassName = notValid ? 'border-red-500' : 'border-border-color';
+  const disabledClassName = disabled ? 'opacity-80 pointer-events-none' : '';
+  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-secondary overflow-hidden cursor-pointer text-theme ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
   return (
     <label className={checkboxClassName}>
       <input
-        type='checkbox'
         {...props}
+        type='checkbox'
+        className='absolute inset-0 w-full h-full z-20 p-0 m-0 border-none cursor-pointer bg-none opacity-0'
         value={value ? value : ''}
         checked={checked}
         disabled={disabled}
         data-cy={`${testId}-checkbox`}
       />
-      <Icon name={'check'} />
+      {checked ? (
+        <Icon className='absolute w-[10px] h-[10px] top-[4px] left-[4px] z-10' name={'check'} />
+      ) : null}
     </label>
   );
 };

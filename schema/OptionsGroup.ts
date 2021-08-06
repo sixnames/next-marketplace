@@ -7,6 +7,7 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import {
+  DEFAULT_COUNTERS_OBJECT,
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   OPTIONS_GROUP_VARIANT_ICON,
@@ -569,6 +570,7 @@ export const OptionsGroupMutations = extendType({
             slug: newOptionSlug,
             parentId,
             optionsGroupId,
+            ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdOption = createdOptionResult.ops[0];
           if (!createdOptionResult.result.ok || !createdOption) {

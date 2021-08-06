@@ -13,6 +13,7 @@ import {
   DEFAULT_LAYOUT,
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
+  CATALOGUE_FILTER_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -198,7 +199,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikLayoutSelect
                   name={'catalogueFilterLayout'}
                   label={'Дизайн фильтра каталога'}
-                  options={[]}
+                  options={CATALOGUE_FILTER_LAYOUT_OPTIONS}
                 />
 
                 <FixedButtons>

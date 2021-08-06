@@ -1,4 +1,4 @@
-import { DEFAULT_LAYOUT } from 'config/constantSelects';
+import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
@@ -30,10 +30,16 @@ interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {
 }
 
 const CatalogueFilterDefault = dynamic(() => import('layout/catalogue/CatalogueFilterDefault'));
+const CatalogueFilterCheckboxTree = dynamic(
+  () => import('layout/catalogue/CatalogueFilterCheckboxTree'),
+);
 
 const CatalogueFilter: React.FC<CatalogueFilterProviderInterface> = (props) => {
   const layoutVariant = props.filterLayoutVariant || DEFAULT_LAYOUT;
-  console.log(layoutVariant);
+
+  if (layoutVariant === CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE) {
+    return <CatalogueFilterCheckboxTree {...props} />;
+  }
 
   return <CatalogueFilterDefault {...props} />;
 };

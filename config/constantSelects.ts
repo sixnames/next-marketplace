@@ -58,3 +58,16 @@ export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
     asset: `/layout/grid-snippet/${GRID_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
   },
 ];
+
+// catalogue filter
+export const CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE = 'checkbox-tree';
+export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/catalogue-filter/${DEFAULT_LAYOUT}.png`,
+  },
+  {
+    _id: CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
+    asset: `/layout/catalogue-filter/${CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE}.png`,
+  },
+];

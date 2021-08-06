@@ -28,8 +28,8 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
 
   return (
     <div className={`mb-8`}>
-      <div className={`flex items-baseline`}>
-        <span className={`font-medium mb-4 text-lg`}>{name}</span>
+      <div className={`flex mb-1 items-baseline`}>
+        <span className={`font-medium text-lg`}>{name}</span>
         {isSelected ? (
           <Link href={clearSlug} className={`ml-4`}>
             Очистить

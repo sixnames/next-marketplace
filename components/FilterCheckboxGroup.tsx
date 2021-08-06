@@ -27,8 +27,8 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
   return (
     <div className={`mb-8 ${className ? className : ''}`}>
       {label ? (
-        <div className={`flex items-baseline`}>
-          <span className={`font-medium mb-4 text-lg`}>{label}</span>
+        <div className='flex items-baseline mb-2 justify-between'>
+          <span className={`font-medium text-lg`}>{label}</span>
           {isSelected && clearSlug ? (
             <Link href={clearSlug} className={`ml-4`}>
               Очистить

@@ -23,7 +23,7 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
     <Link href={nextSlug}>
       <a
         data-cy={testId}
-        className={`flex items-center gap-2 w-full min-h-[var(--formInputHeight)] cursor-pointer text-primary-text hover:text-theme hover:no-underline ${
+        className={`flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline ${
           className ? className : ''
         }`}
       >

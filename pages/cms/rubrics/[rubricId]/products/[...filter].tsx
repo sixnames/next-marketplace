@@ -261,7 +261,11 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
             <Accordion
               title={'Фильтр'}
               titleRight={
-                selectedAttributes.length > 0 ? <Link href={clearSlug}>Очистить фильтр</Link> : null
+                selectedAttributes.length > 0 ? (
+                  <Link href={`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`}>
+                    Очистить фильтр
+                  </Link>
+                ) : null
               }
             >
               <div className={`mt-8`}>

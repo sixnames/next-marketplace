@@ -6,7 +6,6 @@ import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
 } from 'layout/catalogue/CatalogueFilter';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
@@ -26,10 +25,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
-  const maxVisibleOptionsString = configs.catalogueFilterVisibleOptionsCount;
-  const maxVisibleOptions = maxVisibleOptionsString
-    ? noNaN(maxVisibleOptionsString)
-    : noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+  const maxVisibleOptions =
+    configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
   const isPrice = slug === PRICE_ATTRIBUTE_SLUG;

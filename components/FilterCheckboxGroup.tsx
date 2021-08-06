@@ -10,8 +10,11 @@ interface FilterCheckboxGroupInterface {
   label?: string;
   attributeSlug: string;
   clearSlug?: string;
+  onClick?: () => void;
   isSelected?: boolean;
-  showMoreHandler?: () => void;
+  showMoreHandler?: (() => void) | null;
+  postfix?: string | null;
+  testId?: string;
 }
 
 const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
@@ -23,6 +26,9 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
   clearSlug,
   isSelected,
   showMoreHandler,
+  postfix,
+  testId,
+  onClick,
 }) => {
   return (
     <div className={`mb-8 ${className ? className : ''}`}>
@@ -30,7 +36,7 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
         <div className='flex items-baseline mb-2 justify-between'>
           <span className={`font-medium text-lg`}>{label}</span>
           {isSelected && clearSlug ? (
-            <Link href={clearSlug} className={`ml-4`}>
+            <Link onClick={onClick} href={clearSlug} className={`ml-4`}>
               Очистить
             </Link>
           ) : null}
@@ -38,14 +44,17 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
       ) : null}
 
       <div className='space-y-1'>
-        {checkboxItems.map((option) => {
+        {checkboxItems.map((option, optionIndex) => {
           const key = `${attributeSlug}-${option.slug}`;
+          const optionTestId = `${testId}-${optionIndex}`;
           return (
             <div key={key}>
               <FilterCheckbox
+                onClick={onClick}
                 option={option}
-                testId={key}
+                testId={optionTestId}
                 className={`${checkboxClassName ? checkboxClassName : ''}`}
+                postfix={postfix}
               />
             </div>
           );
@@ -53,7 +62,10 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
       </div>
 
       {showMoreHandler ? (
-        <div className='uppercase cursor-pointer hover:text-theme mt-6' onClick={showMoreHandler}>
+        <div
+          className='uppercase cursor-pointer hover:text-theme mt-2 text-secondary-text'
+          onClick={showMoreHandler}
+        >
           Показать еще
         </div>
       ) : null}

@@ -8,6 +8,7 @@ export interface FilterCheckboxInterface {
   testId?: string;
   className?: string;
   postfix?: string | null;
+  onClick?: () => void;
 }
 
 const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
@@ -15,6 +16,7 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   testId,
   className,
   postfix,
+  onClick,
   // counter = 0,
 }) => {
   const { name, nextSlug, isSelected } = option;
@@ -22,6 +24,7 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   return (
     <Link href={nextSlug}>
       <a
+        onClick={onClick}
         data-cy={testId}
         className={`flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline ${
           className ? className : ''

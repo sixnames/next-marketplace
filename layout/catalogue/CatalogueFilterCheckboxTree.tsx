@@ -1,3 +1,5 @@
+import FilterCheckbox from 'components/FilterCheckbox';
+import FilterCheckboxGroup from 'components/FilterCheckboxGroup';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
@@ -6,9 +8,7 @@ import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
 } from 'layout/catalogue/CatalogueFilter';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
@@ -26,62 +26,41 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
-  const maxVisibleOptionsString = configs.catalogueFilterVisibleOptionsCount;
-  const maxVisibleOptions = maxVisibleOptionsString
-    ? noNaN(maxVisibleOptionsString)
-    : noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+  const maxVisibleOptions =
+    configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
   const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
-
+  const testId = `catalogue-option-${attributeIndex}`;
   return (
-    <div className='mb-12'>
-      <div className='flex items-baseline justify-between mb-4'>
-        <span className='text-lg font-bold'>{name}</span>
-        {isSelected ? (
-          <Link href={clearSlug} onClick={onClick} className='font-medium text-theme'>
-            Очистить
-          </Link>
-        ) : null}
-      </div>
-
-      <div className='flex flex-wrap gap-2'>
-        {options.map((option, optionIndex) => {
-          const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return (
-            <FilterLink
-              onClick={onClick}
-              option={option}
-              key={option.slug}
-              testId={testId}
-              postfix={postfix}
-            />
-          );
-        })}
-      </div>
-
-      {totalOptionsCount > maxVisibleOptions && !isPrice ? (
-        <div
-          className='uppercase cursor-pointer hover:text-theme mt-6'
-          onClick={() => {
-            showModal<CatalogueAdditionalOptionsModalInterface>({
-              variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
-              props: {
-                rubricSlug,
-                attributeSlug: attribute.slug,
-                notShowAsAlphabet: attribute.notShowAsAlphabet,
-                title: attribute.name,
-                companyId,
-                isSearchResult,
-              },
-            });
-          }}
-        >
-          Показать еще
-        </div>
-      ) : null}
-    </div>
+    <FilterCheckboxGroup
+      testId={testId}
+      isSelected={isSelected}
+      clearSlug={clearSlug}
+      label={name}
+      checkboxItems={options}
+      attributeSlug={slug}
+      postfix={postfix}
+      onClick={onClick}
+      showMoreHandler={
+        totalOptionsCount > maxVisibleOptions && !isPrice
+          ? () => {
+              showModal<CatalogueAdditionalOptionsModalInterface>({
+                variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+                props: {
+                  rubricSlug,
+                  attributeSlug: attribute.slug,
+                  notShowAsAlphabet: attribute.notShowAsAlphabet,
+                  title: attribute.name,
+                  companyId,
+                  isSearchResult,
+                },
+              });
+            }
+          : null
+      }
+    />
   );
 };
 
@@ -143,13 +122,12 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
                 return attribute.options.map((option) => {
                   const key = `${option.slug}`;
                   return (
-                    <FilterLink
-                      withCross
-                      onClick={hideFilterHandler}
+                    <FilterCheckbox
+                      postfix={postfix}
                       option={option}
                       key={key}
+                      onClick={hideFilterHandler}
                       testId={key}
-                      postfix={postfix}
                     />
                   );
                 });

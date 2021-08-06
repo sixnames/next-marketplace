@@ -63,6 +63,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardListFeaturesCount: 5,
     catalogueMetaPrefix: '',
     cardMetaPrefix: '',
+    useUniqueConstructor: false,
   },
 });
 

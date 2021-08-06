@@ -20,6 +20,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   THEME_COOKIE_KEY,
   THEME_LIGHT,
+  CONFIG_GROUP_PROJECT,
 } from 'config/common';
 import {
   COL_CITIES,
@@ -472,15 +473,32 @@ export const getSsrConfigs = async ({
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const initialConfigs = await configsCollection
+
+  const projectConfigs = await configsCollection
     .aggregate([
       {
         $match: {
+          group: CONFIG_GROUP_PROJECT,
+          companySlug: DEFAULT_COMPANY_SLUG,
+        },
+      },
+    ])
+    .toArray();
+
+  const companyConfigs = await configsCollection
+    .aggregate([
+      {
+        $match: {
+          group: {
+            $ne: CONFIG_GROUP_PROJECT,
+          },
           companySlug: companySlug || DEFAULT_COMPANY_SLUG,
         },
       },
     ])
     .toArray();
+
+  const initialConfigs = [...companyConfigs, ...projectConfigs];
   const configs = initialConfigs.map((config) => {
     const value = getCityFieldLocaleString({ cityField: config.cities, city, locale });
     const singleValue = (value || [])[0];
@@ -925,7 +943,7 @@ export async function getPageInitialState({
     company = await companiesCollection.findOne({ domain });
   }
   // For development
-  // company = await companiesCollection.findOne({ slug: 'company_a' });
+  company = await companiesCollection.findOne({ slug: 'company_a' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

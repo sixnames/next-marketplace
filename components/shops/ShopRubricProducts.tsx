@@ -11,8 +11,9 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useConfigContext } from 'context/configContext';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -66,6 +67,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   const { me } = useUserContext();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
+  const { configs } = useConfigContext();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
@@ -178,14 +180,23 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             justifyContent={'flex-end'}
             testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
-            updateHandler={() => {
-              if (me?.role?.isStaff) {
-                window.open(
-                  `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
-                  '_blank',
-                );
-              }
-            }}
+            updateHandler={
+              me?.role?.isStaff
+                ? () => {
+                    window.open(
+                      `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
+                      '_blank',
+                    );
+                  }
+                : configs.useUniqueConstructor
+                ? () => {
+                    window.open(
+                      `${ROUTE_CONSOLE}/${router.query.companyId}/shops/shop/${router.query.shopId}/products/product/${dataItem.productId}`,
+                      '_blank',
+                    );
+                  }
+                : undefined
+            }
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({

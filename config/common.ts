@@ -129,6 +129,7 @@ export const CONFIG_GROUP_UI = 'ui';
 export const CONFIG_GROUP_CONTACTS = 'contacts';
 export const CONFIG_GROUP_SEO = 'seo';
 export const CONFIG_GROUP_CATALOGUE = 'catalogue';
+export const CONFIG_GROUP_PROJECT = 'project';
 
 // OPTIONS GROUP VARIANTS
 export const OPTIONS_GROUP_VARIANT_TEXT = 'text';

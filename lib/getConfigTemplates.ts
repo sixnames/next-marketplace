@@ -786,22 +786,6 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'catalogue',
-      variant: 'boolean' as ConfigVariantModel,
-      slug: 'useUniqueConstructor',
-      name: 'Использовать уникальный конструктор в карточке товара для каждой компании',
-      description: '',
-      multi: false,
-      acceptedFormats: [],
-      cities: {
-        [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['false'],
-        },
-      },
-    },
-    {
-      _id: new ObjectId(),
-      companySlug,
-      group: 'catalogue',
       variant: 'number' as ConfigVariantModel,
       slug: 'stickyNavVisibleAttributesCount',
       name: 'Количество видимых аттрибутов в выпадающем меню шапки сайта.',
@@ -923,6 +907,24 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['купить'],
+        },
+      },
+    },
+
+    // Project
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'useUniqueConstructor',
+      name: 'Использовать уникальный конструктор в карточке товара для каждой компании',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['false'],
         },
       },
     },

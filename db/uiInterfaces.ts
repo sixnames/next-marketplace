@@ -604,7 +604,6 @@ export interface SsrConfigsInterface {
   /// Catalogue
   mainBannerAutoplaySpeed: number;
   showCardArticle: boolean;
-  useUniqueConstructor: boolean;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
   catalogueFilterVisibleAttributesCount: number;
@@ -613,4 +612,7 @@ export interface SsrConfigsInterface {
   cardListFeaturesCount: number;
   catalogueMetaPrefix: string;
   cardMetaPrefix: string;
+
+  // Project
+  useUniqueConstructor: boolean;
 }

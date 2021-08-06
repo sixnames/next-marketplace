@@ -56,6 +56,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   isSearchResult,
 }) => {
   const router = useRouter();
+  const { configs } = useConfigContext();
   const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
   const { showErrorNotification } = useNotificationsContext();
@@ -129,7 +130,16 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     if (state.products.length < state.totalProducts) {
       setLoading(true);
       const filters = alwaysArray(router.query.catalogue).join('/');
-      fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}?page=${state.page + 1}`)
+      const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
+      const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
+      const companyIdParam = companyId ? `$companyId=${companyId}` : '';
+      const companySlugParam = companySlug ? `companySlug=${companySlug}` : '';
+
+      const params = `?page=${
+        state.page + 1
+      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}`;
+
+      fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}${params}`)
         .then((res) => {
           return res.json();
         })
@@ -148,6 +158,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         });
     }
   }, [
+    companyId,
+    companySlug,
+    configs.catalogueFilterVisibleAttributesCount,
+    configs.catalogueFilterVisibleOptionsCount,
     router.query.catalogue,
     router.query.rubricSlug,
     state.page,

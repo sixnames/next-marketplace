@@ -943,7 +943,7 @@ export async function getPageInitialState({
     company = await companiesCollection.findOne({ domain });
   }
   // For development
-  company = await companiesCollection.findOne({ slug: 'company_a' });
+  // company = await companiesCollection.findOne({ slug: 'company_a' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

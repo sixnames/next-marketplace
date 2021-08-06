@@ -32,11 +32,11 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   footerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
 
   // Metrics
-  const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
-  const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
+  const yaMetrica = configs.yaMetrica;
+  const googleAnalytics = configs.googleAnalytics;
   const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (

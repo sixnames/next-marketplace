@@ -13,13 +13,14 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { ConfigCitiesModel, ConfigModel, TranslationModel } from 'db/dbModels';
+import { ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import { useUpdateConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
+import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
 import { InputType } from 'types/clientTypes';
@@ -87,7 +88,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
                   <FormikInput name={fieldName} testId={fieldTestId} type={type} low />
                 </div>
 
-                {multi && (
+                {multi ? (
                   <div className='flex items-center justify-end flex-shrink-0 w-[40px]'>
                     {isFirst ? (
                       <Button
@@ -105,7 +106,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
                       />
                     )}
                   </div>
-                )}
+                ) : null}
               </React.Fragment>
             )}
           </div>
@@ -182,7 +183,7 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
 
 interface InitialValues {
   configId: string;
-  cities: ConfigCitiesModel;
+  cities: JSONObjectModel;
 }
 
 interface FormikConfigInputInterface {
@@ -206,7 +207,36 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
   const type = initialType as InputType;
   const isConstructor = variant === 'constructor';
 
-  const initialValues: InitialValues = { configId: `${_id}`, cities: configCities };
+  const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
+    const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
+    if (!cityLocales) {
+      return acc;
+    }
+    acc[cityKey] = Object.keys(cityLocales).reduce((localesAcc: JSONObjectModel, localeKey) => {
+      const locale = cityLocales[localeKey] as string[];
+
+      if (!locale) {
+        return localesAcc;
+      }
+
+      if (variant === 'number') {
+        localesAcc[localeKey] = locale.map((value) => noNaN(value));
+        return localesAcc;
+      }
+
+      if (variant === 'boolean') {
+        localesAcc[localeKey] = locale.map((value) => value === 'true');
+        return localesAcc;
+      }
+
+      localesAcc[localeKey] = locale;
+      return localesAcc;
+    }, {});
+
+    return acc;
+  }, {});
+
+  const initialValues: InitialValues = { configId: `${_id}`, cities: initialCities };
 
   const updateConfigMutationHandler = React.useCallback(
     (values: InitialValues) => {
@@ -239,7 +269,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
                   const localeValue = alwaysArray(localeValueArray).map((value) => {
                     if (config.variant === 'boolean') {
                       if (!value) {
-                        return '';
+                        return 'false';
                       }
                       return `${value}`;
                     }

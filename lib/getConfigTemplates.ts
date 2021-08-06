@@ -910,5 +910,23 @@ export function getConfigTemplates({
         },
       },
     },
+
+    // Project
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'useUniqueConstructor',
+      name: 'Использовать уникальный конструктор в карточке товара для каждой компании',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
   ];
 }

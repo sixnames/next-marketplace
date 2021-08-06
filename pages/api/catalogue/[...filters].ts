@@ -10,6 +10,8 @@ export interface CatalogueQueryInterface {
   companySlug?: string;
   companyId?: string;
   page: number;
+  visibleOptionsCount: string;
+  snippetVisibleAttributesCount: string;
 }
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
@@ -18,7 +20,14 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     const anyQuery = query as unknown;
     const locale = req.cookies.locale || DEFAULT_LOCALE;
 
-    const { filters, companySlug, companyId, page } = anyQuery as CatalogueQueryInterface;
+    const {
+      filters,
+      companySlug,
+      companyId,
+      page,
+      visibleOptionsCount,
+      snippetVisibleAttributesCount,
+    } = anyQuery as CatalogueQueryInterface;
     const [rubricSlug, ...restFilters] = filters;
     const host = `${headers.host}`;
     const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
@@ -28,6 +37,8 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companySlug,
       companyId,
       city: sessionCity,
+      visibleOptionsCount: noNaN(visibleOptionsCount) || 5,
+      snippetVisibleAttributesCount: noNaN(snippetVisibleAttributesCount) || 5,
       input: {
         rubricSlug,
         page: noNaN(page),

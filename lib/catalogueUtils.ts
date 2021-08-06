@@ -685,6 +685,8 @@ export interface GetCatalogueDataInterface {
   city: string;
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
+  snippetVisibleAttributesCount: number;
+  visibleOptionsCount: number;
   input: {
     rubricSlug: string;
     filters: string[];
@@ -698,6 +700,8 @@ export const getCatalogueData = async ({
   input,
   companySlug = DEFAULT_COMPANY_SLUG,
   companyId,
+  snippetVisibleAttributesCount,
+  visibleOptionsCount,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
     // console.log(' ');
@@ -719,14 +723,6 @@ export const getCatalogueData = async ({
     // Args
     const { filters, page, rubricSlug } = input;
     const realCompanySlug = companySlug || DEFAULT_COMPANY_SLUG;
-
-    // Get configs
-    // const configsTimeStart = new Date().getTime();
-    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs({
-      companySlug: realCompanySlug,
-      city,
-    });
-    // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Cast selected options
     const {
@@ -1316,6 +1312,8 @@ export async function getCatalogueServerSideProps(
     city: props.sessionCity,
     companySlug: props.company?.slug,
     companyId: props.company?._id,
+    snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(catalogue),

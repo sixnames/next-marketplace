@@ -1,20 +1,74 @@
-import { CityInterface, ConfigInterface } from 'db/uiInterfaces';
+import { CityInterface, SsrConfigsInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import { noNaN } from 'lib/numbers';
 
 interface ConfigContextInterface {
-  configs: ConfigInterface[];
+  configs: SsrConfigsInterface;
   cities: CityInterface[];
   currentCity?: CityInterface | null;
 }
 
 const ConfigContext = React.createContext<ConfigContextInterface>({
-  configs: [],
   cities: [],
+  configs: {
+    siteName: '',
+    siteFoundationYear: 0,
+    yaVerification: '',
+    yaMetrica: '',
+    googleAnalytics: '',
+    siteLogo: '',
+    siteLogoDark: '',
+    siteLogoWidth: '',
+    siteMobileLogoWidth: '',
+    siteThemeColor: '',
+    siteTopBarBgLightTheme: '',
+    headerTopBarBgDarkTheme: '',
+    headerTopBarTextLightTheme: '',
+    headerTopBarTextDarkTheme: '',
+    siteNavBarBgLightTheme: '',
+    siteNavBarBgDarkTheme: '',
+    siteNavBarTextLightTheme: '',
+    siteNavBarTextDarkTheme: '',
+    siteNavDropdownBgLightTheme: '',
+    siteNavDropdownBgDarkTheme: '',
+    siteNavDropdownTextLightTheme: '',
+    siteNavDropdownTextDarkTheme: '',
+    siteNavDropdownAttributeLightTheme: '',
+    siteNavDropdownAttributeDarkTheme: '',
+    showAdultModal: false,
+    contactEmail: [],
+    phone: [],
+    facebook: '',
+    instagram: '',
+    vkontakte: '',
+    odnoklassniki: '',
+    youtube: '',
+    twitter: '',
+    pageDefaultPreviewImage: '',
+    androidChrome192: '',
+    androidChrome512: '',
+    appleTouchIcon: '',
+    faviconIco: '',
+    iconSvg: '',
+    pageDefaultTitle: '',
+    pageDefaultDescription: '',
+    seoTextTitle: '',
+    seoText: '',
+    mainBannerAutoplaySpeed: 5000,
+    showCardArticle: true,
+    stickyNavVisibleAttributesCount: 5,
+    stickyNavVisibleOptionsCount: 5,
+    catalogueFilterVisibleAttributesCount: 5,
+    catalogueFilterVisibleOptionsCount: 5,
+    snippetAttributesCount: 5,
+    cardListFeaturesCount: 5,
+    catalogueMetaPrefix: '',
+    cardMetaPrefix: '',
+    useUniqueConstructor: false,
+  },
 });
 
 const ConfigContextProvider: React.FC<ConfigContextInterface> = ({
-  configs = [],
+  configs,
   cities = [],
   currentCity,
   children,
@@ -37,64 +91,7 @@ function useConfigContext() {
     throw new Error('useConfigContext must be used within a ConfigContextProvider');
   }
 
-  const getSiteConfig = React.useCallback(
-    (configSlug: string) => {
-      return context.configs.find(({ slug }) => configSlug === slug);
-    },
-    [context.configs],
-  );
-
-  const getSiteConfigValue = React.useCallback(
-    (configSlug: string) => {
-      const config = getSiteConfig(configSlug);
-      return config ? config.value : [''];
-    },
-    [getSiteConfig],
-  );
-
-  const getSiteConfigSingleValue = React.useCallback(
-    (configSlug: string) => {
-      const config = getSiteConfig(configSlug);
-      if (!config || !config.singleValue) {
-        return null;
-      }
-
-      return `${config.singleValue}`;
-    },
-    [getSiteConfig],
-  );
-
-  const getSiteConfigBoolean = React.useCallback(
-    (configSlug: string) => {
-      const config = getSiteConfigSingleValue(configSlug);
-
-      return config === 'true';
-    },
-    [getSiteConfigSingleValue],
-  );
-
-  const themeStyles = React.useMemo(() => {
-    const themeColor = getSiteConfigSingleValue('siteThemeColor');
-    const fallbackColor = `219, 83, 96`;
-    const themeRGB = themeColor ? themeColor.split(',').map((num) => noNaN(num)) : fallbackColor;
-    const toShort = themeRGB.length < 3;
-    const finalThemeColor = toShort ? fallbackColor : themeColor;
-
-    const themeR = toShort ? '219' : themeRGB[0];
-    const themeG = toShort ? '83' : themeRGB[1];
-    const themeB = toShort ? '96' : themeRGB[2];
-
-    return `--theme: rgb(${finalThemeColor}); --themeR: ${themeR}; --themeG: ${themeG}; --themeB: ${themeB};`;
-  }, [getSiteConfigSingleValue]);
-
-  return {
-    ...context,
-    getSiteConfig,
-    getSiteConfigValue,
-    getSiteConfigSingleValue,
-    getSiteConfigBoolean,
-    themeStyles,
-  };
+  return context;
 }
 
 export { ConfigContextProvider, useConfigContext };

@@ -6,6 +6,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   CATALOGUE_OPTION_SEPARATOR,
   DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
@@ -61,6 +62,7 @@ export interface GetCardDataInterface {
   slug: string;
   companySlug: string;
   companyId?: string | ObjectId | null;
+  useUniqueConstructor: boolean;
 }
 
 export async function getCardData({
@@ -69,6 +71,7 @@ export async function getCardData({
   slug,
   companyId,
   companySlug,
+  useUniqueConstructor,
 }: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
@@ -319,7 +322,7 @@ export async function getCardData({
             pipeline: [
               {
                 $match: {
-                  companySlug,
+                  companySlug: useUniqueConstructor ? companySlug : DEFAULT_COMPANY_SLUG,
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },

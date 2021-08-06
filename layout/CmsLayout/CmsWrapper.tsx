@@ -3,6 +3,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Modal from 'components/Modal/Modal';
 import Spinner from 'components/Spinner';
 import ThemeTrigger from 'components/ThemeTrigger';
+import { ROUTE_CONSOLE } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useUserContext } from 'context/userContext';
 import { CompanyInterface } from 'db/uiInterfaces';
@@ -32,6 +33,9 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
   if (!me) {
     return <Spinner />;
   }
+
+  const navItems = company ? me.role?.appNavigation : me.role?.cmsNavigation;
+  const basePath = company ? `${ROUTE_CONSOLE}/${company._id}` : '';
 
   return (
     <div className={`min-h-full-height text-primary-text bg-primary`}>
@@ -73,8 +77,8 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
         isMobile={isMobile}
         compact={compact}
         company={company}
-        basePath={''}
-        navItems={me.role?.cmsNavigation || []}
+        basePath={basePath}
+        navItems={navItems || []}
       />
 
       {isLoading ? <Spinner /> : null}

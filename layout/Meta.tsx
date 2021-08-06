@@ -26,32 +26,32 @@ const Meta: React.FC<MetaInterface> = ({
   pageUrls,
   previewImage,
 }) => {
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
 
-  const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const configTitle = configs.pageDefaultTitle;
   const pageTitle = title || configTitle;
 
-  const configDescription = getSiteConfigSingleValue('pageDefaultDescription');
-  const pageDescription = description || `${configDescription}`;
+  const configDescription = configs.pageDefaultDescription;
+  const pageDescription = description || configDescription;
 
-  const configPreviewImage = getSiteConfigSingleValue('pageDefaultPreviewImage');
-  const pagePreviewImage = previewImage || `${configPreviewImage}`;
+  const configPreviewImage = configs.pageDefaultPreviewImage;
+  const pagePreviewImage = previewImage || configPreviewImage;
 
-  const configSiteName = getSiteConfigSingleValue('siteName');
-  const pageSiteName = siteName || `${configSiteName}`;
+  const configSiteName = configs.siteName;
+  const pageSiteName = siteName || configSiteName;
 
-  const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
-  const pageFoundationYear = foundationYear || `${configFoundationYear}`;
+  const configFoundationYear = configs.siteFoundationYear;
+  const pageFoundationYear = foundationYear || configFoundationYear;
 
   // Icons
-  const appleTouchIcon = getSiteConfigSingleValue('apple-touch-icon');
-  const faviconIco = getSiteConfigSingleValue('favicon.ico');
-  const iconSvg = getSiteConfigSingleValue('icon.svg');
+  const appleTouchIcon = configs.appleTouchIcon;
+  const faviconIco = configs.faviconIco;
+  const iconSvg = configs.iconSvg;
 
   // Metrics
   //<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->
   //<!-- Global site tag (gtag.js) - Google Analytics -->
-  const yaVerification = getSiteConfigSingleValue('yaVerification') || '';
+  const yaVerification = configs.yaVerification;
   // const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
   // const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
   // const metricsCodeAsString = `${yaVerification}${yaMetrica}${googleAnalytics}`;

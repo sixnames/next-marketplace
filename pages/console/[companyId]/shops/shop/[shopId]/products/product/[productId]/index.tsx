@@ -2,46 +2,37 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import {
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  ROUTE_CMS,
-} from 'config/common';
+import Title from 'components/Title';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductCardContentModel, ProductModel, RubricModel } from 'db/dbModels';
+import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS } from 'db/collectionNames';
+import { ProductCardContentModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
   useUpdateProductCardContentMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
+import Head from 'next/head';
+import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
-interface ProductAttributesInterface {
+interface ProductDetailsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   cardContent: ProductCardContentModel;
 }
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
-  product,
-  rubric,
-  cardContent,
-}) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, cardContent }) => {
   const { cities } = useConfigContext();
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -51,33 +42,31 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
     onError: onErrorCallback,
   });
 
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Контент карточки',
-    config: [
-      {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
-      },
-      {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
-      },
-      {
-        name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
-      },
-      {
-        name: product.originalName,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
-      },
-    ],
-  };
+  const { originalName, mainImage } = product;
 
   const initialValues: UpdateProductCardContentInput = cardContent;
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <Inner testId={'product-card-constructor'}>
+    <AppContentWrapper>
+      <Head>
+        <title>{product.originalName}</title>
+      </Head>
+
+      <Inner testId={'product-details'}>
+        <Title subtitle={`Арт. ${product.itemId}`} testId={`${product.originalName}-product-title`}>
+          {product.originalName}
+        </Title>
+
+        <div className='relative w-[15rem] h-[15rem] mb-8'>
+          <Image
+            src={mainImage}
+            alt={originalName}
+            title={originalName}
+            layout='fill'
+            objectFit='contain'
+          />
+        </div>
+
         <Formik<UpdateProductCardContentInput>
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -154,17 +143,22 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
           }}
         </Formik>
       </Inner>
-    </CmsProductLayout>
+    </AppContentWrapper>
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
+interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({
+  pageUrls,
+  currentCompany,
+  cardContent,
+  product,
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} rubric={rubric} cardContent={cardContent} />
-    </CmsLayout>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+      <ProductDetails product={product} cardContent={cardContent} />
+    </ConsoleLayout>
   );
 };
 
@@ -172,40 +166,54 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId, rubricId } = query;
+  const { productId, companyId } = query;
   const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const productCardContentsCollection =
     db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-  const { props } = await getAppInitialData({ context });
-  if (!props || !productId || !rubricId) {
+  const { props } = await getConsoleInitialData({ context });
+
+  if (!props || !productId || !companyId || !props.initialData.configs.useUniqueConstructor) {
     return {
       notFound: true,
     };
   }
 
-  const product = await productsCollection.findOne({
-    _id: new ObjectId(`${productId}`),
+  const company = await companiesCollection.findOne({
+    _id: new ObjectId(`${companyId}`),
   });
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
-  });
-
-  if (!product || !initialRubric) {
+  if (!company) {
     return {
       notFound: true,
     };
   }
 
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
+  const productAggregation = await productsCollection
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(`${productId}`),
+        },
+      },
+      {
+        $project: {
+          attributes: false,
+        },
+      },
+    ])
+    .toArray();
+  const product = productAggregation[0];
+
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug: company.slug,
   });
 
   if (!cardContent) {
@@ -213,7 +221,7 @@ export const getServerSideProps = async (
       _id: new ObjectId(),
       productId: product._id,
       productSlug: product.slug,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySlug: company.slug,
       assetKeys: [],
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
@@ -225,7 +233,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(product),
-      rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
     },
   };

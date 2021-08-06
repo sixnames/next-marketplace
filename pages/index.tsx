@@ -58,11 +58,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   mobileTopFilters,
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const configTitle = getSiteConfigSingleValue('seoTextTitle');
-  const configSeoText = getSiteConfigSingleValue('seoText');
-  const configAutoplaySpeed = getSiteConfigSingleValue('mainBannerAutoplaySpeed');
-  const autoplaySpeed = noNaN(configAutoplaySpeed);
+  const { configs } = useConfigContext();
+  const configTitle = configs.seoTextTitle;
+  const configSeoText = configs.seoText;
+  const autoplaySpeed = configs.mainBannerAutoplaySpeed;
   const sectionClassName = `mb-14 sm:mb-28`;
 
   const sliderItems = sliderPages.reduce(

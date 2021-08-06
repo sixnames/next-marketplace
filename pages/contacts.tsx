@@ -9,16 +9,16 @@ import { GetServerSidePropsContext, NextPage } from 'next';
 import * as React from 'react';
 
 const ContactsRoute: React.FC = () => {
-  const { getSiteConfigSingleValue, currentCity } = useConfigContext();
-  const configSiteName = getSiteConfigSingleValue('siteName');
-  const contactEmail = getSiteConfigSingleValue('contactEmail');
-  const phone = getSiteConfigSingleValue('phone');
-  const facebookLink = getSiteConfigSingleValue('facebook');
-  const instagramLink = getSiteConfigSingleValue('instagram');
-  const vkontakteLink = getSiteConfigSingleValue('vkontakte');
-  const odnoklassnikiLink = getSiteConfigSingleValue('odnoklassniki');
-  const youtubeLink = getSiteConfigSingleValue('youtube');
-  const twitterLink = getSiteConfigSingleValue('twitter');
+  const { configs, currentCity } = useConfigContext();
+  const configSiteName = configs.siteName;
+  const contactEmail = configs.contactEmail;
+  const phone = configs.phone;
+  const facebookLink = configs.facebook;
+  const instagramLink = configs.instagram;
+  const vkontakteLink = configs.vkontakte;
+  const odnoklassnikiLink = configs.odnoklassniki;
+  const youtubeLink = configs.youtube;
+  const twitterLink = configs.twitter;
   const showSocials =
     facebookLink ||
     instagramLink ||
@@ -36,13 +36,18 @@ const ContactsRoute: React.FC = () => {
           <address className='mb-6 text-lg font-medium not-italic'>{currentCity.name}</address>
         ) : null}
 
-        <div className='mb-4'>
-          <a
-            className='text-secondary-text hover:text-theme hover:no-underline'
-            href={`tel:${phone}`}
-          >
-            {phoneToReadable(phone)}
-          </a>
+        <div className='mb-4 space-y-2'>
+          {phone.map((phoneItem) => {
+            return (
+              <a
+                key={phoneItem}
+                className='block text-secondary-text hover:text-theme hover:no-underline'
+                href={`tel:${phoneItem}`}
+              >
+                {phoneToReadable(phoneItem)}
+              </a>
+            );
+          })}
         </div>
         <div className='mb-4'>
           <a

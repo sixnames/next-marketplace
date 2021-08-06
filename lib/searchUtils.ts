@@ -37,7 +37,6 @@ import {
   castCatalogueFilters,
   castRubricsToCatalogueAttribute,
   getCatalogueAttributes,
-  getCatalogueConfigs,
 } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -88,6 +87,8 @@ export interface GetCatalogueDataInterface {
   city: string;
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
+  snippetVisibleAttributesCount: number;
+  visibleOptionsCount: number;
   input: {
     filters: string[];
     page: number;
@@ -100,6 +101,8 @@ export const getSearchData = async ({
   input,
   companySlug = DEFAULT_COMPANY_SLUG,
   companyId,
+  snippetVisibleAttributesCount,
+  visibleOptionsCount,
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
     // console.log(' ');
@@ -112,14 +115,6 @@ export const getSearchData = async ({
     const { filters, page } = input;
     const [search, ...restFilters] = filters;
     const realCompanySlug = companySlug || DEFAULT_COMPANY_SLUG;
-
-    // Get configs
-    // const configsTimeStart = new Date().getTime();
-    const { snippetVisibleAttributesCount, visibleOptionsCount } = await getCatalogueConfigs({
-      companySlug: realCompanySlug,
-      city,
-    });
-    // console.log('Configs >>>>>>>>>>>>>>>> ', new Date().getTime() - configsTimeStart);
 
     // Get algolia search result
     const searchIds = await getAlgoliaProductsSearch({
@@ -888,6 +883,8 @@ export async function getSearchServerSideProps(
     city: props.sessionCity,
     companySlug: props.company?.slug,
     companyId: props.company?._id,
+    snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {
       filters: alwaysArray(filters),
       page: 1,

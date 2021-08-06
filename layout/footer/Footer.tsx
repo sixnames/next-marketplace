@@ -14,17 +14,17 @@ export interface FooterInterface {
 }
 
 const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
-  const { getSiteConfigSingleValue, getSiteConfigValue } = useConfigContext();
-  const configSiteName = getSiteConfigSingleValue('siteName');
-  const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
-  const contactEmail = getSiteConfigSingleValue('contactEmail');
-  const phonesList = getSiteConfigValue('phone');
-  const facebookLink = getSiteConfigSingleValue('facebook');
-  const instagramLink = getSiteConfigSingleValue('instagram');
-  const vkontakteLink = getSiteConfigSingleValue('vkontakte');
-  const odnoklassnikiLink = getSiteConfigSingleValue('odnoklassniki');
-  const youtubeLink = getSiteConfigSingleValue('youtube');
-  const twitterLink = getSiteConfigSingleValue('twitter');
+  const { configs } = useConfigContext();
+  const configSiteName = configs.siteName;
+  const configFoundationYear = configs.siteFoundationYear;
+  const contactEmail = configs.contactEmail;
+  const phonesList = configs.phone;
+  const facebookLink = configs.facebook;
+  const instagramLink = configs.instagram;
+  const vkontakteLink = configs.vkontakte;
+  const odnoklassnikiLink = configs.odnoklassniki;
+  const youtubeLink = configs.youtube;
+  const twitterLink = configs.twitter;
   const showSocials =
     facebookLink ||
     instagramLink ||

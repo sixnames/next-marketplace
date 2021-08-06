@@ -1,12 +1,14 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE, ROUTE_CMS } from 'config/common';
+import { useUserContext } from 'context/userContext';
 import { ConfigModel } from 'db/dbModels';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 export interface ConfigPageInterface extends PagePropsInterface {
   assetConfigs: ConfigModel[];
@@ -23,7 +25,9 @@ const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
   isCms,
   companyId,
 }) => {
-  const navConfig = React.useMemo(() => {
+  const { me } = useUserContext();
+
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Общие',
@@ -67,8 +71,15 @@ const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
           : `${ROUTE_CONSOLE}/${companyId}/config/catalogue`,
         exact: true,
       },
+      {
+        name: 'Проект',
+        testId: 'admin',
+        path: `${ROUTE_CMS}/config/project`,
+        exact: true,
+        hidden: !me?.role?.isStaff,
+      },
     ];
-  }, [isCms, companyId]);
+  }, [isCms, companyId, me]);
 
   return (
     <AppContentWrapper>

@@ -33,13 +33,13 @@ const useCardData = ({
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { getSiteConfigBoolean, getSiteConfigSingleValue } = useConfigContext();
-  const showArticle = getSiteConfigBoolean('showCardArticle');
+  const { configs } = useConfigContext();
+  const showArticle = configs.showCardArticle;
 
   // visible list features slice
   const visibleListFeaturesCount = React.useMemo(() => {
-    return noNaN(getSiteConfigSingleValue('cardListFeaturesCount')) || 5;
-  }, [getSiteConfigSingleValue]);
+    return configs.cardListFeaturesCount;
+  }, [configs]);
 
   const visibleListFeatures = React.useMemo(() => {
     return cardData.listFeatures.slice(0, visibleListFeaturesCount);

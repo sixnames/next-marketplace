@@ -5,7 +5,6 @@ import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
 interface AppContentFilterAttributeInterface {
@@ -14,10 +13,9 @@ interface AppContentFilterAttributeInterface {
 
 const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = ({ attribute }) => {
   const { currency } = useLocaleContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
+  const { configs } = useConfigContext();
   const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
-  const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
-  const maxVisibleOptions = maxVisibleOptionsString ? noNaN(maxVisibleOptionsString) : 5;
+  const maxVisibleOptions = configs.catalogueFilterVisibleOptionsCount;
 
   const { name, clearSlug, options, isSelected, metric, slug } = attribute;
 

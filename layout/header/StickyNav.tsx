@@ -117,17 +117,17 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
 const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
   const { isDark } = useThemeContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const bgColorLightTheme = getSiteConfigSingleValue('siteNavBarBgLightTheme');
-  const bgColorDarkTheme = getSiteConfigSingleValue('siteNavBarBgDarkTheme');
-  const textColorLightTheme = getSiteConfigSingleValue('siteNavBarTextLightTheme');
-  const textColorDarkTheme = getSiteConfigSingleValue('siteNavBarTextDarkTheme');
-  const dropDownBgLightTheme = getSiteConfigSingleValue('siteNavDropdownBgLightTheme');
-  const dropDownBgDarkTheme = getSiteConfigSingleValue('siteNavDropdownBgDarkTheme');
-  const linkColorLightTheme = getSiteConfigSingleValue('siteNavDropdownTextLightTheme');
-  const linkColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownTextDarkTheme');
-  const attributeColorLightTheme = getSiteConfigSingleValue('siteNavDropdownAttributeLightTheme');
-  const attributeColorDarkTheme = getSiteConfigSingleValue('siteNavDropdownAttributeDarkTheme');
+  const { configs } = useConfigContext();
+  const bgColorLightTheme = configs.siteNavBarBgLightTheme;
+  const bgColorDarkTheme = configs.siteNavBarBgDarkTheme;
+  const textColorLightTheme = configs.siteNavBarTextLightTheme;
+  const textColorDarkTheme = configs.siteNavBarTextDarkTheme;
+  const dropDownBgLightTheme = configs.siteNavDropdownBgLightTheme;
+  const dropDownBgDarkTheme = configs.siteNavDropdownBgDarkTheme;
+  const linkColorLightTheme = configs.siteNavDropdownTextLightTheme;
+  const linkColorDarkTheme = configs.siteNavDropdownTextDarkTheme;
+  const attributeColorLightTheme = configs.siteNavDropdownAttributeLightTheme;
+  const attributeColorDarkTheme = configs.siteNavDropdownAttributeDarkTheme;
 
   // styles
   const linkStyle = {

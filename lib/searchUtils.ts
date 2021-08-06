@@ -10,6 +10,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
+import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
@@ -125,6 +126,7 @@ export const getSearchData = async ({
     if (searchIds.length < 1) {
       return {
         _id: new ObjectId(),
+        catalogueFilterLayout: DEFAULT_LAYOUT,
         clearSlug: `${ROUTE_SEARCH_RESULT}/${search}`,
         filters: restFilters,
         rubricName: 'Ничего не найдено',
@@ -651,6 +653,7 @@ export const getSearchData = async ({
     if (rubrics.length < 1) {
       return {
         _id: new ObjectId(),
+        catalogueFilterLayout: DEFAULT_LAYOUT,
         clearSlug: `${ROUTE_SEARCH_RESULT}/${search}`,
         filters: restFilters,
         rubricName: 'Ничего не найдено',
@@ -675,6 +678,7 @@ export const getSearchData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
       visibleOptionsCount,
+      selectedOptionsSlugs: [],
       // visibleAttributesCount,
     });
 
@@ -687,6 +691,7 @@ export const getSearchData = async ({
         productsPrices: shopProductsAggregationResult.prices,
         basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
         visibleOptionsCount,
+        selectedOptionsSlugs: [],
         // visibleAttributesCount,
       });
 
@@ -834,6 +839,7 @@ export const getSearchData = async ({
 
     return {
       _id: new ObjectId(),
+      catalogueFilterLayout: DEFAULT_LAYOUT,
       clearSlug: `${ROUTE_SEARCH_RESULT}/${search}${sortPathname}`,
       filters: restFilters,
       rubricName: catalogueTitle,

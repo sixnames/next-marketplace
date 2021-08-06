@@ -114,7 +114,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
               </Link>
             </div>
 
-            <div className='flex flex-wrap gap-2'>
+            <div>
               {selectedAttributes.map((attribute) => {
                 const { metric, slug } = attribute;
                 const isPrice = slug === PRICE_ATTRIBUTE_SLUG;

@@ -48,15 +48,14 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
           const key = `${attributeSlug}-${option.slug}`;
           const optionTestId = `${testId}-${optionIndex}`;
           return (
-            <div key={key}>
-              <FilterCheckbox
-                onClick={onClick}
-                option={option}
-                testId={optionTestId}
-                className={`${checkboxClassName ? checkboxClassName : ''}`}
-                postfix={postfix}
-              />
-            </div>
+            <FilterCheckbox
+              key={key}
+              onClick={onClick}
+              option={option}
+              testId={optionTestId}
+              className={`${checkboxClassName ? checkboxClassName : ''}`}
+              postfix={postfix}
+            />
           );
         })}
       </div>

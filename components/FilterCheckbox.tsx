@@ -3,7 +3,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import Icon from 'components/Icon';
 
-export interface FilterCheckboxInterface {
+interface FilterCheckboxLinkInterface {
   option: CatalogueFilterAttributeOptionInterface;
   testId?: string;
   className?: string;
@@ -11,13 +11,12 @@ export interface FilterCheckboxInterface {
   onClick?: () => void;
 }
 
-const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
+const FilterCheckboxLink: React.FC<FilterCheckboxLinkInterface> = ({
   option,
-  testId,
-  className,
-  postfix,
   onClick,
-  // counter = 0,
+  testId,
+  postfix,
+  className,
 }) => {
   const { name, nextSlug, isSelected } = option;
 
@@ -46,6 +45,53 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
       </a>
     </Link>
   );
+};
+
+export interface FilterCheckboxInterface extends FilterCheckboxLinkInterface {}
+
+const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
+  option,
+  testId,
+  className,
+  postfix,
+  onClick,
+}) => {
+  const renderChildOption = (option: CatalogueFilterAttributeOptionInterface) => {
+    const { options } = option;
+    if (options && options.length > 0) {
+      return (
+        <div>
+          <FilterCheckboxLink
+            option={option}
+            postfix={postfix}
+            onClick={onClick}
+            testId={testId}
+            className={className}
+          />
+
+          <div className='ml-[18px]'>
+            {options.map((option) => {
+              return <div key={option.slug}>{renderChildOption(option)}</div>;
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <FilterCheckboxLink
+          option={option}
+          postfix={postfix}
+          onClick={onClick}
+          testId={testId}
+          className={className}
+        />
+      </div>
+    );
+  };
+
+  return renderChildOption(option);
 };
 
 export default FilterCheckbox;

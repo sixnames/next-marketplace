@@ -364,7 +364,7 @@ export interface OptionVariantsModel {
   [key: string]: TranslationModel;
 }
 
-export interface OptionModel {
+export interface OptionModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
@@ -603,7 +603,7 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel {
+export interface RubricOptionModel extends OptionModel {
   options?: RubricOptionModel[] | null;
 }
 

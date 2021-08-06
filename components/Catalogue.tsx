@@ -38,7 +38,7 @@ import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CatalogueFilter from 'components/CatalogueFilter';
+import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
 interface CatalogueConsumerInterface {
   catalogueData: CatalogueDataInterface;
@@ -293,6 +293,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <CatalogueFilter
             route={route}
             companyId={companyId}
+            filterLayoutVariant={catalogueData.catalogueFilterLayout}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
             catalogueCounterString={catalogueCounterString}

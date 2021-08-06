@@ -1,4 +1,4 @@
-export const LAYOUT_DEFAULT = 'default';
+export const DEFAULT_LAYOUT = 'default';
 
 export interface LayoutOptionInterface {
   _id: string;
@@ -11,8 +11,8 @@ export type LayoutOptionsType = LayoutOptionInterface[];
 export const CARD_LAYOUT_HALF_COLUMNS = 'half-columns';
 export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
-    _id: LAYOUT_DEFAULT,
-    asset: `/layout/card/${LAYOUT_DEFAULT}.png`,
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/card/${DEFAULT_LAYOUT}.png`,
   },
   {
     _id: CARD_LAYOUT_HALF_COLUMNS,
@@ -24,8 +24,8 @@ export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
 export const NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY = 'options-only';
 export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
-    _id: LAYOUT_DEFAULT,
-    asset: `/layout/nav-dropdown/${LAYOUT_DEFAULT}.png`,
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/nav-dropdown/${DEFAULT_LAYOUT}.png`,
   },
   {
     _id: NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
@@ -37,8 +37,8 @@ export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
 export const ROW_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
 export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
-    _id: LAYOUT_DEFAULT,
-    asset: `/layout/row-snippet/${LAYOUT_DEFAULT}.png`,
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/row-snippet/${DEFAULT_LAYOUT}.png`,
   },
   {
     _id: ROW_SNIPPET_LAYOUT_BIG_IMAGE,
@@ -50,11 +50,24 @@ export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
 export const GRID_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
 export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
-    _id: LAYOUT_DEFAULT,
-    asset: `/layout/grid-snippet/${LAYOUT_DEFAULT}.png`,
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/grid-snippet/${DEFAULT_LAYOUT}.png`,
   },
   {
     _id: GRID_SNIPPET_LAYOUT_BIG_IMAGE,
     asset: `/layout/grid-snippet/${GRID_SNIPPET_LAYOUT_BIG_IMAGE}.png`,
+  },
+];
+
+// catalogue filter
+export const CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE = 'checkbox-tree';
+export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/catalogue-filter/${DEFAULT_LAYOUT}.png`,
+  },
+  {
+    _id: CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
+    asset: `/layout/catalogue-filter/${CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE}.png`,
   },
 ];

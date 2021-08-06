@@ -343,6 +343,7 @@ export interface CatalogueDataInterface {
   filters: string[];
   rubricName: string;
   rubricSlug: string;
+  catalogueFilterLayout: string;
   rubricVariant?: RubricVariantInterface | null;
   products: ProductInterface[];
   totalProducts: number;
@@ -368,6 +369,7 @@ export interface CatalogueProductsAggregationInterface {
   docs: ProductInterface[];
   rubric: RubricInterface;
   rubrics?: RubricInterface[] | null;
+  selectedOptionsSlugs: string[];
 }
 
 export interface ProductsPaginationAggregationInterface {
@@ -385,6 +387,7 @@ export interface CatalogueFilterAttributeOptionInterface {
   name: string;
   nextSlug: string;
   isSelected: boolean;
+  options?: CatalogueFilterAttributeOptionInterface[] | null;
 }
 
 export interface CatalogueFilterAttributeInterface {

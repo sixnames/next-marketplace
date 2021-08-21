@@ -9,6 +9,7 @@ import {
   CartModel,
   CartProductModel,
   CatalogueBreadcrumbModel,
+  CategoryModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -298,6 +299,18 @@ export interface RubricInterface extends RubricModel {
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
   attributesGroups?: RubricAttributesGroupInterface[] | null;
+  categories?: CategoryInterface[] | null;
+}
+
+export interface CategoryInterface extends CategoryModel {
+  name?: string | null;
+  attributes?: RubricAttributeInterface[] | null;
+  activeProductsCount?: number | null;
+  productsCount?: number | null;
+  variant?: RubricVariantInterface | null;
+  attributesGroups?: RubricAttributesGroupInterface[] | null;
+  rubric?: RubricInterface | null;
+  categories?: CategoryInterface[] | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {

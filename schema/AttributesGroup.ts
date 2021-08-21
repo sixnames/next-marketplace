@@ -10,6 +10,7 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
+  CategoryModel,
   MetricModel,
   ProductAttributeModel,
   ProductConnectionModel,
@@ -20,6 +21,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
   COL_METRICS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTIONS,
@@ -541,6 +543,7 @@ export const attributesGroupMutations = extendType({
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const rubricAttributesCollection =
           db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
@@ -673,6 +676,38 @@ export const attributesGroupMutations = extendType({
                   rubricId: rubric._id,
                 });
                 rubricAttributes.push(rubricAttribute);
+              }
+
+              const createdAttributesResult = await rubricAttributesCollection.insertMany(
+                rubricAttributes,
+              );
+              if (!createdAttributesResult.result.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
+                };
+                await session.abortTransaction();
+                return;
+              }
+            }
+
+            // Add new attribute to the categories
+            const categories = await categoriesCollection
+              .find({
+                attributesGroupsIds: attributesGroupId,
+              })
+              .toArray();
+            if (categories.length > 0) {
+              const rubricAttributes: RubricAttributeModel[] = [];
+              for await (const category of categories) {
+                const categoryAttribute = await castAttributeForRubric({
+                  attribute: createdAttribute,
+                  rubricSlug: category.rubricSlug,
+                  rubricId: category.rubricId,
+                  categorySlug: category.slug,
+                  categoryId: category._id,
+                });
+                rubricAttributes.push(categoryAttribute);
               }
 
               const createdAttributesResult = await rubricAttributesCollection.insertMany(

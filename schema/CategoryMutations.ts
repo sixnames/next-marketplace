@@ -13,6 +13,7 @@ import {
   CategoryModel,
   CategoryPayloadModel,
   ShopProductModel,
+  RubricModel,
 } from 'db/dbModels';
 import {
   getOperationPermission,
@@ -29,6 +30,7 @@ import {
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
+  COL_CATEGORIES,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -62,6 +64,7 @@ export const CreateCategoryInput = inputObjectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.objectId('variantId');
+    t.nonNull.objectId('rubricId');
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitleInput',
     });
@@ -72,6 +75,7 @@ export const UpdateCategoryInput = inputObjectType({
   name: 'UpdateCategoryInput',
   definition(t) {
     t.nonNull.objectId('rubricId');
+    t.nonNull.objectId('categoryId');
     t.boolean('capitalise');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
@@ -157,14 +161,29 @@ export const CategoryMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({
+            _id: input.rubricId,
+          });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('categories.create.error'),
+            };
+          }
 
           // Check if category already exist
           const exist = await findDocumentByI18nField<CategoryModel>({
-            collectionName: COL_RUBRICS,
+            collectionName: COL_CATEGORIES,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
+            additionalQuery: {
+              rubricId: input.rubricId,
+            },
           });
           if (exist) {
             return {
@@ -178,6 +197,7 @@ export const CategoryMutations = extendType({
           const createdCategoryResult = await categoriesCollection.insertOne({
             ...input,
             slug,
+            rubricSlug: rubric.slug,
             active: true,
             attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
@@ -238,9 +258,21 @@ export const CategoryMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { categoryId, ...values } = input;
+          const { categoryId, rubricId, ...values } = input;
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({
+            _id: rubricId,
+          });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('categories.update.error'),
+            };
+          }
 
           // Check category availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -253,11 +285,12 @@ export const CategoryMutations = extendType({
 
           // Check if category already exist
           const exist = await findDocumentByI18nField<CategoryModel>({
-            collectionName: COL_RUBRICS,
+            collectionName: COL_CATEGORIES,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
             additionalQuery: {
               _id: { $ne: categoryId },
+              rubricId,
             },
           });
           if (exist) {
@@ -315,7 +348,7 @@ export const CategoryMutations = extendType({
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
@@ -417,7 +450,8 @@ export const CategoryMutations = extendType({
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const categoryAttributesCollection =
           db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
         const attributesGroupsCollection =
@@ -457,6 +491,19 @@ export const CategoryMutations = extendType({
             const { input } = args;
             const { categoryId, attributesGroupId } = input;
 
+            // Check rubric availability
+            const rubric = await rubricsCollection.findOne({
+              _id: input.rubricId,
+            });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             // Check category and attributes group availability
             const attributesGroup = await attributesGroupsCollection.findOne({
               _id: attributesGroupId,
@@ -491,8 +538,10 @@ export const CategoryMutations = extendType({
             for await (const attribute of groupAttributes) {
               const categoryAttribute = await castAttributeForRubric({
                 attribute,
+                rubricSlug: rubric.slug,
+                rubricId: rubric._id,
+                categoryId: category._id,
                 categorySlug: category.slug,
-                categoryId,
               });
               categoryAttributes.push(categoryAttribute);
             }
@@ -586,11 +635,23 @@ export const CategoryMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({
+            _id: input.rubricId,
+          });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.notFound'),
+            };
+          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -675,11 +736,23 @@ export const CategoryMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({
+            _id: input.rubricId,
+          });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.notFound'),
+            };
+          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -731,7 +804,7 @@ export const CategoryMutations = extendType({
     });
 
     // Should toggle attribute in the category attribute showInProductAttributes field
-    t.nonNull.field('toggleAttributeInProductAttributes', {
+    t.nonNull.field('toggleAttributeInCategoryProductAttributes', {
       type: 'CategoryPayload',
       description:
         'Should toggle attribute in the category attribute showInProductAttributes field',
@@ -765,11 +838,23 @@ export const CategoryMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({
+            _id: input.rubricId,
+          });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.notFound'),
+            };
+          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -834,7 +919,8 @@ export const CategoryMutations = extendType({
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const categoryAttributesCollection =
@@ -874,6 +960,19 @@ export const CategoryMutations = extendType({
 
             const { input } = args;
             const { categoryId, attributesGroupId } = input;
+
+            // Check rubric availability
+            const rubric = await rubricsCollection.findOne({
+              _id: input.rubricId,
+            });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
             // Check category and attributes group availability
             const attributesGroup = await attributesGroupsCollection.findOne({
@@ -974,7 +1073,8 @@ export const CategoryMutations = extendType({
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_RUBRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
         const productAttributesCollection =
@@ -1015,6 +1115,19 @@ export const CategoryMutations = extendType({
 
             const { input } = args;
             const { categoryId, productId } = input;
+
+            // Check rubric availability
+            const rubric = await rubricsCollection.findOne({
+              _id: input.rubricId,
+            });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
             // Check category and product availability
             const product = await productsCollection.findOne({

@@ -109,12 +109,16 @@ interface CastAttributeForRubricInterface {
   attribute: AttributeModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categorySlug?: string;
+  categoryId?: ObjectIdModel;
 }
 
 export async function castAttributeForRubric({
   attribute,
   rubricId,
   rubricSlug,
+  categoryId,
+  categorySlug,
 }: CastAttributeForRubricInterface): Promise<RubricAttributeModel> {
   const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
@@ -133,6 +137,8 @@ export async function castAttributeForRubric({
     attributeId: attribute._id,
     rubricId,
     rubricSlug,
+    categoryId,
+    categorySlug,
     attributesGroupId: new ObjectId(attributesGroup?._id),
     showInCatalogueFilter: visible,
     showInCatalogueNav: visible,

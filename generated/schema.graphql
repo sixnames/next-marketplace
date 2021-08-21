@@ -504,6 +504,7 @@ input CreateCategoryInput {
   catalogueTitle: RubricCatalogueTitleInput!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
+  rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
   variantId: ObjectId!
 }
@@ -1270,6 +1271,13 @@ type Mutation {
   Should toggle attribute in the category attribute showInCatalogueNav field
   """
   toggleAttributeInCategoryNav(input: UpdateAttributeInCategoryInput!): CategoryPayload!
+
+  """
+  Should toggle attribute in the category attribute showInProductAttributes field
+  """
+  toggleAttributeInCategoryProductAttributes(
+    input: UpdateAttributeInCategoryInput!
+  ): CategoryPayload!
 
   """
   Should toggle attribute in the rubric attribute showInProductAttributes field
@@ -2576,6 +2584,7 @@ input UpdateCategoryInput {
   active: Boolean!
   capitalise: Boolean
   catalogueTitle: RubricCatalogueTitleInput!
+  categoryId: ObjectId!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   rubricId: ObjectId!

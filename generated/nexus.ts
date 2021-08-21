@@ -273,6 +273,7 @@ export interface NexusGenInputs {
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
@@ -633,6 +634,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     capitalise?: boolean | null; // Boolean
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1568,6 +1570,7 @@ export interface NexusGenFieldTypes {
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     toggleAttributeInCategoryCatalogue: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     toggleAttributeInCategoryNav: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
+    toggleAttributeInCategoryProductAttributes: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     toggleAttributeInProductAttributes: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricCatalogue: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricNav: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -2726,6 +2729,7 @@ export interface NexusGenFieldTypeNames {
     signUp: 'UserPayload';
     toggleAttributeInCategoryCatalogue: 'CategoryPayload';
     toggleAttributeInCategoryNav: 'CategoryPayload';
+    toggleAttributeInCategoryProductAttributes: 'CategoryPayload';
     toggleAttributeInProductAttributes: 'RubricPayload';
     toggleAttributeInRubricCatalogue: 'RubricPayload';
     toggleAttributeInRubricNav: 'RubricPayload';
@@ -3759,6 +3763,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
     };
     toggleAttributeInCategoryNav: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
+    };
+    toggleAttributeInCategoryProductAttributes: {
       // args
       input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
     };

@@ -612,6 +612,8 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   attributeId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categoryId?: ObjectIdModel | null;
+  categorySlug?: string | null;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   showInProductAttributes: boolean;
@@ -645,6 +647,7 @@ export interface RubricModel extends CountersModel {
 
 export interface CategoryModel extends RubricModel {
   rubricId: ObjectIdModel;
+  rubricSlug: string;
   parentId?: ObjectIdModel;
 }
 

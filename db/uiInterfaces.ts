@@ -245,6 +245,7 @@ export interface ProductInterface extends ProductModel {
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
+  categories?: CategoryInterface[] | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -326,6 +327,7 @@ export interface ShopProductInterface extends ShopProductModel {
   iconFeatures?: ProductAttributeInterface[];
   ratingFeatures?: ProductAttributeInterface[];
   orders?: OrderInterface[];
+  categories?: CategoryInterface[] | null;
 }
 
 export interface ShopInterface extends ShopModel {

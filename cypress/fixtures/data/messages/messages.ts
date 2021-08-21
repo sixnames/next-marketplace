@@ -24,6 +24,7 @@ import { ordersMessages } from '../../apiMessages/ordersMessages';
 import { productsMessages } from '../../apiMessages/productsMessages';
 import { rolesMessages } from '../../apiMessages/rolesMessages';
 import { rubricsMessages } from '../../apiMessages/rubricsMessages';
+import { categoriesMessages } from '../../apiMessages/categoriesMessages';
 import { rubricVariantsMessages } from '../../apiMessages/rubricVariantsMessages';
 import { shopProductsMessages } from '../../apiMessages/shopProductsMessages';
 import { shopsMessages } from '../../apiMessages/shopsMessages';
@@ -106,6 +107,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: rubricsMessages,
     groupName: 'Рубрики',
+  },
+  {
+    initialMessages: categoriesMessages,
+    groupName: 'Категории',
   },
   {
     initialMessages: productsMessages,

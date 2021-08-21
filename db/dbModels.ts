@@ -639,6 +639,13 @@ export interface RubricModel extends CountersModel {
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+
+export interface CategoryModel extends RubricModel {
+  rubricId: ObjectIdModel;
+  parentId?: ObjectIdModel;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {
@@ -774,6 +781,7 @@ export type ProductPayloadModel = PayloadType<ProductModel>;
 export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
+export type CategoryPayloadModel = PayloadType<CategoryModel>;
 export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;

@@ -123,6 +123,12 @@ export interface NexusGenInputs {
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
   };
+  AddAttributesGroupToCategoryInput: {
+    // input type
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   AddAttributesGroupToRubricInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -261,6 +267,15 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
+  CreateCategoryInput: {
+    // input type
+    capitalise?: boolean | null; // Boolean
+    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
+    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    variantId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   CreateCompanyInput: {
     // input type
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
@@ -395,6 +410,12 @@ export interface NexusGenInputs {
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  DeleteAttributesGroupFromCategoryInput: {
+    // input type
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   DeleteAttributesGroupFromRubricInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -433,6 +454,12 @@ export interface NexusGenInputs {
   DeleteProductFromCartInput: {
     // input type
     cartProductId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  DeleteProductFromCategoryInput: {
+    // input type
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteProductFromConnectionInput: {
     // input type
@@ -558,6 +585,12 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
+  UpdateAttributeInCategoryInput: {
+    // input type
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateAttributeInGroupInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -594,6 +627,17 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
+  };
+  UpdateCategoryInput: {
+    // input type
+    active: boolean; // Boolean!
+    capitalise?: boolean | null; // Boolean
+    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
+    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateCityInCountryInput: {
     // input type
@@ -979,6 +1023,8 @@ export interface NexusGenObjects {
   CartPayload: dbModels.CartPayloadModel;
   CartProduct: dbModels.CartProductModel;
   CatalogueSearchResult: dbModels.CatalogueSearchResultModel;
+  Category: dbModels.CategoryModel;
+  CategoryPayload: dbModels.CategoryPayloadModel;
   CitiesPaginationPayload: dbModels.CitiesPaginationPayloadModel;
   City: dbModels.CityModel;
   CompaniesPaginationPayload: dbModels.CompaniesPaginationPayloadModel;
@@ -1215,6 +1261,30 @@ export interface NexusGenFieldTypes {
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     rubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
   };
+  Category: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    active: boolean; // Boolean!
+    capitalise: boolean | null; // Boolean
+    catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
+    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    icon: string | null; // String
+    image: string | null; // String
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
+    priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    slug: string; // String!
+    variantId: NexusGenScalars['ObjectId']; // ObjectId!
+    views: NexusGenScalars['JSONObject']; // JSONObject!
+  };
+  CategoryPayload: {
+    // field return type
+    message: string; // String!
+    payload: NexusGenRootTypes['Category'] | null; // Category
+    success: boolean; // Boolean!
+  };
   CitiesPaginationPayload: {
     // field return type
     docs: NexusGenRootTypes['City'][]; // [City!]!
@@ -1422,6 +1492,7 @@ export interface NexusGenFieldTypes {
   Mutation: {
     // field return type
     addAttributeToGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
+    addAttributesGroupToCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     addAttributesGroupToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addCityToCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     addCollectionToBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -1438,6 +1509,7 @@ export interface NexusGenFieldTypes {
     copyProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     createBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
+    createCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     createCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     createCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     createCurrency: NexusGenRootTypes['CurrencyPayload']; // CurrencyPayload!
@@ -1459,8 +1531,10 @@ export interface NexusGenFieldTypes {
     createUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     deleteAttributeFromGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
+    deleteAttributesGroupFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteAttributesGroupFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
+    deleteCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteCityFromCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     deleteCollectionFromBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     deleteCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -1477,6 +1551,7 @@ export interface NexusGenFieldTypes {
     deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
+    deleteProductFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteProductFromShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -1491,6 +1566,8 @@ export interface NexusGenFieldTypes {
     makeAnOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
+    toggleAttributeInCategoryCatalogue: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
+    toggleAttributeInCategoryNav: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     toggleAttributeInProductAttributes: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricCatalogue: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     toggleAttributeInRubricNav: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -1498,6 +1575,7 @@ export interface NexusGenFieldTypes {
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     updateCatalogueCounters: boolean; // Boolean!
+    updateCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     updateCityInCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     updateCollectionInBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     updateCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -1922,6 +2000,8 @@ export interface NexusGenFieldTypes {
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    icon: string | null; // String
+    image: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2339,6 +2419,30 @@ export interface NexusGenFieldTypeNames {
     products: 'Product';
     rubrics: 'Rubric';
   };
+  Category: {
+    // field return type name
+    _id: 'ObjectId';
+    active: 'Boolean';
+    capitalise: 'Boolean';
+    catalogueTitle: 'RubricCatalogueTitle';
+    descriptionI18n: 'JSONObject';
+    icon: 'String';
+    image: 'String';
+    nameI18n: 'JSONObject';
+    parentId: 'ObjectId';
+    priorities: 'JSONObject';
+    rubricId: 'ObjectId';
+    shortDescriptionI18n: 'JSONObject';
+    slug: 'String';
+    variantId: 'ObjectId';
+    views: 'JSONObject';
+  };
+  CategoryPayload: {
+    // field return type name
+    message: 'String';
+    payload: 'Category';
+    success: 'Boolean';
+  };
   CitiesPaginationPayload: {
     // field return type name
     docs: 'City';
@@ -2546,6 +2650,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: {
     // field return type name
     addAttributeToGroup: 'AttributesGroupPayload';
+    addAttributesGroupToCategory: 'CategoryPayload';
     addAttributesGroupToRubric: 'RubricPayload';
     addCityToCountry: 'CountryPayload';
     addCollectionToBrand: 'BrandPayload';
@@ -2562,6 +2667,7 @@ export interface NexusGenFieldTypeNames {
     copyProduct: 'ProductPayload';
     createAttributesGroup: 'AttributesGroupPayload';
     createBrand: 'BrandPayload';
+    createCategory: 'CategoryPayload';
     createCompany: 'CompanyPayload';
     createCountry: 'CountryPayload';
     createCurrency: 'CurrencyPayload';
@@ -2583,8 +2689,10 @@ export interface NexusGenFieldTypeNames {
     createUser: 'UserPayload';
     deleteAttributeFromGroup: 'AttributesGroupPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
+    deleteAttributesGroupFromCategory: 'CategoryPayload';
     deleteAttributesGroupFromRubric: 'RubricPayload';
     deleteBrand: 'BrandPayload';
+    deleteCategory: 'CategoryPayload';
     deleteCityFromCountry: 'CountryPayload';
     deleteCollectionFromBrand: 'BrandPayload';
     deleteCompany: 'CompanyPayload';
@@ -2601,6 +2709,7 @@ export interface NexusGenFieldTypeNames {
     deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
+    deleteProductFromCategory: 'CategoryPayload';
     deleteProductFromConnection: 'ProductPayload';
     deleteProductFromRubric: 'RubricPayload';
     deleteProductFromShop: 'ShopPayload';
@@ -2615,6 +2724,8 @@ export interface NexusGenFieldTypeNames {
     makeAnOrder: 'MakeAnOrderPayload';
     repeatOrder: 'CartPayload';
     signUp: 'UserPayload';
+    toggleAttributeInCategoryCatalogue: 'CategoryPayload';
+    toggleAttributeInCategoryNav: 'CategoryPayload';
     toggleAttributeInProductAttributes: 'RubricPayload';
     toggleAttributeInRubricCatalogue: 'RubricPayload';
     toggleAttributeInRubricNav: 'RubricPayload';
@@ -2622,6 +2733,7 @@ export interface NexusGenFieldTypeNames {
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
     updateCatalogueCounters: 'Boolean';
+    updateCategory: 'CategoryPayload';
     updateCityInCountry: 'CountryPayload';
     updateCollectionInBrand: 'BrandPayload';
     updateCompany: 'CompanyPayload';
@@ -3046,6 +3158,8 @@ export interface NexusGenFieldTypeNames {
     catalogueTitle: 'RubricCatalogueTitle';
     description: 'String';
     descriptionI18n: 'JSONObject';
+    icon: 'String';
+    image: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     priorities: 'JSONObject';
@@ -3348,6 +3462,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['AddAttributeToGroupInput']; // AddAttributeToGroupInput!
     };
+    addAttributesGroupToCategory: {
+      // args
+      input: NexusGenInputs['AddAttributesGroupToCategoryInput']; // AddAttributesGroupToCategoryInput!
+    };
     addAttributesGroupToRubric: {
       // args
       input: NexusGenInputs['AddAttributesGroupToRubricInput']; // AddAttributesGroupToRubricInput!
@@ -3407,6 +3525,10 @@ export interface NexusGenArgTypes {
     createBrand: {
       // args
       input: NexusGenInputs['CreateBrandInput']; // CreateBrandInput!
+    };
+    createCategory: {
+      // args
+      input: NexusGenInputs['CreateCategoryInput']; // CreateCategoryInput!
     };
     createCompany: {
       // args
@@ -3492,11 +3614,19 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
+    deleteAttributesGroupFromCategory: {
+      // args
+      input: NexusGenInputs['DeleteAttributesGroupFromCategoryInput']; // DeleteAttributesGroupFromCategoryInput!
+    };
     deleteAttributesGroupFromRubric: {
       // args
       input: NexusGenInputs['DeleteAttributesGroupFromRubricInput']; // DeleteAttributesGroupFromRubricInput!
     };
     deleteBrand: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    deleteCategory: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
@@ -3564,6 +3694,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['DeleteProductFromCartInput']; // DeleteProductFromCartInput!
     };
+    deleteProductFromCategory: {
+      // args
+      input: NexusGenInputs['DeleteProductFromCategoryInput']; // DeleteProductFromCategoryInput!
+    };
     deleteProductFromConnection: {
       // args
       input: NexusGenInputs['DeleteProductFromConnectionInput']; // DeleteProductFromConnectionInput!
@@ -3620,6 +3754,14 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['SignUpInput']; // SignUpInput!
     };
+    toggleAttributeInCategoryCatalogue: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
+    };
+    toggleAttributeInCategoryNav: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
+    };
     toggleAttributeInProductAttributes: {
       // args
       input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
@@ -3647,6 +3789,10 @@ export interface NexusGenArgTypes {
     updateCatalogueCounters: {
       // args
       input: NexusGenInputs['CatalogueDataInput']; // CatalogueDataInput!
+    };
+    updateCategory: {
+      // args
+      input: NexusGenInputs['UpdateCategoryInput']; // UpdateCategoryInput!
     };
     updateCityInCountry: {
       // args
@@ -4029,6 +4175,7 @@ export interface NexusGenAbstractTypeMembers {
   Payload:
     | 'AttributesGroupPayload'
     | 'BrandPayload'
+    | 'CategoryPayload'
     | 'CompanyPayload'
     | 'ConfigPayload'
     | 'CountryPayload'
@@ -4080,6 +4227,7 @@ export interface NexusGenTypeInterfaces {
   BrandsAlphabetList: 'AlphabetList';
   BrandsPaginationPayload: 'PaginationPayload';
   CartProduct: 'Base';
+  CategoryPayload: 'Payload';
   CitiesPaginationPayload: 'PaginationPayload';
   CompaniesPaginationPayload: 'PaginationPayload';
   Company: 'Base' | 'Timestamp';

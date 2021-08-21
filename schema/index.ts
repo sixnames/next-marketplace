@@ -4,6 +4,8 @@ export * from './Brand';
 export * from './BrandCollection';
 export * from './Cart';
 export * from './CatalogueData';
+export * from './Category';
+export * from './CategoryMutations';
 export * from './City';
 export * from './CommonSchemaTypes';
 export * from './Company';

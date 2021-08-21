@@ -20,6 +20,12 @@ input AddAttributeToGroupInput {
   viewVariant: AttributeViewVariant!
 }
 
+input AddAttributesGroupToCategoryInput {
+  attributesGroupId: ObjectId!
+  categoryId: ObjectId!
+  rubricId: ObjectId!
+}
+
 input AddAttributesGroupToRubricInput {
   attributesGroupId: ObjectId!
   rubricId: ObjectId!
@@ -298,6 +304,30 @@ input CatalogueSearchTopItemsInput {
   companySlug: String = "default"
 }
 
+type Category {
+  _id: ObjectId!
+  active: Boolean!
+  capitalise: Boolean
+  catalogueTitle: RubricCatalogueTitle!
+  descriptionI18n: JSONObject!
+  icon: String
+  image: String
+  nameI18n: JSONObject!
+  parentId: ObjectId
+  priorities: JSONObject!
+  rubricId: ObjectId!
+  shortDescriptionI18n: JSONObject!
+  slug: String!
+  variantId: ObjectId!
+  views: JSONObject!
+}
+
+type CategoryPayload implements Payload {
+  message: String!
+  payload: Category
+  success: Boolean!
+}
+
 type CitiesPaginationPayload implements PaginationPayload {
   docs: [City!]!
   hasNextPage: Boolean!
@@ -469,6 +499,15 @@ input CreateBrandInput {
   url: [URL!]
 }
 
+input CreateCategoryInput {
+  capitalise: Boolean
+  catalogueTitle: RubricCatalogueTitleInput!
+  descriptionI18n: JSONObject!
+  nameI18n: JSONObject!
+  shortDescriptionI18n: JSONObject!
+  variantId: ObjectId!
+}
+
 input CreateCompanyInput {
   contacts: ContactsInput!
   domain: String
@@ -619,6 +658,12 @@ input DeleteAttributeFromGroupInput {
   attributesGroupId: ObjectId!
 }
 
+input DeleteAttributesGroupFromCategoryInput {
+  attributesGroupId: ObjectId!
+  categoryId: ObjectId!
+  rubricId: ObjectId!
+}
+
 input DeleteAttributesGroupFromRubricInput {
   attributesGroupId: ObjectId!
   rubricId: ObjectId!
@@ -656,6 +701,12 @@ input DeleteProductAssetInput {
 
 input DeleteProductFromCartInput {
   cartProductId: ObjectId!
+}
+
+input DeleteProductFromCategoryInput {
+  categoryId: ObjectId!
+  productId: ObjectId!
+  rubricId: ObjectId!
 }
 
 input DeleteProductFromConnectionInput {
@@ -839,6 +890,11 @@ type Mutation {
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayload!
 
   """
+  Should add attributes group to the category
+  """
+  addAttributesGroupToCategory(input: AddAttributesGroupToCategoryInput!): CategoryPayload!
+
+  """
   Should add attributes group to the rubric
   """
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayload!
@@ -917,6 +973,11 @@ type Mutation {
   Should create brand
   """
   createBrand(input: CreateBrandInput!): BrandPayload!
+
+  """
+  Should create category
+  """
+  createCategory(input: CreateCategoryInput!): CategoryPayload!
 
   """
   Should create company
@@ -1024,6 +1085,13 @@ type Mutation {
   deleteAttributesGroup(_id: ObjectId!): AttributesGroupPayload!
 
   """
+  Should delete attributes group from category
+  """
+  deleteAttributesGroupFromCategory(
+    input: DeleteAttributesGroupFromCategoryInput!
+  ): CategoryPayload!
+
+  """
   Should delete attributes group from rubric
   """
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayload!
@@ -1032,6 +1100,11 @@ type Mutation {
   Should delete brand
   """
   deleteBrand(_id: ObjectId!): BrandPayload!
+
+  """
+  Should delete category
+  """
+  deleteCategory(_id: ObjectId!): CategoryPayload!
 
   """
   Should delete city
@@ -1114,6 +1187,11 @@ type Mutation {
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
 
   """
+  Should remove product from category
+  """
+  deleteProductFromCategory(input: DeleteProductFromCategoryInput!): CategoryPayload!
+
+  """
   Should delete product from connection and delete connection if there is no products left
   """
   deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayload!
@@ -1184,6 +1262,16 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayload!
 
   """
+  Should toggle attribute in the category attribute showInCatalogueFilter field
+  """
+  toggleAttributeInCategoryCatalogue(input: UpdateAttributeInCategoryInput!): CategoryPayload!
+
+  """
+  Should toggle attribute in the category attribute showInCatalogueNav field
+  """
+  toggleAttributeInCategoryNav(input: UpdateAttributeInCategoryInput!): CategoryPayload!
+
+  """
   Should toggle attribute in the rubric attribute showInProductAttributes field
   """
   toggleAttributeInProductAttributes(input: UpdateAttributeInRubricInput!): RubricPayload!
@@ -1217,6 +1305,11 @@ type Mutation {
   Should update catalogue counters
   """
   updateCatalogueCounters(input: CatalogueDataInput!): Boolean!
+
+  """
+  Should update category
+  """
+  updateCategory(input: UpdateCategoryInput!): CategoryPayload!
 
   """
   Should update city
@@ -2165,6 +2258,8 @@ type Rubric {
   catalogueTitle: RubricCatalogueTitle!
   description: String!
   descriptionI18n: JSONObject!
+  icon: String
+  image: String
   name: String!
   nameI18n: JSONObject!
   priorities: JSONObject!
@@ -2434,6 +2529,12 @@ A field whose value conforms to the standard URL format as specified in RFC3986:
 """
 scalar URL
 
+input UpdateAttributeInCategoryInput {
+  attributeId: ObjectId!
+  categoryId: ObjectId!
+  rubricId: ObjectId!
+}
+
 input UpdateAttributeInGroupInput {
   attributeId: ObjectId!
   attributesGroupId: ObjectId!
@@ -2469,6 +2570,17 @@ input UpdateBrandInput {
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
   url: [URL!]
+}
+
+input UpdateCategoryInput {
+  active: Boolean!
+  capitalise: Boolean
+  catalogueTitle: RubricCatalogueTitleInput!
+  descriptionI18n: JSONObject!
+  nameI18n: JSONObject!
+  rubricId: ObjectId!
+  shortDescriptionI18n: JSONObject!
+  variantId: ObjectId!
 }
 
 input UpdateCityInCountryInput {

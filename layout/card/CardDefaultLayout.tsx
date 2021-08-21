@@ -71,6 +71,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     cardPrices,
     shopsCount,
     shopProducts,
+    cardShopProducts,
     cardContent,
     assets,
     showCardImagesSlider,
@@ -363,7 +364,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         <CardDynamicContent cardContent={cardContent} />
 
         {/*shops*/}
-        <CardShopsList cardShopProducts={shopProducts} />
+        <CardShopsList cardShopProducts={cardShopProducts} />
 
         {/*similar products*/}
         <CardSimilarProducts similarProducts={similarProducts} />

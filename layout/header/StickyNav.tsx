@@ -118,39 +118,52 @@ const StickyNav: React.FC = () => {
   const { navRubrics } = useSiteContext();
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
-  const bgColorLightTheme = configs.siteNavBarBgLightTheme;
-  const bgColorDarkTheme = configs.siteNavBarBgDarkTheme;
-  const textColorLightTheme = configs.siteNavBarTextLightTheme;
-  const textColorDarkTheme = configs.siteNavBarTextDarkTheme;
-  const dropDownBgLightTheme = configs.siteNavDropdownBgLightTheme;
-  const dropDownBgDarkTheme = configs.siteNavDropdownBgDarkTheme;
-  const linkColorLightTheme = configs.siteNavDropdownTextLightTheme;
-  const linkColorDarkTheme = configs.siteNavDropdownTextDarkTheme;
-  const attributeColorLightTheme = configs.siteNavDropdownAttributeLightTheme;
-  const attributeColorDarkTheme = configs.siteNavDropdownAttributeDarkTheme;
 
   // styles
-  const linkStyle = {
-    color: (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textColor)',
-  } as React.CSSProperties;
+  const linkStyle = React.useMemo<React.CSSProperties>(() => {
+    return {
+      color:
+        (isDark ? configs.siteNavBarTextDarkTheme : configs.siteNavBarTextLightTheme) ||
+        'var(--textColor)',
+    };
+  }, [configs.siteNavBarTextDarkTheme, configs.siteNavBarTextLightTheme, isDark]);
 
-  const dropdownStyle = {
-    backgroundColor:
-      (isDark ? dropDownBgDarkTheme : dropDownBgLightTheme) || 'var(--secondaryBackground)',
-  } as React.CSSProperties;
+  const dropdownStyle = React.useMemo<React.CSSProperties>(() => {
+    return {
+      backgroundColor:
+        (isDark ? configs.siteNavDropdownBgDarkTheme : configs.siteNavDropdownBgLightTheme) ||
+        'var(--secondaryBackground)',
+    };
+  }, [configs.siteNavDropdownBgDarkTheme, configs.siteNavDropdownBgLightTheme, isDark]);
 
-  const attributeLinkStyle = {
-    color: (isDark ? linkColorDarkTheme : linkColorLightTheme) || 'var(--textSecondaryColor)',
-  } as React.CSSProperties;
+  const attributeLinkStyle = React.useMemo<React.CSSProperties>(() => {
+    return {
+      color:
+        (isDark ? configs.siteNavDropdownTextDarkTheme : configs.siteNavDropdownTextLightTheme) ||
+        'var(--textSecondaryColor)',
+    };
+  }, [configs.siteNavDropdownTextDarkTheme, configs.siteNavDropdownTextLightTheme, isDark]);
 
-  const attributeStyle = {
-    color: (isDark ? attributeColorDarkTheme : attributeColorLightTheme) || 'var(--textColor)',
-  } as React.CSSProperties;
+  const attributeStyle = React.useMemo<React.CSSProperties>(() => {
+    return {
+      color:
+        (isDark
+          ? configs.siteNavDropdownAttributeDarkTheme
+          : configs.siteNavDropdownAttributeLightTheme) || 'var(--textColor)',
+    };
+  }, [
+    configs.siteNavDropdownAttributeDarkTheme,
+    configs.siteNavDropdownAttributeLightTheme,
+    isDark,
+  ]);
 
-  const style = {
-    backgroundColor:
-      (isDark ? bgColorDarkTheme : bgColorLightTheme) || 'var(--secondaryBackground)',
-  } as React.CSSProperties;
+  const style = React.useMemo<React.CSSProperties>(() => {
+    return {
+      backgroundColor:
+        (isDark ? configs.siteNavBarBgDarkTheme : configs.siteNavBarBgLightTheme) ||
+        'var(--secondaryBackground)',
+    };
+  }, [configs.siteNavBarBgDarkTheme, configs.siteNavBarBgLightTheme, isDark]);
 
   return (
     <nav

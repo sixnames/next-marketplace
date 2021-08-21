@@ -503,6 +503,8 @@ export interface ProductModel extends BaseModel, TimestampModel {
   descriptionI18n: TranslationModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categoriesIds?: ObjectIdModel[];
+  categoriesSlugs?: string[];
   mainImage: string;
   supplierSlug?: string | null;
   brandSlug?: string | null;
@@ -673,6 +675,8 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categoriesIds?: ObjectIdModel[];
+  categoriesSlugs?: string[];
   selectedOptionsSlugs: string[];
   mainImage: string;
   barcode?: string | null;

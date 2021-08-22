@@ -3,11 +3,14 @@ import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
+import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import RequestError from 'components/RequestError';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import { useCreateCategoryMutation, useDeleteCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -26,70 +29,118 @@ interface RubricCategoriesConsumerInterface {
 }
 
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({ rubric }) => {
-  const { showModal } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
+  const { showModal, onCompleteCallback, onErrorCallback, showLoading, router } =
+    useMutationCallbacks({
+      withModal: true,
+      reload: true,
+    });
+
+  const [deleteCategoryMutation] = useDeleteCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteCategory),
+    onError: onErrorCallback,
   });
 
-  const renderCategories = React.useCallback((option: CategoryInterface) => {
-    const { name, categories, image } = option;
+  const [createCategoryMutation] = useCreateCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.createCategory),
+    onError: onErrorCallback,
+  });
 
-    return (
-      <div>
-        {image ? (
-          <div>
-            <Image
-              src={image}
-              width={80}
-              height={80}
-              quality={50}
-              alt={`${name}`}
-              title={`${name}`}
-              objectFit={'contain'}
-              objectPosition={'center'}
-            />
-          </div>
-        ) : null}
-        <div className='cms-option flex items-center'>
-          {option.icon ? (
-            <div className='mr-4'>
-              <Icon name={option.icon} className='w-6 h-6' />
+  const renderCategories = React.useCallback(
+    (category: CategoryInterface) => {
+      const { name, categories, image } = category;
+
+      return (
+        <div>
+          {image ? (
+            <div>
+              <Image
+                src={image}
+                width={80}
+                height={80}
+                quality={50}
+                alt={`${name}`}
+                title={`${name}`}
+                objectFit={'contain'}
+                objectPosition={'center'}
+              />
             </div>
           ) : null}
-          <div className='font-medium' data-cy={`option-${name}`}>
-            {name}
-          </div>
-          <div className='cms-option__controls ml-4'>
-            <ContentItemControls
-              testId={`${name}`}
-              justifyContent={'flex-end'}
-              createTitle={'Добавить дочернюю категорию'}
-              createHandler={() => {
-                console.log('create');
-              }}
-              updateTitle={'Редактировать категорию'}
-              updateHandler={() => {
-                console.log('update');
-              }}
-              deleteTitle={'Удалить категорию'}
-              deleteHandler={() => {
-                console.log('delete');
-              }}
-            />
-          </div>
-        </div>
-        {categories && categories.length > 0 ? (
-          <div className='ml-4'>
-            {categories.map((category) => (
-              <div className='mt-4' key={`${category._id}`}>
-                {renderCategories(category)}
+
+          <div className='cms-option flex items-center'>
+            {category.icon ? (
+              <div className='mr-4'>
+                <Icon name={category.icon} className='w-6 h-6' />
               </div>
-            ))}
+            ) : null}
+            <div className='font-medium' data-cy={`option-${name}`}>
+              {name}
+            </div>
+            <div className='cms-option__controls ml-4'>
+              <ContentItemControls
+                testId={`${name}`}
+                justifyContent={'flex-end'}
+                createTitle={'Добавить дочернюю категорию'}
+                createHandler={() => {
+                  showModal<CreateRubricModalInterface>({
+                    variant: CREATE_RUBRIC_MODAL,
+                    props: {
+                      isCategory: true,
+                      confirm: (values) => {
+                        showLoading();
+                        return createCategoryMutation({
+                          variables: {
+                            input: {
+                              ...values,
+                              parentId: category._id,
+                              rubricId: rubric._id,
+                            },
+                          },
+                        });
+                      },
+                    },
+                  });
+                }}
+                updateTitle={'Редактировать категорию'}
+                updateHandler={() => {
+                  router
+                    .push(`${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`)
+                    .catch(console.log);
+                }}
+                deleteTitle={'Удалить категорию'}
+                deleteHandler={() => {
+                  showModal({
+                    variant: CONFIRM_MODAL,
+                    props: {
+                      testId: 'delete-category-modal',
+                      message: 'Категория будет удалена',
+                      confirm: () => {
+                        showLoading();
+                        return deleteCategoryMutation({
+                          variables: {
+                            _id: category._id,
+                          },
+                        });
+                      },
+                    },
+                  });
+                }}
+              />
+            </div>
           </div>
-        ) : null}
-      </div>
-    );
-  }, []);
+          {categories && categories.length > 0 ? (
+            <div className='ml-4'>
+              {categories.map((category) => (
+                <div className='mt-4' key={`${category._id}`}>
+                  {renderCategories(category)}
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
+    [createCategoryMutation, deleteCategoryMutation, router, rubric._id, showLoading, showModal],
+  );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Категории',
@@ -131,7 +182,23 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
               testId={'create-rubric-product'}
               size={'small'}
               onClick={() => {
-                console.log(showModal);
+                showModal<CreateRubricModalInterface>({
+                  variant: CREATE_RUBRIC_MODAL,
+                  props: {
+                    isCategory: true,
+                    confirm: (values) => {
+                      showLoading();
+                      return createCategoryMutation({
+                        variables: {
+                          input: {
+                            ...values,
+                            rubricId: rubric._id,
+                          },
+                        },
+                      });
+                    },
+                  },
+                });
               }}
             >
               Создать категорию

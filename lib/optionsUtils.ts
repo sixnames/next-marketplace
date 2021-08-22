@@ -6,7 +6,7 @@ import {
   DEFAULT_LOCALE,
   GENDER_HE,
 } from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES, COL_OPTIONS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
 import {
   AlphabetListModelType,
   AttributeModel,
@@ -14,7 +14,6 @@ import {
   GenderModel,
   LanguageModel,
   ObjectIdModel,
-  OptionModel,
   RubricAttributeModel,
   RubricOptionModel,
 } from 'db/dbModels';
@@ -210,11 +209,19 @@ export async function getAlphabetList<TModel extends Record<string, any>>({
   return payload;
 }
 
-export async function deleteOptionsTree(optionId: ObjectIdModel): Promise<boolean> {
+export interface DeleteDocumentsTreeInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+}
+
+export async function deleteDocumentsTree({
+  _id,
+  collectionName,
+}: DeleteDocumentsTreeInterface): Promise<boolean> {
   const { db } = await getDatabase();
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const optionsCollection = db.collection(collectionName);
   const removedOptionResult = await optionsCollection.findOneAndDelete({
-    _id: optionId,
+    _id,
   });
 
   if (!removedOptionResult.ok) {
@@ -222,10 +229,10 @@ export async function deleteOptionsTree(optionId: ObjectIdModel): Promise<boolea
   }
 
   // Delete tree
-  const children = await optionsCollection.find({ parentId: optionId }).toArray();
+  const children = await optionsCollection.find({ parentId: _id }).toArray();
   const removedChildrenResults = [];
-  for await (const option of children) {
-    const removedChild = await deleteOptionsTree(option._id);
+  for await (const child of children) {
+    const removedChild = await deleteDocumentsTree({ _id: child._id, collectionName });
     if (removedChild) {
       removedChildrenResults.push(removedChild);
     }

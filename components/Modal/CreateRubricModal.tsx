@@ -12,9 +12,10 @@ import { createRubricSchema } from 'validation/rubricSchema';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
+  isCategory?: boolean;
 }
 
-const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) => {
+const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, isCategory }) => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createRubricSchema,
@@ -22,7 +23,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
 
   return (
     <ModalFrame testId={'create-rubric-modal'}>
-      <ModalTitle>Добавление рубрики</ModalTitle>
+      <ModalTitle>{isCategory ? 'Создание категории' : 'Создание рубрики'}</ModalTitle>
 
       <Formik<CreateRubricInput>
         validationSchema={validationSchema}

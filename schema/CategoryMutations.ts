@@ -1,6 +1,6 @@
 import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
-import { castAttributeForRubric } from 'lib/optionsUtils';
+import { castAttributeForRubric, deleteDocumentsTree } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -405,10 +405,11 @@ export const CategoryMutations = extendType({
             }
 
             // Delete category
-            const removedCategorysResult = await categoriesCollection.deleteOne({
+            const removedCategoriesResult = await deleteDocumentsTree({
               _id,
+              collectionName: COL_CATEGORIES,
             });
-            if (!removedCategorysResult.result.ok) {
+            if (!removedCategoriesResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('categories.delete.error'),

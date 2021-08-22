@@ -8,13 +8,11 @@ import Head from 'next/head';
 import * as React from 'react';
 
 interface CmsCategoryLayoutInterface {
-  rubricId: string;
   category: CategoryInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
-  rubricId,
   category,
   breadcrumbs,
   children,
@@ -24,22 +22,22 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
       {
         name: 'Товары',
         testId: 'products',
-        path: `${ROUTE_CMS}/rubrics/${rubricId}/categories/${category._id}/products/${category._id}`,
+        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}/products/${category._id}`,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${ROUTE_CMS}/rubrics/${rubricId}/categories/${category._id}/attributes`,
+        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}/attributes`,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${rubricId}/categories/${category._id}`,
+        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
         exact: true,
       },
     ];
-  }, [category._id, rubricId]);
+  }, [category]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

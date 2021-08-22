@@ -221,6 +221,7 @@ export const RUBRIC_KEY = 'rubric';
 export const SORT_BY_KEY = 'sortBy';
 export const SORT_DIR_KEY = 'sortDir';
 export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];
+export const CATALOGUE_CATEGORY_KEY = 'category';
 export const CATALOGUE_BRAND_KEY = 'brand';
 export const CATALOGUE_BRAND_COLLECTION_KEY = 'brandCollection';
 export const CATALOGUE_MANUFACTURER_KEY = 'manufacturer';

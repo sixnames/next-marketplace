@@ -60,7 +60,7 @@ const rubrics: RubricModel[] = [
       gender: GENDER_IT as GenderModel,
     },
     active: true,
-    variantId: getObjectId('rubricVariant alcohol'),
+    variantId: getObjectId('rubricVariant water'),
     attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },

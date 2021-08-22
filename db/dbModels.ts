@@ -640,7 +640,6 @@ export interface RubricModel extends CountersModel {
   catalogueTitle: RubricCatalogueTitleModel;
   slug: string;
   active: boolean;
-  attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
   icon?: string;

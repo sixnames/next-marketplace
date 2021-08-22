@@ -187,7 +187,6 @@ export const RubricMutations = extendType({
             ...input,
             slug,
             active: true,
-            attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdRubric = createdRubricResult.ops[0];
@@ -517,33 +516,10 @@ export const RubricMutations = extendType({
               return;
             }
 
-            // Update rubric
-            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-              {
-                _id: rubricId,
-              },
-              {
-                $push: {
-                  attributesGroupsIds: attributesGroup._id,
-                },
-              },
-              { returnDocument: 'after' },
-            );
-
-            const updatedRubric = updatedRubricResult.value;
-            if (!updatedRubricResult.ok || !updatedRubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.addAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('rubrics.addAttributesGroup.success'),
-              payload: updatedRubric,
+              payload: rubric,
             };
           });
 
@@ -914,34 +890,10 @@ export const RubricMutations = extendType({
               return;
             }
 
-            // Delete attributes group from rubric
-            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-              {
-                _id: rubricId,
-              },
-              {
-                $pull: {
-                  attributesGroupsIds: attributesGroupId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedRubric = updatedRubricResult.value;
-            if (!updatedRubricResult.ok || !updatedRubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-              payload: updatedRubric,
+              payload: rubric,
             };
           });
 

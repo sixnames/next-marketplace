@@ -1,6 +1,6 @@
 import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
 import { CategoryModel, GenderModel } from '../../../../db/dbModels';
-import { getObjectId, getObjectIds } from 'mongo-seeding';
+import { getObjectId } from 'mongo-seeding';
 
 const categories: CategoryModel[] = [
   {
@@ -31,7 +31,6 @@ const categories: CategoryModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant water'),
-    attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -63,10 +62,6 @@ const categories: CategoryModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant water'),
-    attributesGroupsIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики виски',
-    ]),
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -98,7 +93,6 @@ const categories: CategoryModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant water'),
-    attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -130,7 +124,6 @@ const categories: CategoryModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant water'),
-    attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

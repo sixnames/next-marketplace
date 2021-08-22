@@ -199,7 +199,6 @@ export const CategoryMutations = extendType({
             slug,
             rubricSlug: rubric.slug,
             active: true,
-            attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdCategory = createdCategoryResult.ops[0];
@@ -558,33 +557,10 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Update category
-            const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
-              {
-                _id: categoryId,
-              },
-              {
-                $push: {
-                  attributesGroupsIds: attributesGroup._id,
-                },
-              },
-              { returnDocument: 'after' },
-            );
-
-            const updatedCategory = updatedCategoryResult.value;
-            if (!updatedCategoryResult.ok || !updatedCategory) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.addAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('categories.addAttributesGroup.success'),
-              payload: updatedCategory,
+              payload: category,
             };
           });
 
@@ -1015,34 +991,10 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Delete attributes group from category
-            const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
-              {
-                _id: categoryId,
-              },
-              {
-                $pull: {
-                  attributesGroupsIds: attributesGroupId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedCategory = updatedCategoryResult.value;
-            if (!updatedCategoryResult.ok || !updatedCategory) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('categories.deleteAttributesGroup.success'),
-              payload: updatedCategory,
+              payload: category,
             };
           });
 

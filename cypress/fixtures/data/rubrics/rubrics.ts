@@ -1,6 +1,6 @@
 import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
 import { GenderModel, RubricModel } from '../../../../db/dbModels';
-import { getObjectId, getObjectIds } from 'mongo-seeding';
+import { getObjectId } from 'mongo-seeding';
 
 const rubrics: RubricModel[] = [
   {
@@ -29,10 +29,6 @@ const rubrics: RubricModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant alcohol'),
-    attributesGroupsIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики шампанского',
-    ]),
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -61,7 +57,6 @@ const rubrics: RubricModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant water'),
-    attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -90,10 +85,6 @@ const rubrics: RubricModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant alcohol'),
-    attributesGroupsIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики вина',
-    ]),
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

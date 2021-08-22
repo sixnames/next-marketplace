@@ -196,6 +196,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       <Inner testId={'rubric-attributes'}>
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
+          const isDeleteDisabled = (attributes || []).some((attribute) => {
+            return attribute.categoryId;
+          });
+
           return (
             <div key={`${_id}`} className='mb-12'>
               <Accordion
@@ -203,8 +207,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls
+                    testId={`${attributesGroup.name}`}
                     justifyContent={'flex-end'}
                     deleteTitle={'Удалить группу атрибутов из рубрики'}
+                    isDeleteDisabled={isDeleteDisabled}
                     deleteHandler={() => {
                       showModal({
                         variant: CONFIRM_MODAL,
@@ -225,7 +231,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                         },
                       });
                     }}
-                    testId={`${attributesGroup.name}`}
                   />
                 }
               >
@@ -252,7 +257,9 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 props: {
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${rubric._id}`,
-                  excludedIds: rubric.attributesGroupsIds.map((_id) => `${_id}`),
+                  excludedIds: (rubric.attributesGroups || []).map(
+                    (attributesGroup) => `${attributesGroup._id}`,
+                  ),
                   confirm: (values) => {
                     showLoading();
                     return addAttributesGroupToRubricMutation({
@@ -314,14 +321,16 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_ATTRIBUTES_GROUPS,
+          from: COL_RUBRIC_ATTRIBUTES,
           as: 'attributesGroups',
-          let: { attributesGroupsIds: '$attributesGroupsIds', rubricId: '$_id' },
+          let: {
+            rubricId: '$_id',
+          },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $in: ['$_id', '$$attributesGroupsIds'],
+                  $and: [{ $eq: ['$$rubricId', '$rubricId'] }],
                 },
               },
             },
@@ -331,19 +340,20 @@ export const getServerSideProps = async (
                 _id: SORT_DESC,
               },
             },
+
+            // get attributes group
             {
               $lookup: {
-                from: COL_RUBRIC_ATTRIBUTES,
-                as: 'attributes',
-                let: { attributesIds: '$attributesIds' },
+                from: COL_ATTRIBUTES_GROUPS,
+                as: 'attributesGroup',
+                let: {
+                  attributesGroupId: '$attributesGroupId',
+                },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $and: [
-                          { $in: ['$attributeId', '$$attributesIds'] },
-                          { $eq: ['$$rubricId', '$rubricId'] },
-                        ],
+                        $eq: ['$_id', '$$attributesGroupId'],
                       },
                     },
                   },
@@ -354,6 +364,29 @@ export const getServerSideProps = async (
                     },
                   },
                 ],
+              },
+            },
+            {
+              $addFields: {
+                attributesGroup: {
+                  $arrayElemAt: ['$attributesGroup', 0],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: '$attributesGroupId',
+                nameI18n: {
+                  $first: '$attributesGroup.nameI18n',
+                },
+                attributes: {
+                  $push: '$$ROOT',
+                },
+              },
+            },
+            {
+              $project: {
+                'attributes.attributesGroup': false,
               },
             },
           ],

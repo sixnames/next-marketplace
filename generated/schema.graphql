@@ -504,6 +504,7 @@ input CreateCategoryInput {
   catalogueTitle: RubricCatalogueTitleInput!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
+  parentId: ObjectId
   rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
   variantId: ObjectId!

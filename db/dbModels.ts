@@ -649,7 +649,7 @@ export interface RubricModel extends CountersModel {
 export interface CategoryModel extends RubricModel {
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  parentId?: ObjectIdModel;
+  parentId?: ObjectIdModel | null;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {

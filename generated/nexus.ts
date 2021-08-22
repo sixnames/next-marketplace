@@ -273,6 +273,7 @@ export interface NexusGenInputs {
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     variantId: NexusGenScalars['ObjectId']; // ObjectId!

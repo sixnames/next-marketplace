@@ -60,6 +60,7 @@ export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.objectId('parentId');
     t.boolean('capitalise');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');

@@ -24,25 +24,31 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 
-interface GetOptionsTreeInterface {
-  options?: OptionInterface[] | null;
+interface TreeItemInterface extends Record<any, any> {
+  parentId?: ObjectIdModel | null;
+}
+
+interface GetTreeFromListInterface<T> {
+  childrenFieldName: string;
+  list?: T[] | null;
   parentId?: ObjectId | null;
   locale?: string;
 }
 
-export function getOptionsTree({
-  options,
+export function getTreeFromList<T extends TreeItemInterface>({
+  list,
   parentId,
   locale,
-}: GetOptionsTreeInterface): OptionInterface[] {
-  const parentOptions = (options || []).filter((option) =>
-    parentId ? option.parentId?.equals(parentId) : !option.parentId,
+  childrenFieldName,
+}: GetTreeFromListInterface<T>): T[] {
+  const parentsList = (list || []).filter((listItem) =>
+    parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId,
   );
-  return parentOptions.map((parentOption) => {
+  return parentsList.map((parent) => {
     return {
-      ...parentOption,
-      name: getFieldStringLocale(parentOption.nameI18n, locale),
-      options: getOptionsTree({ options, parentId: parentOption._id }),
+      ...parent,
+      name: getFieldStringLocale(parent.nameI18n, locale),
+      [childrenFieldName]: getTreeFromList({ list: list, parentId: parent._id, childrenFieldName }),
     };
   });
 }

@@ -3,12 +3,22 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
-import { RubricModel, RubricAttributeModel } from '../../../../db/dbModels';
+import { RubricModel, RubricAttributeModel, ObjectIdModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 import rubrics from '../rubrics/rubrics';
 
-function getRubricAttributes(rubric: RubricModel): RubricAttributeModel[] {
+interface GetRubricAttributesInterface {
+  rubric: RubricModel;
+  categoryId?: ObjectIdModel | null;
+  categorySlug?: string | null;
+}
+
+function getRubricAttributes({
+  rubric,
+  categoryId,
+  categorySlug,
+}: GetRubricAttributesInterface): RubricAttributeModel[] {
   return attributes.map((attribute) => {
     const visible =
       attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
@@ -22,6 +32,8 @@ function getRubricAttributes(rubric: RubricModel): RubricAttributeModel[] {
       showInCatalogueNav: visible,
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
+      categoryId,
+      categorySlug,
       attributeId: attribute._id,
       attributesGroupId: attribute.attributesGroupId,
       showInProductAttributes: true,
@@ -30,7 +42,19 @@ function getRubricAttributes(rubric: RubricModel): RubricAttributeModel[] {
 }
 
 const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) => {
-  return [...acc, ...getRubricAttributes(rubric)];
+  let rubricAttributes: RubricAttributeModel[];
+
+  if (rubric.nameI18n.ru === 'Виски') {
+    rubricAttributes = getRubricAttributes({
+      rubric,
+      categoryId: getObjectId('category Односолодовый A'),
+      categorySlug: 'odnosolodovyy_a',
+    });
+  } else {
+    rubricAttributes = getRubricAttributes({ rubric });
+  }
+
+  return [...acc, ...rubricAttributes];
 }, []);
 
 // @ts-ignore

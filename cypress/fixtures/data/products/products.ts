@@ -248,10 +248,16 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     });
     const brandCollection = currentBrandCollections[brandCollectionIndex];
 
+    const isForCategory = rubric.nameI18n.ru === 'Виски';
+
     rubricProducts.push({
       _id: getObjectId(`${rubricSlug} ${itemId}`),
       active: true,
       itemId,
+      rubricSlug: rubric.slug,
+      rubricId: rubric._id,
+      categoryIds: isForCategory ? [getObjectId('category Односолодовый A')] : null,
+      categorySlugs: isForCategory ? ['odnosolodovyy_a'] : null,
       barcode: [itemId, `${itemId}9999`],
       slug: generateSlug(name),
       originalName: name,
@@ -261,8 +267,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       descriptionI18n: {
         ru: `Description ${name}`,
       },
-      rubricSlug: rubric.slug,
-      rubricId: rubric._id,
       mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
       selectedAttributesIds,

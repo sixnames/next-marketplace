@@ -61,10 +61,7 @@ const rubrics: RubricModel[] = [
     },
     active: true,
     variantId: getObjectId('rubricVariant alcohol'),
-    attributesGroupsIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики виски',
-    ]),
+    attributesGroupsIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {

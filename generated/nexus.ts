@@ -127,7 +127,6 @@ export interface NexusGenInputs {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   AddAttributesGroupToRubricInput: {
     // input type
@@ -416,7 +415,6 @@ export interface NexusGenInputs {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteAttributesGroupFromRubricInput: {
     // input type
@@ -461,7 +459,6 @@ export interface NexusGenInputs {
     // input type
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteProductFromConnectionInput: {
     // input type
@@ -591,7 +588,6 @@ export interface NexusGenInputs {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateAttributeInGroupInput: {
     // input type
@@ -1554,7 +1550,6 @@ export interface NexusGenFieldTypes {
     deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
-    deleteProductFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteProductFromShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -2713,7 +2708,6 @@ export interface NexusGenFieldTypeNames {
     deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
-    deleteProductFromCategory: 'CategoryPayload';
     deleteProductFromConnection: 'ProductPayload';
     deleteProductFromRubric: 'RubricPayload';
     deleteProductFromShop: 'ShopPayload';
@@ -3698,10 +3692,6 @@ export interface NexusGenArgTypes {
     deleteProductFromCart: {
       // args
       input: NexusGenInputs['DeleteProductFromCartInput']; // DeleteProductFromCartInput!
-    };
-    deleteProductFromCategory: {
-      // args
-      input: NexusGenInputs['DeleteProductFromCategoryInput']; // DeleteProductFromCategoryInput!
     };
     deleteProductFromConnection: {
       // args

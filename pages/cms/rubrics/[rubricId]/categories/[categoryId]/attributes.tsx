@@ -16,21 +16,25 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
-  useAddAttributesGroupToRubricMutation,
-  useDeleteAttributesGroupFromRubricMutation,
+  COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+} from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CategoryInterface, RubricAttributeInterface } from 'db/uiInterfaces';
+import {
+  useAddAttributesGroupToCategoryMutation,
+  useDeleteAttributesGroupFromCategoryMutation,
+  useToggleAttributeInCategoryCatalogueMutation,
+  useToggleAttributeInCategoryNavMutation,
   useToggleAttributeInProductAttributesMutation,
-  useToggleAttributeInRubricCatalogueMutation,
-  useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import CmsCategoryLayout from 'layout/CmsLayout/CmsCategoryLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -38,34 +42,37 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface RubricAttributesConsumerInterface {
-  rubric: RubricInterface;
+interface CategoryAttributesConsumerInterface {
+  category: CategoryInterface;
 }
 
-const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({ rubric }) => {
+const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> = ({
+  category,
+}) => {
   const { locale } = useLocaleContext();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
     reload: true,
   });
 
-  const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromRubric),
+  const [deleteAttributesGroupFromCategoryMutation] = useDeleteAttributesGroupFromCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromCategory),
     onError: onErrorCallback,
   });
 
-  const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
+  const [addAttributesGroupToCategoryMutation] = useAddAttributesGroupToCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToCategory),
     onError: onErrorCallback,
   });
 
-  const [toggleAttributeInRubricCatalogueMutation] = useToggleAttributeInRubricCatalogueMutation({
-    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricCatalogue),
-    onError: onErrorCallback,
-  });
+  const [toggleAttributeInCategoryCatalogueMutation] =
+    useToggleAttributeInCategoryCatalogueMutation({
+      onCompleted: (data) => onCompleteCallback(data.toggleAttributeInCategoryCatalogue),
+      onError: onErrorCallback,
+    });
 
-  const [toggleAttributeInRubricNavMutation] = useToggleAttributeInRubricNavMutation({
-    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricNav),
+  const [toggleAttributeInCategoryNavMutation] = useToggleAttributeInCategoryNavMutation({
+    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInCategoryNav),
     onError: onErrorCallback,
   });
 
@@ -109,11 +116,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             name={'showInCatalogueFilter'}
             onChange={() => {
               showLoading();
-              toggleAttributeInRubricCatalogueMutation({
+              toggleAttributeInCategoryCatalogueMutation({
                 variables: {
                   input: {
                     attributeId: cellData,
-                    rubricId: rubric._id,
+                    categoryId: category._id,
                   },
                 },
               }).catch(console.log);
@@ -139,11 +146,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             name={'showInCatalogueNav'}
             onChange={() => {
               showLoading();
-              toggleAttributeInRubricNavMutation({
+              toggleAttributeInCategoryNavMutation({
                 variables: {
                   input: {
                     attributeId: cellData,
-                    rubricId: rubric._id,
+                    categoryId: category._id,
                   },
                 },
               }).catch(console.log);
@@ -169,7 +176,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 variables: {
                   input: {
                     attributeId: cellData,
-                    rubricId: rubric._id,
+                    rubricId: category._id,
                   },
                 },
               }).catch(console.log);
@@ -188,19 +195,27 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${category.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${category.rubricId}`,
+      },
+      {
+        name: `Категории`,
+        href: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories`,
+      },
+      {
+        name: `${category.name}`,
+        href: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
-      <Inner testId={'rubric-attributes'}>
-        {(rubric.attributesGroups || []).map((attributesGroup) => {
+    <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
+      <Inner testId={'category-attributes'}>
+        {(category.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
           const isAttributeDisabled = (attributes || []).some((attribute) => {
-            return attribute.categoryId;
+            return attribute.categoryId !== category._id;
           });
 
           return (
@@ -212,20 +227,20 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   <ContentItemControls
                     testId={`${attributesGroup.name}`}
                     justifyContent={'flex-end'}
-                    deleteTitle={'Удалить группу атрибутов из рубрики'}
+                    deleteTitle={'Удалить группу атрибутов из категории'}
                     isDeleteDisabled={isAttributeDisabled}
                     deleteHandler={() => {
                       showModal({
                         variant: CONFIRM_MODAL,
                         props: {
                           testId: 'attributes-group-delete-modal',
-                          message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
+                          message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из категории?`,
                           confirm: () => {
                             showLoading();
-                            return deleteAttributesGroupFromRubricMutation({
+                            return deleteAttributesGroupFromCategoryMutation({
                               variables: {
                                 input: {
-                                  rubricId: rubric._id,
+                                  categoryId: category._id,
                                   attributesGroupId: attributesGroup._id,
                                 },
                               },
@@ -259,15 +274,18 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 variant: ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
                 props: {
                   testId: 'add-attributes-group-to-rubric-modal',
-                  rubricId: `${rubric._id}`,
-                  excludedIds: (rubric.attributesGroups || []).map(
+                  rubricId: `${category._id}`,
+                  excludedIds: (category.attributesGroups || []).map(
                     (attributesGroup) => `${attributesGroup._id}`,
                   ),
                   confirm: (values) => {
                     showLoading();
-                    return addAttributesGroupToRubricMutation({
+                    return addAttributesGroupToCategoryMutation({
                       variables: {
-                        input: values,
+                        input: {
+                          categoryId: values.rubricId,
+                          attributesGroupId: values.attributesGroupId,
+                        },
                       },
                     });
                   },
@@ -279,61 +297,86 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           </Button>
         </FixedButtons>
       </Inner>
-    </CmsRubricLayout>
+    </CmsCategoryLayout>
   );
 };
 
-interface RubricAttributesPageInterface
+interface CategoryAttributesPageInterface
   extends PagePropsInterface,
-    RubricAttributesConsumerInterface {}
+    CategoryAttributesConsumerInterface {}
 
-const RubricAttributesPage: NextPage<RubricAttributesPageInterface> = ({ pageUrls, rubric }) => {
+const CategoryAttributesPage: NextPage<CategoryAttributesPageInterface> = ({
+  pageUrls,
+  category,
+}) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricAttributesConsumer rubric={rubric} />
+      <CategoryAttributesConsumer category={category} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RubricAttributesPageInterface>> => {
+): Promise<GetServerSidePropsResult<CategoryAttributesPageInterface>> => {
   const { query } = context;
   const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props || !query.categoryId) {
     return {
       notFound: true,
     };
   }
 
-  const initialRubrics = await rubricsCollection
-    .aggregate<RubricInterface>([
+  const categoriesAggregation = await categoriesCollection
+    .aggregate([
       {
         $match: {
-          _id: new ObjectId(`${query.rubricId}`),
+          _id: new ObjectId(`${query.categoryId}`),
         },
       },
-      {
-        $project: {
-          priorities: false,
-          views: false,
-        },
-      },
+      // get category rubric
       {
         $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'attributesGroups',
+          from: COL_RUBRICS,
+          as: 'rubric',
           let: {
-            rubricId: '$_id',
+            rubricId: '$rubricId',
           },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$$rubricId', '$rubricId'] }],
+                  $eq: ['$_id', '$$rubricId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: {
+            $arrayElemAt: ['$rubric', 0],
+          },
+        },
+      },
+
+      // get category attributes
+      {
+        $lookup: {
+          from: COL_RUBRIC_ATTRIBUTES,
+          as: 'attributesGroups',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$$categoryId', '$categoryId'] }],
                 },
               },
             },
@@ -397,19 +440,25 @@ export const getServerSideProps = async (
       },
     ])
     .toArray();
-  const initialRubric = initialRubrics[0];
-  if (!initialRubric) {
+  const initialCategory = categoriesAggregation[0];
+  if (!initialCategory) {
     return {
       notFound: true,
     };
   }
 
   const { sessionLocale } = props;
-  const rawRubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
+  const category: CategoryInterface = {
+    ...initialCategory,
+    name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
     attributes: [],
-    attributesGroups: (initialRubric.attributesGroups || []).map((attributesGroup) => {
+    rubric: initialCategory.rubric
+      ? {
+          ...initialCategory.rubric,
+          name: getFieldStringLocale(initialCategory.rubric.nameI18n, sessionLocale),
+        }
+      : null,
+    attributesGroups: (initialCategory.attributesGroups || []).map((attributesGroup) => {
       return {
         ...attributesGroup,
         name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
@@ -426,9 +475,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      rubric: castDbData(rawRubric),
+      category: castDbData(category),
     },
   };
 };
 
-export default RubricAttributesPage;
+export default CategoryAttributesPage;

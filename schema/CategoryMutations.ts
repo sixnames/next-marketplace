@@ -1,13 +1,9 @@
-import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { castAttributeForRubric, deleteDocumentsTree } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
-  ProductAssetsModel,
   ProductAttributeModel,
-  ProductCardContentModel,
   ProductModel,
   RubricAttributeModel,
   CategoryModel,
@@ -24,9 +20,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -41,7 +35,6 @@ import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
   deleteAttributesGroupFromCategorySchema,
-  deleteProductFromCategorySchema,
   updateAttributesGroupInCategorySchema,
   updateCategorySchema,
 } from 'validation/categorySchema';
@@ -92,7 +85,6 @@ export const UpdateCategoryInput = inputObjectType({
 export const AddAttributesGroupToCategoryInput = inputObjectType({
   name: 'AddAttributesGroupToCategoryInput',
   definition(t) {
-    t.nonNull.objectId('rubricId');
     t.nonNull.objectId('categoryId');
     t.nonNull.objectId('attributesGroupId');
   },
@@ -101,7 +93,6 @@ export const AddAttributesGroupToCategoryInput = inputObjectType({
 export const DeleteAttributesGroupFromCategoryInput = inputObjectType({
   name: 'DeleteAttributesGroupFromCategoryInput',
   definition(t) {
-    t.nonNull.objectId('rubricId');
     t.nonNull.objectId('categoryId');
     t.nonNull.objectId('attributesGroupId');
   },
@@ -110,7 +101,6 @@ export const DeleteAttributesGroupFromCategoryInput = inputObjectType({
 export const UpdateAttributesGroupInCategoryInput = inputObjectType({
   name: 'UpdateAttributeInCategoryInput',
   definition(t) {
-    t.nonNull.objectId('rubricId');
     t.nonNull.objectId('categoryId');
     t.nonNull.objectId('attributeId');
   },
@@ -119,7 +109,6 @@ export const UpdateAttributesGroupInCategoryInput = inputObjectType({
 export const DeleteProductFromCategoryInput = inputObjectType({
   name: 'DeleteProductFromCategoryInput',
   definition(t) {
-    t.nonNull.objectId('rubricId');
     t.nonNull.objectId('categoryId');
     t.nonNull.objectId('productId');
   },
@@ -492,19 +481,6 @@ export const CategoryMutations = extendType({
             const { input } = args;
             const { categoryId, attributesGroupId } = input;
 
-            // Check rubric availability
-            const rubric = await rubricsCollection.findOne({
-              _id: input.rubricId,
-            });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.update.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             // Check category and attributes group availability
             const attributesGroup = await attributesGroupsCollection.findOne({
               _id: attributesGroupId,
@@ -514,6 +490,19 @@ export const CategoryMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('categories.addAttributesGroup.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check rubric availability
+            const rubric = await rubricsCollection.findOne({
+              _id: category.rubricId,
+            });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.notFound'),
               };
               await session.abortTransaction();
               return;
@@ -614,22 +603,10 @@ export const CategoryMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
-
-          // Check rubric availability
-          const rubric = await rubricsCollection.findOne({
-            _id: input.rubricId,
-          });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.notFound'),
-            };
-          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -715,22 +692,10 @@ export const CategoryMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
-
-          // Check rubric availability
-          const rubric = await rubricsCollection.findOne({
-            _id: input.rubricId,
-          });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.notFound'),
-            };
-          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -817,22 +782,10 @@ export const CategoryMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
           const { categoryId, attributeId } = input;
-
-          // Check rubric availability
-          const rubric = await rubricsCollection.findOne({
-            _id: input.rubricId,
-          });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.notFound'),
-            };
-          }
 
           // Check category and attribute availability
           const category = await categoriesCollection.findOne({ _id: categoryId });
@@ -898,7 +851,6 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const categoryAttributesCollection =
@@ -938,19 +890,6 @@ export const CategoryMutations = extendType({
 
             const { input } = args;
             const { categoryId, attributesGroupId } = input;
-
-            // Check rubric availability
-            const rubric = await rubricsCollection.findOne({
-              _id: input.rubricId,
-            });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.update.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
 
             // Check category and attributes group availability
             const attributesGroup = await attributesGroupsCollection.findOne({
@@ -996,227 +935,6 @@ export const CategoryMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('categories.deleteAttributesGroup.success'),
-              payload: category,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should remove product from the category
-    t.nonNull.field('deleteProductFromCategory', {
-      type: 'CategoryPayload',
-      description: 'Should remove product from category',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'DeleteProductFromCategoryInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const productCardContentsCollection =
-          db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-
-        const session = client.startSession();
-
-        let mutationPayload: CategoryPayloadModel = {
-          success: false,
-          message: await getApiMessage(`categories.deleteProduct.error`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'deleteProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: deleteProductFromCategorySchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const { input } = args;
-            const { categoryId, productId } = input;
-
-            // Check rubric availability
-            const rubric = await rubricsCollection.findOne({
-              _id: input.rubricId,
-            });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.update.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check category and product availability
-            const product = await productsCollection.findOne({
-              _id: productId,
-            });
-            const category = await categoriesCollection.findOne({ _id: categoryId });
-            if (!category || !product) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteProduct.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete algolia product object
-            const algoliaProductResult = await deleteAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-              objectIDs: [productId.toHexString()],
-            });
-            if (!algoliaProductResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete algolia shop product objects
-            const shopProducts = await shopProductsCollection
-              .find({
-                productId,
-              })
-              .toArray();
-            const shopProductIds: string[] = shopProducts.map(({ _id }) => _id.toHexString());
-            const algoliaShopProductsResult = await deleteAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-              objectIDs: shopProductIds,
-            });
-            if (!algoliaShopProductsResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product assets from cloud
-            const productAssets = await productAssetsCollection
-              .find({
-                productId,
-              })
-              .toArray();
-            for await (const productAsset of productAssets) {
-              for await (const asset of productAsset.assets) {
-                await deleteUpload({
-                  filePath: asset.url,
-                });
-              }
-            }
-
-            // Delete product assets
-            const removedProductAssetsResult = await productAssetsCollection.deleteMany({
-              productId,
-            });
-            if (!removedProductAssetsResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product attributes
-            const removedProductAttributesResult = await productAttributesCollection.deleteMany({
-              productId,
-            });
-            if (!removedProductAttributesResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product card content assets from cloud
-            const productCardContents = await productCardContentsCollection
-              .find({
-                productId,
-              })
-              .toArray();
-            for await (const productCardContent of productCardContents) {
-              for await (const filePath of productCardContent.assetKeys) {
-                await deleteUpload({
-                  filePath,
-                });
-              }
-            }
-
-            // Delete product card content
-            const removedProductCardContents = await productCardContentsCollection.deleteMany({
-              productId,
-            });
-            if (!removedProductCardContents.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product
-            const removedProductResult = await productsCollection.findOneAndDelete({
-              _id: productId,
-            });
-            const removedShopProductResult = await shopProductsCollection.findOneAndDelete({
-              productId,
-            });
-            if (!removedProductResult.ok || !removedShopProductResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`categories.deleteProduct.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('categories.deleteProduct.success'),
               payload: category,
             };
           });

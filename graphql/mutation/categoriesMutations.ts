@@ -27,15 +27,6 @@ export const DELETE_CATEGORY = gql`
   }
 `;
 
-export const DELETE_PRODUCT_FROM_CATEGORY_MUTATION = gql`
-  mutation DeleteProductFromCategory($input: DeleteProductFromCategoryInput!) {
-    deleteProductFromCategory(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const TOGGLE_ATTRIBUTE_IN_CATEGORY_CATALOGUE = gql`
   mutation ToggleAttributeInCategoryCatalogue($input: UpdateAttributeInCategoryInput!) {
     toggleAttributeInCategoryCatalogue(input: $input) {

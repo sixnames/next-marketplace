@@ -23,7 +23,6 @@ input AddAttributeToGroupInput {
 input AddAttributesGroupToCategoryInput {
   attributesGroupId: ObjectId!
   categoryId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input AddAttributesGroupToRubricInput {
@@ -663,7 +662,6 @@ input DeleteAttributeFromGroupInput {
 input DeleteAttributesGroupFromCategoryInput {
   attributesGroupId: ObjectId!
   categoryId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input DeleteAttributesGroupFromRubricInput {
@@ -708,7 +706,6 @@ input DeleteProductFromCartInput {
 input DeleteProductFromCategoryInput {
   categoryId: ObjectId!
   productId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input DeleteProductFromConnectionInput {
@@ -1187,11 +1184,6 @@ type Mutation {
   Should delete product from cart
   """
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
-
-  """
-  Should remove product from category
-  """
-  deleteProductFromCategory(input: DeleteProductFromCategoryInput!): CategoryPayload!
 
   """
   Should delete product from connection and delete connection if there is no products left
@@ -2541,7 +2533,6 @@ scalar URL
 input UpdateAttributeInCategoryInput {
   attributeId: ObjectId!
   categoryId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input UpdateAttributeInGroupInput {

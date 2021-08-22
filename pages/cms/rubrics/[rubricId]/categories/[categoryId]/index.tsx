@@ -87,7 +87,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
 
   return (
     <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
-      <Inner testId={'rubric-details'}>
+      <Inner testId={'category-details'}>
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}

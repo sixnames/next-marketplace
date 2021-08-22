@@ -3,7 +3,6 @@ import { rubricCommonFieldsSchema, rubricIdSchema } from 'validation/rubricSchem
 import { objectIdSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { attributeIdSchema, attributesGroupIdSchema } from 'validation/attributesGroupSchema';
-import { productIdSchema } from 'validation/productSchema';
 
 export const categoryIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.categories.id' });
@@ -30,14 +29,12 @@ export const updateCategorySchema = (args: ValidationSchemaArgsInterface) => {
 export const addAttributesGroupToCategorySchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     categoryId: categoryIdSchema(args),
-    rubricId: rubricIdSchema(args),
     attributesGroupId: attributesGroupIdSchema(args),
   });
 };
 
 export const deleteAttributesGroupFromCategorySchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    rubricId: rubricIdSchema(args),
     categoryId: categoryIdSchema(args),
     attributesGroupId: attributesGroupIdSchema(args),
   });
@@ -45,16 +42,7 @@ export const deleteAttributesGroupFromCategorySchema = (args: ValidationSchemaAr
 
 export const updateAttributesGroupInCategorySchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    rubricId: rubricIdSchema(args),
     categoryId: categoryIdSchema(args),
     attributeId: attributeIdSchema(args),
-  });
-};
-
-export const deleteProductFromCategorySchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    rubricId: rubricIdSchema(args),
-    categoryId: categoryIdSchema(args),
-    productId: productIdSchema(args),
   });
 };

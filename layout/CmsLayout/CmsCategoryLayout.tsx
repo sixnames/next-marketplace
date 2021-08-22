@@ -20,20 +20,15 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
   const navConfig = React.useMemo(() => {
     return [
       {
-        name: 'Товары',
-        testId: 'products',
-        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}/products/${category._id}`,
+        name: 'Детали',
+        testId: 'details',
+        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
+        exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
         path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}/attributes`,
-        exact: true,
-      },
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
         exact: true,
       },
     ];

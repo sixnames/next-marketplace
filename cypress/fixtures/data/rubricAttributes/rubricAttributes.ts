@@ -79,8 +79,8 @@ const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) =>
     rubricAttributes = getRubricAttributes({
       rubric,
       attributes: [...commonAttributes, ...rubricRawAttributes],
-      categoryId: getObjectId('category Односолодовый A-1'),
-      categorySlug: `${CATEGORY_SLUG_PREFIX}3`,
+      categoryId: getObjectId('category Односолодовый'),
+      categorySlug: `${CATEGORY_SLUG_PREFIX}1`,
     });
   }
 

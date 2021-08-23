@@ -81,6 +81,12 @@ const messagesGroups: MessagesGroupModel[] = [
     },
   },
   {
+    _id: getObjectId('messagesGroups Категории'),
+    nameI18n: {
+      ru: 'Категории',
+    },
+  },
+  {
     _id: getObjectId('messagesGroups Товары'),
     nameI18n: {
       ru: 'Товары',

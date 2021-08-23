@@ -1,11 +1,4 @@
-import {
-  DEFAULT_LOCALE,
-  GENDER_HE,
-  GENDER_IT,
-  GENDER_SHE,
-  ROUTE_CMS,
-  SECONDARY_LOCALE,
-} from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_IT, GENDER_SHE, ROUTE_CMS } from 'config/common';
 
 describe('Options', () => {
   beforeEach(() => {
@@ -26,16 +19,8 @@ describe('Options', () => {
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(optionName);
     cy.getByCy(`option-gender`).select(GENDER_IT);
     cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LOCALE}`).type(optionName);
-    cy.getByCy(`variant-${GENDER_SHE}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_SHE}-${SECONDARY_LOCALE}`).type(optionName);
-
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LOCALE}`).type(optionName);
-    cy.getByCy(`variant-${GENDER_HE}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_HE}-${SECONDARY_LOCALE}`).type(optionName);
-
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LOCALE}`).type(optionName);
-    cy.getByCy(`variant-${GENDER_IT}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_IT}-${SECONDARY_LOCALE}`).type(optionName);
 
     cy.getByCy(`option-submit`).click();
     cy.wait(1500);
@@ -47,16 +32,8 @@ describe('Options', () => {
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(childOptionName);
     cy.getByCy(`option-gender`).select(GENDER_IT);
     cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LOCALE}`).type(childOptionName);
-    cy.getByCy(`variant-${GENDER_SHE}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_SHE}-${SECONDARY_LOCALE}`).type(childOptionName);
-
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LOCALE}`).type(childOptionName);
-    cy.getByCy(`variant-${GENDER_HE}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_HE}-${SECONDARY_LOCALE}`).type(childOptionName);
-
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LOCALE}`).type(childOptionName);
-    cy.getByCy(`variant-${GENDER_IT}-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`variant-${GENDER_IT}-${SECONDARY_LOCALE}`).type(childOptionName);
 
     cy.getByCy(`option-submit`).click();
     cy.wait(1500);

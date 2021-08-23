@@ -26,7 +26,7 @@ import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppConte
 import AppSubNav from 'layout/AppSubNav';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getOptionsTree } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -401,8 +401,11 @@ export const getServerSideProps = async (
 
   const optionsGroup: OptionsGroupInterface = {
     ...optionsGroupResult,
-    options: getOptionsTree({ options: optionsGroupResult.options }),
     name: getFieldStringLocale(optionsGroupResult.nameI18n, props.sessionLocale),
+    options: getTreeFromList<OptionInterface>({
+      list: optionsGroupResult.options,
+      childrenFieldName: 'options',
+    }),
     variantName: getConstantTranslation(
       `selectsOptions.optionsGroupVariant.${optionsGroupResult.variant}.${props.sessionLocale}`,
     ),

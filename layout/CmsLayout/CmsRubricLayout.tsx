@@ -27,6 +27,11 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, breadcrum
         exact: true,
       },
       {
+        name: 'Категории',
+        testId: 'categories',
+        path: `${ROUTE_CMS}/rubrics/${rubric._id}/categories`,
+      },
+      {
         name: 'Детали',
         testId: 'details',
         path: `${ROUTE_CMS}/rubrics/${rubric._id}`,

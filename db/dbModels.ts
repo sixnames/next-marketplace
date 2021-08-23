@@ -612,6 +612,8 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   attributeId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categoryId?: ObjectIdModel | null;
+  categorySlug?: string | null;
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   showInProductAttributes: boolean;
@@ -636,9 +638,23 @@ export interface RubricModel extends CountersModel {
   catalogueTitle: RubricCatalogueTitleModel;
   slug: string;
   active: boolean;
-  attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+
+export interface CategoryModel extends CountersModel {
+  _id: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  variants: OptionVariantsModel;
+  gender?: GenderModel | null;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  parentId?: ObjectIdModel | null;
+  icon?: string | null;
+  image?: string | null;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {
@@ -774,6 +790,7 @@ export type ProductPayloadModel = PayloadType<ProductModel>;
 export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
+export type CategoryPayloadModel = PayloadType<CategoryModel>;
 export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
 export type UserPayloadModel = PayloadType<UserModel>;

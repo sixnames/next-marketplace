@@ -9,6 +9,7 @@ import {
   CartModel,
   CartProductModel,
   CatalogueBreadcrumbModel,
+  CategoryModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -16,7 +17,6 @@ import {
   CoordinatesModel,
   FormattedPhoneModel,
   ManufacturerModel,
-  MessageModel,
   MetricModel,
   NavItemModel,
   NotSyncedProductModel,
@@ -42,7 +42,6 @@ import {
   RoleRuleModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
-  RubricCatalogueTitleModel,
   RubricModel,
   RubricOptionModel,
   RubricVariantModel,
@@ -135,10 +134,6 @@ export interface CompanyInterface extends CompanyModel {
 export interface MessageBaseInterface {
   slug: MessageSlug;
   messageI18n: TranslationModel;
-}
-
-export interface MessageInterface extends MessageModel {
-  message: string | null;
 }
 
 export interface MetricInterface extends MetricModel {
@@ -244,6 +239,7 @@ export interface ProductInterface extends ProductModel {
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
+  categories?: CategoryInterface[] | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -277,12 +273,7 @@ export interface RubricAttributeInterface extends RubricAttributeModel, Attribut
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;
   totalOptionsCount?: number | null;
-}
-
-export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {
-  defaultTitle?: string | null;
-  prefix?: string | null;
-  keyword?: string | null;
+  category?: CategoryInterface | null;
 }
 
 export interface RubricAttributesGroupInterface extends RubricAttributesGroupModel {
@@ -298,6 +289,18 @@ export interface RubricInterface extends RubricModel {
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
   attributesGroups?: RubricAttributesGroupInterface[] | null;
+  categories?: CategoryInterface[] | null;
+}
+
+export interface CategoryInterface extends CategoryModel {
+  name?: string | null;
+  attributes?: RubricAttributeInterface[] | null;
+  activeProductsCount?: number | null;
+  productsCount?: number | null;
+  variant?: RubricVariantInterface | null;
+  attributesGroups?: RubricAttributesGroupInterface[] | null;
+  rubric?: RubricInterface | null;
+  categories?: CategoryInterface[] | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {
@@ -313,6 +316,7 @@ export interface ShopProductInterface extends ShopProductModel {
   iconFeatures?: ProductAttributeInterface[];
   ratingFeatures?: ProductAttributeInterface[];
   orders?: OrderInterface[];
+  categories?: CategoryInterface[] | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -403,16 +407,6 @@ export interface CatalogueFilterAttributeInterface {
   totalOptionsCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
-}
-
-export interface ProductCardPricesAggregationInterface {
-  _id: ObjectIdModel;
-  minPrice: number;
-  maxPrice: number;
-}
-
-export interface ProductShopsCountAggregationInterface {
-  shopsCount: number;
 }
 
 export interface OrderStatusInterface extends OrderStatusModel {

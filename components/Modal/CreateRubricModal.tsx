@@ -22,7 +22,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
 
   return (
     <ModalFrame testId={'create-rubric-modal'}>
-      <ModalTitle>Добавление рубрики</ModalTitle>
+      <ModalTitle>Создание рубрики</ModalTitle>
 
       <Formik<CreateRubricInput>
         validationSchema={validationSchema}

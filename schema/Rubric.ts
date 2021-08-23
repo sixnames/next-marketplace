@@ -25,6 +25,8 @@ export const Rubric = objectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.string('slug');
+    t.string('icon');
+    t.string('image');
     t.nonNull.boolean('active');
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');

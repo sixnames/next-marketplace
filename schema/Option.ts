@@ -3,7 +3,7 @@ import { COL_OPTIONS } from 'db/collectionNames';
 import { OptionAlphabetListModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
-import { getAlphabetList, getOptionsTree } from 'lib/optionsUtils';
+import { getAlphabetList, getTreeFromList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 
@@ -106,7 +106,11 @@ export const OptionQueries = extendType({
           ])
           .toArray();
 
-        const optionsTree = getOptionsTree({ options, parentId });
+        const optionsTree = getTreeFromList<OptionInterface>({
+          list: options,
+          parentId,
+          childrenFieldName: 'options',
+        });
 
         return getAlphabetList<OptionModel>({
           entityList: optionsTree,

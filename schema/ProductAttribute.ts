@@ -784,8 +784,6 @@ export const ProductAttributeMutations = extendType({
               },
             };
 
-            console.log(JSON.stringify(productUpdater, null, 2));
-
             const updatedProduct = await productsCollection.findOneAndUpdate(
               {
                 _id: productId,

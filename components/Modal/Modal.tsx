@@ -40,6 +40,7 @@ import {
   ORDER_STATUS_MODAL,
   SUPPLIER_OPTIONS_MODAL,
   ADD_ASSETS_MODAL,
+  CREATE_CATEGORY_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -58,6 +59,7 @@ const AttributesGroupModal = dynamic(() => import('components/Modal/AttributesGr
 const RubricVariantModal = dynamic(() => import('components/Modal/RubricVariantModal'));
 const OptionInGroupModal = dynamic(() => import('components/Modal/OptionInGroupModal'));
 const CreateRubricModal = dynamic(() => import('components/Modal/CreateRubricModal'));
+const CreateCategoryModal = dynamic(() => import('components/Modal/CreateCategoryModal'));
 const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
 const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal'));
 const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal'));
@@ -115,6 +117,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === RUBRIC_VARIANT_MODAL && <RubricVariantModal {...modalProps} />}
 
           {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
+
+          {modalType === CREATE_CATEGORY_MODAL && <CreateCategoryModal {...modalProps} />}
 
           {modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
             <AddAttributesGroupToRubricModal {...modalProps} />

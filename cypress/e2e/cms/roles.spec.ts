@@ -53,7 +53,7 @@ describe('User roles', () => {
     cy.getByCy('cms-CMS-checkbox').check();
     cy.wait(1500);
     cy.getByCy('cms-CMS-checkbox').should('be.checked');
-    cy.getByCy('sign-out').click();
+    cy.signOut();
     cy.wait(1500);
 
     // Auth as content manager
@@ -80,7 +80,7 @@ describe('User roles', () => {
     cy.shouldError();
 
     // Add permission for content manager to create attributes group
-    cy.getByCy('sign-out').click();
+    cy.signOut();
     cy.wait(1500);
     cy.getByCy(`header-sign-in-link`).click();
     cy.wait(1500);
@@ -97,7 +97,7 @@ describe('User roles', () => {
     cy.getByCy('Создание группы атрибутов-checkbox').check();
     cy.wait(1500);
     cy.getByCy('Создание группы атрибутов-checkbox').should('be.checked');
-    cy.getByCy('sign-out').click();
+    cy.signOut();
     cy.wait(1500);
 
     // Auth as content manager

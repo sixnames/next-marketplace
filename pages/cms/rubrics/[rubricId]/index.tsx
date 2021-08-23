@@ -146,7 +146,6 @@ export const getServerSideProps = async (
           attributes: false,
           priorities: false,
           views: false,
-          attributesGroupsIds: false,
         },
       },
     ])

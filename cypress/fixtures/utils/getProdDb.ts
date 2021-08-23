@@ -3,6 +3,7 @@ import {
   BrandCollectionModel,
   BrandModel,
   CartModel,
+  CategoryModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -30,6 +31,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CARTS,
+  COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
@@ -205,15 +207,31 @@ export async function updateIndexes(db: Db) {
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   await rubricsCollection.createIndex({ slug: 1 }, { unique: true });
 
+  // Categories
+  await createCollectionIfNotExist(COL_CATEGORIES);
+  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  await categoriesCollection.createIndex({ slug: 1 }, { unique: true });
+  await categoriesCollection.createIndex({ rubricId: 1 });
+  await categoriesCollection.createIndex({ rubricId: 1, parentId: 1 });
+
   // Rubric attributes
   await createCollectionIfNotExist(COL_RUBRIC_ATTRIBUTES);
   const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-  await rubricAttributesCollection.createIndex({ rubricId: 1, showInCatalogueFilter: 1 });
   await rubricAttributesCollection.createIndex({ attributeId: 1 });
+  await rubricAttributesCollection.createIndex({ rubricId: 1, showInCatalogueFilter: 1 });
+  await rubricAttributesCollection.createIndex({
+    rubricId: 1,
+    categoryId: 1,
+    showInCatalogueFilter: 1,
+  });
   await rubricAttributesCollection.createIndex({
     rubricId: 1,
     showInCatalogueNav: 1,
-    showInCatalogueFilter: 1,
+  });
+  await rubricAttributesCollection.createIndex({
+    rubricId: 1,
+    categoryId: 1,
+    showInCatalogueNav: 1,
   });
 
   // Configs

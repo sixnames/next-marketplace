@@ -93,8 +93,6 @@ export const CREATE_RUBRIC_MUTATION = gql`
       message
     }
   }
-
-  ${rubricInListFragment}
 `;
 
 export const UPDATE_RUBRIC = gql`
@@ -104,8 +102,6 @@ export const UPDATE_RUBRIC = gql`
       message
     }
   }
-
-  ${rubricInListFragment}
 `;
 
 export const DELETE_RUBRIC = gql`
@@ -206,14 +202,6 @@ export const rubricAttributeFragment = gql`
   }
 `;
 
-export const rubricAttributesGroupFragment = gql`
-  fragment RubricAttributesGroup on RubricAttributesGroup {
-    _id
-    name
-  }
-  ${rubricAttributeFragment}
-`;
-
 export const RUBRIC_ATTRIBUTES_QUERY = gql`
   query GetRubricAttributes($rubricId: ObjectId!) {
     getRubric(_id: $rubricId) {
@@ -222,5 +210,4 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
       slug
     }
   }
-  ${rubricAttributesGroupFragment}
 `;

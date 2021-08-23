@@ -156,6 +156,12 @@ Cypress.Commands.add(
   },
 );
 
+Cypress.Commands.add('signOut', (redirect = '/') => {
+  cy.visit('/api/auth/signout');
+  cy.get('[type="submit"]').click();
+  cy.visit('/');
+});
+
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {
   const catalogueRoute = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
   cy.visit(catalogueRoute);

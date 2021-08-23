@@ -1,5 +1,5 @@
 import { getNextItemId } from 'lib/itemIdUtils';
-import { deleteOptionsTree } from 'lib/optionsUtils';
+import { deleteDocumentsTree } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -780,7 +780,10 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Update options group options list
-          const removedOptionResult = await deleteOptionsTree(optionId);
+          const removedOptionResult = await deleteDocumentsTree({
+            _id: optionId,
+            collectionName: COL_OPTIONS,
+          });
           if (!removedOptionResult) {
             return {
               success: false,

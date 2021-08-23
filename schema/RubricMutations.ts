@@ -187,7 +187,6 @@ export const RubricMutations = extendType({
             ...input,
             slug,
             active: true,
-            attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdRubric = createdRubricResult.ops[0];
@@ -326,6 +325,8 @@ export const RubricMutations = extendType({
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -374,6 +375,19 @@ export const RubricMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete rubric attributes
+            const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
+              categoryId: rubric._id,
+            });
+            if (!removedRubricAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.delete.error'),
               };
               await session.abortTransaction();
               return;
@@ -517,33 +531,10 @@ export const RubricMutations = extendType({
               return;
             }
 
-            // Update rubric
-            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-              {
-                _id: rubricId,
-              },
-              {
-                $push: {
-                  attributesGroupsIds: attributesGroup._id,
-                },
-              },
-              { returnDocument: 'after' },
-            );
-
-            const updatedRubric = updatedRubricResult.value;
-            if (!updatedRubricResult.ok || !updatedRubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.addAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('rubrics.addAttributesGroup.success'),
-              payload: updatedRubric,
+              payload: rubric,
             };
           });
 
@@ -914,34 +905,10 @@ export const RubricMutations = extendType({
               return;
             }
 
-            // Delete attributes group from rubric
-            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-              {
-                _id: rubricId,
-              },
-              {
-                $pull: {
-                  attributesGroupsIds: attributesGroupId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedRubric = updatedRubricResult.value;
-            if (!updatedRubricResult.ok || !updatedRubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-              payload: updatedRubric,
+              payload: rubric,
             };
           });
 

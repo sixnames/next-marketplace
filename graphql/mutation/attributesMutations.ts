@@ -71,3 +71,21 @@ export const DELETE_ATTRIBUTES_GROUP_FROM_RUBRIC = gql`
     }
   }
 `;
+
+export const ADD_ATTRIBUTES_GROUP_TO_CATEGORY = gql`
+  mutation AddAttributesGroupToCategory($input: AddAttributesGroupToCategoryInput!) {
+    addAttributesGroupToCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_ATTRIBUTES_GROUP_FROM_CATEGORY = gql`
+  mutation DeleteAttributesGroupFromCategory($input: DeleteAttributesGroupFromCategoryInput!) {
+    deleteAttributesGroupFromCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;

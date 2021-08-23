@@ -36,6 +36,7 @@ declare namespace Cypress {
     closeNotification(): void;
     attachFile(path: string, options?: AttachFileOptionsInterface): Chainable<Element>;
     testAuth(redirect?: string, email?: string, password?: string): Chainable<Element>;
+    signOut(redirect?: string): Chainable<Element>;
     makeAnOrder(props: MakeAnOrderInterface): Chainable<Element>;
   }
 }

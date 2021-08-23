@@ -121,6 +121,11 @@ export type RoleRuleSlugType =
   | 'updateRubric' // done
   | 'deleteRubric' // done
 
+  // Category
+  | 'createCategory' // done
+  | 'updateCategory' // done
+  | 'deleteCategory' // done
+
   // RubricVariant
   | 'createRubricVariant' // done
   | 'updateRubricVariant' // done
@@ -770,6 +775,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление рубрики',
+    },
+  },
+
+  // Category
+  {
+    allow: false,
+    slug: 'createCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание категории',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление категории',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление категории',
     },
   },
 

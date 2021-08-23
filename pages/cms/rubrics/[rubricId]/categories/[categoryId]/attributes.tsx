@@ -22,6 +22,7 @@ import {
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
 } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricAttributeInterface } from 'db/uiInterfaces';
 import {
@@ -44,10 +45,12 @@ import * as React from 'react';
 
 interface CategoryAttributesConsumerInterface {
   category: CategoryInterface;
+  excludedAttributesGroupsIds: ObjectIdModel[];
 }
 
 const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> = ({
   category,
+  excludedAttributesGroupsIds,
 }) => {
   const { locale } = useLocaleContext();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
@@ -185,6 +188,11 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
         );
       },
     },
+    {
+      accessor: 'category.name',
+      headTitle: 'Категория',
+      render: ({ cellData }) => cellData || null,
+    },
   ];
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -275,9 +283,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 props: {
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${category._id}`,
-                  excludedIds: (category.attributesGroups || []).map(
-                    (attributesGroup) => `${attributesGroup._id}`,
-                  ),
+                  excludedIds: excludedAttributesGroupsIds.map((_id) => `${_id}`),
                   confirm: (values) => {
                     showLoading();
                     return addAttributesGroupToCategoryMutation({
@@ -308,10 +314,14 @@ interface CategoryAttributesPageInterface
 const CategoryAttributesPage: NextPage<CategoryAttributesPageInterface> = ({
   pageUrls,
   category,
+  excludedAttributesGroupsIds,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CategoryAttributesConsumer category={category} />
+      <CategoryAttributesConsumer
+        category={category}
+        excludedAttributesGroupsIds={excludedAttributesGroupsIds}
+      />
     </CmsLayout>
   );
 };
@@ -322,6 +332,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const rubricAttributesCollection = db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
@@ -370,13 +381,13 @@ export const getServerSideProps = async (
           from: COL_RUBRIC_ATTRIBUTES,
           as: 'attributesGroups',
           let: {
-            categoryId: '$_id',
+            parentTreeIds: '$parentTreeIds',
           },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$$categoryId', '$categoryId'] }],
+                  $in: ['$categoryId', '$$parentTreeIds'],
                 },
               },
             },
@@ -384,6 +395,26 @@ export const getServerSideProps = async (
               $sort: {
                 [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
                 _id: SORT_DESC,
+              },
+            },
+
+            // get category
+            {
+              $lookup: {
+                from: COL_CATEGORIES,
+                as: 'category',
+                let: {
+                  categoryId: '$categoryId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$_id', '$$categoryId'],
+                      },
+                    },
+                  },
+                ],
               },
             },
 
@@ -417,6 +448,9 @@ export const getServerSideProps = async (
                 attributesGroup: {
                   $arrayElemAt: ['$attributesGroup', 0],
                 },
+                category: {
+                  $arrayElemAt: ['$category', 0],
+                },
               },
             },
             {
@@ -447,6 +481,39 @@ export const getServerSideProps = async (
     };
   }
 
+  // get excluded attributes groups ids
+  const excludedAttributesGroupsIds: ObjectIdModel[] = (initialCategory.attributesGroups || []).map(
+    ({ _id }) => {
+      return _id;
+    },
+  );
+  const siblingsQuery = initialCategory.parentId
+    ? {
+        _id: { $ne: initialCategory._id },
+        parentId: initialCategory.parentId,
+      }
+    : {
+        _id: { $ne: initialCategory._id },
+        parentId: null,
+      };
+
+  const siblings = await categoriesCollection.find(siblingsQuery).toArray();
+  if (siblings.length > 0) {
+    const siblingsIds = siblings.map(({ _id }) => _id);
+    const siblingsRubricAttributes = await rubricAttributesCollection
+      .find({
+        categoryId: {
+          $in: siblingsIds,
+        },
+      })
+      .toArray();
+    siblingsRubricAttributes.forEach(({ attributesGroupId }) => {
+      if (attributesGroupId) {
+        excludedAttributesGroupsIds.push(attributesGroupId);
+      }
+    });
+  }
+
   const { sessionLocale } = props;
   const category: CategoryInterface = {
     ...initialCategory,
@@ -466,6 +533,12 @@ export const getServerSideProps = async (
           return {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
+            category: attribute.category
+              ? {
+                  ...attribute.category,
+                  name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
+                }
+              : null,
           };
         }),
       };
@@ -476,6 +549,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       category: castDbData(category),
+      excludedAttributesGroupsIds: castDbData(excludedAttributesGroupsIds),
     },
   };
 };

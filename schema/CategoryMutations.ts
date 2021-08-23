@@ -1,5 +1,6 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { castAttributeForRubric, deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -196,9 +197,10 @@ export const CategoryMutations = extendType({
 
           // Create category
           const slug = await getNextItemId(COL_CATEGORIES);
+          const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
             ...input,
-            parentTreeIds,
+            parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             rubricSlug: rubric.slug,
             ...DEFAULT_COUNTERS_OBJECT,

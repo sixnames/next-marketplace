@@ -16,7 +16,12 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
+  COL_RUBRIC_ATTRIBUTES,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
@@ -177,6 +182,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           />
         );
       },
+    },
+    {
+      accessor: 'category.name',
+      headTitle: 'Категория',
+      render: ({ cellData }) => cellData || null,
     },
   ];
 
@@ -344,6 +354,26 @@ export const getServerSideProps = async (
               },
             },
 
+            // get category
+            {
+              $lookup: {
+                from: COL_CATEGORIES,
+                as: 'category',
+                let: {
+                  categoryId: '$categoryId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$_id', '$$categoryId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+
             // get attributes group
             {
               $lookup: {
@@ -373,6 +403,9 @@ export const getServerSideProps = async (
               $addFields: {
                 attributesGroup: {
                   $arrayElemAt: ['$attributesGroup', 0],
+                },
+                category: {
+                  $arrayElemAt: ['$category', 0],
                 },
               },
             },
@@ -417,6 +450,12 @@ export const getServerSideProps = async (
           return {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
+            category: attribute.category
+              ? {
+                  ...attribute.category,
+                  name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
+                }
+              : null,
           };
         }),
       };

@@ -273,6 +273,7 @@ export interface RubricAttributeInterface extends RubricAttributeModel, Attribut
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;
   totalOptionsCount?: number | null;
+  category?: CategoryInterface | null;
 }
 
 export interface RubricAttributesGroupInterface extends RubricAttributesGroupModel {

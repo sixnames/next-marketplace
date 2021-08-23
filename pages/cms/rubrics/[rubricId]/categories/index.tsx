@@ -67,7 +67,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 <Icon name={category.icon} className='w-6 h-6' />
               </div>
             ) : null}
-            <div className='font-medium' data-cy={`option-${name}`}>
+            <div className='font-medium' data-cy={`category-${name}`}>
               {name}
             </div>
             <div className='cms-option__controls ml-4'>
@@ -163,7 +163,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-rubric-product'}
+              testId={'create-category'}
               size={'small'}
               onClick={() => {
                 showModal<CreateCategoryModalInterface>({

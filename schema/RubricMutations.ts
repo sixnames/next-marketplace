@@ -325,6 +325,8 @@ export const RubricMutations = extendType({
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const rubricAttributesCollection =
+          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -373,6 +375,19 @@ export const RubricMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Delete rubric attributes
+            const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
+              categoryId: rubric._id,
+            });
+            if (!removedRubricAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.delete.error'),
               };
               await session.abortTransaction();
               return;

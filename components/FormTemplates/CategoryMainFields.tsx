@@ -38,14 +38,14 @@ const CategoryMainFields: React.FC = () => {
         name={'gender'}
         firstOption
         options={getGenderOptions}
-        testId={`option-gender`}
+        testId={`gender`}
         label={'Род названия'}
       />
 
       <FormikIconSelect
         label={'Иконка'}
         name={'icon'}
-        testId={'option-icon'}
+        testId={'icon'}
         firstOption
         showInlineError
       />

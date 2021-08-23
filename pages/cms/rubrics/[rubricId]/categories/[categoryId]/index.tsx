@@ -88,7 +88,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
                 <CategoryMainFields />
 
                 <FixedButtons>
-                  <Button type={'submit'} testId={'rubric-submit'}>
+                  <Button type={'submit'} testId={'category-submit'}>
                     Сохранить
                   </Button>
                 </FixedButtons>

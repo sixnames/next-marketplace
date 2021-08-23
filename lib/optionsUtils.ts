@@ -244,3 +244,27 @@ export async function deleteDocumentsTree({
 
   return true;
 }
+
+interface GetParentTreeIdsInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+  acc: ObjectIdModel[];
+}
+
+export async function getParentTreeIds({
+  _id,
+  collectionName,
+  acc,
+}: GetParentTreeIdsInterface): Promise<ObjectIdModel[]> {
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const parent = await collection.findOne({ _id });
+
+  acc.push(_id);
+
+  if (!parent || !parent.parentId) {
+    return acc;
+  }
+
+  return getParentTreeIds({ _id: parent.parentId, collectionName, acc });
+}

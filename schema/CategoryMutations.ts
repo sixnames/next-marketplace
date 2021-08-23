@@ -1,5 +1,5 @@
 import { getNextItemId } from 'lib/itemIdUtils';
-import { castAttributeForRubric, deleteDocumentsTree } from 'lib/optionsUtils';
+import { castAttributeForRubric, deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -11,6 +11,7 @@ import {
   CategoryPayloadModel,
   ShopProductModel,
   RubricModel,
+  ObjectIdModel,
 } from 'db/dbModels';
 import {
   getOperationPermission,
@@ -182,10 +183,22 @@ export const CategoryMutations = extendType({
             };
           }
 
+          // Get parent tree ids
+          let parentTreeIds: ObjectIdModel[] = [];
+
+          if (input.parentId) {
+            parentTreeIds = await getParentTreeIds({
+              _id: input.parentId,
+              collectionName: COL_CATEGORIES,
+              acc: [],
+            });
+          }
+
           // Create category
           const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryResult = await categoriesCollection.insertOne({
             ...input,
+            parentTreeIds,
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             rubricSlug: rubric.slug,
             ...DEFAULT_COUNTERS_OBJECT,

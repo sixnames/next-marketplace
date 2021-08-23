@@ -346,20 +346,15 @@ export type CatalogueSearchTopItemsInput = {
 export type Category = {
   __typename?: 'Category';
   _id: Scalars['ObjectId'];
-  nameI18n: Scalars['JSONObject'];
-  descriptionI18n: Scalars['JSONObject'];
-  shortDescriptionI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
+  nameI18n: Scalars['JSONObject'];
   icon?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
-  active: Scalars['Boolean'];
-  variantId: Scalars['ObjectId'];
   rubricId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
   views: Scalars['JSONObject'];
-  capitalise?: Maybe<Scalars['Boolean']>;
   priorities: Scalars['JSONObject'];
-  catalogueTitle: RubricCatalogueTitle;
+  variants: Scalars['JSONObject'];
 };
 
 export type CategoryPayload = Payload & {
@@ -544,12 +539,10 @@ export type CreateBrandInput = {
 export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
   parentId?: Maybe<Scalars['ObjectId']>;
-  capitalise?: Maybe<Scalars['Boolean']>;
-  descriptionI18n: Scalars['JSONObject'];
-  shortDescriptionI18n: Scalars['JSONObject'];
-  variantId: Scalars['ObjectId'];
   rubricId: Scalars['ObjectId'];
-  catalogueTitle: RubricCatalogueTitleInput;
+  icon?: Maybe<Scalars['String']>;
+  variants: Scalars['JSONObject'];
+  gender?: Maybe<Gender>;
 };
 
 export type CreateCompanyInput = {
@@ -2904,15 +2897,12 @@ export type UpdateBrandInput = {
 };
 
 export type UpdateCategoryInput = {
-  rubricId: Scalars['ObjectId'];
   categoryId: Scalars['ObjectId'];
-  capitalise?: Maybe<Scalars['Boolean']>;
   nameI18n: Scalars['JSONObject'];
-  descriptionI18n: Scalars['JSONObject'];
-  shortDescriptionI18n: Scalars['JSONObject'];
-  variantId: Scalars['ObjectId'];
-  active: Scalars['Boolean'];
-  catalogueTitle: RubricCatalogueTitleInput;
+  rubricId: Scalars['ObjectId'];
+  icon?: Maybe<Scalars['String']>;
+  variants: Scalars['JSONObject'];
+  gender?: Maybe<Gender>;
 };
 
 export type UpdateCityInCountryInput = {

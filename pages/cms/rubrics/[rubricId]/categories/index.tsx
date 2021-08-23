@@ -3,14 +3,14 @@ import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
-import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
+import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
-import { useCreateCategoryMutation, useDeleteCategoryMutation } from 'generated/apolloComponents';
+import { useDeleteCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -37,11 +37,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
 
   const [deleteCategoryMutation] = useDeleteCategoryMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteCategory),
-    onError: onErrorCallback,
-  });
-
-  const [createCategoryMutation] = useCreateCategoryMutation({
-    onCompleted: (data) => onCompleteCallback(data.createCategory),
     onError: onErrorCallback,
   });
 
@@ -81,22 +76,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 justifyContent={'flex-end'}
                 createTitle={'Добавить дочернюю категорию'}
                 createHandler={() => {
-                  showModal<CreateRubricModalInterface>({
-                    variant: CREATE_RUBRIC_MODAL,
+                  showModal<CreateCategoryModalInterface>({
+                    variant: CREATE_CATEGORY_MODAL,
                     props: {
-                      isCategory: true,
-                      confirm: (values) => {
-                        showLoading();
-                        return createCategoryMutation({
-                          variables: {
-                            input: {
-                              ...values,
-                              parentId: category._id,
-                              rubricId: rubric._id,
-                            },
-                          },
-                        });
-                      },
+                      parentId: `${category._id}`,
+                      rubricId: `${rubric._id}`,
                     },
                   });
                 }}
@@ -139,7 +123,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [createCategoryMutation, deleteCategoryMutation, router, rubric._id, showLoading, showModal],
+    [deleteCategoryMutation, router, rubric._id, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -182,21 +166,10 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
               testId={'create-rubric-product'}
               size={'small'}
               onClick={() => {
-                showModal<CreateRubricModalInterface>({
-                  variant: CREATE_RUBRIC_MODAL,
+                showModal<CreateCategoryModalInterface>({
+                  variant: CREATE_CATEGORY_MODAL,
                   props: {
-                    isCategory: true,
-                    confirm: (values) => {
-                      showLoading();
-                      return createCategoryMutation({
-                        variables: {
-                          input: {
-                            ...values,
-                            rubricId: rubric._id,
-                          },
-                        },
-                      });
-                    },
+                    rubricId: `${rubric._id}`,
                   },
                 });
               }}

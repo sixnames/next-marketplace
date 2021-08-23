@@ -305,19 +305,14 @@ input CatalogueSearchTopItemsInput {
 
 type Category {
   _id: ObjectId!
-  active: Boolean!
-  capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitle!
-  descriptionI18n: JSONObject!
   icon: String
   image: String
   nameI18n: JSONObject!
   parentId: ObjectId
   priorities: JSONObject!
   rubricId: ObjectId!
-  shortDescriptionI18n: JSONObject!
   slug: String!
-  variantId: ObjectId!
+  variants: JSONObject!
   views: JSONObject!
 }
 
@@ -499,14 +494,12 @@ input CreateBrandInput {
 }
 
 input CreateCategoryInput {
-  capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitleInput!
-  descriptionI18n: JSONObject!
+  gender: Gender
+  icon: String
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
-  shortDescriptionI18n: JSONObject!
-  variantId: ObjectId!
+  variants: JSONObject!
 }
 
 input CreateCompanyInput {
@@ -2573,15 +2566,12 @@ input UpdateBrandInput {
 }
 
 input UpdateCategoryInput {
-  active: Boolean!
-  capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitleInput!
   categoryId: ObjectId!
-  descriptionI18n: JSONObject!
+  gender: Gender
+  icon: String
   nameI18n: JSONObject!
   rubricId: ObjectId!
-  shortDescriptionI18n: JSONObject!
-  variantId: ObjectId!
+  variants: JSONObject!
 }
 
 input UpdateCityInCountryInput {

@@ -1,13 +1,13 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import RubricMainFields from 'components/FormTemplates/RubricMainFields';
+import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
+import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -37,34 +37,15 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const {
-    _id = '',
-    active,
-    variantId,
-    descriptionI18n,
-    shortDescriptionI18n,
-    nameI18n,
-    catalogueTitle,
-    capitalise,
-    rubricId,
-    rubric,
-  } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, icon, variants } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
-    active,
     nameI18n,
-    descriptionI18n,
-    shortDescriptionI18n,
-    capitalise: capitalise || false,
-    catalogueTitle: {
-      defaultTitleI18n: catalogueTitle?.defaultTitleI18n,
-      prefixI18n: catalogueTitle?.prefixI18n,
-      keywordI18n: catalogueTitle?.keywordI18n,
-      gender: catalogueTitle?.gender as any,
-    },
-    variantId,
+    gender: gender ? (`${gender}` as Gender) : null,
+    icon,
+    variants,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -104,7 +85,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
           {() => {
             return (
               <Form>
-                <RubricMainFields />
+                <CategoryMainFields />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'rubric-submit'}>

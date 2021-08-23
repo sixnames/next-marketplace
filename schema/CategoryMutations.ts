@@ -1,3 +1,4 @@
+import { getNextItemId } from 'lib/itemIdUtils';
 import { castAttributeForRubric, deleteDocumentsTree } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -29,8 +30,7 @@ import {
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { CATEGORY_SLUG_PREFIX, DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
@@ -54,13 +54,11 @@ export const CreateCategoryInput = inputObjectType({
   definition(t) {
     t.nonNull.json('nameI18n');
     t.objectId('parentId');
-    t.boolean('capitalise');
-    t.nonNull.json('descriptionI18n');
-    t.nonNull.json('shortDescriptionI18n');
-    t.nonNull.objectId('variantId');
     t.nonNull.objectId('rubricId');
-    t.nonNull.field('catalogueTitle', {
-      type: 'RubricCatalogueTitleInput',
+    t.string('icon');
+    t.nonNull.json('variants');
+    t.field('gender', {
+      type: 'Gender',
     });
   },
 });
@@ -68,16 +66,13 @@ export const CreateCategoryInput = inputObjectType({
 export const UpdateCategoryInput = inputObjectType({
   name: 'UpdateCategoryInput',
   definition(t) {
-    t.nonNull.objectId('rubricId');
     t.nonNull.objectId('categoryId');
-    t.boolean('capitalise');
     t.nonNull.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
-    t.nonNull.json('shortDescriptionI18n');
-    t.nonNull.objectId('variantId');
-    t.nonNull.boolean('active');
-    t.nonNull.field('catalogueTitle', {
-      type: 'RubricCatalogueTitleInput',
+    t.nonNull.objectId('rubricId');
+    t.string('icon');
+    t.nonNull.json('variants');
+    t.field('gender', {
+      type: 'Gender',
     });
   },
 });
@@ -171,9 +166,14 @@ export const CategoryMutations = extendType({
             collectionName: COL_CATEGORIES,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
-            additionalQuery: {
-              rubricId: input.rubricId,
-            },
+            additionalQuery: input.parentId
+              ? {
+                  parentId: input.parentId,
+                  rubricId: input.rubricId,
+                }
+              : {
+                  rubricId: input.rubricId,
+                },
           });
           if (exist) {
             return {
@@ -183,12 +183,11 @@ export const CategoryMutations = extendType({
           }
 
           // Create category
-          const slug = generateDefaultLangSlug(input.nameI18n);
+          const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryResult = await categoriesCollection.insertOne({
             ...input,
-            slug,
+            slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             rubricSlug: rubric.slug,
-            active: true,
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdCategory = createdCategoryResult.ops[0];

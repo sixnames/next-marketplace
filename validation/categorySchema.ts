@@ -1,6 +1,6 @@
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { rubricCommonFieldsSchema, rubricIdSchema } from 'validation/rubricSchema';
-import { objectIdSchema } from 'validation/schemaTemplates';
+import { rubricIdSchema } from 'validation/rubricSchema';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { attributeIdSchema, attributesGroupIdSchema } from 'validation/attributesGroupSchema';
 
@@ -10,8 +10,11 @@ export const categoryIdSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const categoryCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
-    ...rubricCommonFieldsSchema(args),
     rubricId: rubricIdSchema(args),
+    nameI18n: requiredStringTranslationSchema({
+      ...args,
+      slug: 'validation.categories.name',
+    }),
   };
 };
 

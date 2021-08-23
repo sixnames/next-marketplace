@@ -1,129 +1,53 @@
-import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
-import { CategoryModel, GenderModel } from '../../../../db/dbModels';
+import { CATEGORY_SLUG_PREFIX, DEFAULT_COUNTERS_OBJECT } from '../../../../config/common';
+import { CategoryModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const categories: CategoryModel[] = [
   {
     _id: getObjectId('category Односолодовый'),
     rubricId: getObjectId('rubric Виски'),
-    slug: 'odnosolodovyy',
+    slug: `${CATEGORY_SLUG_PREFIX}1`,
     rubricSlug: 'vino',
     nameI18n: {
       ru: 'Односолодовый',
     },
-    descriptionI18n: {
-      ru: 'Односолодовый',
-    },
-    shortDescriptionI18n: {
-      ru: 'Односолодовый',
-    },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Односолодовый',
-      },
-      keywordI18n: {
-        ru: 'Односолодовый',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
-    },
-    active: true,
-    variantId: getObjectId('rubricVariant water'),
+    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
     _id: getObjectId('category Односолодовый A'),
     parentId: getObjectId('category Односолодовый'),
     rubricId: getObjectId('rubric Виски'),
-    slug: 'odnosolodovyy_a',
+    slug: `${CATEGORY_SLUG_PREFIX}2`,
     rubricSlug: 'vino',
     nameI18n: {
       ru: 'Односолодовый A',
     },
-    descriptionI18n: {
-      ru: 'Односолодовый A',
-    },
-    shortDescriptionI18n: {
-      ru: 'Односолодовый A',
-    },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Односолодовый A',
-      },
-      keywordI18n: {
-        ru: 'Односолодовый A',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
-    },
-    active: true,
-    variantId: getObjectId('rubricVariant water'),
+    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
-    _id: getObjectId('category Односолодовый AA'),
+    _id: getObjectId('category Односолодовый A-1'),
     parentId: getObjectId('category Односолодовый A'),
     rubricId: getObjectId('rubric Виски'),
-    slug: 'odnosolodovyy_aa',
+    slug: `${CATEGORY_SLUG_PREFIX}3`,
     rubricSlug: 'vino',
     nameI18n: {
-      ru: 'Односолодовый AA',
+      ru: 'Односолодовый A-1',
     },
-    descriptionI18n: {
-      ru: 'Односолодовый AA',
-    },
-    shortDescriptionI18n: {
-      ru: 'Односолодовый AA',
-    },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Односолодовый AA',
-      },
-      keywordI18n: {
-        ru: 'Односолодовый AA',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
-    },
-    active: true,
-    variantId: getObjectId('rubricVariant water'),
+    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
-    _id: getObjectId('category Односолодовый AB'),
+    _id: getObjectId('category Односолодовый A-2'),
     parentId: getObjectId('category Односолодовый A'),
     rubricId: getObjectId('rubric Виски'),
-    slug: 'odnosolodovyy_ab',
+    slug: `${CATEGORY_SLUG_PREFIX}4`,
     rubricSlug: 'vino',
     nameI18n: {
-      ru: 'Односолодовый AB',
+      ru: 'Односолодовый A-2',
     },
-    descriptionI18n: {
-      ru: 'Односолодовый AB',
-    },
-    shortDescriptionI18n: {
-      ru: 'Односолодовый AB',
-    },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Односолодовый AB',
-      },
-      keywordI18n: {
-        ru: 'Односолодовый AB',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
-    },
-    active: true,
-    variantId: getObjectId('rubricVariant water'),
+    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

@@ -17,7 +17,6 @@ import {
   CoordinatesModel,
   FormattedPhoneModel,
   ManufacturerModel,
-  MessageModel,
   MetricModel,
   NavItemModel,
   NotSyncedProductModel,
@@ -43,7 +42,6 @@ import {
   RoleRuleModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
-  RubricCatalogueTitleModel,
   RubricModel,
   RubricOptionModel,
   RubricVariantModel,
@@ -136,10 +134,6 @@ export interface CompanyInterface extends CompanyModel {
 export interface MessageBaseInterface {
   slug: MessageSlug;
   messageI18n: TranslationModel;
-}
-
-export interface MessageInterface extends MessageModel {
-  message: string | null;
 }
 
 export interface MetricInterface extends MetricModel {
@@ -281,12 +275,6 @@ export interface RubricAttributeInterface extends RubricAttributeModel, Attribut
   totalOptionsCount?: number | null;
 }
 
-export interface RubricCatalogueTitleInterface extends RubricCatalogueTitleModel {
-  defaultTitle?: string | null;
-  prefix?: string | null;
-  keyword?: string | null;
-}
-
 export interface RubricAttributesGroupInterface extends RubricAttributesGroupModel {
   attributes?: RubricAttributeInterface[] | null;
   name?: string | null;
@@ -418,16 +406,6 @@ export interface CatalogueFilterAttributeInterface {
   totalOptionsCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
-}
-
-export interface ProductCardPricesAggregationInterface {
-  _id: ObjectIdModel;
-  minPrice: number;
-  maxPrice: number;
-}
-
-export interface ProductShopsCountAggregationInterface {
-  shopsCount: number;
 }
 
 export interface OrderStatusInterface extends OrderStatusModel {

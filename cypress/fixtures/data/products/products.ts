@@ -3,6 +3,7 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_OPTION_SEPARATOR,
+  CATEGORY_SLUG_PREFIX,
   ID_COUNTER_DIGITS,
 } from '../../../../config/common';
 import { ObjectIdModel, OptionModel, ProductModel } from '../../../../db/dbModels';
@@ -249,6 +250,16 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     const brandCollection = currentBrandCollections[brandCollectionIndex];
 
     const isForCategory = rubric.nameI18n.ru === 'Виски';
+    if (isForCategory) {
+      const categoriesSlugs = [
+        `${CATEGORY_SLUG_PREFIX}1`,
+        `${CATEGORY_SLUG_PREFIX}2`,
+        `${CATEGORY_SLUG_PREFIX}3`,
+      ];
+      categoriesSlugs.forEach((categorySlug) => {
+        selectedOptionsSlugs.push(categorySlug);
+      });
+    }
 
     rubricProducts.push({
       _id: getObjectId(`${rubricSlug} ${itemId}`),
@@ -256,8 +267,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       itemId,
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
-      categoryIds: isForCategory ? [getObjectId('category Односолодовый A')] : null,
-      categorySlugs: isForCategory ? ['odnosolodovyy_a'] : null,
       barcode: [itemId, `${itemId}9999`],
       slug: generateSlug(name),
       originalName: name,

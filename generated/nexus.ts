@@ -268,14 +268,12 @@ export interface NexusGenInputs {
   };
   CreateCategoryInput: {
     // input type
-    capitalise?: boolean | null; // Boolean
-    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender?: NexusGenEnums['Gender'] | null; // Gender
+    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    variantId: NexusGenScalars['ObjectId']; // ObjectId!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
     // input type
@@ -628,15 +626,12 @@ export interface NexusGenInputs {
   };
   UpdateCategoryInput: {
     // input type
-    active: boolean; // Boolean!
-    capitalise?: boolean | null; // Boolean
-    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender?: NexusGenEnums['Gender'] | null; // Gender
+    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    variantId: NexusGenScalars['ObjectId']; // ObjectId!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateCityInCountryInput: {
     // input type
@@ -1263,19 +1258,14 @@ export interface NexusGenFieldTypes {
   Category: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    active: boolean; // Boolean!
-    capitalise: boolean | null; // Boolean
-    catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     icon: string | null; // String
     image: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
-    variantId: NexusGenScalars['ObjectId']; // ObjectId!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CategoryPayload: {
@@ -2421,19 +2411,14 @@ export interface NexusGenFieldTypeNames {
   Category: {
     // field return type name
     _id: 'ObjectId';
-    active: 'Boolean';
-    capitalise: 'Boolean';
-    catalogueTitle: 'RubricCatalogueTitle';
-    descriptionI18n: 'JSONObject';
     icon: 'String';
     image: 'String';
     nameI18n: 'JSONObject';
     parentId: 'ObjectId';
     priorities: 'JSONObject';
     rubricId: 'ObjectId';
-    shortDescriptionI18n: 'JSONObject';
     slug: 'String';
-    variantId: 'ObjectId';
+    variants: 'JSONObject';
     views: 'JSONObject';
   };
   CategoryPayload: {

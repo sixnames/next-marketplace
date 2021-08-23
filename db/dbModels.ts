@@ -503,8 +503,6 @@ export interface ProductModel extends BaseModel, TimestampModel {
   descriptionI18n: TranslationModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  categoryIds?: ObjectIdModel[] | null;
-  categorySlugs?: string[] | null;
   mainImage: string;
   supplierSlug?: string | null;
   brandSlug?: string | null;
@@ -646,10 +644,17 @@ export interface RubricModel extends CountersModel {
   image?: string;
 }
 
-export interface CategoryModel extends RubricModel {
+export interface CategoryModel extends CountersModel {
+  _id: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  variants: OptionVariantsModel;
+  gender?: GenderModel | null;
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;
+  icon?: string | null;
+  image?: string | null;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {
@@ -674,8 +679,6 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   companyId: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  categoryIds?: ObjectIdModel[] | null;
-  categorySlugs?: string[] | null;
   selectedOptionsSlugs: string[];
   mainImage: string;
   barcode?: string | null;

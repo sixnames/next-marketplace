@@ -1,6 +1,7 @@
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
+  CATEGORY_SLUG_PREFIX,
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
 import { RubricModel, RubricAttributeModel, ObjectIdModel } from '../../../../db/dbModels';
@@ -47,8 +48,8 @@ const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) =>
   if (rubric.nameI18n.ru === 'Виски') {
     rubricAttributes = getRubricAttributes({
       rubric,
-      categoryId: getObjectId('category Односолодовый A'),
-      categorySlug: 'odnosolodovyy_a',
+      categoryId: getObjectId('category Односолодовый A-1'),
+      categorySlug: `${CATEGORY_SLUG_PREFIX}3`,
     });
   } else {
     rubricAttributes = getRubricAttributes({ rubric });

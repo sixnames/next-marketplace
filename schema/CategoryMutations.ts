@@ -867,7 +867,7 @@ export const CategoryMutations = extendType({
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const categoryAttributesCollection =
+        const rubricAttributesCollection =
           db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
@@ -920,8 +920,9 @@ export const CategoryMutations = extendType({
             }
 
             // Delete category attributes
-            const removedCategoryAttributesResult = await categoryAttributesCollection.deleteMany({
+            const removedCategoryAttributesResult = await rubricAttributesCollection.deleteMany({
               attributesGroupId,
+              categoryId,
             });
             if (!removedCategoryAttributesResult.result.ok) {
               mutationPayload = {

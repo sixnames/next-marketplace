@@ -11,6 +11,7 @@ import {
   ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
+import { useUpdateProductCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
@@ -34,24 +35,39 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   categoriesTree,
   rubric,
 }) => {
-  const { showLoading } = useMutationCallbacks({
+  const { showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     reload: true,
+  });
+
+  const [updateProductCategoryMutation] = useUpdateProductCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateProductCategory),
+    onError: onErrorCallback,
   });
 
   const renderCategories = React.useCallback((category: ProductCategoryInterface) => {
     const { name, categories } = category;
+    const hasSelectedChildren = categories.some(({ selected }) => selected);
 
     return (
       <div>
         <div className='cms-option flex items-center'>
           <div className='mr-4'>
             <Checkbox
+              disabled={hasSelectedChildren}
               testId={`category-${category.name}`}
               checked={category.selected}
               value={category._id}
               name={`${category._id}`}
               onChange={() => {
                 showLoading();
+                updateProductCategoryMutation({
+                  variables: {
+                    input: {
+                      productId: product._id,
+                      categoryId: category._id,
+                    },
+                  },
+                }).catch(console.log);
               }}
             />
           </div>

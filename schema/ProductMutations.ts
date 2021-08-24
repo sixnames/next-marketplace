@@ -1,7 +1,9 @@
 import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { getParentTreeSlugs } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
+  CategoryModel,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardContentModel,
@@ -20,6 +22,7 @@ import {
 } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
+  COL_CATEGORIES,
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -127,6 +130,14 @@ export const UpdateProductCounterInput = inputObjectType({
   definition(t) {
     t.nonNull.list.nonNull.objectId('shopProductIds');
     t.string('companySlug', { default: DEFAULT_COMPANY_SLUG });
+  },
+});
+
+export const UpdateProductCategoryInput = inputObjectType({
+  name: 'UpdateProductCategoryInput',
+  definition(t) {
+    t.nonNull.objectId('productId');
+    t.nonNull.objectId('categoryId');
   },
 });
 
@@ -1501,6 +1512,129 @@ export const ProductMutations = extendType({
           };
         } finally {
           await session.endSession();
+        }
+      },
+    });
+
+    // Should update product category
+    t.nonNull.field('updateProductCategory', {
+      type: 'ProductPayload',
+      description: 'Should update product category',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductCategoryInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        try {
+          const { db } = await getDatabase();
+          const { getApiMessage } = await getRequestParams(context);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const { input } = args;
+          const { productId, categoryId } = input;
+
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateProduct',
+          });
+          if (!allow) {
+            return {
+              success: true,
+              message,
+            };
+          }
+
+          // Check product availability
+          const product = await productsCollection.findOne({ _id: productId });
+          if (!product) {
+            return {
+              success: true,
+              message: await getApiMessage(`products.update.notFound`),
+            };
+          }
+
+          // Check category availability
+          const category = await categoriesCollection.findOne({ _id: categoryId });
+          if (!category) {
+            return {
+              success: true,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+
+          // Get category siblings
+          let countSelectedSiblings = 0;
+          if (category.parentId) {
+            countSelectedSiblings = await categoriesCollection.countDocuments({
+              _id: {
+                $ne: categoryId,
+              },
+              parentId: category.parentId,
+              slug: {
+                $in: product.selectedOptionsSlugs,
+              },
+            });
+          }
+
+          // Toggle category in product
+          const selected = product.selectedOptionsSlugs.some((slug) => slug === category.slug);
+          const categoryParentTreeSlugs = await getParentTreeSlugs({
+            _id: category._id,
+            collectionName: COL_CATEGORIES,
+            acc: [],
+          });
+
+          let updater: Record<string, any> = {
+            $addToSet: {
+              selectedOptionsSlugs: {
+                $each: categoryParentTreeSlugs,
+              },
+            },
+          };
+          if (selected) {
+            if (countSelectedSiblings > 0) {
+              updater = {
+                $pull: {
+                  selectedOptionsSlugs: category.slug,
+                },
+              };
+            } else {
+              updater = {
+                $pullAll: {
+                  selectedOptionsSlugs: categoryParentTreeSlugs,
+                },
+              };
+            }
+          }
+
+          const updatedProductResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: productId,
+            },
+            updater,
+          );
+          const updatedProduct = updatedProductResult.value;
+          if (!updatedProductResult.ok || !updatedProduct) {
+            return {
+              success: true,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+          return {
+            success: true,
+            message: await getApiMessage(`products.update.success`),
+            payload: updatedProduct,
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
         }
       },
     });

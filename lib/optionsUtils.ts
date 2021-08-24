@@ -258,13 +258,41 @@ export async function getParentTreeIds({
 }: GetParentTreeIdsInterface): Promise<ObjectIdModel[]> {
   const { db } = await getDatabase();
   const collection = db.collection(collectionName);
-  const parent = await collection.findOne({ _id });
+  const document = await collection.findOne({ _id });
 
   acc.push(_id);
 
-  if (!parent || !parent.parentId) {
+  if (!document || !document.parentId) {
     return acc;
   }
 
-  return getParentTreeIds({ _id: parent.parentId, collectionName, acc });
+  return getParentTreeIds({ _id: document.parentId, collectionName, acc });
+}
+
+interface GetParentTreeSlugsInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+  acc: string[];
+}
+
+export async function getParentTreeSlugs({
+  _id,
+  collectionName,
+  acc,
+}: GetParentTreeSlugsInterface): Promise<string[]> {
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const document = await collection.findOne({ _id });
+
+  if (!document) {
+    return acc;
+  }
+
+  acc.push(document.slug);
+
+  if (!document.parentId) {
+    return acc;
+  }
+
+  return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
 }

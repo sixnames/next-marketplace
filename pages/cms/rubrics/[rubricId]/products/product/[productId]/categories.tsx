@@ -54,7 +54,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
           <div className='mr-4'>
             <Checkbox
               disabled={hasSelectedChildren}
-              testId={`category-${category.name}`}
+              testId={`${category.name}`}
               checked={category.selected}
               value={category._id}
               name={`${category._id}`}

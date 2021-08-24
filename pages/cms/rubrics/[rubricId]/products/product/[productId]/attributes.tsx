@@ -30,6 +30,8 @@ import {
   ProductAttributeInterface,
   ProductAttributesGroupASTInterface,
   ProductInterface,
+  RubricAttributeInterface,
+  RubricAttributesGroupASTInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
 import {
@@ -378,6 +380,8 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricAttributessCollection =
+    db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -440,38 +444,6 @@ export const getServerSideProps = async (
           ],
         },
       },
-      {
-        $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'rubricAttributesAST',
-          let: { rubricId: '$rubricId' },
-          pipeline: [
-            {
-              $match: {
-                showInProductAttributes: true,
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-              },
-            },
-            {
-              $sort: {
-                variant: SORT_DESC,
-                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                _id: SORT_DESC,
-              },
-            },
-            {
-              $group: {
-                _id: '$variant',
-                attributes: {
-                  $push: '$$ROOT',
-                },
-              },
-            },
-          ],
-        },
-      },
     ])
     .toArray();
   const product = productAggregation[0];
@@ -486,24 +458,91 @@ export const getServerSideProps = async (
     };
   }
 
+  // Get rubric and categories attributes
+  const rubricAttributesCommonPipeline = [
+    {
+      $sort: {
+        variant: SORT_DESC,
+        [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+        _id: SORT_DESC,
+      },
+    },
+    {
+      $group: {
+        _id: '$variant',
+        attributes: {
+          $push: '$$ROOT',
+        },
+      },
+    },
+  ];
+
+  const rubricAttributesAST = await rubricAttributessCollection
+    .aggregate<RubricAttributesGroupASTInterface>([
+      {
+        $match: {
+          rubricId: product.rubricId,
+          categoryId: null,
+        },
+      },
+      ...rubricAttributesCommonPipeline,
+    ])
+    .toArray();
+
+  const categoryAttributesAST = await rubricAttributessCollection
+    .aggregate<RubricAttributesGroupASTInterface>([
+      {
+        $match: {
+          rubricId: product.rubricId,
+          categorySlug: {
+            $in: product.selectedOptionsSlugs,
+          },
+        },
+      },
+      ...rubricAttributesCommonPipeline,
+    ])
+    .toArray();
+
   // Cast rubric attributes to product attributes
-  const { attributes, rubricAttributesAST, ...restProduct } = product;
+  const { attributes, ...restProduct } = product;
   let stringAttributesAST: ProductAttributesGroupASTInterface | null = null;
   let numberAttributesAST: ProductAttributesGroupASTInterface | null = null;
   let multipleSelectAttributesAST: ProductAttributesGroupASTInterface | null = null;
   let selectAttributesAST: ProductAttributesGroupASTInterface | null = null;
 
-  for await (const rubricAttributesASTGroup of rubricAttributesAST || []) {
+  const initialAttributesAST = [...rubricAttributesAST, ...categoryAttributesAST];
+  const allAttributesAST = initialAttributesAST.reduce(
+    (acc: RubricAttributesGroupASTInterface[], group) => {
+      const existingGroup = acc.find(({ _id }) => {
+        return _id === group._id;
+      });
+
+      if (existingGroup) {
+        return [
+          ...acc,
+          {
+            ...existingGroup,
+            attributes: [...existingGroup.attributes, ...group.attributes],
+          },
+        ];
+      }
+
+      return [...acc, group];
+    },
+    [],
+  );
+
+  for await (const rubricAttributesASTGroup of allAttributesAST) {
     const variant = rubricAttributesASTGroup._id;
     const astGroup: ProductAttributesGroupASTInterface = {
       _id: variant,
       attributes: [],
     };
 
-    for await (const rubricAttributeAST of rubricAttributesASTGroup.attributes) {
+    for await (const attributeAST of rubricAttributesASTGroup.attributes) {
       const productAttributes = attributes || [];
       const currentProductAttribute = productAttributes.find(({ attributeId }) => {
-        return attributeId.equals(rubricAttributeAST.attributeId);
+        return attributeId.equals(attributeAST.attributeId);
       });
       if (currentProductAttribute) {
         const readableValue = getAttributeReadableValue({
@@ -523,9 +562,9 @@ export const getServerSideProps = async (
       }
 
       const newProductAttribute: ProductAttributeInterface = {
-        ...rubricAttributeAST,
+        ...attributeAST,
         _id: new ObjectId(),
-        name: getFieldStringLocale(rubricAttributeAST.nameI18n, props.sessionLocale),
+        name: getFieldStringLocale(attributeAST.nameI18n, props.sessionLocale),
         productId: product._id,
         productSlug: product.slug,
         selectedOptionsIds: [],

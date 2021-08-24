@@ -3,6 +3,7 @@ import { getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_ATTRIBUTES,
+  COL_CATEGORIES,
   COL_CITIES,
   COL_CONFIGS,
   COL_COUNTRIES,
@@ -1082,6 +1083,62 @@ export const getCatalogueData = async ({
                   },
                 },
               ],
+              categories: [
+                {
+                  $unwind: {
+                    path: '$selectedOptionsSlugs',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    rubricId: { $first: '$rubricId' },
+                    selectedOptionsSlugs: {
+                      $addToSet: '$selectedOptionsSlugs',
+                    },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: COL_CATEGORIES,
+                    as: 'categories',
+                    let: {
+                      rubricId: '$rubricId',
+                      selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $and: [
+                            {
+                              $expr: {
+                                $eq: ['$rubricId', '$$rubricId'],
+                              },
+                            },
+                            {
+                              $expr: {
+                                $in: ['$slug', '$$selectedOptionsSlugs'],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $unwind: {
+                    path: '$categories',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $replaceRoot: {
+                    newRoot: '$categories',
+                  },
+                },
+              ],
               countAllDocs: [
                 {
                   $count: 'totalDocs',
@@ -1123,6 +1180,7 @@ export const getCatalogueData = async ({
           {
             $project: {
               docs: 1,
+              categories: 1,
               totalProducts: 1,
               prices: 1,
               rubric: 1,
@@ -1139,7 +1197,7 @@ export const getCatalogueData = async ({
     // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
     // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
-
+    console.log(shopProductsAggregationResult.categories);
     if (!shopProductsAggregationResult) {
       return null;
     }

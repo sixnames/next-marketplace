@@ -38,6 +38,10 @@ export const RubricVariant = objectType({
     t.boolean('showSnippetButtonsOnHover');
     t.boolean('showCardButtonsBackground');
     t.boolean('showCardImagesSlider');
+    t.boolean('showCardBrands');
+    t.boolean('showCatalogueFilterBrands');
+    t.boolean('showCategoriesInFilter');
+    t.boolean('showCategoriesInNav');
 
     // numbers
     t.int('gridCatalogueColumns');
@@ -154,6 +158,8 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.boolean('showCardImagesSlider');
     t.boolean('showCardBrands');
     t.boolean('showCatalogueFilterBrands');
+    t.boolean('showCategoriesInFilter');
+    t.boolean('showCategoriesInNav');
 
     // numbers
     t.int('gridCatalogueColumns');

@@ -44,49 +44,52 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
     onError: onErrorCallback,
   });
 
-  const renderCategories = React.useCallback((category: ProductCategoryInterface) => {
-    const { name, categories } = category;
-    const hasSelectedChildren = categories.some(({ selected }) => selected);
+  const renderCategories = React.useCallback(
+    (category: ProductCategoryInterface) => {
+      const { name, categories } = category;
+      const hasSelectedChildren = categories.some(({ selected }) => selected);
 
-    return (
-      <div>
-        <div className='cms-option flex items-center'>
-          <div className='mr-4'>
-            <Checkbox
-              disabled={hasSelectedChildren}
-              testId={`${category.name}`}
-              checked={category.selected}
-              value={category._id}
-              name={`${category._id}`}
-              onChange={() => {
-                showLoading();
-                updateProductCategoryMutation({
-                  variables: {
-                    input: {
-                      productId: product._id,
-                      categoryId: category._id,
+      return (
+        <div>
+          <div className='cms-option flex items-center'>
+            <div className='mr-4'>
+              <Checkbox
+                disabled={hasSelectedChildren}
+                testId={`${category.name}`}
+                checked={category.selected}
+                value={category._id}
+                name={`${category._id}`}
+                onChange={() => {
+                  showLoading();
+                  updateProductCategoryMutation({
+                    variables: {
+                      input: {
+                        productId: product._id,
+                        categoryId: category._id,
+                      },
                     },
-                  },
-                }).catch(console.log);
-              }}
-            />
+                  }).catch(console.log);
+                }}
+              />
+            </div>
+            <div className='font-medium' data-cy={`category-${name}`}>
+              {name}
+            </div>
           </div>
-          <div className='font-medium' data-cy={`category-${name}`}>
-            {name}
-          </div>
+          {categories && categories.length > 0 ? (
+            <div className='ml-4'>
+              {categories.map((category) => (
+                <div className='mt-4' key={`${category._id}`}>
+                  {renderCategories(category)}
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
-        {categories && categories.length > 0 ? (
-          <div className='ml-4'>
-            {categories.map((category) => (
-              <div className='mt-4' key={`${category._id}`}>
-                {renderCategories(category)}
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </div>
-    );
-  }, []);
+      );
+    },
+    [product._id, showLoading, updateProductCategoryMutation],
+  );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Категории',

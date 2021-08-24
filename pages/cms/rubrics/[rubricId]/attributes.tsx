@@ -186,7 +186,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     {
       accessor: 'category.name',
       headTitle: 'Категория',
-      render: ({ cellData }) => cellData || null,
+      render: ({ cellData }) => cellData || 'На уровне рубрики',
     },
   ];
 

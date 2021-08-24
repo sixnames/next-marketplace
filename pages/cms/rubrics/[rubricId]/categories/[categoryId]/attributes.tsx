@@ -191,7 +191,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     {
       accessor: 'category.name',
       headTitle: 'Категория',
-      render: ({ cellData }) => cellData || null,
+      render: ({ cellData }) => cellData || 'На уровне рубрики',
     },
   ];
 
@@ -381,14 +381,31 @@ export const getServerSideProps = async (
           from: COL_RUBRIC_ATTRIBUTES,
           as: 'attributesGroups',
           let: {
+            categoryId: '$_id',
             parentTreeIds: '$parentTreeIds',
+            rubricId: '$rubricId',
           },
           pipeline: [
             {
               $match: {
-                $expr: {
-                  $in: ['$categoryId', '$$parentTreeIds'],
-                },
+                $or: [
+                  {
+                    $expr: {
+                      $in: ['$categoryId', '$$parentTreeIds'],
+                    },
+                  },
+                  {
+                    $expr: {
+                      $eq: ['$categoryId', '$$categoryId'],
+                    },
+                  },
+                  {
+                    categoryId: null,
+                    $expr: {
+                      $eq: ['$rubricId', '$$rubricId'],
+                    },
+                  },
+                ],
               },
             },
             {
@@ -487,17 +504,21 @@ export const getServerSideProps = async (
       return _id;
     },
   );
+
   const siblingsQuery = initialCategory.parentId
     ? {
         _id: { $ne: initialCategory._id },
         parentId: initialCategory.parentId,
+        rubricId: initialCategory.rubricId,
       }
     : {
         _id: { $ne: initialCategory._id },
         parentId: null,
+        rubricId: initialCategory.rubricId,
       };
 
   const siblings = await categoriesCollection.find(siblingsQuery).toArray();
+
   if (siblings.length > 0) {
     const siblingsIds = siblings.map(({ _id }) => _id);
     const siblingsRubricAttributes = await rubricAttributesCollection
@@ -507,6 +528,19 @@ export const getServerSideProps = async (
         },
       })
       .toArray();
+    const rubricAttributes = await rubricAttributesCollection
+      .find({
+        rubricId: initialCategory.rubricId,
+        categoryId: null,
+      })
+      .toArray();
+
+    rubricAttributes.forEach(({ attributesGroupId }) => {
+      if (attributesGroupId) {
+        excludedAttributesGroupsIds.push(attributesGroupId);
+      }
+    });
+
     siblingsRubricAttributes.forEach(({ attributesGroupId }) => {
       if (attributesGroupId) {
         excludedAttributesGroupsIds.push(attributesGroupId);

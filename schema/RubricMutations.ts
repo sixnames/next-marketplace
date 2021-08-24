@@ -881,6 +881,7 @@ export const RubricMutations = extendType({
             // Delete rubric attributes
             const removedRubricAttributesResult = await rubricAttributesCollection.deleteMany({
               attributesGroupId,
+              rubricId,
             });
             if (!removedRubricAttributesResult.result.ok) {
               mutationPayload = {

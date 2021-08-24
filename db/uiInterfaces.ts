@@ -197,6 +197,11 @@ export interface ProductAttributesGroupASTInterface {
   attributes: ProductAttributeInterface[];
 }
 
+export interface ProductCategoryInterface extends CategoryInterface {
+  selected: boolean;
+  categories: ProductCategoryInterface[];
+}
+
 export interface ProductCardContentInterface extends ProductCardContentModel {
   value?: string | null;
 }

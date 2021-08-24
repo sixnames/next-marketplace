@@ -271,6 +271,46 @@ const attributes: AttributeModel[] = [
     attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
   },
   {
+    _id: getObjectId(`attribute Тип шампанского`),
+    slug: 'tip_vina',
+    nameI18n: {
+      ru: 'Тип шампанского',
+    },
+    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
+    optionsGroupId: getObjectId('optionsGroup Тип шампанского'),
+    showInCard: true,
+    showAsBreadcrumb: true,
+    showAsCatalogueBreadcrumb: true,
+    showInSnippet: true,
+    notShowAsAlphabet: false,
+    capitalise: false,
+    positioningInTitle: {
+      ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
+    },
+    attributesGroupId: getObjectId('attributesGroup Характеристики шампанского'),
+  },
+  {
+    _id: getObjectId(`attribute Тип виски`),
+    slug: 'tip_vina',
+    nameI18n: {
+      ru: 'Тип виски',
+    },
+    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
+    optionsGroupId: getObjectId('optionsGroup Тип виски'),
+    showInCard: true,
+    showAsBreadcrumb: true,
+    showAsCatalogueBreadcrumb: true,
+    showInSnippet: true,
+    notShowAsAlphabet: false,
+    capitalise: false,
+    positioningInTitle: {
+      ru: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleModel,
+    },
+    attributesGroupId: getObjectId('attributesGroup Характеристики виски'),
+  },
+  {
     _id: getObjectId(`attribute Тип вина`),
     slug: 'tip_vina',
     nameI18n: {

@@ -151,3 +151,12 @@ export const UPDATE_PRODUCT_CARD_CONTENT_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT_CATEGORY_MUTATION = gql`
+  mutation UpdateProductCategory($input: UpdateProductCategoryInput!) {
+    updateProductCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;

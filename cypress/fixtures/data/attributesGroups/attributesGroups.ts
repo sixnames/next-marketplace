@@ -33,7 +33,7 @@ const attributesGroups: AttributesGroupModel[] = [
     nameI18n: {
       ru: 'Характеристики шампанского',
     },
-    attributesIds: [],
+    attributesIds: getObjectIds([`attribute Тип шампанского`]),
   },
   {
     _id: getObjectId('attributesGroup Характеристики коньяка'),
@@ -61,7 +61,7 @@ const attributesGroups: AttributesGroupModel[] = [
     nameI18n: {
       ru: 'Характеристики виски',
     },
-    attributesIds: [],
+    attributesIds: getObjectIds([`attribute Тип виски`]),
   },
   {
     _id: getObjectId('attributesGroup Характеристики вина'),

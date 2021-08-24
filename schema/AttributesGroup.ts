@@ -1,4 +1,4 @@
-import { SORT_ASC } from 'config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
@@ -116,7 +116,7 @@ export const AttributesGroupQueries = extendType({
             { _id: { $nin: args.excludedIds || [] } },
             {
               sort: {
-                itemId: SORT_ASC,
+                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
               },
             },
           )

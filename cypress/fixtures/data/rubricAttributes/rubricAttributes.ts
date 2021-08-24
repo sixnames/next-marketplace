@@ -4,7 +4,12 @@ import {
   CATEGORY_SLUG_PREFIX,
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
-import { RubricModel, RubricAttributeModel, ObjectIdModel } from '../../../../db/dbModels';
+import {
+  RubricModel,
+  RubricAttributeModel,
+  ObjectIdModel,
+  AttributeModel,
+} from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 import rubrics from '../rubrics/rubrics';
@@ -13,12 +18,14 @@ interface GetRubricAttributesInterface {
   rubric: RubricModel;
   categoryId?: ObjectIdModel | null;
   categorySlug?: string | null;
+  attributes: AttributeModel[];
 }
 
 function getRubricAttributes({
   rubric,
   categoryId,
   categorySlug,
+  attributes,
 }: GetRubricAttributesInterface): RubricAttributeModel[] {
   return attributes.map((attribute) => {
     const visible =
@@ -28,7 +35,7 @@ function getRubricAttributes({
     return {
       ...attribute,
       ...DEFAULT_COUNTERS_OBJECT,
-      _id: getObjectId(`${rubric.slug} ${attribute.slug}`),
+      _id: getObjectId(`${rubric.slug} ${attribute.slug}${categorySlug ? ` ${categorySlug}` : ''}`),
       showInCatalogueFilter: visible,
       showInCatalogueNav: visible,
       rubricSlug: rubric.slug,
@@ -42,17 +49,49 @@ function getRubricAttributes({
   });
 }
 
-const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) => {
-  let rubricAttributes: RubricAttributeModel[];
+function getCurrentGroupAttributes(_id: ObjectIdModel): AttributeModel[] {
+  return attributes.filter(({ attributesGroupId }) => {
+    return attributesGroupId && attributesGroupId.equals(_id);
+  });
+}
 
-  if (rubric.nameI18n.ru === 'Виски') {
+const commonAttributes = getCurrentGroupAttributes(
+  getObjectId('attributesGroup Общие характеристики'),
+);
+
+const rubricAttributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) => {
+  let rubricAttributes: RubricAttributeModel[] = [];
+
+  if (rubric.nameI18n.ru === 'Шампанское') {
+    const rubricRawAttributes = getCurrentGroupAttributes(
+      getObjectId('attributesGroup Характеристики шампанского'),
+    );
     rubricAttributes = getRubricAttributes({
       rubric,
-      categoryId: getObjectId('category Односолодовый A-1'),
-      categorySlug: `${CATEGORY_SLUG_PREFIX}3`,
+      attributes: [...commonAttributes, ...rubricRawAttributes],
     });
-  } else {
-    rubricAttributes = getRubricAttributes({ rubric });
+  }
+
+  if (rubric.nameI18n.ru === 'Виски') {
+    const rubricRawAttributes = getCurrentGroupAttributes(
+      getObjectId('attributesGroup Характеристики виски'),
+    );
+    rubricAttributes = getRubricAttributes({
+      rubric,
+      attributes: [...commonAttributes, ...rubricRawAttributes],
+      categoryId: getObjectId('category Односолодовый'),
+      categorySlug: `${CATEGORY_SLUG_PREFIX}1`,
+    });
+  }
+
+  if (rubric.nameI18n.ru === 'Вино') {
+    const rubricRawAttributes = getCurrentGroupAttributes(
+      getObjectId('attributesGroup Характеристики вина'),
+    );
+    rubricAttributes = getRubricAttributes({
+      rubric,
+      attributes: [...commonAttributes, ...rubricRawAttributes],
+    });
   }
 
   return [...acc, ...rubricAttributes];

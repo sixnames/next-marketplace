@@ -1108,6 +1108,8 @@ export type Mutation = {
   updateProductWithSyncError: ProductPayload;
   /** Should create product with syn error and remove sync error */
   createProductWithSyncError: ProductPayload;
+  /** Should update product category */
+  updateProductCategory: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should create role */
@@ -1648,6 +1650,11 @@ export type MutationUpdateProductWithSyncErrorArgs = {
 
 export type MutationCreateProductWithSyncErrorArgs = {
   input: CreateProductWithSyncErrorInput;
+};
+
+
+export type MutationUpdateProductCategoryArgs = {
+  input: UpdateProductCategoryInput;
 };
 
 
@@ -3077,6 +3084,11 @@ export type UpdateProductCardContentInput = {
   companySlug: Scalars['String'];
   content: Scalars['JSONObject'];
   assetKeys: Array<Scalars['String']>;
+};
+
+export type UpdateProductCategoryInput = {
+  productId: Scalars['ObjectId'];
+  categoryId: Scalars['ObjectId'];
 };
 
 export type UpdateProductCounterInput = {
@@ -4588,6 +4600,19 @@ export type UpdateProductCardContentMutation = (
   & { updateProductCardContent: (
     { __typename?: 'ProductCardContentPayload' }
     & Pick<ProductCardContentPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductCategoryMutationVariables = Exact<{
+  input: UpdateProductCategoryInput;
+}>;
+
+
+export type UpdateProductCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductCategory: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
   ) }
 );
 
@@ -9214,6 +9239,40 @@ export function useUpdateProductCardContentMutation(baseOptions?: Apollo.Mutatio
 export type UpdateProductCardContentMutationHookResult = ReturnType<typeof useUpdateProductCardContentMutation>;
 export type UpdateProductCardContentMutationResult = Apollo.MutationResult<UpdateProductCardContentMutation>;
 export type UpdateProductCardContentMutationOptions = Apollo.BaseMutationOptions<UpdateProductCardContentMutation, UpdateProductCardContentMutationVariables>;
+export const UpdateProductCategoryDocument = gql`
+    mutation UpdateProductCategory($input: UpdateProductCategoryInput!) {
+  updateProductCategory(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductCategoryMutationFn = Apollo.MutationFunction<UpdateProductCategoryMutation, UpdateProductCategoryMutationVariables>;
+
+/**
+ * __useUpdateProductCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCategoryMutation, { data, loading, error }] = useUpdateProductCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCategoryMutation, UpdateProductCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductCategoryMutation, UpdateProductCategoryMutationVariables>(UpdateProductCategoryDocument, options);
+      }
+export type UpdateProductCategoryMutationHookResult = ReturnType<typeof useUpdateProductCategoryMutation>;
+export type UpdateProductCategoryMutationResult = Apollo.MutationResult<UpdateProductCategoryMutation>;
+export type UpdateProductCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateProductCategoryMutation, UpdateProductCategoryMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

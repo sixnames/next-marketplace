@@ -1421,6 +1421,11 @@ type Mutation {
   updateProductCardContent(input: UpdateProductCardContentInput!): ProductCardContentPayload!
 
   """
+  Should update product category
+  """
+  updateProductCategory(input: UpdateProductCategoryInput!): ProductPayload!
+
+  """
   Should update product counter
   """
   updateProductCounter(input: UpdateProductCounterInput!): Boolean!
@@ -2746,6 +2751,11 @@ input UpdateProductCardContentInput {
   content: JSONObject!
   productId: ObjectId!
   productSlug: String!
+}
+
+input UpdateProductCategoryInput {
+  categoryId: ObjectId!
+  productId: ObjectId!
 }
 
 input UpdateProductCounterInput {

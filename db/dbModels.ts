@@ -650,6 +650,7 @@ export interface CategoryModel extends CountersModel {
   nameI18n: TranslationModel;
   variants: OptionVariantsModel;
   gender?: GenderModel | null;
+  parentTreeIds: ObjectIdModel[];
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;

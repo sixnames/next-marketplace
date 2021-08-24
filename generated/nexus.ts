@@ -807,6 +807,11 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
   };
+  UpdateProductCategoryInput: {
+    // input type
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    productId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateProductCounterInput: {
     // input type
     companySlug: string | null; // String
@@ -1588,6 +1593,7 @@ export interface NexusGenFieldTypes {
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
+    updateProductCategory: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2741,6 +2747,7 @@ export interface NexusGenFieldTypeNames {
     updateProductBrand: 'ProductPayload';
     updateProductBrandCollection: 'ProductPayload';
     updateProductCardContent: 'ProductCardContentPayload';
+    updateProductCategory: 'ProductPayload';
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
@@ -3869,6 +3876,10 @@ export interface NexusGenArgTypes {
     updateProductCardContent: {
       // args
       input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
+    };
+    updateProductCategory: {
+      // args
+      input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
     };
     updateProductCounter: {
       // args

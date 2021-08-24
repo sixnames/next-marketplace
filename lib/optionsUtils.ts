@@ -244,3 +244,55 @@ export async function deleteDocumentsTree({
 
   return true;
 }
+
+interface GetParentTreeIdsInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+  acc: ObjectIdModel[];
+}
+
+export async function getParentTreeIds({
+  _id,
+  collectionName,
+  acc,
+}: GetParentTreeIdsInterface): Promise<ObjectIdModel[]> {
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const document = await collection.findOne({ _id });
+
+  acc.push(_id);
+
+  if (!document || !document.parentId) {
+    return acc;
+  }
+
+  return getParentTreeIds({ _id: document.parentId, collectionName, acc });
+}
+
+interface GetParentTreeSlugsInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+  acc: string[];
+}
+
+export async function getParentTreeSlugs({
+  _id,
+  collectionName,
+  acc,
+}: GetParentTreeSlugsInterface): Promise<string[]> {
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const document = await collection.findOne({ _id });
+
+  if (!document) {
+    return acc;
+  }
+
+  acc.push(document.slug);
+
+  if (!document.parentId) {
+    return acc;
+  }
+
+  return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
+}

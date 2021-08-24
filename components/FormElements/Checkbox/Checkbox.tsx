@@ -24,8 +24,10 @@ const Checkbox: React.FC<CheckboxInterface> = ({
 }) => {
   const additionalClassName = className ? className : '';
   const errorClassName = notValid ? 'border-red-500' : 'border-border-color';
-  const disabledClassName = disabled ? 'opacity-80 pointer-events-none' : '';
-  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-secondary overflow-hidden cursor-pointer text-theme ${additionalClassName} ${errorClassName} ${disabledClassName}`;
+  const disabledClassName = disabled
+    ? 'opacity-60 pointer-events-none secondary-text'
+    : 'text-theme';
+  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-secondary overflow-hidden cursor-pointer ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
   return (
     <label className={checkboxClassName}>

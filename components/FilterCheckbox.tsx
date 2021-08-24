@@ -47,7 +47,9 @@ const FilterCheckboxLink: React.FC<FilterCheckboxLinkInterface> = ({
   );
 };
 
-export interface FilterCheckboxInterface extends FilterCheckboxLinkInterface {}
+export interface FilterCheckboxInterface extends FilterCheckboxLinkInterface {
+  hidden?: (option: CatalogueFilterAttributeOptionInterface) => boolean;
+}
 
 const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   option,
@@ -55,9 +57,14 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   className,
   postfix,
   onClick,
+  hidden,
 }) => {
   const renderChildOption = (option: CatalogueFilterAttributeOptionInterface) => {
     const { options } = option;
+    if (hidden && hidden(option)) {
+      return null;
+    }
+
     if (options && options.length > 0) {
       return (
         <div>
@@ -71,6 +78,9 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
 
           <div className='ml-[18px]'>
             {options.map((option) => {
+              if (hidden && hidden(option)) {
+                return null;
+              }
               return <div key={option.slug}>{renderChildOption(option)}</div>;
             })}
           </div>

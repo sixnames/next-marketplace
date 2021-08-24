@@ -128,6 +128,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
                       key={key}
                       onClick={hideFilterHandler}
                       testId={key}
+                      hidden={({ isSelected }) => !isSelected}
                     />
                   );
                 });

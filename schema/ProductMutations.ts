@@ -1532,6 +1532,7 @@ export const ProductMutations = extendType({
           const { db } = await getDatabase();
           const { getApiMessage } = await getRequestParams(context);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const { input } = args;
           const { productId, categoryId } = input;
@@ -1611,6 +1612,7 @@ export const ProductMutations = extendType({
             }
           }
 
+          // update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
             {
               _id: productId,
@@ -1624,6 +1626,21 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+
+          // update shop products
+          const updatedShopProductsResult = await shopProductsCollection.updateMany(
+            {
+              productId,
+            },
+            updater,
+          );
+          if (!updatedShopProductsResult.result.ok) {
+            return {
+              success: true,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage(`products.update.success`),

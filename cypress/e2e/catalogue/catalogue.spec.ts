@@ -27,8 +27,6 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-dropdown').should('not.exist');
 
     // Should navigate to the rubric
-    cy.getByCy(`main-rubric-${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).trigger('mouseover');
-    cy.getByCy('header-nav-dropdown').should('be.visible');
     cy.getByCy(`main-rubric-${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).click();
     cy.getByCy('catalogue').should('exist');
     cy.getByCy('catalogue-title').contains('Вино');

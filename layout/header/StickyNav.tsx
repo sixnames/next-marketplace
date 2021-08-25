@@ -23,6 +23,11 @@ export interface StickyNavAttributeInterface extends AttributeStylesInterface {
   rubricSlug: string;
 }
 
+export interface StickyNavCategoryInterface extends AttributeStylesInterface {
+  category: CategoryInterface;
+  rubricSlug: string;
+}
+
 interface StylesInterface extends AttributeStylesInterface {
   dropdownStyle: React.CSSProperties;
 }

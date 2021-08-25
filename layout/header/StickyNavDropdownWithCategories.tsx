@@ -1,8 +1,12 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_CATEGORY_KEY, CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
+import {
+  StickyNavAttributeInterface,
+  StickyNavCategoryInterface,
+  StickyNavDropdownInterface,
+} from 'layout/header/StickyNav';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -24,10 +28,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
   return (
     <div className='flex flex-col'>
-      <div
-        style={attributeStyle}
-        className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'
-      >
+      <div style={attributeStyle} className='flex items-center pb-1 uppercase font-medium'>
         {name}
       </div>
       <ul className='flex-grow flex flex-col'>
@@ -39,7 +40,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text'
+                className='flex items-center py-2 text-secondary-text'
               >
                 {option.name}
                 {postfix}
@@ -53,12 +54,54 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             <Link
               prefetch={false}
               href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
-              className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+              className='flex items-center py-2 text-secondary-theme'
             >
               Показать все
             </Link>
           </li>
         ) : null}
+      </ul>
+    </div>
+  );
+};
+
+const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
+  category,
+  rubricSlug,
+  attributeStyle,
+  attributeLinkStyle,
+}) => {
+  const { categories, name } = category;
+
+  return (
+    <div className='flex flex-col'>
+      <div style={attributeStyle} className='flex items-center pb-1 uppercase font-medium'>
+        <Link
+          style={attributeLinkStyle}
+          testId={`header-nav-dropdown-option`}
+          prefetch={false}
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${category.slug}`}
+          className='flex items-center py-2 text-secondary-text'
+        >
+          {name}
+        </Link>
+      </div>
+      <ul className='flex-grow flex flex-col'>
+        {(categories || []).map((childCategory) => {
+          return (
+            <li key={`${childCategory._id}`}>
+              <Link
+                style={attributeLinkStyle}
+                testId={`header-nav-dropdown-option`}
+                prefetch={false}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${childCategory.slug}`}
+                className='flex items-center py-2 text-secondary-text'
+              >
+                {childCategory.name}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -85,8 +128,20 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
       >
         <Inner>
           <div className='grid grid-cols-2'>
-            <div></div>
-            <div className='grid gap-4 grid-cols-2'>
+            <div className='grid gap-x-4 gap-y-8 grid-cols-3 border-r border-border-color pr-8'>
+              {categories.map((category) => {
+                return (
+                  <StickyNavCategory
+                    key={`${category._id}`}
+                    category={category}
+                    rubricSlug={rubricSlug}
+                    attributeStyle={attributeStyle}
+                    attributeLinkStyle={attributeLinkStyle}
+                  />
+                );
+              })}
+            </div>
+            <div className='grid gap-x-4 gap-y-8 grid-cols-3 pl-8'>
               {(attributes || []).map((attribute) => {
                 return (
                   <StickyNavAttribute

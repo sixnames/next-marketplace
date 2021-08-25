@@ -23,6 +23,7 @@ import {
   CONFIG_GROUP_PROJECT,
 } from 'config/common';
 import {
+  COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
@@ -40,6 +41,7 @@ import {
   COL_USERS,
 } from 'db/collectionNames';
 import {
+  CategoryModel,
   CityModel,
   CompanyModel,
   ConfigModel,
@@ -68,6 +70,7 @@ import {
 import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
@@ -116,7 +119,8 @@ export const getCatalogueNavRubrics = async ({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
   const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
@@ -440,10 +444,31 @@ export const getCatalogueNavRubrics = async ({
         ])
         .toArray();
 
+      let categories: CategoryModel[] = [];
+      if (rubric.variant?.showCategoriesInNav) {
+        categories = await categoriesCollection
+          .aggregate([
+            {
+              $match: {
+                rubricId: rubric._id,
+                slug: {
+                  $in: rubricConfig.attributeSlugs,
+                },
+              },
+            },
+          ])
+          .toArray();
+      }
+
       rubrics.push({
         ...rubric,
         nameI18n: {},
         name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
+        categories: getTreeFromList({
+          list: categories,
+          childrenFieldName: 'categories',
+          locale,
+        }),
         attributes: getRubricNavAttributes({
           attributes: rubricAttributesAggregation || [],
           locale,

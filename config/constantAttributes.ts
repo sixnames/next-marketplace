@@ -1,6 +1,7 @@
 import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_TAG,
+  CATALOGUE_CATEGORY_KEY,
   GENDER_IT,
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
@@ -8,14 +9,21 @@ import {
   AttributeVariantModel,
   AttributeViewVariantModel,
   GenderModel,
+  ObjectIdModel,
   RubricOptionModel,
 } from 'db/dbModels';
-import { RubricAttributeInterface } from 'db/uiInterfaces';
+import {
+  CategoryInterface,
+  RubricAttributeInterface,
+  RubricOptionInterface,
+} from 'db/uiInterfaces';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 
-export function getPriceAttribute(): RubricAttributeInterface {
-  const optionsGroupId = new ObjectId();
-  const commonOptionFields: Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> = {
+export const getCommonOptionFields = (
+  optionsGroupId: ObjectIdModel,
+): Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> => {
+  return {
     priorities: {},
     views: {},
     options: [],
@@ -23,6 +31,66 @@ export function getPriceAttribute(): RubricAttributeInterface {
     gender: GENDER_IT as GenderModel,
     optionsGroupId,
   };
+};
+
+interface GetCategoryFilterAttributeInterface {
+  categories: CategoryInterface[];
+  locale: string;
+}
+
+export function getCategoryFilterAttribute({
+  categories,
+  locale,
+}: GetCategoryFilterAttributeInterface) {
+  const optionsGroupId = new ObjectId();
+  const commonOptionFields = getCommonOptionFields(optionsGroupId);
+  const initialOptions: RubricOptionInterface[] = categories.map((category) => {
+    const option: RubricOptionInterface = {
+      ...commonOptionFields,
+      _id: category._id,
+      nameI18n: category.nameI18n,
+      slug: category.slug,
+      parentId: category.parentId,
+      priorities: category.priorities,
+      views: category.views,
+    };
+    return option;
+  });
+
+  const options = getTreeFromList<RubricOptionInterface>({
+    list: initialOptions,
+    childrenFieldName: 'options',
+    locale,
+  });
+
+  return {
+    _id: new ObjectId(),
+    attributeId: new ObjectId(),
+    rubricId: new ObjectId(),
+    rubricSlug: 'slug',
+    attributesGroupId: new ObjectId(),
+    optionsGroupId,
+    nameI18n: {
+      ru: 'Категория',
+      en: 'Category',
+    },
+    slug: CATALOGUE_CATEGORY_KEY,
+    priorities: {},
+    views: {},
+    showInCatalogueNav: false,
+    showInCatalogueFilter: true,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as AttributeViewVariantModel,
+    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    showAsBreadcrumb: false,
+    showInCard: true,
+    showInProductAttributes: true,
+    options,
+  };
+}
+
+export function getPriceAttribute(): RubricAttributeInterface {
+  const optionsGroupId = new ObjectId();
+  const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   return {
     _id: new ObjectId(),

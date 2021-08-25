@@ -927,6 +927,8 @@ export interface NexusGenInputs {
     showCardButtonsBackground?: boolean | null; // Boolean
     showCardImagesSlider?: boolean | null; // Boolean
     showCatalogueFilterBrands?: boolean | null; // Boolean
+    showCategoriesInFilter?: boolean | null; // Boolean
+    showCategoriesInNav?: boolean | null; // Boolean
     showSnippetArticle?: boolean | null; // Boolean
     showSnippetBackground?: boolean | null; // Boolean
     showSnippetButtonsOnHover?: boolean | null; // Boolean
@@ -2073,8 +2075,12 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout: string | null; // String
+    showCardBrands: boolean | null; // Boolean
     showCardButtonsBackground: boolean | null; // Boolean
     showCardImagesSlider: boolean | null; // Boolean
+    showCatalogueFilterBrands: boolean | null; // Boolean
+    showCategoriesInFilter: boolean | null; // Boolean
+    showCategoriesInNav: boolean | null; // Boolean
     showSnippetArticle: boolean | null; // Boolean
     showSnippetBackground: boolean | null; // Boolean
     showSnippetButtonsOnHover: boolean | null; // Boolean
@@ -3227,8 +3233,12 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     rowSnippetLayout: 'String';
+    showCardBrands: 'Boolean';
     showCardButtonsBackground: 'Boolean';
     showCardImagesSlider: 'Boolean';
+    showCatalogueFilterBrands: 'Boolean';
+    showCategoriesInFilter: 'Boolean';
+    showCategoriesInNav: 'Boolean';
     showSnippetArticle: 'Boolean';
     showSnippetBackground: 'Boolean';
     showSnippetButtonsOnHover: 'Boolean';

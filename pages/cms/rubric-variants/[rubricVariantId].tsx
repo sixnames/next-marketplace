@@ -90,6 +90,8 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showCardButtonsBackground: rubricVariant.showCardButtonsBackground || false,
             showCardImagesSlider: rubricVariant.showCardImagesSlider || false,
             showCatalogueFilterBrands: rubricVariant.showCatalogueFilterBrands || false,
+            showCategoriesInFilter: rubricVariant.showCategoriesInFilter || false,
+            showCategoriesInNav: rubricVariant.showCategoriesInNav || false,
             showCardBrands: rubricVariant.showCardBrands || false,
             cardBrandsLabelI18n: rubricVariant.cardBrandsLabelI18n || {},
             gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
@@ -152,6 +154,16 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikCheckboxLine
                   label={'Показывать бренд / линейку бренда / производителя в карточке товара'}
                   name={'showCardBrands'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать категории в фильтре каталога'}
+                  name={'showCategoriesInFilter'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать категории в навигации каталога'}
+                  name={'showCategoriesInNav'}
                 />
 
                 {/*strings*/}

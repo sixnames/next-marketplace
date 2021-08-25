@@ -2682,6 +2682,10 @@ export type RubricVariant = {
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;
   showCardImagesSlider?: Maybe<Scalars['Boolean']>;
+  showCardBrands?: Maybe<Scalars['Boolean']>;
+  showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
+  showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
+  showCategoriesInNav?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
@@ -3207,6 +3211,8 @@ export type UpdateRubricVariantInput = {
   showCardImagesSlider?: Maybe<Scalars['Boolean']>;
   showCardBrands?: Maybe<Scalars['Boolean']>;
   showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
+  showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
+  showCategoriesInNav?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };

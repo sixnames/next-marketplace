@@ -1,8 +1,9 @@
 import { CatalogueInterface } from 'components/Catalogue';
-import { getPriceAttribute } from 'config/constantAttributes';
+import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_ATTRIBUTES,
+  COL_CATEGORIES,
   COL_CITIES,
   COL_CONFIGS,
   COL_COUNTRIES,
@@ -55,6 +56,7 @@ import {
   PAGE_DEFAULT,
   RUBRIC_KEY,
   DEFAULT_CURRENCY,
+  CATALOGUE_CATEGORY_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -435,31 +437,43 @@ export async function getCatalogueAttributes({
           .join('/')
       : [...realFilter, optionSlug].join('/');
 
+    const isCategory = attribute.slug === CATALOGUE_CATEGORY_KEY;
     const nestedOptions: CatalogueFilterAttributeOptionInterface[] = [];
+
     if (isSelected) {
-      const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
-        const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
-        return slugParts[1];
-      });
-      const initialNestedOptions = await optionsCollection
-        .aggregate([
-          {
-            $match: {
-              parentId: option._id,
-              slug: {
-                $in: castedSelectedOptionsSlugs,
+      if (isCategory) {
+        for await (const nestedOption of option.options || []) {
+          const { castedOption } = await castOption({
+            option: nestedOption,
+            attribute,
+          });
+          nestedOptions.push(castedOption);
+        }
+      } else {
+        const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
+          const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+          return slugParts[1];
+        });
+        const initialNestedOptions = await optionsCollection
+          .aggregate([
+            {
+              $match: {
+                parentId: option._id,
+                slug: {
+                  $in: castedSelectedOptionsSlugs,
+                },
               },
             },
-          },
-        ])
-        .toArray();
+          ])
+          .toArray();
 
-      for await (const nestedOption of initialNestedOptions) {
-        const { castedOption } = await castOption({
-          option: nestedOption,
-          attribute,
-        });
-        nestedOptions.push(castedOption);
+        for await (const nestedOption of initialNestedOptions) {
+          const { castedOption } = await castOption({
+            option: nestedOption,
+            attribute,
+          });
+          nestedOptions.push(castedOption);
+        }
       }
     }
 
@@ -676,40 +690,45 @@ export function castCatalogueFilters({
 
   filters.forEach((filterOption) => {
     const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
-    const filterOptionName = splittedOption[0];
-    const filterOptionValue = splittedOption[1];
-    if (filterOptionName) {
-      if (filterOptionName === RUBRIC_KEY) {
-        rubricSlug.push(filterOptionValue);
+    const filterAttributeSlug = splittedOption[0];
+    const filterOptionSlug = splittedOption[1];
+    if (filterAttributeSlug) {
+      if (filterAttributeSlug === RUBRIC_KEY) {
+        rubricSlug.push(filterOptionSlug);
         return;
       }
 
-      if (filterOptionName === QUERY_FILTER_PAGE) {
-        page = noNaN(filterOptionValue) || defaultPage;
+      if (filterAttributeSlug === QUERY_FILTER_PAGE) {
+        page = noNaN(filterOptionSlug) || defaultPage;
         return;
       }
 
-      if (filterOptionName === CATALOGUE_FILTER_LIMIT) {
-        limit = noNaN(filterOptionValue) || defaultLimit;
+      if (filterAttributeSlug === CATALOGUE_FILTER_LIMIT) {
+        limit = noNaN(filterOptionSlug) || defaultLimit;
         return;
       }
 
-      if (filterOptionName === PRICE_ATTRIBUTE_SLUG) {
-        const prices = filterOptionValue.split('_');
+      if (filterAttributeSlug === PRICE_ATTRIBUTE_SLUG) {
+        const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
         return;
       }
 
-      if (filterOptionName === SORT_BY_KEY) {
+      if (filterAttributeSlug === SORT_BY_KEY) {
         sortFilterOptions.push(filterOption);
-        sortBy = filterOptionValue;
+        sortBy = filterOptionSlug;
         return;
       }
 
-      if (filterOptionName === SORT_DIR_KEY) {
+      if (filterAttributeSlug === SORT_DIR_KEY) {
         sortFilterOptions.push(filterOption);
-        sortDir = filterOptionValue;
+        sortDir = filterOptionSlug;
+        return;
+      }
+
+      if (filterAttributeSlug === CATALOGUE_CATEGORY_KEY) {
+        realFilterOptions.push(filterOptionSlug);
         return;
       }
 
@@ -1082,6 +1101,84 @@ export const getCatalogueData = async ({
                   },
                 },
               ],
+
+              // get catalogue categories
+              categories: [
+                {
+                  $unwind: {
+                    path: '$selectedOptionsSlugs',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    rubricId: { $first: '$rubricId' },
+                    selectedOptionsSlugs: {
+                      $addToSet: '$selectedOptionsSlugs',
+                    },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: COL_CATEGORIES,
+                    as: 'categories',
+                    let: {
+                      rubricId: '$rubricId',
+                      selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $and: [
+                            {
+                              $expr: {
+                                $eq: ['$rubricId', '$$rubricId'],
+                              },
+                            },
+                            {
+                              $expr: {
+                                $in: ['$slug', '$$selectedOptionsSlugs'],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        $addFields: {
+                          views: { $max: `$views.${realCompanySlug}.${city}` },
+                          priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
+                        },
+                      },
+                      {
+                        $sort: {
+                          priorities: SORT_DESC,
+                          views: SORT_DESC,
+                          _id: SORT_DESC,
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $unwind: {
+                    path: '$categories',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $match: {
+                    categories: {
+                      $exists: true,
+                    },
+                  },
+                },
+                {
+                  $replaceRoot: {
+                    newRoot: '$categories',
+                  },
+                },
+              ],
               countAllDocs: [
                 {
                   $count: 'totalDocs',
@@ -1123,6 +1220,7 @@ export const getCatalogueData = async ({
           {
             $project: {
               docs: 1,
+              categories: 1,
               totalProducts: 1,
               prices: 1,
               rubric: 1,
@@ -1139,7 +1237,6 @@ export const getCatalogueData = async ({
     // console.log(shopProductsAggregationResult.docs[0]);
     // console.log(JSON.stringify(shopProductsAggregationResult.rubric, null, 2));
     // console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - shopProductsStart);
-
     if (!shopProductsAggregationResult) {
       return null;
     }
@@ -1171,8 +1268,24 @@ export const getCatalogueData = async ({
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
+    const priceAttribute = getPriceAttribute();
+    let categoryAttribute: RubricAttributeInterface[] = [];
+
+    if (
+      rubric.variant?.showCategoriesInFilter &&
+      shopProductsAggregationResult.categories &&
+      shopProductsAggregationResult.categories.length > 0
+    ) {
+      categoryAttribute = [
+        getCategoryFilterAttribute({
+          locale,
+          categories: shopProductsAggregationResult.categories,
+        }),
+      ];
+    }
+
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
+      attributes: [priceAttribute, ...categoryAttribute, ...(rubric.attributes || [])],
       locale,
       filters,
       selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,

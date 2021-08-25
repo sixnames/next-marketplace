@@ -22,6 +22,7 @@ export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
 
 // nav dropdown
 export const NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY = 'options-only';
+export const NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES = 'with-categories';
 export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: DEFAULT_LAYOUT,
@@ -30,6 +31,10 @@ export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
     asset: `/layout/nav-dropdown/${NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY}.png`,
+  },
+  {
+    _id: NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
+    asset: `/layout/nav-dropdown/${NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES}.png`,
   },
 ];
 

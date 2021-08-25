@@ -6,7 +6,6 @@ import * as React from 'react';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
-  hideDropdownHandler,
   rubricSlug,
   attributeLinkStyle,
 }) => {
@@ -30,7 +29,6 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               testId={`header-nav-dropdown-option`}
               prefetch={false}
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
-              onClick={hideDropdownHandler}
             >
               {option.image ? (
                 <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
@@ -59,7 +57,6 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                         testId={`header-nav-dropdown-option`}
                         prefetch={false}
                         href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${childOption.slug}`}
-                        onClick={hideDropdownHandler}
                       >
                         <span className='block text-secondary-text'>
                           {childOption.name}
@@ -83,8 +80,6 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
   attributeStyle,
   attributeLinkStyle,
   dropdownStyle,
-  hideDropdownHandler,
-  isDropdownOpen,
   rubricSlug,
 }) => {
   if (!attributes || attributes.length < 1) {
@@ -95,9 +90,7 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
     <div
       style={dropdownStyle}
       data-cy={'header-nav-dropdown'}
-      className={`absolute top-full w-full inset-x-0 bg-secondary shadow-lg ${
-        isDropdownOpen ? '' : 'h-[1px] overflow-hidden header-hidden-dropdown'
-      }`}
+      className={`wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg`}
     >
       <Inner>
         <div className='grid gap-8 pb-10 grid-cols-5'>
@@ -106,7 +99,6 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
               <StickyNavAttribute
                 key={`${attribute._id}`}
                 attribute={attribute}
-                hideDropdownHandler={hideDropdownHandler}
                 rubricSlug={rubricSlug}
                 attributeStyle={attributeStyle}
                 attributeLinkStyle={attributeLinkStyle}

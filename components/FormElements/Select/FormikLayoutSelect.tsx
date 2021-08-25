@@ -64,7 +64,7 @@ const FormikLayoutSelect: React.FC<FormikLayoutSelectInterface> = ({
                       }
                     }}
                   >
-                    <img src={asset} width='200' height='200' alt={_id} />
+                    <img src={asset} width='300' height='300' alt={_id} />
                   </div>
                 );
               })}

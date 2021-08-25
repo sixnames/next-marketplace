@@ -1,8 +1,11 @@
 import { ROUTE_CATALOGUE } from 'config/common';
-import { NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY } from 'config/constantSelects';
+import {
+  NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
+  NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
+} from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
-import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
+import { CategoryInterface, RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import Inner from 'components/Inner';
@@ -17,7 +20,6 @@ interface AttributeStylesInterface {
 
 export interface StickyNavAttributeInterface extends AttributeStylesInterface {
   attribute: RubricAttributeInterface;
-  hideDropdownHandler: () => void;
   rubricSlug: string;
 }
 
@@ -27,9 +29,8 @@ interface StylesInterface extends AttributeStylesInterface {
 
 export interface StickyNavDropdownInterface extends StylesInterface {
   attributes: RubricAttributeInterface[] | null | undefined;
-  isDropdownOpen: boolean;
-  hideDropdownHandler: () => void;
   rubricSlug: string;
+  categories: CategoryInterface[];
 }
 
 export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInterface {
@@ -41,6 +42,10 @@ const StickyNavDropdownOptionsOnly = dynamic(
   () => import('layout/header/StickyNavDropdownOptionsOnly'),
 );
 
+const StickyNavDropdownWithCategories = dynamic(
+  () => import('layout/header/StickyNavDropdownWithCategories'),
+);
+
 const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   catalogueNavLayout,
   ...props
@@ -49,12 +54,17 @@ const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
     return <StickyNavDropdownOptionsOnly {...props} />;
   }
 
+  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES) {
+    return <StickyNavDropdownWithCategories {...props} />;
+  }
+
   return <StickyNavDropdownDefault {...props} />;
 };
 
 interface StickyNavItemInterface extends StylesInterface {
   rubric: RubricInterface;
   linkStyle: React.CSSProperties;
+  categories: CategoryInterface[];
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({
@@ -63,9 +73,9 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   linkStyle,
   attributeLinkStyle,
   dropdownStyle,
+  categories,
 }) => {
   const { asPath } = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { name, slug, attributes } = rubric;
 
   // Get rubric slug from product card path
@@ -73,24 +83,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath);
 
-  function showDropdownHandler() {
-    setIsDropdownOpen(true);
-  }
-
-  function hideDropdownHandler() {
-    setIsDropdownOpen(false);
-  }
-
   return (
-    <li
-      onMouseEnter={showDropdownHandler}
-      onMouseLeave={hideDropdownHandler}
-      data-cy={`main-rubric-list-item-${rubric.slug}`}
-    >
+    <li className='group' data-cy={`main-rubric-list-item-${rubric.slug}`}>
       <Link
         href={path}
         style={linkStyle}
-        onClick={hideDropdownHandler}
         testId={`main-rubric-${rubric.slug}`}
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
       >
@@ -101,11 +98,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
       </Link>
 
       <StickyNavDropdown
+        categories={categories}
         attributeLinkStyle={attributeLinkStyle}
         attributeStyle={attributeStyle}
         dropdownStyle={dropdownStyle}
-        hideDropdownHandler={hideDropdownHandler}
-        isDropdownOpen={isDropdownOpen}
         rubricSlug={slug}
         attributes={attributes}
         catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
@@ -176,6 +172,7 @@ const StickyNav: React.FC = () => {
           {navRubrics.map((rubric) => {
             return (
               <StickyNavItem
+                categories={rubric.categories || []}
                 linkStyle={linkStyle}
                 attributeLinkStyle={attributeLinkStyle}
                 dropdownStyle={dropdownStyle}

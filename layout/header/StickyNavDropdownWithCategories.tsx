@@ -64,15 +64,45 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   );
 };
 
-const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
+const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   attributes,
   attributeStyle,
   attributeLinkStyle,
   dropdownStyle,
   rubricSlug,
+  categories,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
+  }
+
+  if (categories.length > 0) {
+    return (
+      <div
+        style={dropdownStyle}
+        data-cy={'header-nav-dropdown'}
+        className={`wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg`}
+      >
+        <Inner>
+          <div className='grid grid-cols-2'>
+            <div></div>
+            <div className='grid gap-4 grid-cols-2'>
+              {(attributes || []).map((attribute) => {
+                return (
+                  <StickyNavAttribute
+                    key={`${attribute._id}`}
+                    attribute={attribute}
+                    rubricSlug={rubricSlug}
+                    attributeStyle={attributeStyle}
+                    attributeLinkStyle={attributeLinkStyle}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </Inner>
+      </div>
+    );
   }
 
   return (
@@ -100,4 +130,4 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   );
 };
 
-export default StickyNavDropdownDefault;
+export default StickyNavDropdownWithCategories;

@@ -31,6 +31,7 @@ import {
   ROUTE_DOCS_PAGES,
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CONTACTS,
+  CATALOGUE_CATEGORY_KEY,
 } from 'config/common';
 
 const middleLinkClassName =
@@ -205,7 +206,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
         <ul className='headless-mobile-nav pb-20'>
           {navRubrics.map((rubric) => {
-            const { name, attributes } = rubric;
+            const { name, attributes, variant, categories } = rubric;
 
             // Get rubric slug from product card path
             const isCurrent = rubric.slug === rubricSlug || rubricSlug === rubric.slug;
@@ -226,9 +227,33 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 <Disclosure>
                   <Disclosure.Panel>
                     <div>
+                      {variant?.showCategoriesInNav && (categories || []).length > 0 ? (
+                        <div className='mt-2 mb-10'>
+                          <div className='mb-2 text-secondary-text'>Категории</div>
+                          <ul>
+                            {(categories || []).map((category) => {
+                              const isCurrent = asPath === category.slug;
+                              return (
+                                <li key={`${category._id}`}>
+                                  <Link
+                                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${category.slug}`}
+                                    onClick={hideBurgerDropdown}
+                                    className={`flex items-center h-10 ${
+                                      isCurrent ? 'text-theme' : 'text-primary-text'
+                                    }`}
+                                  >
+                                    <span>{category.name}</span>
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      ) : null}
+
                       {(attributes || []).map((attribute) => {
                         return (
-                          <div className='mt-4 mb-4' key={`${attribute._id}`}>
+                          <div className='mt-2 mb-10' key={`${attribute._id}`}>
                             <div className='mb-2 text-secondary-text'>{attribute.name}</div>
                             <ul>
                               {(attribute.options || []).map((option) => {

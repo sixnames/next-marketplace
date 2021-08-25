@@ -595,6 +595,8 @@ export interface RubricVariantModel {
   showCardImagesSlider?: boolean | null;
   showCardBrands?: boolean | null;
   showCatalogueFilterBrands?: boolean | null;
+  showCategoriesInFilter?: boolean | null;
+  showCategoriesInNav?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;

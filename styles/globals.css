@@ -58,6 +58,35 @@
   .wp-shadow-200 {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
   }
+
+  .wp-nav-dropdown-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    opacity: 0.5;
+  }
+
+  .wp-nav-dropdown-visible {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    opacity: 1;
+    transition: opacity 0.1s linear;
+  }
 }
 
 @layer base {

@@ -221,6 +221,15 @@
     opacity: 1;
   }
 
+  /* Inputs */
+  .icon-upload-preview svg {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+  }
+
   /* Shops */
   .shops-map-snippet > div {
     position: absolute;

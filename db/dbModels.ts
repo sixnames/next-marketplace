@@ -104,6 +104,13 @@ export interface PaginationInputModel {
   limit?: number | null;
 }
 
+export interface IconModel {
+  _id: ObjectIdModel;
+  collectionName: string;
+  documentId: ObjectIdModel;
+  icon: string;
+}
+
 export interface ProductsPaginationInputModel extends PaginationInputModel {
   rubricId?: ObjectIdModel | null;
   attributesIds?: ObjectIdModel[] | null;
@@ -656,7 +663,6 @@ export interface CategoryModel extends CountersModel {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;
-  icon?: string | null;
   image?: string | null;
 }
 

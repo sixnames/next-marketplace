@@ -1,10 +1,10 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
+import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -45,14 +45,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, icon, variants } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, variants } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    icon,
     variants,
   };
 
@@ -77,9 +76,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   return (
     <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
       <Inner testId={'category-details'}>
-        <WpImageUpload
-          format={'image/svg+xml'}
-          maxFiles={1}
+        <WpIconUpload
+          previewIcon={category.icon?.icon}
           testId={'icon'}
           label={'Иконка'}
           uploadImageHandler={(files) => {
@@ -98,6 +96,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
                 })
                 .then((json) => {
                   if (json.success) {
+                    hideLoading();
                     router.reload();
                     return;
                   }
@@ -194,7 +193,29 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_ICONS,
+          as: 'icon',
+          let: {
+            documentId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                collectionName: COL_CATEGORIES,
+                $expr: {
+                  $eq: ['$documentId', '$$documentId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $addFields: {
+          icon: {
+            $arrayElemAt: ['$icon', 0],
+          },
           rubric: {
             $arrayElemAt: ['$rubric', 0],
           },

@@ -269,7 +269,6 @@ export interface NexusGenInputs {
   CreateCategoryInput: {
     // input type
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -628,7 +627,6 @@ export interface NexusGenInputs {
     // input type
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1265,7 +1263,6 @@ export interface NexusGenFieldTypes {
   Category: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    icon: string | null; // String
     image: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -2423,7 +2420,6 @@ export interface NexusGenFieldTypeNames {
   Category: {
     // field return type name
     _id: 'ObjectId';
-    icon: 'String';
     image: 'String';
     nameI18n: 'JSONObject';
     parentId: 'ObjectId';

@@ -305,7 +305,6 @@ input CatalogueSearchTopItemsInput {
 
 type Category {
   _id: ObjectId!
-  icon: String
   image: String
   nameI18n: JSONObject!
   parentId: ObjectId
@@ -495,7 +494,6 @@ input CreateBrandInput {
 
 input CreateCategoryInput {
   gender: Gender
-  icon: String
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
@@ -2577,7 +2575,6 @@ input UpdateBrandInput {
 input UpdateCategoryInput {
   categoryId: ObjectId!
   gender: Gender
-  icon: String
   nameI18n: JSONObject!
   rubricId: ObjectId!
   variants: JSONObject!

@@ -57,7 +57,6 @@ export const CreateCategoryInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
-    t.string('icon');
     t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
@@ -71,7 +70,6 @@ export const UpdateCategoryInput = inputObjectType({
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
     t.nonNull.objectId('rubricId');
-    t.string('icon');
     t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',

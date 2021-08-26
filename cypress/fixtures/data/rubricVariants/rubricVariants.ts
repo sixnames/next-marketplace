@@ -1,3 +1,10 @@
+import {
+  CARD_LAYOUT_HALF_COLUMNS,
+  CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
+  GRID_SNIPPET_LAYOUT_BIG_IMAGE,
+  NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
+  ROW_SNIPPET_LAYOUT_BIG_IMAGE,
+} from '../../../../config/constantSelects';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../../../config/common';
 import { RubricVariantModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -45,14 +52,16 @@ const rubricVariants: RubricVariantModel[] = [
     cardBrandsLabelI18n: {
       [DEFAULT_LOCALE]: 'Дополнительно',
     },
-    cardLayout: 'half-columns',
-    catalogueFilterLayout: 'checkbox-tree',
-    catalogueNavLayout: 'options-only',
-    gridSnippetLayout: 'big-image',
-    rowSnippetLayout: 'big-image',
+    cardLayout: CARD_LAYOUT_HALF_COLUMNS,
+    catalogueFilterLayout: CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
+    catalogueNavLayout: NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
+    gridSnippetLayout: GRID_SNIPPET_LAYOUT_BIG_IMAGE,
+    rowSnippetLayout: ROW_SNIPPET_LAYOUT_BIG_IMAGE,
     showCardBrands: true,
     showCardImagesSlider: true,
     showCatalogueFilterBrands: true,
+    showCategoriesInNav: true,
+    showCategoriesInFilter: true,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Вода',
     },

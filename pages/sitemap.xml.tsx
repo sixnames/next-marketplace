@@ -1,3 +1,9 @@
+import {
+  CATALOGUE_CATEGORY_KEY,
+  CATALOGUE_OPTION_SEPARATOR,
+  CATEGORY_SLUG_PREFIX_SEPARATOR,
+  CATEGORY_SLUG_PREFIX_WORD,
+} from 'config/common';
 import { COL_COMPANIES, COL_LANGUAGES, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -122,7 +128,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // catalogue filters
     selectedOptionsSlugs.forEach((slug) => {
-      initialSlugs.push(`catalogue/${rubric.slug}/${slug}`);
+      const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+      const isCategory = slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
+
+      initialSlugs.push(
+        `catalogue/${rubric.slug}/${
+          isCategory ? `${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${slug}` : slug
+        }`,
+      );
     });
 
     // products

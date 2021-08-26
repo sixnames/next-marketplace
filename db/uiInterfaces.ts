@@ -16,6 +16,7 @@ import {
   ContactsModel,
   CoordinatesModel,
   FormattedPhoneModel,
+  IconModel,
   ManufacturerModel,
   MetricModel,
   NavItemModel,
@@ -306,6 +307,7 @@ export interface CategoryInterface extends CategoryModel {
   attributesGroups?: RubricAttributesGroupInterface[] | null;
   rubric?: RubricInterface | null;
   categories?: CategoryInterface[] | null;
+  icon?: IconModel | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {

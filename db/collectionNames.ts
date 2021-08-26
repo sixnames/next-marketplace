@@ -8,6 +8,7 @@ export const COL_COMPANIES = 'companies';
 export const COL_CONFIGS = 'configs';
 export const COL_COUNTRIES = 'countries';
 export const COL_CURRENCIES = 'currencies';
+export const COL_ICONS = 'icons';
 export const COL_ID_COUNTERS = 'idCounters';
 export const COL_LANGUAGES = 'languages';
 export const COL_MANUFACTURERS = 'manufacturers';

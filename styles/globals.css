@@ -221,6 +221,29 @@
     opacity: 1;
   }
 
+  /* Icons */
+  .header-dropdown-category-icon {
+    display: block;
+  }
+
+  .header-dropdown-category-icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .icon-upload-preview svg {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+  }
+
+  .categories-icon-preview svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
   /* Shops */
   .shops-map-snippet > div {
     position: absolute;

@@ -348,7 +348,6 @@ export type Category = {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
-  icon?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
   rubricId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
@@ -540,7 +539,6 @@ export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
-  icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
@@ -2911,7 +2909,6 @@ export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
-  icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };

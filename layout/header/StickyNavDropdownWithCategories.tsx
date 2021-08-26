@@ -71,22 +71,28 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   attributeStyle,
   attributeLinkStyle,
 }) => {
-  const { categories, name } = category;
+  const { categories, name, icon } = category;
 
   return (
     <div className='flex flex-col'>
-      <div style={attributeStyle} className='flex items-center pb-1 uppercase font-medium'>
+      <div style={attributeStyle} className='flex items-center pb-1 font-medium'>
         <Link
           style={attributeLinkStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${category.slug}`}
-          className='flex items-center py-2 text-secondary-text'
+          className='flex items-center gap-3 py-2 text-secondary-text'
         >
-          {name}
+          {icon ? (
+            <span
+              className='flex-shrink-0 header-dropdown-category-icon'
+              dangerouslySetInnerHTML={{ __html: icon.icon }}
+            />
+          ) : null}
+          <span>{name}</span>
         </Link>
       </div>
-      <ul className='flex-grow flex flex-col'>
+      <ul className='flex-grow flex flex-col pl-10'>
         {(categories || []).map((childCategory) => {
           return (
             <li key={`${childCategory._id}`}>

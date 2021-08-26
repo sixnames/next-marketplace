@@ -221,7 +221,16 @@
     opacity: 1;
   }
 
-  /* Inputs */
+  /* Icons */
+  .header-dropdown-category-icon {
+    display: block;
+  }
+
+  .header-dropdown-category-icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
   .icon-upload-preview svg {
     position: absolute;
     top: 10%;

@@ -28,6 +28,7 @@ import {
   COL_COMPANIES,
   COL_CONFIGS,
   COL_COUNTRIES,
+  COL_ICONS,
   COL_LANGUAGES,
   COL_NAV_ITEMS,
   COL_OPTIONS,
@@ -453,6 +454,32 @@ export const getCatalogueNavRubrics = async ({
                 rubricId: rubric._id,
                 slug: {
                   $in: rubricConfig.attributeSlugs,
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ICONS,
+                as: 'icon',
+                let: {
+                  documentId: '$_id',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      collectionName: COL_CATEGORIES,
+                      $expr: {
+                        $eq: ['$documentId', '$$documentId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                icon: {
+                  $arrayElemAt: ['$icon', 0],
                 },
               },
             },

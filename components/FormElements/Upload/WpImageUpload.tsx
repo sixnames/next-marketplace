@@ -14,6 +14,7 @@ interface WpImageUploadInterface extends InputLinePropsInterface {
   format?: string | string[];
   testId?: string;
   previewUrl?: string;
+  maxFiles?: number;
 }
 
 const WpImageUpload: React.FC<WpImageUploadInterface> = ({
@@ -36,9 +37,11 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
   uploadImageHandler,
   removeImageHandler,
   format,
+  maxFiles,
   error,
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
+    maxFiles,
     onDrop: (acceptedFiles) => {
       if (uploadImageHandler) {
         uploadImageHandler(acceptedFiles);

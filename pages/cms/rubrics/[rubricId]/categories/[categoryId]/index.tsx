@@ -1,5 +1,6 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
@@ -29,7 +30,14 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+  const {
+    onCompleteCallback,
+    onErrorCallback,
+    showLoading,
+    router,
+    showErrorNotification,
+    hideLoading,
+  } = useMutationCallbacks({
     reload: true,
   });
   const [updateCategoryMutation] = useUpdateCategoryMutation({
@@ -69,6 +77,41 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   return (
     <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
       <Inner testId={'category-details'}>
+        <WpImageUpload
+          format={'image/svg+xml'}
+          maxFiles={1}
+          testId={'icon'}
+          label={'Иконка'}
+          uploadImageHandler={(files) => {
+            if (files) {
+              showLoading();
+              const formData = new FormData();
+              formData.append('assets', files[0]);
+              formData.append('categoryId', `${category._id}`);
+
+              fetch('/api/add-category-icon', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
+          }}
+        />
+
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}

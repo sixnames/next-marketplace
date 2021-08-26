@@ -1,6 +1,7 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
@@ -45,7 +46,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, variants } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, variants, image } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
@@ -76,6 +77,41 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   return (
     <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
       <Inner testId={'category-details'}>
+        <WpImageUpload
+          previewUrl={image}
+          testId={'image'}
+          label={'Изображение'}
+          uploadImageHandler={(files) => {
+            if (files) {
+              showLoading();
+              const formData = new FormData();
+              formData.append('assets', files[0]);
+              formData.append('categoryId', `${category._id}`);
+
+              fetch('/api/add-category-image', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    hideLoading();
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
+          }}
+        />
+
         <WpIconUpload
           previewIcon={category.icon?.icon}
           testId={'icon'}

@@ -13,7 +13,7 @@ interface WpImageUploadInterface extends InputLinePropsInterface {
   removeImageHandler?: () => void;
   format?: string | string[];
   testId?: string;
-  previewUrl?: string;
+  previewUrl?: string | null;
 }
 
 const WpImageUpload: React.FC<WpImageUploadInterface> = ({

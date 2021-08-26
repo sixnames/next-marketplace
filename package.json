@@ -15,6 +15,8 @@
     "cy:open": "cypress open",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
     "test": "cypress run",
+    "ci": "server-test 3000",
+    "build-and-test": "yarn build && yarn ci",
     "seed-stage-db": "ts-node --skip-project tests/seedStageDb.ts",
     "update-prods": "ts-node --skip-project cypress/fixtures/utils/updateProds.ts",
     "seed-new-db": "ts-node --skip-project cypress/fixtures/utils/seedNewDb.ts",
@@ -148,6 +150,7 @@
     "mongo-seeding-cli": "^3.6.0",
     "postcss": "^8.2.8",
     "prettier": "^2.2.1",
+    "start-server-and-test": "^1.13.1",
     "tailwindcss": "2.1.4",
     "ts-node": "10.0.0",
     "typescript": "4.3.2"

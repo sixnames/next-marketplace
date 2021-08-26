@@ -5,20 +5,19 @@ import ButtonCross from 'components/ButtonCross';
 import { useDropzone } from 'react-dropzone';
 import Tooltip from 'components/Tooltip';
 
-interface WpImageUploadInterface extends InputLinePropsInterface {
+interface WpIconUploadInterface extends InputLinePropsInterface {
   tooltip?: any;
   width?: string;
   height?: string;
   uploadImageHandler: (files: any) => void;
   removeImageHandler?: () => void;
-  format?: string | string[];
   testId?: string;
-  previewUrl?: string | null;
+  previewIcon?: string | null;
 }
 
-const WpImageUpload: React.FC<WpImageUploadInterface> = ({
+const WpIconUpload: React.FC<WpIconUploadInterface> = ({
   name,
-  previewUrl,
+  previewIcon,
   label,
   isRequired,
   lineClass,
@@ -35,7 +34,6 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
   lineContentClass,
   uploadImageHandler,
   removeImageHandler,
-  format,
   error,
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
@@ -45,7 +43,7 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
         uploadImageHandler(acceptedFiles);
       }
     },
-    accept: format,
+    accept: 'image/svg+xml',
   });
 
   return (
@@ -76,18 +74,12 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
             />
           </span>
 
-          {previewUrl ? (
+          {previewIcon ? (
             <React.Fragment>
-              <div className='absolute inset-0 z-10'>
-                <img
-                  className='absolute inset-0 object-contain object-center w-full h-full'
-                  src={previewUrl}
-                  width='100'
-                  height='100'
-                  alt={''}
-                  data-cy={`${testId}-image`}
-                />
-              </div>
+              <div
+                className='absolute inset-0 z-10 text-wp-dark-gray-400 icon-upload-preview'
+                dangerouslySetInnerHTML={{ __html: previewIcon }}
+              />
               {removeImageHandler ? (
                 <ButtonCross
                   size={'small'}
@@ -110,4 +102,4 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
   );
 };
 
-export default WpImageUpload;
+export default WpIconUpload;

@@ -7,6 +7,7 @@ import {
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
   ASSETS_DIST_TEMPLATES,
+  ASSETS_DIST_CATEGORIES,
 } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
@@ -80,6 +81,11 @@ const config = {
       `./cypress/fixtures/assets/${ASSETS_DIST_BRANDS}`,
       bucketName,
       `/${ASSETS_DIST_BRANDS}`,
+    );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_CATEGORIES}`,
+      bucketName,
+      `/${ASSETS_DIST_CATEGORIES}`,
     );
     /*await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,

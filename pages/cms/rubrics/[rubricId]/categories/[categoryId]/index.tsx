@@ -1,9 +1,11 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -29,7 +31,14 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+  const {
+    onCompleteCallback,
+    onErrorCallback,
+    showLoading,
+    router,
+    showErrorNotification,
+    hideLoading,
+  } = useMutationCallbacks({
     reload: true,
   });
   const [updateCategoryMutation] = useUpdateCategoryMutation({
@@ -37,14 +46,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, icon, variants } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, variants, image } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    icon,
     variants,
   };
 
@@ -69,6 +77,76 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
   return (
     <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
       <Inner testId={'category-details'}>
+        <WpImageUpload
+          previewUrl={image}
+          testId={'image'}
+          label={'Изображение'}
+          uploadImageHandler={(files) => {
+            if (files) {
+              showLoading();
+              const formData = new FormData();
+              formData.append('assets', files[0]);
+              formData.append('categoryId', `${category._id}`);
+
+              fetch('/api/add-category-image', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    hideLoading();
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
+          }}
+        />
+
+        <WpIconUpload
+          previewIcon={category.icon?.icon}
+          testId={'icon'}
+          label={'Иконка'}
+          uploadImageHandler={(files) => {
+            if (files) {
+              showLoading();
+              const formData = new FormData();
+              formData.append('assets', files[0]);
+              formData.append('categoryId', `${category._id}`);
+
+              fetch('/api/add-category-icon', {
+                method: 'POST',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    hideLoading();
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }
+          }}
+        />
+
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}
@@ -151,7 +229,29 @@ export const getServerSideProps = async (
         },
       },
       {
+        $lookup: {
+          from: COL_ICONS,
+          as: 'icon',
+          let: {
+            documentId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                collectionName: COL_CATEGORIES,
+                $expr: {
+                  $eq: ['$documentId', '$$documentId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
         $addFields: {
+          icon: {
+            $arrayElemAt: ['$icon', 0],
+          },
           rubric: {
             $arrayElemAt: ['$rubric', 0],
           },

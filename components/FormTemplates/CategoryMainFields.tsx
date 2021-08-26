@@ -1,4 +1,3 @@
-import FormikIconSelect from 'components/FormElements/FormikIconSelect';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -40,14 +39,6 @@ const CategoryMainFields: React.FC = () => {
         options={getGenderOptions}
         testId={`gender`}
         label={'Род названия'}
-      />
-
-      <FormikIconSelect
-        label={'Иконка'}
-        name={'icon'}
-        testId={'icon'}
-        firstOption
-        showInlineError
       />
 
       <InputLine name={'variants'} label={'Склонение названия по родам'} labelTag={'div'}>

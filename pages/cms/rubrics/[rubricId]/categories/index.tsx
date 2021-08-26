@@ -1,13 +1,12 @@
 import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
-import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { useDeleteCategoryMutation } from 'generated/apolloComponents';
@@ -43,7 +42,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-
+      console.log(image);
       return (
         <div>
           {image ? (
@@ -61,16 +60,17 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
             </div>
           ) : null}
 
-          <div className='cms-option flex items-center'>
+          <div className='cms-option flex items-center gap-4'>
             {category.icon ? (
-              <div className='mr-4'>
-                <Icon name={category.icon} className='w-6 h-6' />
-              </div>
+              <div
+                className='categories-icon-preview'
+                dangerouslySetInnerHTML={{ __html: category.icon.icon }}
+              />
             ) : null}
             <div className='font-medium' data-cy={`category-${name}`}>
               {name}
             </div>
-            <div className='cms-option__controls ml-4'>
+            <div className='cms-option__controls'>
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
@@ -226,6 +226,32 @@ export const getServerSideProps = async (
               $match: {
                 $expr: {
                   $eq: ['$rubricId', '$$rubricId'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ICONS,
+                as: 'icon',
+                let: {
+                  documentId: '$_id',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      collectionName: COL_CATEGORIES,
+                      $expr: {
+                        $eq: ['$documentId', '$$documentId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                icon: {
+                  $arrayElemAt: ['$icon', 0],
                 },
               },
             },

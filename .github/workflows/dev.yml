@@ -19,7 +19,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: yarn install
-      - run: yarn build-and-test
+      - run: yarn build
         env:
           DEV_ENV: true
           MONGO_URL: ${{ secrets.MONGO_URL }}

@@ -42,7 +42,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-      console.log(image);
+
       return (
         <div>
           {image ? (

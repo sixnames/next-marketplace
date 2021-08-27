@@ -4,6 +4,7 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
 import {
@@ -190,9 +191,20 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       },
     },
     {
-      accessor: 'category.name',
+      accessor: 'category',
       headTitle: 'Категория',
-      render: ({ cellData }) => cellData || 'На уровне рубрики',
+      render: ({ cellData }) => {
+        if (cellData) {
+          return (
+            <Link
+              href={`${ROUTE_CMS}/rubrics/${category.rubric?._id}/categories/${category._id}/attributes`}
+            >
+              {cellData.name}
+            </Link>
+          );
+        }
+        return null;
+      },
     },
   ];
 

@@ -88,6 +88,7 @@ export function getCategoryFilterAttribute({
     showAsBreadcrumb: false,
     showInCard: true,
     showInProductAttributes: true,
+    showAsCatalogueBreadcrumb: true,
     capitalise: true,
     positioningInTitle: {
       [DEFAULT_LOCALE]:

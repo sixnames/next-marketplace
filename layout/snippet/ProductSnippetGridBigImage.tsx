@@ -32,7 +32,9 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   } = product;
 
   const bgClassName = showSnippetBackground
-    ? 'bg-secondary dark:shadow-md'
+    ? showSnippetButtonsOnHover
+      ? 'transition-all bg-secondary lg:bg-transparent lg:hover:bg-secondary lg:hover:shadow-md'
+      : 'bg-secondary dark:shadow-md'
     : 'transition-all hover:shadow-md';
 
   const columnsClassName =
@@ -57,55 +59,63 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         className ? className : columnsClassName
       }`}
     >
-      <div className='px-4 pt-6'>
-        <div className='relative flex justify-center snippet-image mb-4'>
-          <Image
-            priority={true}
-            src={mainImage}
-            objectFit={'contain'}
-            objectPosition={'center'}
-            alt={originalName}
-            title={originalName}
-            width={240}
-            height={240}
-            quality={50}
-          />
-          <Link
-            testId={`${testId}-image-grid`}
-            target={'_blank'}
-            className='block absolute z-10 inset-0 text-indent-full'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
-          >
-            {originalName}
-          </Link>
+      <div
+        className={`rounded-md ${
+          showSnippetBackground && showSnippetButtonsOnHover
+            ? 'lg:group-hover:bg-none lg:group-hover:shadow-none lg:bg-secondary lg:dark:shadow-md'
+            : ''
+        }`}
+      >
+        <div className='px-4 pt-6'>
+          <div className='relative flex justify-center snippet-image mb-4'>
+            <Image
+              priority={true}
+              src={mainImage}
+              objectFit={'contain'}
+              objectPosition={'center'}
+              alt={originalName}
+              title={originalName}
+              width={240}
+              height={240}
+              quality={50}
+            />
+            <Link
+              testId={`${testId}-image-grid`}
+              target={'_blank'}
+              className='block absolute z-10 inset-0 text-indent-full'
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            >
+              {originalName}
+            </Link>
+          </div>
+
+          {/*original name*/}
+          <div className='text-lg mb-1'>
+            <Link
+              testId={`${testId}-name-grid`}
+              target={'_blank'}
+              className='block text-primary-text hover:no-underline hover:text-primary-text'
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            >
+              {originalName}
+            </Link>
+          </div>
+
+          {/*name translation*/}
+          {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
+            <div className='text-sm text-secondary-text mb-3'>{name}</div>
+          )}
+
+          {/*art*/}
+          {showSnippetArticle ? (
+            <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+          ) : null}
         </div>
 
-        {/*original name*/}
-        <div className='text-lg sm:text-xl font-medium mb-1'>
-          <Link
-            testId={`${testId}-name-grid`}
-            target={'_blank'}
-            className='block text-primary-text hover:no-underline hover:text-primary-text'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
-          >
-            {originalName}
-          </Link>
+        {/*price*/}
+        <div className='flex justify-center mb-2 px-4 mt-auto'>
+          <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
-
-        {/*name translation*/}
-        {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
-          <div className='text-sm text-secondary-text mb-3'>{name}</div>
-        )}
-
-        {/*art*/}
-        {showSnippetArticle ? (
-          <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
-        ) : null}
-      </div>
-
-      {/*price*/}
-      <div className='flex justify-center mb-2 px-4 mt-auto'>
-        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
       </div>
 
       {/*controls*/}

@@ -32,7 +32,7 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
                 return (
                   <li key={`${option?.name}`}>
                     <TagLink
-                      icon={option.icon}
+                      icon={option.icon?.icon}
                       href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
                       testId={`card-icon-option-${name}`}
                     >

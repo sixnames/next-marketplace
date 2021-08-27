@@ -46,14 +46,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, variants, image } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, image } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    variants,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -81,6 +80,32 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
           previewUrl={image}
           testId={'image'}
           label={'Изображение'}
+          removeImageHandler={() => {
+            showLoading();
+            const formData = new FormData();
+            formData.append('categoryId', `${category._id}`);
+
+            fetch('/api/update-category-image', {
+              method: 'DELETE',
+              body: formData,
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((json) => {
+                if (json.success) {
+                  hideLoading();
+                  router.reload();
+                  return;
+                }
+                hideLoading();
+                showErrorNotification({ title: json.message });
+              })
+              .catch(() => {
+                hideLoading();
+                showErrorNotification({ title: 'error' });
+              });
+          }}
           uploadImageHandler={(files) => {
             if (files) {
               showLoading();
@@ -88,7 +113,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
               formData.append('assets', files[0]);
               formData.append('categoryId', `${category._id}`);
 
-              fetch('/api/add-category-image', {
+              fetch('/api/update-category-image', {
                 method: 'POST',
                 body: formData,
               })
@@ -116,6 +141,32 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
           previewIcon={category.icon?.icon}
           testId={'icon'}
           label={'Иконка'}
+          removeImageHandler={() => {
+            showLoading();
+            const formData = new FormData();
+            formData.append('categoryId', `${category._id}`);
+
+            fetch('/api/update-category-icon', {
+              method: 'DELETE',
+              body: formData,
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((json) => {
+                if (json.success) {
+                  hideLoading();
+                  router.reload();
+                  return;
+                }
+                hideLoading();
+                showErrorNotification({ title: json.message });
+              })
+              .catch(() => {
+                hideLoading();
+                showErrorNotification({ title: 'error' });
+              });
+          }}
           uploadImageHandler={(files) => {
             if (files) {
               showLoading();
@@ -123,7 +174,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
               formData.append('assets', files[0]);
               formData.append('categoryId', `${category._id}`);
 
-              fetch('/api/add-category-icon', {
+              fetch('/api/update-category-icon', {
                 method: 'POST',
                 body: formData,
               })
@@ -166,7 +217,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
                 <CategoryMainFields />
 
                 <FixedButtons>
-                  <Button type={'submit'} testId={'category-submit'}>
+                  <Button type={'submit'} testId={'category-submit'} size={'small'}>
                     Сохранить
                   </Button>
                 </FixedButtons>

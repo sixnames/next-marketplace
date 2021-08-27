@@ -149,7 +149,6 @@ export interface NexusGenInputs {
     // input type
     color?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -272,7 +271,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
     // input type
@@ -629,7 +627,6 @@ export interface NexusGenInputs {
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateCityInCountryInput: {
     // input type
@@ -725,7 +722,6 @@ export interface NexusGenInputs {
     // input type
     color?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1269,7 +1265,6 @@ export interface NexusGenFieldTypes {
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
-    variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CategoryPayload: {
@@ -1637,7 +1632,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string | null; // String
     gender: NexusGenEnums['Gender'] | null; // Gender
-    icon: string | null; // String
     image: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2426,7 +2420,6 @@ export interface NexusGenFieldTypeNames {
     priorities: 'JSONObject';
     rubricId: 'ObjectId';
     slug: 'String';
-    variants: 'JSONObject';
     views: 'JSONObject';
   };
   CategoryPayload: {
@@ -2794,7 +2787,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     color: 'String';
     gender: 'Gender';
-    icon: 'String';
     image: 'String';
     name: 'String';
     nameI18n: 'JSONObject';

@@ -1,17 +1,15 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
-import Icon from 'components/Icon';
 import Inner from 'components/Inner';
-import { AddAssetsModalInterface } from 'components/Modal/AddAssetsModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { ADD_ASSETS_MODAL, CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
-import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
+import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface, OptionsGroupInterface } from 'db/uiInterfaces';
 import {
@@ -19,17 +17,14 @@ import {
   OptionsGroupVariant,
   useAddOptionToGroupMutation,
   useDeleteOptionFromGroupMutation,
-  useUpdateOptionInGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -44,18 +39,11 @@ interface OptionsGroupOptionsConsumerInterface {
 const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface> = ({
   optionsGroup,
 }) => {
-  const router = useRouter();
-  const {
-    onCompleteCallback,
-    onErrorCallback,
-    showLoading,
-    showModal,
-    hideLoading,
-    showErrorNotification,
-  } = useMutationCallbacks({
-    reload: true,
-    withModal: true,
-  });
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal, router } =
+    useMutationCallbacks({
+      reload: true,
+      withModal: true,
+    });
 
   const [addOptionToGroupMutation] = useAddOptionToGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.addOptionToGroup),
@@ -64,11 +52,6 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
 
   const [deleteOptionFromGroupMutation] = useDeleteOptionFromGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteOptionFromGroup),
-    onError: onErrorCallback,
-  });
-
-  const [updateOptionInGroupMutation] = useUpdateOptionInGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateOptionInGroup),
     onError: onErrorCallback,
   });
 
@@ -109,60 +92,20 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
               />
             </div>
           ) : null}
-          <div className='cms-option flex items-center'>
+          <div className='cms-option flex items-center gap-4'>
             {option.icon ? (
-              <div className='mr-4'>
-                <Icon name={option.icon} className='w-6 h-6' />
-              </div>
+              <div
+                className='categories-icon-preview'
+                dangerouslySetInnerHTML={{ __html: option.icon.icon }}
+              />
             ) : null}
             <div className='font-medium' data-cy={`option-${name}`}>
               {name}
             </div>
-            <div className='cms-option__controls ml-4'>
+            <div className='cms-option__controls'>
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
-                addAssetTitle={'Добавить изображение'}
-                addAssetHandler={() => {
-                  showModal<AddAssetsModalInterface>({
-                    variant: ADD_ASSETS_MODAL,
-                    props: {
-                      maxFiles: 1,
-                      testId: 'option-image-modal',
-                      dropZoneTextId: 'option-image',
-                      onDropHandler: (acceptedFiles) => {
-                        if (acceptedFiles) {
-                          showLoading();
-                          const formData = new FormData();
-                          alwaysArray(acceptedFiles).forEach((file, index) => {
-                            formData.append(`assets[${index}]`, file);
-                          });
-                          formData.append('optionId', `${option._id}`);
-
-                          fetch('/api/add-option-asset', {
-                            method: 'POST',
-                            body: formData,
-                          })
-                            .then((res) => {
-                              return res.json();
-                            })
-                            .then((json) => {
-                              if (json.success) {
-                                router.reload();
-                                return;
-                              }
-                              hideLoading();
-                              showErrorNotification({ title: json.message });
-                            })
-                            .catch(() => {
-                              hideLoading();
-                              showErrorNotification({ title: 'error' });
-                            });
-                        }
-                      },
-                    },
-                  });
-                }}
                 createTitle={'Добавить дочернюю опцию'}
                 createHandler={() => {
                   showModal<OptionInGroupModalInterface>({
@@ -187,25 +130,9 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
                 }}
                 updateTitle={'Редактировать опцию'}
                 updateHandler={() => {
-                  showModal<OptionInGroupModalInterface>({
-                    variant: OPTION_IN_GROUP_MODAL,
-                    props: {
-                      option,
-                      groupVariant: `${optionsGroup.variant}` as OptionsGroupVariant,
-                      confirm: (values) => {
-                        showLoading();
-                        return updateOptionInGroupMutation({
-                          variables: {
-                            input: {
-                              ...values,
-                              optionId: option._id,
-                              optionsGroupId: `${optionsGroup._id}`,
-                            },
-                          },
-                        });
-                      },
-                    },
-                  });
+                  router
+                    .push(`${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`)
+                    .catch(console.log);
                 }}
                 deleteTitle={'Удалить опцию'}
                 deleteHandler={() => {
@@ -245,14 +172,11 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
     [
       addOptionToGroupMutation,
       deleteOptionFromGroupMutation,
-      hideLoading,
       optionsGroup._id,
       optionsGroup.variant,
       router,
-      showErrorNotification,
       showLoading,
       showModal,
-      updateOptionInGroupMutation,
     ],
   );
 
@@ -378,6 +302,32 @@ export const getServerSideProps = async (
               $match: {
                 $expr: {
                   $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ICONS,
+                as: 'icon',
+                let: {
+                  documentId: '$_id',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      collectionName: COL_OPTIONS,
+                      $expr: {
+                        $eq: ['$documentId', '$$documentId'],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                icon: {
+                  $arrayElemAt: ['$icon', 0],
                 },
               },
             },

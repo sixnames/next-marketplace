@@ -4,6 +4,7 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
 import {
@@ -37,6 +38,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/CmsLayout/CmsCategoryLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -189,9 +191,20 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       },
     },
     {
-      accessor: 'category.name',
+      accessor: 'category',
       headTitle: 'Категория',
-      render: ({ cellData }) => cellData || 'На уровне рубрики',
+      render: ({ cellData }) => {
+        if (cellData && cellData._id !== category._id) {
+          return (
+            <Link
+              href={`${ROUTE_CMS}/rubrics/${category.rubric?._id}/categories/${category._id}/attributes`}
+            >
+              {cellData.name}
+            </Link>
+          );
+        }
+        return null;
+      },
     },
   ];
 
@@ -399,12 +412,6 @@ export const getServerSideProps = async (
                       $eq: ['$categoryId', '$$categoryId'],
                     },
                   },
-                  {
-                    categoryId: null,
-                    $expr: {
-                      $eq: ['$rubricId', '$$rubricId'],
-                    },
-                  },
                 ],
               },
             },
@@ -449,12 +456,6 @@ export const getServerSideProps = async (
                       $expr: {
                         $eq: ['$_id', '$$attributesGroupId'],
                       },
-                    },
-                  },
-                  {
-                    $sort: {
-                      [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                      _id: SORT_DESC,
                     },
                   },
                 ],
@@ -549,6 +550,26 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
+
+  const castedAttributesGroups = (initialCategory.attributesGroups || []).map((attributesGroup) => {
+    return {
+      ...attributesGroup,
+      name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
+      attributes: (attributesGroup.attributes || []).map((attribute) => {
+        return {
+          ...attribute,
+          name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
+          category: attribute.category
+            ? {
+                ...attribute.category,
+                name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
+              }
+            : null,
+        };
+      }),
+    };
+  });
+
   const category: CategoryInterface = {
     ...initialCategory,
     name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
@@ -559,24 +580,7 @@ export const getServerSideProps = async (
           name: getFieldStringLocale(initialCategory.rubric.nameI18n, sessionLocale),
         }
       : null,
-    attributesGroups: (initialCategory.attributesGroups || []).map((attributesGroup) => {
-      return {
-        ...attributesGroup,
-        name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-        attributes: (attributesGroup.attributes || []).map((attribute) => {
-          return {
-            ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
-            category: attribute.category
-              ? {
-                  ...attribute.category,
-                  name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
-                }
-              : null,
-          };
-        }),
-      };
-    }),
+    attributesGroups: sortByName(castedAttributesGroups),
   };
 
   return {

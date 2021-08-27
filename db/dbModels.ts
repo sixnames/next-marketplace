@@ -378,7 +378,6 @@ export interface OptionModel extends CountersModel {
   variants: OptionVariantsModel;
   gender?: GenderModel | null;
   color?: string | null;
-  icon?: string | null;
   optionsGroupId: ObjectIdModel;
   parentId?: ObjectIdModel | null;
   image?: string | null;
@@ -657,7 +656,6 @@ export interface CategoryModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  variants: OptionVariantsModel;
   gender?: GenderModel | null;
   parentTreeIds: ObjectIdModel[];
   rubricId: ObjectIdModel;

@@ -296,3 +296,17 @@ export async function getParentTreeSlugs({
 
   return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
 }
+
+export function sortByName(list: any[]): any[] {
+  return list.sort((a, b) => {
+    const nameA = `${a.name}`.toUpperCase();
+    const nameB = `${b.name}`.toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}

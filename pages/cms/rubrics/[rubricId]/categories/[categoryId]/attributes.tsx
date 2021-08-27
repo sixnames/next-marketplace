@@ -37,6 +37,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/CmsLayout/CmsCategoryLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -399,12 +400,6 @@ export const getServerSideProps = async (
                       $eq: ['$categoryId', '$$categoryId'],
                     },
                   },
-                  {
-                    categoryId: null,
-                    $expr: {
-                      $eq: ['$rubricId', '$$rubricId'],
-                    },
-                  },
                 ],
               },
             },
@@ -449,12 +444,6 @@ export const getServerSideProps = async (
                       $expr: {
                         $eq: ['$_id', '$$attributesGroupId'],
                       },
-                    },
-                  },
-                  {
-                    $sort: {
-                      [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                      _id: SORT_DESC,
                     },
                   },
                 ],
@@ -549,6 +538,26 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
+
+  const castedAttributesGroups = (initialCategory.attributesGroups || []).map((attributesGroup) => {
+    return {
+      ...attributesGroup,
+      name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
+      attributes: (attributesGroup.attributes || []).map((attribute) => {
+        return {
+          ...attribute,
+          name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
+          category: attribute.category
+            ? {
+                ...attribute.category,
+                name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
+              }
+            : null,
+        };
+      }),
+    };
+  });
+
   const category: CategoryInterface = {
     ...initialCategory,
     name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
@@ -559,24 +568,7 @@ export const getServerSideProps = async (
           name: getFieldStringLocale(initialCategory.rubric.nameI18n, sessionLocale),
         }
       : null,
-    attributesGroups: (initialCategory.attributesGroups || []).map((attributesGroup) => {
-      return {
-        ...attributesGroup,
-        name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-        attributes: (attributesGroup.attributes || []).map((attribute) => {
-          return {
-            ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
-            category: attribute.category
-              ? {
-                  ...attribute.category,
-                  name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
-                }
-              : null,
-          };
-        }),
-      };
-    }),
+    attributesGroups: sortByName(castedAttributesGroups),
   };
 
   return {

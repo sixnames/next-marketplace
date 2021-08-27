@@ -17,7 +17,6 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый',
     },
-    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -30,7 +29,6 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A',
     },
-    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -47,7 +45,6 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-1',
     },
-    variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -64,7 +61,17 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-2',
     },
-    variants: {},
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('category Купажированный'),
+    parentTreeIds: [getObjectId('category Купажированный')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}5`,
+    rubricSlug: 'vino',
+    nameI18n: {
+      ru: 'Купажированный',
+    },
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

@@ -155,6 +155,8 @@ export interface NavGroupInterface {
 export interface OptionInterface extends OptionModel {
   name?: string | null;
   options?: OptionInterface[] | null;
+  icon?: IconModel | null;
+  optionsGroup?: OptionsGroupInterface | null;
 }
 
 export interface OptionsGroupInterface extends OptionsGroupModel {

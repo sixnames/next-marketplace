@@ -1,6 +1,4 @@
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel } from 'db/dbModels';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -41,10 +39,6 @@ const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({ parentId,
         initialValues={{
           rubricId,
           nameI18n: {},
-          variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
-            acc[gender] = {};
-            return acc;
-          }, {}),
         }}
         onSubmit={(values) => {
           showLoading();

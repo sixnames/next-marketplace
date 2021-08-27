@@ -14,7 +14,6 @@ export const Option = objectType({
     t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
     t.string('color');
-    t.string('icon');
     t.string('image');
     t.nonNull.json('variants');
     t.field('gender', {

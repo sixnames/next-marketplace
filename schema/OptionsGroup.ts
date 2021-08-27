@@ -10,7 +10,6 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
-  OPTIONS_GROUP_VARIANT_ICON,
   SORT_DESC,
 } from 'config/common';
 import {
@@ -173,7 +172,6 @@ export const AddOptionToGroupInput = inputObjectType({
     t.objectId('parentId');
     t.nonNull.json('nameI18n');
     t.string('color');
-    t.string('icon');
     t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
@@ -189,7 +187,6 @@ export const UpdateOptionInGroupInput = inputObjectType({
     t.nonNull.objectId('optionsGroupId');
     t.nonNull.json('nameI18n');
     t.string('color');
-    t.string('icon');
     t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
@@ -526,12 +523,6 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check input fields based on options group variant
-          if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
-            return {
-              success: false,
-              message: await getApiMessage(`optionsGroups.addOption.iconError`),
-            };
-          }
           if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
             return {
               success: false,
@@ -643,12 +634,6 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check input fields based on options group variant
-          if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
-            return {
-              success: false,
-              message: await getApiMessage(`optionsGroups.addOption.iconError`),
-            };
-          }
           if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
             return {
               success: false,

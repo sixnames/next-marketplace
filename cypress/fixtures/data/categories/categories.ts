@@ -67,6 +67,18 @@ const categories: CategoryModel[] = [
     variants: {},
     ...DEFAULT_COUNTERS_OBJECT,
   },
+  {
+    _id: getObjectId('category Купажированный'),
+    parentTreeIds: [getObjectId('category Купажированный')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}5`,
+    rubricSlug: 'vino',
+    nameI18n: {
+      ru: 'Купажированный',
+    },
+    variants: {},
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 // @ts-ignore

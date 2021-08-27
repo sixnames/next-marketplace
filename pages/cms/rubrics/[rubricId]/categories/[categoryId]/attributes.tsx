@@ -194,7 +194,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       accessor: 'category',
       headTitle: 'Категория',
       render: ({ cellData }) => {
-        if (cellData) {
+        if (cellData && cellData._id !== category._id) {
           return (
             <Link
               href={`${ROUTE_CMS}/rubrics/${category.rubric?._id}/categories/${category._id}/attributes`}

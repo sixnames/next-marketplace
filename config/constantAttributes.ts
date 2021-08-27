@@ -1,11 +1,15 @@
 import {
+  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   CATALOGUE_CATEGORY_KEY,
+  DEFAULT_LOCALE,
   GENDER_IT,
   PRICE_ATTRIBUTE_SLUG,
+  SECONDARY_LOCALE,
 } from 'config/common';
 import {
+  AttributePositionInTitleModel,
   AttributeVariantModel,
   AttributeViewVariantModel,
   GenderModel,
@@ -71,8 +75,8 @@ export function getCategoryFilterAttribute({
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
-      ru: 'Категория',
-      en: 'Category',
+      [DEFAULT_LOCALE]: 'Категория',
+      [SECONDARY_LOCALE]: 'Category',
     },
     slug: CATALOGUE_CATEGORY_KEY,
     priorities: {},
@@ -84,6 +88,13 @@ export function getCategoryFilterAttribute({
     showAsBreadcrumb: false,
     showInCard: true,
     showInProductAttributes: true,
+    capitalise: true,
+    positioningInTitle: {
+      [DEFAULT_LOCALE]:
+        ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleModel,
+      [SECONDARY_LOCALE]:
+        ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleModel,
+    },
     options,
   };
 }

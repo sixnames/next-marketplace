@@ -22,6 +22,61 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 
+  // Permission
+  const { allow, message } = await getOperationPermission({
+    context: {
+      req,
+      res,
+    },
+    slug: 'updateCategory',
+  });
+  if (!allow) {
+    res.status(500).send({
+      success: false,
+      message: message,
+    });
+    return;
+  }
+
+  // delete icon
+  if (req.method === 'DELETE') {
+    if (!formData || !formData.fields || !formData.fields.categoryId) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'categories.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    const removedIconResult = await iconsCollection.findOneAndDelete({
+      documentId: new ObjectId(`${formData.fields.categoryId}`),
+      collectionName: COL_CATEGORIES,
+    });
+    if (!removedIconResult.ok) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'categories.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: await getApiMessageValue({
+        slug: 'categories.update.success',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // update icon
   if (!formData || !formData.files || !formData.fields || !formData.fields.categoryId) {
     res.status(500).send({
       success: false,
@@ -51,22 +106,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const icon = buffer.toString();
   const categoryId = new ObjectId(`${formData.fields.categoryId}`);
-
-  // Permission
-  const { allow, message } = await getOperationPermission({
-    context: {
-      req,
-      res,
-    },
-    slug: 'updateCategory',
-  });
-  if (!allow) {
-    res.status(500).send({
-      success: false,
-      message: message,
-    });
-    return;
-  }
 
   const category = await categoriesCollection.findOne({
     _id: categoryId,

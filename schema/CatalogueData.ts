@@ -7,6 +7,7 @@ import {
   BrandCollectionModel,
   BrandModel,
   CatalogueSearchResultModel,
+  CategoryModel,
   LanguageModel,
   ManufacturerModel,
   OptionAlphabetListModel,
@@ -22,6 +23,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
+  COL_CATEGORIES,
   COL_LANGUAGES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
@@ -35,6 +37,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
+  CATALOGUE_CATEGORY_KEY,
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
@@ -643,6 +646,7 @@ export const CatalogueMutations = extendType({
           const { role } = await getSessionRole(context);
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const productAttributesCollection =
@@ -669,6 +673,7 @@ export const CatalogueMutations = extendType({
             const selectedManufacturerSlugs: string[] = [];
             const selectedAttributesSlugs: string[] = [];
             const selectedOptionsSlugs: string[] = [];
+            const selectedCategoriesSlugs: string[] = [];
 
             filter.forEach((param) => {
               const castedParam = castCatalogueParamToObject(param);
@@ -689,6 +694,11 @@ export const CatalogueMutations = extendType({
                 return;
               }
 
+              if (slug === CATALOGUE_CATEGORY_KEY) {
+                selectedCategoriesSlugs.push(value);
+                return;
+              }
+
               selectedAttributesSlugs.push(slug);
               selectedOptionsSlugs.push(value);
             });
@@ -698,6 +708,14 @@ export const CatalogueMutations = extendType({
                 [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
               },
             };
+
+            // Update categories
+            if (selectedCategoriesSlugs.length > 0) {
+              await categoriesCollection.updateMany(
+                { slug: { $in: selectedCategoriesSlugs } },
+                counterUpdater,
+              );
+            }
 
             // Update brand counters
             if (selectedBrandSlugs.length > 0) {

@@ -36,7 +36,7 @@ export interface ProductPromoModel {
 
 // add PromoModel to the OrderModel
 
-// Uer category
+// User category
 export interface UserCategoryModel {
   _id: string;
   nameI18n: any;
@@ -60,9 +60,9 @@ export interface UserCashbackModel {
 }
 
 export interface ProductModel {
-  useCategoryDiscount?: boolean | null;
-  useCategoryCashback?: boolean | null;
-  useCategoryPayFromCashback?: boolean | null;
+  userCategoryDiscount?: boolean | null;
+  userCategoryCashback?: boolean | null;
+  userCategoryPayFromCashback?: boolean | null;
 }
 
 // Add userCategoryId to the UserModel

@@ -1270,9 +1270,9 @@ export const getCatalogueData = async ({
     // const beforeOptions = new Date().getTime();
     const priceAttribute = getPriceAttribute();
     let categoryAttribute: RubricAttributeInterface[] = [];
+    const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
 
     if (
-      rubric.variant?.showCategoriesInFilter &&
       shopProductsAggregationResult.categories &&
       shopProductsAggregationResult.categories.length > 0
     ) {
@@ -1463,8 +1463,16 @@ export const getCatalogueData = async ({
       catalogueTitle,
       catalogueFilterLayout: rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT,
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
-      attributes: castedAttributes,
-      selectedAttributes,
+      attributes: showCategoriesInFilter
+        ? castedAttributes
+        : castedAttributes.filter(({ slug }) => {
+            return slug !== CATALOGUE_CATEGORY_KEY;
+          }),
+      selectedAttributes: showCategoriesInFilter
+        ? selectedAttributes
+        : selectedAttributes.filter(({ slug }) => {
+            return slug !== CATALOGUE_CATEGORY_KEY;
+          }),
       page: payloadPage,
       breadcrumbs,
       rubricVariant: rubric.variant,

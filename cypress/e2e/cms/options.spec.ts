@@ -51,21 +51,13 @@ describe('Options', () => {
     cy.getByCy(`Тип вина-update`).click();
     cy.wait(1500);
     cy.getByCy(`Крепленое-update`).click();
+    cy.wait(1500);
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`option-color`).invoke('val', optionNewColor).trigger('change');
     cy.getByCy(`option-gender`).select(GENDER_SHE);
     cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LOCALE}`).clear().type(optionNewName);
-    cy.getByCy(`option-submit`).click();
-
-    // Should update icon option
-    cy.visit(`${ROUTE_CMS}/options`);
-    cy.getByCy(`Сахар-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`Сладкое-update`).click();
-    cy.getByCy(`option-icon`).click();
-    cy.getByCy(`instagram`).click();
     cy.getByCy(`option-submit`).click();
   });
 });

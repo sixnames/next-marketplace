@@ -310,7 +310,6 @@ type Category {
   priorities: JSONObject!
   rubricId: ObjectId!
   slug: String!
-  variants: JSONObject!
   views: JSONObject!
 }
 
@@ -496,7 +495,6 @@ input CreateCategoryInput {
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
-  variants: JSONObject!
 }
 
 input CreateCompanyInput {
@@ -2575,7 +2573,6 @@ input UpdateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
   rubricId: ObjectId!
-  variants: JSONObject!
 }
 
 input UpdateCityInCountryInput {

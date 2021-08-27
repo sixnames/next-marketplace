@@ -11,6 +11,5 @@ export const Category = objectType({
     t.objectId('parentId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
-    t.nonNull.json('variants');
   },
 });

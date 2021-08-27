@@ -5,8 +5,9 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import OptionMainFields from 'components/FormTemplates/OptionMainFields';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { GENDER_ENUMS, ROUTE_CMS } from 'config/common';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { OptionVariantsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
 import {
@@ -68,6 +69,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
   };
 
   const { _id, color, nameI18n, optionsGroupId, gender, variants, image, parentId } = option;
+  const variantKeys = Object.keys(variants);
 
   const initialValues: UpdateOptionInGroupInput = {
     optionId: _id,
@@ -76,7 +78,13 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
     parentId,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    variants,
+    variants:
+      variantKeys.length > 0
+        ? variants
+        : GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
+            acc[gender] = {};
+            return acc;
+          }, {}),
   };
 
   return (

@@ -352,7 +352,6 @@ export type Category = {
   parentId?: Maybe<Scalars['ObjectId']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  variants: Scalars['JSONObject'];
 };
 
 export type CategoryPayload = Payload & {
@@ -538,7 +537,6 @@ export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
-  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 
@@ -2907,7 +2905,6 @@ export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
-  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 

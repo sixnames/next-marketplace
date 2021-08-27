@@ -20,6 +20,7 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
+  COL_ICONS,
   COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
@@ -400,6 +401,32 @@ export async function getCardData({
                       $match: {
                         $expr: {
                           $in: ['$_id', '$$selectedOptionsIds'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_ICONS,
+                        as: 'icon',
+                        let: {
+                          documentId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              collectionName: COL_OPTIONS,
+                              $expr: {
+                                $eq: ['$documentId', '$$documentId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        icon: {
+                          $arrayElemAt: ['$icon', 0],
                         },
                       },
                     },

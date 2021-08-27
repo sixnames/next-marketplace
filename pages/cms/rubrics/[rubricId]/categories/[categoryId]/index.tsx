@@ -46,14 +46,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, variants, image } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, image } = category;
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    variants,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

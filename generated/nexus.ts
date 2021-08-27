@@ -149,7 +149,6 @@ export interface NexusGenInputs {
     // input type
     color?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -725,7 +724,6 @@ export interface NexusGenInputs {
     // input type
     color?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
-    icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1637,7 +1635,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string | null; // String
     gender: NexusGenEnums['Gender'] | null; // Gender
-    icon: string | null; // String
     image: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2794,7 +2791,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     color: 'String';
     gender: 'Gender';
-    icon: 'String';
     image: 'String';
     name: 'String';
     nameI18n: 'JSONObject';

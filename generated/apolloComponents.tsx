@@ -72,7 +72,6 @@ export type AddOptionToGroupInput = {
   parentId?: Maybe<Scalars['ObjectId']>;
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
@@ -1833,7 +1832,6 @@ export type Option = {
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
@@ -3009,7 +3007,6 @@ export type UpdateOptionInGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
@@ -5285,53 +5282,6 @@ export type GetValidationMessagesQuery = (
   )> }
 );
 
-export type OptionsGroupInlistFragment = (
-  { __typename?: 'OptionsGroup' }
-  & Pick<OptionsGroup, '_id' | 'name'>
-  & { options: Array<(
-    { __typename?: 'Option' }
-    & Pick<Option, '_id'>
-  )> }
-);
-
-export type GetAllOptionsGroupsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllOptionsGroupsQuery = (
-  { __typename?: 'Query' }
-  & { getAllOptionsGroups: Array<(
-    { __typename?: 'OptionsGroup' }
-    & OptionsGroupInlistFragment
-  )> }
-);
-
-export type OptionInGroupFragment = (
-  { __typename?: 'Option' }
-  & Pick<Option, '_id' | 'nameI18n' | 'name' | 'color' | 'icon' | 'gender' | 'variants'>
-);
-
-export type OptionsGroupFragment = (
-  { __typename?: 'OptionsGroup' }
-  & Pick<OptionsGroup, '_id' | 'nameI18n' | 'variant' | 'name'>
-  & { options: Array<(
-    { __typename?: 'Option' }
-    & OptionInGroupFragment
-  )> }
-);
-
-export type GetOptionsGroupQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetOptionsGroupQuery = (
-  { __typename?: 'Query' }
-  & { getOptionsGroup: (
-    { __typename?: 'OptionsGroup' }
-    & OptionsGroupFragment
-  ) }
-);
-
 export type GetNewOrdersCounterQueryVariables = Exact<{
   input?: Maybe<GetNewOrdersCounterInput>;
 }>;
@@ -5876,37 +5826,6 @@ export const MessageFragmentDoc = gql`
   message
 }
     `;
-export const OptionsGroupInlistFragmentDoc = gql`
-    fragment OptionsGroupInlist on OptionsGroup {
-  _id
-  name
-  options {
-    _id
-  }
-}
-    `;
-export const OptionInGroupFragmentDoc = gql`
-    fragment OptionInGroup on Option {
-  _id
-  nameI18n
-  name
-  color
-  icon
-  gender
-  variants
-}
-    `;
-export const OptionsGroupFragmentDoc = gql`
-    fragment OptionsGroup on OptionsGroup {
-  _id
-  nameI18n
-  variant
-  name
-  options {
-    ...OptionInGroup
-  }
-}
-    ${OptionInGroupFragmentDoc}`;
 export const RubricVariantFragmentDoc = gql`
     fragment RubricVariant on RubricVariant {
   _id
@@ -10720,75 +10639,6 @@ export function useGetValidationMessagesLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetValidationMessagesQueryHookResult = ReturnType<typeof useGetValidationMessagesQuery>;
 export type GetValidationMessagesLazyQueryHookResult = ReturnType<typeof useGetValidationMessagesLazyQuery>;
 export type GetValidationMessagesQueryResult = Apollo.QueryResult<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>;
-export const GetAllOptionsGroupsDocument = gql`
-    query GetAllOptionsGroups {
-  getAllOptionsGroups {
-    ...OptionsGroupInlist
-  }
-}
-    ${OptionsGroupInlistFragmentDoc}`;
-
-/**
- * __useGetAllOptionsGroupsQuery__
- *
- * To run a query within a React component, call `useGetAllOptionsGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllOptionsGroupsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllOptionsGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, options);
-      }
-export function useGetAllOptionsGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, options);
-        }
-export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
-export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
-export type GetAllOptionsGroupsQueryResult = Apollo.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;
-export const GetOptionsGroupDocument = gql`
-    query GetOptionsGroup($_id: ObjectId!) {
-  getOptionsGroup(_id: $_id) {
-    ...OptionsGroup
-  }
-}
-    ${OptionsGroupFragmentDoc}`;
-
-/**
- * __useGetOptionsGroupQuery__
- *
- * To run a query within a React component, call `useGetOptionsGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOptionsGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetOptionsGroupQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetOptionsGroupQuery(baseOptions: Apollo.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, options);
-      }
-export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, options);
-        }
-export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
-export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
-export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
 export const GetNewOrdersCounterDocument = gql`
     query GetNewOrdersCounter($input: GetNewOrdersCounterInput) {
   getNewOrdersCounter(input: $input)

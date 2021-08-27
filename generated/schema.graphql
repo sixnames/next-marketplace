@@ -45,7 +45,6 @@ input AddCollectionToBrandInput {
 input AddOptionToGroupInput {
   color: String
   gender: Gender
-  icon: String
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   parentId: ObjectId
@@ -1547,7 +1546,6 @@ type Option {
   _id: ObjectId!
   color: String
   gender: Gender
-  icon: String
   image: String
   name: String!
   nameI18n: JSONObject!
@@ -2673,7 +2671,6 @@ input UpdateNavItemInput {
 input UpdateOptionInGroupInput {
   color: String
   gender: Gender
-  icon: String
   nameI18n: JSONObject!
   optionId: ObjectId!
   optionsGroupId: ObjectId!

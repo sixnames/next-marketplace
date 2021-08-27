@@ -225,7 +225,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Сухое'),
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
-    icon: 'arrow-left',
     nameI18n: {
       ru: 'Сухое',
     },
@@ -235,7 +234,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Сладкое'),
     optionsGroupId: getObjectId('optionsGroup Сахар'),
     variants: {},
-    icon: 'burger',
     nameI18n: {
       ru: 'Сладкое',
     },
@@ -288,7 +286,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Белое мясо'),
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
-    icon: 'white-meat',
     nameI18n: {
       ru: 'Белое мясо',
     },
@@ -298,7 +295,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Дары моря'),
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
-    icon: 'seafood',
     nameI18n: {
       ru: 'Дары моря',
     },
@@ -308,7 +304,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Суп'),
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
-    icon: 'soup',
     nameI18n: {
       ru: 'Суп',
     },
@@ -318,7 +313,6 @@ const optionsBase: OptionBaseModel[] = [
     _id: getObjectId('option Рыба'),
     optionsGroupId: getObjectId('optionsGroup Сочетание'),
     variants: {},
-    icon: 'fish',
     nameI18n: {
       ru: 'Рыба',
     },

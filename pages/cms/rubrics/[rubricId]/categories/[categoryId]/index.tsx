@@ -81,6 +81,32 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
           previewUrl={image}
           testId={'image'}
           label={'Изображение'}
+          removeImageHandler={() => {
+            showLoading();
+            const formData = new FormData();
+            formData.append('categoryId', `${category._id}`);
+
+            fetch('/api/update-category-image', {
+              method: 'DELETE',
+              body: formData,
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((json) => {
+                if (json.success) {
+                  hideLoading();
+                  router.reload();
+                  return;
+                }
+                hideLoading();
+                showErrorNotification({ title: json.message });
+              })
+              .catch(() => {
+                hideLoading();
+                showErrorNotification({ title: 'error' });
+              });
+          }}
           uploadImageHandler={(files) => {
             if (files) {
               showLoading();
@@ -88,7 +114,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
               formData.append('assets', files[0]);
               formData.append('categoryId', `${category._id}`);
 
-              fetch('/api/add-category-image', {
+              fetch('/api/update-category-image', {
                 method: 'POST',
                 body: formData,
               })

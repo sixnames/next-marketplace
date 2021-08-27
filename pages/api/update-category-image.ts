@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 
-  if (!formData || !formData.files || !formData.fields || !formData.fields.categoryId) {
+  if (!formData || !formData.fields || !formData.fields.categoryId) {
     res.status(500).send({
       success: false,
       message: await getApiMessageValue({
@@ -44,6 +44,72 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).send({
       success: false,
       message: message,
+    });
+    return;
+  }
+
+  // delete image
+  if (req.method === 'DELETE') {
+    const category = await categoriesCollection.findOne({
+      _id: new ObjectId(`${formData.fields.categoryId}`),
+    });
+    if (!category) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'categories.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    // remove old image
+    if (category.image) {
+      await deleteUpload({ filePath: category.image });
+    }
+
+    const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
+      { _id: category._id },
+      {
+        $set: {
+          image: null,
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    );
+    const updatedCategory = updatedCategoryResult.value;
+    if (!updatedCategoryResult.ok || !updatedCategory) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'categories.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: await getApiMessageValue({
+        slug: 'categories.update.success',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // add image
+  if (!formData.files) {
+    res.status(500).send({
+      success: false,
+      message: await getApiMessageValue({
+        slug: 'optionsGroups.updateOption.error',
+        locale,
+      }),
     });
     return;
   }

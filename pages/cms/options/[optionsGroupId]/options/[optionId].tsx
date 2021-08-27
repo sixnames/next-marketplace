@@ -93,6 +93,32 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
             previewUrl={image}
             testId={'image'}
             label={'Изображение'}
+            removeImageHandler={() => {
+              showLoading();
+              const formData = new FormData();
+              formData.append('optionId', `${_id}`);
+
+              fetch('/api/update-option-image', {
+                method: 'DELETE',
+                body: formData,
+              })
+                .then((res) => {
+                  return res.json();
+                })
+                .then((json) => {
+                  if (json.success) {
+                    hideLoading();
+                    router.reload();
+                    return;
+                  }
+                  hideLoading();
+                  showErrorNotification({ title: json.message });
+                })
+                .catch(() => {
+                  hideLoading();
+                  showErrorNotification({ title: 'error' });
+                });
+            }}
             uploadImageHandler={(files) => {
               if (files) {
                 showLoading();
@@ -100,7 +126,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
                 formData.append('assets', files[0]);
                 formData.append('optionId', `${_id}`);
 
-                fetch('/api/add-option-image', {
+                fetch('/api/update-option-image', {
                   method: 'POST',
                   body: formData,
                 })

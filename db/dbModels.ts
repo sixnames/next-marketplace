@@ -792,7 +792,8 @@ export interface BlogPostModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   companySlug: string;
-  previewImage: string;
+  previewImage?: string | null;
+  state: PageStateModel;
   source?: string;
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;

@@ -1,13 +1,18 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
+import {
+  dropdownClassName,
+  StickyNavAttributeInterface,
+  StickyNavDropdownInterface,
+} from 'layout/header/StickyNav';
 import * as React from 'react';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
   rubricSlug,
   attributeLinkStyle,
+  hideDropdown,
 }) => {
   const { options, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
@@ -25,6 +30,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         return (
           <div key={`${option._id}`}>
             <Link
+              onClick={hideDropdown}
               style={attributeLinkStyle}
               testId={`header-nav-dropdown-option`}
               prefetch={false}
@@ -53,6 +59,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                   return (
                     <li key={`${childOption._id}`}>
                       <Link
+                        onClick={hideDropdown}
                         style={attributeLinkStyle}
                         testId={`header-nav-dropdown-option`}
                         prefetch={false}
@@ -81,22 +88,20 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
   attributeLinkStyle,
   dropdownStyle,
   rubricSlug,
+  hideDropdown,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
   }
 
   return (
-    <div
-      style={dropdownStyle}
-      data-cy={'header-nav-dropdown'}
-      className={`wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg`}
-    >
+    <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
       <Inner>
         <div className='grid gap-8 pb-10 grid-cols-5'>
           {(attributes || []).map((attribute) => {
             return (
               <StickyNavAttribute
+                hideDropdown={hideDropdown}
                 key={`${attribute._id}`}
                 attribute={attribute}
                 rubricSlug={rubricSlug}

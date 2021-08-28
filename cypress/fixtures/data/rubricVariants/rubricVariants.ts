@@ -48,7 +48,7 @@ const rubricVariants: RubricVariantModel[] = [
     showSnippetBackground: true,
     showSnippetButtonsOnHover: false,
     showSnippetRating: true,
-    gridCatalogueColumns: 3,
+    gridCatalogueColumns: 4,
     cardBrandsLabelI18n: {
       [DEFAULT_LOCALE]: 'Дополнительно',
     },

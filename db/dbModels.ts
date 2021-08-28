@@ -780,6 +780,21 @@ export interface PageModel extends TimestampModel {
 export type PagesGroupTemplateModel = PagesGroupModel;
 export type PagesTemplateModel = PageModel;
 
+// Blog
+// TODO blog attributes
+export interface BlogModel extends CountersModel {
+  _id: ObjectIdModel;
+  assetKeys: string[];
+  companySlug: string;
+  previewImage: string;
+  titleI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+  content: JSONObjectModel;
+  authorId: ObjectIdModel;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;

@@ -52,7 +52,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     cardContent,
     cardPrices,
     shopsCount,
-    shopProducts,
+    cardShopProducts,
     showCardImagesSlider,
     showCardBrands,
     cardBrandsLabel,
@@ -159,11 +159,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     {/*cart button*/}
                     <Button
                       onClick={() => {
-                        if (shopProducts && shopProducts.length < 2) {
+                        if (cardShopProducts && cardShopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
                             productId: product._id,
-                            shopProductId: `${shopProducts[0]._id}`,
+                            shopProductId: `${cardShopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({
@@ -368,7 +368,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <CardDynamicContent cardContent={cardContent} />
 
           {/*shops*/}
-          <CardShopsList cardShopProducts={shopProducts} />
+          <CardShopsList cardShopProducts={cardShopProducts} />
 
           {/*similar products*/}
           <CardSimilarProducts similarProducts={similarProducts} />

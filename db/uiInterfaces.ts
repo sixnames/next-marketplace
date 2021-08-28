@@ -64,6 +64,7 @@ export interface BlogAttributeInterface extends BlogPostModel {
 export interface BlogPostInterface extends BlogPostModel {
   name?: string | null;
   attributes?: BlogAttributeInterface[] | [];
+  author?: UserInterface | null;
 }
 
 export interface AddressInterface extends AddressModel {

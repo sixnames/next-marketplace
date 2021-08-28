@@ -5,14 +5,22 @@ interface ProductSnippetPriceInterface {
   value?: string | number | null;
   className?: string;
   shopsCount?: number;
+  size?: 'normal' | 'medium' | 'small';
 }
 
 const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
   value,
   className,
   shopsCount,
+  size = 'normal',
 }) => {
   const minimalShopsCount = 1;
+  const sizeClassName =
+    size === 'medium'
+      ? 'text-xl sm:text-2xl'
+      : size === 'small'
+      ? 'sm:text-xl'
+      : 'text-2xl sm:text-3xl';
 
   if (!shopsCount || shopsCount < minimalShopsCount) {
     return (
@@ -24,7 +32,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
 
   return (
     <div
-      className={`flex items-baseline text-2xl sm:text-3xl whitespace-nowrap ${
+      className={`flex items-baseline whitespace-nowrap ${sizeClassName} ${
         className ? className : ''
       }`}
     >

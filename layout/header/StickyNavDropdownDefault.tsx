@@ -2,7 +2,11 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
+import {
+  dropdownClassName,
+  StickyNavAttributeInterface,
+  StickyNavDropdownInterface,
+} from 'layout/header/StickyNav';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -11,6 +15,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   rubricSlug,
   attributeStyle,
   attributeLinkStyle,
+  hideDropdown,
 }) => {
   const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
@@ -35,6 +40,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           return (
             <li key={`${option._id}`}>
               <Link
+                onClick={hideDropdown}
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
@@ -51,6 +57,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {showOptionsMoreLink ? (
           <li className='mt-auto'>
             <Link
+              onClick={hideDropdown}
               prefetch={false}
               href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
               className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
@@ -70,22 +77,20 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   attributeLinkStyle,
   dropdownStyle,
   rubricSlug,
+  hideDropdown,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
   }
 
   return (
-    <div
-      style={dropdownStyle}
-      data-cy={'header-nav-dropdown'}
-      className={`wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg`}
-    >
+    <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
       <Inner>
         <div className='grid gap-4 grid-cols-5'>
           {(attributes || []).map((attribute) => {
             return (
               <StickyNavAttribute
+                hideDropdown={hideDropdown}
                 key={`${attribute._id}`}
                 attribute={attribute}
                 rubricSlug={rubricSlug}

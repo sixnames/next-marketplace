@@ -70,7 +70,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     cardBreadcrumbs,
     cardPrices,
     shopsCount,
-    shopProducts,
     cardShopProducts,
     cardContent,
     assets,
@@ -210,11 +209,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
                     <Button
                       onClick={() => {
-                        if (shopProducts && shopProducts.length < 2) {
+                        if (cardShopProducts && cardShopProducts.length < 2) {
                           addProductToCart({
                             amount: 1,
                             productId: product._id,
-                            shopProductId: `${shopProducts[0]._id}`,
+                            shopProductId: `${cardShopProducts[0]._id}`,
                           });
                         } else {
                           addShoplessProductToCart({

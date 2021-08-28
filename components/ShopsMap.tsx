@@ -49,7 +49,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                   <div className='font-bold mb-3'>{name}</div>
                   <div className='mb-3'>{address.formattedAddress}</div>
                   <div className='whitespace-nowrap flex flex-wrap gap-2 mb-3'>
-                    {contacts.formattedPhones.map((phone) => {
+                    {(contacts.formattedPhones || []).map((phone) => {
                       return (
                         <div key={phone.raw}>
                           <a

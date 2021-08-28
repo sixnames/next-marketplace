@@ -1,4 +1,5 @@
 import { RoleRuleSlugType } from 'lib/roleUtils';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -213,6 +214,22 @@ export interface ValidateResolverInterface {
 
 export async function getResolverValidationSchema({ context, schema }: ValidateResolverInterface) {
   const locale = getSessionLocale(context);
+  const messages = await getValidationMessages();
+  return schema({ locale, messages });
+}
+
+export interface GetApiResolverValidationSchemaInterface {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  schema: (args: ValidationSchemaArgsInterface) => ResolverValidationSchema;
+}
+
+export async function getApiResolverValidationSchema({
+  req,
+  res,
+  schema,
+}: GetApiResolverValidationSchemaInterface) {
+  const locale = getSessionLocale({ req, res });
   const messages = await getValidationMessages();
   return schema({ locale, messages });
 }

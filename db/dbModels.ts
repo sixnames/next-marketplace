@@ -798,7 +798,7 @@ export interface BlogPostModel extends CountersModel {
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   assetKeys: string[];
-  content: JSONObjectModel;
+  content: string;
   authorId: ObjectIdModel;
   selectedOptionsSlugs: string[];
   createdAt: Date;

@@ -785,16 +785,18 @@ export interface BlogAttributeModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  optionsGroupId?: ObjectIdModel | null;
+  optionsGroupId: ObjectIdModel;
 }
 
 export interface BlogPostModel extends CountersModel {
   _id: ObjectIdModel;
-  assetKeys: string[];
+  slug: string;
   companySlug: string;
   previewImage: string;
+  source?: string;
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;
+  assetKeys: string[];
   content: JSONObjectModel;
   authorId: ObjectIdModel;
   selectedOptionsSlugs: string[];

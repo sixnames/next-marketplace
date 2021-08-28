@@ -37,6 +37,7 @@ const config = {
 };
 
 (async function seedTestDb() {
+  const startTime = new Date().getTime();
   const seeder = new Seeder(config);
 
   const collections = seeder.readCollectionsFromPath(
@@ -50,7 +51,8 @@ const config = {
 
   try {
     await seeder.import(collections);
-    console.log('Test data seeded');
+    console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
+
     // await uploadTestAssets('./cypress/fixtures/assets');
 
     await uploadTestAssets(
@@ -97,6 +99,8 @@ const config = {
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
       `/${ASSETS_DIST_CONFIGS}`,
     );*/
+
+    console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
   } catch (err) {
     console.log(err);
   }

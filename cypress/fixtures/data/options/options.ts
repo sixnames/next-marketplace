@@ -318,6 +318,35 @@ const optionsBase: OptionBaseModel[] = [
     },
     ...DEFAULT_COUNTERS_OBJECT,
   },
+
+  // Теги
+  {
+    _id: getObjectId('option Новости'),
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Новости',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Рецепт'),
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Рецепт',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Новинка'),
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Новинка',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 const options: OptionModel[] = [...optionsBase, ...yearOptionsBase()].map((base, i) => {

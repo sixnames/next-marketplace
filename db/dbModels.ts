@@ -781,8 +781,14 @@ export type PagesGroupTemplateModel = PagesGroupModel;
 export type PagesTemplateModel = PageModel;
 
 // Blog
-// TODO blog attributes
-export interface BlogModel extends CountersModel {
+export interface BlogAttributeModel extends CountersModel {
+  _id: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  optionsGroupId?: ObjectIdModel | null;
+}
+
+export interface BlogPostModel extends CountersModel {
   _id: ObjectIdModel;
   assetKeys: string[];
   companySlug: string;
@@ -791,6 +797,7 @@ export interface BlogModel extends CountersModel {
   descriptionI18n: TranslationModel;
   content: JSONObjectModel;
   authorId: ObjectIdModel;
+  selectedOptionsSlugs: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -798,6 +805,8 @@ export interface BlogModel extends CountersModel {
 // Payload
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;
+export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
+export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
 export type CompanyPayloadModel = PayloadType<CompanyModel>;
 export type ConfigPayloadModel = PayloadType<ConfigModel>;
 export type CountryPayloadModel = PayloadType<CountryModel>;

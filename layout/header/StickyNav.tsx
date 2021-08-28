@@ -13,6 +13,9 @@ import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';
 
+export const dropdownClassName =
+  'wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg';
+
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
   attributeStyle: React.CSSProperties;
@@ -21,11 +24,13 @@ interface AttributeStylesInterface {
 export interface StickyNavAttributeInterface extends AttributeStylesInterface {
   attribute: RubricAttributeInterface;
   rubricSlug: string;
+  hideDropdown: () => void;
 }
 
 export interface StickyNavCategoryInterface extends AttributeStylesInterface {
   category: CategoryInterface;
   rubricSlug: string;
+  hideDropdown: () => void;
 }
 
 interface StylesInterface extends AttributeStylesInterface {
@@ -36,6 +41,7 @@ export interface StickyNavDropdownInterface extends StylesInterface {
   attributes: RubricAttributeInterface[] | null | undefined;
   rubricSlug: string;
   categories: CategoryInterface[];
+  hideDropdown: () => void;
 }
 
 export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInterface {
@@ -82,6 +88,25 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
 }) => {
   const { asPath } = useRouter();
   const { name, slug, attributes } = rubric;
+  const [isDropdownVisible, setIsDropdownVisible] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (!isDropdownVisible) {
+      const timeout = setTimeout(() => {
+        setIsDropdownVisible(true);
+      }, 1500);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+
+    return;
+  }, [isDropdownVisible]);
+
+  const hideDropdown = React.useCallback(() => {
+    setIsDropdownVisible(false);
+  }, []);
 
   // Get rubric slug from product card path
   const path = `${ROUTE_CATALOGUE}/${slug}`;
@@ -89,7 +114,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   const isCurrent = reg.test(asPath);
 
   return (
-    <li className='group' data-cy={`main-rubric-list-item-${rubric.slug}`}>
+    <li
+      className='group px-4 first:pl-0 last:pr-0'
+      data-cy={`main-rubric-list-item-${rubric.slug}`}
+    >
       <Link
         href={path}
         style={linkStyle}
@@ -102,15 +130,18 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
         ) : null}
       </Link>
 
-      <StickyNavDropdown
-        categories={categories}
-        attributeLinkStyle={attributeLinkStyle}
-        attributeStyle={attributeStyle}
-        dropdownStyle={dropdownStyle}
-        rubricSlug={slug}
-        attributes={attributes}
-        catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
-      />
+      {isDropdownVisible ? (
+        <StickyNavDropdown
+          hideDropdown={hideDropdown}
+          categories={categories}
+          attributeLinkStyle={attributeLinkStyle}
+          attributeStyle={attributeStyle}
+          dropdownStyle={dropdownStyle}
+          rubricSlug={slug}
+          attributes={attributes}
+          catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
+        />
+      ) : null}
     </li>
   );
 };

@@ -1,4 +1,3 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { COL_BLOG_ATTRIBUTES } from 'db/collectionNames';
 import { BlogAttributeModel, BlogAttributePayloadModel, TranslationModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
@@ -9,25 +8,25 @@ import {
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createBlogAttributeSchema } from 'validation/blogSchema';
+import { updateBlogAttributeSchema } from 'validation/blogSchema';
 
-export interface CreateBlogAttributeInputInterface {
+export interface UpdateBlogAttributeInputInterface {
+  blogAttributeId: string;
   nameI18n: TranslationModel;
   optionsGroupId: string;
 }
 
-export async function createBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
+export async function updateBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
-  const args = req.body as CreateBlogAttributeInputInterface;
+  const args = req.body as UpdateBlogAttributeInputInterface;
 
   let payload: BlogAttributePayloadModel = {
     success: false,
-    message: await getApiMessage('blogAttributes.create.error'),
+    message: await getApiMessage('blogAttributes.update.error'),
   };
 
   try {
@@ -37,7 +36,7 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
         req,
         res,
       },
-      slug: 'createBlogAttribute',
+      slug: 'updateBlogAttribute',
     });
     if (!allow) {
       payload = {
@@ -52,7 +51,7 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
     const validationSchema = await getApiResolverValidationSchema({
       req,
       res,
-      schema: createBlogAttributeSchema,
+      schema: updateBlogAttributeSchema,
     });
     await validationSchema.validate(args);
 
@@ -61,29 +60,42 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
       collectionName: COL_BLOG_ATTRIBUTES,
       fieldName: 'nameI18n',
       fieldArg: args.nameI18n,
+      additionalQuery: {
+        _id: {
+          $ne: new ObjectId(args.blogAttributeId),
+        },
+      },
     });
     if (exist) {
       payload = {
         success: false,
-        message: await getApiMessage('blogAttributes.create.duplicate'),
+        message: await getApiMessage('blogAttributes.update.duplicate'),
       };
       res.status(500).send(payload);
       return;
     }
 
-    // create
-    const slug = generateDefaultLangSlug(args.nameI18n);
-    const createdBlogAttributeResult = await blogAttributesCollection.insertOne({
-      ...args,
-      slug,
-      optionsGroupId: new ObjectId(args.optionsGroupId),
-      ...DEFAULT_COUNTERS_OBJECT,
-    });
-    const createdBlogAttribute = createdBlogAttributeResult.ops[0];
-    if (!createdBlogAttributeResult.result.ok || !createdBlogAttribute) {
+    // update
+    const { blogAttributeId, ...values } = args;
+    const updatedBlogAttributeResult = await blogAttributesCollection.findOneAndUpdate(
+      {
+        _id: new ObjectId(blogAttributeId),
+      },
+      {
+        $set: {
+          ...values,
+          optionsGroupId: new ObjectId(values.optionsGroupId),
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    );
+    const updatedBlogAttribute = updatedBlogAttributeResult.value;
+    if (!updatedBlogAttributeResult.ok || !updatedBlogAttribute) {
       payload = {
         success: false,
-        message: await getApiMessage('blogAttributes.create.error'),
+        message: await getApiMessage('blogAttributes.update.error'),
       };
       res.status(500).send(payload);
       return;
@@ -92,8 +104,8 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
     // success
     payload = {
       success: true,
-      message: await getApiMessage('blogAttributes.create.success'),
-      payload: createdBlogAttribute,
+      message: await getApiMessage('blogAttributes.update.success'),
+      payload: updatedBlogAttribute,
     };
 
     // response

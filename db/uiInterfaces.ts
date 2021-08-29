@@ -63,7 +63,7 @@ export interface BlogAttributeInterface extends BlogAttributeModel {
 }
 
 export interface BlogPostInterface extends BlogPostModel {
-  name?: string | null;
+  title?: string | null;
   attributes?: BlogAttributeInterface[] | [];
   author?: UserInterface | null;
 }

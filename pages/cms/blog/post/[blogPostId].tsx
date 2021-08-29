@@ -1,10 +1,13 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
-import { REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
+import { PAGE_STATE_OPTIONS, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
@@ -80,6 +83,21 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
             {({ values, setFieldValue }) => {
               return (
                 <Form>
+                  <WpImageUpload
+                    isRequired
+                    label={'Превью изображение блог-поста'}
+                    name={'previewImage'}
+                    testId={'previewImage'}
+                    width={'10rem'}
+                    height={'10rem'}
+                    previewUrl={post.previewImage}
+                    uploadImageHandler={(files) => {
+                      if (files) {
+                        console.log(files);
+                      }
+                    }}
+                  />
+
                   <FormikTranslationsInput
                     label={'Заголовок'}
                     name={'titleI18n'}
@@ -95,6 +113,17 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                     isRequired
                     showInlineError
                   />
+
+                  <FormikSelect
+                    label={'Состояние'}
+                    name={'state'}
+                    testId={'state'}
+                    options={PAGE_STATE_OPTIONS}
+                    isRequired
+                    showInlineError
+                  />
+
+                  <FormikInput name={'source'} testId={'source'} label={'Источник'} />
 
                   <div className={sectionClassName}>
                     <Title tag={'div'} size={'small'}>

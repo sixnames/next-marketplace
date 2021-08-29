@@ -88,6 +88,33 @@ export const useDeleteBlogPost = (): UseMutationConsumerPayload<
   return [handler, payload];
 };
 
+// delete post preview image
+export const useDeleteBlogPostPreviewImage = (): UseMutationConsumerPayload<
+  BlogPostPayloadModel,
+  DeleteBlogPostInputInterface
+> => {
+  const [handle, payload] = useMutation<BlogPostPayloadModel>({
+    input: '/api/blog/post-preview-image',
+    reload: true,
+  });
+
+  const handler = React.useCallback(
+    (args) => {
+      const formData = new FormData();
+      formData.append('assets', args.files[0]);
+      formData.append('postId', `${args.postId}`);
+
+      handle({
+        method: REQUEST_METHOD_DELETE,
+        body: formData,
+      });
+    },
+    [handle],
+  );
+
+  return [handler, payload];
+};
+
 // attribute
 export const useCreateBlogAttribute = (): UseMutationConsumerPayload<
   BlogAttributePayloadModel,

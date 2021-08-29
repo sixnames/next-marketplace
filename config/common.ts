@@ -2,10 +2,11 @@
 import { Value } from '@react-page/editor';
 import { PageStateModel } from '../db/dbModels';
 
-export const REQUEST_METHOD_GET = 'GET';
-export const REQUEST_METHOD_POST = 'POST';
-export const REQUEST_METHOD_DELETE = 'DELETE';
-export const REQUEST_METHOD_PATCH = 'PATCH';
+export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
+export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
+export const REQUEST_METHOD_POST = 'POST' as RequestMethodType;
+export const REQUEST_METHOD_DELETE = 'DELETE' as RequestMethodType;
+export const REQUEST_METHOD_PATCH = 'PATCH' as RequestMethodType;
 
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
@@ -331,6 +332,19 @@ export const HEADER_SEARCH_PRODUCTS_LIMIT = 4;
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
 export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
 export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
+export const PAGE_STATE_OPTIONS = [
+  {
+    _id: PAGE_STATE_DRAFT,
+    slug: PAGE_STATE_DRAFT,
+    name: 'Не опубликована',
+  },
+  {
+    _id: PAGE_STATE_PUBLISHED,
+    slug: PAGE_STATE_PUBLISHED,
+    name: 'Опубликована',
+  },
+];
+
 export const PAGE_EDITOR_DEFAULT_VALUE_STRING = '{"id":"1","version":1,"rows":[]}';
 export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   id: '1',

@@ -11,6 +11,9 @@ async function updateProds() {
     const { db, client } = await getProdDb(dbConfig);
 
     // Update api messages
+    console.log(' ');
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
+    console.log(' ');
     console.log(`Updating api messages in ${dbConfig.dbName} db`);
     const messagesGroupsCollection = db.collection<MessagesGroupModel>(COL_MESSAGES_GROUPS);
     const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
@@ -81,9 +84,6 @@ async function updateProds() {
     console.log(`Updating indexes in ${dbConfig.dbName} db`);
     await updateIndexes(db);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
-    console.log(' ');
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log(' ');
 
     // disconnect form db
     await client.close();

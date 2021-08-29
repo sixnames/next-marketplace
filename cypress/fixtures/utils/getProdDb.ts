@@ -208,11 +208,20 @@ export async function updateIndexes(db: Db) {
   // Blog posts
   await createCollectionIfNotExist(COL_BLOG_POSTS);
   const blogPostsCollection = db.collection<BlogAttributeModel>(COL_BLOG_POSTS);
-  await blogPostsCollection.createIndex({ slug: 1 }, { unique: true });
-  await blogPostsCollection.createIndex(
-    { selectedOptionsSlugs: 1, priorities: -1, views: -1, createdAt: -1 },
-    { unique: true },
-  );
+  await blogPostsCollection.createIndex({ companySlug: 1, slug: 1 }, { unique: true });
+  await blogPostsCollection.createIndex({
+    companySlug: 1,
+    selectedOptionsSlugs: 1,
+    priorities: -1,
+    views: -1,
+    createdAt: -1,
+  });
+  await blogPostsCollection.createIndex({
+    companySlug: 1,
+    priorities: -1,
+    views: -1,
+    createdAt: -1,
+  });
 
   // Blog attributes
   await createCollectionIfNotExist(COL_BLOG_ATTRIBUTES);

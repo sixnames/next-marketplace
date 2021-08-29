@@ -63,7 +63,7 @@ export const createBlogPostSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const updateBlogPostSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    blogAttributeId: blogAttributeIdSchema(args),
+    blogPostId: blogAttributeIdSchema(args),
     ...blogPostCommonFieldsSchema(args),
   });
 };

@@ -41,9 +41,13 @@ import {
   SUPPLIER_OPTIONS_MODAL,
   ADD_ASSETS_MODAL,
   CREATE_CATEGORY_MODAL,
+  BLOG_POST_MODAL,
+  BLOG_ATTRIBUTE_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
+const BlogPostModal = dynamic(() => import('components/Modal/BlogPostModal'));
+const BlogAttributeModal = dynamic(() => import('components/Modal/BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
@@ -163,6 +167,10 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === BRAND_COLLECTION_OPTIONS_MODAL && (
             <BrandCollectionOptionsModal {...modalProps} />
           )}
+
+          {modalType === BLOG_POST_MODAL && <BlogPostModal {...modalProps} />}
+
+          {modalType === BLOG_ATTRIBUTE_MODAL && <BlogAttributeModal {...modalProps} />}
 
           {modalType === MANUFACTURER_OPTIONS_MODAL && <ManufacturerOptionsModal {...modalProps} />}
 

@@ -2,9 +2,12 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
+import { BlogPostModalInterface } from 'components/Modal/BlogPostModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { BLOG_POST_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
@@ -26,6 +29,8 @@ interface BlogPostsListConsumerInterface {
 const pageTitle = 'Блог';
 
 const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts }) => {
+  const { showModal } = useAppContext();
+
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
@@ -94,7 +99,12 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
               testId={`create-blog-post`}
               size={'small'}
               onClick={() => {
-                console.log(DEFAULT_COMPANY_SLUG);
+                showModal<BlogPostModalInterface>({
+                  variant: BLOG_POST_MODAL,
+                  props: {
+                    companySlug: DEFAULT_COMPANY_SLUG,
+                  },
+                });
               }}
             >
               Создать блог-пост

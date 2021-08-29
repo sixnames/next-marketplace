@@ -7,7 +7,6 @@ export const REQUEST_METHOD_POST = 'POST';
 export const REQUEST_METHOD_DELETE = 'DELETE';
 export const REQUEST_METHOD_PATCH = 'PATCH';
 
-export const DEFAULT_ID_COUNTER = 1;
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
 

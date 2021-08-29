@@ -5,7 +5,7 @@ import {
   COL_PAGES_GROUP_TEMPLATES,
 } from 'db/collectionNames';
 import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {

@@ -29,7 +29,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/constantPipelines';
+import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
 import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

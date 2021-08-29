@@ -1,7 +1,7 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { createBlogPost } from 'db/dao/createBlogPost';
-import { deleteBlogAttribute } from 'db/dao/deleteBlogAttribute';
-import { updateBlogAttribute } from 'db/dao/updateBlogAttribute';
+import { createBlogPost } from 'db/dao/blog/createBlogPost';
+import { deleteBlogPost } from 'db/dao/blog/deleteBlogPost';
+import { updateBlogPost } from 'db/dao/blog/updateBlogPost';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
@@ -16,11 +16,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === REQUEST_METHOD_PATCH) {
-    return updateBlogAttribute(req, res);
+    return updateBlogPost(req, res);
   }
 
   if (req.method === REQUEST_METHOD_DELETE) {
-    return deleteBlogAttribute(req, res);
+    return deleteBlogPost(req, res);
   }
 
   res.status(405).send({

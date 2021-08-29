@@ -29,7 +29,7 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import { aggregatePagination } from 'db/aggregatePagination';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,

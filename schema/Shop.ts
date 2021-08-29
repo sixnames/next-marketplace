@@ -24,7 +24,7 @@ import {
   ShopProductsPaginationPayloadModel,
   ShopsPaginationPayloadModel,
 } from 'db/dbModels';
-import { aggregatePagination } from 'db/aggregatePagination';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
 import {
   getOperationPermission,
   getRequestParams,

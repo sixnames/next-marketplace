@@ -3,7 +3,7 @@ import { getRequestParams, getSessionCity } from 'lib/sessionHelpers';
 import { CitiesPaginationPayloadModel, CityModel, CountryModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_CITIES, COL_COUNTRIES } from 'db/collectionNames';
-import { aggregatePagination } from 'db/aggregatePagination';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { DEFAULT_CURRENCY, SORT_DESC } from 'config/common';
 
 export const City = objectType({

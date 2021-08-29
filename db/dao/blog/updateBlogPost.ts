@@ -1,11 +1,6 @@
-import {
-  DEFAULT_COUNTERS_OBJECT,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  PAGE_STATE_PUBLISHED,
-} from 'config/common';
 import { COL_BLOG_POSTS } from 'db/collectionNames';
-import { BlogPostModel, BlogPostPayloadModel, TranslationModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { BlogPostModel, BlogPostPayloadModel, PageStateModel, TranslationModel } from 'db/dbModels';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
@@ -13,37 +8,40 @@ import {
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createBlogPostSchema } from 'validation/blogSchema';
+import { updateBlogPostSchema } from 'validation/blogSchema';
 
-export interface CreateBlogAttributeInputInterface {
+export interface UpdateBlogAttributeInputInterface {
+  blogPostId: string;
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;
-  companySlug: string;
+  state: PageStateModel;
+  source?: string;
+  content: string;
 }
 
-export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) {
+export async function updateBlogPost(req: NextApiRequest, res: NextApiResponse) {
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const args = req.body as CreateBlogAttributeInputInterface;
+  const args = req.body as UpdateBlogAttributeInputInterface;
 
   let payload: BlogPostPayloadModel = {
     success: false,
-    message: await getApiMessage('blogPosts.create.error'),
+    message: await getApiMessage('blogPosts.update.error'),
   };
 
   try {
     // check permission
-    const { allow, message, user } = await getOperationPermission({
+    const { allow, message } = await getOperationPermission({
       context: {
         req,
         res,
       },
-      slug: 'createBlogPost',
+      slug: 'updateBlogPost',
     });
-    if (!allow || !user) {
+    if (!allow) {
       payload = {
         success: false,
         message: message,
@@ -56,44 +54,50 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     const validationSchema = await getApiResolverValidationSchema({
       req,
       res,
-      schema: createBlogPostSchema,
+      schema: updateBlogPostSchema,
     });
     await validationSchema.validate(args);
 
     // check if exist
+    const { blogPostId, ...values } = args;
+    const _id = new ObjectId(blogPostId);
     const exist = await findDocumentByI18nField({
       collectionName: COL_BLOG_POSTS,
       fieldName: 'titleI18n',
       fieldArg: args.titleI18n,
+      additionalQuery: {
+        _id: {
+          $ne: _id,
+        },
+      },
     });
     if (exist) {
       payload = {
         success: false,
-        message: await getApiMessage('blogPosts.create.duplicate'),
+        message: await getApiMessage('blogPosts.update.duplicate'),
       };
       res.status(500).send(payload);
       return;
     }
 
-    // create
-    const slug = generateDefaultLangSlug(args.titleI18n);
-    const createdBlogPostResult = await blogPostsCollection.insertOne({
-      ...args,
-      slug,
-      state: PAGE_STATE_PUBLISHED,
-      assetKeys: [],
-      selectedOptionsSlugs: [],
-      authorId: user._id,
-      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...DEFAULT_COUNTERS_OBJECT,
-    });
-    const createdBlogPost = createdBlogPostResult.ops[0];
-    if (!createdBlogPostResult.result.ok || !createdBlogPost) {
+    // update
+    const updatedBlogPostResult = await blogPostsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          ...values,
+          updatedAt: new Date(),
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    );
+    const updatedBlogPost = updatedBlogPostResult.value;
+    if (!updatedBlogPostResult.ok || !updatedBlogPost) {
       payload = {
         success: false,
-        message: await getApiMessage('blogPosts.create.error'),
+        message: await getApiMessage('blogPosts.update.error'),
       };
       res.status(500).send(payload);
       return;
@@ -102,8 +106,8 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     // success
     payload = {
       success: true,
-      message: await getApiMessage('blogPosts.create.success'),
-      payload: createdBlogPost,
+      message: await getApiMessage('blogPosts.update.success'),
+      payload: updatedBlogPost,
     };
 
     // response

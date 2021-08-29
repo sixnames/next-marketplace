@@ -1,6 +1,6 @@
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
-import { useCreateBlogPost } from 'hooks/mutations/blog/useBlogPostMutations';
+import { useCreateBlogPost } from 'hooks/mutations/blog/useBlogMutations';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';

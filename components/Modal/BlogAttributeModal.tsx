@@ -5,7 +5,7 @@ import Spinner from 'components/Spinner';
 import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
 import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
-import { useCreateBlogAttribute } from 'hooks/mutations/blog/useBlogPostMutations';
+import { useCreateBlogAttribute } from 'hooks/mutations/blog/useBlogMutations';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';

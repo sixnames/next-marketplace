@@ -109,6 +109,7 @@ interface GetOperationPermissionInterface {
 interface GetOperationPermissionPayloadInterface {
   allow: boolean;
   message: string;
+  user?: UserModel | null;
 }
 
 export const getOperationPermission = async ({
@@ -117,7 +118,7 @@ export const getOperationPermission = async ({
 }: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
   const { db } = await getDatabase();
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
-  const { role } = await getSessionRole(context);
+  const { role, user } = await getSessionRole(context);
 
   if (role.slug === ROLE_SLUG_ADMIN) {
     return {
@@ -146,6 +147,7 @@ export const getOperationPermission = async ({
   return {
     allow: rule.allow,
     message: '',
+    user,
   };
 };
 

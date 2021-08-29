@@ -2,10 +2,10 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
+import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
-import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -27,6 +27,7 @@ interface BlogPostConsumerInterface {
   post: BlogPostInterface;
 }
 
+const sectionClassName = 'border-t border-border-color pt-8 mt-12';
 const pageTitle = 'Блог';
 
 const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
@@ -44,15 +45,6 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
     ],
   };
 
-  const initialValues: UpdateBlogPostInputInterface = {
-    blogPostId: `${post._id}`,
-    content: post.content,
-    descriptionI18n: post.descriptionI18n,
-    source: post.source,
-    state: post.state,
-    titleI18n: post.titleI18n,
-  };
-
   return (
     <AppContentWrapper testId={'post-details'} breadcrumbs={breadcrumbs}>
       <Head>
@@ -66,11 +58,18 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
         <div className='relative'>
           <Formik
             validationSchema={validationSchema}
-            initialValues={initialValues}
+            initialValues={{
+              blogPostId: `${post._id}`,
+              content: JSON.parse(post.content),
+              descriptionI18n: post.descriptionI18n,
+              source: post.source,
+              state: post.state,
+              titleI18n: post.titleI18n,
+            }}
             onSubmit={(values) => {
               updateBlogPost({
                 blogPostId: values.blogPostId,
-                content: values.content,
+                content: JSON.stringify(values.content),
                 descriptionI18n: values.descriptionI18n,
                 source: values.source,
                 state: values.state,
@@ -78,7 +77,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
               });
             }}
           >
-            {() => {
+            {({ values, setFieldValue }) => {
               return (
                 <Form>
                   <FormikTranslationsInput
@@ -97,8 +96,42 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                     showInlineError
                   />
 
+                  <div className={sectionClassName}>
+                    <Title tag={'div'} size={'small'}>
+                      Контент страницы
+                    </Title>
+                    <PageEditor
+                      value={values.content}
+                      setValue={(value) => {
+                        setFieldValue('content', value);
+                      }}
+                      imageUpload={async (file) => {
+                        try {
+                          const formData = new FormData();
+                          formData.append('pageId', `${post._id}`);
+                          formData.append('assets', file);
+
+                          const responseFetch = await fetch('/api/blog/add-post-asset', {
+                            method: REQUEST_METHOD_POST,
+                            body: formData,
+                          });
+                          const responseJson = await responseFetch.json();
+
+                          return {
+                            url: responseJson.url,
+                          };
+                        } catch (e) {
+                          console.log(e);
+                          return {
+                            url: '',
+                          };
+                        }
+                      }}
+                    />
+                  </div>
+
                   <FixedButtons>
-                    <Button testId={`submit-blog-post`} size={'small'}>
+                    <Button testId={`submit-blog-post`} size={'small'} type={'submit'}>
                       Сохранить
                     </Button>
                   </FixedButtons>

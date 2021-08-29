@@ -15,6 +15,7 @@ import {
   TEXT_HORIZONTAL_LEFT,
   TEXT_HORIZONTAL_CENTER,
   TEXT_HORIZONTAL_RIGHT,
+  REQUEST_METHOD_POST,
 } from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -243,7 +244,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-main-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -283,7 +284,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-main-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -369,7 +370,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-secondary-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -452,7 +453,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-screenshot', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -494,7 +495,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         const responseFetch = await fetch('/api/add-page-asset', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         });
                         const responseJson = await responseFetch.json();

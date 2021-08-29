@@ -1,6 +1,10 @@
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
 import { BlogAttributeInterface } from 'db/uiInterfaces';
+import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
 import { useCreateBlogAttribute } from 'hooks/mutations/blog/useBlogPostMutations';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -21,14 +25,30 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
     schema: createBlogAttributeSchema,
   });
 
+  const { data, loading, error } = useGetNewAttributeOptionsQuery();
+
   const initialValues: CreateBlogAttributeInputInterface = {
     nameI18n: attribute?.nameI18n || {},
     optionsGroupId: attribute ? `${attribute?.optionsGroupId}` : null,
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (error || !data) {
+    return (
+      <ModalFrame>
+        <RequestError />
+      </ModalFrame>
+    );
+  }
+
+  const { getAllOptionsGroups } = data;
+
   return (
-    <ModalFrame testId={'blog-post-modal'}>
-      <ModalTitle>Создание блог-поста</ModalTitle>
+    <ModalFrame testId={'blog-attribute-modal'}>
+      <ModalTitle>Создание атрибута блога</ModalTitle>
 
       <Formik
         validationSchema={validationSchema}
@@ -44,21 +64,22 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
           return (
             <Form>
               <FormikTranslationsInput
-                label={'Заголовок'}
-                name={'titleI18n'}
-                testId={'title'}
+                label={'Название'}
+                name={'nameI18n'}
+                testId={'name'}
                 isRequired
               />
 
-              <FormikTranslationsInput
-                label={'Краткое описание'}
-                name={'descriptionI18n'}
-                testId={'description'}
+              <FormikSelect
+                options={getAllOptionsGroups}
+                label={'Группа опций'}
+                name={'optionsGroupId'}
+                testId={'optionsGroupId'}
                 isRequired
               />
 
               <ModalButtons>
-                <Button testId={'blog-post-submit'} type={'submit'}>
+                <Button testId={'blog-attribute-submit'} type={'submit'}>
                   Создать
                 </Button>
               </ModalButtons>

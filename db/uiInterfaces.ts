@@ -4,6 +4,7 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributeViewVariantModel,
+  BlogAttributeModel,
   BlogPostModel,
   BrandCollectionModel,
   BrandModel,
@@ -56,7 +57,7 @@ import {
 import { MessageSlug } from 'types/messageSlugTypes';
 
 // Blog
-export interface BlogAttributeInterface extends BlogPostModel {
+export interface BlogAttributeInterface extends BlogAttributeModel {
   name?: string | null;
   options?: OptionInterface[] | null;
 }

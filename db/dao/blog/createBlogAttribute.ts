@@ -16,7 +16,7 @@ import { createBlogAttributeSchema } from 'validation/blogSchema';
 
 export interface CreateBlogAttributeInputInterface {
   nameI18n: TranslationModel;
-  optionsGroupId: string;
+  optionsGroupId?: string | null;
 }
 
 export async function createBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
@@ -66,6 +66,15 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
       payload = {
         success: false,
         message: await getApiMessage('blogAttributes.create.duplicate'),
+      };
+      res.status(500).send(payload);
+      return;
+    }
+
+    if (!args.optionsGroupId) {
+      payload = {
+        success: false,
+        message: await getApiMessage('blogAttributes.create.error'),
       };
       res.status(500).send(payload);
       return;

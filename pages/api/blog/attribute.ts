@@ -4,12 +4,6 @@ import { deleteBlogAttribute } from 'db/dao/blog/deleteBlogAttribute';
 import { updateBlogAttribute } from 'db/dao/blog/updateBlogAttribute';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {
     return createBlogAttribute(req, res);

@@ -6,7 +6,7 @@ import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export interface DeleteBlogAttributeInputInterface {
+export interface DeleteBlogPostInputInterface {
   _id: string;
 }
 
@@ -14,7 +14,7 @@ export async function deleteBlogPost(req: NextApiRequest, res: NextApiResponse) 
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const args = req.body as DeleteBlogAttributeInputInterface;
+  const args = JSON.parse(req.body) as DeleteBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {
     success: false,
@@ -73,7 +73,7 @@ export async function deleteBlogPost(req: NextApiRequest, res: NextApiResponse) 
     return;
   } catch (e) {
     res.status(200).send({
-      success: true,
+      success: false,
       message: getResolverErrorMessage(e),
     });
     return;

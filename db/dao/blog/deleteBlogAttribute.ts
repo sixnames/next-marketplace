@@ -14,7 +14,7 @@ export async function deleteBlogAttribute(req: NextApiRequest, res: NextApiRespo
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
-  const args = req.body as DeleteBlogAttributeInputInterface;
+  const args = JSON.parse(req.body) as DeleteBlogAttributeInputInterface;
 
   let payload: BlogAttributePayloadModel = {
     success: false,
@@ -75,7 +75,7 @@ export async function deleteBlogAttribute(req: NextApiRequest, res: NextApiRespo
     return;
   } catch (e) {
     res.status(200).send({
-      success: true,
+      success: false,
       message: getResolverErrorMessage(e),
     });
     return;

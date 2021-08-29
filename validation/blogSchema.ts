@@ -22,7 +22,7 @@ export const blogPostCommonFieldsSchema = (args: ValidationSchemaArgsInterface) 
       ...args,
       slug: 'validation.blogPosts.title',
     }),
-    description18n: requiredStringTranslationSchema({
+    descriptionI18n: requiredStringTranslationSchema({
       ...args,
       slug: 'validation.blogPosts.description',
     }),

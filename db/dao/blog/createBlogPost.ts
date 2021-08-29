@@ -17,7 +17,7 @@ import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createBlogPostSchema } from 'validation/blogSchema';
 
-export interface CreateBlogAttributeInputInterface {
+export interface CreateBlogPostInputInterface {
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   companySlug: string;
@@ -27,7 +27,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const args = req.body as CreateBlogAttributeInputInterface;
+  const args = JSON.parse(req.body) as CreateBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {
     success: false,
@@ -43,6 +43,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
       },
       slug: 'createBlogPost',
     });
+
     if (!allow || !user) {
       payload = {
         success: false,
@@ -111,7 +112,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     return;
   } catch (e) {
     res.status(200).send({
-      success: true,
+      success: false,
       message: getResolverErrorMessage(e),
     });
     return;

@@ -4,7 +4,7 @@ import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
@@ -94,7 +94,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
               testId={`create-blog-post`}
               size={'small'}
               onClick={() => {
-                console.log('create');
+                console.log(DEFAULT_COMPANY_SLUG);
               }}
             >
               Создать блог-пост

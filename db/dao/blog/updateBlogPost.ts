@@ -12,7 +12,7 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { updateBlogPostSchema } from 'validation/blogSchema';
 
-export interface UpdateBlogAttributeInputInterface {
+export interface UpdateBlogPostInputInterface {
   blogPostId: string;
   titleI18n: TranslationModel;
   descriptionI18n: TranslationModel;
@@ -25,7 +25,7 @@ export async function updateBlogPost(req: NextApiRequest, res: NextApiResponse) 
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const args = req.body as UpdateBlogAttributeInputInterface;
+  const args = JSON.parse(req.body) as UpdateBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {
     success: false,
@@ -115,7 +115,7 @@ export async function updateBlogPost(req: NextApiRequest, res: NextApiResponse) 
     return;
   } catch (e) {
     res.status(200).send({
-      success: true,
+      success: false,
       message: getResolverErrorMessage(e),
     });
     return;

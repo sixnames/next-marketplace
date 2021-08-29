@@ -124,6 +124,7 @@ export const getOperationPermission = async ({
     return {
       allow: true,
       message: '',
+      user,
     };
   }
 

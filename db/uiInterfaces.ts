@@ -60,6 +60,7 @@ import { MessageSlug } from 'types/messageSlugTypes';
 export interface BlogAttributeInterface extends BlogAttributeModel {
   name?: string | null;
   options?: OptionInterface[] | null;
+  optionsGroup?: OptionsGroupInterface | null;
 }
 
 export interface BlogPostInterface extends BlogPostModel {

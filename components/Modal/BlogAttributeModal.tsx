@@ -5,7 +5,10 @@ import Spinner from 'components/Spinner';
 import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
 import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
-import { useCreateBlogAttribute } from 'hooks/mutations/blog/useBlogMutations';
+import {
+  useCreateBlogAttribute,
+  useUpdateBlogAttribute,
+} from 'hooks/mutations/blog/useBlogMutations';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -21,6 +24,7 @@ export interface BlogAttributeModalInterface {
 
 const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }) => {
   const [createBlogPostHandler] = useCreateBlogAttribute();
+  const [updateBlogAttribute] = useUpdateBlogAttribute();
   const validationSchema = useValidationSchema({
     schema: createBlogAttributeSchema,
   });
@@ -48,12 +52,21 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
 
   return (
     <ModalFrame testId={'blog-attribute-modal'}>
-      <ModalTitle>Создание атрибута блога</ModalTitle>
+      <ModalTitle>{attribute ? 'Обновление' : 'Создание'} атрибута блога</ModalTitle>
 
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
+          if (attribute) {
+            updateBlogAttribute({
+              blogAttributeId: `${attribute._id}`,
+              nameI18n: values.nameI18n,
+              optionsGroupId: values.optionsGroupId,
+            });
+            return;
+          }
+
           createBlogPostHandler({
             nameI18n: values.nameI18n,
             optionsGroupId: values.optionsGroupId,
@@ -68,6 +81,7 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
                 name={'nameI18n'}
                 testId={'name'}
                 isRequired
+                showInlineError
               />
 
               <FormikSelect
@@ -76,6 +90,7 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
                 name={'optionsGroupId'}
                 testId={'optionsGroupId'}
                 isRequired
+                showInlineError
               />
 
               <ModalButtons>

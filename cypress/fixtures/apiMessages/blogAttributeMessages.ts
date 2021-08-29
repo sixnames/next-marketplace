@@ -82,7 +82,7 @@ export const blogAttributeMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.blogAttributes.name',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Название атрибута обязателен.`,
+      [DEFAULT_LOCALE]: `Название атрибута обязателено.`,
       [SECONDARY_LOCALE]: `Attribute title is required.`,
     },
   },

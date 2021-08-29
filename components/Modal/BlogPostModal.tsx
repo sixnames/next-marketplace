@@ -49,6 +49,7 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
                 name={'titleI18n'}
                 testId={'title'}
                 isRequired
+                showInlineError
               />
 
               <FormikTranslationsInput
@@ -56,6 +57,7 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
                 name={'descriptionI18n'}
                 testId={'description'}
                 isRequired
+                showInlineError
               />
 
               <ModalButtons>

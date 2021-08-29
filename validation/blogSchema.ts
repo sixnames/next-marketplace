@@ -1,4 +1,5 @@
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { optionsGroupIdSchema } from 'validation/optionsGroupSchema';
 import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 
@@ -35,10 +36,7 @@ export const blogAttributeCommonFieldsSchema = (args: ValidationSchemaArgsInterf
       ...args,
       slug: 'validation.blogAttributes.name',
     }),
-    optionsGroupId: requiredStringTranslationSchema({
-      ...args,
-      slug: 'validation.blogAttributes.optionsGroupId',
-    }),
+    optionsGroupId: optionsGroupIdSchema(args),
   };
 };
 

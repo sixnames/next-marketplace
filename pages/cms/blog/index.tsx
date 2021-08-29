@@ -184,6 +184,11 @@ export const getServerSideProps = async (
   const initialBlogPostsAggregation = await blogPostsCollection
     .aggregate([
       {
+        $match: {
+          companySlug: DEFAULT_COMPANY_SLUG,
+        },
+      },
+      {
         $sort: {
           updatedAt: SORT_DESC,
           _id: SORT_DESC,

@@ -15,7 +15,7 @@ import { updateBlogAttributeSchema } from 'validation/blogSchema';
 export interface UpdateBlogAttributeInputInterface {
   blogAttributeId: string;
   nameI18n: TranslationModel;
-  optionsGroupId: string;
+  optionsGroupId?: string | null;
 }
 
 export async function updateBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
@@ -76,7 +76,16 @@ export async function updateBlogAttribute(req: NextApiRequest, res: NextApiRespo
     }
 
     // update
-    const { blogAttributeId, ...values } = args;
+    const { blogAttributeId, optionsGroupId, ...values } = args;
+    if (!optionsGroupId) {
+      payload = {
+        success: false,
+        message: await getApiMessage('blogAttributes.update.error'),
+      };
+      res.status(500).send(payload);
+      return;
+    }
+
     const updatedBlogAttributeResult = await blogAttributesCollection.findOneAndUpdate(
       {
         _id: new ObjectId(blogAttributeId),
@@ -84,13 +93,14 @@ export async function updateBlogAttribute(req: NextApiRequest, res: NextApiRespo
       {
         $set: {
           ...values,
-          optionsGroupId: new ObjectId(values.optionsGroupId),
+          optionsGroupId: new ObjectId(optionsGroupId),
         },
       },
       {
         returnDocument: 'after',
       },
     );
+
     const updatedBlogAttribute = updatedBlogAttributeResult.value;
     if (!updatedBlogAttributeResult.ok || !updatedBlogAttribute) {
       payload = {

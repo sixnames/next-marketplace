@@ -31,6 +31,7 @@ import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 const pageTitle = `Группы атрибутов`;
 
@@ -99,7 +100,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
     ],
   };
 
-  const navConfig = React.useMemo(() => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Атрибуты',

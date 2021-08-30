@@ -51,3 +51,7 @@ export async function parseApiFormData<T>(
 
   return formData;
 }
+
+export interface UploadRestApiImageInterface {
+  assets?: any[];
+}

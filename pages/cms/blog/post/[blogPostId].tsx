@@ -12,7 +12,11 @@ import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateBlogPost } from 'hooks/mutations/blog/useBlogMutations';
+import {
+  useDeleteBlogPostPreviewImage,
+  useUpdateBlogPost,
+  useUploadBlogPostPreviewImage,
+} from 'hooks/mutations/blog/useBlogMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -38,6 +42,9 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
     schema: updateBlogPostSchema,
   });
   const [updateBlogPost] = useUpdateBlogPost();
+  const [deleteBlogPostPreviewImage] = useDeleteBlogPostPreviewImage();
+  const [uploadBlogPostPreviewImage] = useUploadBlogPostPreviewImage();
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
@@ -91,10 +98,16 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                     width={'10rem'}
                     height={'10rem'}
                     previewUrl={post.previewImage}
+                    removeImageHandler={() => {
+                      deleteBlogPostPreviewImage({
+                        blogPostId: `${post._id}`,
+                      });
+                    }}
                     uploadImageHandler={(files) => {
-                      if (files) {
-                        console.log(files);
-                      }
+                      uploadBlogPostPreviewImage({
+                        blogPostId: `${post._id}`,
+                        assets: files,
+                      });
                     }}
                   />
 

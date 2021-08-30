@@ -2,8 +2,10 @@ import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribu
 import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
 import { DeleteBlogAttributeInputInterface } from 'db/dao/blog/deleteBlogAttribute';
 import { DeleteBlogPostInputInterface } from 'db/dao/blog/deleteBlogPost';
+import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPreviewImage';
 import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
+import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
@@ -91,7 +93,7 @@ export const useDeleteBlogPost = (): UseMutationConsumerPayload<
 // delete post preview image
 export const useDeleteBlogPostPreviewImage = (): UseMutationConsumerPayload<
   BlogPostPayloadModel,
-  DeleteBlogPostInputInterface
+  DeleteBlogPostPreviewImageInterface
 > => {
   const [handle, payload] = useMutation<BlogPostPayloadModel>({
     input: '/api/blog/post-preview-image',
@@ -99,13 +101,41 @@ export const useDeleteBlogPostPreviewImage = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
+    (args: DeleteBlogPostPreviewImageInterface) => {
       const formData = new FormData();
-      formData.append('assets', args.files[0]);
-      formData.append('postId', `${args.postId}`);
+      formData.append('blogPostId', `${args.blogPostId}`);
 
       handle({
         method: REQUEST_METHOD_DELETE,
+        body: formData,
+      });
+    },
+    [handle],
+  );
+
+  return [handler, payload];
+};
+
+// upload post preview image
+export const useUploadBlogPostPreviewImage = (): UseMutationConsumerPayload<
+  BlogPostPayloadModel,
+  UpdateBlogPostPreviewInputInterface
+> => {
+  const [handle, payload] = useMutation<BlogPostPayloadModel>({
+    input: '/api/blog/post-preview-image',
+    reload: true,
+  });
+
+  const handler = React.useCallback(
+    (args: UpdateBlogPostPreviewInputInterface) => {
+      const formData = new FormData();
+      if (args.assets) {
+        formData.append('assets', args.assets[0]);
+      }
+      formData.append('blogPostId', `${args.blogPostId}`);
+
+      handle({
+        method: REQUEST_METHOD_PATCH,
         body: formData,
       });
     },

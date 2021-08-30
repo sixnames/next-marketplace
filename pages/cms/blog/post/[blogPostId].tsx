@@ -8,19 +8,24 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import Inner from 'components/Inner';
 import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
 import PageEditor from 'components/PageEditor';
-import Spinner from 'components/Spinner';
 import Title from 'components/Title';
-import { PAGE_STATE_OPTIONS, ROUTE_CMS } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  DEFAULT_LOCALE,
+  PAGE_STATE_OPTIONS,
+  ROUTE_CMS,
+  SORT_ASC,
+} from 'config/common';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
-import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { BlogPostInterface } from 'db/uiInterfaces';
+import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteBlogPostPreviewImage,
-  useGetBlogAttributes,
   useUpdateBlogPost,
+  useUpdateBlogPostAttribute,
   useUploadBlogPostAsset,
   useUploadBlogPostPreviewImage,
 } from 'hooks/mutations/blog/useBlogMutations';
@@ -39,12 +44,13 @@ import { updateBlogPostSchema } from 'validation/blogSchema';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;
+  attributes: BlogAttributeInterface[];
 }
 
 const sectionClassName = 'border-t border-border-color pt-8 mt-12';
 const pageTitle = 'Блог';
 
-const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
+const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attributes }) => {
   const validationSchema = useValidationSchema({
     schema: updateBlogPostSchema,
   });
@@ -53,7 +59,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
   const [deleteBlogPostPreviewImage] = useDeleteBlogPostPreviewImage();
   const [uploadBlogPostPreviewImage] = useUploadBlogPostPreviewImage();
   const [uploadBlogPostAsset] = useUploadBlogPostAsset();
-  const attributes = useGetBlogAttributes();
+  const [updateBlogPostAttribute] = useUpdateBlogPostAttribute();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
@@ -153,39 +159,49 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                       Атрибуты блог-поста
                     </Title>
 
-                    {attributes ? (
-                      <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
-                        {attributes.map((attribute) => {
-                          return (
-                            <FakeInput
-                              value={`${attribute.readableValue}`}
-                              label={`${attribute.name}`}
-                              key={`${attribute._id}`}
-                              testId={`${attribute.name}-attribute`}
-                              onClear={undefined}
-                              onClick={() => {
-                                if (attribute.optionsGroupId) {
-                                  showModal<AttributeOptionsModalInterface>({
-                                    variant: ATTRIBUTE_OPTIONS_MODAL,
-                                    props: {
-                                      testId: 'select-attribute-options-modal',
-                                      optionsGroupId: `${attribute.optionsGroupId}`,
-                                      optionVariant: 'checkbox',
-                                      title: `${attribute.name}`,
-                                      onSubmit: (value) => {
-                                        console.log(value);
-                                      },
+                    <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
+                      {attributes.map((attribute) => {
+                        return (
+                          <FakeInput
+                            value={`${attribute.readableValue}`}
+                            label={`${attribute.name}`}
+                            key={`${attribute._id}`}
+                            testId={`${attribute.name}-attribute`}
+                            onClear={
+                              attribute.readableValue
+                                ? () => {
+                                    updateBlogPostAttribute({
+                                      blogPostId: `${post._id}`,
+                                      blogAttributeId: `${attribute._id}`,
+                                      selectedOptionsIds: [],
+                                    }).catch(console.log);
+                                  }
+                                : undefined
+                            }
+                            onClick={() => {
+                              if (attribute.optionsGroupId) {
+                                showModal<AttributeOptionsModalInterface>({
+                                  variant: ATTRIBUTE_OPTIONS_MODAL,
+                                  props: {
+                                    testId: 'select-attribute-options-modal',
+                                    optionsGroupId: `${attribute.optionsGroupId}`,
+                                    optionVariant: 'checkbox',
+                                    title: `${attribute.name}`,
+                                    onSubmit: (value) => {
+                                      updateBlogPostAttribute({
+                                        blogPostId: `${post._id}`,
+                                        blogAttributeId: `${attribute._id}`,
+                                        selectedOptionsIds: value.map(({ _id }) => `${_id}`),
+                                      }).catch(console.log);
                                     },
-                                  });
-                                }
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <Spinner isNested isTransparent />
-                    )}
+                                  },
+                                });
+                              }
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className={sectionClassName}>
@@ -232,10 +248,10 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
 
 interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInterface {}
 
-const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, pageUrls }) => {
+const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, pageUrls, attributes }) => {
   return (
     <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogPostConsumer post={post} />
+      <BlogPostConsumer post={post} attributes={attributes} />
     </CmsLayout>
   );
 };
@@ -252,6 +268,7 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+  const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
 
   const initialBlogPostAggregation = await blogPostsCollection
     .aggregate([
@@ -306,10 +323,74 @@ export const getServerSideProps = async (
       : null,
   };
 
+  const selectedOptionsSlugs = post.selectedOptionsSlugs.reduce((acc: string[], slug) => {
+    const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+    const optionSlug = slugParts[1];
+    if (!optionSlug) {
+      return acc;
+    }
+    return [...acc, optionSlug];
+  }, []);
+
+  const initialBlogAttributesAggregation = await blogAttributesCollection
+    .aggregate([
+      {
+        $sort: {
+          [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
+        },
+      },
+      {
+        $lookup: {
+          as: 'options',
+          from: COL_OPTIONS,
+          let: {
+            optionsGroupId: '$optionsGroupId',
+          },
+          pipeline: [
+            {
+              $match: {
+                slug: {
+                  $in: selectedOptionsSlugs,
+                },
+                $expr: {
+                  $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  const attributes = initialBlogAttributesAggregation.map((attribute) => {
+    const options = attribute.options
+      ? attribute.options.map((option) => {
+          return {
+            ...option,
+            name: getFieldStringLocale(option.nameI18n, props.sessionLocale),
+          };
+        })
+      : null;
+    const optionNames = (options || [])
+      .filter((option) => {
+        return option.slug;
+      })
+      .map(({ name }) => `${name}`);
+
+    return {
+      ...attribute,
+      name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+      options,
+      readableValue: optionNames.join(', '),
+    };
+  });
+
   return {
     props: {
       ...props,
       post: castDbData(post),
+      attributes: castDbData(attributes),
     },
   };
 };

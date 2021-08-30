@@ -5,9 +5,9 @@ import { DeleteBlogPostInputInterface } from 'db/dao/blog/deleteBlogPost';
 import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPreviewImage';
 import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
+import { UpdateBlogPostAttributeInterface } from 'db/dao/blog/updateBlogPostAttribute';
 import { UploadBlogPostAssetInputInterface } from 'db/dao/blog/uploadPostAsset';
 import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
-import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
@@ -22,7 +22,6 @@ import {
   ConstructorAssetPayloadModel,
 } from 'db/dbModels';
 import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
-import useSWR from 'swr';
 
 // post
 export const useCreateBlogPost = (): UseMutationConsumerPayload<
@@ -41,7 +40,7 @@ export const useCreateBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    async (args) => {
+    async (args: CreateBlogPostInputInterface) => {
       const payload = await handle({
         method: REQUEST_METHOD_POST,
         body: JSON.stringify(args),
@@ -64,7 +63,30 @@ export const useUpdateBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    async (args) => {
+    async (args: UpdateBlogPostInputInterface) => {
+      const payload = await handle({
+        method: REQUEST_METHOD_PATCH,
+        body: JSON.stringify(args),
+      });
+      return payload;
+    },
+    [handle],
+  );
+
+  return [handler, payload];
+};
+
+export const useUpdateBlogPostAttribute = (): UseMutationConsumerPayload<
+  BlogPostPayloadModel,
+  UpdateBlogPostAttributeInterface
+> => {
+  const [handle, payload] = useMutation<BlogPostPayloadModel>({
+    input: '/api/blog/update-post-attribute',
+    reload: true,
+  });
+
+  const handler = React.useCallback(
+    async (args: UpdateBlogPostAttributeInterface) => {
       const payload = await handle({
         method: REQUEST_METHOD_PATCH,
         body: JSON.stringify(args),
@@ -87,7 +109,7 @@ export const useDeleteBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    async (args) => {
+    async (args: DeleteBlogPostInputInterface) => {
       const payload = await handle({
         method: REQUEST_METHOD_DELETE,
         body: JSON.stringify(args),
@@ -255,9 +277,4 @@ export const useDeleteBlogAttribute = (): UseMutationConsumerPayload<
   );
 
   return [handler, payload];
-};
-
-export const useGetBlogAttributes = () => {
-  const { data } = useSWR<BlogAttributeInterface[]>('/api/blog/get-blog-attributes');
-  return data;
 };

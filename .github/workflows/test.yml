@@ -31,8 +31,8 @@ jobs:
 
       - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
-      - run: yarn seed-test-db
-#      - run: yarn build-and-test
+#      - run: yarn seed-test-db
+      - run: yarn build-and-test
         env:
           CI: true
           DEV_ENV: true

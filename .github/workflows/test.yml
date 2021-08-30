@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
+  buildAndTest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,8 +18,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
-      - run: yarn build
+      - run: yarn build-and-test
         env:
           DEV_ENV: true
           MONGO_URL: ${{ secrets.MONGO_URL }}
@@ -50,3 +51,4 @@ jobs:
           ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
           ALG_INDEX_PRODUCTS: ${{ secrets.ALG_INDEX_PRODUCTS }}
           ALG_INDEX_SHOP_PRODUCTS: ${{ secrets.ALG_INDEX_SHOP_PRODUCTS }}
+

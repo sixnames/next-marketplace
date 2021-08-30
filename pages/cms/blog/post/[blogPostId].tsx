@@ -1,19 +1,25 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
+import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import Inner from 'components/Inner';
+import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
 import PageEditor from 'components/PageEditor';
+import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import { PAGE_STATE_OPTIONS, ROUTE_CMS } from 'config/common';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteBlogPostPreviewImage,
+  useGetBlogAttributes,
   useUpdateBlogPost,
   useUploadBlogPostAsset,
   useUploadBlogPostPreviewImage,
@@ -42,10 +48,12 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
   const validationSchema = useValidationSchema({
     schema: updateBlogPostSchema,
   });
+  const { showModal } = useAppContext();
   const [updateBlogPost] = useUpdateBlogPost();
   const [deleteBlogPostPreviewImage] = useDeleteBlogPostPreviewImage();
   const [uploadBlogPostPreviewImage] = useUploadBlogPostPreviewImage();
   const [uploadBlogPostAsset] = useUploadBlogPostAsset();
+  const attributes = useGetBlogAttributes();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
@@ -86,7 +94,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                 source: values.source,
                 state: values.state,
                 titleI18n: values.titleI18n,
-              });
+              }).catch(console.log);
             }}
           >
             {({ values, setFieldValue }) => {
@@ -103,13 +111,13 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
                     removeImageHandler={() => {
                       deleteBlogPostPreviewImage({
                         blogPostId: `${post._id}`,
-                      });
+                      }).catch(console.log);
                     }}
                     uploadImageHandler={(files) => {
                       uploadBlogPostPreviewImage({
                         blogPostId: `${post._id}`,
                         assets: files,
-                      });
+                      }).catch(console.log);
                     }}
                   />
 
@@ -142,7 +150,47 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post }) => {
 
                   <div className={sectionClassName}>
                     <Title tag={'div'} size={'small'}>
-                      Контент страницы
+                      Атрибуты блог-поста
+                    </Title>
+
+                    {attributes ? (
+                      <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
+                        {attributes.map((attribute) => {
+                          return (
+                            <FakeInput
+                              value={`${attribute.readableValue}`}
+                              label={`${attribute.name}`}
+                              key={`${attribute._id}`}
+                              testId={`${attribute.name}-attribute`}
+                              onClear={undefined}
+                              onClick={() => {
+                                if (attribute.optionsGroupId) {
+                                  showModal<AttributeOptionsModalInterface>({
+                                    variant: ATTRIBUTE_OPTIONS_MODAL,
+                                    props: {
+                                      testId: 'select-attribute-options-modal',
+                                      optionsGroupId: `${attribute.optionsGroupId}`,
+                                      optionVariant: 'checkbox',
+                                      title: `${attribute.name}`,
+                                      onSubmit: (value) => {
+                                        console.log(value);
+                                      },
+                                    },
+                                  });
+                                }
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <Spinner isNested isTransparent />
+                    )}
+                  </div>
+
+                  <div className={sectionClassName}>
+                    <Title tag={'div'} size={'small'}>
+                      Контент блог-поста
                     </Title>
                     <PageEditor
                       value={values.content}

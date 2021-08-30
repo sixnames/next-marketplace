@@ -14,13 +14,15 @@ export interface UseFetchInterface<T> {
 
 type UseFetchHandler<T> = (init?: RequestInit) => Promise<T | null>;
 
+export interface UseFetchDataPayloadInterface<T> {
+  loading: boolean;
+  error: any;
+  data: T | null;
+}
+
 export type UseFetchPayload<T> = [
   handler: UseFetchHandler<T>,
-  payload: {
-    loading: boolean;
-    error: any;
-    data: T | null;
-  },
+  payload: UseFetchDataPayloadInterface<T>,
 ];
 
 export function useFetch<T>({
@@ -95,6 +97,7 @@ export type UseMutationConsumerPayload<TPayload, TArgs> = [
   },
 ];
 
+// TODO refactor
 export function useMutation<T extends PayloadModel>({
   input,
   onError,

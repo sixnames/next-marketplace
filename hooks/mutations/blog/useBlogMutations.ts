@@ -7,6 +7,7 @@ import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribu
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
 import { UploadBlogPostAssetInputInterface } from 'db/dao/blog/uploadPostAsset';
 import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
+import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
@@ -21,6 +22,7 @@ import {
   ConstructorAssetPayloadModel,
 } from 'db/dbModels';
 import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
+import useSWR from 'swr';
 
 // post
 export const useCreateBlogPost = (): UseMutationConsumerPayload<
@@ -253,4 +255,9 @@ export const useDeleteBlogAttribute = (): UseMutationConsumerPayload<
   );
 
   return [handler, payload];
+};
+
+export const useGetBlogAttributes = () => {
+  const { data } = useSWR<BlogAttributeInterface[]>('/api/blog/get-blog-attributes');
+  return data;
 };

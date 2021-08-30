@@ -61,6 +61,7 @@ export interface BlogAttributeInterface extends BlogAttributeModel {
   name?: string | null;
   options?: OptionInterface[] | null;
   optionsGroup?: OptionsGroupInterface | null;
+  readableValue?: string;
 }
 
 export interface BlogPostInterface extends BlogPostModel {

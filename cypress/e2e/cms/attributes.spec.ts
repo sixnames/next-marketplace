@@ -18,7 +18,7 @@ describe('Attributes Groups', () => {
     const createdGroupName = 'createdGroupName';
     const updatedGroupName = 'updatedGroupName';
 
-    const mockAttributeNewName = 'mockAttributeNewName';
+    const attributeNewName = 'attributeNewName';
     const updatedAttributeName = 'updatedAttributeName';
 
     cy.getByCy(`create-attributes-group`).click();
@@ -44,8 +44,8 @@ describe('Attributes Groups', () => {
     // Should create attribute in group
     cy.getByCy(`create-attribute`).click();
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockAttributeNewName);
-    cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(mockAttributeNewName);
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(attributeNewName);
+    cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).type(attributeNewName);
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
     cy.getByCy(`attribute-viewVariant`).select(ATTRIBUTE_VIEW_VARIANT_LIST);
     cy.selectOptionByTestId(`attribute-options`, 'Год');
@@ -55,25 +55,25 @@ describe('Attributes Groups', () => {
       ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
     );
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`${mockAttributeNewName}-row`).should('exist');
+    cy.getByCy(`${attributeNewName}-row`).should('exist');
 
     // Should update attribute in group
-    cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
+    cy.getByCy(`${attributeNewName}-attribute-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`)
-      .should('have.value', mockAttributeNewName)
+      .should('have.value', attributeNewName)
       .clear()
       .type(updatedAttributeName);
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
     cy.getByCy(`positioningInTitle-${DEFAULT_LOCALE}`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`${mockAttributeNewName}-row`).should('not.exist');
+    cy.getByCy(`${attributeNewName}-row`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}-row`).should('exist');
 
     // Should delete attribute from group
     cy.getByCy(`${updatedAttributeName}-attribute-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.getByCy(`${mockAttributeNewName}-row`).should('not.exist');
+    cy.getByCy(`${attributeNewName}-row`).should('not.exist');
 
     // Should delete attributes group
     cy.visit(`${ROUTE_CMS}/attributes`);

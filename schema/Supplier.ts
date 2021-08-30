@@ -15,8 +15,8 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_SUPPLIERS, COL_PRODUCTS } from 'db/collectionNames';
-import { aggregatePagination } from 'db/aggregatePagination';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { generateDefaultLangSlug } from 'lib/slugUtils';

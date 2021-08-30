@@ -1,6 +1,6 @@
 import { COL_ORDER_STATUSES } from 'db/collectionNames';
 import { OrderStatusModel, OrderStatusPayloadModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { generateDefaultLangSlug } from 'lib/slugUtils';

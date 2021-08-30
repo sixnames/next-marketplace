@@ -17,9 +17,9 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from 'db/collectionNames';
-import { aggregatePagination } from 'db/aggregatePagination';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {

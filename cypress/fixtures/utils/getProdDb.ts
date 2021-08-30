@@ -1,5 +1,6 @@
 import { ONE_WEEK } from '../../../config/common';
 import {
+  BlogAttributeModel,
   BrandCollectionModel,
   BrandModel,
   CartModel,
@@ -28,6 +29,8 @@ import {
   UserModel,
 } from '../../../db/dbModels';
 import {
+  COL_BLOG_ATTRIBUTES,
+  COL_BLOG_POSTS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CARTS,
@@ -201,6 +204,29 @@ export async function updateIndexes(db: Db) {
     views: -1,
     _id: -1,
   });
+
+  // Blog posts
+  await createCollectionIfNotExist(COL_BLOG_POSTS);
+  const blogPostsCollection = db.collection<BlogAttributeModel>(COL_BLOG_POSTS);
+  await blogPostsCollection.createIndex({ companySlug: 1, slug: 1 }, { unique: true });
+  await blogPostsCollection.createIndex({
+    companySlug: 1,
+    selectedOptionsSlugs: 1,
+    priorities: -1,
+    views: -1,
+    createdAt: -1,
+  });
+  await blogPostsCollection.createIndex({
+    companySlug: 1,
+    priorities: -1,
+    views: -1,
+    createdAt: -1,
+  });
+
+  // Blog attributes
+  await createCollectionIfNotExist(COL_BLOG_ATTRIBUTES);
+  const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
+  await blogAttributesCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);

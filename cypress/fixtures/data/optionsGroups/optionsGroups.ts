@@ -70,6 +70,13 @@ const optionsGroups: OptionsGroupModel[] = [
     },
     variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantModel,
   },
+  {
+    _id: getObjectId('optionsGroup Теги'),
+    nameI18n: {
+      ru: 'Теги',
+    },
+    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
+  },
 ];
 
 // @ts-ignore

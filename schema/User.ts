@@ -1,4 +1,4 @@
-import { aggregatePagination } from 'db/aggregatePagination';
+import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
 import {
   getOperationPermission,

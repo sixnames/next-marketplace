@@ -8,6 +8,7 @@ import {
   ASSETS_DIST_SHOPS_LOGOS,
   ASSETS_DIST_TEMPLATES,
   ASSETS_DIST_CATEGORIES,
+  ASSETS_DIST_BLOG,
 } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
@@ -36,6 +37,7 @@ const config = {
 };
 
 (async function seedTestDb() {
+  const startTime = new Date().getTime();
   const seeder = new Seeder(config);
 
   const collections = seeder.readCollectionsFromPath(
@@ -49,7 +51,8 @@ const config = {
 
   try {
     await seeder.import(collections);
-    console.log('Test data seeded');
+    console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
+
     // await uploadTestAssets('./cypress/fixtures/assets');
 
     await uploadTestAssets(
@@ -87,10 +90,17 @@ const config = {
       bucketName,
       `/${ASSETS_DIST_CATEGORIES}`,
     );
+    await uploadTestAssets(
+      `./cypress/fixtures/assets/${ASSETS_DIST_BLOG}`,
+      bucketName,
+      `/${ASSETS_DIST_BLOG}`,
+    );
     /*await uploadTestAssets(
       `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
       `/${ASSETS_DIST_CONFIGS}`,
     );*/
+
+    console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
   } catch (err) {
     console.log(err);
   }

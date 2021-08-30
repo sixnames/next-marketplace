@@ -14,7 +14,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/constantPipelines';
+import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
 import { RubricAttributeModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

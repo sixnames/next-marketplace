@@ -15,6 +15,18 @@ const messagesGroups: MessagesGroupModel[] = [
     },
   },
   {
+    _id: getObjectId('messagesGroups Атрибуты блога'),
+    nameI18n: {
+      ru: 'Атрибуты блога',
+    },
+  },
+  {
+    _id: getObjectId('messagesGroups Блог-пост'),
+    nameI18n: {
+      ru: 'Блог-пост',
+    },
+  },
+  {
     _id: getObjectId('messagesGroups Валюта'),
     nameI18n: {
       ru: 'Валюта',

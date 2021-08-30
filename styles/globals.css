@@ -383,6 +383,8 @@
 }
 
 :root {
+  color-scheme: 'light dark';
+
   /*Font*/
   --font: 'Gilroy', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 

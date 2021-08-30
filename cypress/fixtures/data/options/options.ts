@@ -3,7 +3,9 @@ import { OptionModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');
 
-type OptionBaseModel = Omit<OptionModel, 'slug'>;
+interface OptionBaseModel extends Omit<OptionModel, 'slug'> {
+  slug?: string;
+}
 
 const yearOptionsCount = 10;
 const yearOptionsBase = (): OptionBaseModel[] => {
@@ -318,11 +320,43 @@ const optionsBase: OptionBaseModel[] = [
     },
     ...DEFAULT_COUNTERS_OBJECT,
   },
+
+  // Теги
+  {
+    _id: getObjectId('option Новости'),
+    slug: '777',
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Новости',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Рецепт'),
+    slug: '778',
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Рецепт',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('option Новинка'),
+    slug: '779',
+    optionsGroupId: getObjectId('optionsGroup Теги'),
+    variants: {},
+    nameI18n: {
+      ru: 'Новинка',
+    },
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 const options: OptionModel[] = [...optionsBase, ...yearOptionsBase()].map((base, i) => {
   return {
-    slug: addZero(i, ID_COUNTER_DIGITS),
+    slug: base.slug || addZero(i, ID_COUNTER_DIGITS),
     ...base,
   };
 });

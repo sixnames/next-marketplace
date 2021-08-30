@@ -29,9 +29,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
-#      - run: yarn seed-test-db
       - run: yarn build
         env:
           CI: true

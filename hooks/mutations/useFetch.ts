@@ -12,8 +12,10 @@ export interface UseFetchInterface<T> {
   reload?: boolean;
 }
 
+type UseFetchHandler<T> = (init?: RequestInit) => Promise<T | null>;
+
 export type UseFetchPayload<T> = [
-  handler: (init?: RequestInit) => void,
+  handler: UseFetchHandler<T>,
   payload: {
     loading: boolean;
     error: any;
@@ -34,33 +36,35 @@ export function useFetch<T>({
   const [error, setError] = React.useState<any>(null);
 
   const handler = React.useCallback(
-    (init) => {
-      if (onFetchStart) {
-        onFetchStart();
-      }
+    async (init) => {
+      let payload: any | null = null;
 
-      setLoading(true);
-      fetch(input, init)
-        .then((res) => res.json())
-        .then((json) => {
-          setData(json);
-          setLoading(false);
-          if (json.success) {
-            onSuccess(json);
+      try {
+        if (onFetchStart) {
+          onFetchStart();
+        }
 
-            if (reload) {
-              router.reload();
-            }
+        setLoading(true);
+        const fetchResult = await fetch(input, init);
+        const json = await fetchResult.json();
+        setData(json);
+        payload = json;
+        setLoading(false);
+        if (json.success) {
+          onSuccess(json);
 
-            return;
+          if (reload) {
+            router.reload();
           }
-          onError(json);
-        })
-        .catch((e) => {
-          setLoading(false);
-          setError(e);
-          onError();
-        });
+
+          return payload;
+        }
+        onError(json);
+      } catch (e) {
+        setLoading(false);
+        setError(e);
+        return payload;
+      }
     },
     [input, onError, onFetchStart, onSuccess, reload, router],
   );
@@ -83,7 +87,7 @@ export interface UseMutationInterface<T> {
 }
 
 export type UseMutationConsumerPayload<TPayload, TArgs> = [
-  handler: (args: TArgs) => void,
+  handler: (args: TArgs) => Promise<TPayload | null>,
   payload: {
     loading: boolean;
     error: any;

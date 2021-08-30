@@ -5,6 +5,7 @@ import { DeleteBlogPostInputInterface } from 'db/dao/blog/deleteBlogPost';
 import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPreviewImage';
 import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
+import { UploadBlogPostAssetInputInterface } from 'db/dao/blog/uploadPostAsset';
 import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -14,7 +15,11 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_CMS,
 } from 'config/common';
-import { BlogAttributePayloadModel, BlogPostPayloadModel } from 'db/dbModels';
+import {
+  BlogAttributePayloadModel,
+  BlogPostPayloadModel,
+  ConstructorAssetPayloadModel,
+} from 'db/dbModels';
 import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
 
 // post
@@ -34,11 +39,12 @@ export const useCreateBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_POST,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );
@@ -56,11 +62,12 @@ export const useUpdateBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_PATCH,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );
@@ -78,11 +85,12 @@ export const useDeleteBlogPost = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_DELETE,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );
@@ -101,14 +109,15 @@ export const useDeleteBlogPostPreviewImage = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args: DeleteBlogPostPreviewImageInterface) => {
+    async (args: DeleteBlogPostPreviewImageInterface) => {
       const formData = new FormData();
       formData.append('blogPostId', `${args.blogPostId}`);
 
-      handle({
+      const payload = await handle({
         method: REQUEST_METHOD_DELETE,
         body: formData,
       });
+      return payload;
     },
     [handle],
   );
@@ -127,17 +136,48 @@ export const useUploadBlogPostPreviewImage = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args: UpdateBlogPostPreviewInputInterface) => {
+    async (args: UpdateBlogPostPreviewInputInterface) => {
       const formData = new FormData();
       if (args.assets) {
         formData.append('assets', args.assets[0]);
       }
       formData.append('blogPostId', `${args.blogPostId}`);
 
-      handle({
+      const payload = await handle({
         method: REQUEST_METHOD_PATCH,
         body: formData,
       });
+      return payload;
+    },
+    [handle],
+  );
+
+  return [handler, payload];
+};
+
+// upload post asset
+export const useUploadBlogPostAsset = (): UseMutationConsumerPayload<
+  ConstructorAssetPayloadModel,
+  UploadBlogPostAssetInputInterface
+> => {
+  const [handle, payload] = useMutation<ConstructorAssetPayloadModel>({
+    input: '/api/blog/add-post-asset',
+  });
+
+  const handler = React.useCallback(
+    async (args: UploadBlogPostAssetInputInterface) => {
+      const formData = new FormData();
+      if (args.assets) {
+        formData.append('assets', args.assets[0]);
+      }
+      formData.append('blogPostId', `${args.blogPostId}`);
+
+      const payload = await handle({
+        method: REQUEST_METHOD_PATCH,
+        body: formData,
+      });
+
+      return payload;
     },
     [handle],
   );
@@ -156,11 +196,12 @@ export const useCreateBlogAttribute = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_POST,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );
@@ -178,11 +219,12 @@ export const useUpdateBlogAttribute = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_PATCH,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );
@@ -200,11 +242,12 @@ export const useDeleteBlogAttribute = (): UseMutationConsumerPayload<
   });
 
   const handler = React.useCallback(
-    (args) => {
-      handle({
+    async (args) => {
+      const payload = await handle({
         method: REQUEST_METHOD_DELETE,
         body: JSON.stringify(args),
       });
+      return payload;
     },
     [handle],
   );

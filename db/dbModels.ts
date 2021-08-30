@@ -806,6 +806,9 @@ export interface BlogPostModel extends CountersModel {
 }
 
 // Payload
+export interface ConstructorAssetPayloadModel extends PayloadType<string> {
+  payload: string;
+}
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;
 export type BlogPostPayloadModel = PayloadType<BlogPostModel>;

@@ -1,6 +1,7 @@
 import { COL_BLOG_POSTS } from 'db/collectionNames';
 import { BlogPostModel, BlogPostPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -49,6 +50,13 @@ export async function deleteBlogPost(req: NextApiRequest, res: NextApiResponse) 
       };
       res.status(500).send(payload);
       return;
+    }
+
+    // delete assets
+    for await (const filePath of blogPost.assetKeys) {
+      await deleteUpload({
+        filePath,
+      });
     }
 
     // delete

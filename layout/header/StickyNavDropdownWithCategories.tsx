@@ -98,7 +98,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           <span>{name}</span>
         </Link>
       </div>
-      <ul className='flex-grow flex flex-col pl-10'>
+      <ul className='flex-grow flex flex-col'>
         {(categories || []).map((childCategory) => {
           return (
             <li key={`${childCategory._id}`}>

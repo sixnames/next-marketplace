@@ -20,7 +20,8 @@ jobs:
 
       - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
-      - run: yarn build-and-test
+      - run: yarn seed-test-db
+#      - run: yarn build-and-test
         env:
           DEV_ENV: true
           MONGO_URL: ${{ secrets.MONGO_URL }}

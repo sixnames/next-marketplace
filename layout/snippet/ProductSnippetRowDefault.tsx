@@ -48,7 +48,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
         className ? className : ''
       }`}
     >
-      <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 snippet-image'>
+      <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
           <Image

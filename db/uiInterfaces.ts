@@ -603,6 +603,8 @@ export interface SsrConfigsInterface {
   siteNavDropdownAttributeLightTheme: string;
   siteNavDropdownAttributeDarkTheme: string;
   showAdultModal: boolean;
+  showBlog: boolean;
+  showBlogPostViews: boolean;
 
   // Contacts
   contactEmail: string[];

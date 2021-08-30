@@ -2,7 +2,12 @@
 import { Value } from '@react-page/editor';
 import { PageStateModel } from '../db/dbModels';
 
-export const DEFAULT_ID_COUNTER = 1;
+export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
+export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
+export const REQUEST_METHOD_POST = 'POST' as RequestMethodType;
+export const REQUEST_METHOD_DELETE = 'DELETE' as RequestMethodType;
+export const REQUEST_METHOD_PATCH = 'PATCH' as RequestMethodType;
+
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
 
@@ -304,6 +309,8 @@ export const ASSETS_DIST_TEMPLATES = 'templates';
 export const ASSETS_DIST_OPTIONS = 'options';
 export const ASSETS_DIST_BRANDS = 'brands';
 export const ASSETS_DIST_CATEGORIES = 'categories';
+export const ASSETS_DIST_BLOG = 'blog';
+export const ASSETS_DIST_BLOG_CONTENT = 'blog-content';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
 export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
@@ -326,6 +333,19 @@ export const HEADER_SEARCH_PRODUCTS_LIMIT = 4;
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
 export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
 export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
+export const PAGE_STATE_OPTIONS = [
+  {
+    _id: PAGE_STATE_DRAFT,
+    slug: PAGE_STATE_DRAFT,
+    name: 'Не опубликована',
+  },
+  {
+    _id: PAGE_STATE_PUBLISHED,
+    slug: PAGE_STATE_PUBLISHED,
+    name: 'Опубликована',
+  },
+];
+
 export const PAGE_EDITOR_DEFAULT_VALUE_STRING = '{"id":"1","version":1,"rows":[]}';
 export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   id: '1',

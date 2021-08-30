@@ -62,6 +62,7 @@ const Meta: React.FC<MetaInterface> = ({
       <Head>
         {'<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->'}
         <title>{pageTitle}</title>
+        <meta name={'color-scheme'} content={'light dark'} />
         <meta
           name='viewport'
           content={`minimum-scale=1, height=device-height, width=device-width, initial-scale=1.0`}

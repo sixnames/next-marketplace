@@ -4,6 +4,8 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributeViewVariantModel,
+  BlogAttributeModel,
+  BlogPostModel,
   BrandCollectionModel,
   BrandModel,
   CartModel,
@@ -53,6 +55,20 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { MessageSlug } from 'types/messageSlugTypes';
+
+// Blog
+export interface BlogAttributeInterface extends BlogAttributeModel {
+  name?: string | null;
+  options?: OptionInterface[] | null;
+  optionsGroup?: OptionsGroupInterface | null;
+  readableValue?: string;
+}
+
+export interface BlogPostInterface extends BlogPostModel {
+  title?: string | null;
+  attributes?: BlogAttributeInterface[] | [];
+  author?: UserInterface | null;
+}
 
 export interface AddressInterface extends AddressModel {
   formattedCoordinates?: CoordinatesModel;

@@ -1,6 +1,8 @@
 export const COL_ATTRIBUTES = 'attributes';
 export const COL_ATTRIBUTES_GROUPS = 'attributesGroups';
 export const COL_BRANDS = 'brands';
+export const COL_BLOG_POSTS = 'blogPosts';
+export const COL_BLOG_ATTRIBUTES = 'blogAttributes';
 export const COL_BRAND_COLLECTIONS = 'brandCollections';
 export const COL_CARTS = 'carts';
 export const COL_CITIES = 'cities';

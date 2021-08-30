@@ -7,61 +7,71 @@ import { ObjectId } from 'mongodb';
 
 export type RoleRuleSlugType =
   // Attributes
-  | 'createAttributesGroup' // done
-  | 'updateAttributesGroup' // done
-  | 'deleteAttributesGroup' // done
-  | 'createAttribute' // done
-  | 'updateAttribute' // done
-  | 'deleteAttribute' // done
+  | 'createAttributesGroup'
+  | 'updateAttributesGroup'
+  | 'deleteAttributesGroup'
+  | 'createAttribute'
+  | 'updateAttribute'
+  | 'deleteAttribute'
 
   // Brand
-  | 'createBrand' // done
-  | 'updateBrand' // done
-  | 'deleteBrand' // done
+  | 'createBrand'
+  | 'updateBrand'
+  | 'deleteBrand'
+
+  // Blog post
+  | 'createBlogPost'
+  | 'updateBlogPost'
+  | 'deleteBlogPost'
+
+  // Blog attribute
+  | 'createBlogAttribute'
+  | 'updateBlogAttribute'
+  | 'deleteBlogAttribute'
 
   // Brand collection
-  | 'createBrandCollection' // done
-  | 'updateBrandCollection' // done
-  | 'deleteBrandCollection' // done
+  | 'createBrandCollection'
+  | 'updateBrandCollection'
+  | 'deleteBrandCollection'
 
   // City
-  | 'createCity' // done
-  | 'updateCity' // done
-  | 'deleteCity' // done
+  | 'createCity'
+  | 'updateCity'
+  | 'deleteCity'
 
   // Company
-  | 'createCompany' // done
-  | 'updateCompany' // done
-  | 'deleteCompany' // done
-  | 'updateCompanyConfig' // done
+  | 'createCompany'
+  | 'updateCompany'
+  | 'deleteCompany'
+  | 'updateCompanyConfig'
 
   // Config
-  | 'updateConfig' // done
+  | 'updateConfig'
 
   // Country
-  | 'createCountry' // done
-  | 'updateCountry' // done
-  | 'deleteCountry' // done
+  | 'createCountry'
+  | 'updateCountry'
+  | 'deleteCountry'
 
   // Currency
-  | 'createCurrency' // done
-  | 'updateCurrency' // done
-  | 'deleteCurrency' // done
+  | 'createCurrency'
+  | 'updateCurrency'
+  | 'deleteCurrency'
 
   // Language
-  | 'createLanguage' // done
-  | 'updateLanguage' // done
-  | 'deleteLanguage' // done
+  | 'createLanguage'
+  | 'updateLanguage'
+  | 'deleteLanguage'
 
   // Manufacturer
-  | 'createManufacturer' // done
-  | 'updateManufacturer' // done
-  | 'deleteManufacturer' // done
+  | 'createManufacturer'
+  | 'updateManufacturer'
+  | 'deleteManufacturer'
 
   // Supplier
-  | 'createSupplier' // done
-  | 'updateSupplier' // done
-  | 'deleteSupplier' // done
+  | 'createSupplier'
+  | 'updateSupplier'
+  | 'deleteSupplier'
 
   // Message
   | 'createMessagesGroup'
@@ -72,80 +82,80 @@ export type RoleRuleSlugType =
   | 'deleteMessage'
 
   // Metric
-  | 'createMetric' // done
-  | 'updateMetric' // done
-  | 'deleteMetric' // done
+  | 'createMetric'
+  | 'updateMetric'
+  | 'deleteMetric'
 
   // OrderStatus
-  | 'createOrderStatus' // done
-  | 'updateOrderStatus' // done
-  | 'deleteOrderStatus' // done
+  | 'createOrderStatus'
+  | 'updateOrderStatus'
+  | 'deleteOrderStatus'
 
   // NavItem
-  | 'createNavItem' // done
-  | 'updateNavItem' // done
-  | 'deleteNavItem' // done
+  | 'createNavItem'
+  | 'updateNavItem'
+  | 'deleteNavItem'
 
   // Option
-  | 'createOptionsGroup' // done
-  | 'updateOptionsGroup' // done
-  | 'deleteOptionsGroup' // done
-  | 'createOption' // done
-  | 'updateOption' // done
-  | 'deleteOption' // done
+  | 'createOptionsGroup'
+  | 'updateOptionsGroup'
+  | 'deleteOptionsGroup'
+  | 'createOption'
+  | 'updateOption'
+  | 'deleteOption'
 
   // Order
   | 'deleteOrder'
   | 'updateOrder'
 
   // Product
-  | 'createPagesGroup' // done
-  | 'updatePagesGroup' // done
-  | 'deletePagesGroup' // done
-  | 'createPage' // done
-  | 'updatePage' // done
-  | 'deletePage' // done
+  | 'createPagesGroup'
+  | 'updatePagesGroup'
+  | 'deletePagesGroup'
+  | 'createPage'
+  | 'updatePage'
+  | 'deletePage'
 
   // Product
-  | 'createProduct' // done
-  | 'updateProduct' // done
-  | 'deleteProduct' // done
+  | 'createProduct'
+  | 'updateProduct'
+  | 'deleteProduct'
 
   // Role
-  | 'createRole' // done
-  | 'updateRole' // done
-  | 'deleteRole' // done
+  | 'createRole'
+  | 'updateRole'
+  | 'deleteRole'
 
   // Rubric
-  | 'createRubric' // done
-  | 'updateRubric' // done
-  | 'deleteRubric' // done
+  | 'createRubric'
+  | 'updateRubric'
+  | 'deleteRubric'
 
   // Category
-  | 'createCategory' // done
-  | 'updateCategory' // done
-  | 'deleteCategory' // done
+  | 'createCategory'
+  | 'updateCategory'
+  | 'deleteCategory'
 
   // RubricVariant
-  | 'createRubricVariant' // done
-  | 'updateRubricVariant' // done
-  | 'deleteRubricVariant' // done
+  | 'createRubricVariant'
+  | 'updateRubricVariant'
+  | 'deleteRubricVariant'
 
   // Shop
-  | 'createShop' // done
-  | 'updateShop' // done
-  | 'deleteShop' // done
+  | 'createShop'
+  | 'updateShop'
+  | 'deleteShop'
 
   // ShopProduct
-  | 'createShopProduct' // done
-  | 'updateShopProduct' // done
-  | 'deleteShopProduct' // done
+  | 'createShopProduct'
+  | 'updateShopProduct'
+  | 'deleteShopProduct'
 
   // User
-  | 'createUser' // done
-  | 'updateUser' // done
-  | 'updateUserPassword' // done
-  | 'deleteUser'; // done
+  | 'createUser'
+  | 'updateUser'
+  | 'updateUserPassword'
+  | 'deleteUser';
 
 interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
   slug: RoleRuleSlugType;
@@ -225,6 +235,58 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление бренда',
+    },
+  },
+
+  // Blog post
+  {
+    allow: false,
+    slug: 'createBlogPost',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание блог-поста',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateBlogPost',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление блог-поста',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteBlogPost',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление блог-поста',
+    },
+  },
+
+  // Blog attribute
+  {
+    allow: false,
+    slug: 'createBlogAttribute',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание аттрибута блога',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateBlogAttribute',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление аттрибута блога',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteBlogAttribute',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление аттрибута блога',
     },
   },
 

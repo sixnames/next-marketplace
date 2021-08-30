@@ -17,6 +17,7 @@ import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
 import NProgress from 'nprogress';
 import { Theme } from 'types/clientTypes';
+import { SWRConfig } from 'swr';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;
@@ -44,40 +45,48 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
 
   return (
     <Provider session={session}>
-      <div
-        className={`min-h-[100vh] ${initialTheme}`}
-        id={'theme-provider'}
-        data-theme={initialTheme}
-        style={themeStyle}
+      <SWRConfig
+        value={{
+          fetcher: (resource, init) => {
+            return fetch(resource, init).then((res) => res.json());
+          },
+        }}
       >
-        <ApolloProvider client={apolloClient}>
-          <AppContextProvider
-            companySlug={pageProps.companySlug}
-            sessionCity={pageProps.sessionCity}
-            isMobileDevice={pageProps.isMobileDevice}
-            configs={initialData?.configs || []}
-          >
-            <NotificationsProvider>
-              <ConfigContextProvider
-                currentCity={currentCity}
-                configs={initialData?.configs || []}
-                cities={initialData?.cities || []}
-              >
-                <ThemeContextProvider initialTheme={initialTheme}>
-                  <LocaleContextProvider
-                    languagesList={initialData?.languages || []}
-                    currency={initialData?.currency || ''}
-                  >
-                    <UserContextProvider sessionUser={pageProps.sessionUser}>
-                      <Component {...pageProps} />
-                    </UserContextProvider>
-                  </LocaleContextProvider>
-                </ThemeContextProvider>
-              </ConfigContextProvider>
-            </NotificationsProvider>
-          </AppContextProvider>
-        </ApolloProvider>
-      </div>
+        <div
+          className={`min-h-[100vh] ${initialTheme}`}
+          id={'theme-provider'}
+          data-theme={initialTheme}
+          style={themeStyle}
+        >
+          <ApolloProvider client={apolloClient}>
+            <AppContextProvider
+              companySlug={pageProps.companySlug}
+              sessionCity={pageProps.sessionCity}
+              isMobileDevice={pageProps.isMobileDevice}
+              configs={initialData?.configs || []}
+            >
+              <NotificationsProvider>
+                <ConfigContextProvider
+                  currentCity={currentCity}
+                  configs={initialData?.configs || []}
+                  cities={initialData?.cities || []}
+                >
+                  <ThemeContextProvider initialTheme={initialTheme}>
+                    <LocaleContextProvider
+                      languagesList={initialData?.languages || []}
+                      currency={initialData?.currency || ''}
+                    >
+                      <UserContextProvider sessionUser={pageProps.sessionUser}>
+                        <Component {...pageProps} />
+                      </UserContextProvider>
+                    </LocaleContextProvider>
+                  </ThemeContextProvider>
+                </ConfigContextProvider>
+              </NotificationsProvider>
+            </AppContextProvider>
+          </ApolloProvider>
+        </div>
+      </SWRConfig>
     </Provider>
   );
 }

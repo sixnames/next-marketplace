@@ -1,4 +1,5 @@
 import { RoleRuleSlugType } from 'lib/roleUtils';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -108,6 +109,7 @@ interface GetOperationPermissionInterface {
 interface GetOperationPermissionPayloadInterface {
   allow: boolean;
   message: string;
+  user?: UserModel | null;
 }
 
 export const getOperationPermission = async ({
@@ -116,12 +118,13 @@ export const getOperationPermission = async ({
 }: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
   const { db } = await getDatabase();
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
-  const { role } = await getSessionRole(context);
+  const { role, user } = await getSessionRole(context);
 
   if (role.slug === ROLE_SLUG_ADMIN) {
     return {
       allow: true,
       message: '',
+      user,
     };
   }
 
@@ -145,6 +148,7 @@ export const getOperationPermission = async ({
   return {
     allow: rule.allow,
     message: '',
+    user,
   };
 };
 
@@ -213,6 +217,22 @@ export interface ValidateResolverInterface {
 
 export async function getResolverValidationSchema({ context, schema }: ValidateResolverInterface) {
   const locale = getSessionLocale(context);
+  const messages = await getValidationMessages();
+  return schema({ locale, messages });
+}
+
+export interface GetApiResolverValidationSchemaInterface {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  schema: (args: ValidationSchemaArgsInterface) => ResolverValidationSchema;
+}
+
+export async function getApiResolverValidationSchema({
+  req,
+  res,
+  schema,
+}: GetApiResolverValidationSchemaInterface) {
+  const locale = getSessionLocale({ req, res });
   const messages = await getValidationMessages();
   return schema({ locale, messages });
 }

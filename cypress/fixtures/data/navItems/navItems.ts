@@ -233,6 +233,17 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} cms-blog`),
+    nameI18n: {
+      ru: 'Блог',
+      en: 'Blog',
+    },
+    index: 93,
+    slug: 'cms-blog',
+    path: `${ROUTE_CMS}/blog`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-pages`),
     nameI18n: {
       ru: 'Страницы',

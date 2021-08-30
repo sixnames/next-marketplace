@@ -1,7 +1,7 @@
 import { ROLE_SLUG_GUEST } from 'config/common';
 import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {

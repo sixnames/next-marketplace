@@ -96,6 +96,39 @@ export type MessageSlug =
   | 'validation.languages.slug'
   | 'validation.languages.nativeName'
 
+  // Blog posts ----------
+  | 'blogPosts.create.duplicate'
+  | 'blogPosts.create.error'
+  | 'blogPosts.create.success'
+  | 'blogPosts.update.duplicate'
+  | 'blogPosts.update.notFound'
+  | 'blogPosts.update.error'
+  | 'blogPosts.update.success'
+  | 'blogPosts.delete.notFound'
+  | 'blogPosts.delete.error'
+  | 'blogPosts.delete.success'
+  // Blog posts validation
+  | 'validation.blogPosts.id'
+  | 'validation.blogPosts.title'
+  | 'validation.blogPosts.description'
+  | 'validation.blogPosts.companySlug'
+
+  // Blog attributes ----------
+  | 'blogAttributes.create.duplicate'
+  | 'blogAttributes.create.error'
+  | 'blogAttributes.create.success'
+  | 'blogAttributes.update.duplicate'
+  | 'blogAttributes.update.notFound'
+  | 'blogAttributes.update.error'
+  | 'blogAttributes.update.success'
+  | 'blogAttributes.delete.notFound'
+  | 'blogAttributes.delete.error'
+  | 'blogAttributes.delete.success'
+  // Blog attributes validation
+  | 'validation.blogAttributes.id'
+  | 'validation.blogAttributes.name'
+  | 'validation.blogAttributes.optionsGroupId'
+
   // Nav items ----------
   | 'navItems.create.duplicate'
   | 'navItems.create.error'

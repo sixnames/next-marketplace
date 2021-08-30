@@ -7,14 +7,14 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import {
-  PAGE_STATE_DRAFT,
-  PAGE_STATE_PUBLISHED,
   FLEX_CENTER,
   FLEX_START,
   FLEX_END,
   TEXT_HORIZONTAL_LEFT,
   TEXT_HORIZONTAL_CENTER,
   TEXT_HORIZONTAL_RIGHT,
+  REQUEST_METHOD_POST,
+  PAGE_STATE_OPTIONS,
 } from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -25,19 +25,6 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updatePageSchema } from 'validation/pagesSchema';
-
-const PAGE_STATE_OPTIONS = [
-  {
-    _id: PAGE_STATE_DRAFT,
-    slug: PAGE_STATE_DRAFT,
-    name: 'Не опубликована',
-  },
-  {
-    _id: PAGE_STATE_PUBLISHED,
-    slug: PAGE_STATE_PUBLISHED,
-    name: 'Опубликована',
-  },
-];
 
 const TEXT_HORIZONTAL_ALIGN_OPTIONS = [
   {
@@ -243,7 +230,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-main-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -283,7 +270,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-main-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -369,7 +356,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-secondary-banner', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -452,7 +439,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         fetch('/api/update-page-screenshot', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -494,7 +481,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                         }
 
                         const responseFetch = await fetch('/api/add-page-asset', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         });
                         const responseJson = await responseFetch.json();

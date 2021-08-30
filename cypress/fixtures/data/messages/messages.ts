@@ -30,6 +30,8 @@ import { shopProductsMessages } from '../../apiMessages/shopProductsMessages';
 import { shopsMessages } from '../../apiMessages/shopsMessages';
 import { usersMessages } from '../../apiMessages/usersMessages';
 import { orderStatusesMessages } from '../../apiMessages/orderStatusesMessages';
+import { blogAttributeMessages } from '../../apiMessages/blogAttributeMessages';
+import { blogPostsMessages } from '../../apiMessages/blogPostsMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -67,6 +69,14 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: currenciesMessages,
     groupName: 'Валюта',
+  },
+  {
+    initialMessages: blogPostsMessages,
+    groupName: 'Блог-пост',
+  },
+  {
+    initialMessages: blogAttributeMessages,
+    groupName: 'Атрибуты блога',
   },
   {
     initialMessages: languagesMessages,

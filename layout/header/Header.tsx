@@ -2,6 +2,8 @@ import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { useLocaleContext } from 'context/localeContext';
 import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
@@ -32,6 +34,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CONTACTS,
   CATALOGUE_CATEGORY_KEY,
+  ROUTE_BLOG,
 } from 'config/common';
 
 const middleLinkClassName =
@@ -304,6 +307,7 @@ const middleSideClassName =
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
+  const { locale } = useLocaleContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -337,6 +341,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const bgColorDarkTheme = configs.headerTopBarBgDarkTheme;
   const textColorLightTheme = configs.headerTopBarTextLightTheme;
   const textColorDarkTheme = configs.headerTopBarTextDarkTheme;
+  const showBlog = configs.showBlog;
   const textColor =
     (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textSecondaryColor)';
 
@@ -346,9 +351,12 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
     color: textColor,
   } as React.CSSProperties;
 
-  const topTextBgStyle = {
+  const topTextColorStyle = {
     color: textColor,
   } as React.CSSProperties;
+
+  const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
+  const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
 
   return (
     <React.Fragment>
@@ -365,16 +373,16 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
         {/*top bar*/}
         <div className='relative z-[10] bg-secondary' style={topBarBgStyle}>
           <Inner className='hidden h-[30px] items-center justify-between lg:flex' lowBottom lowTop>
-            <div className='flex items-center'>
+            <div className='flex items-center gap-6'>
               {headerPageGroups.map(({ name, _id, pages }, index) => {
                 return (
                   <div
                     key={`${_id}`}
-                    className='header-sub-nav font-sm relative mr-6 cursor-pointer'
+                    className='header-sub-nav font-sm relative gap-6 cursor-pointer'
                   >
                     <div
                       className='flex items-center h-[30px] text-secondary-text'
-                      style={topTextBgStyle}
+                      style={topTextColorStyle}
                     >
                       {name}
                     </div>
@@ -400,7 +408,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                             className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
                             href={ROUTE_CONTACTS}
                           >
-                            Контакты
+                            {contactsLinkName}
                           </Link>
                         </li>
                       ) : null}
@@ -408,6 +416,16 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                   </div>
                 );
               })}
+              {showBlog ? (
+                <Link
+                  target={'_blank'}
+                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
+                  style={topTextColorStyle}
+                  href={ROUTE_BLOG}
+                >
+                  {blogLinkName}
+                </Link>
+              ) : null}
             </div>
 
             <div className='flex gap-6 items-center'>
@@ -415,14 +433,14 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                 <a
                   className='text-secondary-text'
                   href={`tel:${callbackPhone}`}
-                  style={topTextBgStyle}
+                  style={topTextColorStyle}
                 >
                   {phoneToReadable(callbackPhone)}
                 </a>
               ) : null}
 
-              <ThemeTrigger style={topTextBgStyle} />
-              <LanguageTrigger style={topTextBgStyle} />
+              <ThemeTrigger style={topTextColorStyle} />
+              <LanguageTrigger style={topTextColorStyle} />
             </div>
           </Inner>
         </div>

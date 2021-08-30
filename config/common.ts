@@ -84,6 +84,7 @@ export const ROUTE_CONSOLE_NAV_GROUP = 'console';
 export const ROUTE_CMS_NAV_GROUP = 'cms';
 export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;
+export const ROUTE_BLOG = `/blog`;
 export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;

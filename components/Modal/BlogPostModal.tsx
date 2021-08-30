@@ -38,7 +38,7 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
             titleI18n: values.titleI18n,
             descriptionI18n: values.descriptionI18n,
             companySlug: values.companySlug,
-          });
+          }).catch(console.log);
         }}
       >
         {() => {
@@ -47,7 +47,7 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
               <FormikTranslationsInput
                 label={'Заголовок'}
                 name={'titleI18n'}
-                testId={'title'}
+                testId={'titleI18n'}
                 isRequired
                 showInlineError
               />
@@ -55,7 +55,7 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
               <FormikTranslationsInput
                 label={'Краткое описание'}
                 name={'descriptionI18n'}
-                testId={'description'}
+                testId={'descriptionI18n'}
                 isRequired
                 showInlineError
               />

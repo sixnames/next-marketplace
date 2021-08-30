@@ -130,7 +130,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
                   <FormikTranslationsInput
                     label={'Заголовок'}
                     name={'titleI18n'}
-                    testId={'title'}
+                    testId={'titleI18n'}
                     isRequired
                     showInlineError
                   />
@@ -138,7 +138,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
                   <FormikTranslationsInput
                     label={'Краткое описание'}
                     name={'descriptionI18n'}
-                    testId={'description'}
+                    testId={'descriptionI18n'}
                     isRequired
                     showInlineError
                   />

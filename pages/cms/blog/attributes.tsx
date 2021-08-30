@@ -70,7 +70,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={'name'}
+              testId={`${dataItem.name}`}
               updateTitle={'Редактировать блог-пост'}
               updateHandler={() => {
                 showModal<BlogAttributeModalInterface>({
@@ -89,7 +89,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
                     confirm: () => {
                       deleteBlogAttribute({
                         _id: `${dataItem._id}`,
-                      });
+                      }).catch(console.log);
                     },
                   },
                 });
@@ -111,7 +111,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
         <div className='relative'>
           <div className='overflow-x-auto'>
             <Table<BlogAttributeInterface>
-              testIdKey={'title'}
+              testIdKey={'name'}
               columns={columns}
               data={attributes}
               onRowDoubleClick={(dataItem) => {

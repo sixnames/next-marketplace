@@ -91,7 +91,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={'name'}
+              testId={`${dataItem.title}`}
               updateTitle={'Редактировать блог-пост'}
               updateHandler={() => {
                 router.push(`${ROUTE_CMS}/blog/post/${dataItem._id}`).catch(console.log);
@@ -105,7 +105,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
                     confirm: () => {
                       deleteBlogPost({
                         _id: `${dataItem._id}`,
-                      });
+                      }).catch(console.log);
                     },
                   },
                 });

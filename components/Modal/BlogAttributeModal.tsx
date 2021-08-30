@@ -63,14 +63,14 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
               blogAttributeId: `${attribute._id}`,
               nameI18n: values.nameI18n,
               optionsGroupId: values.optionsGroupId,
-            });
+            }).catch(console.log);
             return;
           }
 
           createBlogPostHandler({
             nameI18n: values.nameI18n,
             optionsGroupId: values.optionsGroupId,
-          });
+          }).catch(console.log);
         }}
       >
         {() => {
@@ -79,7 +79,7 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
               <FormikTranslationsInput
                 label={'Название'}
                 name={'nameI18n'}
-                testId={'name'}
+                testId={'nameI18n'}
                 isRequired
                 showInlineError
               />

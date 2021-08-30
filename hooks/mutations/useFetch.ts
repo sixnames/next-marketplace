@@ -97,7 +97,6 @@ export type UseMutationConsumerPayload<TPayload, TArgs> = [
   },
 ];
 
-// TODO refactor
 export function useMutation<T extends PayloadModel>({
   input,
   onError,

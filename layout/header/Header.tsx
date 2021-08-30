@@ -34,7 +34,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_CONTACTS,
   CATALOGUE_CATEGORY_KEY,
-  ROUTE_BLOG,
+  ROUTE_BLOG_WITH_PAGE,
 } from 'config/common';
 
 const middleLinkClassName =
@@ -421,7 +421,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
                   target={'_blank'}
                   className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
                   style={topTextColorStyle}
-                  href={ROUTE_BLOG}
+                  href={ROUTE_BLOG_WITH_PAGE}
                 >
                   {blogLinkName}
                 </Link>

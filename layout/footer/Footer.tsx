@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
 import Socials from 'components/Socials';
-import { ROUTE_BLOG, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
+import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
@@ -115,7 +115,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                         <Link
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={ROUTE_BLOG}
+                          href={ROUTE_BLOG_WITH_PAGE}
                         >
                           {blogLinkName}
                         </Link>

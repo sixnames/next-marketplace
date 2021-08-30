@@ -55,52 +55,54 @@ const config = {
 
     // await uploadTestAssets('./cypress/fixtures/assets');
 
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
-      bucketName,
-      `/${ASSETS_DIST_SHOPS_LOGOS}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
-      bucketName,
-      `/${ASSETS_DIST_SHOPS}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
-      bucketName,
-      `/${ASSETS_DIST_COMPANIES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
-      bucketName,
-      `/${ASSETS_DIST_PAGES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
-      bucketName,
-      `/${ASSETS_DIST_TEMPLATES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_BRANDS}`,
-      bucketName,
-      `/${ASSETS_DIST_BRANDS}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_CATEGORIES}`,
-      bucketName,
-      `/${ASSETS_DIST_CATEGORIES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_BLOG}`,
-      bucketName,
-      `/${ASSETS_DIST_BLOG}`,
-    );
-    /*await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
-      `/${ASSETS_DIST_CONFIGS}`,
-    );*/
+    if (!process.env.CI) {
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
+        bucketName,
+        `/${ASSETS_DIST_SHOPS_LOGOS}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
+        bucketName,
+        `/${ASSETS_DIST_SHOPS}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
+        bucketName,
+        `/${ASSETS_DIST_COMPANIES}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
+        bucketName,
+        `/${ASSETS_DIST_PAGES}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
+        bucketName,
+        `/${ASSETS_DIST_TEMPLATES}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_BRANDS}`,
+        bucketName,
+        `/${ASSETS_DIST_BRANDS}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_CATEGORIES}`,
+        bucketName,
+        `/${ASSETS_DIST_CATEGORIES}`,
+      );
+      await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_BLOG}`,
+        bucketName,
+        `/${ASSETS_DIST_BLOG}`,
+      );
+      /*await uploadTestAssets(
+        `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
+        `/${ASSETS_DIST_CONFIGS}`,
+      );*/
 
-    console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
+      console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
+    }
   } catch (err) {
     console.log(err);
   }

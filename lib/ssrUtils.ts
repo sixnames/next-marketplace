@@ -606,6 +606,8 @@ export const getSsrConfigs = async ({
   const siteNavDropdownAttributeDarkTheme =
     getCurrentConfig('siteNavDropdownAttributeDarkTheme')?.singleValue || '';
   const showAdultModal = getConfigBooleanValue('showAdultModal');
+  const showBlog = getConfigBooleanValue('showBlog');
+  const showBlogPostViews = getConfigBooleanValue('showBlogPostViews');
 
   // Contacts
   const contactEmail = getCurrentConfig('contactEmail')?.value || [];
@@ -672,6 +674,8 @@ export const getSsrConfigs = async ({
     siteNavDropdownAttributeLightTheme,
     siteNavDropdownAttributeDarkTheme,
     showAdultModal,
+    showBlog,
+    showBlogPostViews,
     contactEmail,
     phone,
     facebook,

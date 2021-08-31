@@ -2,7 +2,9 @@ import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
 import Socials from 'components/Socials';
-import { ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
+import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { useLocaleContext } from 'context/localeContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
@@ -15,6 +17,7 @@ export interface FooterInterface {
 
 const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const { configs } = useConfigContext();
+  const { locale } = useLocaleContext();
   const configSiteName = configs.siteName;
   const configFoundationYear = configs.siteFoundationYear;
   const contactEmail = configs.contactEmail;
@@ -25,6 +28,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const odnoklassnikiLink = configs.odnoklassniki;
   const youtubeLink = configs.youtube;
   const twitterLink = configs.twitter;
+  const showBlog = configs.showBlog;
   const showSocials =
     facebookLink ||
     instagramLink ||
@@ -32,6 +36,9 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
     odnoklassnikiLink ||
     youtubeLink ||
     twitterLink;
+
+  const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
+  const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
 
   return (
     <footer className='footer relative z-[100] pt-6 pb-8 bg-secondary'>
@@ -98,7 +105,19 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
                           href={ROUTE_CONTACTS}
                         >
-                          Контакты
+                          {contactsLinkName}
+                        </Link>
+                      </li>
+                    ) : null}
+
+                    {index === 0 && showBlog ? (
+                      <li className=''>
+                        <Link
+                          target={'_blank'}
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                          href={ROUTE_BLOG_WITH_PAGE}
+                        >
+                          {blogLinkName}
                         </Link>
                       </li>
                     ) : null}

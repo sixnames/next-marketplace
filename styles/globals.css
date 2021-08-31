@@ -87,10 +87,31 @@
     opacity: 1;
     transition: opacity 0.1s linear;
   }
+
+  /* Snippets */
+  .snippet-image img {
+    filter: drop-shadow(var(--wp-shadow-25));
+  }
 }
 
 @layer base {
   /* Form elements */
+  /* Change Autocomplete styles in Chrome*/
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border: 1px solid gray;
+    -webkit-text-fill-color: var(--textColor);
+    -webkit-box-shadow: 0 0 0 1000px var(--inputBackground) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0;
   }
@@ -99,7 +120,6 @@
     border: none;
     border-radius: 0.5rem;
   }
-
 
   .form-select,
   .form-input {
@@ -122,9 +142,9 @@
     padding-right: calc(var(--controlButtonHeight) + 0.5rem);
   }
 
-  /* Snippets */
-  .snippet-image img {
-    filter: drop-shadow(var(--wp-shadow-25));
+  /* Blog */
+  .blog-post-image-cover {
+   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 65%, rgba(0, 0, 0, 0) 100%);
   }
 
   /* Footer */
@@ -530,6 +550,7 @@
 
 .dark {
   --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
+  --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));

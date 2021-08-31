@@ -436,6 +436,21 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'showBlog',
+      name: 'Показывать блог на сайте',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['true'],
+        },
+      },
+    },
 
     // Contacts
     {

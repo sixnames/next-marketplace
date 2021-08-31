@@ -76,37 +76,6 @@ export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
 export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
-// Routes
-export const ROUTE_DOCS_PAGES = '/docs';
-export const ROUTE_CONSOLE = '/console';
-export const ROUTE_CMS = `/cms`;
-export const ROUTE_CONSOLE_NAV_GROUP = 'console';
-export const ROUTE_CMS_NAV_GROUP = 'cms';
-export const ROUTE_SIGN_IN = '/sign-in';
-export const ROUTE_CONTACTS = `/contacts`;
-export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
-export const ROUTE_CATALOGUE = `/catalogue`;
-export const ROUTE_THANK_YOU = `/thank-you`;
-export const ROUTE_CATALOGUE_DEFAULT_RUBRIC = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
-export const CMS_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CMS_NAV_GROUP}-orders`;
-export const CONSOLE_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CONSOLE_NAV_GROUP}-orders`;
-
-// query params
-export const QUERY_DATA_LAYOUT_PAGE = 'page';
-
-// profile
-export const ROUTE_SEARCH_RESULT = `/search-result`;
-export const ROUTE_PROFILE = `/profile`;
-export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
-export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
-export const ROUTE_PROFILE_VIEWED = `${ROUTE_PROFILE}/viewed`;
-export const ROUTE_PROFILE_PROPOSALS = `${ROUTE_PROFILE}/proposals`;
-export const ROUTE_PROFILE_BONUS = `${ROUTE_PROFILE}/bonus`;
-export const ROUTE_PROFILE_PREFERENCES = `${ROUTE_PROFILE}/preferences`;
-export const ROUTE_PROFILE_CHATS = `${ROUTE_PROFILE}/chats`;
-export const ROUTE_PROFILE_FEEDBACK = `${ROUTE_PROFILE}/feedback`;
-export const ROUTE_PROFILE_DETAILS = `${ROUTE_PROFILE}/details`;
-
 // Configs
 export const CONFIG_VARIANT_STRING = 'string';
 export const CONFIG_VARIANT_NUMBER = 'number';
@@ -352,6 +321,39 @@ export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   version: 1,
   rows: [],
 };
+
+// Routes
+export const ROUTE_DOCS_PAGES = '/docs';
+export const ROUTE_CONSOLE = '/console';
+export const ROUTE_CMS = `/cms`;
+export const ROUTE_CONSOLE_NAV_GROUP = 'console';
+export const ROUTE_CMS_NAV_GROUP = 'cms';
+export const ROUTE_SIGN_IN = '/sign-in';
+export const ROUTE_CONTACTS = `/contacts`;
+export const ROUTE_BLOG = `/blog`;
+export const ROUTE_BLOG_POST = `${ROUTE_BLOG}/post`;
+export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}`;
+export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
+export const ROUTE_CATALOGUE = `/catalogue`;
+export const ROUTE_THANK_YOU = `/thank-you`;
+export const CMS_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CMS_NAV_GROUP}-orders`;
+export const CONSOLE_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CONSOLE_NAV_GROUP}-orders`;
+
+// query params
+export const QUERY_DATA_LAYOUT_PAGE = 'page';
+
+// profile
+export const ROUTE_SEARCH_RESULT = `/search-result`;
+export const ROUTE_PROFILE = `/profile`;
+export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
+export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
+export const ROUTE_PROFILE_VIEWED = `${ROUTE_PROFILE}/viewed`;
+export const ROUTE_PROFILE_PROPOSALS = `${ROUTE_PROFILE}/proposals`;
+export const ROUTE_PROFILE_BONUS = `${ROUTE_PROFILE}/bonus`;
+export const ROUTE_PROFILE_PREFERENCES = `${ROUTE_PROFILE}/preferences`;
+export const ROUTE_PROFILE_CHATS = `${ROUTE_PROFILE}/chats`;
+export const ROUTE_PROFILE_FEEDBACK = `${ROUTE_PROFILE}/feedback`;
+export const ROUTE_PROFILE_DETAILS = `${ROUTE_PROFILE}/details`;
 
 // Alphabets
 export const ALPHABET_EN = [

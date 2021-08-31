@@ -64,11 +64,12 @@ export interface BlogAttributeInterface extends BlogAttributeModel {
   readableValue?: string;
 }
 
-export interface BlogPostInterface extends BlogPostModel {
+export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
   title?: string | null;
   description?: string | null;
   attributes?: BlogAttributeInterface[] | [];
   author?: UserInterface | null;
+  views?: number;
 }
 
 export interface AddressInterface extends AddressModel {

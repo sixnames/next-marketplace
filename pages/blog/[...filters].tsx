@@ -1,10 +1,12 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import FormattedDateTime from 'components/FormattedDateTime';
+import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import Title from 'components/Title';
 import { ROUTE_BLOG_POST, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_BLOG_POSTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -18,9 +20,10 @@ import * as React from 'react';
 
 interface BlogListSnippetInterface {
   post: BlogPostInterface;
+  showViews: boolean;
 }
 
-const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post }) => {
+const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
     <div className='overflow-hidden rounded-md bg-secondary'>
       {/*image*/}
@@ -59,16 +62,20 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post }) => {
 
         {/*description*/}
         <div>{post.description}</div>
+
+        {/*views counter*/}
+        {showViews ? (
+          <div className='flex items-center gap-3 mt-3'>
+            <Icon className='w-5 h-5' name={'eye'} />
+            <div>{post.views}</div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
 };
 
-interface BlogListMainSnippetInterface {
-  post: BlogPostInterface;
-}
-
-const BlogListMainSnippet: React.FC<BlogListMainSnippetInterface> = ({ post }) => {
+const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
     <div className='relative overflow-hidden rounded-md min-h-[300px] bg-secondary sm:col-span-2'>
       <img
@@ -90,6 +97,14 @@ const BlogListMainSnippet: React.FC<BlogListMainSnippetInterface> = ({ post }) =
 
           {/*description*/}
           <div className='text-white'>{post.description}</div>
+
+          {/*views counter*/}
+          {showViews ? (
+            <div className='flex items-center gap-3 mt-3 text-white'>
+              <Icon className='w-5 h-5' name={'eye'} />
+              <div>{post.views}</div>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -110,6 +125,7 @@ interface BlogListPageConsumerInterface {
 
 const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({ posts }) => {
   const { locale } = useLocaleContext();
+  const { configs } = useConfigContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
 
   return (
@@ -121,9 +137,21 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({ posts }
           <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3'>
             {posts.map((post, index) => {
               if (index === 0) {
-                return <BlogListMainSnippet post={post} key={`${post._id}`} />;
+                return (
+                  <BlogListMainSnippet
+                    post={post}
+                    showViews={configs.showBlogPostViews}
+                    key={`${post._id}`}
+                  />
+                );
               }
-              return <BlogListSnippet post={post} key={`${post._id}`} />;
+              return (
+                <BlogListSnippet
+                  post={post}
+                  showViews={configs.showBlogPostViews}
+                  key={`${post._id}`}
+                />
+              );
             })}
           </div>
         ) : (
@@ -167,6 +195,12 @@ export const getServerSideProps = async (
       {
         $match: {
           companySlug: props.companySlug,
+        },
+      },
+      {
+        $addFields: {
+          views: { $max: `$views.${props.companySlug}.${props.sessionCity}` },
+          priorities: { $max: `$priorities.${props.companySlug}.${props.sessionCity}` },
         },
       },
       {

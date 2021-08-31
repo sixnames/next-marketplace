@@ -142,6 +142,11 @@
     padding-right: calc(var(--controlButtonHeight) + 0.5rem);
   }
 
+  /* Blog */
+  .blog-post-image-cover {
+   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 65%, rgba(0, 0, 0, 0) 100%);
+  }
+
   /* Footer */
   .footer {
     box-shadow: 0 0 20px rgba(9, 9, 9, 0.25);
@@ -545,6 +550,7 @@
 
 .dark {
   --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
+  --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));

@@ -39,6 +39,11 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         exact: true,
       },
       {
+        name: 'Блог',
+        testId: 'company-blog',
+        path: `${ROUTE_CMS}/companies/${company?._id}/blog`,
+      },
+      {
         name: 'Страницы',
         testId: 'company-pages',
         path: `${ROUTE_CMS}/companies/${company?._id}/pages`,

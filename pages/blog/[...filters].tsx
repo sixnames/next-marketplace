@@ -70,44 +70,36 @@ interface BlogListMainSnippetInterface {
 
 const BlogListMainSnippet: React.FC<BlogListMainSnippetInterface> = ({ post }) => {
   return (
-    <div className='overflow-hidden rounded-md bg-secondary sm:col-span-2'>
-      {/*image*/}
-      <div className='relative overflow-hidden h-[200px]'>
-        <img
-          className='absolute h-full w-full inset-0 object-cover'
-          src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
-          alt={`${post.title}`}
-          title={`${post.title}`}
-        />
-        <Link
-          testId={`${post.title}-image-link`}
-          className='block absolute z-20 inset-0 text-indent-full'
-          href={`${ROUTE_BLOG_POST}/${post.slug}`}
-        >
-          {post.title}
-        </Link>
+    <div className='relative overflow-hidden rounded-md min-h-[300px] bg-secondary sm:col-span-2'>
+      <img
+        className='absolute h-full w-full inset-0 object-cover'
+        src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
+        alt={`${post.title}`}
+        title={`${post.title}`}
+      />
+
+      <div className='absolute inset-0 w-full h-full flex flex-col justify-end z-10'>
+        <div className='px-4 pb-6 pt-12 blog-post-image-cover'>
+          {/*title*/}
+          <div className='font-medium text-xl mb-3 text-white'>{post.title}</div>
+
+          {/*date*/}
+          <div className='text-secondary-text mb-3 text-wp-light-gray-100'>
+            <FormattedDateTime value={post.createdAt} />
+          </div>
+
+          {/*description*/}
+          <div className='text-white'>{post.description}</div>
+        </div>
       </div>
 
-      <div className='px-4 py-6'>
-        {/*title*/}
-        <div className='font-medium text-lg mb-3'>
-          <Link
-            testId={`${post.title}-title-link`}
-            className='block text-primary-text hover:no-underline'
-            href={`${ROUTE_BLOG_POST}/${post.slug}`}
-          >
-            {post.title}
-          </Link>
-        </div>
-
-        {/*date*/}
-        <div className='text-secondary-text mb-3'>
-          <FormattedDateTime value={post.createdAt} />
-        </div>
-
-        {/*description*/}
-        <div>{post.description}</div>
-      </div>
+      <Link
+        testId={`${post.title}-image-link`}
+        className='block absolute z-20 inset-0 text-indent-full'
+        href={`${ROUTE_BLOG_POST}/${post.slug}`}
+      >
+        {post.title}
+      </Link>
     </div>
   );
 };

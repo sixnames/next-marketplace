@@ -72,6 +72,7 @@ const navItems: NavItemModel[] = [
       en: 'Blog',
     },
     index: 5,
+    icon: 'pencil',
     slug: 'console-blog',
     path: `/blog`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,

@@ -31,7 +31,6 @@ export const useCreateBlogPost = (
   const [handle, payload] = useMutation<BlogPostPayloadModel>({
     input: '/api/blog/post',
     onSuccess: (payload) => {
-      console.log(payload);
       if (payload.payload) {
         router.push(`${basePath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);
       }

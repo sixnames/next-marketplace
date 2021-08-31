@@ -451,6 +451,21 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: 'boolean' as ConfigVariantModel,
+      slug: 'showBlogPostViews',
+      name: 'Показывать счётчик просмотров блог-поста',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['true'],
+        },
+      },
+    },
 
     // Contacts
     {

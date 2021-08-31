@@ -98,18 +98,6 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                       );
                     })}
 
-                    {index === 0 ? (
-                      <li className=''>
-                        <Link
-                          target={'_blank'}
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={ROUTE_CONTACTS}
-                        >
-                          {contactsLinkName}
-                        </Link>
-                      </li>
-                    ) : null}
-
                     {index === 0 && showBlog ? (
                       <li className=''>
                         <Link
@@ -118,6 +106,18 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                           href={ROUTE_BLOG_WITH_PAGE}
                         >
                           {blogLinkName}
+                        </Link>
+                      </li>
+                    ) : null}
+
+                    {index === 0 ? (
+                      <li className=''>
+                        <Link
+                          target={'_blank'}
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                          href={ROUTE_CONTACTS}
+                        >
+                          {contactsLinkName}
                         </Link>
                       </li>
                     ) : null}

@@ -1,14 +1,7 @@
-import { uploadTestAssets } from './uploadTestAssets';
-import {
-  ASSETS_DIST_COMPANIES,
-  ASSETS_DIST_CONFIGS,
-  ASSETS_DIST_PAGES,
-  ASSETS_DIST_SHOPS,
-  ASSETS_DIST_SHOPS_LOGOS,
-  ASSETS_DIST_TEMPLATES,
-} from '../config/common';
 import { Seeder } from 'mongo-seeding';
+import { uploadTestAssets } from './uploadTestAssets';
 const path = require('path');
+require('dotenv').config();
 
 const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
@@ -49,36 +42,7 @@ const config = {
 
     const bucketName = `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`;
 
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
-      bucketName,
-      `/${ASSETS_DIST_SHOPS_LOGOS}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
-      bucketName,
-      `/${ASSETS_DIST_SHOPS}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
-      bucketName,
-      `/${ASSETS_DIST_COMPANIES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
-      bucketName,
-      `/${ASSETS_DIST_PAGES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
-      bucketName,
-      `/${ASSETS_DIST_TEMPLATES}`,
-    );
-    await uploadTestAssets(
-      `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
-      bucketName,
-      `/${ASSETS_DIST_CONFIGS}`,
-    );
+    await uploadTestAssets(`./cypress/fixtures/assets/`, bucketName, `/`);
   } catch (err) {
     console.log(err);
   }

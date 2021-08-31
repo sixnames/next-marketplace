@@ -12,10 +12,11 @@ import { createBlogPostSchema } from 'validation/blogSchema';
 
 export interface BlogPostModalInterface {
   companySlug: string;
+  basePath: string;
 }
 
-const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
-  const [createBlogPostHandler] = useCreateBlogPost();
+const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug, basePath }) => {
+  const [createBlogPostHandler] = useCreateBlogPost(basePath);
   const validationSchema = useValidationSchema({
     schema: createBlogPostSchema,
   });

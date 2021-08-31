@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import { ROUTE_BLOG_WITH_PAGE } from 'config/common';
+import { ROUTE_BLOG_WITH_PAGE, VIEWS_COUNTER_STEP } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';
@@ -111,6 +111,19 @@ export const getServerSideProps = async (
     return {
       notFound: true,
     };
+  }
+
+  // update post counter
+  const isStaff = props.sessionUser?.role?.isStaff;
+  if (!isStaff) {
+    await blogPostsCollection.findOneAndUpdate(
+      { _id: initialPost._id },
+      {
+        $inc: {
+          [`views.${props.companySlug}.${props.sessionCity}`]: VIEWS_COUNTER_STEP,
+        },
+      },
+    );
   }
 
   const post: BlogPostInterface = {

@@ -61,8 +61,19 @@ const navItems: NavItemModel[] = [
     },
     index: 4,
     icon: 'filter',
-    slug: 'cms-pages',
+    slug: 'console-pages',
     path: `/pages`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} console-blog`),
+    nameI18n: {
+      ru: 'Блог',
+      en: 'Blog',
+    },
+    index: 5,
+    slug: 'console-blog',
+    path: `/blog`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {

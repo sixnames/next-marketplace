@@ -1,11 +1,14 @@
 import BlogPostsDetails from 'components/blog/BlogPostsDetails';
+import Inner from 'components/Inner';
+import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { getBlogPost } from 'db/dao/blog/getBlogPost';
 import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -27,7 +30,20 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
     ],
   };
 
-  return <BlogPostsDetails attributes={attributes} post={post} breadcrumbs={breadcrumbs} />;
+  return (
+    <AppContentWrapper testId={'post-details'} breadcrumbs={breadcrumbs}>
+      <Head>
+        <title>{post.title}</title>
+      </Head>
+      <Inner lowBottom>
+        <Title>{post.title}</Title>
+      </Inner>
+
+      <Inner>
+        <BlogPostsDetails attributes={attributes} post={post} />
+      </Inner>
+    </AppContentWrapper>
+  );
 };
 
 interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInterface {}

@@ -14,7 +14,7 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-  ROUTE_CMS,
+  ROUTE_BLOG,
 } from 'config/common';
 import {
   BlogAttributePayloadModel,
@@ -24,17 +24,16 @@ import {
 import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
 
 // post
-export const useCreateBlogPost = (): UseMutationConsumerPayload<
-  BlogPostPayloadModel,
-  CreateBlogPostInputInterface
-> => {
+export const useCreateBlogPost = (
+  basePath: string,
+): UseMutationConsumerPayload<BlogPostPayloadModel, CreateBlogPostInputInterface> => {
   const router = useRouter();
   const [handle, payload] = useMutation<BlogPostPayloadModel>({
     input: '/api/blog/post',
     onSuccess: (payload) => {
       console.log(payload);
       if (payload.payload) {
-        router.push(`${ROUTE_CMS}/blog/post/${payload.payload._id}`).catch(console.log);
+        router.push(`${basePath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);
       }
     },
   });

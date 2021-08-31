@@ -66,6 +66,7 @@ export interface BlogAttributeInterface extends BlogAttributeModel {
 
 export interface BlogPostInterface extends BlogPostModel {
   title?: string | null;
+  description?: string | null;
   attributes?: BlogAttributeInterface[] | [];
   author?: UserInterface | null;
 }

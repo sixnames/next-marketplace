@@ -116,55 +116,57 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
 
               <FormikInput name={'source'} testId={'source'} label={'Источник'} />
 
-              <div className={sectionClassName}>
-                <Title tag={'div'} size={'small'}>
-                  Атрибуты блог-поста
-                </Title>
+              {attributes.length > 0 ? (
+                <div className={sectionClassName}>
+                  <Title tag={'div'} size={'small'}>
+                    Атрибуты блог-поста
+                  </Title>
 
-                <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
-                  {attributes.map((attribute) => {
-                    return (
-                      <FakeInput
-                        value={`${attribute.readableValue}`}
-                        label={`${attribute.name}`}
-                        key={`${attribute._id}`}
-                        testId={`${attribute.name}-attribute`}
-                        onClear={
-                          attribute.readableValue
-                            ? () => {
-                                updateBlogPostAttribute({
-                                  blogPostId: `${post._id}`,
-                                  blogAttributeId: `${attribute._id}`,
-                                  selectedOptionsIds: [],
-                                }).catch(console.log);
-                              }
-                            : undefined
-                        }
-                        onClick={() => {
-                          if (attribute.optionsGroupId) {
-                            showModal<AttributeOptionsModalInterface>({
-                              variant: ATTRIBUTE_OPTIONS_MODAL,
-                              props: {
-                                testId: 'select-attribute-options-modal',
-                                optionsGroupId: `${attribute.optionsGroupId}`,
-                                optionVariant: 'checkbox',
-                                title: `${attribute.name}`,
-                                onSubmit: (value) => {
+                  <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
+                    {attributes.map((attribute) => {
+                      return (
+                        <FakeInput
+                          value={`${attribute.readableValue}`}
+                          label={`${attribute.name}`}
+                          key={`${attribute._id}`}
+                          testId={`${attribute.name}-attribute`}
+                          onClear={
+                            attribute.readableValue
+                              ? () => {
                                   updateBlogPostAttribute({
                                     blogPostId: `${post._id}`,
                                     blogAttributeId: `${attribute._id}`,
-                                    selectedOptionsIds: value.map(({ _id }) => `${_id}`),
+                                    selectedOptionsIds: [],
                                   }).catch(console.log);
-                                },
-                              },
-                            });
+                                }
+                              : undefined
                           }
-                        }}
-                      />
-                    );
-                  })}
+                          onClick={() => {
+                            if (attribute.optionsGroupId) {
+                              showModal<AttributeOptionsModalInterface>({
+                                variant: ATTRIBUTE_OPTIONS_MODAL,
+                                props: {
+                                  testId: 'select-attribute-options-modal',
+                                  optionsGroupId: `${attribute.optionsGroupId}`,
+                                  optionVariant: 'checkbox',
+                                  title: `${attribute.name}`,
+                                  onSubmit: (value) => {
+                                    updateBlogPostAttribute({
+                                      blogPostId: `${post._id}`,
+                                      blogAttributeId: `${attribute._id}`,
+                                      selectedOptionsIds: value.map(({ _id }) => `${_id}`),
+                                    }).catch(console.log);
+                                  },
+                                },
+                              });
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               <div className={sectionClassName}>
                 <Title tag={'div'} size={'small'}>

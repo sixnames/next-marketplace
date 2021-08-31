@@ -432,7 +432,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['true'],
+          [DEFAULT_LOCALE]: ['false'],
         },
       },
     },
@@ -447,7 +447,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['true'],
+          [DEFAULT_LOCALE]: ['false'],
         },
       },
     },
@@ -462,7 +462,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['true'],
+          [DEFAULT_LOCALE]: ['false'],
         },
       },
     },

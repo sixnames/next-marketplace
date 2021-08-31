@@ -28,6 +28,16 @@ import {
 } from './common';
 
 export const constantTranslations = {
+  nav: {
+    blog: {
+      [DEFAULT_LOCALE]: 'Блог',
+      [SECONDARY_LOCALE]: 'Blog',
+    },
+    contacts: {
+      [DEFAULT_LOCALE]: 'Контакты',
+      [SECONDARY_LOCALE]: 'Contacts',
+    },
+  },
   shops: {
     single: {
       [DEFAULT_LOCALE]: 'магазин',

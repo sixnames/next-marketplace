@@ -67,7 +67,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         }`}
       >
         <div className='px-4 pt-6'>
-          <div className='relative flex justify-center snippet-image mb-4'>
+          <div className='relative flex justify-center dark:snippet-image mb-4'>
             <Image
               priority={true}
               src={mainImage}

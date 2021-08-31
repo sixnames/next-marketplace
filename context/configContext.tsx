@@ -35,6 +35,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     siteNavDropdownAttributeLightTheme: '',
     siteNavDropdownAttributeDarkTheme: '',
     showAdultModal: false,
+    showBlog: false,
+    showBlogPostViews: false,
     contactEmail: [],
     phone: [],
     facebook: '',

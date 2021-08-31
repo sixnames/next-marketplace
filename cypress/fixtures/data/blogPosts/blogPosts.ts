@@ -84,6 +84,54 @@ const blogPosts: BlogPostModel[] = [
     createdAt: new Date(),
     ...DEFAULT_COUNTERS_OBJECT,
   },
+  {
+    _id: getObjectId('post d'),
+    slug: 'post_d',
+    companySlug: DEFAULT_COMPANY_SLUG,
+    titleI18n: {
+      [DEFAULT_LOCALE]: 'Post D',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
+    },
+    previewImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_d/previewImage.jpg`,
+    assetKeys: [
+      `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_d/post_d.jpg`,
+    ],
+    state: PAGE_STATE_PUBLISHED,
+    content: `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"ppcfbj","size":6,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_d/post_d.jpg"}},"rows":[],"inline":null},{"id":"hzq58d","size":6,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header A"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
+    authorId: getObjectId('admin'),
+    selectedOptionsSlugs: [`tags${CATALOGUE_OPTION_SEPARATOR}779`],
+    source: 'Source site-c.com',
+    updatedAt: new Date(),
+    createdAt: new Date(),
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('post e'),
+    slug: 'post_e',
+    companySlug: DEFAULT_COMPANY_SLUG,
+    titleI18n: {
+      [DEFAULT_LOCALE]: 'Post E',
+    },
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
+    },
+    previewImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_e/previewImage.jpg`,
+    assetKeys: [
+      `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_e/post_e.jpg`,
+    ],
+    state: PAGE_STATE_PUBLISHED,
+    content: `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"ppcfbj","size":6,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BLOG}/post_e/post_e.jpg"}},"rows":[],"inline":null},{"id":"hzq58d","size":6,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header A"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
+    authorId: getObjectId('admin'),
+    selectedOptionsSlugs: [`tags${CATALOGUE_OPTION_SEPARATOR}779`],
+    source: 'Source site-c.com',
+    updatedAt: new Date(),
+    createdAt: new Date(),
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 // @ts-ignore

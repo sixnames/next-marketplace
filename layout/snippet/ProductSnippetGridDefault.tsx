@@ -65,7 +65,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
     >
       <div className='grid grid-cols-12 flex-grow'>
         {/*image*/}
-        <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 snippet-image'>
+        <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
           <Image
             priority={true}
             src={mainImage}

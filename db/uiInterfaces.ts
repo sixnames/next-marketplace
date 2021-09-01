@@ -70,6 +70,7 @@ export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
   attributes?: BlogAttributeInterface[] | [];
   author?: UserInterface | null;
   views?: number;
+  options?: OptionInterface[] | null;
 }
 
 export interface AddressInterface extends AddressModel {

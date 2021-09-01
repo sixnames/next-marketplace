@@ -1,22 +1,77 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import FormattedDateTime from 'components/FormattedDateTime';
+import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
+import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
-import { ROUTE_BLOG_POST, SORT_DESC } from 'config/common';
+import {
+  CATALOGUE_OPTION_SEPARATOR,
+  PAGE_STATE_PUBLISHED,
+  ROUTE_BLOG_POST,
+  SORT_DESC,
+} from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_BLOG_POSTS } from 'db/collectionNames';
+import { COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { BlogPostInterface } from 'db/uiInterfaces';
+import { BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
+
+interface BlogListSnippetMetaInterface {
+  createdAt?: string | Date | null;
+  views?: number | null;
+  showViews: boolean;
+}
+
+const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
+  showViews,
+  createdAt,
+  views,
+}) => {
+  return (
+    <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
+      <FormattedDate value={createdAt} />
+      {/*views counter*/}
+      {showViews ? (
+        <div className='flex items-center gap-2'>
+          <Icon className='w-5 h-5' name={'eye'} />
+          <div>{views}</div>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+interface BlogListSnippetTagsInterface {
+  options?: OptionInterface[] | null;
+  theme?: 'primary' | 'secondary';
+}
+
+const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({ options, theme }) => {
+  if (!options) {
+    return null;
+  }
+  return (
+    <div className='mt-3 flex flex-wrap gap-3'>
+      {options.map((option) => {
+        return (
+          <TagLink theme={theme} key={`${option._id}`}>
+            #{option.name}
+          </TagLink>
+        );
+      })}
+    </div>
+  );
+};
+
+const snippetClassName = `relative overflow-hidden rounded-md bg-secondary hover:shadow-xl transition-shadow duration-150`;
 
 interface BlogListSnippetInterface {
   post: BlogPostInterface;
@@ -25,7 +80,7 @@ interface BlogListSnippetInterface {
 
 const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
-    <div className='overflow-hidden rounded-md bg-secondary'>
+    <div className={snippetClassName}>
       {/*image*/}
       <div className='relative overflow-hidden h-[200px]'>
         <img
@@ -55,21 +110,14 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
           </Link>
         </div>
 
-        {/*date*/}
-        <div className='text-secondary-text mb-3'>
-          <FormattedDateTime value={post.createdAt} />
-        </div>
+        {/*meta*/}
+        <BlogListSnippetMeta showViews={showViews} createdAt={post.createdAt} views={post.views} />
 
         {/*description*/}
         <div>{post.description}</div>
 
-        {/*views counter*/}
-        {showViews ? (
-          <div className='flex items-center gap-3 mt-3'>
-            <Icon className='w-5 h-5' name={'eye'} />
-            <div>{post.views}</div>
-          </div>
-        ) : null}
+        {/*tags*/}
+        <BlogListSnippetTags theme={'primary'} options={post.options} />
       </div>
     </div>
   );
@@ -77,7 +125,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
 
 const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
-    <div className='relative overflow-hidden rounded-md min-h-[300px] bg-secondary sm:col-span-2'>
+    <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
       <img
         className='absolute h-full w-full inset-0 object-cover'
         src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
@@ -90,21 +138,18 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
           {/*title*/}
           <div className='font-medium text-xl mb-3 text-white'>{post.title}</div>
 
-          {/*date*/}
-          <div className='text-secondary-text mb-3 text-wp-light-gray-100'>
-            <FormattedDateTime value={post.createdAt} />
-          </div>
+          {/*meta*/}
+          <BlogListSnippetMeta
+            showViews={showViews}
+            createdAt={post.createdAt}
+            views={post.views}
+          />
 
           {/*description*/}
           <div className='text-white'>{post.description}</div>
 
-          {/*views counter*/}
-          {showViews ? (
-            <div className='flex items-center gap-3 mt-3 text-white'>
-              <Icon className='w-5 h-5' name={'eye'} />
-              <div>{post.views}</div>
-            </div>
-          ) : null}
+          {/*tags*/}
+          <BlogListSnippetTags options={post.options} />
         </div>
       </div>
 
@@ -195,6 +240,7 @@ export const getServerSideProps = async (
       {
         $match: {
           companySlug: props.companySlug,
+          state: PAGE_STATE_PUBLISHED,
         },
       },
       {
@@ -213,6 +259,86 @@ export const getServerSideProps = async (
           content: false,
         },
       },
+      {
+        $unwind: {
+          path: '$selectedOptionsSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          slugArray: {
+            $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+          },
+        },
+      },
+      {
+        $addFields: {
+          attributeSlug: {
+            $arrayElemAt: ['$slugArray', 0],
+          },
+          optionSlug: {
+            $arrayElemAt: ['$slugArray', 1],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          slug: { $first: '$slug' },
+          companySlug: { $first: '$companySlug' },
+          titleI18n: { $first: '$titleI18n' },
+          descriptionI18n: { $first: '$descriptionI18n' },
+          previewImage: { $first: '$previewImage' },
+          authorId: { $first: '$authorId' },
+          source: { $first: '$source' },
+          createdAt: { $first: '$createdAt' },
+          views: { $first: '$views' },
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
+          attributesSlugs: {
+            $addToSet: '$attributeSlug',
+          },
+          optionsSlugs: {
+            $addToSet: '$optionSlug',
+          },
+        },
+      },
+
+      // options
+      {
+        $lookup: {
+          from: COL_OPTIONS,
+          as: 'options',
+          let: {
+            optionsSlugs: '$optionsSlugs',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $in: ['$slug', '$$optionsSlugs'],
+                    },
+                  ],
+                },
+                $or: [
+                  {
+                    parentId: {
+                      $exists: false,
+                    },
+                  },
+                  {
+                    parentId: null,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
     ])
     .toArray();
 
@@ -221,6 +347,14 @@ export const getServerSideProps = async (
       ...post,
       title: getFieldStringLocale(post.titleI18n, props.sessionLocale),
       description: getFieldStringLocale(post.descriptionI18n, props.sessionLocale),
+      options: post.options
+        ? post.options.map((option) => {
+            return {
+              ...option,
+              name: getFieldStringLocale(option.nameI18n, props.sessionLocale),
+            };
+          })
+        : null,
     };
   });
 

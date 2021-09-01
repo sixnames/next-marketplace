@@ -14,13 +14,14 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
+import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
@@ -166,44 +167,59 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 
 interface BlogListPageConsumerInterface {
   posts: BlogPostInterface[];
+  blogFilter: BlogAttributeInterface[];
+  meta: string;
 }
 
-const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({ posts }) => {
+const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
+  posts,
+  blogFilter,
+  meta,
+}) => {
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
+  const metaTitle = `${blogLinkName} ${meta}`;
+
+  console.log(blogFilter);
 
   return (
-    <div className='mb-12'>
-      <Breadcrumbs currentPageName={blogLinkName} />
-      <Inner lowTop>
-        <Title>{blogLinkName}</Title>
-        {posts.length > 0 ? (
-          <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3'>
-            {posts.map((post, index) => {
-              if (index === 0) {
+    <React.Fragment>
+      <Head>
+        <title>{metaTitle}</title>
+        <meta name={'description'} content={metaTitle} />
+      </Head>
+      <div className='mb-12'>
+        <Breadcrumbs currentPageName={blogLinkName} />
+        <Inner lowTop>
+          <Title>{blogLinkName}</Title>
+          {posts.length > 0 ? (
+            <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3'>
+              {posts.map((post, index) => {
+                if (index === 0) {
+                  return (
+                    <BlogListMainSnippet
+                      post={post}
+                      showViews={configs.showBlogPostViews}
+                      key={`${post._id}`}
+                    />
+                  );
+                }
                 return (
-                  <BlogListMainSnippet
+                  <BlogListSnippet
                     post={post}
                     showViews={configs.showBlogPostViews}
                     key={`${post._id}`}
                   />
                 );
-              }
-              return (
-                <BlogListSnippet
-                  post={post}
-                  showViews={configs.showBlogPostViews}
-                  key={`${post._id}`}
-                />
-              );
-            })}
-          </div>
-        ) : (
-          <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>
-        )}
-      </Inner>
-    </div>
+              })}
+            </div>
+          ) : (
+            <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>
+          )}
+        </Inner>
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -211,10 +227,10 @@ interface BlogListPageInterface
   extends SiteLayoutProviderInterface,
     BlogListPageConsumerInterface {}
 
-const BlogListPage: React.FC<BlogListPageInterface> = ({ posts, ...props }) => {
+const BlogListPage: React.FC<BlogListPageInterface> = ({ posts, meta, blogFilter, ...props }) => {
   return (
     <SiteLayout {...props}>
-      <BlogListPageConsumer posts={posts} />
+      <BlogListPageConsumer blogFilter={blogFilter} posts={posts} meta={meta} />
     </SiteLayout>
   );
 };
@@ -235,6 +251,13 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
 
+  const viewsStage = {
+    $addFields: {
+      views: { $max: `$views.${props.companySlug}.${props.sessionCity}` },
+      priorities: { $max: `$priorities.${props.companySlug}.${props.sessionCity}` },
+    },
+  };
+
   const initialBlogPostsAggregation = await blogPostsCollection
     .aggregate([
       {
@@ -243,12 +266,7 @@ export const getServerSideProps = async (
           state: PAGE_STATE_PUBLISHED,
         },
       },
-      {
-        $addFields: {
-          views: { $max: `$views.${props.companySlug}.${props.sessionCity}` },
-          priorities: { $max: `$priorities.${props.companySlug}.${props.sessionCity}` },
-        },
-      },
+      viewsStage,
       {
         $sort: {
           createdAt: SORT_DESC,
@@ -306,12 +324,13 @@ export const getServerSideProps = async (
         },
       },
 
-      // options
+      // attributes
       {
         $lookup: {
-          from: COL_OPTIONS,
-          as: 'options',
+          from: COL_BLOG_ATTRIBUTES,
+          as: 'attributes',
           let: {
+            attributesSlugs: '$attributesSlugs',
             optionsSlugs: '$optionsSlugs',
           },
           pipeline: [
@@ -320,18 +339,57 @@ export const getServerSideProps = async (
                 $expr: {
                   $and: [
                     {
-                      $in: ['$slug', '$$optionsSlugs'],
+                      $in: ['$slug', '$$attributesSlugs'],
                     },
                   ],
                 },
-                $or: [
+              },
+            },
+            viewsStage,
+            {
+              $sort: {
+                views: SORT_DESC,
+              },
+            },
+
+            // options
+            {
+              $lookup: {
+                from: COL_OPTIONS,
+                as: 'options',
+                let: {
+                  optionsGroupId: '$optionsGroupId',
+                },
+                pipeline: [
                   {
-                    parentId: {
-                      $exists: false,
+                    $match: {
+                      $expr: {
+                        $and: [
+                          {
+                            $in: ['$slug', '$$optionsSlugs'],
+                          },
+                          {
+                            $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                          },
+                        ],
+                      },
+                      $or: [
+                        {
+                          parentId: {
+                            $exists: false,
+                          },
+                        },
+                        {
+                          parentId: null,
+                        },
+                      ],
                     },
                   },
+                  viewsStage,
                   {
-                    parentId: null,
+                    $sort: {
+                      views: SORT_DESC,
+                    },
                   },
                 ],
               },
@@ -342,19 +400,94 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
+  const blogOptions: OptionInterface[] = [];
+  const blogAttributes: BlogAttributeInterface[] = [];
+
   const posts: BlogPostInterface[] = initialBlogPostsAggregation.map((post) => {
+    const postOptions: OptionInterface[] = [];
+
+    // cast attributes
+    const attributes = (post.attributes || []).reduce(
+      (acc: BlogAttributeInterface[], attribute) => {
+        const attributeName = getFieldStringLocale(attribute.nameI18n, props.sessionLocale);
+        if (!attributeName) {
+          return acc;
+        }
+
+        // cast options
+        const options = (attribute.options || []).reduce(
+          (optionsAcc: OptionInterface[], option) => {
+            const name = getFieldStringLocale(option.nameI18n, props.sessionLocale);
+            if (!name) {
+              return optionsAcc;
+            }
+
+            const translatedOption = {
+              ...option,
+              name,
+            };
+
+            // add option to the post
+            const exist = postOptions.some(({ slug }) => slug === translatedOption.slug);
+            if (!exist) {
+              postOptions.push(translatedOption);
+            }
+
+            // add option to the total list
+            const existInAllOptions = blogOptions.some(
+              ({ slug }) => slug === translatedOption.slug,
+            );
+            if (!existInAllOptions) {
+              blogOptions.push(translatedOption);
+            }
+
+            return [...optionsAcc, translatedOption];
+          },
+          [],
+        );
+
+        const translatedAttribute = {
+          ...attribute,
+          name: attributeName,
+          options,
+        };
+
+        // add attribute to the total list
+        const exist = blogAttributes.some(({ slug }) => slug === attribute.slug);
+        if (!exist) {
+          blogAttributes.push({
+            ...translatedAttribute,
+            options: [],
+          });
+        }
+
+        return [...acc, translatedAttribute];
+      },
+      [],
+    );
+
     return {
       ...post,
       title: getFieldStringLocale(post.titleI18n, props.sessionLocale),
       description: getFieldStringLocale(post.descriptionI18n, props.sessionLocale),
-      options: post.options
-        ? post.options.map((option) => {
-            return {
-              ...option,
-              name: getFieldStringLocale(option.nameI18n, props.sessionLocale),
-            };
-          })
-        : null,
+      attributes,
+      options: postOptions,
+    };
+  });
+
+  // meta
+  const metaList = blogOptions.reduce((acc: string[], { name }) => {
+    return [...acc, `${name}`];
+  }, []);
+
+  // filter
+  const blogFilter = blogAttributes.map((attribute) => {
+    const options = blogOptions.filter((option) => {
+      return option.optionsGroupId.equals(attribute.optionsGroupId);
+    });
+    return {
+      ...attribute,
+      options,
     };
   });
 
@@ -362,6 +495,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       posts: castDbData(posts),
+      blogFilter: castDbData(blogFilter),
+      meta: metaList.join(', '),
     },
   };
 };

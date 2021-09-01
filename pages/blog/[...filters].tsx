@@ -6,19 +6,32 @@ import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
 import {
+  ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_OPTION_SEPARATOR,
+  CATALOGUE_PRODUCTS_LIMIT,
+  DEFAULT_PAGE,
   PAGE_STATE_PUBLISHED,
   ROUTE_BLOG_POST,
+  ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
+import { AttributeViewVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
+import {
+  BlogAttributeInterface,
+  BlogPostInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+  OptionInterface,
+} from 'db/uiInterfaces';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
@@ -167,7 +180,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 
 interface BlogListPageConsumerInterface {
   posts: BlogPostInterface[];
-  blogFilter: BlogAttributeInterface[];
+  blogFilter: CatalogueFilterAttributeInterface[];
   meta: string;
 }
 
@@ -181,7 +194,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const metaTitle = `${blogLinkName} ${meta}`;
 
-  console.log(blogFilter);
+  console.log({ blogFilter, posts });
 
   return (
     <React.Fragment>
@@ -248,8 +261,18 @@ export const getServerSideProps = async (
     };
   }
 
+  const filters = alwaysArray(context.query.filters);
+
+  // Cast selected filters
+  const { realFilterOptions, noFiltersSelected } = castCatalogueFilters({
+    filters,
+    initialPage: DEFAULT_PAGE,
+    initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+  });
+
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+  const basePath = ROUTE_BLOG_WITH_PAGE;
 
   const viewsStage = {
     $addFields: {
@@ -258,12 +281,21 @@ export const getServerSideProps = async (
     },
   };
 
+  const filtersStage = noFiltersSelected
+    ? {}
+    : {
+        selectedOptionsSlugs: {
+          $all: realFilterOptions,
+        },
+      };
+
   const initialBlogPostsAggregation = await blogPostsCollection
     .aggregate([
       {
         $match: {
           companySlug: props.companySlug,
           state: PAGE_STATE_PUBLISHED,
+          ...filtersStage,
         },
       },
       viewsStage,
@@ -481,14 +513,60 @@ export const getServerSideProps = async (
   }, []);
 
   // filter
-  const blogFilter = blogAttributes.map((attribute) => {
-    const options = blogOptions.filter((option) => {
+  const blogFilter: CatalogueFilterAttributeInterface[] = blogAttributes.map((attribute) => {
+    const attributeOptions = blogOptions.filter((option) => {
       return option.optionsGroupId.equals(attribute.optionsGroupId);
     });
-    return {
-      ...attribute,
-      options,
+
+    const castedOptions: CatalogueFilterAttributeOptionInterface[] = attributeOptions.map(
+      (option) => {
+        const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
+        const isSelected = realFilterOptions.includes(optionSlug);
+        const optionName = `${option.name}`;
+
+        const optionNextSlug = isSelected
+          ? [...realFilterOptions]
+              .filter((pathArg) => {
+                return pathArg !== optionSlug;
+              })
+              .join('/')
+          : [...realFilterOptions, optionSlug].join('/');
+
+        const castedOption: CatalogueFilterAttributeOptionInterface = {
+          _id: option._id,
+          slug: option.slug,
+          isSelected,
+          name: optionName,
+          nextSlug: `${basePath}/${optionNextSlug}`,
+        };
+        return castedOption;
+      },
+    );
+
+    const isSelected = realFilterOptions.some((param) => {
+      const filterItemArr = param.split(CATALOGUE_OPTION_SEPARATOR);
+      return filterItemArr[0] === attribute.slug;
+    });
+
+    const otherSelectedValues = realFilterOptions.filter((param) => {
+      const castedParam = castCatalogueParamToObject(param);
+      return castedParam.slug !== attribute.slug;
+    });
+    const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
+
+    const filterAttribute: CatalogueFilterAttributeInterface = {
+      _id: attribute._id,
+      attributeId: attribute._id,
+      slug: attribute.slug,
+      clearSlug,
+      isSelected,
+      name: `${attribute.name}`,
+      options: castedOptions,
+      notShowAsAlphabet: true,
+      totalOptionsCount: attributeOptions.length,
+      viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     };
+    return filterAttribute;
   });
 
   return {

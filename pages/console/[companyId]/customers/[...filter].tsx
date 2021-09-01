@@ -4,7 +4,7 @@ import LinkPhone from 'components/Link/LinkPhone';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -292,7 +292,7 @@ export const getServerSideProps = async (
                   totalDocs: 1,
                   totalPages: 1,
                   hasPrevPage: {
-                    $gt: [page, PAGE_DEFAULT],
+                    $gt: [page, DEFAULT_PAGE],
                   },
                   hasNextPage: {
                     $lt: [page, '$totalPages'],

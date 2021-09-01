@@ -1,6 +1,6 @@
 import { CollectionAggregationOptions } from 'mongodb';
 import {
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
   SORT_BY_CREATED_AT,
   SORT_BY_ID_DIRECTION,
@@ -39,14 +39,14 @@ export async function aggregatePagination<TModel>({
 }: AggregatePaginationPropsInterface): Promise<PaginationPayloadType<TModel>> {
   try {
     const { page, sortDir, sortBy, limit } = input || {
-      page: PAGE_DEFAULT,
+      page: DEFAULT_PAGE,
       sortDir: SORT_DESC,
       sortBy: SORT_BY_CREATED_AT,
       limit: PAGINATION_DEFAULT_LIMIT,
     };
 
     const realLimit = limit || PAGINATION_DEFAULT_LIMIT;
-    const realPage = page || PAGE_DEFAULT;
+    const realPage = page || DEFAULT_PAGE;
     const realSortDir = sortDir || SORT_DESC;
     const realSortBy = sortBy || SORT_BY_CREATED_AT;
 
@@ -106,7 +106,7 @@ export async function aggregatePagination<TModel>({
               totalActiveDocs: 1,
               totalPages: 1,
               hasPrevPage: {
-                $gt: [page, PAGE_DEFAULT],
+                $gt: [page, DEFAULT_PAGE],
               },
               hasNextPage: {
                 $lt: [page, '$totalPages'],
@@ -131,7 +131,7 @@ export async function aggregatePagination<TModel>({
       ...aggregationResult,
       totalDocs: aggregationResult.totalDocs || 0,
       totalActiveDocs: aggregationResult.totalActiveDocs || 0,
-      totalPages: aggregationResult.totalPages || PAGE_DEFAULT,
+      totalPages: aggregationResult.totalPages || DEFAULT_PAGE,
       sortBy: realSortBy,
       sortDir: realSortDir,
       page: realPage,

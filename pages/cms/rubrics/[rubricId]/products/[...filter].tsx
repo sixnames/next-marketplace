@@ -15,7 +15,7 @@ import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import {
   CATALOGUE_OPTION_SEPARATOR,
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
   SORT_DESC,
@@ -579,7 +579,7 @@ export const getServerSideProps = async (
             prices: 1,
             totalPages: 1,
             hasPrevPage: {
-              $gt: [page, PAGE_DEFAULT],
+              $gt: [page, DEFAULT_PAGE],
             },
             hasNextPage: {
               $lt: [page, '$totalPages'],

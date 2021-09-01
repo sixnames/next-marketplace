@@ -53,7 +53,7 @@ import {
   SORT_DESC,
   SORT_DESC_STR,
   SORT_DIR_KEY,
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   RUBRIC_KEY,
   DEFAULT_CURRENCY,
   CATALOGUE_CATEGORY_KEY,
@@ -672,7 +672,7 @@ export function castCatalogueFilters({
   let sortDir: string | null = null;
 
   // pagination
-  const defaultPage = initialPage || PAGE_DEFAULT;
+  const defaultPage = initialPage || DEFAULT_PAGE;
   let page = defaultPage;
 
   const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;

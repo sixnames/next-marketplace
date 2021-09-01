@@ -1,6 +1,6 @@
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_BY_ID,
@@ -46,7 +46,7 @@ export const ProductsPaginationInput = inputObjectType({
       default: SORT_DESC,
     });
     t.int('page', {
-      default: PAGE_DEFAULT,
+      default: DEFAULT_PAGE,
     });
     t.int('limit', {
       default: PAGINATION_DEFAULT_LIMIT,

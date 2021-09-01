@@ -5,7 +5,7 @@ import {
 } from 'db/dbModels';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import {
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
   // SORT_ASC,
   SORT_BY_CREATED_AT,
@@ -62,14 +62,14 @@ export async function productsPaginationQuery({
       ...restInputValues
     } = input || {};
     const { page, sortDir, sortBy, limit } = restInputValues || {
-      page: PAGE_DEFAULT,
+      page: DEFAULT_PAGE,
       sortDir: SORT_DESC,
       sortBy: SORT_BY_CREATED_AT,
       limit: PAGINATION_DEFAULT_LIMIT,
     };
 
     const realLimit = limit || PAGINATION_DEFAULT_LIMIT;
-    const realPage = page || PAGE_DEFAULT;
+    const realPage = page || DEFAULT_PAGE;
     const skip = realPage ? (realPage - 1) * realLimit : 0;
     const realSortDir = sortDir || SORT_DESC;
     let realSortBy = sortBy || '_id';
@@ -274,7 +274,7 @@ export async function productsPaginationQuery({
           totalActiveDocs: 1,
           totalPages: 1,
           hasPrevPage: {
-            $gt: [page, PAGE_DEFAULT],
+            $gt: [page, DEFAULT_PAGE],
           },
           hasNextPage: {
             $lt: [page, '$totalPages'],
@@ -305,7 +305,7 @@ export async function productsPaginationQuery({
       docs: aggregationResult.docs,
       totalDocs: noNaN(aggregationResult.totalDocs),
       totalActiveDocs: noNaN(aggregationResult.totalActiveDocs),
-      totalPages: aggregationResult.totalPages || PAGE_DEFAULT,
+      totalPages: aggregationResult.totalPages || DEFAULT_PAGE,
       sortBy: realSortBy,
       sortDir: realSortDir,
       page: realPage,

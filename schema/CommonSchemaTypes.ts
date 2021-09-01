@@ -2,7 +2,7 @@ import { enumType, inputObjectType, interfaceType, objectType } from 'nexus';
 import { CoordinatesModel } from 'db/dbModels';
 import {
   GENDER_ENUMS,
-  PAGE_DEFAULT,
+  DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
   SORT_ASC,
   SORT_BY_CREATED_AT,
@@ -196,7 +196,7 @@ export const PaginationInput = inputObjectType({
       default: SORT_DESC,
     });
     t.int('page', {
-      default: PAGE_DEFAULT,
+      default: DEFAULT_PAGE,
     });
     t.int('limit', {
       default: PAGINATION_DEFAULT_LIMIT,

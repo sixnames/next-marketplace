@@ -10,7 +10,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { ROUTE_CMS, SORT_DESC, PAGE_DEFAULT } from 'config/common';
+import { ROUTE_CMS, SORT_DESC, DEFAULT_PAGE } from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
 import {
   COL_CITIES,
@@ -419,7 +419,7 @@ export const getServerSideProps = async (
           totalDocs: 1,
           totalPages: 1,
           hasPrevPage: {
-            $gt: [page, PAGE_DEFAULT],
+            $gt: [page, DEFAULT_PAGE],
           },
           hasNextPage: {
             $lt: [page, '$totalPages'],

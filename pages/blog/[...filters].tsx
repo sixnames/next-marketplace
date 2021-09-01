@@ -2,6 +2,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
+import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
@@ -178,9 +179,66 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
   );
 };
 
-interface BlogListPageConsumerInterface {
-  posts: BlogPostInterface[];
+interface BlogFilterAttributeInterface {
+  attribute: CatalogueFilterAttributeInterface;
+  attributeIndex: number;
+}
+
+const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
+  attribute,
+  attributeIndex,
+}) => {
+  const { name, clearSlug, options, isSelected } = attribute;
+
+  return (
+    <div className='mb-12'>
+      <div className='flex items-baseline justify-between mb-4'>
+        <span className='text-lg font-bold'>{name}</span>
+        {isSelected ? (
+          <Link href={clearSlug} className='font-medium text-theme'>
+            Очистить
+          </Link>
+        ) : null}
+      </div>
+
+      <div className='flex flex-wrap gap-2'>
+        {options.map((option, optionIndex) => {
+          const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
+          return <FilterLink option={option} key={option.slug} testId={testId} />;
+        })}
+      </div>
+    </div>
+  );
+};
+
+interface BlogFilterInterface {
   blogFilter: CatalogueFilterAttributeInterface[];
+  isFilterVisible: boolean;
+}
+
+const BlogFilter: React.FC<BlogFilterInterface> = ({ isFilterVisible, blogFilter }) => {
+  if (!isFilterVisible) {
+    return null;
+  }
+  return (
+    <div className='lg:col-span-2'>
+      <div className='sticky top-20'>
+        {blogFilter.map((attribute, index) => {
+          return (
+            <BlogFilterAttribute
+              attribute={attribute}
+              attributeIndex={index}
+              key={`${attribute._id}`}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+interface BlogListPageConsumerInterface extends BlogFilterInterface {
+  posts: BlogPostInterface[];
   meta: string;
 }
 
@@ -188,13 +246,12 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   posts,
   blogFilter,
   meta,
+  isFilterVisible,
 }) => {
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const metaTitle = `${blogLinkName} ${meta}`;
-
-  console.log({ blogFilter, posts });
 
   return (
     <React.Fragment>
@@ -206,26 +263,35 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
         <Breadcrumbs currentPageName={blogLinkName} />
         <Inner lowTop>
           <Title>{blogLinkName}</Title>
+
           {posts.length > 0 ? (
-            <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3'>
-              {posts.map((post, index) => {
-                if (index === 0) {
+            <div className={`relative grid ${isFilterVisible ? 'lg:grid-cols-7' : ''} gap-12`}>
+              <div
+                className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 ${
+                  isFilterVisible ? 'lg:col-span-5' : ''
+                }`}
+              >
+                {posts.map((post, index) => {
+                  if (index === 0) {
+                    return (
+                      <BlogListMainSnippet
+                        post={post}
+                        showViews={configs.showBlogPostViews}
+                        key={`${post._id}`}
+                      />
+                    );
+                  }
                   return (
-                    <BlogListMainSnippet
+                    <BlogListSnippet
                       post={post}
                       showViews={configs.showBlogPostViews}
                       key={`${post._id}`}
                     />
                   );
-                }
-                return (
-                  <BlogListSnippet
-                    post={post}
-                    showViews={configs.showBlogPostViews}
-                    key={`${post._id}`}
-                  />
-                );
-              })}
+                })}
+              </div>
+
+              <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
             </div>
           ) : (
             <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>
@@ -240,10 +306,21 @@ interface BlogListPageInterface
   extends SiteLayoutProviderInterface,
     BlogListPageConsumerInterface {}
 
-const BlogListPage: React.FC<BlogListPageInterface> = ({ posts, meta, blogFilter, ...props }) => {
+const BlogListPage: React.FC<BlogListPageInterface> = ({
+  posts,
+  meta,
+  isFilterVisible,
+  blogFilter,
+  ...props
+}) => {
   return (
     <SiteLayout {...props}>
-      <BlogListPageConsumer blogFilter={blogFilter} posts={posts} meta={meta} />
+      <BlogListPageConsumer
+        blogFilter={blogFilter}
+        posts={posts}
+        meta={meta}
+        isFilterVisible={isFilterVisible}
+      />
     </SiteLayout>
   );
 };
@@ -574,6 +651,7 @@ export const getServerSideProps = async (
       ...props,
       posts: castDbData(posts),
       blogFilter: castDbData(blogFilter),
+      isFilterVisible: blogFilter.length > 0,
       meta: metaList.join(', '),
     },
   };

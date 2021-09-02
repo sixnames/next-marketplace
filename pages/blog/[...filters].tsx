@@ -401,11 +401,6 @@ export const getServerSideProps = async (
       },
       viewsStage,
       {
-        $sort: {
-          createdAt: SORT_DESC,
-        },
-      },
-      {
         $project: {
           content: false,
         },
@@ -454,6 +449,12 @@ export const getServerSideProps = async (
           optionsSlugs: {
             $addToSet: '$optionSlug',
           },
+        },
+      },
+      {
+        $sort: {
+          createdAt: SORT_DESC,
+          _id: SORT_DESC,
         },
       },
 

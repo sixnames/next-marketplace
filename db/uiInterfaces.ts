@@ -74,6 +74,7 @@ export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
   options?: OptionInterface[] | null;
   likes?: BlogLikeInterface[] | null;
   likesCount?: number | null;
+  likedBySessionUser?: boolean;
 }
 
 export interface BlogLikeInterface extends BlogLikeModel {

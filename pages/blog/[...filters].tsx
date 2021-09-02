@@ -15,6 +15,7 @@ import {
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
+  VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
@@ -349,6 +350,8 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
+  const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
   const basePath = ROUTE_BLOG_WITH_PAGE;
 
   const viewsStage = {
@@ -458,6 +461,7 @@ export const getServerSideProps = async (
             {
               $sort: {
                 views: SORT_DESC,
+                _id: SORT_DESC,
               },
             },
 
@@ -498,6 +502,7 @@ export const getServerSideProps = async (
                   {
                     $sort: {
                       views: SORT_DESC,
+                      _id: SORT_DESC,
                     },
                   },
                 ],
@@ -590,6 +595,8 @@ export const getServerSideProps = async (
   }, []);
 
   // filter
+  const selectedOptionsSlugs: string[] = [];
+  const selectedAttributesSlugs: string[] = [];
   const blogFilter: CatalogueFilterAttributeInterface[] = blogAttributes.map((attribute) => {
     const attributeOptions = blogOptions.filter((option) => {
       return option.optionsGroupId.equals(attribute.optionsGroupId);
@@ -600,6 +607,10 @@ export const getServerSideProps = async (
         const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
         const isSelected = realFilterOptions.includes(optionSlug);
         const optionName = `${option.name}`;
+
+        if (isSelected) {
+          selectedOptionsSlugs.push(option.slug);
+        }
 
         const optionNextSlug = isSelected
           ? [...realFilterOptions]
@@ -625,6 +636,10 @@ export const getServerSideProps = async (
       return filterItemArr[0] === attribute.slug;
     });
 
+    if (isSelected) {
+      selectedAttributesSlugs.push(attribute.slug);
+    }
+
     const otherSelectedValues = realFilterOptions.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
@@ -645,6 +660,39 @@ export const getServerSideProps = async (
     };
     return filterAttribute;
   });
+
+  // update counters
+  if (!props.sessionUser?.role?.isStaff) {
+    const counterUpdater = {
+      $inc: {
+        [`views.${props.companySlug}.${props.sessionCity}`]: VIEWS_COUNTER_STEP,
+      },
+    };
+
+    // options
+    if (selectedOptionsSlugs.length > 0) {
+      await optionsCollection.updateMany(
+        {
+          slug: {
+            $in: selectedOptionsSlugs,
+          },
+        },
+        counterUpdater,
+      );
+    }
+
+    // attributes
+    if (selectedAttributesSlugs.length > 0) {
+      await blogAttributesCollection.updateMany(
+        {
+          slug: {
+            $in: selectedAttributesSlugs,
+          },
+        },
+        counterUpdater,
+      );
+    }
+  }
 
   return {
     props: {

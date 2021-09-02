@@ -134,9 +134,9 @@ interface BlogListSnippetInterface {
 
 const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
-    <div className={snippetClassName}>
+    <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
-      <div className='relative overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
+      <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
         <img
           className='absolute h-full w-full inset-0 object-cover'
           src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
@@ -152,7 +152,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         </Link>
       </div>
 
-      <div className='px-4 py-6'>
+      <div className='px-4 py-6 flex flex-col flex-grow-1 h-full'>
         {/*title*/}
         <div className='font-medium text-lg mb-3'>
           <Link
@@ -176,7 +176,9 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         <div>{post.description}</div>
 
         {/*tags*/}
-        <BlogListSnippetTags theme={'primary'} attributes={post.attributes} />
+        <div className='mt-auto'>
+          <BlogListSnippetTags theme={'primary'} attributes={post.attributes} />
+        </div>
       </div>
     </div>
   );
@@ -225,6 +227,36 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
   );
 };
 
+const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
+  return (
+    <div className='py-4'>
+      {/*title*/}
+      <div className='font-medium text-lg mb-3'>
+        <Link
+          testId={`${post.title}-title-link`}
+          className='block text-primary-text hover:no-underline'
+          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+        >
+          {post.title}
+        </Link>
+      </div>
+
+      {/*tags*/}
+      <BlogListSnippetTags attributes={post.attributes} />
+
+      <div className='mt-3'>
+        {/*meta*/}
+        <BlogListSnippetMeta
+          showViews={showViews}
+          createdAt={post.createdAt}
+          viewsCount={post.views}
+          likesCount={post.likesCount}
+        />
+      </div>
+    </div>
+  );
+};
+
 interface BlogFilterAttributeInterface {
   attribute: CatalogueFilterAttributeInterface;
   attributeIndex: number;
@@ -267,19 +299,17 @@ const BlogFilter: React.FC<BlogFilterInterface> = ({ isFilterVisible, blogFilter
     return null;
   }
   return (
-    <div className='lg:col-span-1'>
-      <div className='sticky top-20'>
-        {blogFilter.map((attribute, index) => {
-          return (
-            <BlogFilterAttribute
-              attribute={attribute}
-              attributeIndex={index}
-              key={`${attribute._id}`}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <React.Fragment>
+      {blogFilter.map((attribute, index) => {
+        return (
+          <BlogFilterAttribute
+            attribute={attribute}
+            attributeIndex={index}
+            key={`${attribute._id}`}
+          />
+        );
+      })}
+    </React.Fragment>
   );
 };
 
@@ -291,6 +321,7 @@ interface BlogListPageConsumerInterface extends BlogFilterInterface {
 
 const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   posts,
+  topPosts,
   blogFilter,
   meta,
   isFilterVisible,
@@ -338,7 +369,30 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                 })}
               </div>
 
-              <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
+              <div className='col-span-3 lg:col-span-1'>
+                <div className='sticky top-20'>
+                  <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
+
+                  {/*top posts*/}
+                  <div className='border border-border-color rounded-md py-6 px-4'>
+                    <div className='text-lg font-bold mb-4'>Самые читаемые</div>
+
+                    {topPosts.length > 0 ? (
+                      <div className='divide-y-2 divide-border-color'>
+                        {topPosts.map((post) => {
+                          return (
+                            <BlogListTopSnippet
+                              showViews={configs.showBlogPostViews}
+                              post={post}
+                              key={`${post._id}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>

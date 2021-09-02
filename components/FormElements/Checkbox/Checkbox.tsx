@@ -23,7 +23,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   ...props
 }) => {
   const additionalClassName = className ? className : '';
-  const errorClassName = notValid ? 'border-red-500' : 'border-border-color';
+  const errorClassName = notValid ? 'border-red-500' : 'border-border-300';
   const disabledClassName = disabled
     ? 'opacity-60 pointer-events-none secondary-text'
     : 'text-theme';

@@ -149,10 +149,10 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
           {!categories || categories.length < 1 ? (
             <RequestError message={'Список пуст'} />
           ) : (
-            <div className='border-t border-border-color'>
+            <div className='border-t border-border-300'>
               {categories.map((category) => (
                 <div
-                  className='border-b border-border-color py-6 px-inner-block-horizontal-padding'
+                  className='border-b border-border-300 py-6 px-inner-block-horizontal-padding'
                   key={`${category._id}`}
                 >
                   {renderCategories(category)}

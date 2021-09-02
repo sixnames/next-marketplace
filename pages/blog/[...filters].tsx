@@ -64,7 +64,9 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
 }) => {
   return (
     <div
-      className={`flex items center flex-wrap gap-5 mb-3 ${isLight ? '' : 'text-secondary-text'}`}
+      className={`flex items center flex-wrap gap-5 mb-3 ${
+        isLight ? 'text-white' : 'text-secondary-text'
+      }`}
     >
       <FormattedDate value={createdAt} />
       {/*views counter*/}
@@ -374,11 +376,11 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                   <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
 
                   {/*top posts*/}
-                  <div className='border border-border-color rounded-md py-6 px-4'>
+                  <div className='border border-border-100 rounded-md py-6 px-4'>
                     <div className='text-lg font-bold mb-4'>Самые читаемые</div>
 
                     {topPosts.length > 0 ? (
-                      <div className='divide-y-2 divide-border-color'>
+                      <div className='divide-y-2 divide-border-100'>
                         {topPosts.map((post) => {
                           return (
                             <BlogListTopSnippet

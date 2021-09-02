@@ -2,7 +2,7 @@
   position: relative;
   width: 16px;
   height: 16px;
-  border: 2px solid var(--borderColor);
+  border: 2px solid var(--border-300);
   background-color: var(--inputBackground);
   border-radius: 50%;
   overflow: hidden;

@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import {
   dropdownClassName,
@@ -44,7 +44,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text'
               >
                 {option.name}

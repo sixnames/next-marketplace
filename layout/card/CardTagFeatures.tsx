@@ -1,5 +1,5 @@
 import TagLink from 'components/Link/TagLink';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
@@ -33,7 +33,7 @@ const CardTagFeatures: React.FC<CardTagFeaturesInterface> = ({
                 return (
                   <li key={`${option?.name}`}>
                     <TagLink
-                      href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                      href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                       testId={`card-tag-option-${name}`}
                     >
                       {name}

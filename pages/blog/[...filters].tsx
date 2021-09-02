@@ -8,7 +8,7 @@ import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_PAGE,
   PAGE_STATE_PUBLISHED,
@@ -16,6 +16,7 @@ import {
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
+  ROUTE_BLOG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
@@ -40,6 +41,7 @@ import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -50,6 +52,7 @@ interface BlogListSnippetMetaInterface {
   viewsCount?: number | null;
   likesCount?: number | null;
   showViews: boolean;
+  isLight?: boolean;
 }
 
 const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
@@ -57,9 +60,12 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
   createdAt,
   viewsCount,
   likesCount,
+  isLight,
 }) => {
   return (
-    <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
+    <div
+      className={`flex items center flex-wrap gap-5 mb-3 ${isLight ? '' : 'text-secondary-text'}`}
+    >
       <FormattedDate value={createdAt} />
       {/*views counter*/}
       {showViews ? (
@@ -81,28 +87,45 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
 };
 
 interface BlogListSnippetTagsInterface {
-  options?: OptionInterface[] | null;
+  attributes?: BlogAttributeInterface[] | null;
   theme?: 'primary' | 'secondary';
 }
 
-const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({ options, theme }) => {
-  if (!options) {
+export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
+  attributes,
+  theme,
+}) => {
+  if (!attributes) {
     return null;
   }
   return (
     <div className='mt-3 flex flex-wrap gap-3'>
-      {options.map((option) => {
+      {attributes.map((attribute) => {
+        if (!attribute.options || attribute.options.length < 1) {
+          return null;
+        }
         return (
-          <TagLink theme={theme} key={`${option._id}`}>
-            #{option.name}
-          </TagLink>
+          <React.Fragment key={`${attribute._id}`}>
+            {attribute.options.map((option) => {
+              return (
+                <TagLink
+                  size={'small'}
+                  href={`${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                  theme={theme}
+                  key={`${option._id}`}
+                >
+                  #{option.name}
+                </TagLink>
+              );
+            })}
+          </React.Fragment>
         );
       })}
     </div>
   );
 };
 
-const snippetClassName = `relative overflow-hidden rounded-md bg-secondary hover:shadow-xl transition-shadow duration-150`;
+const snippetClassName = `group relative overflow-hidden rounded-md bg-secondary hover:shadow-2xl transition-shadow duration-150`;
 
 interface BlogListSnippetInterface {
   post: BlogPostInterface;
@@ -111,9 +134,9 @@ interface BlogListSnippetInterface {
 
 const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
   return (
-    <div className={snippetClassName}>
+    <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
-      <div className='relative overflow-hidden h-[200px]'>
+      <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
         <img
           className='absolute h-full w-full inset-0 object-cover'
           src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
@@ -129,7 +152,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         </Link>
       </div>
 
-      <div className='px-4 py-6'>
+      <div className='px-4 py-6 flex flex-col flex-grow-1 h-full'>
         {/*title*/}
         <div className='font-medium text-lg mb-3'>
           <Link
@@ -153,7 +176,9 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         <div>{post.description}</div>
 
         {/*tags*/}
-        <BlogListSnippetTags theme={'primary'} options={post.options} />
+        <div className='mt-auto'>
+          <BlogListSnippetTags theme={'primary'} attributes={post.attributes} />
+        </div>
       </div>
     </div>
   );
@@ -176,6 +201,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 
           {/*meta*/}
           <BlogListSnippetMeta
+            isLight
             showViews={showViews}
             createdAt={post.createdAt}
             viewsCount={post.views}
@@ -186,7 +212,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
           <div className='text-white'>{post.description}</div>
 
           {/*tags*/}
-          <BlogListSnippetTags options={post.options} />
+          <BlogListSnippetTags attributes={post.attributes} />
         </div>
       </div>
 
@@ -197,6 +223,36 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
       >
         {post.title}
       </Link>
+    </div>
+  );
+};
+
+const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
+  return (
+    <div className='py-4'>
+      {/*title*/}
+      <div className='font-medium text-lg mb-3'>
+        <Link
+          testId={`${post.title}-title-link`}
+          className='block text-primary-text hover:no-underline'
+          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+        >
+          {post.title}
+        </Link>
+      </div>
+
+      {/*tags*/}
+      <BlogListSnippetTags attributes={post.attributes} />
+
+      <div className='mt-3'>
+        {/*meta*/}
+        <BlogListSnippetMeta
+          showViews={showViews}
+          createdAt={post.createdAt}
+          viewsCount={post.views}
+          likesCount={post.likesCount}
+        />
+      </div>
     </div>
   );
 };
@@ -243,29 +299,29 @@ const BlogFilter: React.FC<BlogFilterInterface> = ({ isFilterVisible, blogFilter
     return null;
   }
   return (
-    <div className='lg:col-span-2'>
-      <div className='sticky top-20'>
-        {blogFilter.map((attribute, index) => {
-          return (
-            <BlogFilterAttribute
-              attribute={attribute}
-              attributeIndex={index}
-              key={`${attribute._id}`}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <React.Fragment>
+      {blogFilter.map((attribute, index) => {
+        return (
+          <BlogFilterAttribute
+            attribute={attribute}
+            attributeIndex={index}
+            key={`${attribute._id}`}
+          />
+        );
+      })}
+    </React.Fragment>
   );
 };
 
 interface BlogListPageConsumerInterface extends BlogFilterInterface {
   posts: BlogPostInterface[];
+  topPosts: BlogPostInterface[];
   meta: string;
 }
 
 const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   posts,
+  topPosts,
   blogFilter,
   meta,
   isFilterVisible,
@@ -273,7 +329,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
-  const metaTitle = `${blogLinkName} ${meta}`;
+  const metaTitle = `${blogLinkName} ${configs.siteName} на темы ${meta}`;
 
   return (
     <React.Fragment>
@@ -287,10 +343,10 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
           <Title>{blogLinkName}</Title>
 
           {posts.length > 0 ? (
-            <div className={`relative grid ${isFilterVisible ? 'lg:grid-cols-7' : ''} gap-12`}>
+            <div className={`relative grid ${isFilterVisible ? 'lg:grid-cols-4' : ''} gap-6`}>
               <div
                 className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 ${
-                  isFilterVisible ? 'lg:col-span-5' : ''
+                  isFilterVisible ? 'col-span-3' : ''
                 }`}
               >
                 {posts.map((post, index) => {
@@ -313,7 +369,30 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                 })}
               </div>
 
-              <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
+              <div className='col-span-3 lg:col-span-1'>
+                <div className='sticky top-20'>
+                  <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
+
+                  {/*top posts*/}
+                  <div className='border border-border-color rounded-md py-6 px-4'>
+                    <div className='text-lg font-bold mb-4'>Самые читаемые</div>
+
+                    {topPosts.length > 0 ? (
+                      <div className='divide-y-2 divide-border-color'>
+                        {topPosts.map((post) => {
+                          return (
+                            <BlogListTopSnippet
+                              showViews={configs.showBlogPostViews}
+                              post={post}
+                              key={`${post._id}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>
@@ -333,11 +412,13 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
   meta,
   isFilterVisible,
   blogFilter,
+  topPosts,
   ...props
 }) => {
   return (
     <SiteLayout {...props}>
       <BlogListPageConsumer
+        topPosts={topPosts}
         blogFilter={blogFilter}
         posts={posts}
         meta={meta}
@@ -401,11 +482,6 @@ export const getServerSideProps = async (
       },
       viewsStage,
       {
-        $sort: {
-          createdAt: SORT_DESC,
-        },
-      },
-      {
         $project: {
           content: false,
         },
@@ -419,7 +495,7 @@ export const getServerSideProps = async (
       {
         $addFields: {
           slugArray: {
-            $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+            $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
           },
         },
       },
@@ -454,6 +530,12 @@ export const getServerSideProps = async (
           optionsSlugs: {
             $addToSet: '$optionSlug',
           },
+        },
+      },
+      {
+        $sort: {
+          createdAt: SORT_DESC,
+          _id: SORT_DESC,
         },
       },
 
@@ -652,7 +734,7 @@ export const getServerSideProps = async (
 
     const castedOptions: CatalogueFilterAttributeOptionInterface[] = attributeOptions.map(
       (option) => {
-        const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
+        const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
         const isSelected = realFilterOptions.includes(optionSlug);
         const optionName = `${option.name}`;
 
@@ -680,7 +762,7 @@ export const getServerSideProps = async (
     );
 
     const isSelected = realFilterOptions.some((param) => {
-      const filterItemArr = param.split(CATALOGUE_OPTION_SEPARATOR);
+      const filterItemArr = param.split(FILTER_SEPARATOR);
       return filterItemArr[0] === attribute.slug;
     });
 
@@ -742,10 +824,18 @@ export const getServerSideProps = async (
     }
   }
 
+  const topPostsLimit = 5;
+  const topPosts = [...posts]
+    .sort((a, b) => {
+      return noNaN(b.views) - noNaN(a.views);
+    })
+    .slice(0, topPostsLimit);
+
   return {
     props: {
       ...props,
       posts: castDbData(posts),
+      topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
       isFilterVisible: blogFilter.length > 0,
       meta: metaList.join(', '),

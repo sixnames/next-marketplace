@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR } from 'config/common';
+import { FILTER_SEPARATOR } from 'config/common';
 import { COL_OPTIONS } from 'db/collectionNames';
 import { OptionAlphabetListModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -82,7 +82,7 @@ export const OptionQueries = extendType({
         if (slugs && slugs.length > 0) {
           const realSlugs: string[] = [];
           slugs.forEach((slug) => {
-            const slugArray = slug.split(CATALOGUE_OPTION_SEPARATOR);
+            const slugArray = slug.split(FILTER_SEPARATOR);
             const realSlug = slugArray[1] || slug;
             realSlugs.push(realSlug);
           });

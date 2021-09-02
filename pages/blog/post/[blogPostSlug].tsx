@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import Tooltip from 'components/Tooltip';
 import {
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
   VIEWS_COUNTER_STEP,
@@ -32,6 +32,7 @@ import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { BlogListSnippetTags } from 'pages/blog/[...filters]';
 import * as React from 'react';
 
 interface BlogListSnippetMetaInterface {
@@ -104,7 +105,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
         ]}
       />
       <Inner lowTop>
-        <div className='mb-8'>
+        <div className='mb-3'>
           <BlogPostMeta
             blogPostId={`${post._id}`}
             createdAt={post.createdAt}
@@ -112,6 +113,9 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
             viewsCount={post.views}
             isLikeAllowed={post.isLikeAllowed}
           />
+        </div>
+        <div className='mb-8'>
+          <BlogListSnippetTags attributes={post.attributes} />
         </div>
         <PageEditor value={JSON.parse(post.content)} readOnly />
       </Inner>
@@ -203,7 +207,7 @@ export const getServerSideProps = async (
       {
         $addFields: {
           slugArray: {
-            $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+            $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
           },
         },
       },

@@ -17,7 +17,7 @@ import {
   SORT_ASC,
   SORT_DESC,
   PAGE_STATE_PUBLISHED,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   THEME_COOKIE_KEY,
   THEME_LIGHT,
   CONFIG_GROUP_PROJECT,
@@ -204,7 +204,7 @@ export const getCatalogueNavRubrics = async ({
       {
         $addFields: {
           slugArray: {
-            $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+            $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
           },
         },
       },

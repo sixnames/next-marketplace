@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { FILTER_SEPARATOR, DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
@@ -217,7 +217,7 @@ export const getServerSideProps = async (
             {
               $addFields: {
                 slugArray: {
-                  $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
+                  $split: ['$_id', FILTER_SEPARATOR],
                 },
               },
             },

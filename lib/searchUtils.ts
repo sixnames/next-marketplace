@@ -2,7 +2,7 @@ import { CatalogueInterface } from 'components/Catalogue';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
   ROUTE_SEARCH_RESULT,
@@ -477,7 +477,7 @@ export const getSearchData = async ({
                 {
                   $addFields: {
                     slugArray: {
-                      $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+                      $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
                     },
                   },
                 },

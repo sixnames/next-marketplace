@@ -14,7 +14,7 @@ import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import {
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
@@ -375,7 +375,7 @@ export const getServerSideProps = async (
       filters: restFilter,
     });
 
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}1`;
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   // Products stages

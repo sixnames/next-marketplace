@@ -1,6 +1,6 @@
 import {
   CATALOGUE_CATEGORY_KEY,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   CATEGORY_SLUG_PREFIX_SEPARATOR,
   CATEGORY_SLUG_PREFIX_WORD,
 } from 'config/common';
@@ -133,7 +133,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       initialSlugs.push(
         `catalogue/${rubric.slug}/${
-          isCategory ? `${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${slug}` : slug
+          isCategory ? `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}` : slug
         }`,
       );
     });

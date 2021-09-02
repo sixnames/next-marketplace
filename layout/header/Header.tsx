@@ -31,7 +31,7 @@ import {
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
   ROUTE_DOCS_PAGES,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   ROUTE_CONTACTS,
   CATALOGUE_CATEGORY_KEY,
   ROUTE_BLOG_WITH_PAGE,
@@ -236,7 +236,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               return (
                                 <li key={`${category._id}`}>
                                   <Link
-                                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${category.slug}`}
+                                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
                                     className={`flex items-center h-10 ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'
@@ -261,7 +261,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                 return (
                                   <li key={`${option._id}`}>
                                     <Link
-                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex items-center h-10 ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'

@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR } from 'config/common';
+import { FILTER_SEPARATOR } from 'config/common';
 import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
 import { BlogAttributeModel, BlogPostModel, BlogPostPayloadModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -117,13 +117,13 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
       });
     }
     const finalSelectedOptionsSlugs = finalOptions.map(
-      ({ slug }) => `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`,
+      ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
     );
 
     // update
     const attributeSlug = attribute.slug;
     const otherAttributesOptions = post.selectedOptionsSlugs.filter((slug) => {
-      const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+      const slugParts = slug.split(FILTER_SEPARATOR);
       return slugParts[0] !== attributeSlug;
     });
     const updatedBlogPostResult = await blogPostsCollection.findOneAndUpdate(

@@ -1,5 +1,5 @@
 import {
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
@@ -162,7 +162,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: restFilter,
   });
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}1`;
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
 
   // Products stages
   const pricesStage =
@@ -312,7 +312,7 @@ export const getServerSideProps = async (
             {
               $addFields: {
                 slugArray: {
-                  $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
+                  $split: ['$_id', FILTER_SEPARATOR],
                 },
               },
             },

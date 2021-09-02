@@ -1,9 +1,4 @@
-import {
-  CATALOGUE_OPTION_SEPARATOR,
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_CITY,
-  SORT_DESC,
-} from 'config/common';
+import { FILTER_SEPARATOR, DEFAULT_COMPANY_SLUG, DEFAULT_CITY, SORT_DESC } from 'config/common';
 import {
   COL_OPTIONS,
   COL_RUBRIC_ATTRIBUTES,
@@ -83,7 +78,7 @@ export function getCatalogueRubricPipeline(
     {
       $addFields: {
         slugArray: {
-          $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+          $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
         },
       },
     },

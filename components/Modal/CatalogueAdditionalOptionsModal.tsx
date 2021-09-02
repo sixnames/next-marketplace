@@ -1,5 +1,5 @@
 import OptionsModal, { OptionsModalInterface } from 'components/Modal/OptionsModal';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useGetCatalogueAdditionalOptionsQuery } from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -50,7 +50,7 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
       onSubmit={(options) => {
         hideModal();
         const selectedOptionsSlugs = options.map(({ slug }) => {
-          return `${attributeSlug}${CATALOGUE_OPTION_SEPARATOR}${slug}`;
+          return `${attributeSlug}${FILTER_SEPARATOR}${slug}`;
         });
         const nextParams = [...alwaysArray(query.catalogue), ...selectedOptionsSlugs].join('/');
         router

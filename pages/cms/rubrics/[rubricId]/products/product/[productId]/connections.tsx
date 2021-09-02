@@ -8,7 +8,7 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import {
   COL_ATTRIBUTES,
@@ -63,7 +63,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
   const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
   const excludedOptionsSlugs = (connection.connectionProducts || []).map(({ option }) => {
-    return `${connection.attribute?.slug}${CATALOGUE_OPTION_SEPARATOR}${option?.slug}`;
+    return `${connection.attribute?.slug}${FILTER_SEPARATOR}${option?.slug}`;
   });
 
   return (

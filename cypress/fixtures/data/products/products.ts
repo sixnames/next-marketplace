@@ -2,7 +2,7 @@ import {
   ASSETS_DIST_PRODUCTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   CATEGORY_SLUG_PREFIX,
   ID_COUNTER_DIGITS,
 } from '../../../../config/common';
@@ -139,7 +139,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
           if (selectedOption) {
             const regionOptionsTree = getOptionsTree(selectedOption, [selectedOption]);
             regionOptionsTree.forEach(({ slug }) => {
-              selectedOptionsSlugs.push(`${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`);
+              selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${slug}`);
             });
           }
           return;
@@ -157,9 +157,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
           });
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
-            selectedOptionsSlugs.push(
-              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
-            );
+            selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`);
           }
           return;
         }
@@ -175,9 +173,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
           });
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
-            selectedOptionsSlugs.push(
-              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
-            );
+            selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`);
           }
 
           const randomOptionIndexB = getNextOptionIndex({
@@ -191,7 +187,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
           const nextSelectedOption = attributeOptions[randomOptionIndexB];
           if (nextSelectedOption) {
             selectedOptionsSlugs.push(
-              `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${nextSelectedOption.slug}`,
+              `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`,
             );
           }
           return;

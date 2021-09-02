@@ -1,7 +1,7 @@
 import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_STRING,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
 import { ObjectIdModel, ProductAttributeModel } from '../../../../db/dbModels';
@@ -29,7 +29,7 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
 
         const cleanOptionSlugs = product.selectedOptionsSlugs.reduce(
           (acc: string[], initialSlug) => {
-            const slugArray = initialSlug.split(CATALOGUE_OPTION_SEPARATOR);
+            const slugArray = initialSlug.split(FILTER_SEPARATOR);
             const cleanSlug = slugArray[1];
             if (cleanSlug) {
               return [...acc, cleanSlug];
@@ -44,9 +44,7 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
         rubricAttributeOptions.forEach((option) => {
           if (cleanOptionSlugs.includes(option.slug)) {
             selectedOptionsIds.push(option._id);
-            selectedOptionsSlugs.push(
-              `${rubricAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`,
-            );
+            selectedOptionsSlugs.push(`${rubricAttribute.slug}${FILTER_SEPARATOR}${option.slug}`);
           }
         });
 

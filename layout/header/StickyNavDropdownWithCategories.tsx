@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { CATALOGUE_CATEGORY_KEY, CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import {
   dropdownClassName,
@@ -42,7 +42,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center py-2 text-secondary-text'
               >
                 {option.name}
@@ -86,7 +86,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           style={attributeLinkStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${category.slug}`}
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
           className='flex items-center gap-3 py-2 text-secondary-text'
         >
           {icon ? (
@@ -107,7 +107,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${CATALOGUE_OPTION_SEPARATOR}${childCategory.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`}
                 className='flex items-center py-2 text-secondary-text'
               >
                 {childCategory.name}

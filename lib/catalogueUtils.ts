@@ -38,7 +38,7 @@ import {
   CATALOGUE_FILTER_LIMIT,
   QUERY_FILTER_PAGE,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
@@ -292,13 +292,13 @@ CastRubricsToCatalogueAttributeInterface): CatalogueFilterAttributeInterface {
   const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
 
   const realFilter = filters.filter((filterItem) => {
-    const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
+    const filterItemArr = filterItem.split(FILTER_SEPARATOR);
     const filterName = filterItemArr[0];
     return filterName !== QUERY_FILTER_PAGE;
   });
 
   rubrics.forEach((rubric) => {
-    const optionSlug = `${RUBRIC_KEY}${CATALOGUE_OPTION_SEPARATOR}${rubric.slug}`;
+    const optionSlug = `${RUBRIC_KEY}${FILTER_SEPARATOR}${rubric.slug}`;
     const isSelected = realFilter.includes(optionSlug);
 
     const optionNextSlug = isSelected
@@ -405,7 +405,7 @@ export async function getCatalogueAttributes({
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
   const realFilter = filters.filter((filterItem) => {
-    const filterItemArr = filterItem.split(CATALOGUE_OPTION_SEPARATOR);
+    const filterItemArr = filterItem.split(FILTER_SEPARATOR);
     const filterName = filterItemArr[0];
     return filterName !== QUERY_FILTER_PAGE;
     // return filterName !== QUERY_FILTER_PAGE && filterName !== RUBRIC_KEY;
@@ -416,7 +416,7 @@ export async function getCatalogueAttributes({
     attribute,
   }: CastOptionInterface): Promise<CastOptionPayloadInterface> {
     // check if selected
-    const optionSlug = `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`;
+    const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
     const isSelected = realFilter.includes(optionSlug);
     let optionName = getFieldStringLocale(option.nameI18n, locale);
     if (rubricGender) {
@@ -451,7 +451,7 @@ export async function getCatalogueAttributes({
         }
       } else {
         const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
-          const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+          const slugParts = slug.split(FILTER_SEPARATOR);
           return slugParts[1];
         });
         const initialNestedOptions = await optionsCollection
@@ -510,7 +510,7 @@ export async function getCatalogueAttributes({
 
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {
-        const splittedOption = optionSlug.split(CATALOGUE_OPTION_SEPARATOR);
+        const splittedOption = optionSlug.split(FILTER_SEPARATOR);
         const filterOptionValue = splittedOption[1];
         const prices = filterOptionValue.split('_');
         const minPrice = prices[0] ? noNaN(prices[0]) : null;
@@ -689,7 +689,7 @@ export function castCatalogueFilters({
   const rubricSlug: string[] = [];
 
   filters.forEach((filterOption) => {
-    const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
+    const splittedOption = filterOption.split(FILTER_SEPARATOR);
     const filterAttributeSlug = splittedOption[0];
     const filterOptionSlug = splittedOption[1];
     if (filterAttributeSlug) {
@@ -1447,7 +1447,7 @@ export const getCatalogueData = async ({
           breadcrumbs.push({
             _id: selectedOption._id,
             name: `${selectedOption.name}${metricValue}`,
-            href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${CATALOGUE_OPTION_SEPARATOR}${selectedOption.slug}`,
+            href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`,
           });
         });
       }

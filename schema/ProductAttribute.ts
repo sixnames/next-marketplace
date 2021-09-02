@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { FILTER_SEPARATOR, DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -736,7 +736,7 @@ export const ProductAttributeMutations = extendType({
 
             // Update or create product attribute
             const finalSelectedOptionsSlugs = finalOptions.map(
-              ({ slug }) => `${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${slug}`,
+              ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
             );
             const finalSelectedOptionsIds = finalOptions.map(({ _id }) => _id);
             const { _id, ...restProductAttribute } = productAttribute;
@@ -770,7 +770,7 @@ export const ProductAttributeMutations = extendType({
             // Update product
             const attributeSlug = attribute.slug;
             const otherAttributesOptions = product.selectedOptionsSlugs.filter((slug) => {
-              const slugParts = slug.split(CATALOGUE_OPTION_SEPARATOR);
+              const slugParts = slug.split(FILTER_SEPARATOR);
               return slugParts[0] !== attributeSlug;
             });
 

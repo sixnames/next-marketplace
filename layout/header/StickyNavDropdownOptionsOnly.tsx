@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { CATALOGUE_OPTION_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import {
   dropdownClassName,
   StickyNavAttributeInterface,
@@ -34,7 +34,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               style={attributeLinkStyle}
               testId={`header-nav-dropdown-option`}
               prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`}
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
             >
               {option.image ? (
                 <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
@@ -63,7 +63,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                         style={attributeLinkStyle}
                         testId={`header-nav-dropdown-option`}
                         prefetch={false}
-                        href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${childOption.slug}`}
+                        href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${childOption.slug}`}
                       >
                         <span className='block text-secondary-text'>
                           {childOption.name}

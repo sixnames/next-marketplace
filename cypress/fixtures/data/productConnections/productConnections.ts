@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR } from '../../../../config/common';
+import { FILTER_SEPARATOR } from '../../../../config/common';
 import { ObjectIdModel, ProductConnectionModel, ProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import products from '../products/products';
@@ -44,7 +44,7 @@ rubrics.forEach(({ slug }) => {
 
     attributeProducts.forEach((product) => {
       const selectedOptionSlug = product.selectedOptionsSlugs.find((slug) => {
-        const slugArray = slug.split(CATALOGUE_OPTION_SEPARATOR);
+        const slugArray = slug.split(FILTER_SEPARATOR);
         return attributeSlug === slugArray[0];
       });
 

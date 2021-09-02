@@ -39,7 +39,7 @@ import {
   CATALOGUE_BRAND_KEY,
   CATALOGUE_CATEGORY_KEY,
   CATALOGUE_MANUFACTURER_KEY,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
   HEADER_SEARCH_PRODUCTS_LIMIT,
   HEADER_SEARCH_RUBRICS_LIMIT,
@@ -181,7 +181,7 @@ export const CatalogueQueries = extendType({
             {
               $addFields: {
                 slugArray: {
-                  $split: ['$selectedOptionsSlugs', CATALOGUE_OPTION_SEPARATOR],
+                  $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
                 },
               },
             },

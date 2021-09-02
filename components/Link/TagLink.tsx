@@ -8,12 +8,14 @@ export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' 
   isActive?: boolean;
   href?: string;
   icon?: IconType | null;
+  size?: 'small' | 'normal' | 'big';
 }
 
 const TagLink: React.FC<TagLinkInterface> = ({
   className,
   children,
   theme = 'secondary',
+  size = 'normal',
   href,
   testId,
   isActive,
@@ -29,10 +31,13 @@ const TagLink: React.FC<TagLinkInterface> = ({
     ? `border-secondary`
     : `border-primary`;
   const variantClassName = theme === 'secondary' ? `bg-secondary` : `bg-primary`;
-  const tagSizeClassName = icon
-    ? `min-h-[4rem] rounded-3xl px-6 text-lg`
-    : `min-h-[2.5rem] rounded-2xl px-4`;
-  const tagClassName = `flex items-center border text-secondary-text py-1 ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
+  const tagSizeClassName =
+    icon || size === 'big'
+      ? `min-h-[4rem] rounded-3xl px-6 text-lg py-1`
+      : size === 'small'
+      ? 'min-h-[1.5rem] rounded-xl px-3'
+      : `min-h-[2.5rem] rounded-2xl px-4 py-1`;
+  const tagClassName = `flex items-center border text-secondary-text ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
   const iconClassName = `flex-shrink-0 w-10 h-10 mr-6`;
 
   if (href) {

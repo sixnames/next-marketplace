@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR } from '../../../../config/common';
+import { FILTER_SEPARATOR } from '../../../../config/common';
 import { ProductConnectionItemModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import products from '../products/products';
@@ -14,11 +14,11 @@ productConnections.forEach((connection) => {
 
   connectionProducts.forEach((product) => {
     const selectedOptionSlug = product.selectedOptionsSlugs.find((slug) => {
-      const slugArray = slug.split(CATALOGUE_OPTION_SEPARATOR);
+      const slugArray = slug.split(FILTER_SEPARATOR);
       return connection.attributeSlug === slugArray[0];
     });
 
-    const optionsSlugArray = `${selectedOptionSlug}`.split(CATALOGUE_OPTION_SEPARATOR);
+    const optionsSlugArray = `${selectedOptionSlug}`.split(FILTER_SEPARATOR);
     const optionsSlug = `${optionsSlugArray[1]}`;
     const option = options.find(({ slug }) => slug === optionsSlug);
 

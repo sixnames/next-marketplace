@@ -8,7 +8,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   SORT_DESC,
-  CATALOGUE_OPTION_SEPARATOR,
+  FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
   ROUTE_DOCS_PAGES,
   CATALOGUE_TOP_FILTERS_LIMIT,
@@ -578,7 +578,7 @@ export async function getServerSideProps(
         if (!exist) {
           topFilters.push({
             name,
-            href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${CATALOGUE_OPTION_SEPARATOR}${option.slug}`,
+            href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
           });
         }
       });

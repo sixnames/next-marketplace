@@ -20,7 +20,12 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
+import {
+  COL_BLOG_ATTRIBUTES,
+  COL_BLOG_LIKES,
+  COL_BLOG_POSTS,
+  COL_OPTIONS,
+} from 'db/collectionNames';
 import { AttributeViewVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -42,14 +47,16 @@ import * as React from 'react';
 
 interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
-  views?: number | null;
+  viewsCount?: number | null;
+  likesCount?: number | null;
   showViews: boolean;
 }
 
 const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
   showViews,
   createdAt,
-  views,
+  viewsCount,
+  likesCount,
 }) => {
   return (
     <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
@@ -58,7 +65,15 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {showViews ? (
         <div className='flex items-center gap-2'>
           <Icon className='w-5 h-5' name={'eye'} />
-          <div>{views}</div>
+          <div>{viewsCount}</div>
+        </div>
+      ) : null}
+
+      {/*likes counter*/}
+      {likesCount ? (
+        <div className='flex items-center gap-2'>
+          <Icon className='w-4 h-4' name={'like'} />
+          <div>{likesCount}</div>
         </div>
       ) : null}
     </div>
@@ -127,7 +142,12 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         </div>
 
         {/*meta*/}
-        <BlogListSnippetMeta showViews={showViews} createdAt={post.createdAt} views={post.views} />
+        <BlogListSnippetMeta
+          showViews={showViews}
+          createdAt={post.createdAt}
+          viewsCount={post.views}
+          likesCount={post.likesCount}
+        />
 
         {/*description*/}
         <div>{post.description}</div>
@@ -158,7 +178,8 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
           <BlogListSnippetMeta
             showViews={showViews}
             createdAt={post.createdAt}
-            views={post.views}
+            viewsCount={post.views}
+            likesCount={post.likesCount}
           />
 
           {/*description*/}
@@ -432,6 +453,33 @@ export const getServerSideProps = async (
           },
           optionsSlugs: {
             $addToSet: '$optionSlug',
+          },
+        },
+      },
+
+      // likes
+      {
+        $lookup: {
+          from: COL_BLOG_LIKES,
+          as: 'likesCount',
+          let: {
+            blogPostId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$blogPostId', '$$blogPostId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          likesCount: {
+            $size: '$likesCount',
           },
         },
       },

@@ -5,6 +5,7 @@ import {
   AttributesGroupModel,
   AttributeViewVariantModel,
   BlogAttributeModel,
+  BlogLikeModel,
   BlogPostModel,
   BrandCollectionModel,
   BrandModel,
@@ -71,6 +72,13 @@ export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
   author?: UserInterface | null;
   views?: number;
   options?: OptionInterface[] | null;
+  likes?: BlogLikeInterface[] | null;
+  likesCount?: number | null;
+}
+
+export interface BlogLikeInterface extends BlogLikeModel {
+  blogPost?: BlogPostInterface | null;
+  user?: UserInterface | null;
 }
 
 export interface AddressInterface extends AddressModel {

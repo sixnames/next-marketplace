@@ -1,3 +1,4 @@
+import { AddBlogPostLikeInputInterface } from 'db/dao/blog/addPostLike';
 import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
 import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
 import { DeleteBlogAttributeInputInterface } from 'db/dao/blog/deleteBlogAttribute';
@@ -22,6 +23,30 @@ import {
   ConstructorAssetPayloadModel,
 } from 'db/dbModels';
 import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
+
+// likes
+export const useCreateBlogPostLike = (): UseMutationConsumerPayload<
+  BlogPostPayloadModel,
+  AddBlogPostLikeInputInterface
+> => {
+  const [handle, payload] = useMutation<BlogPostPayloadModel>({
+    input: '/api/blog/add-post-like',
+    reload: true,
+  });
+
+  const handler = React.useCallback(
+    async (args: AddBlogPostLikeInputInterface) => {
+      const payload = await handle({
+        method: REQUEST_METHOD_PATCH,
+        body: JSON.stringify(args),
+      });
+      return payload;
+    },
+    [handle],
+  );
+
+  return [handler, payload];
+};
 
 // post
 export const useCreateBlogPost = (

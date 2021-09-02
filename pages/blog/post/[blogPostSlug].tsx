@@ -3,6 +3,7 @@ import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
+import Tooltip from 'components/Tooltip';
 import {
   CATALOGUE_OPTION_SEPARATOR,
   ROUTE_BLOG_WITH_PAGE,
@@ -12,6 +13,7 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
+import { useUserContext } from 'context/userContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
@@ -21,6 +23,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
+import { useCreateBlogPostLike } from 'hooks/mutations/blog/useBlogMutations';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -35,14 +38,20 @@ interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
   viewsCount?: number | null;
   likesCount?: number | null;
+  isLikeAllowed?: boolean | null;
+  blogPostId: string;
 }
 
 const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
+  blogPostId,
   createdAt,
   viewsCount,
   likesCount,
+  isLikeAllowed,
 }) => {
+  const [createBlogPostLike] = useCreateBlogPostLike();
   const { configs } = useConfigContext();
+  const { me } = useUserContext();
 
   return (
     <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
@@ -56,10 +65,21 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
       ) : null}
 
       {/*likes counter*/}
-      <div className='flex items-center gap-2'>
-        <Icon className='w-4 h-4' name={'like'} />
-        <div>{noNaN(likesCount)}</div>
-      </div>
+      <Tooltip title={me ? '' : 'Вы должны быть авторизованны для данного действия'}>
+        <div
+          className={`flex items-center gap-2 ${
+            isLikeAllowed ? 'cursor-pointer transition-all duration-150 hover:text-theme' : ''
+          }`}
+          onClick={() => {
+            if (isLikeAllowed) {
+              createBlogPostLike({ blogPostId }).catch(console.log);
+            }
+          }}
+        >
+          <Icon className='w-4 h-4' name={'like'} />
+          <div>{noNaN(likesCount)}</div>
+        </div>
+      </Tooltip>
     </div>
   );
 };
@@ -86,9 +106,11 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
       <Inner lowTop>
         <div className='mb-8'>
           <BlogPostMeta
+            blogPostId={`${post._id}`}
             createdAt={post.createdAt}
             likesCount={post.likesCount}
             viewsCount={post.views}
+            isLikeAllowed={post.isLikeAllowed}
           />
         </div>
         <PageEditor value={JSON.parse(post.content)} readOnly />
@@ -386,15 +408,18 @@ export const getServerSideProps = async (
     [],
   );
 
+  const likedBySessionUser = (initialPost.likes || []).some((like) => {
+    return props.sessionUser && like.userId.equals(new ObjectId(props.sessionUser._id));
+  });
+
   const post: BlogPostInterface = {
     ...initialPost,
     title: getFieldStringLocale(initialPost.titleI18n, props.sessionLocale),
     description: getFieldStringLocale(initialPost.descriptionI18n, props.sessionLocale),
     attributes,
     options: postOptions,
-    likedBySessionUser: (initialPost.likes || []).some((like) => {
-      return props.sessionUser && like.userId.equals(new ObjectId(props.sessionUser._id));
-    }),
+    isLikeAllowed: props.sessionUser && !likedBySessionUser,
+    likedBySessionUser,
     author: initialPost.author
       ? {
           ...initialPost.author,

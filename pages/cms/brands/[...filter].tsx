@@ -8,7 +8,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ISO_LANGUAGES, PAGE_DEFAULT, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { ISO_LANGUAGES, DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
 import { COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -275,7 +275,7 @@ export const getServerSideProps = async (
             totalDocs: 1,
             totalPages: 1,
             hasPrevPage: {
-              $gt: [page, PAGE_DEFAULT],
+              $gt: [page, DEFAULT_PAGE],
             },
             hasNextPage: {
               $lt: [page, '$totalPages'],

@@ -1,5 +1,5 @@
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, QUERY_FILTER_PAGE } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_PAGE, QUERY_FILTER_PAGE } from 'config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -27,7 +27,7 @@ const FormikRouterSearch: React.FC<FormikRouterSearchInterface> = ({ testId }) =
     const basePath = cleanAsPathArray.reduce((acc: string, param) => {
       const paramArray = param.split(CATALOGUE_OPTION_SEPARATOR);
       if (paramArray[0] === QUERY_FILTER_PAGE) {
-        return `${acc}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}`;
+        return `${acc}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${DEFAULT_PAGE}`;
       }
       return `${acc}/${param}`;
     }, '');

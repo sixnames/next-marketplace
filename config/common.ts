@@ -219,7 +219,7 @@ export const PAGINATION_DEFAULT_LIMIT = 30;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';
-export const PAGE_DEFAULT = 1;
+export const DEFAULT_PAGE = 1;
 
 // ORDER LOG VARIANTS
 export const ORDER_LOG_VARIANT_STATUS = 'status';
@@ -332,7 +332,7 @@ export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;
 export const ROUTE_BLOG = `/blog`;
 export const ROUTE_BLOG_POST = `${ROUTE_BLOG}/post`;
-export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${PAGE_DEFAULT}`;
+export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${QUERY_FILTER_PAGE}${CATALOGUE_OPTION_SEPARATOR}${DEFAULT_PAGE}`;
 export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;

@@ -13,7 +13,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -213,6 +213,10 @@ export const getServerSideProps = async (
               name: getFieldStringLocale(user.role.nameI18n, props.sessionLocale),
             }
           : null,
+        formattedPhone: {
+          raw: phoneToRaw(user.phone),
+          readable: phoneToReadable(user.phone),
+        },
       };
     }),
     owner: companyResult.owner

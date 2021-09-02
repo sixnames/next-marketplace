@@ -1,4 +1,4 @@
-import { CATALOGUE_OPTION_SEPARATOR, PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { CATALOGUE_OPTION_SEPARATOR, DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
@@ -343,7 +343,7 @@ export const getServerSideProps = async (
           prices: 1,
           totalPages: 1,
           hasPrevPage: {
-            $gt: [page, PAGE_DEFAULT],
+            $gt: [page, DEFAULT_PAGE],
           },
           hasNextPage: {
             $lt: [page, '$totalPages'],

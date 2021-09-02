@@ -8,7 +8,7 @@ import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ISO_LANGUAGES, PAGE_DEFAULT, SORT_DESC } from 'config/common';
+import { ISO_LANGUAGES, DEFAULT_PAGE, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'config/modalVariants';
 import { COL_MANUFACTURERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -305,7 +305,7 @@ export const getServerSideProps = async (
             totalDocs: 1,
             totalPages: 1,
             hasPrevPage: {
-              $gt: [page, PAGE_DEFAULT],
+              $gt: [page, DEFAULT_PAGE],
             },
             hasNextPage: {
               $lt: [page, '$totalPages'],

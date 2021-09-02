@@ -28,6 +28,25 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, isMobile, basePath, compan
         }
       }}
     >
+      {/*company logo*/}
+      {company ? (
+        <div>
+          {company.logo ? (
+            <div className='px-[20px] pt-8'>
+              <img
+                className='h-[70px] w-full object-contain'
+                src={company.logo.url}
+                width='100'
+                height='100'
+                alt={company.name}
+              />
+            </div>
+          ) : (
+            <div>{company.name}</div>
+          )}
+        </div>
+      ) : null}
+
       <ul className='pb-20 pt-8'>
         {navItems.map((item) => {
           return (

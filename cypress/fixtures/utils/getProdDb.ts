@@ -1,4 +1,4 @@
-import { ONE_WEEK } from '../../../config/common';
+import { ONE_WEEK, PAGE_STATE_PUBLISHED } from '../../../config/common';
 import {
   BlogAttributeModel,
   BrandCollectionModel,
@@ -211,6 +211,7 @@ export async function updateIndexes(db: Db) {
   await blogPostsCollection.createIndex({ companySlug: 1, slug: 1 }, { unique: true });
   await blogPostsCollection.createIndex({
     companySlug: 1,
+    state: PAGE_STATE_PUBLISHED,
     selectedOptionsSlugs: 1,
     priorities: -1,
     views: -1,
@@ -218,6 +219,7 @@ export async function updateIndexes(db: Db) {
   });
   await blogPostsCollection.createIndex({
     companySlug: 1,
+    state: PAGE_STATE_PUBLISHED,
     priorities: -1,
     views: -1,
     createdAt: -1,

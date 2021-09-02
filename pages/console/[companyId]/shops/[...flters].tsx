@@ -11,7 +11,7 @@ import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
-import { PAGE_DEFAULT, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
 import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -371,7 +371,7 @@ export const getServerSideProps = async (
           totalDocs: 1,
           totalPages: 1,
           hasPrevPage: {
-            $gt: [page, PAGE_DEFAULT],
+            $gt: [page, DEFAULT_PAGE],
           },
           hasNextPage: {
             $lt: [page, '$totalPages'],

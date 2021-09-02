@@ -96,12 +96,9 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     {me?.role?.isCompanyStaff && (me?.role?.appNavigation || []).length > 0 ? (
                       <li>
                         <Link
-                          target={'_blank'}
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                          href={`${process.env.DEV_ENV ? 'http' : 'https'}://${
-                            process.env.DEFAULT_DOMAIN
-                          }${ROUTE_CONSOLE}`}
+                          href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
                         </Link>

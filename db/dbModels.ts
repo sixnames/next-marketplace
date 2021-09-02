@@ -805,6 +805,12 @@ export interface BlogPostModel extends CountersModel {
   updatedAt: Date;
 }
 
+export interface BlogLikeModel {
+  _id: ObjectIdModel;
+  blogPostId: ObjectIdModel;
+  userId: ObjectIdModel;
+}
+
 // Payload
 export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
@@ -864,7 +870,6 @@ export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierMode
 export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
 export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
 export type UsersPaginationPayloadModel = PaginationPayloadType<UserModel>;
-export type OrdersPaginationPayloadModel = PaginationPayloadType<OrderModel>;
 export interface ProductsPaginationPayloadModel {
   sortBy: string;
   sortDir: SortDirectionModel;

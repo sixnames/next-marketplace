@@ -1,4 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
+import FormattedDate from 'components/FormattedDate';
+import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import {
@@ -23,11 +25,44 @@ import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { BlogListSnippetMeta } from 'pages/blog/[...filters]';
 import * as React from 'react';
+
+interface BlogListSnippetMetaInterface {
+  createdAt?: string | Date | null;
+  viewsCount?: number | null;
+  likesCount?: number | null;
+}
+
+const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
+  createdAt,
+  viewsCount,
+  likesCount,
+}) => {
+  const { configs } = useConfigContext();
+
+  return (
+    <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
+      <FormattedDate value={createdAt} />
+      {/*views counter*/}
+      {configs.showBlogPostViews ? (
+        <div className='flex items-center gap-2'>
+          <Icon className='w-5 h-5' name={'eye'} />
+          <div>{viewsCount}</div>
+        </div>
+      ) : null}
+
+      {/*likes counter*/}
+      <div className='flex items-center gap-2'>
+        <Icon className='w-4 h-4' name={'like'} />
+        <div>{noNaN(likesCount)}</div>
+      </div>
+    </div>
+  );
+};
 
 interface BlogPostPageConsumerInterface {
   post: BlogPostInterface;
@@ -36,7 +71,6 @@ interface BlogPostPageConsumerInterface {
 const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post }) => {
   const { locale } = useLocaleContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
-  const { configs } = useConfigContext();
 
   return (
     <div className='mb-12'>
@@ -51,8 +85,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
       />
       <Inner lowTop>
         <div className='mb-8'>
-          <BlogListSnippetMeta
-            showViews={configs.showBlogPostViews}
+          <BlogPostMeta
             createdAt={post.createdAt}
             likesCount={post.likesCount}
             viewsCount={post.views}

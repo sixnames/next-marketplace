@@ -52,7 +52,7 @@ interface BlogListSnippetMetaInterface {
   showViews: boolean;
 }
 
-export const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
+const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
   showViews,
   createdAt,
   viewsCount,

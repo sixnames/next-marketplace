@@ -19,12 +19,14 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   disabled,
   postfix,
   onClick,
+  size,
   ...props
 }) => {
   const { name, nextSlug, isSelected } = option;
 
   return (
     <TagLink
+      size={size}
       href={nextSlug}
       isActive={isSelected}
       prefetch={false}

@@ -281,7 +281,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex flex-wrap gap-2'>
         {options.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return <FilterLink option={option} key={option.slug} testId={testId} />;
+          return <FilterLink size={'small'} option={option} key={option.slug} testId={testId} />;
         })}
       </div>
     </div>

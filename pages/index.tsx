@@ -569,7 +569,10 @@ export async function getServerSideProps(
               options: [option],
             },
           ],
-          rubricCatalogueTitleConfig: catalogueTitle,
+          defaultGender: catalogueTitle.gender,
+          defaultTitleI18n: catalogueTitle.defaultTitleI18n,
+          keywordI18n: catalogueTitle.keywordI18n,
+          prefixI18n: catalogueTitle.prefixI18n,
           locale: sessionLocale,
           currency: initialData.currency,
         });

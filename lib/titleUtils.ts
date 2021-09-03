@@ -5,17 +5,21 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  GENDER_IT,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel, RubricCatalogueTitleModel } from 'db/dbModels';
+import { GenderModel, TranslationModel } from 'db/dbModels';
 import { SelectedFilterInterface } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 
 interface GenerateTitleInterface {
   selectedFilters: SelectedFilterInterface[];
-  rubricCatalogueTitleConfig: RubricCatalogueTitleModel;
+  defaultTitleI18n: TranslationModel;
+  prefixI18n?: TranslationModel | null;
+  keywordI18n?: TranslationModel;
+  defaultGender?: string;
   locale: string;
   currency?: string;
   capitaliseKeyWord?: boolean | null;
@@ -23,18 +27,14 @@ interface GenerateTitleInterface {
 
 export function generateTitle({
   selectedFilters,
-  rubricCatalogueTitleConfig,
+  defaultGender = GENDER_IT,
+  defaultTitleI18n,
+  keywordI18n,
+  prefixI18n,
   locale,
   currency,
   capitaliseKeyWord,
 }: GenerateTitleInterface): string {
-  const {
-    gender: defaultGender,
-    defaultTitleI18n,
-    keywordI18n,
-    prefixI18n,
-  } = rubricCatalogueTitleConfig;
-
   function castArrayToTitle(arr: any[]): string {
     const filteredArray = arr.filter((word) => word);
     const firstWord = filteredArray[0];

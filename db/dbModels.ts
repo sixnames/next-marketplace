@@ -613,10 +613,6 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricOptionModel extends OptionModel {
-  options?: RubricOptionModel[] | null;
-}
-
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;

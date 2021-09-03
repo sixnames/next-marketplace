@@ -14,19 +14,14 @@ import {
   AttributeViewVariantModel,
   GenderModel,
   ObjectIdModel,
-  RubricOptionModel,
 } from 'db/dbModels';
-import {
-  CategoryInterface,
-  RubricAttributeInterface,
-  RubricOptionInterface,
-} from 'db/uiInterfaces';
+import { CategoryInterface, OptionInterface, RubricAttributeInterface } from 'db/uiInterfaces';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 
 export const getCommonOptionFields = (
   optionsGroupId: ObjectIdModel,
-): Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> => {
+): Omit<OptionInterface, 'nameI18n' | '_id' | 'slug'> => {
   return {
     priorities: {},
     views: {},
@@ -48,8 +43,8 @@ export function getCategoryFilterAttribute({
 }: GetCategoryFilterAttributeInterface) {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
-  const initialOptions: RubricOptionInterface[] = categories.map((category) => {
-    const option: RubricOptionInterface = {
+  const initialOptions: OptionInterface[] = categories.map((category) => {
+    const option: OptionInterface = {
       ...commonOptionFields,
       _id: category._id,
       nameI18n: category.nameI18n,
@@ -61,7 +56,7 @@ export function getCategoryFilterAttribute({
     return option;
   });
 
-  const options = getTreeFromList<RubricOptionInterface>({
+  const options = getTreeFromList<OptionInterface>({
     list: initialOptions,
     childrenFieldName: 'options',
     locale,

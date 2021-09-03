@@ -47,7 +47,6 @@ import {
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricModel,
-  RubricOptionModel,
   RubricVariantModel,
   ShopModel,
   ShopProductModel,
@@ -299,13 +298,8 @@ export interface RubricVariantInterface extends RubricVariantModel {
   cardBrandsLabel?: string | null;
 }
 
-export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
-  options?: RubricOptionInterface[] | null;
-  name?: string | null;
-}
-
 export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
-  options?: RubricOptionInterface[] | null;
+  options?: OptionInterface[] | null;
   name?: string | null;
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;

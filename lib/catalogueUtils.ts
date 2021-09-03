@@ -57,11 +57,11 @@ import {
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
+  OptionInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricInterface,
-  RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -91,11 +91,11 @@ export function castCatalogueParamToObject(
 
 export interface SelectedFilterInterface {
   attribute: RubricAttributeInterface;
-  options: RubricOptionInterface[];
+  options: OptionInterface[];
 }
 
 export interface GetRubricCatalogueOptionsInterface {
-  options: RubricOptionInterface[];
+  options: OptionInterface[];
   // maxVisibleOptions: number;
   visibleOptionsSlugs: string[];
   city: string;
@@ -106,7 +106,7 @@ export function getRubricCatalogueOptions({
   // maxVisibleOptions,
   visibleOptionsSlugs,
   city,
-}: GetRubricCatalogueOptionsInterface): RubricOptionInterface[] {
+}: GetRubricCatalogueOptionsInterface): OptionInterface[] {
   const visibleOptions = options.filter(({ slug }) => {
     return visibleOptionsSlugs.includes(slug);
   });
@@ -230,7 +230,7 @@ export interface GetCatalogueAttributesPayloadInterface {
 }
 
 interface CastOptionInterface {
-  option: RubricOptionInterface;
+  option: OptionInterface;
   attribute: RubricAttributeInterface;
 }
 
@@ -350,7 +350,7 @@ export async function getCatalogueAttributes({
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
     const selectedFilterOptions: CatalogueFilterAttributeOptionInterface[] = [];
-    const selectedOptions: RubricOptionInterface[] = [];
+    const selectedOptions: OptionInterface[] = [];
 
     for await (const option of options || []) {
       const { castedOption, optionSlug, isSelected } = await castOption({ option, attribute });
@@ -1268,7 +1268,10 @@ export const getCatalogueData = async ({
 
     // Get catalogue title
     const catalogueTitle = generateTitle({
-      rubricCatalogueTitleConfig: rubric.catalogueTitle,
+      defaultGender: rubric.catalogueTitle.gender,
+      defaultTitleI18n: rubric.catalogueTitle.defaultTitleI18n,
+      keywordI18n: rubric.catalogueTitle.keywordI18n,
+      prefixI18n: rubric.catalogueTitle.prefixI18n,
       selectedFilters,
       locale,
       currency,

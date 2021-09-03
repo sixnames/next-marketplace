@@ -15,10 +15,9 @@ import {
   LanguageModel,
   ObjectIdModel,
   RubricAttributeModel,
-  RubricOptionModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { OptionInterface, RubricOptionInterface } from 'db/uiInterfaces';
+import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -85,15 +84,15 @@ export function getStringValueFromOptionsList({
 }
 
 export interface FindOptionInGroupInterface {
-  options: RubricOptionModel[] | RubricOptionInterface[];
-  condition: (treeOption: RubricOptionModel) => boolean;
+  options: OptionInterface[];
+  condition: (treeOption: OptionInterface) => boolean;
 }
 
 export function findOptionInTree({
   options,
   condition,
-}: FindOptionInGroupInterface): RubricOptionModel | RubricOptionInterface | null | undefined {
-  let option: RubricOptionModel | RubricOptionInterface | null | undefined = null;
+}: FindOptionInGroupInterface): OptionInterface | null | undefined {
+  let option: OptionInterface | null | undefined = null;
   options.forEach((treeOption) => {
     if (option) {
       return;

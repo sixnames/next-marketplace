@@ -243,9 +243,6 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
         </Link>
       </div>
 
-      {/*tags*/}
-      <BlogListSnippetTags attributes={post.attributes} />
-
       <div className='mt-3'>
         {/*meta*/}
         <BlogListSnippetMeta

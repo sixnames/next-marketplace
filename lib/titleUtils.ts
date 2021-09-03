@@ -68,11 +68,9 @@ export function generateTitle({
   let finalGender = defaultGender;
 
   // Set keyword gender
-  selectedFilters.forEach((selectedFilter) => {
-    const { attribute, options } = selectedFilter;
-    const { positioningInTitle } = attribute;
+  selectedFilters.forEach(({ positioningInTitle, options }) => {
     const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-    const gendersList = options.reduce((genderAcc: GenderModel[], { gender }) => {
+    const gendersList = (options || []).reduce((genderAcc: GenderModel[], { gender }) => {
       if (
         gender &&
         positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD
@@ -88,58 +86,58 @@ export function generateTitle({
   });
 
   // Collect title parts
-  selectedFilters.forEach((selectedFilter) => {
-    const { attribute, options } = selectedFilter;
-    const isPrice = attribute.slug === PRICE_ATTRIBUTE_SLUG;
-    const { positioningInTitle, metric, showNameInTitle } = attribute;
-    const attributeName = showNameInTitle
-      ? `${getFieldStringLocale(attribute.nameI18n, locale)} `
-      : '';
-    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-    let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
-    if (isPrice && currency) {
-      metricValue = currency;
-    }
-
-    const value = options
-      .map(({ variants, nameI18n }) => {
-        const name = getFieldStringLocale(nameI18n, locale);
-        const currentVariant = variants[finalGender];
-        const variantLocale = currentVariant ? getFieldStringLocale(currentVariant, locale) : null;
-        let value = name;
-        if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-          value = variantLocale;
-        }
-        const optionValue = `${attributeName}${value}${metricValue}`;
-        return attribute.capitalise ? optionValue : optionValue.toLocaleLowerCase();
-      })
-      .join(titleSeparator);
-
-    if (isPrice) {
-      endOfTitle.push(value);
-      return;
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
-      beginOfTitle.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD) {
-      beforeKeyword.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
-      const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
-      if (finalKeyword === rubricKeyword) {
-        finalKeyword = keywordValue;
-      } else {
-        finalKeyword = finalKeyword + titleSeparator + keywordValue;
+  selectedFilters.forEach(
+    ({ nameI18n, options, capitalise, slug, positioningInTitle, metric, showNameInTitle }) => {
+      const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+      const attributeName = showNameInTitle ? `${getFieldStringLocale(nameI18n, locale)} ` : '';
+      const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
+      let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
+      if (isPrice && currency) {
+        metricValue = currency;
       }
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
-      afterKeyword.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_END) {
-      endOfTitle.push(value);
-    }
-  });
+
+      const value = (options || [])
+        .map(({ variants, nameI18n }) => {
+          const name = getFieldStringLocale(nameI18n, locale);
+          const currentVariant = variants[finalGender];
+          const variantLocale = currentVariant
+            ? getFieldStringLocale(currentVariant, locale)
+            : null;
+          let value = name;
+          if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
+            value = variantLocale;
+          }
+          const optionValue = `${attributeName}${value}${metricValue}`;
+          return capitalise ? optionValue : optionValue.toLocaleLowerCase();
+        })
+        .join(titleSeparator);
+
+      if (isPrice) {
+        endOfTitle.push(value);
+        return;
+      }
+      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
+        beginOfTitle.push(value);
+      }
+      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD) {
+        beforeKeyword.push(value);
+      }
+      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
+        const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
+        if (finalKeyword === rubricKeyword) {
+          finalKeyword = keywordValue;
+        } else {
+          finalKeyword = finalKeyword + titleSeparator + keywordValue;
+        }
+      }
+      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
+        afterKeyword.push(value);
+      }
+      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_END) {
+        endOfTitle.push(value);
+      }
+    },
+  );
 
   return castArrayToTitle([
     finalPrefix,

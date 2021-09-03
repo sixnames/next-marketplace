@@ -565,7 +565,7 @@ export async function getServerSideProps(
         const name = generateTitle({
           selectedFilters: [
             {
-              attribute,
+              ...attribute,
               options: [option],
             },
           ],

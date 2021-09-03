@@ -97,6 +97,7 @@ export interface AttributeInterface extends AttributeModel {
   name?: string | null;
   metric?: MetricInterface | null;
   optionsGroup?: OptionsGroupInterface | null;
+  options?: OptionInterface[] | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {

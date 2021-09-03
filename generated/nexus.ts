@@ -1090,7 +1090,17 @@ export interface NexusGenObjects {
   RubricAttribute: dbModels.RubricAttributeModel;
   RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
   RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
-  RubricOption: dbModels.RubricOptionModel;
+  RubricOption: {
+    // root type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    color?: string | null; // String
+    icon?: string | null; // String
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    slug: string; // String!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
+    views: NexusGenScalars['JSONObject']; // JSONObject!
+  };
   RubricPayload: dbModels.RubricPayloadModel;
   RubricVariant: dbModels.RubricVariantModel;
   RubricVariantPayload: dbModels.RubricVariantPayloadModel;

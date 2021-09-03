@@ -52,6 +52,7 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
+  AttributeInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -89,10 +90,7 @@ export function castCatalogueParamToObject(
   };
 }
 
-export interface SelectedFilterInterface {
-  attribute: RubricAttributeInterface;
-  options: OptionInterface[];
-}
+export interface SelectedFilterInterface extends AttributeInterface, Record<any, any> {}
 
 export interface GetRubricCatalogueOptionsInterface {
   options: OptionInterface[];
@@ -428,10 +426,7 @@ export async function getCatalogueAttributes({
 
       // Add selected items to the catalogue title config
       selectedFilters.push({
-        attribute: {
-          ...attribute,
-          options: [],
-        },
+        ...attribute,
         options: selectedOptions,
       });
     }

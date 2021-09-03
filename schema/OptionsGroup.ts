@@ -155,7 +155,7 @@ export const UpdateOptionsGroupInput = inputObjectType({
   },
 });
 
-export const OptionVariantInput = inputObjectType({
+/*export const OptionVariantInput = inputObjectType({
   name: 'OptionVariantInput',
   definition(t) {
     t.nonNull.json('value');
@@ -163,7 +163,7 @@ export const OptionVariantInput = inputObjectType({
       type: 'Gender',
     });
   },
-});
+});*/
 
 export const AddOptionToGroupInput = inputObjectType({
   name: 'AddOptionToGroupInput',

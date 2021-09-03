@@ -512,6 +512,7 @@ export type CopyProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type Country = {
@@ -544,6 +545,7 @@ export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 
@@ -630,6 +632,7 @@ export type CreateProductInput = {
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
+  gender: Gender;
 };
 
 export type CreateProductWithSyncErrorInput = {
@@ -1808,11 +1811,6 @@ export type OptionAlphabetInput = {
   slugs?: Maybe<Array<Scalars['String']>>;
 };
 
-export type OptionVariantInput = {
-  value: Scalars['JSONObject'];
-  gender: Gender;
-};
-
 export type OptionsAlphabetList = AlphabetList & {
   __typename?: 'OptionsAlphabetList';
   letter: Scalars['String'];
@@ -2876,6 +2874,7 @@ export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 
@@ -3074,6 +3073,7 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type UpdateProductManufacturerInput = {

@@ -57,6 +57,9 @@ export const CreateProductInput = inputObjectType({
     t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
+    t.nonNull.field('gender', {
+      type: 'Gender',
+    });
   },
 });
 
@@ -69,6 +72,9 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
+    t.nonNull.field('gender', {
+      type: 'Gender',
+    });
   },
 });
 
@@ -81,6 +87,9 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.nonNull.json('descriptionI18n');
+    t.nonNull.field('gender', {
+      type: 'Gender',
+    });
   },
 });
 

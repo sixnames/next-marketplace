@@ -12,8 +12,9 @@ const categories: CategoryModel[] = [
     parentTreeIds: [getObjectId('category Односолодовый')],
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}1`,
-    rubricSlug: 'vino',
+    rubricSlug: 'viski',
     image: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_CATEGORIES}/${CATEGORY_SLUG_PREFIX}1/${CATEGORY_SLUG_PREFIX}1-0.png`,
+    variants: {},
     nameI18n: {
       ru: 'Односолодовый',
     },
@@ -25,7 +26,8 @@ const categories: CategoryModel[] = [
     parentTreeIds: [getObjectId('category Односолодовый'), getObjectId('category Односолодовый A')],
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}2`,
-    rubricSlug: 'vino',
+    rubricSlug: 'viski',
+    variants: {},
     nameI18n: {
       ru: 'Односолодовый A',
     },
@@ -41,7 +43,8 @@ const categories: CategoryModel[] = [
     ],
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}3`,
-    rubricSlug: 'vino',
+    rubricSlug: 'viski',
+    variants: {},
     nameI18n: {
       ru: 'Односолодовый A-1',
     },
@@ -57,7 +60,8 @@ const categories: CategoryModel[] = [
     ],
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}4`,
-    rubricSlug: 'vino',
+    rubricSlug: 'viski',
+    variants: {},
     nameI18n: {
       ru: 'Односолодовый A-2',
     },
@@ -68,7 +72,8 @@ const categories: CategoryModel[] = [
     parentTreeIds: [getObjectId('category Купажированный')],
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}5`,
-    rubricSlug: 'vino',
+    rubricSlug: 'viski',
+    variants: {},
     nameI18n: {
       ru: 'Купажированный',
     },

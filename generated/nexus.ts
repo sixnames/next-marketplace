@@ -258,6 +258,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -278,6 +279,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
     // input type
@@ -360,6 +362,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -523,11 +526,6 @@ export interface NexusGenInputs {
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     slugs?: string[] | null; // [String!]
   };
-  OptionVariantInput: {
-    // input type
-    gender: NexusGenEnums['Gender']; // Gender!
-    value: NexusGenScalars['JSONObject']; // JSONObject!
-  };
   PaginationInput: {
     // input type
     limit: number | null; // Int
@@ -641,6 +639,7 @@ export interface NexusGenInputs {
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateCityInCountryInput: {
     // input type
@@ -835,6 +834,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!

@@ -62,7 +62,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
     >
       <Tooltip title={tooltip}>
         <div
-          className='relative cursor-pointer text-secondary w-24 h-24 flex-shrink-0 border border-border-color rounded-md bg-white overflow-hidden'
+          className='relative cursor-pointer text-secondary w-24 h-24 flex-shrink-0 border border-border-300 rounded-md bg-white overflow-hidden'
           style={{ width, height }}
         >
           <span className='absolute inset-0 z-30' {...getRootProps()} data-cy={testId}>

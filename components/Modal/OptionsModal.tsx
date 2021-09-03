@@ -103,7 +103,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
             >
               <div
                 data-cy={`option-${name}`}
-                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
+                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-300 text-theme ${
                   isCheckbox ? checkboxClassName : radioClassName
                 }`}
               >
@@ -128,7 +128,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         >
           <div
             data-cy={`option-${name}`}
-            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-color text-theme ${
+            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-300 text-theme ${
               isCheckbox ? checkboxClassName : radioClassName
             }`}
           >

@@ -24,7 +24,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
 import { updateBlogPostSchema } from 'validation/blogSchema';
 
-const sectionClassName = 'border-t border-border-color pt-8 mt-12';
+const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 
 interface BlogPostsDetailsInterface {
   post: BlogPostInterface;

@@ -80,7 +80,7 @@ const TEXT_VERTICAL_FLEX_OPTIONS = [
   },
 ];
 
-const sectionClassName = 'border-t border-border-color pt-8 mt-12';
+const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 
 export interface PageDetailsInterface {
   page: PageInterface | PagesTemplateInterface;

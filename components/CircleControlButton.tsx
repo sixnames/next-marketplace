@@ -12,7 +12,7 @@ const CircleControlButton: React.FC<CircleControlButtonInterface> = ({
 }) => {
   return (
     <ControlButton
-      className={`rounded-full ${withBorder ? 'border border-border-color' : ''} ${
+      className={`rounded-full ${withBorder ? 'border border-border-300' : ''} ${
         className ? className : ''
       }`}
       {...props}

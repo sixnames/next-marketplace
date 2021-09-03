@@ -160,23 +160,40 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.objectId('optionsGroupId');
     t.objectId('metricId');
     t.boolean('capitalise');
-    t.boolean('notShowAsAlphabet');
-    t.boolean('showNameInTitle');
-    t.boolean('showNameInCardTitle');
-    t.boolean('showNameInSnippetTitle');
-    t.boolean('showNameInSelectedAttributes');
-    t.nonNull.boolean('showAsBreadcrumb');
-    t.nonNull.boolean('showAsCatalogueBreadcrumb');
-    t.nonNull.boolean('showInSnippet');
-    t.nonNull.boolean('showInCard');
-    t.json('positioningInTitle');
-    t.json('positioningCardInTitle');
+
+    // variants
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
     });
     t.nonNull.field('viewVariant', {
       type: 'AttributeViewVariant',
     });
+
+    // positioning in title
+    t.json('positioningInTitle');
+    t.json('positioningInCardTitle');
+
+    // breadcrumbs
+    t.nonNull.boolean('showAsBreadcrumb');
+    t.nonNull.boolean('showAsCatalogueBreadcrumb');
+
+    // options modal
+    t.boolean('notShowAsAlphabet');
+
+    // card / snippet / catalogue visibility
+    t.nonNull.boolean('showInSnippet');
+    t.nonNull.boolean('showInCard');
+    t.nonNull.boolean('showInCatalogueFilter');
+    t.nonNull.boolean('showInCatalogueNav');
+    t.nonNull.boolean('showInCatalogueTitle');
+    t.nonNull.boolean('showInCardTitle');
+    t.nonNull.boolean('showInSnippetTitle');
+
+    // name visibility
+    t.boolean('showNameInTitle');
+    t.boolean('showNameInCardTitle');
+    t.boolean('showNameInSnippetTitle');
+    t.boolean('showNameInSelectedAttributes');
   },
 });
 
@@ -189,21 +206,40 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.objectId('optionsGroupId');
     t.objectId('metricId');
     t.boolean('capitalise');
-    t.boolean('notShowAsAlphabet');
-    t.boolean('showNameInTitle');
-    t.boolean('showNameInSelectedAttributes');
-    t.boolean('showNameInSnippetTitle');
-    t.nonNull.boolean('showAsBreadcrumb');
-    t.nonNull.boolean('showAsCatalogueBreadcrumb');
-    t.nonNull.boolean('showInSnippet');
-    t.nonNull.boolean('showInCard');
-    t.json('positioningInTitle');
+
+    // variants
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
     });
     t.nonNull.field('viewVariant', {
       type: 'AttributeViewVariant',
     });
+
+    // positioning in title
+    t.json('positioningInTitle');
+    t.json('positioningInCardTitle');
+
+    // breadcrumbs
+    t.nonNull.boolean('showAsBreadcrumb');
+    t.nonNull.boolean('showAsCatalogueBreadcrumb');
+
+    // options modal
+    t.boolean('notShowAsAlphabet');
+
+    // card / snippet / catalogue visibility
+    t.nonNull.boolean('showInSnippet');
+    t.nonNull.boolean('showInCard');
+    t.nonNull.boolean('showInCatalogueFilter');
+    t.nonNull.boolean('showInCatalogueNav');
+    t.nonNull.boolean('showInCatalogueTitle');
+    t.nonNull.boolean('showInCardTitle');
+    t.nonNull.boolean('showInSnippetTitle');
+
+    // name visibility
+    t.boolean('showNameInTitle');
+    t.boolean('showNameInCardTitle');
+    t.boolean('showNameInSnippetTitle');
+    t.boolean('showNameInSelectedAttributes');
   },
 });
 

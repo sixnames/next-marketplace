@@ -197,18 +197,35 @@ export interface AttributeModel {
   slug: string;
   attributesGroupId?: ObjectIdModel | null;
   nameI18n: TranslationModel;
-  variant: AttributeVariantModel;
-  viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
   metric?: MetricModel | null;
-  positioningInTitle?: AttributePositioningInTitleModel | null;
-  positioningCardInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
-  showInCard: boolean;
+
+  // variants
+  variant: AttributeVariantModel;
+  viewVariant: AttributeViewVariantModel;
+
+  // positioning in title
+  positioningInTitle?: AttributePositioningInTitleModel | null;
+  positioningInCardTitle?: AttributePositioningInTitleModel | null;
+
+  // breadcrumbs
   showAsBreadcrumb: boolean;
   showAsCatalogueBreadcrumb?: boolean | null;
-  showInSnippet?: boolean | null;
+
+  // options modal
   notShowAsAlphabet?: boolean | null;
+
+  // card / snippet visibility
+  showInSnippet?: boolean | null;
+  showInCard: boolean;
+  showInCatalogueFilter: boolean;
+  showInCatalogueNav: boolean;
+  showInCatalogueTitle: boolean;
+  showInCardTitle: boolean;
+  showInSnippetTitle: boolean;
+
+  // name visibility
   showNameInTitle?: boolean | null;
   showNameInSelectedAttributes?: boolean | null;
   showNameInCardTitle?: boolean | null;
@@ -620,9 +637,6 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   rubricSlug: string;
   categoryId?: ObjectIdModel | null;
   categorySlug?: string | null;
-  showInCatalogueFilter: boolean;
-  showInCatalogueNav: boolean;
-  showInProductAttributes: boolean;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {

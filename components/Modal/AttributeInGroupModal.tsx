@@ -80,15 +80,22 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle || positioningInTitle,
-        capitalise: attribute.capitalise,
-        notShowAsAlphabet: attribute.notShowAsAlphabet,
-        showAsBreadcrumb: attribute.showAsBreadcrumb,
-        showNameInTitle: attribute.showNameInTitle,
-        showNameInSelectedAttributes: attribute.showNameInSelectedAttributes,
-        showNameInSnippetTitle: attribute.showNameInSnippetTitle,
+        positioningInCardTitle: attribute.positioningInCardTitle || positioningInTitle,
+        capitalise: attribute.capitalise || false,
+        notShowAsAlphabet: attribute.notShowAsAlphabet || false,
+        showAsBreadcrumb: attribute.showAsBreadcrumb || false,
+        showNameInTitle: attribute.showNameInTitle || false,
+        showNameInSelectedAttributes: attribute.showNameInSelectedAttributes || false,
+        showNameInSnippetTitle: attribute.showNameInSnippetTitle || false,
         showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb || false,
         showInSnippet: attribute.showInSnippet || false,
-        showInCard: attribute.showInCard,
+        showInCard: attribute.showInCard || false,
+        showInCardTitle: attribute.showInCardTitle || false,
+        showInCatalogueFilter: attribute.showInCatalogueFilter || false,
+        showInCatalogueNav: attribute.showInCatalogueNav || false,
+        showInCatalogueTitle: attribute.showInCatalogueNav || false,
+        showInSnippetTitle: attribute.showInSnippetTitle || false,
+        showNameInCardTitle: attribute.showNameInCardTitle || false,
       }
     : {
         nameI18n: {},
@@ -97,6 +104,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         metricId: null,
         optionsGroupId: null,
         positioningInTitle,
+        positioningInCardTitle: positioningInTitle,
         capitalise: false,
         notShowAsAlphabet: true,
         showAsBreadcrumb: false,
@@ -106,6 +114,12 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         showAsCatalogueBreadcrumb: false,
         showInSnippet: false,
         showInCard: true,
+        showInCardTitle: true,
+        showInCatalogueFilter: true,
+        showInCatalogueNav: true,
+        showInCatalogueTitle: true,
+        showInSnippetTitle: false,
+        showNameInCardTitle: false,
       };
 
   return (
@@ -184,18 +198,72 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 name={'positioningInTitle'}
                 testId={'positioningInTitle'}
                 options={getAttributePositioningOptions}
-                label={'Позиционирование в заголовке'}
+                label={'Позиционирование в заголовке каталога'}
+                showInlineError
+              />
+
+              <FormikTranslationsSelect
+                disabled={
+                  variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+                }
+                name={'positioningInCardTitle'}
+                testId={'positioningInCardTitle'}
+                options={getAttributePositioningOptions}
+                label={'Позиционирование в заголовке товара'}
                 showInlineError
               />
 
               <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
 
               <FormikCheckboxLine
-                label={'Не показывать опции атрибута сгруппированными по алфавиту'}
-                name={'notShowAsAlphabet'}
+                label={'Показывать в заголовке каталога'}
+                name={'showInCatalogueTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать в заголовке карточки товара'}
+                name={'showInCardTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать в заголовке сниппета товара'}
+                name={'showInSnippetTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в заголовке товара'}
+                name={'showNameInCardTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в заголовке каталога'}
+                name={'showNameInTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в заголовке сниппета товара'}
+                name={'showNameInSnippetTitle'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать в фильтре каталога'}
+                name={'showInCatalogueFilter'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать название атрибута в выбраных фильтрах каталога'}
+                name={'showNameInSelectedAttributes'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать в навигации сайта'}
+                name={'showInCatalogueNav'}
               />
 
               <FormikCheckboxLine label={'Показывать в карточке товара'} name={'showInCard'} />
+
+              <FormikCheckboxLine label={'Показывать в сниппете товара'} name={'showInSnippet'} />
 
               <FormikCheckboxLine
                 label={'Показывать в крошках карточки товара'}
@@ -208,21 +276,9 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <FormikCheckboxLine
-                label={'Показывать название атрибута в заголовке каталога'}
-                name={'showNameInTitle'}
+                label={'Не показывать опции атрибута сгруппированными по алфавиту'}
+                name={'notShowAsAlphabet'}
               />
-
-              <FormikCheckboxLine
-                label={'Показывать название атрибута в выбраных фильтрах каталога'}
-                name={'showNameInSelectedAttributes'}
-              />
-
-              <FormikCheckboxLine
-                label={'Показывать название атрибута в заголовке сниппета'}
-                name={'showNameInSnippetTitle'}
-              />
-
-              <FormikCheckboxLine label={'Показывать в сниппете товара'} name={'showInSnippet'} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

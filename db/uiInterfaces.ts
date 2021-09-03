@@ -105,6 +105,8 @@ export interface AttributesGroupInterface extends AttributesGroupModel {
   attributes?: AttributeInterface[] | null;
 }
 
+export interface SelectedFilterInterface extends AttributeInterface, Record<any, any> {}
+
 export interface BrandInterface extends BrandModel {
   name?: string | null;
   description?: string | null;
@@ -299,7 +301,7 @@ export interface RubricVariantInterface extends RubricVariantModel {
   cardBrandsLabel?: string | null;
 }
 
-export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
+export interface RubricAttributeInterface extends RubricAttributeModel {
   options?: OptionInterface[] | null;
   name?: string | null;
   metric?: MetricInterface | null;

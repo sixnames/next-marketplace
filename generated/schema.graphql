@@ -8,12 +8,17 @@ input AddAttributeToGroupInput {
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
-  positioningCardInTitle: JSONObject
+  positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInCardTitle: Boolean!
+  showInCatalogueFilter: Boolean!
+  showInCatalogueNav: Boolean!
+  showInCatalogueTitle: Boolean!
   showInSnippet: Boolean!
+  showInSnippetTitle: Boolean!
   showNameInCardTitle: Boolean
   showNameInSelectedAttributes: Boolean
   showNameInSnippetTitle: Boolean
@@ -1246,38 +1251,6 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayload!
 
   """
-  Should toggle attribute in the category attribute showInCatalogueFilter field
-  """
-  toggleAttributeInCategoryCatalogue(input: UpdateAttributeInCategoryInput!): CategoryPayload!
-
-  """
-  Should toggle attribute in the category attribute showInCatalogueNav field
-  """
-  toggleAttributeInCategoryNav(input: UpdateAttributeInCategoryInput!): CategoryPayload!
-
-  """
-  Should toggle attribute in the category attribute showInProductAttributes field
-  """
-  toggleAttributeInCategoryProductAttributes(
-    input: UpdateAttributeInCategoryInput!
-  ): CategoryPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInProductAttributes field
-  """
-  toggleAttributeInProductAttributes(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInCatalogueFilter field
-  """
-  toggleAttributeInRubricCatalogue(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInCatalogueNav field
-  """
-  toggleAttributeInRubricNav(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
   Should update attribute in the attributes group
   """
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!
@@ -2278,7 +2251,6 @@ type RubricAttribute {
   priorities: JSONObject!
   showInCatalogueFilter: Boolean!
   showInCatalogueNav: Boolean!
-  showInProductAttributes: Boolean!
   slug: String
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
@@ -2541,11 +2513,18 @@ input UpdateAttributeInGroupInput {
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
+  positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInCardTitle: Boolean!
+  showInCatalogueFilter: Boolean!
+  showInCatalogueNav: Boolean!
+  showInCatalogueTitle: Boolean!
   showInSnippet: Boolean!
+  showInSnippetTitle: Boolean!
+  showNameInCardTitle: Boolean
   showNameInSelectedAttributes: Boolean
   showNameInSnippetTitle: Boolean
   showNameInTitle: Boolean

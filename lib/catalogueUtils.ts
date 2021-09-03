@@ -52,7 +52,6 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
-  AttributeInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -63,6 +62,7 @@ import {
   ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricInterface,
+  SelectedFilterInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -89,8 +89,6 @@ export function castCatalogueParamToObject(
     value,
   };
 }
-
-export interface SelectedFilterInterface extends AttributeInterface, Record<any, any> {}
 
 export interface GetRubricCatalogueOptionsInterface {
   options: OptionInterface[];

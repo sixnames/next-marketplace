@@ -8,7 +8,6 @@ import { getBooleanTranslation, getConstantTranslation } from 'config/constantTr
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
-  AddAttributeToGroupInput,
   UpdateAttributeInGroupInput,
   useAddAttributeToGroupMutation,
   useDeleteAttributeFromGroupMutation,
@@ -314,7 +313,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                 variant: ATTRIBUTE_IN_GROUP_MODAL,
                 props: {
                   attributesGroupId: `${attributesGroup._id}`,
-                  confirm: (input: Omit<AddAttributeToGroupInput, 'attributesGroupId'>) => {
+                  confirm: (input) => {
                     showLoading();
                     return addAttributeToGroupMutation({
                       variables: {

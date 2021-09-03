@@ -1,11 +1,4 @@
-import {
-  ALL_ALPHABETS,
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_COUNTERS_OBJECT,
-  DEFAULT_LOCALE,
-  GENDER_HE,
-} from 'config/common';
+import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
 import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
 import {
   AlphabetListModelType,
@@ -131,10 +124,6 @@ export async function castAttributeForRubric({
     attributesIds: attribute._id,
   });
 
-  const visible =
-    attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
-    attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
-
   return {
     ...attribute,
     _id: new ObjectId(),
@@ -144,9 +133,6 @@ export async function castAttributeForRubric({
     categoryId,
     categorySlug,
     attributesGroupId: new ObjectId(attributesGroup?._id),
-    showInCatalogueFilter: visible,
-    showInCatalogueNav: visible,
-    showInProductAttributes: true,
     ...DEFAULT_COUNTERS_OBJECT,
   };
 }

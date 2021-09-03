@@ -11,10 +11,11 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel, TranslationModel } from 'db/dbModels';
-import { SelectedFilterInterface } from 'lib/catalogueUtils';
+import { SelectedFilterInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 
 interface GenerateTitleInterface {
+  // positionFieldName: 'positioningInTitle' | 'positioningCardInTitle';
   selectedFilters: SelectedFilterInterface[];
   defaultTitleI18n: TranslationModel;
   prefixI18n?: TranslationModel | null;
@@ -86,58 +87,56 @@ export function generateTitle({
   });
 
   // Collect title parts
-  selectedFilters.forEach(
-    ({ nameI18n, options, capitalise, slug, positioningInTitle, metric, showNameInTitle }) => {
-      const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
-      const attributeName = showNameInTitle ? `${getFieldStringLocale(nameI18n, locale)} ` : '';
-      const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-      let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
-      if (isPrice && currency) {
-        metricValue = currency;
-      }
+  selectedFilters.forEach((attribute) => {
+    const { nameI18n, options, capitalise, slug, positioningInTitle, metric, showNameInTitle } =
+      attribute;
+    const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+    const attributeName = showNameInTitle ? `${getFieldStringLocale(nameI18n, locale)} ` : '';
+    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
+    let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
+    if (isPrice && currency) {
+      metricValue = currency;
+    }
 
-      const value = (options || [])
-        .map(({ variants, nameI18n }) => {
-          const name = getFieldStringLocale(nameI18n, locale);
-          const currentVariant = variants[finalGender];
-          const variantLocale = currentVariant
-            ? getFieldStringLocale(currentVariant, locale)
-            : null;
-          let value = name;
-          if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-            value = variantLocale;
-          }
-          const optionValue = `${attributeName}${value}${metricValue}`;
-          return capitalise ? optionValue : optionValue.toLocaleLowerCase();
-        })
-        .join(titleSeparator);
-
-      if (isPrice) {
-        endOfTitle.push(value);
-        return;
-      }
-      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
-        beginOfTitle.push(value);
-      }
-      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD) {
-        beforeKeyword.push(value);
-      }
-      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
-        const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
-        if (finalKeyword === rubricKeyword) {
-          finalKeyword = keywordValue;
-        } else {
-          finalKeyword = finalKeyword + titleSeparator + keywordValue;
+    const value = (options || [])
+      .map(({ variants, nameI18n }) => {
+        const name = getFieldStringLocale(nameI18n, locale);
+        const currentVariant = variants[finalGender];
+        const variantLocale = currentVariant ? getFieldStringLocale(currentVariant, locale) : null;
+        let value = name;
+        if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
+          value = variantLocale;
         }
+        const optionValue = `${attributeName}${value}${metricValue}`;
+        return capitalise ? optionValue : optionValue.toLocaleLowerCase();
+      })
+      .join(titleSeparator);
+
+    if (isPrice) {
+      endOfTitle.push(value);
+      return;
+    }
+    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
+      beginOfTitle.push(value);
+    }
+    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD) {
+      beforeKeyword.push(value);
+    }
+    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
+      const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
+      if (finalKeyword === rubricKeyword) {
+        finalKeyword = keywordValue;
+      } else {
+        finalKeyword = finalKeyword + titleSeparator + keywordValue;
       }
-      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
-        afterKeyword.push(value);
-      }
-      if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_END) {
-        endOfTitle.push(value);
-      }
-    },
-  );
+    }
+    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
+      afterKeyword.push(value);
+    }
+    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_END) {
+      endOfTitle.push(value);
+    }
+  });
 
   return castArrayToTitle([
     finalPrefix,

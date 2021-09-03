@@ -99,7 +99,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                 {config.map((group, groupIndex) => {
                   return (
                     <div
-                      className={`divide-y divide-border-color ${config.length > 1 ? 'mb-12' : ''}`}
+                      className={`divide-y divide-border-300 ${config.length > 1 ? 'mb-12' : ''}`}
                       key={groupIndex}
                       data-cy={group.testId}
                     >

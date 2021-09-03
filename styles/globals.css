@@ -452,8 +452,9 @@
   --linkColor: var(--theme);
 
   --appNavBackground: var(--wp-dark-gray-400);
-
-  --borderColor: var(--wp-light-gray-100);
+  --border-100: rgba(28, 29, 29, 0.08);
+  --border-200: rgba(28, 29, 29, 0.12);
+  --border-300: rgba(28, 29, 29, 0.15);
 
   --buttonShadow: 0px 5px 15px rgba(0, 0, 0, 0);
   --secondaryButtonBackground: var(--wp-light-gray-300);
@@ -570,7 +571,9 @@
   --inputBorderError: var(--wp-error);
   --rangeRailBackground: var(--wp-mid-gray-100);
 
-  --borderColor: rgba(255, 255, 255, 0.1);
+  --border-100: rgba(255, 255, 255, 0.03);
+  --border-200: rgba(255, 255, 255, 0.06);
+  --border-300: rgba(255, 255, 255, 0.1);
 
   --buttonShadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   --secondaryButtonBackground: var(--wp-dark-gray-200);

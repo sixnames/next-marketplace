@@ -25,7 +25,7 @@
   padding-bottom: var(--framePadding);
   padding-left: var(--framePadding);
   background-color: var(--primaryBackground);
-  border-top: 1px solid var(--borderColor);
+  border-top: 1px solid var(--border-300);
 }
 
 [data-theme='dark'] .frameBottom {

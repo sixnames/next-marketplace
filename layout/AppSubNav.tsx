@@ -17,7 +17,7 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
 
   return (
     <Inner lowTop>
-      <div className={'border-b border-[var(--borderColor)] overflow-auto whitespace-nowrap'}>
+      <div className={'border-b border-[var(--border-300)] overflow-auto whitespace-nowrap'}>
         <div className={'flex items-baseline'}>
           {navConfig.map(({ path, name, testId, shallow, disabled, hidden, exact }) => {
             if (hidden) {

@@ -210,10 +210,10 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
           {!options || options.length < 1 ? (
             <RequestError message={'Список пуст'} />
           ) : (
-            <div className='border-t border-border-color'>
+            <div className='border-t border-border-300'>
               {options.map((option) => (
                 <div
-                  className='border-b border-border-color py-6 px-inner-block-horizontal-padding'
+                  className='border-b border-border-300 py-6 px-inner-block-horizontal-padding'
                   key={`${option._id}`}
                 >
                   {renderOptions(option)}

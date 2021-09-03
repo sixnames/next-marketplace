@@ -703,6 +703,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   selectedOptionsSlugs: string[];
   mainImage: string;
   barcode?: string | null;
+  gender: GenderModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

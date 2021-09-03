@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import { ROUTE_CMS } from 'config/common';
+import { GENDER_IT, ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -79,6 +79,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
     originalName: product?.originalName || '',
     descriptionI18n: product?.descriptionI18n || {},
     barcode: [],
+    gender: GENDER_IT as any,
   };
 
   return (

@@ -8,11 +8,13 @@ input AddAttributeToGroupInput {
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
+  positioningCardInTitle: JSONObject
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
   showInSnippet: Boolean!
+  showNameInCardTitle: Boolean
   showNameInSelectedAttributes: Boolean
   showNameInSnippetTitle: Boolean
   showNameInTitle: Boolean

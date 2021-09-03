@@ -202,6 +202,7 @@ export interface AttributeModel {
   optionsGroupId?: ObjectIdModel | null;
   metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
+  positioningCardInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
@@ -210,6 +211,7 @@ export interface AttributeModel {
   notShowAsAlphabet?: boolean | null;
   showNameInTitle?: boolean | null;
   showNameInSelectedAttributes?: boolean | null;
+  showNameInCardTitle?: boolean | null;
   showNameInSnippetTitle?: boolean | null;
 }
 
@@ -662,6 +664,7 @@ export interface CategoryModel extends CountersModel {
   rubricSlug: string;
   parentId?: ObjectIdModel | null;
   image?: string | null;
+  variants?: OptionVariantsModel;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {

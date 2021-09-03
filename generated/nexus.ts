@@ -112,11 +112,13 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     notShowAsAlphabet?: boolean | null; // Boolean
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    positioningCardInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     showAsBreadcrumb: boolean; // Boolean!
     showAsCatalogueBreadcrumb: boolean; // Boolean!
     showInCard: boolean; // Boolean!
     showInSnippet: boolean; // Boolean!
+    showNameInCardTitle?: boolean | null; // Boolean
     showNameInSelectedAttributes?: boolean | null; // Boolean
     showNameInSnippetTitle?: boolean | null; // Boolean
     showNameInTitle?: boolean | null; // Boolean

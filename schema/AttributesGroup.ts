@@ -162,13 +162,15 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.boolean('capitalise');
     t.boolean('notShowAsAlphabet');
     t.boolean('showNameInTitle');
-    t.boolean('showNameInSelectedAttributes');
+    t.boolean('showNameInCardTitle');
     t.boolean('showNameInSnippetTitle');
+    t.boolean('showNameInSelectedAttributes');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.boolean('showAsCatalogueBreadcrumb');
     t.nonNull.boolean('showInSnippet');
     t.nonNull.boolean('showInCard');
     t.json('positioningInTitle');
+    t.json('positioningCardInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
     });

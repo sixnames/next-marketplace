@@ -27,7 +27,7 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
-import { getCatalogueTitle } from 'lib/catalogueUtils';
+import { generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -562,7 +562,7 @@ export async function getServerSideProps(
       }
 
       options.forEach((option) => {
-        const name = getCatalogueTitle({
+        const name = generateTitle({
           selectedFilters: [
             {
               attribute,

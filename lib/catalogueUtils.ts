@@ -69,7 +69,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { generateTitle } from 'lib/titleUtils';
+import { generateProductTitle, generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
@@ -990,14 +990,15 @@ export const getCatalogueData = async ({
       };
 
       // title
-      const snippetTitle = generateTitle({
-        positionFieldName: 'positioningCardInTitle',
+      const snippetTitle = generateProductTitle({
+        locale,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+        attributes: attributes || [],
         fallbackTitle: restProduct.originalName,
         defaultKeyword: restProduct.originalName,
         defaultGender: restProduct.gender,
-        capitaliseKeyWord: true,
-        attributes: attributes || [],
-        locale,
       });
 
       // listFeatures

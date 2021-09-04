@@ -664,7 +664,7 @@ export interface RubricModel extends CountersModel {
   active: boolean;
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
-  showNameInProductTitle?: boolean | null;
+  showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
   icon?: string;
   image?: string;

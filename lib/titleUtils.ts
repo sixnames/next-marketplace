@@ -11,7 +11,7 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
-import { AttributeInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 
@@ -175,4 +175,70 @@ export function generateTitle({
 
   const otherWords = filteredArray.slice(1);
   return [capitalize(firstWord), ...otherWords].join(' ');
+}
+
+interface GenerateProductTitlePrefixInterface {
+  locale: string;
+  rubricName?: string | null;
+  categories?: CategoryInterface[] | null;
+  showRubricNameInProductTitle?: boolean | null;
+  showCategoryInProductTitle?: boolean | null;
+}
+
+export function generateProductTitlePrefix({
+  locale,
+  rubricName,
+  categories,
+  showCategoryInProductTitle,
+  showRubricNameInProductTitle,
+}: GenerateProductTitlePrefixInterface): string {
+  // rubric name as main prefix
+  const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
+
+  console.log({
+    locale,
+    categories,
+    showCategoryInProductTitle,
+  });
+
+  const prefixArray = [rubricPrefix];
+  const filteredArray = prefixArray.filter((word) => word);
+  return filteredArray.join(' ');
+}
+
+interface GenerateProductTitleInterface
+  extends GenerateProductTitlePrefixInterface,
+    Omit<GenerateTitleInterface, 'positionFieldName' | 'prefix' | 'capitaliseKeyWord'> {}
+
+export function generateProductTitle({
+  locale,
+  rubricName,
+  categories,
+  showCategoryInProductTitle,
+  showRubricNameInProductTitle,
+  attributes,
+  defaultGender,
+  fallbackTitle,
+  defaultKeyword,
+  currency,
+}: GenerateProductTitleInterface): string {
+  const prefix = generateProductTitlePrefix({
+    locale,
+    rubricName,
+    categories,
+    showCategoryInProductTitle,
+    showRubricNameInProductTitle,
+  });
+
+  return generateTitle({
+    attributes,
+    defaultGender,
+    fallbackTitle,
+    defaultKeyword,
+    prefix,
+    locale,
+    currency,
+    capitaliseKeyWord: true,
+    positionFieldName: 'positioningCardInTitle',
+  });
 }

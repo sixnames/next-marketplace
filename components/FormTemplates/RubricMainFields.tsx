@@ -87,7 +87,7 @@ const RubricMainFields: React.FC = () => {
 
       <FormikCheckboxLine
         label={'Показывать название рубрики в заголовке товара'}
-        name={'showNameInProductTitle'}
+        name={'showRubricNameInProductTitle'}
       />
 
       <FormikCheckboxLine

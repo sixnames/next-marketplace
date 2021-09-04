@@ -47,7 +47,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     nameI18n,
     catalogueTitle,
     capitalise,
-    showNameInProductTitle,
+    showRubricNameInProductTitle,
     showCategoryInProductTitle,
   } = rubric;
 
@@ -58,7 +58,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     descriptionI18n,
     shortDescriptionI18n,
     capitalise: capitalise || false,
-    showNameInProductTitle: showNameInProductTitle || false,
+    showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,
     catalogueTitle: {
       defaultTitleI18n: catalogueTitle?.defaultTitleI18n,

@@ -32,7 +32,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
           shortDescriptionI18n: {},
           variantId: null,
           capitalise: false,
-          showNameInProductTitle: false,
+          showRubricNameInProductTitle: false,
           showCategoryInProductTitle: false,
           catalogueTitle: {
             defaultTitleI18n: {},

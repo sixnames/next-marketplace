@@ -785,7 +785,8 @@ export enum Gender {
   He = 'he',
   She = 'she',
   It = 'it',
-  Plural = 'plural'
+  Plural = 'plural',
+  Singular = 'singular'
 }
 
 export type GetAllRubricsInput = {
@@ -2029,6 +2030,7 @@ export type Product = Base & Timestamp & {
   rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
   mainImage: Scalars['String'];
+  snippetTitle: Scalars['String'];
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
@@ -5203,7 +5205,7 @@ export type GetAllRubricVariantsQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount' | 'snippetTitle'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -5732,6 +5734,7 @@ export const ProductSnippetFragmentDoc = gql`
   rubricSlug
   mainImage
   shopsCount
+  snippetTitle
   cardPrices {
     _id
     min

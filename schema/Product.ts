@@ -1,4 +1,5 @@
 import { noNaN } from 'lib/numbers';
+import { generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -65,6 +66,22 @@ export const Product = objectType({
     t.nonNull.string('rubricSlug');
     t.boolean('available');
     t.nonNull.string('mainImage');
+    t.nonNull.field('snippetTitle', {
+      type: 'String',
+      resolve: async (source, _args, context): Promise<string> => {
+        const { locale } = await getRequestParams(context);
+        const snippetTitle = generateTitle({
+          positionFieldName: 'positioningCardInTitle',
+          fallbackTitle: source.originalName,
+          defaultKeyword: source.originalName,
+          defaultGender: source.gender,
+          capitaliseKeyWord: true,
+          attributes: source.attributes || [],
+          locale,
+        });
+        return snippetTitle;
+      },
+    });
     t.field('assets', {
       type: 'ProductAssets',
       resolve: async (source): Promise<ProductAssetsModel | null> => {

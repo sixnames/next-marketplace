@@ -1822,6 +1822,7 @@ export interface NexusGenFieldTypes {
     shopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
     shopsCount: number; // Int!
     slug: string; // String!
+    snippetTitle: string; // String!
     supplierSlug: string | null; // String
     updatedAt: NexusGenScalars['Date']; // Date!
   };
@@ -2970,6 +2971,7 @@ export interface NexusGenFieldTypeNames {
     shopProducts: 'ShopProduct';
     shopsCount: 'Int';
     slug: 'String';
+    snippetTitle: 'String';
     supplierSlug: 'String';
     updatedAt: 'Date';
   };

@@ -11,10 +11,10 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
-  showSnippetBackground,
-  showSnippetButtonsOnHover,
+  showSnippetBackground = true,
+  showSnippetButtonsOnHover = false,
   showSnippetArticle,
-  gridCatalogueColumns,
+  gridCatalogueColumns = 3,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {

@@ -14,8 +14,8 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
-  showSnippetBackground,
-  showSnippetButtonsOnHover,
+  showSnippetBackground = true,
+  showSnippetButtonsOnHover = false,
   showSnippetArticle,
   showSnippetRating,
 }) => {

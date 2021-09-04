@@ -12,15 +12,12 @@ import {
 import { getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
-  COL_ATTRIBUTES,
   COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
+import { productAttributesPipeline, productConnectionsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -43,6 +40,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
@@ -286,157 +284,10 @@ export const getSearchData = async ({
                 },
 
                 // Lookup product connection
-                {
-                  $lookup: {
-                    from: COL_PRODUCT_CONNECTIONS,
-                    as: 'connections',
-                    let: {
-                      productId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $in: ['$$productId', '$productsIds'],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_ATTRIBUTES,
-                          as: 'attribute',
-                          let: { attributeId: '$attributeId' },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $eq: ['$$attributeId', '$_id'],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        $addFields: {
-                          attribute: {
-                            $arrayElemAt: ['$attribute', 0],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_PRODUCT_CONNECTION_ITEMS,
-                          as: 'connectionProducts',
-                          let: {
-                            connectionId: '$_id',
-                          },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $eq: ['$connectionId', '$$connectionId'],
-                                },
-                              },
-                            },
-                            {
-                              $lookup: {
-                                from: COL_OPTIONS,
-                                as: 'option',
-                                let: { optionId: '$optionId' },
-                                pipeline: [
-                                  {
-                                    $match: {
-                                      $expr: {
-                                        $eq: ['$$optionId', '$_id'],
-                                      },
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              $lookup: {
-                                from: COL_SHOP_PRODUCTS,
-                                as: 'shopProduct',
-                                let: { productId: '$productId' },
-                                pipeline: [
-                                  {
-                                    $match: {
-                                      $expr: {
-                                        $eq: ['$$productId', '$productId'],
-                                      },
-                                      citySlug: city,
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              $addFields: {
-                                option: {
-                                  $arrayElemAt: ['$option', 0],
-                                },
-                                shopProduct: {
-                                  $arrayElemAt: ['$shopProduct', 0],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
+                ...productConnectionsPipeline(city),
 
                 // Lookup product attributes
-                {
-                  $lookup: {
-                    from: COL_PRODUCT_ATTRIBUTES,
-                    as: 'attributes',
-                    let: {
-                      productId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$productId', '$productId'],
-                          },
-                          viewVariant: {
-                            $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_OPTIONS,
-                          as: 'options',
-                          let: {
-                            optionsGroupId: '$optionsGroupId',
-                            selectedOptionsIds: '$selectedOptionsIds',
-                          },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $and: [
-                                    {
-                                      $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                    },
-                                    {
-                                      $in: ['$_id', '$$selectedOptionsIds'],
-                                    },
-                                  ],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
+                ...productAttributesPipeline,
               ],
               prices: [
                 {
@@ -741,6 +592,17 @@ export const getSearchData = async ({
         max: `${maxPrice}`,
       };
 
+      // title
+      const snippetTitle = generateTitle({
+        positionFieldName: 'positioningCardInTitle',
+        fallbackTitle: restProduct.originalName,
+        defaultKeyword: restProduct.originalName,
+        defaultGender: restProduct.gender,
+        capitaliseKeyWord: true,
+        attributes: attributes || [],
+        locale,
+      });
+
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes: attributes || [],
@@ -829,6 +691,7 @@ export const getSearchData = async ({
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         connections: castedConnections,
+        snippetTitle,
       });
     }
 

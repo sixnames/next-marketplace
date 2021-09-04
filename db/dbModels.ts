@@ -1,3 +1,4 @@
+import { AttributeInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 
@@ -542,6 +543,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   // types for aggregation
   shopsCount?: number;
   cardPrices?: ProductCardPricesModel;
+  attributes?: AttributeInterface[] | null;
 }
 
 export interface ProductAssetsModel {

@@ -1,3 +1,4 @@
+import { productAttributesPipeline } from 'db/dao/constantPipelines';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
@@ -33,8 +34,6 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_CATEGORY_KEY,
@@ -354,53 +353,7 @@ export const CatalogueQueries = extendType({
               },
 
               // Lookup product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
+              ...productAttributesPipeline,
             ])
             .toArray();
           // console.log('Top products ', new Date().getTime() - productsStart);
@@ -549,53 +502,7 @@ export const CatalogueQueries = extendType({
               },
 
               // Lookup product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
+              ...productAttributesPipeline,
             ])
             .toArray();
           // console.log('Search products count ', products.length);

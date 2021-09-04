@@ -1,11 +1,13 @@
 import { SORT_DESC } from 'config/common';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { productAttributesPipeline } from 'db/dao/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getSessionCity, getSessionCompanySlug, getSessionLocale } from 'lib/sessionHelpers';
+import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
+import { generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -20,8 +22,7 @@ export interface CatalogueQueryInterface {
 async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { query } = req;
-    const locale = getSessionLocale({ req, res });
-    const city = getSessionCity({ req, res });
+    const { locale, city } = await getRequestParams({ req, res });
     const companySlug = getSessionCompanySlug({ req, res });
     const anyQuery = query as unknown;
     const { productId, companyId } = anyQuery as CatalogueQueryInterface;
@@ -175,53 +176,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
 
               // Lookup product attributes
-              /*{
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },*/
+              ...productAttributesPipeline,
             ],
           },
         },
@@ -259,6 +214,17 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         return acc;
       }
 
+      // title
+      const snippetTitle = generateTitle({
+        positionFieldName: 'positioningCardInTitle',
+        fallbackTitle: product.originalName,
+        defaultKeyword: product.originalName,
+        defaultGender: product.gender,
+        capitaliseKeyWord: true,
+        attributes: product.attributes || [],
+        locale,
+      });
+
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
@@ -273,6 +239,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           ...product,
           name: getFieldStringLocale(product.nameI18n, locale),
           cardPrices,
+          snippetTitle,
         },
       ];
     }, []);

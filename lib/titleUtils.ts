@@ -15,9 +15,11 @@ import { AttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 
+interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {}
+
 interface GenerateTitleInterface {
   positionFieldName: 'positioningInTitle' | 'positioningCardInTitle';
-  attributes: AttributeInterface[];
+  attributes: TitleAttributeInterface[];
   fallbackTitle: string;
   prefix?: string | null;
   defaultKeyword?: string;

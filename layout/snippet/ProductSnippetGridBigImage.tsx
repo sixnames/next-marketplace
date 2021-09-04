@@ -1,6 +1,6 @@
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
@@ -11,7 +11,6 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
-  noSecondaryName,
   showSnippetBackground,
   showSnippetButtonsOnHover,
   showSnippetArticle,
@@ -19,8 +18,6 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
-    name,
-    originalName,
     slug,
     cardPrices,
     _id,
@@ -29,6 +26,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     rubricSlug,
     itemId,
     shopProductsIds,
+    snippetTitle,
   } = product;
 
   const bgClassName = showSnippetBackground
@@ -60,7 +58,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       <div
-        className={`rounded-md ${
+        className={`rounded-md h-full flex flex-col ${
           showSnippetBackground && showSnippetButtonsOnHover
             ? 'lg:group-hover:bg-none lg:group-hover:shadow-none lg:bg-secondary lg:dark:shadow-md'
             : ''
@@ -73,8 +71,8 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               src={mainImage}
               objectFit={'contain'}
               objectPosition={'center'}
-              alt={originalName}
-              title={originalName}
+              alt={`${snippetTitle}`}
+              title={`${snippetTitle}`}
               width={240}
               height={240}
               quality={50}
@@ -85,7 +83,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
-              {originalName}
+              {snippetTitle}
             </Link>
           </div>
 
@@ -97,14 +95,9 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               className='block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
-              {originalName}
+              {snippetTitle}
             </Link>
           </div>
-
-          {/*name translation*/}
-          {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
-            <div className='text-sm text-secondary-text mb-3'>{name}</div>
-          )}
 
           {/*art*/}
           {showSnippetArticle ? (

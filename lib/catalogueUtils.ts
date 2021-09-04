@@ -1160,6 +1160,17 @@ export const getCatalogueData = async ({
         max: `${maxPrice}`,
       };
 
+      // title
+      const snippetTitle = generateTitle({
+        positionFieldName: 'positioningCardInTitle',
+        fallbackTitle: restProduct.originalName,
+        defaultKeyword: restProduct.originalName,
+        defaultGender: restProduct.gender,
+        capitaliseKeyWord: true,
+        attributes: attributes || [],
+        locale,
+      });
+
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes: attributes || [],
@@ -1256,6 +1267,7 @@ export const getCatalogueData = async ({
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         connections: castedConnections,
+        snippetTitle,
       });
     }
 

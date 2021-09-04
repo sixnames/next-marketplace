@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
@@ -21,8 +21,6 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
-    name,
-    originalName,
     slug,
     cardPrices,
     itemId,
@@ -33,6 +31,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
     mainImage,
     rubricSlug,
     shopProductsIds,
+    snippetTitle,
   } = product;
 
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
@@ -57,8 +56,8 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
               src={mainImage}
               objectFit={'contain'}
               objectPosition={'center'}
-              alt={originalName}
-              title={originalName}
+              alt={`${snippetTitle}`}
+              title={`${snippetTitle}`}
               width={260}
               height={260}
               quality={50}
@@ -70,7 +69,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
-            {originalName}
+            {snippetTitle}
           </Link>
         </div>
       </div>
@@ -97,14 +96,9 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             className='block text-primary-text hover:no-underline hover:text-primary-text'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
-            {originalName}
+            {snippetTitle}
           </Link>
         </div>
-
-        {/*name translation*/}
-        {!name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
-          <div className='text-secondary-text mb-6'>{name}</div>
-        )}
 
         {/*list features*/}
         {(listFeatures || []).length > 0 ? (

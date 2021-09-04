@@ -277,6 +277,7 @@ export interface ProductInterface extends ProductModel {
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
   categories?: CategoryInterface[] | null;
+  snippetTitle?: string | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

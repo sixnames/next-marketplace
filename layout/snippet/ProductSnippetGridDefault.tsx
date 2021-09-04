@@ -1,4 +1,4 @@
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -12,7 +12,6 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   product,
   testId,
   className,
-  noSecondaryName,
   noAttributes,
   showSnippetBackground,
   showSnippetButtonsOnHover,
@@ -22,8 +21,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const {
-    name,
-    originalName,
+    snippetTitle,
     slug,
     cardPrices,
     _id,
@@ -71,8 +69,8 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             src={mainImage}
             objectFit={'contain'}
             objectPosition={'center'}
-            alt={originalName}
-            title={originalName}
+            alt={`${snippetTitle}`}
+            title={`${snippetTitle}`}
             width={85}
             height={190}
             quality={50}
@@ -83,7 +81,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
-            {originalName}
+            {snippetTitle}
           </Link>
         </div>
 
@@ -97,14 +95,9 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 className='block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
-                {originalName}
+                {snippetTitle}
               </Link>
             </div>
-
-            {/*name translation*/}
-            {noSecondaryName || !name || name === LOCALE_NOT_FOUND_FIELD_MESSAGE ? null : (
-              <div className='text-sm text-secondary-text mb-3'>{name}</div>
-            )}
 
             {/*art*/}
             {showSnippetArticle ? (

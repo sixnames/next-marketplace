@@ -64,7 +64,8 @@ export const GENDER_SHE = 'she' as GenderModel;
 export const GENDER_HE = 'he' as GenderModel;
 export const GENDER_IT = 'it' as GenderModel;
 export const GENDER_PLURAL = 'plural' as GenderModel;
-export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT, GENDER_PLURAL];
+export const GENDER_SINGULAR = 'singular' as GenderModel;
+export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT, GENDER_PLURAL, GENDER_SINGULAR];
 
 // Addresses
 export const GEO_POINT_TYPE = 'Point';

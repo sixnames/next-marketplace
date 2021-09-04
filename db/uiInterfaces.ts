@@ -105,8 +105,6 @@ export interface AttributesGroupInterface extends AttributesGroupModel {
   attributes?: AttributeInterface[] | null;
 }
 
-export interface SelectedFilterInterface extends AttributeInterface, Record<any, any> {}
-
 export interface BrandInterface extends BrandModel {
   name?: string | null;
   description?: string | null;

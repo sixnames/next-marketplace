@@ -52,6 +52,7 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
+  AttributeInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -62,7 +63,6 @@ import {
   ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricInterface,
-  SelectedFilterInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -220,7 +220,7 @@ export interface GetCatalogueAttributesInterface {
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
-  selectedFilters: SelectedFilterInterface[];
+  selectedFilters: AttributeInterface[];
   castedAttributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
 }
@@ -249,7 +249,7 @@ export async function getCatalogueAttributes({
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const { db } = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-  const selectedFilters: SelectedFilterInterface[] = [];
+  const selectedFilters: AttributeInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
@@ -1261,14 +1261,15 @@ export const getCatalogueData = async ({
 
     // Get catalogue title
     const catalogueTitle = generateTitle({
+      positionFieldName: 'positioningInTitle',
       defaultGender: rubric.catalogueTitle.gender,
-      defaultTitleI18n: rubric.catalogueTitle.defaultTitleI18n,
-      keywordI18n: rubric.catalogueTitle.keywordI18n,
-      prefixI18n: rubric.catalogueTitle.prefixI18n,
-      selectedFilters,
+      fallbackTitle: getFieldStringLocale(rubric.catalogueTitle.defaultTitleI18n, locale),
+      defaultKeyword: getFieldStringLocale(rubric.catalogueTitle.keywordI18n, locale),
+      prefix: getFieldStringLocale(rubric.catalogueTitle.prefixI18n, locale),
+      attributes: selectedFilters,
+      capitaliseKeyWord: rubric.capitalise,
       locale,
       currency,
-      capitaliseKeyWord: rubric.capitalise,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

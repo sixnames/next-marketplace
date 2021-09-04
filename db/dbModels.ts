@@ -14,6 +14,7 @@ export enum GenderModel {
   he = 'he',
   it = 'it',
   plural = 'plural',
+  singular = 'singular',
 }
 
 export interface SelectOptionModel {

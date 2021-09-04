@@ -563,16 +563,17 @@ export async function getServerSideProps(
 
       options.forEach((option) => {
         const name = generateTitle({
-          selectedFilters: [
+          attributes: [
             {
               ...attribute,
               options: [option],
             },
           ],
+          positionFieldName: 'positioningInTitle',
           defaultGender: catalogueTitle.gender,
-          defaultTitleI18n: catalogueTitle.defaultTitleI18n,
-          keywordI18n: catalogueTitle.keywordI18n,
-          prefixI18n: catalogueTitle.prefixI18n,
+          fallbackTitle: getFieldStringLocale(catalogueTitle.defaultTitleI18n, sessionLocale),
+          defaultKeyword: getFieldStringLocale(catalogueTitle.keywordI18n, sessionLocale),
+          prefix: getFieldStringLocale(catalogueTitle.prefixI18n, sessionLocale),
           locale: sessionLocale,
           currency: initialData.currency,
         });

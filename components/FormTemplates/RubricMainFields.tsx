@@ -84,6 +84,16 @@ const RubricMainFields: React.FC = () => {
       />
 
       <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
+
+      <FormikCheckboxLine
+        label={'Показывать название рубрики в заголовке товара'}
+        name={'showNameInProductTitle'}
+      />
+
+      <FormikCheckboxLine
+        label={'Показывать названия категорий в заголовке товара'}
+        name={'showCategoryInProductTitle'}
+      />
     </React.Fragment>
   );
 };

@@ -389,6 +389,8 @@ export interface NexusGenInputs {
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showCategoryInProductTitle?: boolean | null; // Boolean
+    showNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateRubricVariantInput: {
@@ -918,6 +920,8 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showCategoryInProductTitle?: boolean | null; // Boolean
+    showNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRubricVariantInput: {

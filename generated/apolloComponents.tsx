@@ -653,6 +653,8 @@ export type CreateRoleInput = {
 export type CreateRubricInput = {
   nameI18n: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
+  showNameInProductTitle?: Maybe<Scalars['Boolean']>;
+  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
   variantId: Scalars['ObjectId'];
@@ -3151,6 +3153,8 @@ export type UpdateRoleRuleInput = {
 export type UpdateRubricInput = {
   rubricId: Scalars['ObjectId'];
   capitalise?: Maybe<Scalars['Boolean']>;
+  showNameInProductTitle?: Maybe<Scalars['Boolean']>;
+  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];

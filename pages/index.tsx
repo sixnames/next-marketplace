@@ -15,6 +15,7 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { productAttributesPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -458,6 +459,10 @@ export async function getServerSideProps(
       {
         $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
       },
+
+      // Lookup product attributes
+      ...productAttributesPipeline,
+
       {
         $addFields: {
           shopsCount: { $size: '$shopProductsIds' },
@@ -472,6 +477,17 @@ export async function getServerSideProps(
 
   const products = shopProductsAggregation.map((product) => {
     const { attributes, ...restProduct } = product;
+
+    // title
+    const snippetTitle = generateTitle({
+      positionFieldName: 'positioningCardInTitle',
+      fallbackTitle: restProduct.originalName,
+      defaultKeyword: restProduct.originalName,
+      defaultGender: restProduct.gender,
+      capitaliseKeyWord: true,
+      attributes: attributes || [],
+      locale: sessionLocale,
+    });
 
     // prices
     const minPrice = noNaN(product.cardPrices?.min);
@@ -503,6 +519,7 @@ export async function getServerSideProps(
       name: getFieldStringLocale(product.nameI18n, sessionLocale),
       cardPrices,
       connections: [],
+      snippetTitle,
     };
   });
 

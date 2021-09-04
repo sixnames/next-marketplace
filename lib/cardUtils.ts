@@ -456,11 +456,6 @@ export async function getCardData({
                         },
                       },
                     },
-                    {
-                      $sort: {
-                        views: SORT_DESC,
-                      },
-                    },
                   ],
                 },
               },

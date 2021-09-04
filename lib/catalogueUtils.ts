@@ -2,7 +2,6 @@ import { CatalogueInterface } from 'components/Catalogue';
 import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
-  COL_CATEGORIES,
   COL_CITIES,
   COL_CONFIGS,
   COL_COUNTRIES,
@@ -13,6 +12,7 @@ import {
 import {
   getCatalogueRubricPipeline,
   productAttributesPipeline,
+  productCategoriesPipeline,
   productConnectionsPipeline,
 } from 'db/dao/constantPipelines';
 import {
@@ -820,47 +820,21 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                {
-                  $lookup: {
-                    from: COL_CATEGORIES,
-                    as: 'categories',
-                    let: {
-                      rubricId: '$rubricId',
-                      selectedOptionsSlugs: '$selectedOptionsSlugs',
+                ...productCategoriesPipeline([
+                  {
+                    $addFields: {
+                      views: { $max: `$views.${realCompanySlug}.${city}` },
+                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
                     },
-                    pipeline: [
-                      {
-                        $match: {
-                          $and: [
-                            {
-                              $expr: {
-                                $eq: ['$rubricId', '$$rubricId'],
-                              },
-                            },
-                            {
-                              $expr: {
-                                $in: ['$slug', '$$selectedOptionsSlugs'],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        $addFields: {
-                          views: { $max: `$views.${realCompanySlug}.${city}` },
-                          priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                        },
-                      },
-                      {
-                        $sort: {
-                          priorities: SORT_DESC,
-                          views: SORT_DESC,
-                          _id: SORT_DESC,
-                        },
-                      },
-                    ],
                   },
-                },
+                  {
+                    $sort: {
+                      priorities: SORT_DESC,
+                      views: SORT_DESC,
+                      _id: SORT_DESC,
+                    },
+                  },
+                ]),
                 {
                   $unwind: {
                     path: '$categories',

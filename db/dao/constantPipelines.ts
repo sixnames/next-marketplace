@@ -8,6 +8,7 @@ import {
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_CATEGORIES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
@@ -25,6 +26,7 @@ interface GetCatalogueRubricPipelineInterface {
   visibleOptionsCount?: number | null;
   viewVariant?: 'filter' | 'nav';
 }
+
 export function getCatalogueRubricPipeline(
   props?: GetCatalogueRubricPipelineInterface,
 ): Record<string, any>[] {
@@ -452,3 +454,37 @@ export const productAttributesPipeline = [
     },
   },
 ];
+
+export const productCategoriesPipeline = (additionalStages: Record<any, any>[] = []) => {
+  return [
+    {
+      $lookup: {
+        from: COL_CATEGORIES,
+        as: 'categories',
+        let: {
+          rubricId: '$rubricId',
+          selectedOptionsSlugs: '$selectedOptionsSlugs',
+        },
+        pipeline: [
+          {
+            $match: {
+              $and: [
+                {
+                  $expr: {
+                    $eq: ['$rubricId', '$$rubricId'],
+                  },
+                },
+                {
+                  $expr: {
+                    $in: ['$slug', '$$selectedOptionsSlugs'],
+                  },
+                },
+              ],
+            },
+          },
+          ...additionalStages,
+        ],
+      },
+    },
+  ];
+};

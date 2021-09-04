@@ -53,6 +53,7 @@ import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
+import { generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 
 const minAssetsListCount = 2;
@@ -887,6 +888,16 @@ export async function getCardData({
         ? getConstantTranslation(`shops.plural.${locale}`)
         : getConstantTranslation(`shops.single.${locale}`);
 
+    const cardTitle = generateTitle({
+      positionFieldName: 'positioningCardInTitle',
+      fallbackTitle: restProduct.originalName,
+      defaultKeyword: restProduct.originalName,
+      defaultGender: restProduct.gender,
+      capitaliseKeyWord: true,
+      attributes: initialProductAttributes,
+      locale,
+    });
+
     return {
       product: {
         ...restProduct,
@@ -916,6 +927,7 @@ export async function getCardData({
             }
           : null,
       },
+      cardTitle,
       cardPrices,
       rubric,
       cardLayout: rubric?.variant?.cardLayout || DEFAULT_LAYOUT,

@@ -556,6 +556,7 @@ export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
 }
 
 export interface InitialCardDataInterface {
+  cardTitle: string;
   product: ProductInterface;
   listFeatures: ProductAttributeInterface[];
   iconFeatures: ProductAttributeInterface[];

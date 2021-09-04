@@ -56,6 +56,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     showCardImagesSlider,
     showCardBrands,
     cardBrandsLabel,
+    cardTitle,
   } = useCardData({
     cardData,
     companySlug,
@@ -66,13 +67,13 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner lowBottom lowTop>
           {/*title*/}
           <div className='mb-8'>
-            <Title low>{product.originalName}</Title>
+            <Title low>{cardTitle}</Title>
             <div className='flex items-center gap-4 mt-4'>
               {/*article*/}
               {showArticle ? (
@@ -91,8 +92,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <CardSimpleGallery
                   mainImage={product.mainImage}
                   className={stickyClassName}
-                  alt={product.originalName}
-                  title={product.originalName}
+                  alt={cardTitle}
+                  title={cardTitle}
                   assets={assets}
                   isSingleImage={isSingleImage}
                 />

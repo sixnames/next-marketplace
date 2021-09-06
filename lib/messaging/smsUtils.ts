@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LOCALE } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
@@ -42,4 +44,28 @@ export async function smsSender({ text, sign, numbers }: SmsSenderInterface) {
     console.log(`smsSender Error`);
     console.log(e);
   }
+}
+
+interface SendSmsInterface {
+  locale: string;
+  sign: string;
+  orderId: string;
+  numbers: string[];
+}
+
+export async function sendNewOrderSms({ locale, sign, orderId, numbers }: SendSmsInterface) {
+  const messageI18n = {
+    [DEFAULT_LOCALE]: `№${orderId}`,
+    [SECONDARY_LOCALE]: `№${orderId}`,
+  };
+  const text = getFieldStringLocale(messageI18n, locale);
+  if (text === LOCALE_NOT_FOUND_FIELD_MESSAGE || !text) {
+    return;
+  }
+
+  await smsSender({
+    text,
+    sign,
+    numbers,
+  });
 }

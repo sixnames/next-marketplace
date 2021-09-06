@@ -404,6 +404,7 @@ export const ProductMutations = extendType({
                   nameI18n: values.nameI18n,
                   descriptionI18n: values.descriptionI18n,
                   originalName: values.originalName,
+                  gender: values.gender,
                   updatedAt: new Date(),
                 },
               },

@@ -40,8 +40,8 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { sendOrderCreatedEmail } from 'emails/orderCreatedEmail';
-import { signUpEmail } from 'emails/signUpEmail';
+import { sendOrderCreatedEmail } from 'lib/messaging/orderCreatedEmail';
+import { signUpEmail } from 'lib/messaging/signUpEmail';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';

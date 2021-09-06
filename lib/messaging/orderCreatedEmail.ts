@@ -1,4 +1,4 @@
-import { sendEmail, SendEmailInterface } from './mailer';
+import { sendEmail, SendEmailInterface } from 'lib/messaging/mailer';
 
 interface OrderCreatedEmailTemplateInterface {
   orderItemId: string;

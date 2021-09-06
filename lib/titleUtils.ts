@@ -47,11 +47,6 @@ export function generateTitle({
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
 }: GenerateTitleInterface): string {
-  // return default title if no filters selected
-  if (attributes.length < 1) {
-    return fallbackTitle;
-  }
-
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 

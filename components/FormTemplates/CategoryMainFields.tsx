@@ -1,11 +1,17 @@
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import { useGetGenderOptionsQuery } from 'generated/apolloComponents';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { useLocaleContext } from 'context/localeContext';
+import { useFormikContext } from 'formik';
+import { CreateCategoryInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 
 const CategoryMainFields: React.FC = () => {
+  const { locale } = useLocaleContext();
+  const { values } = useFormikContext<CreateCategoryInput>();
   const { data, loading, error } = useGetGenderOptionsQuery();
   if (error || (!loading && !data)) {
     return <RequestError />;
@@ -34,6 +40,20 @@ const CategoryMainFields: React.FC = () => {
         testId={`gender`}
         label={'Род названия'}
       />
+
+      <InputLine name={'variants'} label={'Склонение названия по родам'} labelTag={'div'}>
+        {Object.keys(values.variants).map((gender) => {
+          return (
+            <FormikTranslationsInput
+              key={gender}
+              name={`variants.${gender}`}
+              label={getConstantTranslation(`selectsOptions.gender.${gender}.${locale}`)}
+              testId={`variant-${gender}`}
+              showInlineError
+            />
+          );
+        })}
+      </InputLine>
     </React.Fragment>
   );
 };

@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { getEmailTemplate } from './emailTemplate';
+import { getEmailTemplate } from 'lib/messaging/emailTemplate';
 
 export interface SendEmailInterface {
   subject: string;
@@ -10,6 +10,10 @@ export interface SendEmailInterface {
 
 export const sendEmail = async ({ content, subject, text, to }: SendEmailInterface) => {
   try {
+    if (!process.env.EMAIL_HOST) {
+      return;
+    }
+
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     // const testAccount = await nodemailer.createTestAccount();

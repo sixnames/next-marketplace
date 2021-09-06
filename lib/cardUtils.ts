@@ -125,6 +125,7 @@ export async function getCardData({
             _id: '$productId',
             itemId: { $first: '$itemId' },
             slug: { $first: '$slug' },
+            gender: { $first: '$gender' },
             mainImage: { $first: `$mainImage` },
             originalName: { $first: `$originalName` },
             nameI18n: { $first: `$nameI18n` },

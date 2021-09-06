@@ -11,7 +11,7 @@ export async function smsSender({ text, sign, numbers }: SmsSenderInterface) {
   try {
     const apiKey = process.env.SMS_API_KEY;
     const apiEmail = process.env.SMS_API_EMAIL;
-    if (!apiKey || !apiEmail) {
+    if (!apiKey || !apiEmail || numbers.length < 1) {
       return;
     }
 
@@ -35,7 +35,9 @@ export async function smsSender({ text, sign, numbers }: SmsSenderInterface) {
     const finalParamsAsString = finalParamsArray.join('&');
 
     const url = `https://${apiEmail}:${apiKey}@gate.smsaero.ru/v2/sms/send?${finalParamsAsString}`;
-    await fetch(url);
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log(json);
   } catch (e) {
     console.log(`smsSender Error`);
     console.log(e);

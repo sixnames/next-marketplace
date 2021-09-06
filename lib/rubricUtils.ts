@@ -1,6 +1,6 @@
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 import { RubricVariantModel } from 'db/dbModels';
-import { RubricAttributeInterface, RubricOptionInterface } from 'db/uiInterfaces';
+import { OptionInterface, RubricAttributeInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { getObjectId } from 'mongo-seeding';
 
@@ -21,14 +21,14 @@ export const STANDARD_RUBRIC_VARIANT: RubricVariantModel = {
 };
 
 export interface GetRubricNavOptionsInterface {
-  options: RubricOptionInterface[];
+  options: OptionInterface[];
   locale: string;
 }
 
 export function getRubricNavOptions({
   options,
   locale,
-}: GetRubricNavOptionsInterface): RubricOptionInterface[] {
+}: GetRubricNavOptionsInterface): OptionInterface[] {
   return options.map((option) => {
     return {
       ...option,

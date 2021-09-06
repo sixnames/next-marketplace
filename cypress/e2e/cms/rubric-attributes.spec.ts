@@ -10,13 +10,6 @@ describe('Rubric attributes', () => {
     cy.getByCy(`attributes`).click();
     cy.getByCy(`rubric-attributes`).should('exist');
 
-    // Should update attributes group only in one rubric
-    cy.getByCy(`Состав-filter-checkbox`).should('not.be.disabled');
-    cy.getByCy(`Состав-filter-checkbox`).click();
-    cy.wait(1500);
-    cy.getByCy(`Состав-filter-checkbox`).should('not.be.checked');
-    cy.getByCy(`Крепость-filter-checkbox`).should('be.disabled');
-
     // Should delete attributes group from rubric
     cy.getByCy(`Характеристики вина-delete`).click();
     cy.getByCy(`attributes-group-delete-modal`).should('exist');

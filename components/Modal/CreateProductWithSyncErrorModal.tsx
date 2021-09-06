@@ -5,7 +5,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_IT, ROUTE_CMS } from 'config/common';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -108,6 +108,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     },
     barcode: [notSyncedProduct.barcode],
     rubricId: undefined,
+    gender: GENDER_IT as any,
   };
 
   return (

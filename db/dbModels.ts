@@ -1,3 +1,4 @@
+import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 
@@ -14,6 +15,7 @@ export enum GenderModel {
   he = 'he',
   it = 'it',
   plural = 'plural',
+  singular = 'singular',
 }
 
 export interface SelectOptionModel {
@@ -197,19 +199,38 @@ export interface AttributeModel {
   slug: string;
   attributesGroupId?: ObjectIdModel | null;
   nameI18n: TranslationModel;
-  variant: AttributeVariantModel;
-  viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
   metric?: MetricModel | null;
-  positioningInTitle?: AttributePositioningInTitleModel | null;
   capitalise?: boolean | null;
-  showInCard: boolean;
+
+  // variants
+  variant: AttributeVariantModel;
+  viewVariant: AttributeViewVariantModel;
+
+  // positioning in title
+  positioningInTitle?: AttributePositioningInTitleModel | null;
+  positioningInCardTitle?: AttributePositioningInTitleModel | null;
+
+  // breadcrumbs
   showAsBreadcrumb: boolean;
   showAsCatalogueBreadcrumb?: boolean | null;
-  showInSnippet?: boolean | null;
+
+  // options modal
   notShowAsAlphabet?: boolean | null;
+
+  // card / snippet visibility
+  showInSnippet?: boolean | null;
+  showInCard: boolean;
+  showInCatalogueFilter: boolean;
+  showInCatalogueNav: boolean;
+  showInCatalogueTitle: boolean;
+  showInCardTitle: boolean;
+  showInSnippetTitle: boolean;
+
+  // name visibility
   showNameInTitle?: boolean | null;
   showNameInSelectedAttributes?: boolean | null;
+  showNameInCardTitle?: boolean | null;
   showNameInSnippetTitle?: boolean | null;
 }
 
@@ -517,10 +538,14 @@ export interface ProductModel extends BaseModel, TimestampModel {
   selectedOptionsSlugs: string[];
   selectedAttributesIds: ObjectId[];
   barcode?: string[] | null;
+  gender: GenderModel;
 
   // types for aggregation
   shopsCount?: number;
   cardPrices?: ProductCardPricesModel;
+  attributes?: AttributeInterface[] | null;
+  categories?: CategoryInterface[] | null;
+  rubric?: RubricInterface | null;
 }
 
 export interface ProductAssetsModel {
@@ -611,10 +636,6 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricOptionModel extends OptionModel {
-  options?: RubricOptionModel[] | null;
-}
-
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
@@ -622,9 +643,6 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   rubricSlug: string;
   categoryId?: ObjectIdModel | null;
   categorySlug?: string | null;
-  showInCatalogueFilter: boolean;
-  showInCatalogueNav: boolean;
-  showInProductAttributes: boolean;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {
@@ -648,6 +666,8 @@ export interface RubricModel extends CountersModel {
   active: boolean;
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
+  showRubricNameInProductTitle?: boolean | null;
+  showCategoryInProductTitle?: boolean | null;
   icon?: string;
   image?: string;
 }
@@ -662,6 +682,7 @@ export interface CategoryModel extends CountersModel {
   rubricSlug: string;
   parentId?: ObjectIdModel | null;
   image?: string | null;
+  variants: OptionVariantsModel;
 }
 
 export interface ShopProductModel extends TimestampModel, CountersModel {
@@ -689,6 +710,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   selectedOptionsSlugs: string[];
   mainImage: string;
   barcode?: string | null;
+  gender: GenderModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

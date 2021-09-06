@@ -150,6 +150,7 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
                                   optionsGroupId: `${attribute.optionsGroupId}`,
                                   optionVariant: 'checkbox',
                                   title: `${attribute.name}`,
+                                  notShowAsAlphabet: true,
                                   onSubmit: (value) => {
                                     updateBlogPostAttribute({
                                       blogPostId: `${post._id}`,

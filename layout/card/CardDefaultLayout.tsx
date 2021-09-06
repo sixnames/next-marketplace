@@ -4,7 +4,7 @@ import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -24,22 +24,18 @@ const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
 
 interface CardTitleInterface {
   productId: any;
-  originalName: string;
-  name?: string | null;
   itemId: string;
   tag?: keyof JSX.IntrinsicElements;
   showArticle: boolean;
+  cardTitle: string;
 }
 
-const CardTitle: React.FC<CardTitleInterface> = ({ name, originalName, showArticle, itemId }) => {
+const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, itemId }) => {
   return (
     <div className='mb-6'>
       <Title className='mb-1' low>
-        {originalName}
+        {cardTitle}
       </Title>
-      {name && name !== LOCALE_NOT_FOUND_FIELD_MESSAGE ? (
-        <div className='text-secondary-text mb-4'>{name}</div>
-      ) : null}
 
       <div className='flex justify-between items-center'>
         {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
@@ -74,6 +70,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     cardContent,
     assets,
     showCardImagesSlider,
+    cardTitle,
   } = useCardData({
     cardData,
     companySlug,
@@ -84,7 +81,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={product.originalName} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
@@ -95,9 +92,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               <CardTitle
                 showArticle={showArticle}
                 productId={product._id}
-                originalName={product.originalName}
                 itemId={product.itemId}
-                name={product.name}
+                cardTitle={cardTitle}
               />
             </div>
 
@@ -121,8 +117,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <div className='relative w-[160px] md:h-[500px] lg:h-[600px]'>
                     <Image
                       src={`${product.mainImage}`}
-                      alt={product.originalName}
-                      title={product.originalName}
+                      alt={cardTitle}
+                      title={cardTitle}
                       layout='fill'
                       objectFit='contain'
                     />
@@ -135,11 +131,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 {/*desktop title*/}
                 <div className='hidden lg:block'>
                   <CardTitle
+                    cardTitle={cardTitle}
                     showArticle={showArticle}
                     productId={product._id}
-                    originalName={product.originalName}
                     itemId={product.itemId}
-                    name={product.name}
                   />
                 </div>
 

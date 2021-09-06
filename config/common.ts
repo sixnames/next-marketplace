@@ -1,6 +1,6 @@
 // ID Counters
 import { Value } from '@react-page/editor';
-import { PageStateModel } from '../db/dbModels';
+import { GenderModel, PageStateModel } from '../db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
@@ -60,11 +60,12 @@ export const DEFAULT_CURRENCY = 'р.';
 export const SECONDARY_CURRENCY = '$';
 
 // GENDER
-export const GENDER_SHE = 'she';
-export const GENDER_HE = 'he';
-export const GENDER_IT = 'it';
-export const GENDER_PLURAL = 'plural';
-export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT, GENDER_PLURAL];
+export const GENDER_SHE = 'she' as GenderModel;
+export const GENDER_HE = 'he' as GenderModel;
+export const GENDER_IT = 'it' as GenderModel;
+export const GENDER_PLURAL = 'plural' as GenderModel;
+export const GENDER_SINGULAR = 'singular' as GenderModel;
+export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT, GENDER_PLURAL, GENDER_SINGULAR];
 
 // Addresses
 export const GEO_POINT_TYPE = 'Point';

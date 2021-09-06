@@ -1,11 +1,14 @@
 import { SORT_DESC } from 'config/common';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getSessionCity, getSessionCompanySlug, getSessionLocale } from 'lib/sessionHelpers';
+import { getTreeFromList } from 'lib/optionsUtils';
+import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
+import { generateProductTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -20,8 +23,7 @@ export interface CatalogueQueryInterface {
 async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { query } = req;
-    const locale = getSessionLocale({ req, res });
-    const city = getSessionCity({ req, res });
+    const { locale, city } = await getRequestParams({ req, res });
     const companySlug = getSessionCompanySlug({ req, res });
     const anyQuery = query as unknown;
     const { productId, companyId } = anyQuery as CatalogueQueryInterface;
@@ -140,6 +142,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   nameI18n: { $first: `$nameI18n` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  selectedOptionsSlugs: {
+                    $first: '$selectedOptionsSlugs',
+                  },
                   minPrice: {
                     $min: '$price',
                   },
@@ -175,53 +180,46 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
 
               // Lookup product attributes
-              /*{
+              ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
+              // Lookup product rubric
+              {
                 $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
+                  from: COL_RUBRICS,
+                  as: 'rubric',
                   let: {
-                    productId: '$_id',
+                    rubricId: '$rubricId',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
+                          $eq: ['$$rubricId', '$_id'],
                         },
                       },
                     },
                     {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
                       },
                     },
                   ],
                 },
-              },*/
+              },
+
+              // final fields
+              {
+                $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
+                },
+              },
             ],
           },
         },
@@ -259,6 +257,23 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         return acc;
       }
 
+      // title
+      const snippetTitle = generateProductTitle({
+        locale,
+        rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+        attributes: product.attributes || [],
+        fallbackTitle: product.originalName,
+        defaultKeyword: product.originalName,
+        defaultGender: product.gender,
+        categories: getTreeFromList({
+          list: product.categories,
+          childrenFieldName: 'categories',
+          locale,
+        }),
+      });
+
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
       const cardPrices = {
@@ -273,6 +288,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           ...product,
           name: getFieldStringLocale(product.nameI18n, locale),
           cardPrices,
+          snippetTitle,
         },
       ];
     }, []);

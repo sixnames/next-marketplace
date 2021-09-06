@@ -1,11 +1,4 @@
-import {
-  ALL_ALPHABETS,
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_COUNTERS_OBJECT,
-  DEFAULT_LOCALE,
-  GENDER_HE,
-} from 'config/common';
+import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
 import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
 import {
   AlphabetListModelType,
@@ -15,10 +8,9 @@ import {
   LanguageModel,
   ObjectIdModel,
   RubricAttributeModel,
-  RubricOptionModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { OptionInterface, RubricOptionInterface } from 'db/uiInterfaces';
+import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -85,15 +77,15 @@ export function getStringValueFromOptionsList({
 }
 
 export interface FindOptionInGroupInterface {
-  options: RubricOptionModel[] | RubricOptionInterface[];
-  condition: (treeOption: RubricOptionModel) => boolean;
+  options: OptionInterface[];
+  condition: (treeOption: OptionInterface) => boolean;
 }
 
 export function findOptionInTree({
   options,
   condition,
-}: FindOptionInGroupInterface): RubricOptionModel | RubricOptionInterface | null | undefined {
-  let option: RubricOptionModel | RubricOptionInterface | null | undefined = null;
+}: FindOptionInGroupInterface): OptionInterface | null | undefined {
+  let option: OptionInterface | null | undefined = null;
   options.forEach((treeOption) => {
     if (option) {
       return;
@@ -132,10 +124,6 @@ export async function castAttributeForRubric({
     attributesIds: attribute._id,
   });
 
-  const visible =
-    attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
-    attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
-
   return {
     ...attribute,
     _id: new ObjectId(),
@@ -145,9 +133,6 @@ export async function castAttributeForRubric({
     categoryId,
     categorySlug,
     attributesGroupId: new ObjectId(attributesGroup?._id),
-    showInCatalogueFilter: visible,
-    showInCatalogueNav: visible,
-    showInProductAttributes: true,
     ...DEFAULT_COUNTERS_OBJECT,
   };
 }

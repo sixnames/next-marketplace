@@ -16,7 +16,6 @@ import {
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
 import {
-  COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -26,13 +25,12 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
+import { productCategoriesPipeline, productConnectionsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -48,11 +46,13 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
+import { generateProductTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 
 const minAssetsListCount = 2;
@@ -134,6 +134,9 @@ export async function getCardData({
             manufacturerSlug: { $first: `$manufacturerSlug` },
             brandSlug: { $first: `$brandSlug` },
             brandCollectionSlug: { $first: `$brandCollectionSlug` },
+            selectedOptionsSlugs: {
+              $first: '$selectedOptionsSlugs',
+            },
             minPrice: {
               $min: '$price',
             },
@@ -160,111 +163,7 @@ export async function getCardData({
           },
         },
 
-        // Lookup product connection
-        {
-          $lookup: {
-            from: COL_PRODUCT_CONNECTIONS,
-            as: 'connections',
-            let: {
-              productId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $in: ['$$productId', '$productsIds'],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_ATTRIBUTES,
-                  as: 'attribute',
-                  let: { attributeId: '$attributeId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$attributeId', '$_id'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  attribute: {
-                    $arrayElemAt: ['$attribute', 0],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_PRODUCT_CONNECTION_ITEMS,
-                  as: 'connectionProducts',
-                  let: {
-                    connectionId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$connectionId', '$$connectionId'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'option',
-                        let: { optionId: '$optionId' },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$optionId', '$_id'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_SHOP_PRODUCTS,
-                        as: 'shopProduct',
-                        let: { productId: '$productId' },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                              citySlug: city,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        option: {
-                          $arrayElemAt: ['$option', 0],
-                        },
-                        shopProduct: {
-                          $arrayElemAt: ['$shopProduct', 0],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-
-        // Get product rubric
+        // Lookup product rubric
         {
           $lookup: {
             from: COL_RUBRICS,
@@ -303,6 +202,8 @@ export async function getCardData({
                   _id: true,
                   slug: true,
                   nameI18n: true,
+                  showRubricNameInProductTitle: true,
+                  showCategoryInProductTitle: true,
                   variant: {
                     $arrayElemAt: ['$variant', 0],
                   },
@@ -357,6 +258,12 @@ export async function getCardData({
             ],
           },
         },
+
+        // Lookup product connection
+        ...productConnectionsPipeline(city),
+
+        // Lookup product categories
+        ...productCategoriesPipeline(),
 
         // Get product attributes
         {
@@ -453,11 +360,6 @@ export async function getCardData({
                         $expr: {
                           $eq: ['$_id', '$$attributesGroupId'],
                         },
-                      },
-                    },
-                    {
-                      $sort: {
-                        views: SORT_DESC,
                       },
                     },
                   ],
@@ -587,6 +489,7 @@ export async function getCardData({
       brand,
       brandCollection,
       manufacturer,
+      categories,
       ...restProduct
     } = product;
 
@@ -887,6 +790,23 @@ export async function getCardData({
         ? getConstantTranslation(`shops.plural.${locale}`)
         : getConstantTranslation(`shops.single.${locale}`);
 
+    // title
+    const cardTitle = generateProductTitle({
+      locale,
+      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      attributes: initialProductAttributes,
+      fallbackTitle: restProduct.originalName,
+      defaultKeyword: restProduct.originalName,
+      defaultGender: restProduct.gender,
+      categories: getTreeFromList({
+        list: categories,
+        childrenFieldName: 'categories',
+        locale,
+      }),
+    });
+
     return {
       product: {
         ...restProduct,
@@ -916,6 +836,7 @@ export async function getCardData({
             }
           : null,
       },
+      cardTitle,
       cardPrices,
       rubric,
       cardLayout: rubric?.variant?.cardLayout || DEFAULT_LAYOUT,

@@ -1,3 +1,4 @@
+import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
@@ -33,8 +34,6 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_CATEGORY_KEY,
@@ -325,7 +324,7 @@ export const CatalogueQueries = extendType({
                     $max: '$available',
                   },
                   selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                    $first: '$selectedOptionsSlugs',
                   },
                   shopProductsIds: {
                     $addToSet: '$_id',
@@ -343,62 +342,50 @@ export const CatalogueQueries = extendType({
               {
                 $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
               },
-              {
-                $addFields: {
-                  shopsCount: { $size: '$shopProductsIds' },
-                  cardPrices: {
-                    min: '$minPrice',
-                    max: '$maxPrice',
-                  },
-                },
-              },
 
-              // Lookup product attributes
+              // Lookup product rubric
               {
                 $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
+                  from: COL_RUBRICS,
+                  as: 'rubric',
                   let: {
-                    productId: '$_id',
+                    rubricId: '$rubricId',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
+                          $eq: ['$$rubricId', '$_id'],
                         },
                       },
                     },
                     {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
                       },
                     },
                   ],
+                },
+              },
+
+              // Lookup product attributes
+              ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
+              {
+                $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
+                  shopsCount: { $size: '$shopProductsIds' },
+                  cardPrices: {
+                    min: '$minPrice',
+                    max: '$maxPrice',
+                  },
                 },
               },
             ])
@@ -520,7 +507,7 @@ export const CatalogueQueries = extendType({
                     $max: '$available',
                   },
                   selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                    $first: '$selectedOptionsSlugs',
                   },
                   shopProductsIds: {
                     $addToSet: '$_id',
@@ -538,62 +525,49 @@ export const CatalogueQueries = extendType({
               {
                 $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
               },
-              {
-                $addFields: {
-                  shopsCount: { $size: '$shopProductsIds' },
-                  cardPrices: {
-                    min: '$minPrice',
-                    max: '$maxPrice',
-                  },
-                },
-              },
-
-              // Lookup product attributes
+              // Lookup product rubric
               {
                 $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
+                  from: COL_RUBRICS,
+                  as: 'rubric',
                   let: {
-                    productId: '$_id',
+                    rubricId: '$rubricId',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: {
-                          $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
+                          $eq: ['$$rubricId', '$_id'],
                         },
                       },
                     },
                     {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                          selectedOptionsIds: '$selectedOptionsIds',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
                       },
                     },
                   ],
+                },
+              },
+
+              // Lookup product attributes
+              ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
+              {
+                $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
+                  shopsCount: { $size: '$shopProductsIds' },
+                  cardPrices: {
+                    min: '$minPrice',
+                    max: '$maxPrice',
+                  },
                 },
               },
             ])

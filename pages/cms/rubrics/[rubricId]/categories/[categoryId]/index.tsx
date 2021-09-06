@@ -4,8 +4,9 @@ import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
+import { GENDER_ENUMS, ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { OptionVariantsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -46,13 +47,21 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, image } = category;
+  const { _id = '', nameI18n, rubricId, rubric, gender, image, variants } = category;
+  const variantKeys = Object.keys(variants);
 
   const initialValues: UpdateCategoryInput = {
     rubricId,
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
+    variants:
+      variantKeys.length > 0
+        ? variants
+        : GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
+            acc[gender] = {};
+            return acc;
+          }, {}),
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

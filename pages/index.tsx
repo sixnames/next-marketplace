@@ -14,7 +14,8 @@ import {
   CATALOGUE_TOP_FILTERS_LIMIT,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -27,7 +28,8 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
-import { getCatalogueTitle } from 'lib/catalogueUtils';
+import { getTreeFromList } from 'lib/optionsUtils';
+import { generateProductTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -440,7 +442,7 @@ export async function getServerSideProps(
             $max: '$available',
           },
           selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
+            $first: '$selectedOptionsSlugs',
           },
           shopProductsIds: {
             $addToSet: '$_id',
@@ -458,8 +460,45 @@ export async function getServerSideProps(
       {
         $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
       },
+
+      // Lookup product attributes
+      ...productAttributesPipeline,
+
+      // Lookup product categories
+      ...productCategoriesPipeline(),
+
+      // Lookup product rubric
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubric',
+          let: {
+            rubricId: '$rubricId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$_id'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: true,
+                slug: true,
+                nameI18n: true,
+                showRubricNameInProductTitle: true,
+                showCategoryInProductTitle: true,
+              },
+            },
+          ],
+        },
+      },
+
       {
         $addFields: {
+          rubric: { $arrayElemAt: ['$rubric', 0] },
           shopsCount: { $size: '$shopProductsIds' },
           cardPrices: {
             min: '$minPrice',
@@ -470,8 +509,25 @@ export async function getServerSideProps(
     ])
     .toArray();
 
-  const products = shopProductsAggregation.map((product) => {
-    const { attributes, ...restProduct } = product;
+  const topProducts = shopProductsAggregation.map((product) => {
+    const { attributes, categories, rubric, ...restProduct } = product;
+
+    // title
+    const snippetTitle = generateProductTitle({
+      locale: sessionLocale,
+      rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
+      showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
+      attributes: attributes || [],
+      fallbackTitle: restProduct.originalName,
+      defaultKeyword: restProduct.originalName,
+      defaultGender: restProduct.gender,
+      categories: getTreeFromList({
+        list: categories,
+        childrenFieldName: 'categories',
+        locale: sessionLocale,
+      }),
+    });
 
     // prices
     const minPrice = noNaN(product.cardPrices?.min);
@@ -503,6 +559,7 @@ export async function getServerSideProps(
       name: getFieldStringLocale(product.nameI18n, sessionLocale),
       cardPrices,
       connections: [],
+      snippetTitle,
     };
   });
 
@@ -562,14 +619,18 @@ export async function getServerSideProps(
       }
 
       options.forEach((option) => {
-        const name = getCatalogueTitle({
-          selectedFilters: [
+        const name = generateTitle({
+          attributes: [
             {
-              attribute,
+              ...attribute,
               options: [option],
             },
           ],
-          rubricCatalogueTitleConfig: catalogueTitle,
+          positionFieldName: 'positioningInTitle',
+          defaultGender: catalogueTitle.gender,
+          fallbackTitle: getFieldStringLocale(catalogueTitle.defaultTitleI18n, sessionLocale),
+          defaultKeyword: getFieldStringLocale(catalogueTitle.keywordI18n, sessionLocale),
+          prefix: getFieldStringLocale(catalogueTitle.prefixI18n, sessionLocale),
           locale: sessionLocale,
           currency: initialData.currency,
         });
@@ -624,7 +685,7 @@ export async function getServerSideProps(
     props: {
       ...props,
       topFilters: castDbData(topFilters),
-      topProducts: castDbData(products),
+      topProducts: castDbData(topProducts),
       topShops: castDbData(topShops),
       mobileTopFilters: castDbData(mobileTopFilters),
       sliderPages,

@@ -37,7 +37,6 @@ import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
   deleteAttributesGroupFromCategorySchema,
-  updateAttributesGroupInCategorySchema,
   updateCategorySchema,
 } from 'validation/categorySchema';
 
@@ -57,6 +56,7 @@ export const CreateCategoryInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
+    t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
     });
@@ -69,6 +69,7 @@ export const UpdateCategoryInput = inputObjectType({
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
     t.nonNull.objectId('rubricId');
+    t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
     });
@@ -589,274 +590,6 @@ export const CategoryMutations = extendType({
           };
         } finally {
           await session.endSession();
-        }
-      },
-    });
-
-    // Should toggle attribute in the category attribute showInCatalogueFilter field
-    t.nonNull.field('toggleAttributeInCategoryCatalogue', {
-      type: 'CategoryPayload',
-      description: 'Should toggle attribute in the category attribute showInCatalogueFilter field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInCategoryInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateCategory',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInCategorySchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const categoryAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { categoryId, attributeId } = input;
-
-          // Check category and attribute availability
-          const category = await categoriesCollection.findOne({ _id: categoryId });
-          if (!category) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-          const categoryAttribute = await categoryAttributesCollection.findOne({
-            _id: attributeId,
-          });
-          if (!categoryAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update category attribute
-          const updatedCategoryAttributeResult =
-            await categoryAttributesCollection.findOneAndUpdate(
-              { _id: attributeId },
-              {
-                $set: {
-                  showInCatalogueFilter: !categoryAttribute.showInCatalogueFilter,
-                },
-              },
-            );
-          if (!updatedCategoryAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('categories.updateAttributesGroup.success'),
-            payload: category,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should toggle attribute in the category attribute showInCatalogueNav field
-    t.nonNull.field('toggleAttributeInCategoryNav', {
-      type: 'CategoryPayload',
-      description: 'Should toggle attribute in the category attribute showInCatalogueNav field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInCategoryInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateCategory',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInCategorySchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const categoryAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { categoryId, attributeId } = input;
-
-          // Check category and attribute availability
-          const category = await categoriesCollection.findOne({ _id: categoryId });
-          if (!category) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-          const categoryAttribute = await categoryAttributesCollection.findOne({
-            _id: attributeId,
-          });
-          if (!categoryAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update category attribute
-          const updatedCategoryAttributeResult =
-            await categoryAttributesCollection.findOneAndUpdate(
-              { _id: attributeId },
-              {
-                $set: {
-                  showInCatalogueNav: !categoryAttribute.showInCatalogueNav,
-                },
-              },
-            );
-          if (!updatedCategoryAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('categories.updateAttributesGroup.success'),
-            payload: category,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should toggle attribute in the category attribute showInProductAttributes field
-    t.nonNull.field('toggleAttributeInCategoryProductAttributes', {
-      type: 'CategoryPayload',
-      description:
-        'Should toggle attribute in the category attribute showInProductAttributes field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInCategoryInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateCategory',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInCategorySchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const categoryAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { categoryId, attributeId } = input;
-
-          // Check category and attribute availability
-          const category = await categoriesCollection.findOne({ _id: categoryId });
-          if (!category) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-          const categoryAttribute = await categoryAttributesCollection.findOne({
-            _id: attributeId,
-          });
-          if (!categoryAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update category attribute
-          const updatedCategoryAttributeResult =
-            await categoryAttributesCollection.findOneAndUpdate(
-              { _id: attributeId },
-              {
-                $set: {
-                  showInProductAttributes: !categoryAttribute.showInProductAttributes,
-                },
-              },
-            );
-          if (!updatedCategoryAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('categories.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('categories.updateAttributesGroup.success'),
-            payload: category,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
         }
       },
     });

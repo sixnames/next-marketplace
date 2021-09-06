@@ -32,17 +32,24 @@ export type AddAttributeToGroupInput = {
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
-  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
-  showNameInTitle?: Maybe<Scalars['Boolean']>;
-  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
-  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
-  showAsBreadcrumb: Scalars['Boolean'];
-  showAsCatalogueBreadcrumb: Scalars['Boolean'];
-  showInSnippet: Scalars['Boolean'];
-  showInCard: Scalars['Boolean'];
-  positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
+  positioningInTitle?: Maybe<Scalars['JSONObject']>;
+  positioningInCardTitle?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb: Scalars['Boolean'];
+  showAsCatalogueBreadcrumb: Scalars['Boolean'];
+  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showInSnippet: Scalars['Boolean'];
+  showInCard: Scalars['Boolean'];
+  showInCatalogueFilter: Scalars['Boolean'];
+  showInCatalogueNav: Scalars['Boolean'];
+  showInCatalogueTitle: Scalars['Boolean'];
+  showInCardTitle: Scalars['Boolean'];
+  showInSnippetTitle: Scalars['Boolean'];
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInCardTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
 };
 
 export type AddAttributesGroupToCategoryInput = {
@@ -505,6 +512,7 @@ export type CopyProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type Country = {
@@ -537,6 +545,7 @@ export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 
@@ -623,6 +632,7 @@ export type CreateProductInput = {
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
+  gender: Gender;
 };
 
 export type CreateProductWithSyncErrorInput = {
@@ -643,6 +653,8 @@ export type CreateRoleInput = {
 export type CreateRubricInput = {
   nameI18n: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
+  showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
+  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
   variantId: Scalars['ObjectId'];
@@ -775,7 +787,8 @@ export enum Gender {
   He = 'he',
   She = 'she',
   It = 'it',
-  Plural = 'plural'
+  Plural = 'plural',
+  Singular = 'singular'
 }
 
 export type GetAllRubricsInput = {
@@ -971,12 +984,6 @@ export type Mutation = {
   deleteCategory: CategoryPayload;
   /** Should add attributes group to the category */
   addAttributesGroupToCategory: CategoryPayload;
-  /** Should toggle attribute in the category attribute showInCatalogueFilter field */
-  toggleAttributeInCategoryCatalogue: CategoryPayload;
-  /** Should toggle attribute in the category attribute showInCatalogueNav field */
-  toggleAttributeInCategoryNav: CategoryPayload;
-  /** Should toggle attribute in the category attribute showInProductAttributes field */
-  toggleAttributeInCategoryProductAttributes: CategoryPayload;
   /** Should delete attributes group from category */
   deleteAttributesGroupFromCategory: CategoryPayload;
   /** Should create company */
@@ -1125,12 +1132,6 @@ export type Mutation = {
   deleteRubric: RubricPayload;
   /** Should add attributes group to the rubric */
   addAttributesGroupToRubric: RubricPayload;
-  /** Should toggle attribute in the rubric attribute showInCatalogueFilter field */
-  toggleAttributeInRubricCatalogue: RubricPayload;
-  /** Should toggle attribute in the rubric attribute showInCatalogueNav field */
-  toggleAttributeInRubricNav: RubricPayload;
-  /** Should toggle attribute in the rubric attribute showInProductAttributes field */
-  toggleAttributeInProductAttributes: RubricPayload;
   /** Should delete attributes group from rubric */
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should remove product from rubric */
@@ -1315,21 +1316,6 @@ export type MutationDeleteCategoryArgs = {
 
 export type MutationAddAttributesGroupToCategoryArgs = {
   input: AddAttributesGroupToCategoryInput;
-};
-
-
-export type MutationToggleAttributeInCategoryCatalogueArgs = {
-  input: UpdateAttributeInCategoryInput;
-};
-
-
-export type MutationToggleAttributeInCategoryNavArgs = {
-  input: UpdateAttributeInCategoryInput;
-};
-
-
-export type MutationToggleAttributeInCategoryProductAttributesArgs = {
-  input: UpdateAttributeInCategoryInput;
 };
 
 
@@ -1703,21 +1689,6 @@ export type MutationAddAttributesGroupToRubricArgs = {
 };
 
 
-export type MutationToggleAttributeInRubricCatalogueArgs = {
-  input: UpdateAttributeInRubricInput;
-};
-
-
-export type MutationToggleAttributeInRubricNavArgs = {
-  input: UpdateAttributeInRubricInput;
-};
-
-
-export type MutationToggleAttributeInProductAttributesArgs = {
-  input: UpdateAttributeInRubricInput;
-};
-
-
 export type MutationDeleteAttributesGroupFromRubricArgs = {
   input: DeleteAttributesGroupFromRubricInput;
 };
@@ -1841,11 +1812,6 @@ export type OptionAlphabetInput = {
   optionsGroupId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
   slugs?: Maybe<Array<Scalars['String']>>;
-};
-
-export type OptionVariantInput = {
-  value: Scalars['JSONObject'];
-  gender: Gender;
 };
 
 export type OptionsAlphabetList = AlphabetList & {
@@ -2066,6 +2032,7 @@ export type Product = Base & Timestamp & {
   rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
   mainImage: Scalars['String'];
+  snippetTitle: Scalars['String'];
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
@@ -2592,7 +2559,6 @@ export type RubricAttribute = {
   _id: Scalars['ObjectId'];
   showInCatalogueFilter: Scalars['Boolean'];
   showInCatalogueNav: Scalars['Boolean'];
-  showInProductAttributes: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   slug?: Maybe<Scalars['String']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
@@ -2871,17 +2837,24 @@ export type UpdateAttributeInGroupInput = {
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   metricId?: Maybe<Scalars['ObjectId']>;
   capitalise?: Maybe<Scalars['Boolean']>;
-  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
-  showNameInTitle?: Maybe<Scalars['Boolean']>;
-  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
-  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
-  showAsBreadcrumb: Scalars['Boolean'];
-  showAsCatalogueBreadcrumb: Scalars['Boolean'];
-  showInSnippet: Scalars['Boolean'];
-  showInCard: Scalars['Boolean'];
-  positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
+  positioningInTitle?: Maybe<Scalars['JSONObject']>;
+  positioningInCardTitle?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb: Scalars['Boolean'];
+  showAsCatalogueBreadcrumb: Scalars['Boolean'];
+  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
+  showInSnippet: Scalars['Boolean'];
+  showInCard: Scalars['Boolean'];
+  showInCatalogueFilter: Scalars['Boolean'];
+  showInCatalogueNav: Scalars['Boolean'];
+  showInCatalogueTitle: Scalars['Boolean'];
+  showInCardTitle: Scalars['Boolean'];
+  showInSnippetTitle: Scalars['Boolean'];
+  showNameInTitle?: Maybe<Scalars['Boolean']>;
+  showNameInCardTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateAttributeInRubricInput = {
@@ -2905,6 +2878,7 @@ export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   rubricId: Scalars['ObjectId'];
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
 };
 
@@ -3103,6 +3077,7 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type UpdateProductManufacturerInput = {
@@ -3178,6 +3153,8 @@ export type UpdateRoleRuleInput = {
 export type UpdateRubricInput = {
   rubricId: Scalars['ObjectId'];
   capitalise?: Maybe<Scalars['Boolean']>;
+  showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
+  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
@@ -3442,45 +3419,6 @@ export type DeleteProductFromRubricMutationVariables = Exact<{
 export type DeleteProductFromRubricMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInRubricCatalogueMutationVariables = Exact<{
-  input: UpdateAttributeInRubricInput;
-}>;
-
-
-export type ToggleAttributeInRubricCatalogueMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInRubricCatalogue: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInRubricNavMutationVariables = Exact<{
-  input: UpdateAttributeInRubricInput;
-}>;
-
-
-export type ToggleAttributeInRubricNavMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInRubricNav: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInProductAttributesMutationVariables = Exact<{
-  input: UpdateAttributeInRubricInput;
-}>;
-
-
-export type ToggleAttributeInProductAttributesMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInProductAttributes: (
     { __typename?: 'RubricPayload' }
     & Pick<RubricPayload, 'success' | 'message'>
   ) }
@@ -3878,45 +3816,6 @@ export type DeleteCategoryMutationVariables = Exact<{
 export type DeleteCategoryMutation = (
   { __typename?: 'Mutation' }
   & { deleteCategory: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInCategoryCatalogueMutationVariables = Exact<{
-  input: UpdateAttributeInCategoryInput;
-}>;
-
-
-export type ToggleAttributeInCategoryCatalogueMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInCategoryCatalogue: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInCategoryNavMutationVariables = Exact<{
-  input: UpdateAttributeInCategoryInput;
-}>;
-
-
-export type ToggleAttributeInCategoryNavMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInCategoryNav: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleAttributeInCategoryProductAttributesMutationVariables = Exact<{
-  input: UpdateAttributeInCategoryInput;
-}>;
-
-
-export type ToggleAttributeInCategoryProductAttributesMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleAttributeInCategoryProductAttributes: (
     { __typename?: 'CategoryPayload' }
     & Pick<CategoryPayload, 'success' | 'message'>
   ) }
@@ -5310,7 +5209,7 @@ export type GetAllRubricVariantsQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount' | 'snippetTitle'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
@@ -5839,6 +5738,7 @@ export const ProductSnippetFragmentDoc = gql`
   rubricSlug
   mainImage
   shopsCount
+  snippetTitle
   cardPrices {
     _id
     min
@@ -6203,108 +6103,6 @@ export function useDeleteProductFromRubricMutation(baseOptions?: Apollo.Mutation
 export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationResult = Apollo.MutationResult<DeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
-export const ToggleAttributeInRubricCatalogueDocument = gql`
-    mutation ToggleAttributeInRubricCatalogue($input: UpdateAttributeInRubricInput!) {
-  toggleAttributeInRubricCatalogue(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInRubricCatalogueMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
-
-/**
- * __useToggleAttributeInRubricCatalogueMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInRubricCatalogueMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInRubricCatalogueMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInRubricCatalogueMutation, { data, loading, error }] = useToggleAttributeInRubricCatalogueMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInRubricCatalogueMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>(ToggleAttributeInRubricCatalogueDocument, options);
-      }
-export type ToggleAttributeInRubricCatalogueMutationHookResult = ReturnType<typeof useToggleAttributeInRubricCatalogueMutation>;
-export type ToggleAttributeInRubricCatalogueMutationResult = Apollo.MutationResult<ToggleAttributeInRubricCatalogueMutation>;
-export type ToggleAttributeInRubricCatalogueMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
-export const ToggleAttributeInRubricNavDocument = gql`
-    mutation ToggleAttributeInRubricNav($input: UpdateAttributeInRubricInput!) {
-  toggleAttributeInRubricNav(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInRubricNavMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
-
-/**
- * __useToggleAttributeInRubricNavMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInRubricNavMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInRubricNavMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInRubricNavMutation, { data, loading, error }] = useToggleAttributeInRubricNavMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInRubricNavMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>(ToggleAttributeInRubricNavDocument, options);
-      }
-export type ToggleAttributeInRubricNavMutationHookResult = ReturnType<typeof useToggleAttributeInRubricNavMutation>;
-export type ToggleAttributeInRubricNavMutationResult = Apollo.MutationResult<ToggleAttributeInRubricNavMutation>;
-export type ToggleAttributeInRubricNavMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
-export const ToggleAttributeInProductAttributesDocument = gql`
-    mutation ToggleAttributeInProductAttributes($input: UpdateAttributeInRubricInput!) {
-  toggleAttributeInProductAttributes(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInProductAttributesMutationFn = Apollo.MutationFunction<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>;
-
-/**
- * __useToggleAttributeInProductAttributesMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInProductAttributesMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInProductAttributesMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInProductAttributesMutation, { data, loading, error }] = useToggleAttributeInProductAttributesMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInProductAttributesMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>(ToggleAttributeInProductAttributesDocument, options);
-      }
-export type ToggleAttributeInProductAttributesMutationHookResult = ReturnType<typeof useToggleAttributeInProductAttributesMutation>;
-export type ToggleAttributeInProductAttributesMutationResult = Apollo.MutationResult<ToggleAttributeInProductAttributesMutation>;
-export type ToggleAttributeInProductAttributesMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInProductAttributesMutation, ToggleAttributeInProductAttributesMutationVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductsPaginationInput!) {
   getProductsList(input: $input) {
@@ -7286,108 +7084,6 @@ export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
 export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
 export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
-export const ToggleAttributeInCategoryCatalogueDocument = gql`
-    mutation ToggleAttributeInCategoryCatalogue($input: UpdateAttributeInCategoryInput!) {
-  toggleAttributeInCategoryCatalogue(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInCategoryCatalogueMutationFn = Apollo.MutationFunction<ToggleAttributeInCategoryCatalogueMutation, ToggleAttributeInCategoryCatalogueMutationVariables>;
-
-/**
- * __useToggleAttributeInCategoryCatalogueMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInCategoryCatalogueMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInCategoryCatalogueMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInCategoryCatalogueMutation, { data, loading, error }] = useToggleAttributeInCategoryCatalogueMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInCategoryCatalogueMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInCategoryCatalogueMutation, ToggleAttributeInCategoryCatalogueMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInCategoryCatalogueMutation, ToggleAttributeInCategoryCatalogueMutationVariables>(ToggleAttributeInCategoryCatalogueDocument, options);
-      }
-export type ToggleAttributeInCategoryCatalogueMutationHookResult = ReturnType<typeof useToggleAttributeInCategoryCatalogueMutation>;
-export type ToggleAttributeInCategoryCatalogueMutationResult = Apollo.MutationResult<ToggleAttributeInCategoryCatalogueMutation>;
-export type ToggleAttributeInCategoryCatalogueMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInCategoryCatalogueMutation, ToggleAttributeInCategoryCatalogueMutationVariables>;
-export const ToggleAttributeInCategoryNavDocument = gql`
-    mutation ToggleAttributeInCategoryNav($input: UpdateAttributeInCategoryInput!) {
-  toggleAttributeInCategoryNav(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInCategoryNavMutationFn = Apollo.MutationFunction<ToggleAttributeInCategoryNavMutation, ToggleAttributeInCategoryNavMutationVariables>;
-
-/**
- * __useToggleAttributeInCategoryNavMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInCategoryNavMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInCategoryNavMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInCategoryNavMutation, { data, loading, error }] = useToggleAttributeInCategoryNavMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInCategoryNavMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInCategoryNavMutation, ToggleAttributeInCategoryNavMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInCategoryNavMutation, ToggleAttributeInCategoryNavMutationVariables>(ToggleAttributeInCategoryNavDocument, options);
-      }
-export type ToggleAttributeInCategoryNavMutationHookResult = ReturnType<typeof useToggleAttributeInCategoryNavMutation>;
-export type ToggleAttributeInCategoryNavMutationResult = Apollo.MutationResult<ToggleAttributeInCategoryNavMutation>;
-export type ToggleAttributeInCategoryNavMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInCategoryNavMutation, ToggleAttributeInCategoryNavMutationVariables>;
-export const ToggleAttributeInCategoryProductAttributesDocument = gql`
-    mutation ToggleAttributeInCategoryProductAttributes($input: UpdateAttributeInCategoryInput!) {
-  toggleAttributeInCategoryProductAttributes(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleAttributeInCategoryProductAttributesMutationFn = Apollo.MutationFunction<ToggleAttributeInCategoryProductAttributesMutation, ToggleAttributeInCategoryProductAttributesMutationVariables>;
-
-/**
- * __useToggleAttributeInCategoryProductAttributesMutation__
- *
- * To run a mutation, you first call `useToggleAttributeInCategoryProductAttributesMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleAttributeInCategoryProductAttributesMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleAttributeInCategoryProductAttributesMutation, { data, loading, error }] = useToggleAttributeInCategoryProductAttributesMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleAttributeInCategoryProductAttributesMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInCategoryProductAttributesMutation, ToggleAttributeInCategoryProductAttributesMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleAttributeInCategoryProductAttributesMutation, ToggleAttributeInCategoryProductAttributesMutationVariables>(ToggleAttributeInCategoryProductAttributesDocument, options);
-      }
-export type ToggleAttributeInCategoryProductAttributesMutationHookResult = ReturnType<typeof useToggleAttributeInCategoryProductAttributesMutation>;
-export type ToggleAttributeInCategoryProductAttributesMutationResult = Apollo.MutationResult<ToggleAttributeInCategoryProductAttributesMutation>;
-export type ToggleAttributeInCategoryProductAttributesMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInCategoryProductAttributesMutation, ToggleAttributeInCategoryProductAttributesMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {

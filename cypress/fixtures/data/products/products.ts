@@ -5,6 +5,7 @@ import {
   FILTER_SEPARATOR,
   CATEGORY_SLUG_PREFIX,
   ID_COUNTER_DIGITS,
+  GENDER_IT,
 } from '../../../../config/common';
 import { ObjectIdModel, OptionModel, ProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -267,6 +268,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       barcode: [itemId, `${itemId}9999`],
       slug: generateSlug(name),
       originalName: name,
+      gender: GENDER_IT,
       nameI18n: {
         ru: name,
       },

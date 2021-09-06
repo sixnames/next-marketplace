@@ -26,30 +26,3 @@ export const DELETE_CATEGORY = gql`
     }
   }
 `;
-
-export const TOGGLE_ATTRIBUTE_IN_CATEGORY_CATALOGUE = gql`
-  mutation ToggleAttributeInCategoryCatalogue($input: UpdateAttributeInCategoryInput!) {
-    toggleAttributeInCategoryCatalogue(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const TOGGLE_ATTRIBUTE_IN_CATEGORY_NAV = gql`
-  mutation ToggleAttributeInCategoryNav($input: UpdateAttributeInCategoryInput!) {
-    toggleAttributeInCategoryNav(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const TOGGLE_ATTRIBUTE_IN_CATEGORY_PRODUCT_ATTRIBUTES = gql`
-  mutation ToggleAttributeInCategoryProductAttributes($input: UpdateAttributeInCategoryInput!) {
-    toggleAttributeInCategoryProductAttributes(input: $input) {
-      success
-      message
-    }
-  }
-`;

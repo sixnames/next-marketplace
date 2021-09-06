@@ -9,6 +9,7 @@ export const productSnippedFragment = gql`
     rubricSlug
     mainImage
     shopsCount
+    snippetTitle
     cardPrices {
       _id
       min

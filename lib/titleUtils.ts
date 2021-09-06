@@ -19,6 +19,7 @@ interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {
 
 interface GenerateTitleInterface {
   positionFieldName: 'positioningInTitle' | 'positioningCardInTitle';
+  attributeVisibilityFieldName: 'showInCatalogueTitle' | 'showInCardTitle' | 'showInSnippetTitle';
   attributes: TitleAttributeInterface[];
   fallbackTitle: string;
   prefix?: string | null;
@@ -39,6 +40,7 @@ export function generateTitle({
   currency,
   capitaliseKeyWord,
   positionFieldName,
+  attributeVisibilityFieldName,
 }: GenerateTitleInterface): string {
   // return default title if no filters selected
   if (attributes.length < 1) {
@@ -91,10 +93,13 @@ export function generateTitle({
 
   // collect title parts
   attributes.forEach((attribute) => {
-    const { nameI18n, options, capitalise, slug, positioningInTitle, metric, showNameInTitle } =
-      attribute;
+    const { nameI18n, options, capitalise, slug, positioningInTitle, metric } = attribute;
     const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
-    const attributeName = showNameInTitle ? `${getFieldStringLocale(nameI18n, locale)} ` : '';
+    const visible = get(attribute, attributeVisibilityFieldName);
+    if (!visible) {
+      return;
+    }
+    const attributeName = `${getFieldStringLocale(nameI18n, locale)} `;
     const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
 
     // attribute metric value
@@ -216,7 +221,9 @@ export function generateProductTitlePrefix({
 
 interface GenerateProductTitleInterface
   extends GenerateProductTitlePrefixInterface,
-    Omit<GenerateTitleInterface, 'positionFieldName' | 'prefix' | 'capitaliseKeyWord'> {}
+    Omit<GenerateTitleInterface, 'positionFieldName' | 'prefix' | 'capitaliseKeyWord'> {
+  attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
+}
 
 export function generateProductTitle({
   locale,
@@ -229,6 +236,7 @@ export function generateProductTitle({
   fallbackTitle,
   defaultKeyword,
   currency,
+  attributeVisibilityFieldName,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
     locale,
@@ -248,5 +256,6 @@ export function generateProductTitle({
     currency,
     capitaliseKeyWord: true,
     positionFieldName: 'positioningCardInTitle',
+    attributeVisibilityFieldName,
   });
 }

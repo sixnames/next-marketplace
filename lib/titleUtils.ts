@@ -20,6 +20,10 @@ interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {
 interface GenerateTitleInterface {
   positionFieldName: 'positioningInTitle' | 'positioningInCardTitle';
   attributeVisibilityFieldName: 'showInCatalogueTitle' | 'showInCardTitle' | 'showInSnippetTitle';
+  attributeNameVisibilityFieldName:
+    | 'showNameInTitle'
+    | 'showNameInCardTitle'
+    | 'showNameInSnippetTitle';
   attributes: TitleAttributeInterface[];
   fallbackTitle: string;
   prefix?: string | null;
@@ -41,6 +45,7 @@ export function generateTitle({
   capitaliseKeyWord,
   positionFieldName,
   attributeVisibilityFieldName,
+  attributeNameVisibilityFieldName,
 }: GenerateTitleInterface): string {
   // return default title if no filters selected
   if (attributes.length < 1) {
@@ -100,10 +105,13 @@ export function generateTitle({
       return;
     }
 
-    const attributeName = `${getFieldStringLocale(nameI18n, locale)} `;
+    const attributeNameVisibilityField = get(attribute, attributeNameVisibilityFieldName);
+    const attributeName = attributeNameVisibilityField
+      ? `${getFieldStringLocale(nameI18n, locale)} `
+      : '';
     const attributePositionField = get(attribute, positionFieldName);
     const positionInTitleForCurrentLocale = getFieldStringLocale(attributePositionField, locale);
-    console.log(positionInTitleForCurrentLocale);
+
     // attribute metric value
     let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
     if (isPrice && currency) {
@@ -244,6 +252,7 @@ export function generateProductTitle({
   defaultKeyword,
   currency,
   attributeVisibilityFieldName,
+  attributeNameVisibilityFieldName,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
     locale,
@@ -264,6 +273,7 @@ export function generateProductTitle({
     currency,
     capitaliseKeyWord: true,
     positionFieldName: 'positioningInCardTitle',
+    attributeNameVisibilityFieldName,
     attributeVisibilityFieldName,
   });
 }

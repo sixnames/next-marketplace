@@ -516,6 +516,7 @@ export async function getServerSideProps(
     // title
     const snippetTitle = generateProductTitle({
       locale: sessionLocale,
+      attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
       attributeVisibilityFieldName: 'showInSnippetTitle',
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
@@ -628,6 +629,7 @@ export async function getServerSideProps(
               options: [option],
             },
           ],
+          attributeNameVisibilityFieldName: 'showNameInTitle',
           positionFieldName: 'positioningInTitle',
           attributeVisibilityFieldName: 'showInCatalogueTitle',
           defaultGender: catalogueTitle.gender,

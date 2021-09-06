@@ -194,14 +194,22 @@ export function generateProductTitlePrefix({
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
   const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
+  const categoryNames: string[] = [];
 
-  console.log({
-    locale,
-    categories,
-    showCategoryInProductTitle,
-  });
+  // category names as secondary prefix
+  function getCategoryNames(category: CategoryInterface) {
+    if (showCategoryInProductTitle) {
+      const name = getFieldStringLocale(category.nameI18n, locale);
+      if (name) {
+        categoryNames.push(name);
+      }
+      return (category.categories || []).forEach(getCategoryNames);
+    }
+    return;
+  }
+  (categories || []).forEach(getCategoryNames);
 
-  const prefixArray = [rubricPrefix];
+  const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
   return filteredArray.join(' ');
 }

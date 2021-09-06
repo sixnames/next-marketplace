@@ -67,6 +67,7 @@ import {
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateProductTitle, generateTitle } from 'lib/titleUtils';
@@ -792,6 +793,9 @@ export const getCatalogueData = async ({
 
                 // Lookup product attributes
                 ...productAttributesPipeline,
+
+                // Lookup product categories
+                ...productCategoriesPipeline(),
               ],
 
               // get prices list
@@ -989,6 +993,12 @@ export const getCatalogueData = async ({
         max: `${maxPrice}`,
       };
 
+      const categories = getTreeFromList({
+        list: product.categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
       // title
       const snippetTitle = generateProductTitle({
         locale,
@@ -996,6 +1006,7 @@ export const getCatalogueData = async ({
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
         attributes: attributes || [],
+        categories,
         fallbackTitle: restProduct.originalName,
         defaultKeyword: restProduct.originalName,
         defaultGender: restProduct.gender,

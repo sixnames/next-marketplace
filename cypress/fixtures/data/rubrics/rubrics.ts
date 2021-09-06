@@ -2,6 +2,13 @@ import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
 import { GenderModel, RubricModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
+const booleans = {
+  capitalise: true,
+  active: true,
+  showRubricNameInProductTitle: true,
+  showCategoryInProductTitle: true,
+};
+
 const rubrics: RubricModel[] = [
   {
     _id: getObjectId('rubric Шампанское'),
@@ -27,8 +34,8 @@ const rubrics: RubricModel[] = [
       },
       gender: GENDER_IT as GenderModel,
     },
-    active: true,
     variantId: getObjectId('rubricVariant alcohol'),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -55,8 +62,8 @@ const rubrics: RubricModel[] = [
       },
       gender: GENDER_IT as GenderModel,
     },
-    active: true,
     variantId: getObjectId('rubricVariant water'),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -83,8 +90,8 @@ const rubrics: RubricModel[] = [
       },
       gender: GENDER_IT as GenderModel,
     },
-    active: true,
     variantId: getObjectId('rubricVariant alcohol'),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

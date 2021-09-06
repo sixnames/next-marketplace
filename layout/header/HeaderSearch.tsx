@@ -74,13 +74,13 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
       <div className='md:col-span-10 grid gap-6 items-stretch md:grid-cols-2 xl:grid-cols-4'>
         {products.map((product) => {
           return (
-            <div key={`${product._id}`}>
-              <ProductSnippetGridBigImage
-                showSnippetBackground
-                product={product}
-                testId={`search-product`}
-              />
-            </div>
+            <ProductSnippetGridBigImage
+              gridCatalogueColumns={'full'}
+              showSnippetBackground
+              product={product}
+              testId={`search-product`}
+              key={`${product._id}`}
+            />
           );
         })}
       </div>

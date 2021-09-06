@@ -25,6 +25,7 @@ import {
   ROUTE_CMS_NAV_GROUP,
   ROUTE_CONSOLE_NAV_GROUP,
   GENDER_PLURAL,
+  GENDER_SINGULAR,
 } from './common';
 
 export const constantTranslations = {
@@ -123,6 +124,10 @@ export const constantTranslations = {
       [GENDER_PLURAL]: {
         [DEFAULT_LOCALE]: 'Множественное число',
         [SECONDARY_LOCALE]: 'Plural',
+      },
+      [GENDER_SINGULAR]: {
+        [DEFAULT_LOCALE]: 'Единственное число',
+        [SECONDARY_LOCALE]: 'Singular',
       },
     },
     attributeVariants: {

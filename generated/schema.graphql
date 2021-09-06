@@ -8,11 +8,18 @@ input AddAttributeToGroupInput {
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
+  positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInCardTitle: Boolean!
+  showInCatalogueFilter: Boolean!
+  showInCatalogueNav: Boolean!
+  showInCatalogueTitle: Boolean!
   showInSnippet: Boolean!
+  showInSnippetTitle: Boolean!
+  showNameInCardTitle: Boolean
   showNameInSelectedAttributes: Boolean
   showNameInSnippetTitle: Boolean
   showNameInTitle: Boolean
@@ -461,6 +468,7 @@ input CopyProductInput {
   active: Boolean!
   barcode: [String!]
   descriptionI18n: JSONObject!
+  gender: Gender!
   nameI18n: JSONObject
   originalName: String!
   productId: ObjectId!
@@ -495,6 +503,7 @@ input CreateCategoryInput {
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
+  variants: JSONObject!
 }
 
 input CreateCompanyInput {
@@ -577,6 +586,7 @@ input CreateProductInput {
   active: Boolean!
   barcode: [String!]
   descriptionI18n: JSONObject!
+  gender: Gender!
   nameI18n: JSONObject
   originalName: String!
   rubricId: ObjectId!
@@ -603,6 +613,8 @@ input CreateRubricInput {
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   shortDescriptionI18n: JSONObject!
+  showCategoryInProductTitle: Boolean
+  showRubricNameInProductTitle: Boolean
   variantId: ObjectId!
 }
 
@@ -740,6 +752,7 @@ enum Gender {
   it
   plural
   she
+  singular
 }
 
 input GetAllRubricsInput {
@@ -1244,38 +1257,6 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayload!
 
   """
-  Should toggle attribute in the category attribute showInCatalogueFilter field
-  """
-  toggleAttributeInCategoryCatalogue(input: UpdateAttributeInCategoryInput!): CategoryPayload!
-
-  """
-  Should toggle attribute in the category attribute showInCatalogueNav field
-  """
-  toggleAttributeInCategoryNav(input: UpdateAttributeInCategoryInput!): CategoryPayload!
-
-  """
-  Should toggle attribute in the category attribute showInProductAttributes field
-  """
-  toggleAttributeInCategoryProductAttributes(
-    input: UpdateAttributeInCategoryInput!
-  ): CategoryPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInProductAttributes field
-  """
-  toggleAttributeInProductAttributes(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInCatalogueFilter field
-  """
-  toggleAttributeInRubricCatalogue(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
-  Should toggle attribute in the rubric attribute showInCatalogueNav field
-  """
-  toggleAttributeInRubricNav(input: UpdateAttributeInRubricInput!): RubricPayload!
-
-  """
   Should update attribute in the attributes group
   """
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!
@@ -1558,11 +1539,6 @@ input OptionAlphabetInput {
   slugs: [String!]
 }
 
-input OptionVariantInput {
-  gender: Gender!
-  value: JSONObject!
-}
-
 type OptionsAlphabetList implements AlphabetList {
   docs: [Option!]!
   letter: String!
@@ -1793,6 +1769,7 @@ type Product implements Base & Timestamp {
   shopProducts: [ShopProduct!]!
   shopsCount: Int!
   slug: String!
+  snippetTitle: String!
   supplierSlug: String
   updatedAt: Date!
 }
@@ -2276,7 +2253,6 @@ type RubricAttribute {
   priorities: JSONObject!
   showInCatalogueFilter: Boolean!
   showInCatalogueNav: Boolean!
-  showInProductAttributes: Boolean!
   slug: String
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
@@ -2539,11 +2515,18 @@ input UpdateAttributeInGroupInput {
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
   optionsGroupId: ObjectId
+  positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
   showInCard: Boolean!
+  showInCardTitle: Boolean!
+  showInCatalogueFilter: Boolean!
+  showInCatalogueNav: Boolean!
+  showInCatalogueTitle: Boolean!
   showInSnippet: Boolean!
+  showInSnippetTitle: Boolean!
+  showNameInCardTitle: Boolean
   showNameInSelectedAttributes: Boolean
   showNameInSnippetTitle: Boolean
   showNameInTitle: Boolean
@@ -2573,6 +2556,7 @@ input UpdateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
   rubricId: ObjectId!
+  variants: JSONObject!
 }
 
 input UpdateCityInCountryInput {
@@ -2767,6 +2751,7 @@ input UpdateProductInput {
   active: Boolean!
   barcode: [String!]
   descriptionI18n: JSONObject!
+  gender: Gender!
   nameI18n: JSONObject
   originalName: String!
   productId: ObjectId!
@@ -2850,6 +2835,8 @@ input UpdateRubricInput {
   nameI18n: JSONObject!
   rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
+  showCategoryInProductTitle: Boolean
+  showRubricNameInProductTitle: Boolean
   variantId: ObjectId!
 }
 

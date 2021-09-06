@@ -52,8 +52,8 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   return (
     <SiteLayoutProvider
       previewImage={cardData.product.mainImage}
-      title={`${cardData.product.originalName}${prefix} ${siteName}${cityDescription}`}
-      description={`${cardData.product.description}`}
+      title={`${cardData.cardTitle}${prefix} ${siteName}${cityDescription}`}
+      description={`${cardData.cardTitle} ${cardData.product.description}`}
       company={company}
       {...props}
     >

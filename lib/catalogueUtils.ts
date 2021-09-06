@@ -2,37 +2,30 @@ import { CatalogueInterface } from 'components/Catalogue';
 import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
-  COL_ATTRIBUTES,
-  COL_CATEGORIES,
   COL_CITIES,
   COL_CONFIGS,
   COL_COUNTRIES,
   COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
+import {
+  getCatalogueRubricPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  productConnectionsPipeline,
+} from 'db/dao/constantPipelines';
 import {
   AttributeViewVariantModel,
   CatalogueBreadcrumbModel,
   CityModel,
   ConfigModel,
   CountryModel,
-  GenderModel,
   ObjectIdModel,
   OptionModel,
-  RubricCatalogueTitleModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
-  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
-  ATTRIBUTE_POSITION_IN_TITLE_END,
-  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
@@ -43,7 +36,6 @@ import {
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGINATION_DEFAULT_LIMIT,
   PRICE_ATTRIBUTE_SLUG,
   ROUTE_CATALOGUE,
@@ -60,25 +52,26 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
+  AttributeInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
+  OptionInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   RubricAttributeInterface,
   RubricInterface,
-  RubricOptionInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getConstantTranslation } from 'config/constantTranslations';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { generateProductTitle, generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import capitalize from 'capitalize';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 export interface CastCatalogueParamToObjectPayloadInterface {
@@ -98,151 +91,8 @@ export function castCatalogueParamToObject(
   };
 }
 
-export interface SelectedFilterInterface {
-  attribute: RubricAttributeInterface;
-  options: RubricOptionInterface[];
-}
-
-interface GetCatalogueTitleInterface {
-  selectedFilters: SelectedFilterInterface[];
-  rubricCatalogueTitleConfig: RubricCatalogueTitleModel;
-  locale: string;
-  currency: string;
-  capitaliseKeyWord?: boolean | null;
-}
-
-export function getCatalogueTitle({
-  selectedFilters,
-  rubricCatalogueTitleConfig,
-  locale,
-  currency,
-  capitaliseKeyWord,
-}: GetCatalogueTitleInterface): string {
-  const {
-    gender: rubricGender,
-    defaultTitleI18n,
-    keywordI18n,
-    prefixI18n,
-  } = rubricCatalogueTitleConfig;
-
-  function castArrayToTitle(arr: any[]): string {
-    const filteredArray = arr.filter((word) => word);
-    const firstWord = filteredArray[0];
-    const otherWords = filteredArray.slice(1);
-    return [capitalize(firstWord), ...otherWords].join(' ');
-  }
-
-  // Return default rubric title if no filters selected
-  if (selectedFilters.length < 1) {
-    return getFieldStringLocale(defaultTitleI18n, locale);
-  }
-
-  const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
-  const rubricKeywordTranslation = getFieldStringLocale(keywordI18n, locale);
-  const rubricKeyword =
-    rubricKeywordTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE
-      ? ''
-      : capitaliseKeyWord
-      ? rubricKeywordTranslation
-      : rubricKeywordTranslation.toLowerCase();
-
-  const finalPrefixTranslation = getFieldStringLocale(prefixI18n, locale);
-  const finalPrefix =
-    finalPrefixTranslation === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : finalPrefixTranslation;
-
-  const beginOfTitle: string[] = [];
-  const beforeKeyword: string[] = [];
-  const afterKeyword: string[] = [];
-  const endOfTitle: string[] = [];
-  let finalKeyword = rubricKeyword;
-  let finalGender = rubricGender;
-
-  // Set keyword gender
-  selectedFilters.forEach((selectedFilter) => {
-    const { attribute, options } = selectedFilter;
-    const { positioningInTitle } = attribute;
-    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-    const gendersList = options.reduce((genderAcc: GenderModel[], { gender }) => {
-      if (
-        gender &&
-        positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD
-      ) {
-        return [...genderAcc, gender];
-      }
-      return genderAcc;
-    }, []);
-
-    if (gendersList.length > 0 && gendersList[0]) {
-      finalGender = gendersList[0];
-    }
-  });
-
-  // Collect title parts
-  selectedFilters.forEach((selectedFilter) => {
-    const { attribute, options } = selectedFilter;
-    const isPrice = attribute.slug === PRICE_ATTRIBUTE_SLUG;
-    const { positioningInTitle, metric, showNameInTitle } = attribute;
-    const attributeName = showNameInTitle
-      ? `${getFieldStringLocale(attribute.nameI18n, locale)} `
-      : '';
-    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
-    let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
-    if (isPrice) {
-      metricValue = currency;
-    }
-
-    const value = options
-      .map(({ variants, nameI18n }) => {
-        const name = getFieldStringLocale(nameI18n, locale);
-        const currentVariant = variants[finalGender];
-        const variantLocale = currentVariant ? getFieldStringLocale(currentVariant, locale) : null;
-        let value = name;
-        if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-          value = variantLocale;
-        }
-        const optionValue = `${attributeName}${value}${metricValue}`;
-        return attribute.capitalise ? optionValue : optionValue.toLocaleLowerCase();
-      })
-      .join(titleSeparator);
-
-    if (isPrice) {
-      endOfTitle.push(value);
-      return;
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEGIN) {
-      beginOfTitle.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD) {
-      beforeKeyword.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD) {
-      const keywordValue = capitaliseKeyWord ? value : value.toLowerCase();
-      if (finalKeyword === rubricKeyword) {
-        finalKeyword = keywordValue;
-      } else {
-        finalKeyword = finalKeyword + titleSeparator + keywordValue;
-      }
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD) {
-      afterKeyword.push(value);
-    }
-    if (positionInTitleForCurrentLocale === ATTRIBUTE_POSITION_IN_TITLE_END) {
-      endOfTitle.push(value);
-    }
-  });
-
-  return castArrayToTitle([
-    finalPrefix,
-    ...beginOfTitle,
-    ...beforeKeyword,
-    finalKeyword,
-    ...afterKeyword,
-    ...endOfTitle,
-  ]);
-}
-
 export interface GetRubricCatalogueOptionsInterface {
-  options: RubricOptionInterface[];
+  options: OptionInterface[];
   // maxVisibleOptions: number;
   visibleOptionsSlugs: string[];
   city: string;
@@ -253,7 +103,7 @@ export function getRubricCatalogueOptions({
   // maxVisibleOptions,
   visibleOptionsSlugs,
   city,
-}: GetRubricCatalogueOptionsInterface): RubricOptionInterface[] {
+}: GetRubricCatalogueOptionsInterface): OptionInterface[] {
   const visibleOptions = options.filter(({ slug }) => {
     return visibleOptionsSlugs.includes(slug);
   });
@@ -371,13 +221,13 @@ export interface GetCatalogueAttributesInterface {
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
-  selectedFilters: SelectedFilterInterface[];
+  selectedFilters: AttributeInterface[];
   castedAttributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
 }
 
 interface CastOptionInterface {
-  option: RubricOptionInterface;
+  option: OptionInterface;
   attribute: RubricAttributeInterface;
 }
 
@@ -400,7 +250,7 @@ export async function getCatalogueAttributes({
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const { db } = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-  const selectedFilters: SelectedFilterInterface[] = [];
+  const selectedFilters: AttributeInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
 
@@ -497,7 +347,7 @@ export async function getCatalogueAttributes({
     const { options, slug } = attribute;
     const castedOptions: CatalogueFilterAttributeOptionInterface[] = [];
     const selectedFilterOptions: CatalogueFilterAttributeOptionInterface[] = [];
-    const selectedOptions: RubricOptionInterface[] = [];
+    const selectedOptions: OptionInterface[] = [];
 
     for await (const option of options || []) {
       const { castedOption, optionSlug, isSelected } = await castOption({ option, attribute });
@@ -575,10 +425,7 @@ export async function getCatalogueAttributes({
 
       // Add selected items to the catalogue title config
       selectedFilters.push({
-        attribute: {
-          ...attribute,
-          options: [],
-        },
+        ...attribute,
         options: selectedOptions,
       });
     }
@@ -942,158 +789,16 @@ export const getCatalogueData = async ({
                 },
 
                 // Lookup product connection
-                {
-                  $lookup: {
-                    from: COL_PRODUCT_CONNECTIONS,
-                    as: 'connections',
-                    let: {
-                      productId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $in: ['$$productId', '$productsIds'],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_ATTRIBUTES,
-                          as: 'attribute',
-                          let: { attributeId: '$attributeId' },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $eq: ['$$attributeId', '$_id'],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        $addFields: {
-                          attribute: {
-                            $arrayElemAt: ['$attribute', 0],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_PRODUCT_CONNECTION_ITEMS,
-                          as: 'connectionProducts',
-                          let: {
-                            connectionId: '$_id',
-                          },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $eq: ['$connectionId', '$$connectionId'],
-                                },
-                              },
-                            },
-                            {
-                              $lookup: {
-                                from: COL_OPTIONS,
-                                as: 'option',
-                                let: { optionId: '$optionId' },
-                                pipeline: [
-                                  {
-                                    $match: {
-                                      $expr: {
-                                        $eq: ['$$optionId', '$_id'],
-                                      },
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              $lookup: {
-                                from: COL_SHOP_PRODUCTS,
-                                as: 'shopProduct',
-                                let: { productId: '$productId' },
-                                pipeline: [
-                                  {
-                                    $match: {
-                                      $expr: {
-                                        $eq: ['$$productId', '$productId'],
-                                      },
-                                      citySlug: city,
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              $addFields: {
-                                option: {
-                                  $arrayElemAt: ['$option', 0],
-                                },
-                                shopProduct: {
-                                  $arrayElemAt: ['$shopProduct', 0],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
+                ...productConnectionsPipeline(city),
 
                 // Lookup product attributes
-                {
-                  $lookup: {
-                    from: COL_PRODUCT_ATTRIBUTES,
-                    as: 'attributes',
-                    let: {
-                      productId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$productId', '$productId'],
-                          },
-                          viewVariant: {
-                            $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_OPTIONS,
-                          as: 'options',
-                          let: {
-                            optionsGroupId: '$optionsGroupId',
-                            selectedOptionsIds: '$selectedOptionsIds',
-                          },
-                          pipeline: [
-                            {
-                              $match: {
-                                $expr: {
-                                  $and: [
-                                    {
-                                      $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                                    },
-                                    {
-                                      $in: ['$_id', '$$selectedOptionsIds'],
-                                    },
-                                  ],
-                                },
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
+                ...productAttributesPipeline,
+
+                // Lookup product categories
+                ...productCategoriesPipeline(),
               ],
+
+              // get prices list
               prices: [
                 {
                   $group: {
@@ -1119,47 +824,21 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                {
-                  $lookup: {
-                    from: COL_CATEGORIES,
-                    as: 'categories',
-                    let: {
-                      rubricId: '$rubricId',
-                      selectedOptionsSlugs: '$selectedOptionsSlugs',
+                ...productCategoriesPipeline([
+                  {
+                    $addFields: {
+                      views: { $max: `$views.${realCompanySlug}.${city}` },
+                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
                     },
-                    pipeline: [
-                      {
-                        $match: {
-                          $and: [
-                            {
-                              $expr: {
-                                $eq: ['$rubricId', '$$rubricId'],
-                              },
-                            },
-                            {
-                              $expr: {
-                                $in: ['$slug', '$$selectedOptionsSlugs'],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        $addFields: {
-                          views: { $max: `$views.${realCompanySlug}.${city}` },
-                          priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                        },
-                      },
-                      {
-                        $sort: {
-                          priorities: SORT_DESC,
-                          views: SORT_DESC,
-                          _id: SORT_DESC,
-                        },
-                      },
-                    ],
                   },
-                },
+                  {
+                    $sort: {
+                      priorities: SORT_DESC,
+                      views: SORT_DESC,
+                      _id: SORT_DESC,
+                    },
+                  },
+                ]),
                 {
                   $unwind: {
                     path: '$categories',
@@ -1314,6 +993,25 @@ export const getCatalogueData = async ({
         max: `${maxPrice}`,
       };
 
+      const categories = getTreeFromList({
+        list: product.categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      // title
+      const snippetTitle = generateProductTitle({
+        locale,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+        attributes: attributes || [],
+        categories,
+        fallbackTitle: restProduct.originalName,
+        defaultKeyword: restProduct.originalName,
+        defaultGender: restProduct.gender,
+      });
+
       // listFeatures
       const initialListFeatures = getProductCurrentViewCastedAttributes({
         attributes: attributes || [],
@@ -1410,16 +1108,21 @@ export const getCatalogueData = async ({
         name: getFieldStringLocale(product.nameI18n, locale),
         cardPrices,
         connections: castedConnections,
+        snippetTitle,
       });
     }
 
     // Get catalogue title
-    const catalogueTitle = getCatalogueTitle({
-      rubricCatalogueTitleConfig: rubric.catalogueTitle,
-      selectedFilters,
+    const catalogueTitle = generateTitle({
+      positionFieldName: 'positioningInTitle',
+      defaultGender: rubric.catalogueTitle.gender,
+      fallbackTitle: getFieldStringLocale(rubric.catalogueTitle.defaultTitleI18n, locale),
+      defaultKeyword: getFieldStringLocale(rubric.catalogueTitle.keywordI18n, locale),
+      prefix: getFieldStringLocale(rubric.catalogueTitle.prefixI18n, locale),
+      attributes: selectedFilters,
+      capitaliseKeyWord: rubric.capitalise,
       locale,
       currency,
-      capitaliseKeyWord: rubric.capitalise,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

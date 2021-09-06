@@ -2,18 +2,11 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import {
-  ATTRIBUTE_VARIANT_NUMBER,
-  ATTRIBUTE_VARIANT_STRING,
-  ROUTE_CMS,
-  SORT_ASC,
-  SORT_DESC,
-} from 'config/common';
+import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -29,9 +22,6 @@ import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
-  useToggleAttributeInProductAttributesMutation,
-  useToggleAttributeInRubricCatalogueMutation,
-  useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -65,23 +55,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const [toggleAttributeInRubricCatalogueMutation] = useToggleAttributeInRubricCatalogueMutation({
-    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricCatalogue),
-    onError: onErrorCallback,
-  });
-
-  const [toggleAttributeInRubricNavMutation] = useToggleAttributeInRubricNavMutation({
-    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricNav),
-    onError: onErrorCallback,
-  });
-
-  const [toggleAttributeInProductAttributesMutation] =
-    useToggleAttributeInProductAttributesMutation({
-      onCompleted: (data) => onCompleteCallback(data.toggleAttributeInProductAttributes),
-      onError: onErrorCallback,
-    });
-
-  const columns = (isAttributeDisabled: boolean): TableColumn<RubricAttributeInterface>[] => [
+  const columns: TableColumn<RubricAttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -97,92 +71,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       accessor: 'metric',
       headTitle: 'Единица измерения',
       render: ({ cellData }) => cellData?.name || null,
-    },
-    {
-      accessor: '_id',
-      headTitle: 'Показывать в фильтре',
-      render: ({ cellData, dataItem }) => {
-        const isDisabled =
-          dataItem.variant === ATTRIBUTE_VARIANT_NUMBER ||
-          dataItem.variant === ATTRIBUTE_VARIANT_STRING ||
-          isAttributeDisabled;
-        return (
-          <Checkbox
-            testId={`${dataItem.name}-filter`}
-            disabled={isDisabled}
-            checked={dataItem.showInCatalogueFilter}
-            value={cellData}
-            name={'showInCatalogueFilter'}
-            onChange={() => {
-              showLoading();
-              toggleAttributeInRubricCatalogueMutation({
-                variables: {
-                  input: {
-                    attributeId: cellData,
-                    rubricId: rubric._id,
-                  },
-                },
-              }).catch(console.log);
-            }}
-          />
-        );
-      },
-    },
-    {
-      accessor: '_id',
-      headTitle: 'Показывать в навигации',
-      render: ({ cellData, dataItem }) => {
-        const isDisabled =
-          dataItem.variant === ATTRIBUTE_VARIANT_NUMBER ||
-          dataItem.variant === ATTRIBUTE_VARIANT_STRING ||
-          isAttributeDisabled;
-        return (
-          <Checkbox
-            testId={`${dataItem.name}-nav`}
-            disabled={isDisabled}
-            checked={dataItem.showInCatalogueNav}
-            value={cellData}
-            name={'showInCatalogueNav'}
-            onChange={() => {
-              showLoading();
-              toggleAttributeInRubricNavMutation({
-                variables: {
-                  input: {
-                    attributeId: cellData,
-                    rubricId: rubric._id,
-                  },
-                },
-              }).catch(console.log);
-            }}
-          />
-        );
-      },
-    },
-    {
-      accessor: '_id',
-      headTitle: 'Показывать в настройках товара',
-      render: ({ cellData, dataItem }) => {
-        return (
-          <Checkbox
-            disabled={isAttributeDisabled}
-            testId={`${dataItem.name}-nav`}
-            checked={dataItem.showInProductAttributes}
-            value={cellData}
-            name={'showInCatalogueNav'}
-            onChange={() => {
-              showLoading();
-              toggleAttributeInProductAttributesMutation({
-                variables: {
-                  input: {
-                    attributeId: cellData,
-                    rubricId: rubric._id,
-                  },
-                },
-              }).catch(console.log);
-            }}
-          />
-        );
-      },
     },
     {
       accessor: 'category',
@@ -262,7 +150,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 <div className={`overflow-x-auto mt-4`}>
                   <Table<RubricAttributeInterface>
                     data={attributes}
-                    columns={columns(isAttributeDisabled)}
+                    columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />

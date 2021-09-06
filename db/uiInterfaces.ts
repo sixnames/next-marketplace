@@ -47,7 +47,6 @@ import {
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricModel,
-  RubricOptionModel,
   RubricVariantModel,
   ShopModel,
   ShopProductModel,
@@ -98,6 +97,7 @@ export interface AttributeInterface extends AttributeModel {
   name?: string | null;
   metric?: MetricInterface | null;
   optionsGroup?: OptionsGroupInterface | null;
+  options?: OptionInterface[] | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
@@ -266,7 +266,7 @@ export interface ProductInterface extends ProductModel {
   shopProductIds?: ObjectIdModel[];
   shopProducts?: ShopProductInterface[];
   shopProduct?: ShopProductInterface;
-  rubric?: RubricInterface;
+  rubric?: RubricInterface | null;
   rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
   stringAttributesAST?: ProductAttributesGroupASTInterface | null;
   numberAttributesAST?: ProductAttributesGroupASTInterface | null;
@@ -277,6 +277,7 @@ export interface ProductInterface extends ProductModel {
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
   categories?: CategoryInterface[] | null;
+  snippetTitle?: string | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -299,13 +300,8 @@ export interface RubricVariantInterface extends RubricVariantModel {
   cardBrandsLabel?: string | null;
 }
 
-export interface RubricOptionInterface extends RubricOptionModel, OptionInterface {
-  options?: RubricOptionInterface[] | null;
-  name?: string | null;
-}
-
-export interface RubricAttributeInterface extends RubricAttributeModel, AttributeInterface {
-  options?: RubricOptionInterface[] | null;
+export interface RubricAttributeInterface extends RubricAttributeModel {
+  options?: OptionInterface[] | null;
   name?: string | null;
   metric?: MetricInterface | null;
   rubric?: RubricInterface | null;
@@ -545,7 +541,7 @@ export interface ProductSnippetConfigInterface {
   showSnippetButtonsOnHover?: boolean | null;
 
   // numbers
-  gridCatalogueColumns?: number | null;
+  gridCatalogueColumns?: number | 'full' | null;
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
@@ -561,6 +557,7 @@ export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
 }
 
 export interface InitialCardDataInterface {
+  cardTitle: string;
   product: ProductInterface;
   listFeatures: ProductAttributeInterface[];
   iconFeatures: ProductAttributeInterface[];

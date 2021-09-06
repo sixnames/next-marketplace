@@ -40,7 +40,6 @@ import {
   createRubricSchema,
   deleteAttributesGroupFromRubricSchema,
   deleteProductFromRubricSchema,
-  updateAttributesGroupInRubricSchema,
   updateRubricSchema,
 } from 'validation/rubricSchema';
 
@@ -71,6 +70,8 @@ export const CreateRubricInput = inputObjectType({
   definition(t) {
     t.nonNull.json('nameI18n');
     t.boolean('capitalise');
+    t.boolean('showRubricNameInProductTitle');
+    t.boolean('showCategoryInProductTitle');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.objectId('variantId');
@@ -85,6 +86,8 @@ export const UpdateRubricInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('rubricId');
     t.boolean('capitalise');
+    t.boolean('showRubricNameInProductTitle');
+    t.boolean('showCategoryInProductTitle');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
@@ -547,264 +550,6 @@ export const RubricMutations = extendType({
           };
         } finally {
           await session.endSession();
-        }
-      },
-    });
-
-    // Should toggle attribute in the rubric attribute showInCatalogueFilter field
-    t.nonNull.field('toggleAttributeInRubricCatalogue', {
-      type: 'RubricPayload',
-      description: 'Should toggle attribute in the rubric attribute showInCatalogueFilter field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { rubricId, attributeId } = input;
-
-          // Check rubric and attribute availability
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-          const rubricAttribute = await rubricAttributesCollection.findOne({ _id: attributeId });
-          if (!rubricAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update rubric attribute
-          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
-            { _id: attributeId },
-            {
-              $set: {
-                showInCatalogueFilter: !rubricAttribute.showInCatalogueFilter,
-              },
-            },
-          );
-          if (!updatedRubricAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.updateAttributesGroup.success'),
-            payload: rubric,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should toggle attribute in the rubric attribute showInCatalogueNav field
-    t.nonNull.field('toggleAttributeInRubricNav', {
-      type: 'RubricPayload',
-      description: 'Should toggle attribute in the rubric attribute showInCatalogueNav field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { rubricId, attributeId } = input;
-
-          // Check rubric and attribute availability
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-          const rubricAttribute = await rubricAttributesCollection.findOne({ _id: attributeId });
-          if (!rubricAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update rubric attribute
-          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
-            { _id: attributeId },
-            {
-              $set: {
-                showInCatalogueNav: !rubricAttribute.showInCatalogueNav,
-              },
-            },
-          );
-          if (!updatedRubricAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.updateAttributesGroup.success'),
-            payload: rubric,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should toggle attribute in the rubric attribute showInProductAttributes field
-    t.nonNull.field('toggleAttributeInProductAttributes', {
-      type: 'RubricPayload',
-      description: 'Should toggle attribute in the rubric attribute showInProductAttributes field',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateAttributesGroupInRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-          const { input } = args;
-          const { rubricId, attributeId } = input;
-
-          // Check rubric and attribute availability
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-          const rubricAttribute = await rubricAttributesCollection.findOne({ _id: attributeId });
-          if (!rubricAttribute) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
-            };
-          }
-
-          // Update rubric attribute
-          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
-            { _id: attributeId },
-            {
-              $set: {
-                showInProductAttributes: !rubricAttribute.showInProductAttributes,
-              },
-            },
-          );
-          if (!updatedRubricAttributeResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.updateAttributesGroup.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.updateAttributesGroup.success'),
-            payload: rubric,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
         }
       },
     });

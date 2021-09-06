@@ -1,13 +1,16 @@
 import Button from 'components/Button';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import { CreateProductInput } from 'generated/apolloComponents';
+import { CreateProductInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
 import { get } from 'lodash';
 
 export type ProductFormValuesBaseType = Omit<CreateProductInput, 'rubricId'>;
@@ -20,6 +23,16 @@ const ProductMainFields: React.FC = () => {
   const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { showModal } = useAppContext();
   const barcode = get(values, 'barcode') || [''];
+  const { data, loading, error } = useGetGenderOptionsQuery();
+  if (error || (!loading && !data)) {
+    return <RequestError />;
+  }
+
+  if (loading) {
+    return <Spinner isTransparent isNested />;
+  }
+
+  const { getGenderOptions } = data!;
 
   return (
     <React.Fragment>
@@ -32,6 +45,14 @@ const ProductMainFields: React.FC = () => {
       />
 
       <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
+
+      <FormikSelect
+        name={'gender'}
+        firstOption
+        options={getGenderOptions}
+        testId={`gender`}
+        label={'Род названия'}
+      />
 
       {barcode.map((barcodeItem, index) => {
         return (

@@ -48,7 +48,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     },
   });
 
-  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode, gender } = product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
@@ -57,6 +57,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     descriptionI18n,
     active,
     barcode,
+    gender: gender as any,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

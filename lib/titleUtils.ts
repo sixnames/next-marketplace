@@ -18,13 +18,13 @@ import { get } from 'lodash';
 interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {}
 
 interface GenerateTitleInterface {
-  positionFieldName: 'positioningInTitle' | 'positioningCardInTitle';
+  positionFieldName: 'positioningInTitle' | 'positioningInCardTitle';
   attributeVisibilityFieldName: 'showInCatalogueTitle' | 'showInCardTitle' | 'showInSnippetTitle';
   attributes: TitleAttributeInterface[];
   fallbackTitle: string;
   prefix?: string | null;
   defaultKeyword?: string;
-  defaultGender?: string;
+  defaultGender: string;
   locale: string;
   currency?: string;
   capitaliseKeyWord?: boolean | null;
@@ -93,15 +93,17 @@ export function generateTitle({
 
   // collect title parts
   attributes.forEach((attribute) => {
-    const { nameI18n, options, capitalise, slug, positioningInTitle, metric } = attribute;
+    const { nameI18n, options, capitalise, slug, metric } = attribute;
     const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
     const visible = get(attribute, attributeVisibilityFieldName);
     if (!visible) {
       return;
     }
-    const attributeName = `${getFieldStringLocale(nameI18n, locale)} `;
-    const positionInTitleForCurrentLocale = getFieldStringLocale(positioningInTitle, locale);
 
+    const attributeName = `${getFieldStringLocale(nameI18n, locale)} `;
+    const attributePositionField = get(attribute, positionFieldName);
+    const positionInTitleForCurrentLocale = getFieldStringLocale(attributePositionField, locale);
+    console.log(positionInTitleForCurrentLocale);
     // attribute metric value
     let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
     if (isPrice && currency) {
@@ -185,6 +187,7 @@ export function generateTitle({
 interface GenerateProductTitlePrefixInterface {
   locale: string;
   rubricName?: string | null;
+  defaultGender: string;
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -194,6 +197,7 @@ export function generateProductTitlePrefix({
   locale,
   rubricName,
   categories,
+  defaultGender,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
 }: GenerateProductTitlePrefixInterface): string {
@@ -204,8 +208,11 @@ export function generateProductTitlePrefix({
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
     if (showCategoryInProductTitle) {
+      const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
-      if (name) {
+      if (variant) {
+        categoryNames.push(variant);
+      } else {
         categoryNames.push(name);
       }
       return (category.categories || []).forEach(getCategoryNames);
@@ -242,6 +249,7 @@ export function generateProductTitle({
     locale,
     rubricName,
     categories,
+    defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
   });
@@ -255,7 +263,7 @@ export function generateProductTitle({
     locale,
     currency,
     capitaliseKeyWord: true,
-    positionFieldName: 'positioningCardInTitle',
+    positionFieldName: 'positioningInCardTitle',
     attributeVisibilityFieldName,
   });
 }

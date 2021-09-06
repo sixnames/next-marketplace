@@ -10,6 +10,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  DEFAULT_LOCALE,
 } from '../../../../config/common';
 import {
   AttributeModel,
@@ -31,6 +32,9 @@ const booleans = {
   showAsCatalogueBreadcrumb: true,
   notShowAsAlphabet: false,
   capitalise: false,
+  positioningInCardTitle: {
+    [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as any,
+  },
 };
 
 const attributes: AttributeModel[] = [

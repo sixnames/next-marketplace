@@ -739,6 +739,7 @@ export const getCatalogueData = async ({
               rubricId: { $first: '$rubricId' },
               rubricSlug: { $first: `$rubricSlug` },
               slug: { $first: '$slug' },
+              gender: { $first: '$gender' },
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },
               nameI18n: { $first: `$nameI18n` },

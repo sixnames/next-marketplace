@@ -24,8 +24,8 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import generator from 'generate-password';
 import { compare, hash } from 'bcryptjs';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { sendPasswordUpdatedEmail } from 'emails/passwordUpdatedEmail';
-import { signUpEmail } from 'emails/signUpEmail';
+import { sendPasswordUpdatedEmail } from 'lib/messaging/passwordUpdatedEmail';
+import { signUpEmail } from 'lib/messaging/signUpEmail';
 import {
   createUserSchema,
   signUpSchema,

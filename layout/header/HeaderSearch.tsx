@@ -75,6 +75,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
         {products.map((product) => {
           return (
             <ProductSnippetGridBigImage
+              gridCatalogueColumns={'full'}
               showSnippetBackground
               product={product}
               testId={`search-product`}

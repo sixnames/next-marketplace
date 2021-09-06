@@ -53,7 +53,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`group rounded-md relative text-center flex flex-col grid-snippet ${bgClassName} ${
+      className={`group rounded-md relative text-center flex flex-grow flex-col grid-snippet ${bgClassName} ${
         className ? className : columnsClassName
       }`}
     >

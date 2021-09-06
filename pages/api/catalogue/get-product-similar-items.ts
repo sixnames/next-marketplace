@@ -1,13 +1,14 @@
 import { SORT_DESC } from 'config/common';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { productAttributesPipeline } from 'db/dao/constantPipelines';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
-import { generateTitle } from 'lib/titleUtils';
+import { generateProductTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -141,6 +142,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   nameI18n: { $first: `$nameI18n` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  selectedOptionsSlugs: {
+                    $first: '$selectedOptionsSlugs',
+                  },
                   minPrice: {
                     $min: '$price',
                   },
@@ -177,6 +181,45 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
               // Lookup product attributes
               ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
+              // Lookup product rubric
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: {
+                    rubricId: '$rubricId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$rubricId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // final fields
+              {
+                $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
+                },
+              },
             ],
           },
         },
@@ -215,14 +258,20 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       }
 
       // title
-      const snippetTitle = generateTitle({
-        positionFieldName: 'positioningCardInTitle',
+      const snippetTitle = generateProductTitle({
+        locale,
+        rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+        attributes: product.attributes || [],
         fallbackTitle: product.originalName,
         defaultKeyword: product.originalName,
         defaultGender: product.gender,
-        capitaliseKeyWord: true,
-        attributes: product.attributes || [],
-        locale,
+        categories: getTreeFromList({
+          list: product.categories,
+          childrenFieldName: 'categories',
+          locale,
+        }),
       });
 
       const minPrice = noNaN(product.cardPrices?.min);

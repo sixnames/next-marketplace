@@ -163,7 +163,7 @@ export async function getCardData({
           },
         },
 
-        // Get product rubric
+        // Lookup product rubric
         {
           $lookup: {
             from: COL_RUBRICS,

@@ -266,7 +266,7 @@ export interface ProductInterface extends ProductModel {
   shopProductIds?: ObjectIdModel[];
   shopProducts?: ShopProductInterface[];
   shopProduct?: ShopProductInterface;
-  rubric?: RubricInterface;
+  rubric?: RubricInterface | null;
   rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
   stringAttributesAST?: ProductAttributesGroupASTInterface | null;
   numberAttributesAST?: ProductAttributesGroupASTInterface | null;
@@ -541,7 +541,7 @@ export interface ProductSnippetConfigInterface {
   showSnippetButtonsOnHover?: boolean | null;
 
   // numbers
-  gridCatalogueColumns?: number | null;
+  gridCatalogueColumns?: number | 'full' | null;
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {

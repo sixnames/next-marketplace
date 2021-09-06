@@ -1,4 +1,4 @@
-import { productAttributesPipeline } from 'db/dao/constantPipelines';
+import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
@@ -324,7 +324,7 @@ export const CatalogueQueries = extendType({
                     $max: '$available',
                   },
                   selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                    $first: '$selectedOptionsSlugs',
                   },
                   shopProductsIds: {
                     $addToSet: '$_id',
@@ -342,8 +342,45 @@ export const CatalogueQueries = extendType({
               {
                 $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
               },
+
+              // Lookup product rubric
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: {
+                    rubricId: '$rubricId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$rubricId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // Lookup product attributes
+              ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
               {
                 $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
                   shopsCount: { $size: '$shopProductsIds' },
                   cardPrices: {
                     min: '$minPrice',
@@ -351,9 +388,6 @@ export const CatalogueQueries = extendType({
                   },
                 },
               },
-
-              // Lookup product attributes
-              ...productAttributesPipeline,
             ])
             .toArray();
           // console.log('Top products ', new Date().getTime() - productsStart);
@@ -473,7 +507,7 @@ export const CatalogueQueries = extendType({
                     $max: '$available',
                   },
                   selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                    $first: '$selectedOptionsSlugs',
                   },
                   shopProductsIds: {
                     $addToSet: '$_id',
@@ -491,8 +525,44 @@ export const CatalogueQueries = extendType({
               {
                 $limit: HEADER_SEARCH_PRODUCTS_LIMIT,
               },
+              // Lookup product rubric
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: {
+                    rubricId: '$rubricId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$rubricId', '$_id'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: true,
+                        slug: true,
+                        nameI18n: true,
+                        showRubricNameInProductTitle: true,
+                        showCategoryInProductTitle: true,
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // Lookup product attributes
+              ...productAttributesPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
               {
                 $addFields: {
+                  rubric: { $arrayElemAt: ['$rubric', 0] },
                   shopsCount: { $size: '$shopProductsIds' },
                   cardPrices: {
                     min: '$minPrice',
@@ -500,9 +570,6 @@ export const CatalogueQueries = extendType({
                   },
                 },
               },
-
-              // Lookup product attributes
-              ...productAttributesPipeline,
             ])
             .toArray();
           // console.log('Search products count ', products.length);

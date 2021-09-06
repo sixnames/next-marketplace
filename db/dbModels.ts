@@ -1,4 +1,4 @@
-import { AttributeInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 
@@ -544,6 +544,8 @@ export interface ProductModel extends BaseModel, TimestampModel {
   shopsCount?: number;
   cardPrices?: ProductCardPricesModel;
   attributes?: AttributeInterface[] | null;
+  categories?: CategoryInterface[] | null;
+  rubric?: RubricInterface | null;
 }
 
 export interface ProductAssetsModel {

@@ -1,5 +1,7 @@
+import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { generateTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/optionsUtils';
+import { generateProductTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -70,15 +72,22 @@ export const Product = objectType({
       type: 'String',
       resolve: async (source, _args, context): Promise<string> => {
         const { locale } = await getRequestParams(context);
-        const snippetTitle = generateTitle({
-          positionFieldName: 'positioningCardInTitle',
+        const snippetTitle = generateProductTitle({
+          locale,
+          rubricName: getFieldStringLocale(source.rubric?.nameI18n, locale),
+          showRubricNameInProductTitle: source.rubric?.showRubricNameInProductTitle,
+          showCategoryInProductTitle: source.rubric?.showCategoryInProductTitle,
+          attributes: source.attributes || [],
           fallbackTitle: source.originalName,
           defaultKeyword: source.originalName,
           defaultGender: source.gender,
-          capitaliseKeyWord: true,
-          attributes: source.attributes || [],
-          locale,
+          categories: getTreeFromList({
+            list: source.categories,
+            childrenFieldName: 'categories',
+            locale: locale,
+          }),
         });
+
         return snippetTitle;
       },
     });

@@ -74,6 +74,7 @@ export const Product = objectType({
         const { locale } = await getRequestParams(context);
         const snippetTitle = generateProductTitle({
           locale,
+          attributeVisibilityFieldName: 'showInSnippetTitle',
           rubricName: getFieldStringLocale(source.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: source.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: source.rubric?.showCategoryInProductTitle,

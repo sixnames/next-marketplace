@@ -1002,6 +1002,7 @@ export const getCatalogueData = async ({
       // title
       const snippetTitle = generateProductTitle({
         locale,
+        attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
@@ -1115,6 +1116,7 @@ export const getCatalogueData = async ({
     // Get catalogue title
     const catalogueTitle = generateTitle({
       positionFieldName: 'positioningInTitle',
+      attributeVisibilityFieldName: 'showInCatalogueTitle',
       defaultGender: rubric.catalogueTitle.gender,
       fallbackTitle: getFieldStringLocale(rubric.catalogueTitle.defaultTitleI18n, locale),
       defaultKeyword: getFieldStringLocale(rubric.catalogueTitle.keywordI18n, locale),

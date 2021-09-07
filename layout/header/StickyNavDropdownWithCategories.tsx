@@ -43,7 +43,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
-                className='flex items-center py-2 text-secondary-text'
+                className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
                 {postfix}
@@ -58,7 +58,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               onClick={hideDropdown}
               prefetch={false}
               href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
-              className='flex items-center py-2 text-secondary-theme'
+              className='flex items-center py-1 text-secondary-theme'
             >
               Показать все
             </Link>
@@ -87,7 +87,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           testId={`header-nav-dropdown-option`}
           prefetch={false}
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
-          className='flex items-center gap-3 py-2 text-secondary-text'
+          className='flex items-center gap-3 py-2 text-secondary-text text-lg'
         >
           {icon ? (
             <span
@@ -108,7 +108,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`}
-                className='flex items-center py-2 text-secondary-text'
+                className='flex items-center py-1 text-secondary-text'
               >
                 {childCategory.name}
               </Link>
@@ -129,65 +129,38 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   categories,
   hideDropdown,
 }) => {
-  if ((!attributes || attributes.length < 1) && (!categories || categories.length < 1)) {
-    return null;
-  }
-
-  if (categories.length > 0) {
-    return (
-      <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
-        <Inner>
-          <div className='grid grid-cols-2'>
-            <div className='grid gap-x-4 gap-y-8 grid-cols-3 border-r border-border-300 pr-8'>
-              {categories.map((category) => {
-                return (
-                  <StickyNavCategory
-                    hideDropdown={hideDropdown}
-                    key={`${category._id}`}
-                    category={category}
-                    rubricSlug={rubricSlug}
-                    attributeStyle={attributeStyle}
-                    attributeLinkStyle={attributeLinkStyle}
-                  />
-                );
-              })}
-            </div>
-            <div className='grid gap-x-4 gap-y-8 grid-cols-3 pl-8'>
-              {(attributes || []).map((attribute) => {
-                return (
-                  <StickyNavAttribute
-                    hideDropdown={hideDropdown}
-                    key={`${attribute._id}`}
-                    attribute={attribute}
-                    rubricSlug={rubricSlug}
-                    attributeStyle={attributeStyle}
-                    attributeLinkStyle={attributeLinkStyle}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </Inner>
-      </div>
-    );
-  }
-
   return (
     <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
       <Inner>
-        <div className='grid gap-4 grid-cols-5'>
-          {(attributes || []).map((attribute) => {
-            return (
-              <StickyNavAttribute
-                hideDropdown={hideDropdown}
-                key={`${attribute._id}`}
-                attribute={attribute}
-                rubricSlug={rubricSlug}
-                attributeStyle={attributeStyle}
-                attributeLinkStyle={attributeLinkStyle}
-              />
-            );
-          })}
+        <div className='grid grid-cols-6'>
+          <div className='grid gap-x-4 gap-y-8 grid-cols-4 col-span-4 border-r border-border-300 pr-8'>
+            {(categories || []).map((category) => {
+              return (
+                <StickyNavCategory
+                  hideDropdown={hideDropdown}
+                  key={`${category._id}`}
+                  category={category}
+                  rubricSlug={rubricSlug}
+                  attributeStyle={attributeStyle}
+                  attributeLinkStyle={attributeLinkStyle}
+                />
+              );
+            })}
+          </div>
+          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2'>
+            {(attributes || []).map((attribute) => {
+              return (
+                <StickyNavAttribute
+                  hideDropdown={hideDropdown}
+                  key={`${attribute._id}`}
+                  attribute={attribute}
+                  rubricSlug={rubricSlug}
+                  attributeStyle={attributeStyle}
+                  attributeLinkStyle={attributeLinkStyle}
+                />
+              );
+            })}
+          </div>
         </div>
       </Inner>
     </div>

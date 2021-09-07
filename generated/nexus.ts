@@ -1812,7 +1812,7 @@ export interface NexusGenFieldTypes {
     cardPrices: NexusGenRootTypes['ProductCardPrices']; // ProductCardPrices!
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
-    description: string; // String!
+    description: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     itemId: string; // String!
     mainImage: string; // String!

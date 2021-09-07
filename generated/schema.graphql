@@ -1751,7 +1751,7 @@ type Product implements Base & Timestamp {
   cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: Date!
-  description: String!
+  description: String
   descriptionI18n: JSONObject
   itemId: String!
   mainImage: String!

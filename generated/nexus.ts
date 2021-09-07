@@ -944,6 +944,7 @@ export interface NexusGenInputs {
     showSnippetArticle?: boolean | null; // Boolean
     showSnippetBackground?: boolean | null; // Boolean
     showSnippetButtonsOnHover?: boolean | null; // Boolean
+    showSnippetConnections?: boolean | null; // Boolean
     showSnippetRating?: boolean | null; // Boolean
   };
   UpdateShopAssetIndexInput: {
@@ -2097,6 +2098,7 @@ export interface NexusGenFieldTypes {
     showSnippetArticle: boolean | null; // Boolean
     showSnippetBackground: boolean | null; // Boolean
     showSnippetButtonsOnHover: boolean | null; // Boolean
+    showSnippetConnections: boolean | null; // Boolean
     showSnippetRating: boolean | null; // Boolean
     slug: string; // String!
   };
@@ -3246,6 +3248,7 @@ export interface NexusGenFieldTypeNames {
     showSnippetArticle: 'Boolean';
     showSnippetBackground: 'Boolean';
     showSnippetButtonsOnHover: 'Boolean';
+    showSnippetConnections: 'Boolean';
     showSnippetRating: 'Boolean';
     slug: 'String';
   };

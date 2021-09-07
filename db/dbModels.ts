@@ -618,6 +618,7 @@ export interface RubricVariantModel {
   catalogueNavLayout?: string | null;
 
   // booleans
+  showSnippetConnections?: boolean | null;
   showSnippetBackground?: boolean | null;
   showSnippetArticle?: boolean | null;
   showSnippetRating?: boolean | null;

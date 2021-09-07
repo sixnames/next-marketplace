@@ -511,7 +511,7 @@ export type CopyProductInput = {
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 
@@ -630,7 +630,7 @@ export type CreateProductInput = {
   barcode?: Maybe<Array<Scalars['String']>>;
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   gender: Gender;
 };
@@ -2027,7 +2027,7 @@ export type Product = Base & Timestamp & {
   manufacturerSlug?: Maybe<Scalars['String']>;
   supplierSlug?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
@@ -2036,7 +2036,7 @@ export type Product = Base & Timestamp & {
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   cardPrices: ProductCardPrices;
   shopsCount: Scalars['Int'];
   rubric: Rubric;
@@ -2636,6 +2636,7 @@ export type RubricVariant = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
   showSnippetArticle?: Maybe<Scalars['Boolean']>;
   showSnippetRating?: Maybe<Scalars['Boolean']>;
@@ -3171,6 +3172,7 @@ export type UpdateRubricVariantInput = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
   showSnippetArticle?: Maybe<Scalars['Boolean']>;
   showSnippetRating?: Maybe<Scalars['Boolean']>;

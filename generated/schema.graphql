@@ -2333,6 +2333,7 @@ type RubricVariant {
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean
+  showSnippetConnections: Boolean
   showSnippetRating: Boolean
   slug: String!
 }
@@ -2859,6 +2860,7 @@ input UpdateRubricVariantInput {
   showSnippetArticle: Boolean
   showSnippetBackground: Boolean
   showSnippetButtonsOnHover: Boolean
+  showSnippetConnections: Boolean
   showSnippetRating: Boolean
 }
 

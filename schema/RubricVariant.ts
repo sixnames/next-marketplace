@@ -32,6 +32,7 @@ export const RubricVariant = objectType({
     t.string('catalogueNavLayout');
 
     // booleans
+    t.boolean('showSnippetConnections');
     t.boolean('showSnippetBackground');
     t.boolean('showSnippetArticle');
     t.boolean('showSnippetRating');
@@ -150,6 +151,7 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.string('catalogueNavLayout');
 
     // booleans
+    t.boolean('showSnippetConnections');
     t.boolean('showSnippetBackground');
     t.boolean('showSnippetArticle');
     t.boolean('showSnippetRating');

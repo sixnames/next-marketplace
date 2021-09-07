@@ -21,6 +21,7 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarPr
           return (
             <div className='flex w-[270px] flex-shrink-0' key={`${product._id}`}>
               <ProductSnippetGridBigImage
+                gridCatalogueColumns={'full'}
                 noAttributes
                 noSecondaryName
                 showSnippetBackground

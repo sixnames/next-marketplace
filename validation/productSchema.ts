@@ -3,7 +3,6 @@ import {
   objectIdSchema,
   requiredAssetSchema,
   requiredStringSchema,
-  requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { attributeIdSchema } from 'validation/attributesGroupSchema';
@@ -21,11 +20,6 @@ export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =
     originalName: requiredStringSchema({
       ...args,
       slug: 'validation.products.originalName',
-    }),
-    descriptionI18n: requiredStringTranslationSchema({
-      ...args,
-      max: 1000,
-      slug: 'validation.products.description',
     }),
   };
 };

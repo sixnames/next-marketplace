@@ -38,16 +38,16 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   const columnsClassName =
     // 2
     gridCatalogueColumns === 2
-      ? 'grid-snippet-2'
+      ? 'grid-snippet-2 flex-grow-0'
       : // 3
       gridCatalogueColumns === 3
-      ? 'grid-snippet-3'
+      ? 'grid-snippet-3 flex-grow-0'
       : // 4
       gridCatalogueColumns === 4
-      ? 'grid-snippet-4'
+      ? 'grid-snippet-4 flex-grow-0'
       : // 5
       gridCatalogueColumns === 5
-      ? 'grid-snippet-5'
+      ? 'grid-snippet-5 flex-grow-0'
       : // 1
         ``;
 

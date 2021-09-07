@@ -390,6 +390,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                           gridCatalogueColumns={state.rubricVariant?.gridCatalogueColumns}
                           product={product}
                           key={`${product._id}`}
+                          className={'flex-grow-0'}
                           testId={`catalogue-item-${index}`}
                         />
                       );

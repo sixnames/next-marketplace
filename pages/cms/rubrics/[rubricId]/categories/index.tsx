@@ -15,7 +15,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -271,14 +271,19 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+
+  const categories = getTreeFromList<CategoryInterface>({
+    list: rubric.categories,
+    childrenFieldName: 'categories',
+  });
+
+  const sortedCategories = sortByName(categories);
+
   const payload: RubricCategoriesConsumerInterface = {
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),
-      categories: getTreeFromList<CategoryInterface>({
-        list: rubric.categories,
-        childrenFieldName: 'categories',
-      }),
+      categories: sortedCategories,
     },
   };
 

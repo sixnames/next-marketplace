@@ -283,7 +283,7 @@ export async function getParentTreeSlugs({
 }
 
 export function sortByName(list: any[]): any[] {
-  return list.sort((a, b) => {
+  return [...list].sort((a, b) => {
     const nameA = `${a.name}`.toUpperCase();
     const nameB = `${b.name}`.toUpperCase();
     if (nameA < nameB) {

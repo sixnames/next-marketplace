@@ -11,9 +11,57 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
-import { AttributeInterface, CategoryInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface, OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
+
+interface TitleOptionInterface
+  extends Pick<OptionInterface, 'nameI18n' | 'variants'>,
+    Record<any, any> {
+  options?: TitleOptionInterface[] | null;
+}
+
+interface GetTitleOptionNamesInterface {
+  locale: string;
+  option: TitleOptionInterface;
+  metricValue: string;
+  capitalise?: boolean | null;
+  finalGender: string;
+  acc: string;
+}
+
+export function getTitleOptionNames({
+  capitalise,
+  finalGender,
+  locale,
+  metricValue,
+  option,
+  acc,
+}: GetTitleOptionNamesInterface): string {
+  const variant = get(option, `variants.${finalGender}.${locale}`);
+  const name = getFieldStringLocale(option.nameI18n, locale);
+  let newAcc = `${acc} ${name}`;
+  if (variant) {
+    newAcc = `${acc} ${variant}`;
+  }
+
+  if (!option.options || option.options.length < 1) {
+    const optionValue = `${newAcc}${metricValue}`;
+    return capitalise ? optionValue : optionValue.toLocaleLowerCase();
+  }
+
+  return (option.options || []).reduce((childAcc: string, childOption) => {
+    const childOptionName = getTitleOptionNames({
+      capitalise,
+      finalGender,
+      locale,
+      metricValue,
+      option: childOption,
+      acc,
+    });
+    return `${childAcc} ${childOptionName}`;
+  }, newAcc);
+}
 
 interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {}
 
@@ -32,6 +80,7 @@ interface GenerateTitleInterface {
   locale: string;
   currency?: string;
   capitaliseKeyWord?: boolean | null;
+  log?: boolean;
 }
 
 export function generateTitle({
@@ -46,7 +95,8 @@ export function generateTitle({
   positionFieldName,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
-}: GenerateTitleInterface): string {
+}: // log,
+GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
@@ -114,6 +164,18 @@ export function generateTitle({
     }
 
     // collect selected options
+    /*const arrayValue = (options || []).map((option) => {
+      return getTitleOptionNames({
+        locale,
+        option,
+        metricValue,
+        capitalise,
+        finalGender,
+        acc: '',
+      });
+    });
+    console.log(arrayValue);*/
+
     const value = (options || [])
       .map(({ variants, nameI18n }) => {
         const name = getFieldStringLocale(nameI18n, locale);

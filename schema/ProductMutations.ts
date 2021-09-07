@@ -55,7 +55,7 @@ export const CreateProductInput = inputObjectType({
     t.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
     t.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
+    t.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.field('gender', {
       type: 'Gender',
@@ -71,7 +71,7 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
     t.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
+    t.json('descriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });

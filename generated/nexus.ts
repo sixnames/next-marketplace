@@ -257,7 +257,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
@@ -361,7 +361,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
@@ -1813,7 +1813,7 @@ export interface NexusGenFieldTypes {
     connections: NexusGenRootTypes['ProductConnection'][]; // [ProductConnection!]!
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     itemId: string; // String!
     mainImage: string; // String!
     manufacturer: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer

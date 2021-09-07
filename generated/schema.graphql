@@ -467,7 +467,7 @@ input CoordinatesInput {
 input CopyProductInput {
   active: Boolean!
   barcode: [String!]
-  descriptionI18n: JSONObject!
+  descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
   originalName: String!
@@ -585,7 +585,7 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   active: Boolean!
   barcode: [String!]
-  descriptionI18n: JSONObject!
+  descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
   originalName: String!
@@ -1752,7 +1752,7 @@ type Product implements Base & Timestamp {
   connections: [ProductConnection!]!
   createdAt: Date!
   description: String!
-  descriptionI18n: JSONObject!
+  descriptionI18n: JSONObject
   itemId: String!
   mainImage: String!
   manufacturer: Manufacturer

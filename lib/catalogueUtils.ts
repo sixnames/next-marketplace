@@ -864,6 +864,7 @@ export const getCatalogueData = async ({
                   $count: 'totalDocs',
                 },
               ],
+
               rubric: rubricsPipeline,
 
               selectedOptionsSlugs: [

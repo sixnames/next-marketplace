@@ -203,7 +203,11 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
               {topProducts.map((product) => {
                 return (
                   <div className='min-w-[280px] flex items-stretch' key={`${product._id}`}>
-                    <ProductSnippetGridBigImage showSnippetBackground product={product} />
+                    <ProductSnippetGridBigImage
+                      className='flex-grow'
+                      showSnippetBackground
+                      product={product}
+                    />
                   </div>
                 );
               })}
@@ -516,6 +520,7 @@ export async function getServerSideProps(
     // title
     const snippetTitle = generateProductTitle({
       locale: sessionLocale,
+      attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
       attributeVisibilityFieldName: 'showInSnippetTitle',
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
@@ -628,6 +633,7 @@ export async function getServerSideProps(
               options: [option],
             },
           ],
+          attributeNameVisibilityFieldName: 'showNameInTitle',
           positionFieldName: 'positioningInTitle',
           attributeVisibilityFieldName: 'showInCatalogueTitle',
           defaultGender: catalogueTitle.gender,

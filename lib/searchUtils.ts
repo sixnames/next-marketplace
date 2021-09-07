@@ -607,6 +607,7 @@ export const getSearchData = async ({
       // title
       const snippetTitle = generateProductTitle({
         locale,
+        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
         attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
         showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,

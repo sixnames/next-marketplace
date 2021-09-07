@@ -11,15 +11,67 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
-import { AttributeInterface, CategoryInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface, OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
+
+interface TitleOptionInterface
+  extends Pick<OptionInterface, 'nameI18n' | 'variants'>,
+    Record<any, any> {
+  options?: TitleOptionInterface[] | null;
+}
+
+interface GetTitleOptionNamesInterface {
+  locale: string;
+  option: TitleOptionInterface;
+  metricValue: string;
+  capitalise?: boolean | null;
+  finalGender: string;
+  acc: string;
+}
+
+export function getTitleOptionNames({
+  capitalise,
+  finalGender,
+  locale,
+  metricValue,
+  option,
+  acc,
+}: GetTitleOptionNamesInterface): string {
+  const variant = get(option, `variants.${finalGender}.${locale}`);
+  const name = getFieldStringLocale(option.nameI18n, locale);
+  let newAcc = `${acc} ${name}`;
+  if (variant) {
+    newAcc = `${acc} ${variant}`;
+  }
+
+  if (!option.options || option.options.length < 1) {
+    const optionValue = `${newAcc}${metricValue}`;
+    return capitalise ? optionValue : optionValue.toLocaleLowerCase();
+  }
+
+  return (option.options || []).reduce((childAcc: string, childOption) => {
+    const childOptionName = getTitleOptionNames({
+      capitalise,
+      finalGender,
+      locale,
+      metricValue,
+      option: childOption,
+      acc,
+    });
+    return `${childAcc} ${childOptionName}`;
+  }, newAcc);
+}
 
 interface TitleAttributeInterface extends AttributeInterface, Record<any, any> {}
 
 interface GenerateTitleInterface {
   positionFieldName: 'positioningInTitle' | 'positioningInCardTitle';
   attributeVisibilityFieldName: 'showInCatalogueTitle' | 'showInCardTitle' | 'showInSnippetTitle';
+  attributeNameVisibilityFieldName:
+    | 'showNameInTitle'
+    | 'showNameInCardTitle'
+    | 'showNameInSnippetTitle';
   attributes: TitleAttributeInterface[];
   fallbackTitle: string;
   prefix?: string | null;
@@ -28,6 +80,7 @@ interface GenerateTitleInterface {
   locale: string;
   currency?: string;
   capitaliseKeyWord?: boolean | null;
+  log?: boolean;
 }
 
 export function generateTitle({
@@ -41,12 +94,9 @@ export function generateTitle({
   capitaliseKeyWord,
   positionFieldName,
   attributeVisibilityFieldName,
-}: GenerateTitleInterface): string {
-  // return default title if no filters selected
-  if (attributes.length < 1) {
-    return fallbackTitle;
-  }
-
+  attributeNameVisibilityFieldName,
+}: // log,
+GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
@@ -100,10 +150,13 @@ export function generateTitle({
       return;
     }
 
-    const attributeName = `${getFieldStringLocale(nameI18n, locale)} `;
+    const attributeNameVisibilityField = get(attribute, attributeNameVisibilityFieldName);
+    const attributeName = attributeNameVisibilityField
+      ? `${getFieldStringLocale(nameI18n, locale)} `
+      : '';
     const attributePositionField = get(attribute, positionFieldName);
     const positionInTitleForCurrentLocale = getFieldStringLocale(attributePositionField, locale);
-    console.log(positionInTitleForCurrentLocale);
+
     // attribute metric value
     let metricValue = metric ? ` ${getFieldStringLocale(metric.nameI18n, locale)}` : '';
     if (isPrice && currency) {
@@ -111,6 +164,18 @@ export function generateTitle({
     }
 
     // collect selected options
+    /*const arrayValue = (options || []).map((option) => {
+      return getTitleOptionNames({
+        locale,
+        option,
+        metricValue,
+        capitalise,
+        finalGender,
+        acc: '',
+      });
+    });
+    console.log(arrayValue);*/
+
     const value = (options || [])
       .map(({ variants, nameI18n }) => {
         const name = getFieldStringLocale(nameI18n, locale);
@@ -244,6 +309,7 @@ export function generateProductTitle({
   defaultKeyword,
   currency,
   attributeVisibilityFieldName,
+  attributeNameVisibilityFieldName,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
     locale,
@@ -264,6 +330,7 @@ export function generateProductTitle({
     currency,
     capitaliseKeyWord: true,
     positionFieldName: 'positioningInCardTitle',
+    attributeNameVisibilityFieldName,
     attributeVisibilityFieldName,
   });
 }

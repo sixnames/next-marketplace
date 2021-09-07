@@ -85,13 +85,13 @@ export function getCategoryFilterAttribute({
     showAsCatalogueBreadcrumb: true,
     capitalise: true,
     notShowAsAlphabet: true,
-    showNameInTitle: true,
     showInSnippet: false,
-    showInCardTitle: false,
+    showInCardTitle: true,
     showInCatalogueTitle: true,
-    showInSnippetTitle: false,
+    showInSnippetTitle: true,
+    showNameInTitle: false,
     showNameInCardTitle: false,
-    showNameInSelectedAttributes: true,
+    showNameInSelectedAttributes: false,
     showNameInSnippetTitle: false,
     positioningInTitle: {
       [DEFAULT_LOCALE]:

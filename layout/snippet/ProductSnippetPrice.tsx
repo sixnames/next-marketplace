@@ -36,7 +36,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
         className ? className : ''
       }`}
     >
-      <span className='text-secondary-text text-[0.5em] mr-[0.35rem]'>
+      <span className='text-secondary-text text-[0.7em] mr-[0.35rem]'>
         {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
       </span>
       <Currency value={value} />

@@ -63,7 +63,7 @@ export const Product = objectType({
     t.string('manufacturerSlug');
     t.string('supplierSlug');
     t.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
+    t.json('descriptionI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.string('rubricSlug');
     t.boolean('available');
@@ -74,6 +74,7 @@ export const Product = objectType({
         const { locale } = await getRequestParams(context);
         const snippetTitle = generateProductTitle({
           locale,
+          attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
           attributeVisibilityFieldName: 'showInSnippetTitle',
           rubricName: getFieldStringLocale(source.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: source.rubric?.showRubricNameInProductTitle,
@@ -129,11 +130,11 @@ export const Product = objectType({
     });
 
     // Product description translation field resolver
-    t.nonNull.field('description', {
+    t.field('description', {
       type: 'String',
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.descriptionI18n);
+        return source.descriptionI18n ? getI18nLocale(source.descriptionI18n) : null;
       },
     });
 

@@ -261,6 +261,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       // title
       const snippetTitle = generateProductTitle({
         locale,
+        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
         attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
         showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,

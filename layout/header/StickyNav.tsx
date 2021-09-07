@@ -49,6 +49,7 @@ export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInter
 }
 
 const StickyNavDropdownDefault = dynamic(() => import('layout/header/StickyNavDropdownDefault'));
+
 const StickyNavDropdownOptionsOnly = dynamic(
   () => import('layout/header/StickyNavDropdownOptionsOnly'),
 );

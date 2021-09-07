@@ -794,6 +794,7 @@ export async function getCardData({
     // title
     const cardTitle = generateProductTitle({
       locale,
+      attributeNameVisibilityFieldName: 'showNameInCardTitle',
       attributeVisibilityFieldName: 'showInCardTitle',
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,

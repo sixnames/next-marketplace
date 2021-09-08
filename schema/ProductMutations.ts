@@ -1629,6 +1629,9 @@ export const ProductMutations = extendType({
                 selectedOptionsSlugs: {
                   $each: categoryParentTreeSlugs,
                 },
+                titleCategoriesSlugs: {
+                  $each: categoryParentTreeSlugs,
+                },
               },
             };
             if (selected) {
@@ -1636,12 +1639,14 @@ export const ProductMutations = extendType({
                 updater = {
                   $pull: {
                     selectedOptionsSlugs: category.slug,
+                    titleCategoriesSlugs: category.slug,
                   },
                 };
               } else {
                 updater = {
                   $pullAll: {
                     selectedOptionsSlugs: categoryParentTreeSlugs,
+                    titleCategoriesSlugs: categoryParentTreeSlugs,
                   },
                 };
               }

@@ -1,6 +1,7 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
+import Tooltip from 'components/Tooltip';
 import { ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import { ProductModel, RubricModel } from 'db/dbModels';
@@ -11,7 +12,10 @@ import {
   ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import { useUpdateProductCategoryMutation } from 'generated/apolloComponents';
+import {
+  useUpdateProductCategoryMutation,
+  useUpdateProductCategoryVisibilityMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
@@ -44,15 +48,21 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
     onError: onErrorCallback,
   });
 
+  const [updateProductCategoryVisibilityMutation] = useUpdateProductCategoryVisibilityMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateProductCategoryVisibility),
+    onError: onErrorCallback,
+  });
+
   const renderCategories = React.useCallback(
     (category: ProductCategoryInterface) => {
       const { name, categories } = category;
       const hasSelectedChildren = categories.some(({ selected }) => selected);
+      const isViewChecked = product.titleCategoriesSlugs.includes(category.slug);
 
       return (
         <div>
-          <div className='cms-option flex items-center'>
-            <div className='mr-4'>
+          <div className='cms-option flex gap-4 items-center'>
+            <div>
               <Checkbox
                 disabled={hasSelectedChildren}
                 testId={`${category.name}`}
@@ -75,6 +85,30 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
             <div className='font-medium' data-cy={`category-${name}`}>
               {name}
             </div>
+            <Tooltip
+              title={isViewChecked ? 'Показывать в заголовке товара' : 'Категория не выбрана'}
+            >
+              <div>
+                <Checkbox
+                  disabled={!category.selected}
+                  testId={`${category.name}-view`}
+                  checked={isViewChecked}
+                  value={`${category._id}-view`}
+                  name={`${category._id}-view`}
+                  onChange={() => {
+                    showLoading();
+                    updateProductCategoryVisibilityMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          categoryId: category._id,
+                        },
+                      },
+                    }).catch(console.log);
+                  }}
+                />
+              </div>
+            </Tooltip>
           </div>
           {categories && categories.length > 0 ? (
             <div className='ml-4'>
@@ -88,7 +122,13 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
         </div>
       );
     },
-    [product._id, showLoading, updateProductCategoryMutation],
+    [
+      product._id,
+      product.titleCategoriesSlugs,
+      showLoading,
+      updateProductCategoryMutation,
+      updateProductCategoryVisibilityMutation,
+    ],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

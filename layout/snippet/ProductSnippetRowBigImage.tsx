@@ -16,6 +16,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   className,
   showSnippetBackground = true,
   showSnippetButtonsOnHover = false,
+  showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
 }) => {
@@ -131,7 +132,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         ) : null}
 
         {/*connections*/}
-        {(connections || []).length > 0 ? (
+        {(connections || []).length > 0 && showSnippetConnections ? (
           <div className='hidden md:block mt-2 mb-6'>
             {(connections || []).map(({ _id, attribute, connectionProducts }) => {
               return (

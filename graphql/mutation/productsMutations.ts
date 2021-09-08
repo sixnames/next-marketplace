@@ -160,3 +160,12 @@ export const UPDATE_PRODUCT_CATEGORY_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT_CATEGORY_VISIBILITY_MUTATION = gql`
+  mutation UpdateProductCategoryVisibility($input: UpdateProductCategoryInput!) {
+    updateProductCategoryVisibility(input: $input) {
+      success
+      message
+    }
+  }
+`;

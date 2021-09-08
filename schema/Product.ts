@@ -1,7 +1,7 @@
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
-import { generateProductTitle } from 'lib/titleUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -72,10 +72,8 @@ export const Product = objectType({
       type: 'String',
       resolve: async (source, _args, context): Promise<string> => {
         const { locale } = await getRequestParams(context);
-        const snippetTitle = generateProductTitle({
+        const snippetTitle = generateSnippetTitle({
           locale,
-          attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-          attributeVisibilityFieldName: 'showInSnippetTitle',
           rubricName: getFieldStringLocale(source.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: source.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: source.rubric?.showCategoryInProductTitle,
@@ -83,6 +81,7 @@ export const Product = objectType({
           fallbackTitle: source.originalName,
           defaultKeyword: source.originalName,
           defaultGender: source.gender,
+          titleCategoriesSlugs: source.titleCategoriesSlugs,
           categories: getTreeFromList({
             list: source.categories,
             childrenFieldName: 'categories',

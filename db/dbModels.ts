@@ -522,7 +522,7 @@ export interface ProductAttributeModel extends AttributeModel, CountersModel {
   number?: number | null;
 }
 
-export interface ProductModel extends BaseModel, TimestampModel {
+interface ProductMainFieldsInterface {
   active: boolean;
   slug: string;
   originalName: string;
@@ -536,9 +536,13 @@ export interface ProductModel extends BaseModel, TimestampModel {
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
+  titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
-  barcode?: string[] | null;
   gender: GenderModel;
+}
+
+export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
+  barcode?: string[] | null;
 
   // types for aggregation
   shopsCount?: number;
@@ -618,6 +622,7 @@ export interface RubricVariantModel {
   catalogueNavLayout?: string | null;
 
   // booleans
+  showSnippetConnections?: boolean | null;
   showSnippetBackground?: boolean | null;
   showSnippetArticle?: boolean | null;
   showSnippetRating?: boolean | null;
@@ -685,9 +690,11 @@ export interface CategoryModel extends CountersModel {
   variants: OptionVariantsModel;
 }
 
-export interface ShopProductModel extends TimestampModel, CountersModel {
+export interface ShopProductModel
+  extends ProductMainFieldsInterface,
+    TimestampModel,
+    CountersModel {
   _id: ObjectIdModel;
-  active: boolean;
   available: number;
   citySlug: string;
   price: number;
@@ -695,22 +702,10 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   oldPrices: ShopProductOldPriceModel[];
   discountedPercent: number;
   itemId: string;
-  slug: string;
-  originalName: string;
-  nameI18n?: TranslationModel | null;
-  descriptionI18n?: TranslationModel | null;
-  brandSlug?: string | null;
-  brandCollectionSlug?: string | null;
-  manufacturerSlug?: string | null;
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  selectedOptionsSlugs: string[];
-  mainImage: string;
   barcode?: string | null;
-  gender: GenderModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

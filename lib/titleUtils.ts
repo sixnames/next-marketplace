@@ -24,42 +24,37 @@ interface TitleOptionInterface
 interface GetTitleOptionNamesInterface {
   locale: string;
   option: TitleOptionInterface;
-  metricValue: string;
-  capitalise?: boolean | null;
   finalGender: string;
-  acc: string;
+  acc: string[];
 }
 
 export function getTitleOptionNames({
-  capitalise,
   finalGender,
   locale,
-  metricValue,
   option,
   acc,
-}: GetTitleOptionNamesInterface): string {
+}: GetTitleOptionNamesInterface): string[] {
   const variant = get(option, `variants.${finalGender}.${locale}`);
   const name = getFieldStringLocale(option.nameI18n, locale);
-  let newAcc = `${acc} ${name}`;
+  const newAcc = [...acc];
+  let optionValue = name;
   if (variant) {
-    newAcc = `${acc} ${variant}`;
+    optionValue = variant;
   }
+  newAcc.push(optionValue);
 
   if (!option.options || option.options.length < 1) {
-    const optionValue = `${newAcc}${metricValue}`;
-    return capitalise ? optionValue : optionValue.toLocaleLowerCase();
+    return newAcc;
   }
 
-  return (option.options || []).reduce((childAcc: string, childOption) => {
-    const childOptionName = getTitleOptionNames({
-      capitalise,
+  return (option.options || []).reduce((childAcc: string[], childOption) => {
+    const childOptionResult = getTitleOptionNames({
       finalGender,
       locale,
-      metricValue,
       option: childOption,
-      acc,
+      acc: [],
     });
-    return `${childAcc} ${childOptionName}`;
+    return [...childAcc, ...childOptionResult];
   }, newAcc);
 }
 
@@ -146,7 +141,7 @@ GenerateTitleInterface): string {
     const { nameI18n, options, capitalise, slug, metric } = attribute;
     const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
     const visible = get(attribute, attributeVisibilityFieldName);
-    if (!visible) {
+    if (!visible || !options || options.length < 1) {
       return;
     }
 
@@ -164,31 +159,17 @@ GenerateTitleInterface): string {
     }
 
     // collect selected options
-    /*const arrayValue = (options || []).map((option) => {
-      return getTitleOptionNames({
+    const arrayValue = (options || []).reduce((acc: string[], option) => {
+      const optionResult = getTitleOptionNames({
         locale,
         option,
-        metricValue,
-        capitalise,
         finalGender,
-        acc: '',
+        acc: [],
       });
-    });
-    console.log(arrayValue);*/
-
-    const value = (options || [])
-      .map(({ variants, nameI18n }) => {
-        const name = getFieldStringLocale(nameI18n, locale);
-        const currentVariant = variants[finalGender];
-        const variantLocale = currentVariant ? getFieldStringLocale(currentVariant, locale) : null;
-        let value = name;
-        if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-          value = variantLocale;
-        }
-        const optionValue = `${attributeName}${value}${metricValue}`;
-        return capitalise ? optionValue : optionValue.toLocaleLowerCase();
-      })
-      .join(titleSeparator);
+      return [...acc, ...optionResult];
+    }, []);
+    const initialAttributeValue = `${attributeName}${arrayValue.join(' ')}${metricValue}`;
+    const value = capitalise ? initialAttributeValue : initialAttributeValue.toLocaleLowerCase();
 
     // price
     if (isPrice) {
@@ -253,6 +234,7 @@ interface GenerateProductTitlePrefixInterface {
   locale: string;
   rubricName?: string | null;
   defaultGender: string;
+  titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -265,6 +247,7 @@ export function generateProductTitlePrefix({
   defaultGender,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
+  titleCategoriesSlugs,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
   const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
@@ -272,13 +255,16 @@ export function generateProductTitlePrefix({
 
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
+    const visible = titleCategoriesSlugs.some((slug) => slug === category.slug);
     if (showCategoryInProductTitle) {
       const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
+      let value = name;
       if (variant) {
-        categoryNames.push(variant);
-      } else {
-        categoryNames.push(name);
+        value = variant;
+      }
+      if (visible) {
+        categoryNames.push(value);
       }
       return (category.categories || []).forEach(getCategoryNames);
     }
@@ -293,11 +279,15 @@ export function generateProductTitlePrefix({
 
 interface GenerateProductTitleInterface
   extends GenerateProductTitlePrefixInterface,
-    Omit<GenerateTitleInterface, 'positionFieldName' | 'prefix' | 'capitaliseKeyWord'> {
+    Omit<
+      GenerateTitleInterface,
+      'positionFieldName' | 'prefix' | 'capitaliseKeyWord' | 'attributeNameVisibilityFieldName'
+    > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
+  attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
 }
 
-export function generateProductTitle({
+function generateProductTitle({
   locale,
   rubricName,
   categories,
@@ -310,6 +300,7 @@ export function generateProductTitle({
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
+  titleCategoriesSlugs,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
     locale,
@@ -318,6 +309,7 @@ export function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
+    titleCategoriesSlugs,
   });
 
   return generateTitle({
@@ -332,5 +324,27 @@ export function generateProductTitle({
     positionFieldName: 'positioningInCardTitle',
     attributeNameVisibilityFieldName,
     attributeVisibilityFieldName,
+  });
+}
+
+interface GenerateCardTitleInterface
+  extends Omit<
+    GenerateProductTitleInterface,
+    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName'
+  > {}
+
+export function generateCardTitle(props: GenerateCardTitleInterface): string {
+  return generateProductTitle({
+    ...props,
+    attributeNameVisibilityFieldName: 'showNameInCardTitle',
+    attributeVisibilityFieldName: 'showInCardTitle',
+  });
+}
+
+export function generateSnippetTitle(props: GenerateCardTitleInterface): string {
+  return generateProductTitle({
+    ...props,
+    attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
+    attributeVisibilityFieldName: 'showInSnippetTitle',
   });
 }

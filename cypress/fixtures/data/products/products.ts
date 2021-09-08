@@ -118,6 +118,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     counter = counter + 1;
     const selectedAttributesIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
+    const titleCategoriesSlugs: string[] = [];
 
     rubricAttributes.forEach((attribute) => {
       if (attribute.rubricSlug === rubricSlug && attribute.showInCatalogueFilter) {
@@ -248,12 +249,16 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
 
     const isForCategory = rubric.nameI18n.ru === 'Виски';
     if (isForCategory) {
-      const categoriesSlugs = [
+      const categoriesSlugsForTitle = [
         `${CATEGORY_SLUG_PREFIX}1`,
         `${CATEGORY_SLUG_PREFIX}2`,
         `${CATEGORY_SLUG_PREFIX}3`,
-        `${CATEGORY_SLUG_PREFIX}5`,
       ];
+      categoriesSlugsForTitle.forEach((categorySlug) => {
+        titleCategoriesSlugs.push(categorySlug);
+      });
+
+      const categoriesSlugs = [...categoriesSlugsForTitle, `${CATEGORY_SLUG_PREFIX}5`];
       categoriesSlugs.forEach((categorySlug) => {
         selectedOptionsSlugs.push(categorySlug);
       });
@@ -277,6 +282,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       },
       mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
+      titleCategoriesSlugs,
       selectedAttributesIds,
       brandSlug: brand?.slug,
       brandCollectionSlug: brandCollection?.slug,

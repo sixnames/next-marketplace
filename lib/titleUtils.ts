@@ -297,7 +297,7 @@ interface GenerateProductTitleInterface
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
 }
 
-export function generateProductTitle({
+function generateProductTitle({
   locale,
   rubricName,
   categories,
@@ -332,5 +332,27 @@ export function generateProductTitle({
     positionFieldName: 'positioningInCardTitle',
     attributeNameVisibilityFieldName,
     attributeVisibilityFieldName,
+  });
+}
+
+interface GenerateCardTitleInterface
+  extends Omit<
+    GenerateProductTitleInterface,
+    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName'
+  > {}
+
+export function generateCardTitle(props: GenerateCardTitleInterface): string {
+  return generateProductTitle({
+    ...props,
+    attributeNameVisibilityFieldName: 'showNameInCardTitle',
+    attributeVisibilityFieldName: 'showInCardTitle',
+  });
+}
+
+export function generateSnippetTitle(props: GenerateCardTitleInterface): string {
+  return generateProductTitle({
+    ...props,
+    attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
+    attributeVisibilityFieldName: 'showInSnippetTitle',
   });
 }

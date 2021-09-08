@@ -52,7 +52,7 @@ import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
-import { generateProductTitle } from 'lib/titleUtils';
+import { generateCardTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 
 const minAssetsListCount = 2;
@@ -792,10 +792,8 @@ export async function getCardData({
         : getConstantTranslation(`shops.single.${locale}`);
 
     // title
-    const cardTitle = generateProductTitle({
+    const cardTitle = generateCardTitle({
       locale,
-      attributeNameVisibilityFieldName: 'showNameInCardTitle',
-      attributeVisibilityFieldName: 'showInCardTitle',
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,

@@ -835,7 +835,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!

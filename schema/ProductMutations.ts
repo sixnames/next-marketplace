@@ -86,7 +86,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
     t.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
+    t.json('descriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });

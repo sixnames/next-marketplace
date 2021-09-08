@@ -3,13 +3,7 @@ import navItemTemplates from '../data/navItems/navItems';
 import { MessageModel, MessagesGroupModel, NavItemModel } from '../../../db/dbModels';
 import messagesGroupsTemplates from '../data/messagesGroups/messagesGroups';
 import messageTemplates from '../data/messages/messages';
-import {
-  COL_MESSAGES,
-  COL_MESSAGES_GROUPS,
-  COL_NAV_ITEMS,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
+import { COL_MESSAGES, COL_MESSAGES_GROUPS, COL_NAV_ITEMS } from '../../../db/collectionNames';
 require('dotenv').config();
 
 async function updateProds() {
@@ -90,27 +84,6 @@ async function updateProds() {
     console.log(`Updating indexes in ${dbConfig.dbName} db`);
     await updateIndexes(db);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
-
-    // update products
-    console.log(' ');
-    console.log(`Updating products in ${dbConfig.dbName} db`);
-    await db.collection(COL_PRODUCTS).updateMany(
-      {},
-      {
-        $set: {
-          titleCategoriesSlugs: [],
-        },
-      },
-    );
-    await db.collection(COL_SHOP_PRODUCTS).updateMany(
-      {},
-      {
-        $set: {
-          titleCategoriesSlugs: [],
-        },
-      },
-    );
-    console.log(`products updated in ${dbConfig.dbName} db`);
 
     // disconnect form db
     await client.close();

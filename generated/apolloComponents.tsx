@@ -3077,7 +3077,7 @@ export type UpdateProductInput = {
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 

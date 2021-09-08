@@ -45,7 +45,7 @@ import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { generateProductTitle } from 'lib/titleUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
@@ -605,10 +605,8 @@ export const getSearchData = async ({
       });
 
       // title
-      const snippetTitle = generateProductTitle({
+      const snippetTitle = generateSnippetTitle({
         locale,
-        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-        attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
         showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric?.showCategoryInProductTitle,

@@ -2751,7 +2751,7 @@ input UpdateProductInCartInput {
 input UpdateProductInput {
   active: Boolean!
   barcode: [String!]
-  descriptionI18n: JSONObject!
+  descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
   originalName: String!

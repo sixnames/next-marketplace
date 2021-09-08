@@ -8,7 +8,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
-import { generateProductTitle } from 'lib/titleUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -259,10 +259,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       }
 
       // title
-      const snippetTitle = generateProductTitle({
+      const snippetTitle = generateSnippetTitle({
         locale,
-        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-        attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
         showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,

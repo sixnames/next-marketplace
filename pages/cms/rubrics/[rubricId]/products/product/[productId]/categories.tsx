@@ -12,7 +12,10 @@ import {
   ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import { useUpdateProductCategoryMutation } from 'generated/apolloComponents';
+import {
+  useUpdateProductCategoryMutation,
+  useUpdateProductCategoryVisibilityMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
@@ -42,6 +45,11 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
 
   const [updateProductCategoryMutation] = useUpdateProductCategoryMutation({
     onCompleted: (data) => onCompleteCallback(data.updateProductCategory),
+    onError: onErrorCallback,
+  });
+
+  const [updateProductCategoryVisibilityMutation] = useUpdateProductCategoryVisibilityMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateProductCategoryVisibility),
     onError: onErrorCallback,
   });
 
@@ -89,7 +97,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
                   name={`${category._id}-view`}
                   onChange={() => {
                     showLoading();
-                    updateProductCategoryMutation({
+                    updateProductCategoryVisibilityMutation({
                       variables: {
                         input: {
                           productId: product._id,

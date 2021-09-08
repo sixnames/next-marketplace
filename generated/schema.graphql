@@ -1402,6 +1402,11 @@ type Mutation {
   updateProductCategory(input: UpdateProductCategoryInput!): ProductPayload!
 
   """
+  Should update product category visibility
+  """
+  updateProductCategoryVisibility(input: UpdateProductCategoryInput!): ProductPayload!
+
+  """
   Should update product counter
   """
   updateProductCounter(input: UpdateProductCounterInput!): Boolean!

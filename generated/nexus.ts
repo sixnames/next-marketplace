@@ -1611,6 +1611,7 @@ export interface NexusGenFieldTypes {
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
     updateProductCategory: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductCategoryVisibility: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2761,6 +2762,7 @@ export interface NexusGenFieldTypeNames {
     updateProductBrandCollection: 'ProductPayload';
     updateProductCardContent: 'ProductCardContentPayload';
     updateProductCategory: 'ProductPayload';
+    updateProductCategoryVisibility: 'ProductPayload';
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
@@ -3871,6 +3873,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
     };
     updateProductCategory: {
+      // args
+      input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
+    };
+    updateProductCategoryVisibility: {
       // args
       input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
     };

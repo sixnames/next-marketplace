@@ -1705,6 +1705,140 @@ export const ProductMutations = extendType({
       },
     });
 
+    // Should update product category visibility
+    t.nonNull.field('updateProductCategoryVisibility', {
+      type: 'ProductPayload',
+      description: 'Should update product category visibility',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductCategoryInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { db, client } = await getDatabase();
+        const { getApiMessage } = await getRequestParams(context);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { productId, categoryId } = input;
+
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check category availability
+            const category = await categoriesCollection.findOne({ _id: categoryId });
+            if (!category) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Toggle category in product
+            const selected = product.titleCategoriesSlugs.some((slug) => slug === category.slug);
+            let updater: Record<string, any> = {
+              $addToSet: {
+                titleCategoriesSlugs: category.slug,
+              },
+            };
+            if (selected) {
+              updater = {
+                $pull: {
+                  titleCategoriesSlugs: category.slug,
+                },
+              };
+            }
+
+            // update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              updater,
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // update shop products
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              updater,
+            );
+            if (!updatedShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
     // Should update product counter
     t.nonNull.field('updateProductCounter', {
       type: 'Boolean',

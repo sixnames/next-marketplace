@@ -166,7 +166,8 @@ GenerateTitleInterface): string {
         finalGender,
         acc: [],
       });
-      return [...acc, ...optionResult];
+      const separator = optionResult.length > 0 && acc.length > 0 ? [titleSeparator] : [];
+      return [...acc, ...separator, ...optionResult];
     }, []);
     const initialAttributeValue = `${attributeName}${arrayValue.join(' ')}${metricValue}`;
     const value = capitalise ? initialAttributeValue : initialAttributeValue.toLocaleLowerCase();

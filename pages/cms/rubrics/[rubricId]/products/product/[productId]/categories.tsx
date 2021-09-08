@@ -91,7 +91,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
               <div>
                 <Checkbox
                   disabled={!category.selected}
-                  testId={`${category.name}`}
+                  testId={`${category.name}-view`}
                   checked={isViewChecked}
                   value={`${category._id}-view`}
                   name={`${category._id}-view`}
@@ -122,7 +122,13 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
         </div>
       );
     },
-    [product._id, product.titleCategoriesSlugs, showLoading, updateProductCategoryMutation],
+    [
+      product._id,
+      product.titleCategoriesSlugs,
+      showLoading,
+      updateProductCategoryMutation,
+      updateProductCategoryVisibilityMutation,
+    ],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

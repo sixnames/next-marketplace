@@ -536,6 +536,7 @@ export interface ProductModel extends BaseModel, TimestampModel {
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
+  titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
   barcode?: string[] | null;
   gender: GenderModel;
@@ -709,6 +710,7 @@ export interface ShopProductModel extends TimestampModel, CountersModel {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   selectedOptionsSlugs: string[];
+  titleCategoriesSlugs: string[];
   mainImage: string;
   barcode?: string | null;
   gender: GenderModel;

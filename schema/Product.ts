@@ -81,6 +81,7 @@ export const Product = objectType({
           fallbackTitle: source.originalName,
           defaultKeyword: source.originalName,
           defaultGender: source.gender,
+          titleCategoriesSlugs: source.titleCategoriesSlugs,
           categories: getTreeFromList({
             list: source.categories,
             childrenFieldName: 'categories',

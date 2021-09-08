@@ -234,6 +234,7 @@ interface GenerateProductTitlePrefixInterface {
   locale: string;
   rubricName?: string | null;
   defaultGender: string;
+  titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -246,6 +247,7 @@ export function generateProductTitlePrefix({
   defaultGender,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
+  titleCategoriesSlugs,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
   const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
@@ -253,7 +255,8 @@ export function generateProductTitlePrefix({
 
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
-    if (showCategoryInProductTitle) {
+    const visible = titleCategoriesSlugs.some((slug) => slug === category.slug);
+    if (showCategoryInProductTitle && visible) {
       const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
       if (variant) {
@@ -295,6 +298,7 @@ function generateProductTitle({
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
+  titleCategoriesSlugs,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
     locale,
@@ -303,6 +307,7 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
+    titleCategoriesSlugs,
   });
 
   return generateTitle({

@@ -134,6 +134,7 @@ export async function getCardData({
             rubricSlug: { $first: `$rubricSlug` },
             manufacturerSlug: { $first: `$manufacturerSlug` },
             brandSlug: { $first: `$brandSlug` },
+            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
             brandCollectionSlug: { $first: `$brandCollectionSlug` },
             selectedOptionsSlugs: {
               $first: '$selectedOptionsSlugs',
@@ -798,6 +799,7 @@ export async function getCardData({
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       attributes: initialProductAttributes,
+      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
       fallbackTitle: restProduct.originalName,
       defaultKeyword: restProduct.originalName,
       defaultGender: restProduct.gender,

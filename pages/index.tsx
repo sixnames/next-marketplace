@@ -435,6 +435,7 @@ export async function getServerSideProps(
           mainImage: { $first: `$mainImage` },
           originalName: { $first: `$originalName` },
           nameI18n: { $first: `$nameI18n` },
+          titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
           views: { $max: `$views.${companySlug}.${sessionCity}` },
           priorities: { $max: `$priorities.${companySlug}.${sessionCity}` },
           minPrice: {
@@ -524,6 +525,7 @@ export async function getServerSideProps(
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
       attributes: attributes || [],
+      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
       fallbackTitle: restProduct.originalName,
       defaultKeyword: restProduct.originalName,
       defaultGender: restProduct.gender,

@@ -743,6 +743,7 @@ export const getCatalogueData = async ({
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },
               nameI18n: { $first: `$nameI18n` },
+              titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
               views: { $max: `$views.${realCompanySlug}.${city}` },
               priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
               minPrice: {
@@ -1007,6 +1008,7 @@ export const getCatalogueData = async ({
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
         attributes: attributes || [],
         categories,
+        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
         fallbackTitle: restProduct.originalName,
         defaultKeyword: restProduct.originalName,
         defaultGender: restProduct.gender,

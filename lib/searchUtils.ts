@@ -242,6 +242,7 @@ export const getSearchData = async ({
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },
               nameI18n: { $first: `$nameI18n` },
+              titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
               views: { $max: `$views.${realCompanySlug}.${city}` },
               priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
               minPrice: {
@@ -614,6 +615,7 @@ export const getSearchData = async ({
         fallbackTitle: restProduct.originalName,
         defaultKeyword: restProduct.originalName,
         defaultGender: restProduct.gender,
+        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
         categories: getTreeFromList({
           list: categories,
           childrenFieldName: 'categories',

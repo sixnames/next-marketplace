@@ -313,6 +313,7 @@ export const CatalogueQueries = extendType({
                   mainImage: { $first: `$mainImage` },
                   originalName: { $first: `$originalName` },
                   nameI18n: { $first: `$nameI18n` },
+                  titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
                   minPrice: {
@@ -497,6 +498,7 @@ export const CatalogueQueries = extendType({
                   mainImage: { $first: `$mainImage` },
                   originalName: { $first: `$originalName` },
                   nameI18n: { $first: `$nameI18n` },
+                  titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
                   minPrice: {

@@ -143,6 +143,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   nameI18n: { $first: `$nameI18n` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
                   selectedOptionsSlugs: {
                     $first: '$selectedOptionsSlugs',
                   },
@@ -268,6 +269,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         fallbackTitle: product.originalName,
         defaultKeyword: product.originalName,
         defaultGender: product.gender,
+        titleCategoriesSlugs: product.titleCategoriesSlugs,
         categories: getTreeFromList({
           list: product.categories,
           childrenFieldName: 'categories',

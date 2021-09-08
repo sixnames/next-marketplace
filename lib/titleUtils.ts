@@ -256,13 +256,15 @@ export function generateProductTitlePrefix({
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
     const visible = titleCategoriesSlugs.some((slug) => slug === category.slug);
-    if (showCategoryInProductTitle && visible) {
+    if (showCategoryInProductTitle) {
       const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
+      let value = name;
       if (variant) {
-        categoryNames.push(variant);
-      } else {
-        categoryNames.push(name);
+        value = variant;
+      }
+      if (visible) {
+        categoryNames.push(value);
       }
       return (category.categories || []).forEach(getCategoryNames);
     }

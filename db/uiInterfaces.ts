@@ -539,6 +539,7 @@ export interface ProductSnippetConfigInterface {
   showSnippetArticle?: boolean | null;
   showSnippetRating?: boolean | null;
   showSnippetButtonsOnHover?: boolean | null;
+  showSnippetConnections?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | 'full' | null;

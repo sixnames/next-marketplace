@@ -83,6 +83,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             rowSnippetLayout: rubricVariant.rowSnippetLayout || DEFAULT_LAYOUT,
             catalogueFilterLayout: rubricVariant.catalogueFilterLayout || DEFAULT_LAYOUT,
             catalogueNavLayout: rubricVariant.catalogueNavLayout || DEFAULT_LAYOUT,
+            showSnippetConnections: rubricVariant.showSnippetConnections || false,
             showSnippetBackground: rubricVariant.showSnippetBackground || false,
             showSnippetArticle: rubricVariant.showSnippetArticle || false,
             showSnippetRating: rubricVariant.showSnippetRating || false,
@@ -116,6 +117,11 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 {/*booleans*/}
+                <FormikCheckboxLine
+                  label={'Показывать связи сниппета'}
+                  name={'showSnippetConnections'}
+                />
+
                 <FormikCheckboxLine
                   label={'Показывать фон сниппета'}
                   name={'showSnippetBackground'}

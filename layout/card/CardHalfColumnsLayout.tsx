@@ -241,6 +241,9 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
                 {/*attributes groups*/}
                 {attributesGroups.map((attributesGroup) => {
+                  if ((attributesGroup.attributes || []).length < 1) {
+                    return null;
+                  }
                   return (
                     <section key={`${attributesGroup._id}`} className={`${dataSectionClassName}`}>
                       <h2 className='text-2xl mb-4 font-medium'>{attributesGroup.name}</h2>

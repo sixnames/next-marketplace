@@ -86,7 +86,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
     t.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
+    t.json('descriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });
@@ -229,6 +229,7 @@ export const ProductMutations = extendType({
               rubricId,
               rubricSlug: rubric.slug,
               active: false,
+              titleCategoriesSlugs: [],
               selectedOptionsSlugs: [],
               selectedAttributesIds: [],
               createdAt: new Date(),
@@ -1220,8 +1221,11 @@ export const ProductMutations = extendType({
               brandSlug: product.brandSlug,
               brandCollectionSlug: product.brandCollectionSlug,
               manufacturerSlug: product.manufacturerSlug,
+              supplierSlug: product.supplierSlug,
+              selectedAttributesIds: product.selectedAttributesIds,
               mainImage: product.mainImage,
               selectedOptionsSlugs: product.selectedOptionsSlugs,
+              titleCategoriesSlugs: product.titleCategoriesSlugs,
               gender: product.gender,
               updatedAt: new Date(),
               createdAt: new Date(),
@@ -1397,6 +1401,7 @@ export const ProductMutations = extendType({
               active: false,
               selectedOptionsSlugs: [],
               selectedAttributesIds: [],
+              titleCategoriesSlugs: [],
               createdAt: new Date(),
               updatedAt: new Date(),
             });
@@ -1468,8 +1473,11 @@ export const ProductMutations = extendType({
               brandSlug: createdProduct.brandSlug,
               brandCollectionSlug: createdProduct.brandCollectionSlug,
               manufacturerSlug: createdProduct.manufacturerSlug,
+              supplierSlug: createdProduct.supplierSlug,
+              selectedAttributesIds: createdProduct.selectedAttributesIds,
               mainImage: createdProduct.mainImage,
               selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
+              titleCategoriesSlugs: createdProduct.titleCategoriesSlugs,
               gender: createdProduct.gender,
               updatedAt: new Date(),
               createdAt: new Date(),
@@ -1621,6 +1629,9 @@ export const ProductMutations = extendType({
                 selectedOptionsSlugs: {
                   $each: categoryParentTreeSlugs,
                 },
+                titleCategoriesSlugs: {
+                  $each: categoryParentTreeSlugs,
+                },
               },
             };
             if (selected) {
@@ -1628,15 +1639,151 @@ export const ProductMutations = extendType({
                 updater = {
                   $pull: {
                     selectedOptionsSlugs: category.slug,
+                    titleCategoriesSlugs: category.slug,
                   },
                 };
               } else {
                 updater = {
                   $pullAll: {
                     selectedOptionsSlugs: categoryParentTreeSlugs,
+                    titleCategoriesSlugs: categoryParentTreeSlugs,
                   },
                 };
               }
+            }
+
+            // update product
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              updater,
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // update shop products
+            const updatedShopProductsResult = await shopProductsCollection.updateMany(
+              {
+                productId,
+              },
+              updater,
+            );
+            if (!updatedShopProductsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+              payload: updatedProduct,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should update product category visibility
+    t.nonNull.field('updateProductCategoryVisibility', {
+      type: 'ProductPayload',
+      description: 'Should update product category visibility',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductCategoryInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
+        const { db, client } = await getDatabase();
+        const { getApiMessage } = await getRequestParams(context);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+
+        const session = client.startSession();
+
+        let mutationPayload: ProductPayloadModel = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { productId, categoryId } = input;
+
+            // Check product availability
+            const product = await productsCollection.findOne({ _id: productId });
+            if (!product) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check category availability
+            const category = await categoriesCollection.findOne({ _id: categoryId });
+            if (!category) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Toggle category in product
+            const selected = product.titleCategoriesSlugs.some((slug) => slug === category.slug);
+            let updater: Record<string, any> = {
+              $addToSet: {
+                titleCategoriesSlugs: category.slug,
+              },
+            };
+            if (selected) {
+              updater = {
+                $pull: {
+                  titleCategoriesSlugs: category.slug,
+                },
+              };
             }
 
             // update product

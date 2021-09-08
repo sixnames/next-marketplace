@@ -384,6 +384,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                               ? ROW_SNIPPET_LAYOUT_BIG_IMAGE
                               : `${state.rubricVariant?.rowSnippetLayout}`
                           }
+                          showSnippetConnections={state.rubricVariant?.showSnippetConnections}
                           showSnippetBackground={state.rubricVariant?.showSnippetBackground}
                           showSnippetArticle={state.rubricVariant?.showSnippetArticle}
                           showSnippetButtonsOnHover={state.rubricVariant?.showSnippetButtonsOnHover}

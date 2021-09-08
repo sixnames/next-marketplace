@@ -511,7 +511,7 @@ export type CopyProductInput = {
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 
@@ -630,7 +630,7 @@ export type CreateProductInput = {
   barcode?: Maybe<Array<Scalars['String']>>;
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   gender: Gender;
 };
@@ -1112,6 +1112,8 @@ export type Mutation = {
   createProductWithSyncError: ProductPayload;
   /** Should update product category */
   updateProductCategory: ProductPayload;
+  /** Should update product category visibility */
+  updateProductCategoryVisibility: ProductPayload;
   /** Should update product counter */
   updateProductCounter: Scalars['Boolean'];
   /** Should create role */
@@ -1639,6 +1641,11 @@ export type MutationUpdateProductCategoryArgs = {
 };
 
 
+export type MutationUpdateProductCategoryVisibilityArgs = {
+  input: UpdateProductCategoryInput;
+};
+
+
 export type MutationUpdateProductCounterArgs = {
   input: UpdateProductCounterInput;
 };
@@ -2027,7 +2034,7 @@ export type Product = Base & Timestamp & {
   manufacturerSlug?: Maybe<Scalars['String']>;
   supplierSlug?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
@@ -2036,7 +2043,7 @@ export type Product = Base & Timestamp & {
   assets?: Maybe<ProductAssets>;
   attributes: Array<ProductAttribute>;
   connections: Array<ProductConnection>;
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   cardPrices: ProductCardPrices;
   shopsCount: Scalars['Int'];
   rubric: Rubric;
@@ -2636,6 +2643,7 @@ export type RubricVariant = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
   showSnippetArticle?: Maybe<Scalars['Boolean']>;
   showSnippetRating?: Maybe<Scalars['Boolean']>;
@@ -3076,7 +3084,7 @@ export type UpdateProductInput = {
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
-  descriptionI18n: Scalars['JSONObject'];
+  descriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 
@@ -3171,6 +3179,7 @@ export type UpdateRubricVariantInput = {
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
+  showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
   showSnippetArticle?: Maybe<Scalars['Boolean']>;
   showSnippetRating?: Maybe<Scalars['Boolean']>;
@@ -4507,6 +4516,19 @@ export type UpdateProductCategoryMutationVariables = Exact<{
 export type UpdateProductCategoryMutation = (
   { __typename?: 'Mutation' }
   & { updateProductCategory: (
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateProductCategoryVisibilityMutationVariables = Exact<{
+  input: UpdateProductCategoryInput;
+}>;
+
+
+export type UpdateProductCategoryVisibilityMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductCategoryVisibility: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -8888,6 +8910,40 @@ export function useUpdateProductCategoryMutation(baseOptions?: Apollo.MutationHo
 export type UpdateProductCategoryMutationHookResult = ReturnType<typeof useUpdateProductCategoryMutation>;
 export type UpdateProductCategoryMutationResult = Apollo.MutationResult<UpdateProductCategoryMutation>;
 export type UpdateProductCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateProductCategoryMutation, UpdateProductCategoryMutationVariables>;
+export const UpdateProductCategoryVisibilityDocument = gql`
+    mutation UpdateProductCategoryVisibility($input: UpdateProductCategoryInput!) {
+  updateProductCategoryVisibility(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateProductCategoryVisibilityMutationFn = Apollo.MutationFunction<UpdateProductCategoryVisibilityMutation, UpdateProductCategoryVisibilityMutationVariables>;
+
+/**
+ * __useUpdateProductCategoryVisibilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCategoryVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCategoryVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCategoryVisibilityMutation, { data, loading, error }] = useUpdateProductCategoryVisibilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCategoryVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCategoryVisibilityMutation, UpdateProductCategoryVisibilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductCategoryVisibilityMutation, UpdateProductCategoryVisibilityMutationVariables>(UpdateProductCategoryVisibilityDocument, options);
+      }
+export type UpdateProductCategoryVisibilityMutationHookResult = ReturnType<typeof useUpdateProductCategoryVisibilityMutation>;
+export type UpdateProductCategoryVisibilityMutationResult = Apollo.MutationResult<UpdateProductCategoryVisibilityMutation>;
+export type UpdateProductCategoryVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateProductCategoryVisibilityMutation, UpdateProductCategoryVisibilityMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

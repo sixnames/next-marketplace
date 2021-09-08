@@ -70,7 +70,7 @@ import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { generateProductTitle, generateTitle } from 'lib/titleUtils';
+import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
@@ -743,6 +743,7 @@ export const getCatalogueData = async ({
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },
               nameI18n: { $first: `$nameI18n` },
+              titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
               views: { $max: `$views.${realCompanySlug}.${city}` },
               priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
               minPrice: {
@@ -825,21 +826,20 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                ...productCategoriesPipeline([
-                  {
-                    $addFields: {
-                      views: { $max: `$views.${realCompanySlug}.${city}` },
-                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                    },
+                ...productCategoriesPipeline(),
+                {
+                  $addFields: {
+                    views: { $max: `$views.${realCompanySlug}.${city}` },
+                    priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
                   },
-                  {
-                    $sort: {
-                      priorities: SORT_DESC,
-                      views: SORT_DESC,
-                      _id: SORT_DESC,
-                    },
+                },
+                {
+                  $sort: {
+                    priorities: SORT_DESC,
+                    views: SORT_DESC,
+                    _id: SORT_DESC,
                   },
-                ]),
+                },
                 {
                   $unwind: {
                     path: '$categories',
@@ -952,7 +952,6 @@ export const getCatalogueData = async ({
     const priceAttribute = getPriceAttribute();
     let categoryAttribute: RubricAttributeInterface[] = [];
     const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
-
     if (
       shopProductsAggregationResult.categories &&
       shopProductsAggregationResult.categories.length > 0
@@ -1002,15 +1001,14 @@ export const getCatalogueData = async ({
       });
 
       // title
-      const snippetTitle = generateProductTitle({
+      const snippetTitle = generateSnippetTitle({
         locale,
-        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-        attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
         attributes: attributes || [],
         categories,
+        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
         fallbackTitle: restProduct.originalName,
         defaultKeyword: restProduct.originalName,
         defaultGender: restProduct.gender,

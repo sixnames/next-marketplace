@@ -835,7 +835,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     originalName: string; // String!
@@ -944,6 +944,7 @@ export interface NexusGenInputs {
     showSnippetArticle?: boolean | null; // Boolean
     showSnippetBackground?: boolean | null; // Boolean
     showSnippetButtonsOnHover?: boolean | null; // Boolean
+    showSnippetConnections?: boolean | null; // Boolean
     showSnippetRating?: boolean | null; // Boolean
   };
   UpdateShopAssetIndexInput: {
@@ -1610,6 +1611,7 @@ export interface NexusGenFieldTypes {
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
     updateProductCategory: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductCategoryVisibility: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2097,6 +2099,7 @@ export interface NexusGenFieldTypes {
     showSnippetArticle: boolean | null; // Boolean
     showSnippetBackground: boolean | null; // Boolean
     showSnippetButtonsOnHover: boolean | null; // Boolean
+    showSnippetConnections: boolean | null; // Boolean
     showSnippetRating: boolean | null; // Boolean
     slug: string; // String!
   };
@@ -2759,6 +2762,7 @@ export interface NexusGenFieldTypeNames {
     updateProductBrandCollection: 'ProductPayload';
     updateProductCardContent: 'ProductCardContentPayload';
     updateProductCategory: 'ProductPayload';
+    updateProductCategoryVisibility: 'ProductPayload';
     updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
@@ -3246,6 +3250,7 @@ export interface NexusGenFieldTypeNames {
     showSnippetArticle: 'Boolean';
     showSnippetBackground: 'Boolean';
     showSnippetButtonsOnHover: 'Boolean';
+    showSnippetConnections: 'Boolean';
     showSnippetRating: 'Boolean';
     slug: 'String';
   };
@@ -3868,6 +3873,10 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
     };
     updateProductCategory: {
+      // args
+      input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
+    };
+    updateProductCategoryVisibility: {
       // args
       input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
     };

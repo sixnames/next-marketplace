@@ -8,7 +8,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
-import { generateProductTitle } from 'lib/titleUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -143,6 +143,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   nameI18n: { $first: `$nameI18n` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
+                  titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
                   selectedOptionsSlugs: {
                     $first: '$selectedOptionsSlugs',
                   },
@@ -259,10 +260,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       }
 
       // title
-      const snippetTitle = generateProductTitle({
+      const snippetTitle = generateSnippetTitle({
         locale,
-        attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-        attributeVisibilityFieldName: 'showInSnippetTitle',
         rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
         showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
@@ -270,6 +269,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         fallbackTitle: product.originalName,
         defaultKeyword: product.originalName,
         defaultGender: product.gender,
+        titleCategoriesSlugs: product.titleCategoriesSlugs,
         categories: getTreeFromList({
           list: product.categories,
           childrenFieldName: 'categories',

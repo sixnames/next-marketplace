@@ -29,7 +29,7 @@ import {
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { getTreeFromList } from 'lib/optionsUtils';
-import { generateProductTitle, generateTitle } from 'lib/titleUtils';
+import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -435,6 +435,7 @@ export async function getServerSideProps(
           mainImage: { $first: `$mainImage` },
           originalName: { $first: `$originalName` },
           nameI18n: { $first: `$nameI18n` },
+          titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
           views: { $max: `$views.${companySlug}.${sessionCity}` },
           priorities: { $max: `$priorities.${companySlug}.${sessionCity}` },
           minPrice: {
@@ -518,14 +519,13 @@ export async function getServerSideProps(
     const { attributes, categories, rubric, ...restProduct } = product;
 
     // title
-    const snippetTitle = generateProductTitle({
+    const snippetTitle = generateSnippetTitle({
       locale: sessionLocale,
-      attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
-      attributeVisibilityFieldName: 'showInSnippetTitle',
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
       attributes: attributes || [],
+      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
       fallbackTitle: restProduct.originalName,
       defaultKeyword: restProduct.originalName,
       defaultGender: restProduct.gender,

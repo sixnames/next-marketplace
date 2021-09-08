@@ -293,8 +293,12 @@ export function generateProductTitlePrefix({
 
 interface GenerateProductTitleInterface
   extends GenerateProductTitlePrefixInterface,
-    Omit<GenerateTitleInterface, 'positionFieldName' | 'prefix' | 'capitaliseKeyWord'> {
+    Omit<
+      GenerateTitleInterface,
+      'positionFieldName' | 'prefix' | 'capitaliseKeyWord' | 'attributeNameVisibilityFieldName'
+    > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
+  attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
 }
 
 function generateProductTitle({

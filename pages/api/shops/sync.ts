@@ -178,6 +178,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           mainImage: product.mainImage,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
           titleCategoriesSlugs: product.titleCategoriesSlugs,
+          supplierSlug: product.supplierSlug,
+          selectedAttributesIds: product.selectedAttributesIds,
           gender: product.gender,
           barcode: barcodeItem,
           updatedAt: new Date(),

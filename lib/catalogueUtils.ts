@@ -825,21 +825,20 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                ...productCategoriesPipeline([
-                  {
-                    $addFields: {
-                      views: { $max: `$views.${realCompanySlug}.${city}` },
-                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                    },
+                ...productCategoriesPipeline(),
+                {
+                  $addFields: {
+                    views: { $max: `$views.${realCompanySlug}.${city}` },
+                    priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
                   },
-                  {
-                    $sort: {
-                      priorities: SORT_DESC,
-                      views: SORT_DESC,
-                      _id: SORT_DESC,
-                    },
+                },
+                {
+                  $sort: {
+                    priorities: SORT_DESC,
+                    views: SORT_DESC,
+                    _id: SORT_DESC,
                   },
-                ]),
+                },
                 {
                   $unwind: {
                     path: '$categories',
@@ -952,7 +951,6 @@ export const getCatalogueData = async ({
     const priceAttribute = getPriceAttribute();
     let categoryAttribute: RubricAttributeInterface[] = [];
     const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
-
     if (
       shopProductsAggregationResult.categories &&
       shopProductsAggregationResult.categories.length > 0

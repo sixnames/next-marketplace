@@ -237,6 +237,11 @@ interface CastOptionPayloadInterface {
   castedOption: CatalogueFilterAttributeOptionInterface;
 }
 
+interface FilterSelectedOptionsInterface {
+  option: OptionInterface;
+  attributeSlug: string;
+}
+
 export async function getCatalogueAttributes({
   filters,
   locale,
@@ -260,6 +265,40 @@ export async function getCatalogueAttributes({
     return filterName !== QUERY_FILTER_PAGE;
     // return filterName !== QUERY_FILTER_PAGE && filterName !== RUBRIC_KEY;
   });
+
+  function filterOptionsList(options: (OptionInterface | null)[]): OptionInterface[] {
+    const filteredNestedOptions = options.reduce((acc: OptionInterface[], option) => {
+      if (option) {
+        return [...acc, option];
+      }
+      return acc;
+    }, []);
+    return filteredNestedOptions;
+  }
+
+  function filterSelectedOptions({
+    option,
+    attributeSlug,
+  }: FilterSelectedOptionsInterface): OptionInterface | null {
+    const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
+    const isSelected = realFilter.includes(optionSlug);
+    const nestedOptions = (option.options || []).map((nestedOption) => {
+      return filterSelectedOptions({
+        option: nestedOption,
+        attributeSlug,
+      });
+    });
+    const filteredNestedOptions = filterOptionsList(nestedOptions);
+
+    if (isSelected) {
+      return {
+        ...option,
+        options: filteredNestedOptions,
+      };
+    }
+
+    return null;
+  }
 
   async function castOption({
     option,
@@ -424,9 +463,17 @@ export async function getCatalogueAttributes({
       });
 
       // Add selected items to the catalogue title config
+      const attributeSelectedOptions = selectedOptions.map((option) => {
+        return filterSelectedOptions({
+          option,
+          attributeSlug: castedAttribute.slug,
+        });
+      });
+      const attributeFilteredSelectedOptions = filterOptionsList(attributeSelectedOptions);
       selectedFilters.push({
         ...attribute,
-        options: selectedOptions,
+        // options: selectedOptions,
+        options: attributeFilteredSelectedOptions,
       });
     }
 

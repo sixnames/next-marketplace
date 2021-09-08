@@ -543,6 +543,17 @@ export async function getCardData({
     });
     // console.log(`card connections `, new Date().getTime() - startTime);
 
+    const allProductAttributes = (attributesGroups || []).reduce(
+      (acc: ProductAttributeInterface[], { attributes }) => {
+        const visibleAttributes = attributes.filter(({ showInCard }) => {
+          return showInCard;
+        });
+
+        return [...acc, ...visibleAttributes];
+      },
+      [],
+    );
+
     const initialProductAttributes = (attributesGroups || []).reduce(
       (acc: ProductAttributeInterface[], { attributes }) => {
         const visibleAttributes = attributes.filter(({ showInCard, attributeId }) => {
@@ -798,7 +809,7 @@ export async function getCardData({
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-      attributes: initialProductAttributes,
+      attributes: allProductAttributes,
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
       fallbackTitle: restProduct.originalName,
       defaultKeyword: restProduct.originalName,

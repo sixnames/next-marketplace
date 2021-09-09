@@ -283,7 +283,7 @@ export function generateProductTitlePrefix({
 
   const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
-  return filteredArray.join(' ');
+  return filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
 }
 
 interface GenerateProductTitleInterface

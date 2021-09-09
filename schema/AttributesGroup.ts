@@ -732,8 +732,21 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
+                  $match: {
+                    rubric: {
+                      $exists: true,
+                    },
+                  },
+                },
+                {
                   $replaceRoot: {
                     newRoot: '$rubric',
+                  },
+                },
+                {
+                  $group: {
+                    _id: '$_id',
+                    slug: { $first: '$slug' },
                   },
                 },
               ])
@@ -800,8 +813,23 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
+                  $match: {
+                    category: {
+                      $exists: true,
+                    },
+                  },
+                },
+                {
                   $replaceRoot: {
                     newRoot: '$category',
+                  },
+                },
+                {
+                  $group: {
+                    _id: '$_id',
+                    slug: { $first: '$slug' },
+                    rubricSlug: { $first: '$rubricSlug' },
+                    rubricId: { $first: '$rubricId' },
                   },
                 },
               ])

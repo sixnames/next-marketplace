@@ -77,7 +77,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   hideDropdown,
 }) => {
   const { categories, name, icon } = category;
-
+  const categoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
   return (
     <div className='flex flex-col'>
       <div style={attributeStyle} className='flex items-center pb-1 font-medium'>
@@ -86,7 +86,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           style={attributeLinkStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
           className='flex items-center gap-3 py-2 text-secondary-text text-lg'
         >
           {icon ? (
@@ -100,6 +100,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
       </div>
       <ul className='flex-grow flex flex-col'>
         {(categories || []).map((childCategory) => {
+          const childCategoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`;
           return (
             <li key={`${childCategory._id}`}>
               <Link
@@ -107,7 +108,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
                 className='flex items-center py-1 text-secondary-text'
               >
                 {childCategory.name}

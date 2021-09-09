@@ -52,6 +52,7 @@ export function getCategoryFilterAttribute({
       parentId: category.parentId,
       priorities: category.priorities,
       views: category.views,
+      gender: category.gender,
     };
     return option;
   });

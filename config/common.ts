@@ -1,6 +1,6 @@
 // ID Counters
 import { Value } from '@react-page/editor';
-import { GenderModel, PageStateModel } from '../db/dbModels';
+import { GenderModel, OrderLogVariantModel, PageStateModel } from '../db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
@@ -223,10 +223,15 @@ export const SORT_BY_ID = '_id';
 export const DEFAULT_PAGE = 1;
 
 // ORDER LOG VARIANTS
-export const ORDER_LOG_VARIANT_STATUS = 'status';
-export const ORDER_LOG_VARIANT_CONFIRM = 'confirm';
+export const ORDER_LOG_VARIANT_STATUS = 'status' as OrderLogVariantModel;
+export const ORDER_LOG_VARIANT_CONFIRM = 'confirm' as OrderLogVariantModel;
+export const ORDER_LOG_VARIANT_CANCEL = 'cancel' as OrderLogVariantModel;
 
-export const ORDER_LOG_VARIANTS_ENUMS = [ORDER_LOG_VARIANT_STATUS, ORDER_LOG_VARIANT_CONFIRM];
+export const ORDER_LOG_VARIANTS_ENUMS: OrderLogVariantModel[] = [
+  ORDER_LOG_VARIANT_STATUS,
+  ORDER_LOG_VARIANT_CONFIRM,
+  ORDER_LOG_VARIANT_CANCEL,
+];
 
 // ORDER STATUSES SLUGS
 export const ORDER_STATUS_PENDING = 'pending';

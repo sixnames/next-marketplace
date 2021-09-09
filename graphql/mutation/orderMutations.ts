@@ -8,3 +8,12 @@ export const CONFIRM_ORDER_MUTATION = gql`
     }
   }
 `;
+
+export const CANCEL_ORDER_MUTATION = gql`
+  mutation CancelOrder($input: CancelOrderInput!) {
+    cancelOrder(input: $input) {
+      success
+      message
+    }
+  }
+`;

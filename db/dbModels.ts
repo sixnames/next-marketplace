@@ -436,6 +436,7 @@ export interface OrderStatusModel extends TimestampModel {
 export enum OrderLogVariantModel {
   status = 'status',
   confirm = 'confirm',
+  cancel = 'cancel',
 }
 
 export interface OrderLogModel {
@@ -465,6 +466,7 @@ export interface OrderProductModel extends TimestampModel {
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
   barcode?: string | null;
+  isCanceled?: boolean | null;
 }
 
 export interface OrderCustomerModel extends TimestampModel {

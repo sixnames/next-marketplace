@@ -2,7 +2,9 @@ import Button from 'components/Button';
 import CmsOrderDetails from 'components/CmsOrderDetails';
 import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ROUTE_CONSOLE } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -13,7 +15,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useConfirmOrderMutation } from 'generated/apolloComponents';
+import { useCancelOrderMutation, useConfirmOrderMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
@@ -34,12 +36,18 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     reload: true,
   });
+
   const [confirmOrderMutation] = useConfirmOrderMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.confirmOrder),
+  });
+
+  const [cancelOrderMutation] = useCancelOrderMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.cancelOrder),
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -72,6 +80,31 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
                 }}
               >
                 Подтвердить заказ
+              </Button>
+
+              <Button
+                theme={'secondary'}
+                onClick={() => {
+                  showModal<ConfirmModalInterface>({
+                    variant: CONFIRM_MODAL,
+                    props: {
+                      testId: 'cancel-order-modal',
+                      message: `Вы уверены, что хотите отменить заказ № ${order.orderId} ?`,
+                      confirm: () => {
+                        showLoading();
+                        cancelOrderMutation({
+                          variables: {
+                            input: {
+                              orderId: order._id,
+                            },
+                          },
+                        }).catch(console.log);
+                      },
+                    },
+                  });
+                }}
+              >
+                Отменить заказ
               </Button>
             </FixedButtons>
           </Inner>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { THEME_COOKIE_KEY, THEME_DARK, THEME_LIGHT } from 'config/common';
+import { THEME_DARK, THEME_LIGHT } from 'config/common';
 import { Theme } from 'types/clientTypes';
-import { setCookie } from 'nookies';
 
 interface ThemeContextInterface {
   theme: Theme;
@@ -19,33 +18,17 @@ const ThemeContext = React.createContext<ThemeContextInterface>({
   logoSlug: 'siteLogo',
 });
 
-export interface ThemeContextProviderInterface {
-  initialTheme: Theme;
-}
-
-const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
-  children,
-  initialTheme,
-}) => {
+const ThemeContextProvider: React.FC = ({ children }) => {
   const [vh, setVh] = React.useState(() =>
     typeof window !== 'undefined' ? window.innerHeight * 0.01 : 0,
   );
-  const [theme, setTheme] = React.useState<Theme>(initialTheme);
+  const [theme, setTheme] = React.useState<Theme | null>(null);
 
   React.useEffect(() => {
-    const themeProvider = document.querySelector('#theme-provider');
-    if (themeProvider) {
-      if (initialTheme === THEME_DARK) {
-        themeProvider.setAttribute('data-theme', initialTheme);
-        themeProvider.classList.remove(THEME_LIGHT);
-        themeProvider.classList.add(initialTheme);
-      } else {
-        themeProvider.setAttribute('data-theme', initialTheme);
-        themeProvider.classList.remove(THEME_DARK);
-        themeProvider.classList.add(initialTheme);
-      }
-    }
-  }, [initialTheme]);
+    const initialTheme = (document.documentElement.getAttribute('data-theme') ||
+      THEME_LIGHT) as Theme;
+    setTheme(initialTheme);
+  }, []);
 
   React.useEffect(() => {
     function resizeHandler() {
@@ -62,26 +45,23 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   }, []);
 
   React.useEffect(() => {
-    const themeStyle = `
+    const pageStyle = `
       --vh: ${vh}px;
       --fullHeight: calc(${vh}px * 100);
       `;
 
     const pageHtml = document.querySelector('html');
     if (pageHtml) {
-      pageHtml.setAttribute('style', themeStyle);
+      pageHtml.setAttribute('style', pageStyle);
     }
   }, [vh, theme]);
 
-  const toggleThemeValues = React.useCallback((prevTheme: string, theme: string) => {
+  const toggleThemeValues = React.useCallback((prevTheme: string | null, theme: string) => {
     if (theme !== 'undefined' && prevTheme !== theme) {
-      setCookie(null, THEME_COOKIE_KEY, theme);
-      const themeProvider = document.querySelector('#theme-provider');
-      if (themeProvider) {
-        themeProvider.setAttribute('data-theme', theme);
-        themeProvider.classList.remove(`${prevTheme}`);
-        themeProvider.classList.add(theme);
-      }
+      window.localStorage.setItem('theme', theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.remove(`${prevTheme}`);
+      document.documentElement.classList.add(theme);
     }
   }, []);
 
@@ -102,7 +82,7 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   const value = React.useMemo(() => {
     const isDark = theme === THEME_DARK;
     return {
-      theme,
+      theme: theme || THEME_LIGHT,
       isDark,
       isLight: theme === THEME_LIGHT,
       logoSlug: isDark ? 'siteLogo' : 'siteLogoDark',

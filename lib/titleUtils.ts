@@ -90,8 +90,7 @@ export function generateTitle({
   positionFieldName,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
-}: // log,
-GenerateTitleInterface): string {
+}: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 

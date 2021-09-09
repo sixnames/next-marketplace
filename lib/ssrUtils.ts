@@ -18,8 +18,6 @@ import {
   SORT_DESC,
   PAGE_STATE_PUBLISHED,
   FILTER_SEPARATOR,
-  THEME_COOKIE_KEY,
-  THEME_LIGHT,
   CONFIG_GROUP_PROJECT,
 } from 'config/common';
 import {
@@ -80,7 +78,6 @@ import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
 import nookies from 'nookies';
-import { Theme } from 'types/clientTypes';
 
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
@@ -1047,13 +1044,8 @@ export async function getPageInitialState({
     [`--themeB`]: `${themeB}`,
   };
 
-  // Theme
-  const cookies = nookies.get(context);
-  const theme = cookies?.[THEME_COOKIE_KEY] || THEME_LIGHT;
-
   return {
     db,
-    initialTheme: theme as Theme,
     path,
     host,
     domain,
@@ -1148,7 +1140,6 @@ export async function getConsoleInitialData({
     companySlug,
     session,
     themeStyle,
-    initialTheme,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
@@ -1181,7 +1172,6 @@ export async function getConsoleInitialData({
 
   return {
     props: {
-      initialTheme,
       companySlug,
       initialData,
       currentCity,
@@ -1218,7 +1208,6 @@ export async function getAppInitialData({
     companySlug,
     session,
     themeStyle,
-    initialTheme,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
@@ -1251,7 +1240,6 @@ export async function getAppInitialData({
 
   return {
     props: {
-      initialTheme,
       themeStyle,
       companySlug,
       initialData,
@@ -1393,7 +1381,6 @@ export async function getSiteInitialData({
     sessionUser,
     companySlug,
     themeStyle,
-    initialTheme,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1414,7 +1401,6 @@ export async function getSiteInitialData({
   return {
     props: {
       ...catalogueCreatedPages,
-      initialTheme,
       themeStyle,
       companySlug,
       initialData,

@@ -329,40 +329,38 @@ export async function getCatalogueAttributes({
     const isCategory = attribute.slug === CATALOGUE_CATEGORY_KEY;
     const nestedOptions: CatalogueFilterAttributeOptionInterface[] = [];
 
-    if (isSelected) {
-      if (isCategory) {
-        for await (const nestedOption of option.options || []) {
-          const { castedOption } = await castOption({
-            option: nestedOption,
-            attribute,
-          });
-          nestedOptions.push(castedOption);
-        }
-      } else {
-        const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
-          const slugParts = slug.split(FILTER_SEPARATOR);
-          return slugParts[1];
+    if (isCategory) {
+      for await (const nestedOption of option.options || []) {
+        const { castedOption } = await castOption({
+          option: nestedOption,
+          attribute,
         });
-        const initialNestedOptions = await optionsCollection
-          .aggregate([
-            {
-              $match: {
-                parentId: option._id,
-                slug: {
-                  $in: castedSelectedOptionsSlugs,
-                },
+        nestedOptions.push(castedOption);
+      }
+    } else {
+      const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
+        const slugParts = slug.split(FILTER_SEPARATOR);
+        return slugParts[1];
+      });
+      const initialNestedOptions = await optionsCollection
+        .aggregate([
+          {
+            $match: {
+              parentId: option._id,
+              slug: {
+                $in: castedSelectedOptionsSlugs,
               },
             },
-          ])
-          .toArray();
+          },
+        ])
+        .toArray();
 
-        for await (const nestedOption of initialNestedOptions) {
-          const { castedOption } = await castOption({
-            option: nestedOption,
-            attribute,
-          });
-          nestedOptions.push(castedOption);
-        }
+      for await (const nestedOption of initialNestedOptions) {
+        const { castedOption } = await castOption({
+          option: nestedOption,
+          attribute,
+        });
+        nestedOptions.push(castedOption);
       }
     }
 
@@ -495,6 +493,47 @@ export async function getCatalogueAttributes({
       : castedAttributes,
     selectedAttributes,
   };
+}
+
+interface CastOptionsForBreadcrumbsInterface {
+  option: CatalogueFilterAttributeOptionInterface;
+  attribute: CatalogueFilterAttributeInterface;
+  metricValue: string;
+  rubricSlug: string;
+  acc: CatalogueBreadcrumbModel[];
+}
+
+function castOptionsForBreadcrumbs({
+  option,
+  attribute,
+  rubricSlug,
+  metricValue,
+  acc,
+}: CastOptionsForBreadcrumbsInterface): CatalogueBreadcrumbModel[] {
+  const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+  const newAcc = [...acc];
+  if (option.isSelected) {
+    newAcc.push({
+      _id: option._id,
+      name: `${option.name}${metricValue}`,
+      href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
+    });
+  }
+
+  if (!option.options || option.options.length < 1) {
+    return newAcc;
+  }
+
+  return option.options.reduce((innerAcc: CatalogueBreadcrumbModel[], childOption) => {
+    const castedOptionAcc = castOptionsForBreadcrumbs({
+      option: childOption,
+      attribute,
+      rubricSlug,
+      metricValue,
+      acc: [],
+    });
+    return [...innerAcc, ...castedOptionAcc];
+  }, newAcc);
 }
 
 interface GetCatalogueConfigsInterface {
@@ -1179,6 +1218,13 @@ export const getCatalogueData = async ({
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
     // console.log('Total time: ', new Date().getTime() - timeStart);
 
+    // final filter attributes
+    const finalAttributes = showCategoriesInFilter
+      ? castedAttributes
+      : castedAttributes.filter(({ slug }) => {
+          return slug !== CATALOGUE_CATEGORY_KEY;
+        });
+
     // get catalogue breadcrumbs
     const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
     const breadcrumbs: CatalogueBreadcrumbModel[] = [
@@ -1188,6 +1234,7 @@ export const getCatalogueData = async ({
         href: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       },
     ];
+
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
       const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
@@ -1197,12 +1244,19 @@ export const getCatalogueData = async ({
       }
 
       if (showAsCatalogueBreadcrumb || isPrice) {
-        options.forEach((selectedOption) => {
-          breadcrumbs.push({
-            _id: selectedOption._id,
-            name: `${selectedOption.name}${metricValue}`,
-            href: `${ROUTE_CATALOGUE}/${rubricSlug}/${selectedAttribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`,
+        const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
+          const tree = castOptionsForBreadcrumbs({
+            option: option,
+            attribute: selectedAttribute,
+            rubricSlug,
+            metricValue,
+            acc: [],
           });
+          return [...acc, ...tree];
+        }, []);
+
+        optionBreadcrumbs.forEach((options) => {
+          breadcrumbs.push(options);
         });
       }
     });
@@ -1217,11 +1271,7 @@ export const getCatalogueData = async ({
       catalogueTitle,
       catalogueFilterLayout: rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT,
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
-      attributes: showCategoriesInFilter
-        ? castedAttributes
-        : castedAttributes.filter(({ slug }) => {
-            return slug !== CATALOGUE_CATEGORY_KEY;
-          }),
+      attributes: finalAttributes,
       selectedAttributes: showCategoriesInFilter
         ? selectedAttributes
         : selectedAttributes.filter(({ slug }) => {

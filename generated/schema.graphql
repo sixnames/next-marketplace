@@ -261,6 +261,10 @@ type BrandsPaginationPayload implements PaginationPayload {
   totalPages: Int!
 }
 
+input CancelOrderInput {
+  orderId: ObjectId!
+}
+
 type Cart {
   _id: ObjectId!
   cartProducts: [CartProduct!]!
@@ -950,6 +954,11 @@ type Mutation {
   addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayload!
 
   """
+  Should cancel order
+  """
+  cancelOrder(input: CancelOrderInput!): MakeAnOrderPayload!
+
+  """
   Should delete all products from cart
   """
   clearCart: CartPayload!
@@ -1609,6 +1618,7 @@ type OrderLog implements Timestamp {
 Order log variant enum.
 """
 enum OrderLogVariant {
+  cancel
   confirm
   status
 }

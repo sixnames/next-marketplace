@@ -214,6 +214,10 @@ export interface NexusGenInputs {
     brandSlug?: string | null; // String
     slugs?: string[] | null; // [String!]
   };
+  CancelOrderInput: {
+    // input type
+    orderId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   CatalogueAdditionalOptionsInput: {
     // input type
     attributeSlug: string; // String!
@@ -1521,6 +1525,7 @@ export interface NexusGenFieldTypes {
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
+    cancelOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     clearCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     confirmOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     copyProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -2672,6 +2677,7 @@ export interface NexusGenFieldTypeNames {
     addShopToCartProduct: 'CartPayload';
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
+    cancelOrder: 'MakeAnOrderPayload';
     clearCart: 'CartPayload';
     confirmOrder: 'MakeAnOrderPayload';
     copyProduct: 'ProductPayload';
@@ -3519,6 +3525,10 @@ export interface NexusGenArgTypes {
     addShoplessProductToCart: {
       // args
       input: NexusGenInputs['AddShoplessProductToCartInput']; // AddShoplessProductToCartInput!
+    };
+    cancelOrder: {
+      // args
+      input: NexusGenInputs['CancelOrderInput']; // CancelOrderInput!
     };
     confirmOrder: {
       // args

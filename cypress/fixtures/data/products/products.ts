@@ -198,7 +198,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     });
 
     const itemId: string = addZero(counter, ID_COUNTER_DIGITS);
-    const name = `${rubricSlug} ${itemId}`;
+    const name = `${rubricSlug.toUpperCase()} ${itemId}`;
 
     // manufacturer
     const manufacturerIndex = getNextOptionIndex({

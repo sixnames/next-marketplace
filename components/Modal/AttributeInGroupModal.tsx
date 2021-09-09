@@ -93,7 +93,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         showInCardTitle: attribute.showInCardTitle || false,
         showInCatalogueFilter: attribute.showInCatalogueFilter || false,
         showInCatalogueNav: attribute.showInCatalogueNav || false,
-        showInCatalogueTitle: attribute.showInCatalogueNav || false,
+        showInCatalogueTitle: attribute.showInCatalogueTitle || false,
         showInSnippetTitle: attribute.showInSnippetTitle || false,
         showNameInCardTitle: attribute.showNameInCardTitle || false,
       }

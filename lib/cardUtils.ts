@@ -12,6 +12,7 @@ import {
   ROUTE_CATALOGUE,
   SORT_ASC,
   SORT_DESC,
+  CATALOGUE_CATEGORY_KEY,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -31,9 +32,15 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { productCategoriesPipeline, productConnectionsPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel, ProductCardBreadcrumbModel, ShopProductModel } from 'db/dbModels';
+import {
+  CatalogueBreadcrumbModel,
+  ObjectIdModel,
+  ProductCardBreadcrumbModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  CategoryInterface,
   InitialCardDataInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
@@ -54,6 +61,39 @@ import {
 } from 'lib/productAttributesUtils';
 import { generateCardTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+
+interface CastOptionsForBreadcrumbsInterface {
+  category: CategoryInterface;
+  rubricSlug: string;
+  acc: CatalogueBreadcrumbModel[];
+}
+
+function castCategoriesForBreadcrumbs({
+  category,
+  rubricSlug,
+  acc,
+}: CastOptionsForBreadcrumbsInterface): ProductCardBreadcrumbModel[] {
+  const optionSlug = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+  const newAcc = [...acc];
+  newAcc.push({
+    _id: category._id,
+    name: `${category.name}`,
+    href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
+  });
+
+  if (!category.categories || category.categories.length < 1) {
+    return newAcc;
+  }
+
+  return category.categories.reduce((innerAcc: ProductCardBreadcrumbModel[], childCategory) => {
+    const castedOptionAcc = castCategoriesForBreadcrumbs({
+      category: childCategory,
+      rubricSlug,
+      acc: [],
+    });
+    return [...innerAcc, ...castedOptionAcc];
+  }, newAcc);
+}
 
 const minAssetsListCount = 2;
 
@@ -701,16 +741,35 @@ export async function getCardData({
       };
     }
 
+    const cardCategories = getTreeFromList({
+      list: categories,
+      childrenFieldName: 'categories',
+      locale,
+    });
+
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
+    // Collect breadcrumbs configs for all product categories
+    const breadcrumbCategories = cardCategories.reduce(
+      (acc: ProductCardBreadcrumbModel[], category) => {
+        const categoryList = castCategoriesForBreadcrumbs({
+          rubricSlug: rubric.slug,
+          category,
+          acc: [],
+        });
+        return [...acc, ...categoryList];
+      },
+      [],
+    );
+    breadcrumbCategories.forEach((breadcrumb) => {
+      attributesBreadcrumbs.push(breadcrumb);
+    });
+
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
     for await (const productAttribute of initialProductAttributes || []) {
-      if (!productAttribute.showAsBreadcrumb) {
-        continue;
-      }
-
       if (
+        !productAttribute.showAsBreadcrumb ||
         !productAttribute.selectedOptionsSlugs ||
         productAttribute.selectedOptionsSlugs.length < 1
       ) {
@@ -814,11 +873,7 @@ export async function getCardData({
       fallbackTitle: restProduct.originalName,
       defaultKeyword: restProduct.originalName,
       defaultGender: restProduct.gender,
-      categories: getTreeFromList({
-        list: categories,
-        childrenFieldName: 'categories',
-        locale,
-      }),
+      categories: cardCategories,
     });
 
     return {

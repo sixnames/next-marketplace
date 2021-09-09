@@ -16,7 +16,6 @@ import Router from 'next/router';
 import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
 import NProgress from 'nprogress';
-import { Theme } from 'types/clientTypes';
 import { SWRConfig } from 'swr';
 
 export interface PagePropsInterface {
@@ -31,7 +30,6 @@ export interface PagePropsInterface {
   currentCompany?: CompanyInterface | null;
   companySlug: string;
   themeStyle: Record<string, any>;
-  initialTheme: Theme;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -40,7 +38,7 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
-  const { session, initialData, currentCity, themeStyle, initialTheme } = pageProps;
+  const { session, initialData, currentCity, themeStyle } = pageProps;
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
@@ -52,12 +50,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
           },
         }}
       >
-        <div
-          className={`min-h-[100vh] ${initialTheme}`}
-          id={'theme-provider'}
-          data-theme={initialTheme}
-          style={themeStyle}
-        >
+        <div className={`min-h-[100vh]`} id={'theme-provider'} style={themeStyle}>
           <ApolloProvider client={apolloClient}>
             <AppContextProvider
               companySlug={pageProps.companySlug}
@@ -71,7 +64,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
                   configs={initialData?.configs || []}
                   cities={initialData?.cities || []}
                 >
-                  <ThemeContextProvider initialTheme={initialTheme}>
+                  <ThemeContextProvider>
                     <LocaleContextProvider
                       languagesList={initialData?.languages || []}
                       currency={initialData?.currency || ''}

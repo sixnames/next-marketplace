@@ -8,7 +8,7 @@ import {
 import { ObjectIdModel } from 'db/dbModels';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getStringValueFromOptionsList } from 'lib/optionsUtils';
+import { getStringValueFromOptionsList, sortByName } from 'lib/optionsUtils';
 
 export interface GetProductCurrentViewAttributesInterface {
   attributes: ProductAttributeInterface[];
@@ -58,13 +58,16 @@ export function getAttributeReadableValue({
   const metricName = productAttribute.metric
     ? ` ${getFieldStringLocale(productAttribute.metric.nameI18n, locale)}`
     : '';
+
   if (
     (productAttribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       productAttribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
-    productAttribute.selectedOptionsSlugs.length > 0
+    productAttribute.selectedOptionsSlugs.length > 0 &&
+    productAttribute.options &&
+    productAttribute.options.length > 0
   ) {
     return getStringValueFromOptionsList({
-      options: productAttribute.options || [],
+      options: productAttribute.options,
       locale,
       metricName,
     });
@@ -114,14 +117,13 @@ export function castProductAttributeForUi({
     ...productAttribute,
     name: getFieldStringLocale(productAttribute.nameI18n, locale),
     metric,
+    readableValue,
     options: (productAttribute.options || []).map((option) => {
-      // console.log(attribute.attributeNameI18n.ru, option.nameI18n.ru);
       return {
         ...option,
         name: `${getFieldStringLocale(option.nameI18n, locale)}${metric ? ` ${metric.name}` : ''}`,
       };
     }),
-    readableValue,
   };
 
   return castedAttribute;
@@ -145,20 +147,25 @@ export function getProductCurrentViewCastedAttributes({
     viewVariant,
   });
 
-  return currentViewAttributes.reduce((acc: ProductAttributeInterface[], productAttribute) => {
-    if ((excludedAttributesIds || []).some((_id) => _id.equals(productAttribute.attributeId))) {
-      return acc;
-    }
+  const castedAttributes = currentViewAttributes.reduce(
+    (acc: ProductAttributeInterface[], productAttribute) => {
+      if ((excludedAttributesIds || []).some((_id) => _id.equals(productAttribute.attributeId))) {
+        return acc;
+      }
 
-    const castedAttribute = castProductAttributeForUi({
-      productAttribute,
-      locale,
-    });
+      const castedAttribute = castProductAttributeForUi({
+        productAttribute,
+        locale,
+      });
 
-    if (!castedAttribute) {
-      return acc;
-    }
+      if (!castedAttribute) {
+        return acc;
+      }
 
-    return [...acc, castedAttribute];
-  }, []);
+      return [...acc, castedAttribute];
+    },
+    [],
+  );
+
+  return sortByName(castedAttributes);
 }

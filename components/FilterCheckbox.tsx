@@ -76,14 +76,16 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
             className={className}
           />
 
-          <div className='ml-[18px]'>
-            {options.map((option) => {
-              if (hidden && hidden(option)) {
-                return null;
-              }
-              return <div key={option.slug}>{renderChildOption(option)}</div>;
-            })}
-          </div>
+          {option.isSelected ? (
+            <div className='ml-[18px]'>
+              {options.map((option) => {
+                if (hidden && hidden(option)) {
+                  return null;
+                }
+                return <div key={option.slug}>{renderChildOption(option)}</div>;
+              })}
+            </div>
+          ) : null}
         </div>
       );
     }

@@ -226,8 +226,17 @@ export function generateTitle({
     return fallbackTitle;
   }
 
+  const firstWordArr = firstWord.split(' ');
+  const mainWord = firstWordArr[0];
+
+  // return fallback if no title parts
+  if (!mainWord) {
+    return fallbackTitle;
+  }
+
+  const firstWordOtherWords = firstWordArr.slice(1);
   const otherWords = filteredArray.slice(1);
-  return [capitalize(firstWord), ...otherWords].join(' ');
+  return [capitalize(mainWord), ...firstWordOtherWords, ...otherWords].join(' ');
 }
 
 interface GenerateProductTitlePrefixInterface {

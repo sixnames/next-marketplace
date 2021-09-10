@@ -1,16 +1,16 @@
-import { ORDER_LOG_VARIANT_CANCEL, ORDER_STATUS_CANCELED } from 'config/common';
+import { ORDER_LOG_VARIANT_UPDATE_PRODUCT } from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
   OrderLogModel,
   OrderModel,
-  OrderPayloadModel,
   OrderProductModel,
-  OrderStatusModel,
+  OrderProductPayloadModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
@@ -18,24 +18,25 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface CancelOrderInputInterface {
-  orderId: string;
+export interface UpdateOrderProductInputInterface {
+  orderProductId: string;
+  amount: number;
 }
 
-export async function cancelOrder({
+export async function updateOrderProduct({
   context,
   input,
-}: DaoPropsInterface<CancelOrderInputInterface>): Promise<OrderPayloadModel> {
+}: DaoPropsInterface<UpdateOrderProductInputInterface>): Promise<OrderProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
   const session = client.startSession();
 
-  let mutationPayload: OrderPayloadModel = {
+  let mutationPayload: OrderProductPayloadModel = {
     success: false,
     message: await getApiMessage('orders.makeAnOrder.error'),
   };
@@ -51,7 +52,7 @@ export async function cancelOrder({
       // Permission
       const { allow, message, user } = await getOperationPermission({
         context,
-        slug: 'cancelOrder',
+        slug: 'updateOrder',
       });
       if (!allow) {
         mutationPayload = {
@@ -71,9 +72,22 @@ export async function cancelOrder({
         return;
       }
 
-      // Get order
+      // order product
+      const orderProduct = await orderProductsCollection.findOne({
+        _id: new ObjectId(input.orderProductId),
+      });
+      if (!orderProduct) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('orders.updateOrder.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // order
       const order = await ordersCollection.findOne({
-        _id: new ObjectId(input.orderId),
+        _id: orderProduct.orderId,
       });
       if (!order) {
         mutationPayload = {
@@ -84,44 +98,11 @@ export async function cancelOrder({
         return;
       }
 
-      // Get order cancel status
-      const orderCancelStatus = await orderStatusesCollection.findOne({
-        slug: ORDER_STATUS_CANCELED,
+      // check product availability
+      const shopProduct = await shopProductsCollection.findOne({
+        _id: orderProduct.shopProductId,
       });
-      if (!orderCancelStatus) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('orders.updateOrder.statusNotFound'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // Create order log
-      const orderLog: OrderLogModel = {
-        _id: new ObjectId(),
-        orderId: order._id,
-        userId: user._id,
-        prevStatusId: order.statusId,
-        statusId: orderCancelStatus._id,
-        variant: ORDER_LOG_VARIANT_CANCEL,
-        createdAt: new Date(),
-      };
-      await orderLogsCollection.insertOne(orderLog);
-
-      // Update order
-      const updatedOrderResult = await ordersCollection.findOneAndUpdate(
-        {
-          _id: order._id,
-        },
-        {
-          $set: {
-            statusId: orderCancelStatus._id,
-          },
-        },
-      );
-      const updatedOrder = updatedOrderResult.value;
-      if (!updatedOrderResult.ok || !updatedOrder) {
+      if (!shopProduct || shopProduct.available < input.amount) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('orders.updateOrder.error'),
@@ -130,19 +111,35 @@ export async function cancelOrder({
         return;
       }
 
+      // create order log
+      const orderLog: OrderLogModel = {
+        _id: new ObjectId(),
+        orderId: order._id,
+        userId: user._id,
+        prevStatusId: order.statusId,
+        statusId: order.statusId,
+        productId: orderProduct._id,
+        variant: ORDER_LOG_VARIANT_UPDATE_PRODUCT,
+        createdAt: new Date(),
+      };
+      await orderLogsCollection.insertOne(orderLog);
+
       // Update order products
-      const updatedOrderProductsResult = await orderProductsCollection.updateMany(
+      const updatedOrderProductsResult = await orderProductsCollection.findOneAndUpdate(
         {
-          orderId: order._id,
+          _id: orderProduct._id,
         },
         {
           $set: {
-            statusId: orderCancelStatus._id,
-            isCanceled: true,
+            amount: input.amount,
           },
         },
+        {
+          returnDocument: 'after',
+        },
       );
-      if (!updatedOrderProductsResult.result.ok) {
+      const updatedOrderProducts = updatedOrderProductsResult.value;
+      if (!updatedOrderProductsResult.ok || !updatedOrderProducts) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('orders.updateOrder.error'),
@@ -154,6 +151,7 @@ export async function cancelOrder({
       mutationPayload = {
         success: true,
         message: await getApiMessage('orders.updateOrder.success'),
+        payload: updatedOrderProducts,
       };
     });
 

@@ -543,7 +543,7 @@ export const ProductMutations = extendType({
             // Permission
             const { allow, message } = await getOperationPermission({
               context,
-              slug: 'deleteProduct',
+              slug: 'updateProduct',
             });
             if (!allow) {
               mutationPayload = {

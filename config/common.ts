@@ -227,12 +227,14 @@ export const ORDER_LOG_VARIANT_STATUS = 'status' as OrderLogVariantModel;
 export const ORDER_LOG_VARIANT_CONFIRM = 'confirm' as OrderLogVariantModel;
 export const ORDER_LOG_VARIANT_CANCEL = 'cancel' as OrderLogVariantModel;
 export const ORDER_LOG_VARIANT_CANCEL_PRODUCT = 'cancelProduct' as OrderLogVariantModel;
+export const ORDER_LOG_VARIANT_UPDATE_PRODUCT = 'updateProduct' as OrderLogVariantModel;
 
 export const ORDER_LOG_VARIANTS_ENUMS: OrderLogVariantModel[] = [
   ORDER_LOG_VARIANT_STATUS,
   ORDER_LOG_VARIANT_CONFIRM,
   ORDER_LOG_VARIANT_CANCEL,
   ORDER_LOG_VARIANT_CANCEL_PRODUCT,
+  ORDER_LOG_VARIANT_UPDATE_PRODUCT,
 ];
 
 // ORDER STATUSES SLUGS

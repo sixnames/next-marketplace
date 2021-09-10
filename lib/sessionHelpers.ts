@@ -120,6 +120,14 @@ export const getOperationPermission = async ({
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
   const { role, user } = await getSessionRole(context);
 
+  if (!user) {
+    return {
+      allow: false,
+      message: '',
+      user,
+    };
+  }
+
   if (role.slug === ROLE_SLUG_ADMIN) {
     return {
       allow: true,

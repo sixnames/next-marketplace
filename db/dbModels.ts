@@ -438,6 +438,7 @@ export enum OrderLogVariantModel {
   confirm = 'confirm',
   cancel = 'cancel',
   cancelProduct = 'cancelProduct',
+  updateProduct = 'updateProduct',
 }
 
 export interface OrderLogModel {

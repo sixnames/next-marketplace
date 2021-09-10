@@ -1857,7 +1857,8 @@ export type OrderLog = Timestamp & {
 export enum OrderLogVariant {
   Status = 'status',
   Confirm = 'confirm',
-  Cancel = 'cancel'
+  Cancel = 'cancel',
+  CancelProduct = 'cancelProduct'
 }
 
 export type OrderProduct = {

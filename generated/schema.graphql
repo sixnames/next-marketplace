@@ -1585,6 +1585,7 @@ enum OrderLogVariant {
   cancelProduct
   confirm
   status
+  updateProduct
 }
 
 type OrderProduct {

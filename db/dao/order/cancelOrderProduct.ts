@@ -19,7 +19,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams, getSessionUser } from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface CancelOrderProductInputInterface {
@@ -53,7 +53,7 @@ export async function cancelOrderProduct({
       }
 
       // Permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user } = await getOperationPermission({
         context,
         slug: 'cancelOrder',
       });
@@ -66,8 +66,7 @@ export async function cancelOrderProduct({
         return;
       }
 
-      const sessionUser = await getSessionUser(context);
-      if (!sessionUser) {
+      if (!user) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('orders.updateOrder.error'),
@@ -119,7 +118,7 @@ export async function cancelOrderProduct({
       const orderLog: OrderLogModel = {
         _id: new ObjectId(),
         orderId: order._id,
-        userId: sessionUser._id,
+        userId: user._id,
         prevStatusId: order.statusId,
         statusId: orderCancelStatus._id,
         productId: orderProduct._id,
@@ -186,7 +185,7 @@ export async function cancelOrderProduct({
         const orderLog: OrderLogModel = {
           _id: new ObjectId(),
           orderId: order._id,
-          userId: sessionUser._id,
+          userId: user._id,
           prevStatusId: order.statusId,
           statusId: orderCancelStatus._id,
           variant: ORDER_LOG_VARIANT_CANCEL,

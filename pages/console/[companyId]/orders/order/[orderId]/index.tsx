@@ -267,8 +267,6 @@ export const getServerSideProps = async (
       : null,
   };
 
-  console.log(JSON.stringify(order.products, null, 2));
-
   return {
     props: {
       ...props,

@@ -862,10 +862,6 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
-export interface MakeAnOrderPayloadModel {
-  success: boolean;
-  message: string;
-}
 
 export interface CartPayloadModel {
   success: boolean;

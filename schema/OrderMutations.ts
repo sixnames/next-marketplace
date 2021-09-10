@@ -12,7 +12,6 @@ import {
   COL_ORDER_LOGS,
 } from 'db/collectionNames';
 import {
-  MakeAnOrderPayloadModel,
   OrderLogModel,
   OrderModel,
   OrderPayloadModel,
@@ -93,7 +92,7 @@ export const OrderMutations = extendType({
 
         const session = client.startSession();
 
-        let mutationPayload: MakeAnOrderPayloadModel = {
+        let mutationPayload: OrderPayloadModel = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
@@ -282,7 +281,7 @@ export const OrderMutations = extendType({
 
         const session = client.startSession();
 
-        let mutationPayload: MakeAnOrderPayloadModel = {
+        let mutationPayload: OrderPayloadModel = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.error'),
         };

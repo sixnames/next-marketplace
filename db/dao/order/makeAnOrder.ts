@@ -17,7 +17,6 @@ import {
 import {
   CartModel,
   CompanyModel,
-  MakeAnOrderPayloadModel,
   OrderCustomerModel,
   OrderLogModel,
   OrderModel,
@@ -30,6 +29,7 @@ import {
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -43,9 +43,13 @@ import {
   getSessionUser,
 } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
 import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
+
+export interface MakeAnOrderPayloadModel {
+  success: boolean;
+  message: string;
+}
 
 export interface MakeAnOrderInputInterface {
   name: string;
@@ -56,8 +60,10 @@ export interface MakeAnOrderInputInterface {
   companySlug?: string;
 }
 
-export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
-  const context = { req, res };
+export async function makeAnOrder({
+  context,
+  input,
+}: DaoPropsInterface<MakeAnOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -72,7 +78,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const input = JSON.parse(req.body) as MakeAnOrderInputInterface;
 
   const session = client.startSession();
 
@@ -83,6 +88,12 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     await session.withTransaction(async () => {
+      // check input
+      if (!input) {
+        await session.abortTransaction();
+        return;
+      }
+
       // Validate
       const validationSchema = await getResolverValidationSchema({
         context,
@@ -100,7 +111,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.empty'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -115,7 +125,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
             message: await getApiMessage('orders.makeAnOrder.guestRoleNotFound'),
           };
           await session.abortTransaction();
-          res.status(500).send(payload);
           return;
         }
 
@@ -130,7 +139,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
             message: await getApiMessage('users.create.duplicate'),
           };
           await session.abortTransaction();
-          res.status(500).send(payload);
           return;
         }
 
@@ -160,7 +168,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
             message: await getApiMessage('orders.makeAnOrder.userCreationError'),
           };
           await session.abortTransaction();
-          res.status(500).send(payload);
           return;
         }
         user = createdUser;
@@ -178,7 +185,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.userCreationError'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -192,7 +198,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.initialStatusNotFound'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -298,7 +303,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.productsNotFound'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
       const createdOrderProductsResult = await orderProductsCollection.insertMany(
@@ -310,7 +314,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -352,7 +355,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -376,7 +378,6 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
         await session.abortTransaction();
-        res.status(500).send(payload);
         return;
       }
 
@@ -397,8 +398,7 @@ export async function makeAnOrder(req: NextApiRequest, res: NextApiResponse) {
     });
 
     // send success
-    res.status(200).send(payload);
-    return;
+    return payload;
   } catch (e) {
     console.log(e);
     return {

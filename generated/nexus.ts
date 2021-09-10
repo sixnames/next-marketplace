@@ -1059,7 +1059,11 @@ export interface NexusGenObjects {
   FormattedPhone: dbModels.FormattedPhoneModel;
   Language: dbModels.LanguageModel;
   LanguagePayload: dbModels.LanguagePayloadModel;
-  MakeAnOrderPayload: dbModels.MakeAnOrderPayloadModel;
+  MakeAnOrderPayload: {
+    // root type
+    message: string; // String!
+    success: boolean; // Boolean!
+  };
   Manufacturer: dbModels.ManufacturerModel;
   ManufacturerPayload: dbModels.ManufacturerPayloadModel;
   ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;

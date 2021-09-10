@@ -615,6 +615,7 @@ export const getSsrConfigs = async ({
   const odnoklassniki = getCurrentConfig('odnoklassniki')?.singleValue || '';
   const youtube = getCurrentConfig('youtube')?.singleValue || '';
   const twitter = getCurrentConfig('twitter')?.singleValue || '';
+  const telegram = getCurrentConfig('telegram')?.singleValue || '';
   const pageDefaultPreviewImage = getCurrentConfig('pageDefaultPreviewImage')?.singleValue || '';
   const androidChrome192 = getCurrentConfig('android-chrome-192x192')?.singleValue || '';
   const androidChrome512 = getCurrentConfig('android-chrome-512x512')?.singleValue || '';
@@ -681,6 +682,7 @@ export const getSsrConfigs = async ({
     odnoklassniki,
     youtube,
     twitter,
+    telegram,
     pageDefaultPreviewImage,
     androidChrome192,
     androidChrome512,

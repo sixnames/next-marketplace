@@ -596,6 +596,22 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'string' as ConfigVariantModel,
+      slug: 'telegram',
+      name: 'Ссылка на Telegram',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // SEO
     {

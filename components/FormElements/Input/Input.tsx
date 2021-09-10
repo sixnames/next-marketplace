@@ -25,7 +25,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   min?: number;
   max?: number;
   placeholder?: string;
-  disabled?: boolean;
+  disabled?: boolean | null;
   icon?: IconType;
   onClear?: (() => void) | null;
   onChange?: (e: InputEvent) => void;
@@ -124,7 +124,7 @@ const Input: React.FC<InputPropsInterface> = ({
           type={type ? type : 'text'}
           data-cy={testId}
           data-error={notValid ? name : ''}
-          disabled={disabled}
+          disabled={Boolean(disabled)}
           readOnly={readOnly}
           {...props}
         />

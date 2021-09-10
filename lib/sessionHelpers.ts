@@ -120,6 +120,14 @@ export const getOperationPermission = async ({
   const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
   const { role, user } = await getSessionRole(context);
 
+  if (!user) {
+    return {
+      allow: false,
+      message: '',
+      user,
+    };
+  }
+
   if (role.slug === ROLE_SLUG_ADMIN) {
     return {
       allow: true,
@@ -312,3 +320,32 @@ export const getRequestParams = async (
     getApiMessage,
   };
 };
+
+interface GetResponseStatusInterface extends Record<any, any> {
+  success: boolean;
+}
+
+function getResponseStatus(payload: GetResponseStatusInterface): number {
+  if (payload.success) {
+    return 200;
+  }
+  return 500;
+}
+
+interface SendApiRouteResponseInterface {
+  payload: GetResponseStatusInterface;
+  res: NextApiResponse;
+}
+
+export function sendApiRouteResponse({ payload, res }: SendApiRouteResponseInterface) {
+  res.status(getResponseStatus(payload)).send(payload);
+  return;
+}
+
+export function sendApiRouteWrongMethod(res: NextApiResponse) {
+  res.status(405).send({
+    success: false,
+    message: 'wrong method',
+  });
+  return;
+}

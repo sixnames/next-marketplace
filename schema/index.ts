@@ -23,7 +23,6 @@ export * from './OptionsGroup';
 export * from './Order';
 export * from './OrderCustomer';
 export * from './OrderLog';
-export * from './OrderMutations';
 export * from './OrderProduct';
 export * from './OrderStatus';
 export * from './Page';

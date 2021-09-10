@@ -5,6 +5,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -15,8 +16,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useCancelOrderMutation, useConfirmOrderMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFullName } from 'lib/nameUtils';
@@ -36,19 +36,10 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
-    reload: true,
-  });
+  const { showModal } = useAppContext();
 
-  const [confirmOrderMutation] = useConfirmOrderMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.confirmOrder),
-  });
-
-  const [cancelOrderMutation] = useCancelOrderMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.cancelOrder),
-  });
+  const [confirmOrderMutation] = useConfirmOrder();
+  const [cancelOrderMutation] = useCancelOrder();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
@@ -69,13 +60,8 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
             <FixedButtons>
               <Button
                 onClick={() => {
-                  showLoading();
                   confirmOrderMutation({
-                    variables: {
-                      input: {
-                        orderId: order._id,
-                      },
-                    },
+                    orderId: `${order._id}`,
                   }).catch(console.log);
                 }}
               >
@@ -91,13 +77,8 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
                       testId: 'cancel-order-modal',
                       message: `Вы уверены, что хотите отменить заказ № ${order.orderId} ?`,
                       confirm: () => {
-                        showLoading();
                         cancelOrderMutation({
-                          variables: {
-                            input: {
-                              orderId: order._id,
-                            },
-                          },
+                          orderId: `${order._id}`,
                         }).catch(console.log);
                       },
                     },
@@ -219,7 +200,18 @@ export const getServerSideProps = async (
               },
             },
             {
+              $lookup: {
+                from: COL_ORDER_STATUSES,
+                as: 'status',
+                localField: 'statusId',
+                foreignField: '_id',
+              },
+            },
+            {
               $addFields: {
+                status: {
+                  $arrayElemAt: ['$status', 0],
+                },
                 shopProduct: {
                   $arrayElemAt: ['$shopProduct', 0],
                 },
@@ -240,12 +232,28 @@ export const getServerSideProps = async (
 
   const order: OrderInterface = {
     ...initialOrder,
-    totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
+    totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice, status }) => {
+      const productStatus = castOrderStatus({
+        initialStatus: status,
+        locale: props.sessionLocale,
+      });
+      if (productStatus && productStatus.isCanceled) {
+        return acc;
+      }
       return acc + totalPrice;
     }, 0),
     status: castOrderStatus({
       initialStatus: initialOrder.status,
       locale: props.sessionLocale,
+    }),
+    products: initialOrder.products?.map((product) => {
+      return {
+        ...product,
+        status: castOrderStatus({
+          initialStatus: product.status,
+          locale: props.sessionLocale,
+        }),
+      };
     }),
     customer: initialOrder.customer
       ? {

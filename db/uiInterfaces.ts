@@ -54,6 +54,7 @@ import {
   TranslationModel,
   UserModel,
 } from 'db/dbModels';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from 'types/messageSlugTypes';
 
 // Blog
@@ -651,4 +652,12 @@ export interface SsrConfigsInterface {
 
   // Project
   useUniqueConstructor: boolean;
+}
+
+export interface DaoPropsInterface<TInput> {
+  input?: TInput;
+  context: {
+    req: NextApiRequest;
+    res: NextApiResponse;
+  };
 }

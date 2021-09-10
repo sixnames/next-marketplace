@@ -1,11 +1,15 @@
+import Button from 'components/Button';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import ProductShopPrices from 'components/ProductShopPrices';
 import Title from 'components/Title';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import Image from 'next/image';
 import * as React from 'react';
@@ -15,7 +19,8 @@ interface OrderProductProductInterface {
 }
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
-  const { originalName, shopProduct, itemId, price, amount, totalPrice } = orderProduct;
+  const { showModal } = useAppContext();
+  const { originalName, shopProduct, itemId, price, amount, totalPrice, status } = orderProduct;
   const productImageSrc = shopProduct
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
@@ -23,7 +28,11 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
   const imageHeight = 120;
 
   return (
-    <div className='flex mb-4 py-8 bg-secondary rounded-lg pr-6'>
+    <div
+      className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${
+        status?.isCanceled ? 'opacity-60' : ''
+      }`}
+    >
       <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
         <Image
           src={productImageSrc}
@@ -35,11 +44,10 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
       </div>
 
       <div className='flex-grow'>
-        <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
-
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
           <div>
-            <div className='text-lg font-bold flex-grow mb-4'>{originalName}</div>
+            <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+            <div className='text-lg font-bold flex-grow mb-2'>{originalName}</div>
             <div>
               {shopProduct ? (
                 <div>
@@ -50,14 +58,51 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
                 <div className='text-red-500 font-medium'>Товар магазина не найден</div>
               )}
             </div>
+            {!status?.isCanceled ? (
+              <div className='mt-4'>
+                <Button
+                  size={'small'}
+                  theme={'secondary-b'}
+                  onClick={() => {
+                    showModal<ConfirmModalInterface>({
+                      variant: CONFIRM_MODAL,
+                      props: {
+                        testId: 'cancel-order-product-modal',
+                        message: `Вы уверенны, что хотите отменть товар ${originalName}?`,
+                        confirm: () => {
+                          console.log('confirm');
+                        },
+                      },
+                    });
+                  }}
+                >
+                  Отменить товар
+                </Button>
+              </div>
+            ) : null}
           </div>
 
           <div>
-            <div className='flex items-baseline ml-auto flex-grow-0'>
+            {/*status*/}
+            <div className='flex items-baseline gap-2 mb-2'>
+              <div className='text-secondary-text'>Статус</div>
+              {status ? (
+                <div className='font-medium' style={status ? { color: status.color } : {}}>
+                  {status.name}
+                </div>
+              ) : (
+                <div className='text-red-500 font-medium'>Статус не найден</div>
+              )}
+            </div>
+
+            {/*amount and price*/}
+            <div className='flex lg:justify-end items-baseline flex-grow-0'>
               <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
               <Icon name={'cross'} className='w-2 h-2 mx-4' />
               <div className='font-medium'>{amount}</div>
             </div>
+
+            {/*total price*/}
             <div className='flex gap-2 lg:justify-end text-secondary-text'>
               <span>Итого:</span>
               <Currency value={totalPrice} />

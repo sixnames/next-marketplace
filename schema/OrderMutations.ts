@@ -206,10 +206,26 @@ export const OrderMutations = extendType({
               return;
             }
 
+            // Get order cancel status
+            const orderCancelStatus = orderStatusesList.find(({ slug }) => {
+              return slug === ORDER_STATUS_CANCELED;
+            });
+            if (!orderCancelStatus) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('orders.updateOrder.statusNotFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             // Update order products
             const updatedOrderProductsResult = await orderProductsCollection.updateMany(
               {
                 orderId: order._id,
+                statusId: {
+                  $ne: orderCancelStatus._id,
+                },
               },
               {
                 $set: {
@@ -336,10 +352,10 @@ export const OrderMutations = extendType({
             }
 
             // Get order next status
-            const orderNextStatus = orderStatusesList.find(({ slug }) => {
+            const orderCancelStatus = orderStatusesList.find(({ slug }) => {
               return slug === ORDER_STATUS_CANCELED;
             });
-            if (!orderNextStatus) {
+            if (!orderCancelStatus) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('orders.updateOrder.statusNotFound'),
@@ -354,7 +370,7 @@ export const OrderMutations = extendType({
               orderId: order._id,
               userId: sessionUser._id,
               prevStatusId: order.statusId,
-              statusId: orderNextStatus._id,
+              statusId: orderCancelStatus._id,
               variant: ORDER_LOG_VARIANT_CANCEL,
               createdAt: new Date(),
             };
@@ -367,7 +383,7 @@ export const OrderMutations = extendType({
               },
               {
                 $set: {
-                  statusId: orderNextStatus._id,
+                  statusId: orderCancelStatus._id,
                 },
               },
             );
@@ -388,7 +404,7 @@ export const OrderMutations = extendType({
               },
               {
                 $set: {
-                  statusId: orderNextStatus._id,
+                  statusId: orderCancelStatus._id,
                   isCanceled: true,
                 },
               },

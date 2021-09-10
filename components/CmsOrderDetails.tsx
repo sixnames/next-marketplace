@@ -1,12 +1,20 @@
+import Button from 'components/Button';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
-import Icon from 'components/Icon';
+import Input from 'components/FormElements/Input/Input';
 import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import ProductShopPrices from 'components/ProductShopPrices';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
+import {
+  useCancelOrderProduct,
+  useUpdateOrderProduct,
+} from 'hooks/mutations/order/useOrderMutations';
+import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import * as React from 'react';
 
@@ -15,15 +23,30 @@ interface OrderProductProductInterface {
 }
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
-  const { originalName, shopProduct, itemId, price, amount, totalPrice } = orderProduct;
+  const [amount, setAmount] = React.useState<number>(orderProduct.amount);
+  const [touched, setTouched] = React.useState<boolean>(false);
+
+  const { showModal } = useAppContext();
+  const { originalName, shopProduct, itemId, price, totalPrice, status, isCanceled } = orderProduct;
   const productImageSrc = shopProduct
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
 
+  const [cancelOrderProductMutation] = useCancelOrderProduct();
+  const [updateOrderProductMutation] = useUpdateOrderProduct();
+
+  React.useEffect(() => {
+    if (amount !== orderProduct.amount) {
+      setTouched(true);
+    }
+  }, [amount, orderProduct.amount]);
+
   return (
-    <div className='flex mb-4 py-8 bg-secondary rounded-lg pr-6'>
+    <div
+      className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
+    >
       <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
         <Image
           src={productImageSrc}
@@ -35,11 +58,10 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
       </div>
 
       <div className='flex-grow'>
-        <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
-
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
           <div>
-            <div className='text-lg font-bold flex-grow mb-4'>{originalName}</div>
+            <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+            <div className='text-lg font-bold flex-grow mb-2'>{originalName}</div>
             <div>
               {shopProduct ? (
                 <div>
@@ -50,17 +72,91 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
                 <div className='text-red-500 font-medium'>Товар магазина не найден</div>
               )}
             </div>
+            {!isCanceled ? (
+              <div className='mt-4 flex gap-4'>
+                {/*save button*/}
+                <Button
+                  disabled={!touched}
+                  title={'Сохранить товар'}
+                  size={'small'}
+                  icon={'save'}
+                  circle
+                  theme={'secondary-b'}
+                  onClick={() => {
+                    updateOrderProductMutation({
+                      orderProductId: `${orderProduct._id}`,
+                      amount,
+                    }).catch(console.log);
+                  }}
+                />
+
+                {/*delete button*/}
+                <Button
+                  title={'Отменить товар'}
+                  size={'small'}
+                  icon={'trash'}
+                  circle
+                  theme={'secondary'}
+                  onClick={() => {
+                    showModal<ConfirmModalInterface>({
+                      variant: CONFIRM_MODAL,
+                      props: {
+                        testId: 'cancel-order-product-modal',
+                        message: `Вы уверенны, что хотите отменть товар ${originalName}?`,
+                        confirm: () => {
+                          cancelOrderProductMutation({
+                            orderProductId: `${orderProduct._id}`,
+                          }).catch(console.log);
+                        },
+                      },
+                    });
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
 
-          <div>
-            <div className='flex items-baseline ml-auto flex-grow-0'>
-              <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
-              <Icon name={'cross'} className='w-2 h-2 mx-4' />
-              <div className='font-medium'>{amount}</div>
+          <div className='flex flex-col gap-3'>
+            {/*status*/}
+            <div className='flex items-baseline gap-2'>
+              <div className='text-secondary-text'>Статус</div>
+              {status ? (
+                <div className='font-medium' style={status ? { color: status.color } : {}}>
+                  {status.name}
+                </div>
+              ) : (
+                <div className='text-red-500 font-medium'>Статус не найден</div>
+              )}
             </div>
+
+            {/*price*/}
+            <div className='flex gap-2 lg:justify-end text-secondary-text items-baseline'>
+              <span>Цена:</span>
+              <Currency className='text-xl text-primary-text' value={price} />
+            </div>
+
+            {/*amount*/}
             <div className='flex gap-2 lg:justify-end text-secondary-text'>
+              <div className='w-[100px]'>
+                <Input
+                  low
+                  disabled={isCanceled}
+                  value={amount}
+                  type={'number'}
+                  max={shopProduct?.available}
+                  min={1}
+                  name={'amount'}
+                  onChange={(e) => {
+                    setAmount(noNaN(e.target.value));
+                  }}
+                />
+              </div>
+            </div>
+
+            {/*total price*/}
+            <div className='flex gap-2 lg:justify-end text-secondary-text items-baseline'>
               <span>Итого:</span>
-              <Currency value={totalPrice} />
+              <Currency className='text-2xl text-primary-text' value={totalPrice} />
             </div>
           </div>
         </div>

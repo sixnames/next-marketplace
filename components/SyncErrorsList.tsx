@@ -34,7 +34,9 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        return <div className='max-w-[150px] truncate'>{cellData}</div>;
+      },
     },
     {
       accessor: 'name',

@@ -1,25 +1,25 @@
 import { CartModalInterface } from 'components/Modal/CartModal';
-import { ROUTE_THANK_YOU } from 'config/common';
+import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from 'config/common';
 import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
+import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   AddProductToCartInput,
   AddShoplessProductToCartInput,
   AddShopToCartProductInput,
   DeleteProductFromCartInput,
-  MakeAnOrderInput,
   UpdateProductInCartInput,
   useAddProductToCartMutation,
   useAddShoplessProductToCartMutation,
   useAddShopToCartProductMutation,
   useClearCartMutation,
   useDeleteProductFromCartMutation,
-  useMakeAnOrderMutation,
   useRepeatAnOrderMutation,
   useUpdateProductInCartMutation,
 } from 'generated/apolloComponents';
+import { useMutation } from 'hooks/mutations/useFetch';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -37,7 +37,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
   getShopProductInCartCount: (shopProductId: string) => number;
-  makeAnOrder: (input: MakeAnOrderInput) => void;
+  makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
 }
@@ -170,15 +170,16 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     },
   });
 
-  const [makeAnOrderMutation] = useMakeAnOrderMutation({
-    onCompleted: ({ makeAnOrder }) => {
-      if (makeAnOrder.success) {
+  const [makeAnOrderMutation] = useMutation<MakeAnOrderPayloadModel>({
+    input: '/api/order/make',
+    onSuccess: (payload) => {
+      if (payload.success) {
         refetchCartHandler();
         router.push(ROUTE_THANK_YOU).catch(console.log);
         return;
       }
       hideLoading();
-      showErrorNotification({ title: makeAnOrder.message });
+      showErrorNotification({ title: payload.message });
     },
   });
 
@@ -278,12 +279,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   }, [clearCartMutation, showErrorNotification, showLoading]);
 
   const makeAnOrder = React.useCallback(
-    (input: MakeAnOrderInput) => {
+    (input: MakeAnOrderInputInterface) => {
       showLoading();
       makeAnOrderMutation({
-        variables: {
-          input,
-        },
+        method: REQUEST_METHOD_POST,
+        body: JSON.stringify(input),
       }).catch(() => {
         hideLoading();
         showErrorNotification();

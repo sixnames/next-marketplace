@@ -7,13 +7,6 @@ export const cartPayloadFragment = gql`
   }
 `;
 
-export const makeAnOrderPayloadFragment = gql`
-  fragment MakeAnOrderPayload on MakeAnOrderPayload {
-    success
-    message
-  }
-`;
-
 export const ADD_PRODUCT_TO_CART_MUTATION = gql`
   mutation AddProductToCart($input: AddProductToCartInput!) {
     addProductToCart(input: $input) {
@@ -66,15 +59,6 @@ export const CLEAR_CART_MUTATION = gql`
     }
   }
   ${cartPayloadFragment}
-`;
-
-export const MAKE_AN_ORDER_MUTATION = gql`
-  mutation MakeAnOrder($input: MakeAnOrderInput!) {
-    makeAnOrder(input: $input) {
-      ...MakeAnOrderPayload
-    }
-  }
-  ${makeAnOrderPayloadFragment}
 `;
 
 export const REPEAT_AN_ORDER_MUTATION = gql`

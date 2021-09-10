@@ -529,6 +529,7 @@
   --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
 
   /*Inputs*/
+  --checkboxBg: #cfd4dc;
   --inputTextColor: var(--textColor);
   --inputBackground: var(--wp-white);
   --inputBorderRGB: 170, 172, 176;
@@ -563,6 +564,7 @@
   --textColor: var(--wp-white);
   --textSecondaryColor: var(--wp-light-gray-100);
 
+  --checkboxBg: #444c58;
   --inputTextColor: var(--textColor);
   --inputBackground: var(--wp-dark-gray-300);
   --inputBorderRGB: 255, 255, 255;

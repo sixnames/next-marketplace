@@ -1251,11 +1251,6 @@ type Mutation {
   generateShopToken(_id: ObjectId!): ShopPayload!
 
   """
-  Should create order from session cart
-  """
-  makeAnOrder(input: MakeAnOrderInput!): MakeAnOrderPayload!
-
-  """
   Should add all products to the cart from user's old order
   """
   repeatOrder(input: RepeatOrderInput!): CartPayload!

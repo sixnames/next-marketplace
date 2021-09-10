@@ -1584,7 +1584,6 @@ export interface NexusGenFieldTypes {
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     deleteUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    makeAnOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -2736,7 +2735,6 @@ export interface NexusGenFieldTypeNames {
     deleteSupplier: 'SupplierPayload';
     deleteUser: 'UserPayload';
     generateShopToken: 'ShopPayload';
-    makeAnOrder: 'MakeAnOrderPayload';
     repeatOrder: 'CartPayload';
     signUp: 'UserPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
@@ -3757,10 +3755,6 @@ export interface NexusGenArgTypes {
     generateShopToken: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    makeAnOrder: {
-      // args
-      input: NexusGenInputs['MakeAnOrderInput']; // MakeAnOrderInput!
     };
     repeatOrder: {
       // args

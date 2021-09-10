@@ -121,7 +121,11 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       accessor: 'name',
       headTitle: 'Название',
       render: ({ cellData }) => {
-        return <div data-cy={`attribute-${cellData}`}>{cellData}</div>;
+        return (
+          <div data-cy={`attribute-${cellData}`} className='whitespace-nowrap'>
+            {cellData}
+          </div>
+        );
       },
     },
     {

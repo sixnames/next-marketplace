@@ -214,10 +214,6 @@ export interface NexusGenInputs {
     brandSlug?: string | null; // String
     slugs?: string[] | null; // [String!]
   };
-  CancelOrderInput: {
-    // input type
-    orderId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   CatalogueAdditionalOptionsInput: {
     // input type
     attributeSlug: string; // String!
@@ -242,10 +238,6 @@ export interface NexusGenInputs {
     // input type
     companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     companySlug: string | null; // String
-  };
-  ConfirmOrderInput: {
-    // input type
-    orderId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   ContactsInput: {
     // input type
@@ -512,15 +504,6 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     sortBy: string | null; // String
     sortDir: NexusGenEnums['SortDirection'] | null; // SortDirection
-  };
-  MakeAnOrderInput: {
-    // input type
-    comment?: string | null; // String
-    companySlug: string | null; // String
-    email: NexusGenScalars['EmailAddress']; // EmailAddress!
-    name: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
-    reservationDate: NexusGenScalars['Date']; // Date!
   };
   ManufacturerAlphabetInput: {
     // input type
@@ -1059,11 +1042,6 @@ export interface NexusGenObjects {
   FormattedPhone: dbModels.FormattedPhoneModel;
   Language: dbModels.LanguageModel;
   LanguagePayload: dbModels.LanguagePayloadModel;
-  MakeAnOrderPayload: {
-    // root type
-    message: string; // String!
-    success: boolean; // Boolean!
-  };
   Manufacturer: dbModels.ManufacturerModel;
   ManufacturerPayload: dbModels.ManufacturerPayloadModel;
   ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;
@@ -1087,7 +1065,6 @@ export interface NexusGenObjects {
   Order: dbModels.OrderModel;
   OrderCustomer: dbModels.OrderCustomerModel;
   OrderLog: dbModels.OrderLogModel;
-  OrderPayload: dbModels.OrderPayloadModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
@@ -1442,11 +1419,6 @@ export interface NexusGenFieldTypes {
     payload: NexusGenRootTypes['Language'] | null; // Language
     success: boolean; // Boolean!
   };
-  MakeAnOrderPayload: {
-    // field return type
-    message: string; // String!
-    success: boolean; // Boolean!
-  };
   Manufacturer: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1529,9 +1501,7 @@ export interface NexusGenFieldTypes {
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
-    cancelOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     clearCart: NexusGenRootTypes['CartPayload']; // CartPayload!
-    confirmOrder: NexusGenRootTypes['MakeAnOrderPayload']; // MakeAnOrderPayload!
     copyProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     createBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -1722,12 +1692,6 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User'] | null; // User
     userId: NexusGenScalars['ObjectId']; // ObjectId!
     variant: NexusGenEnums['OrderLogVariant']; // OrderLogVariant!
-  };
-  OrderPayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['Order'] | null; // Order
-    success: boolean; // Boolean!
   };
   OrderProduct: {
     // field return type
@@ -2593,11 +2557,6 @@ export interface NexusGenFieldTypeNames {
     payload: 'Language';
     success: 'Boolean';
   };
-  MakeAnOrderPayload: {
-    // field return type name
-    message: 'String';
-    success: 'Boolean';
-  };
   Manufacturer: {
     // field return type name
     _id: 'ObjectId';
@@ -2680,9 +2639,7 @@ export interface NexusGenFieldTypeNames {
     addShopToCartProduct: 'CartPayload';
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
-    cancelOrder: 'MakeAnOrderPayload';
     clearCart: 'CartPayload';
-    confirmOrder: 'MakeAnOrderPayload';
     copyProduct: 'ProductPayload';
     createAttributesGroup: 'AttributesGroupPayload';
     createBrand: 'BrandPayload';
@@ -2873,12 +2830,6 @@ export interface NexusGenFieldTypeNames {
     user: 'User';
     userId: 'ObjectId';
     variant: 'OrderLogVariant';
-  };
-  OrderPayload: {
-    // field return type name
-    message: 'String';
-    payload: 'Order';
-    success: 'Boolean';
   };
   OrderProduct: {
     // field return type name
@@ -3528,14 +3479,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['AddShoplessProductToCartInput']; // AddShoplessProductToCartInput!
     };
-    cancelOrder: {
-      // args
-      input: NexusGenInputs['CancelOrderInput']; // CancelOrderInput!
-    };
-    confirmOrder: {
-      // args
-      input: NexusGenInputs['ConfirmOrderInput']; // ConfirmOrderInput!
-    };
     copyProduct: {
       // args
       input: NexusGenInputs['CopyProductInput']; // CopyProductInput!
@@ -4183,12 +4126,10 @@ export interface NexusGenAbstractTypeMembers {
     | 'CountryPayload'
     | 'CurrencyPayload'
     | 'LanguagePayload'
-    | 'MakeAnOrderPayload'
     | 'ManufacturerPayload'
     | 'MetricPayload'
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
-    | 'OrderPayload'
     | 'OrderStatusPayload'
     | 'PagePayload'
     | 'PagesGroupPayload'
@@ -4238,7 +4179,6 @@ export interface NexusGenTypeInterfaces {
   CountryPayload: 'Payload';
   CurrencyPayload: 'Payload';
   LanguagePayload: 'Payload';
-  MakeAnOrderPayload: 'Payload';
   Manufacturer: 'Base' | 'Timestamp';
   ManufacturerPayload: 'Payload';
   ManufacturersAlphabetList: 'AlphabetList';
@@ -4249,7 +4189,6 @@ export interface NexusGenTypeInterfaces {
   OptionsGroupPayload: 'Payload';
   Order: 'Base' | 'Timestamp';
   OrderLog: 'Timestamp';
-  OrderPayload: 'Payload';
   OrderStatus: 'Timestamp';
   OrderStatusPayload: 'Payload';
   PagePayload: 'Payload';

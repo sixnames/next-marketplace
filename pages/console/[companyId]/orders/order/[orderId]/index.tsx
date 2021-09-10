@@ -15,7 +15,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useCancelOrderMutation, useConfirmOrderMutation } from 'generated/apolloComponents';
+import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
@@ -36,19 +36,12 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
+  const { showLoading, showModal } = useMutationCallbacks({
     reload: true,
   });
 
-  const [confirmOrderMutation] = useConfirmOrderMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.confirmOrder),
-  });
-
-  const [cancelOrderMutation] = useCancelOrderMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.cancelOrder),
-  });
+  const [confirmOrderMutation] = useConfirmOrder();
+  const [cancelOrderMutation] = useCancelOrder();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
@@ -71,11 +64,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
                 onClick={() => {
                   showLoading();
                   confirmOrderMutation({
-                    variables: {
-                      input: {
-                        orderId: order._id,
-                      },
-                    },
+                    orderId: `${order._id}`,
                   }).catch(console.log);
                 }}
               >
@@ -93,11 +82,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
                       confirm: () => {
                         showLoading();
                         cancelOrderMutation({
-                          variables: {
-                            input: {
-                              orderId: order._id,
-                            },
-                          },
+                          orderId: `${order._id}`,
                         }).catch(console.log);
                       },
                     },

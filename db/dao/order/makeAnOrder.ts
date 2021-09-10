@@ -1,5 +1,10 @@
 import { hash } from 'bcryptjs';
-import { ORDER_LOG_VARIANT_STATUS, ORDER_STATUS_PENDING, ROLE_SLUG_GUEST } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  ORDER_LOG_VARIANT_STATUS,
+  ORDER_STATUS_PENDING,
+  ROLE_SLUG_GUEST,
+} from 'config/common';
 import {
   COL_CARTS,
   COL_COMPANIES,
@@ -255,7 +260,7 @@ export async function makeAnOrder({
             itemId: await getNextItemId(COL_ORDERS),
             statusId: initialStatus._id,
             customerId: user._id,
-            companySiteSlug: `${input.companySlug}`,
+            companySiteSlug: input.companySlug || DEFAULT_COMPANY_SLUG,
             comment: input.comment,
             productIds: [product._id],
             shopProductIds: [shopProduct._id],

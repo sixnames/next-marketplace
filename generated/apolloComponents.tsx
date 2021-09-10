@@ -297,10 +297,6 @@ export type BrandsPaginationPayload = PaginationPayload & {
   docs: Array<Brand>;
 };
 
-export type CancelOrderInput = {
-  orderId: Scalars['ObjectId'];
-};
-
 export type Cart = {
   __typename?: 'Cart';
   _id: Scalars['ObjectId'];
@@ -481,10 +477,6 @@ export enum ConfigVariant {
   Constructor = 'constructor',
   Color = 'color'
 }
-
-export type ConfirmOrderInput = {
-  orderId: Scalars['ObjectId'];
-};
 
 export type Contacts = {
   __typename?: 'Contacts';
@@ -827,21 +819,6 @@ export type LanguagePayload = Payload & {
   payload?: Maybe<Language>;
 };
 
-export type MakeAnOrderInput = {
-  name: Scalars['String'];
-  phone: Scalars['PhoneNumber'];
-  email: Scalars['EmailAddress'];
-  reservationDate: Scalars['Date'];
-  comment?: Maybe<Scalars['String']>;
-  companySlug?: Maybe<Scalars['String']>;
-};
-
-export type MakeAnOrderPayload = Payload & {
-  __typename?: 'MakeAnOrderPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-};
-
 export type Manufacturer = Base & Timestamp & {
   __typename?: 'Manufacturer';
   _id: Scalars['ObjectId'];
@@ -1056,10 +1033,6 @@ export type Mutation = {
   updateOptionInGroup: OptionsGroupPayload;
   /** Should delete option from the group */
   deleteOptionFromGroup: OptionsGroupPayload;
-  /** Should confirm order */
-  confirmOrder: MakeAnOrderPayload;
-  /** Should cancel order */
-  cancelOrder: MakeAnOrderPayload;
   /** Should create order status */
   createOrderStatus: OrderStatusPayload;
   /** Should update order status */
@@ -1495,16 +1468,6 @@ export type MutationDeleteOptionFromGroupArgs = {
 };
 
 
-export type MutationConfirmOrderArgs = {
-  input: ConfirmOrderInput;
-};
-
-
-export type MutationCancelOrderArgs = {
-  input: CancelOrderInput;
-};
-
-
 export type MutationCreateOrderStatusArgs = {
   input: CreateOrderStatusInput;
 };
@@ -1896,13 +1859,6 @@ export enum OrderLogVariant {
   Confirm = 'confirm',
   Cancel = 'cancel'
 }
-
-export type OrderPayload = Payload & {
-  __typename?: 'OrderPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  payload?: Maybe<Order>;
-};
 
 export type OrderProduct = {
   __typename?: 'OrderProduct';
@@ -4146,32 +4102,6 @@ export type DeleteOptionFromGroupMutation = (
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayload' }
     & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ConfirmOrderMutationVariables = Exact<{
-  input: ConfirmOrderInput;
-}>;
-
-
-export type ConfirmOrderMutation = (
-  { __typename?: 'Mutation' }
-  & { confirmOrder: (
-    { __typename?: 'MakeAnOrderPayload' }
-    & Pick<MakeAnOrderPayload, 'success' | 'message'>
-  ) }
-);
-
-export type CancelOrderMutationVariables = Exact<{
-  input: CancelOrderInput;
-}>;
-
-
-export type CancelOrderMutation = (
-  { __typename?: 'Mutation' }
-  & { cancelOrder: (
-    { __typename?: 'MakeAnOrderPayload' }
-    & Pick<MakeAnOrderPayload, 'success' | 'message'>
   ) }
 );
 
@@ -7945,74 +7875,6 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = Apollo.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
-export const ConfirmOrderDocument = gql`
-    mutation ConfirmOrder($input: ConfirmOrderInput!) {
-  confirmOrder(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ConfirmOrderMutationFn = Apollo.MutationFunction<ConfirmOrderMutation, ConfirmOrderMutationVariables>;
-
-/**
- * __useConfirmOrderMutation__
- *
- * To run a mutation, you first call `useConfirmOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useConfirmOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [confirmOrderMutation, { data, loading, error }] = useConfirmOrderMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useConfirmOrderMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmOrderMutation, ConfirmOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ConfirmOrderMutation, ConfirmOrderMutationVariables>(ConfirmOrderDocument, options);
-      }
-export type ConfirmOrderMutationHookResult = ReturnType<typeof useConfirmOrderMutation>;
-export type ConfirmOrderMutationResult = Apollo.MutationResult<ConfirmOrderMutation>;
-export type ConfirmOrderMutationOptions = Apollo.BaseMutationOptions<ConfirmOrderMutation, ConfirmOrderMutationVariables>;
-export const CancelOrderDocument = gql`
-    mutation CancelOrder($input: CancelOrderInput!) {
-  cancelOrder(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type CancelOrderMutationFn = Apollo.MutationFunction<CancelOrderMutation, CancelOrderMutationVariables>;
-
-/**
- * __useCancelOrderMutation__
- *
- * To run a mutation, you first call `useCancelOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCancelOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [cancelOrderMutation, { data, loading, error }] = useCancelOrderMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCancelOrderMutation(baseOptions?: Apollo.MutationHookOptions<CancelOrderMutation, CancelOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CancelOrderMutation, CancelOrderMutationVariables>(CancelOrderDocument, options);
-      }
-export type CancelOrderMutationHookResult = ReturnType<typeof useCancelOrderMutation>;
-export type CancelOrderMutationResult = Apollo.MutationResult<CancelOrderMutation>;
-export type CancelOrderMutationOptions = Apollo.BaseMutationOptions<CancelOrderMutation, CancelOrderMutationVariables>;
 export const CreateOrderStatusDocument = gql`
     mutation CreateOrderStatus($input: CreateOrderStatusInput!) {
   createOrderStatus(input: $input) {

@@ -261,10 +261,6 @@ type BrandsPaginationPayload implements PaginationPayload {
   totalPages: Int!
 }
 
-input CancelOrderInput {
-  orderId: ObjectId!
-}
-
 type Cart {
   _id: ObjectId!
   cartProducts: [CartProduct!]!
@@ -441,10 +437,6 @@ enum ConfigVariant {
   number
   string
   tel
-}
-
-input ConfirmOrderInput {
-  orderId: ObjectId!
 }
 
 type Contacts {
@@ -794,20 +786,6 @@ type LanguagePayload implements Payload {
   success: Boolean!
 }
 
-input MakeAnOrderInput {
-  comment: String
-  companySlug: String = "default"
-  email: EmailAddress!
-  name: String!
-  phone: PhoneNumber!
-  reservationDate: Date!
-}
-
-type MakeAnOrderPayload implements Payload {
-  message: String!
-  success: Boolean!
-}
-
 type Manufacturer implements Base & Timestamp {
   _id: ObjectId!
   createdAt: Date!
@@ -954,19 +932,9 @@ type Mutation {
   addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayload!
 
   """
-  Should cancel order
-  """
-  cancelOrder(input: CancelOrderInput!): MakeAnOrderPayload!
-
-  """
   Should delete all products from cart
   """
   clearCart: CartPayload!
-
-  """
-  Should confirm order
-  """
-  confirmOrder(input: ConfirmOrderInput!): MakeAnOrderPayload!
 
   """
   Should copy product
@@ -1616,12 +1584,6 @@ enum OrderLogVariant {
   cancel
   confirm
   status
-}
-
-type OrderPayload implements Payload {
-  message: String!
-  payload: Order
-  success: Boolean!
 }
 
 type OrderProduct {

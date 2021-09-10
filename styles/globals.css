@@ -439,6 +439,7 @@
   /*Main styles*/
   --primaryBackground-RGB: var(--wp-white-RGB);
   --primaryBackground: var(--wp-white);
+  --primaryBackgroundDark: #e6e6e6;
   --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
@@ -552,6 +553,7 @@
 
 .dark {
   --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
+  --primaryBackgroundDark: #181d23;
   --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);

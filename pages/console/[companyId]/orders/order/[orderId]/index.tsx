@@ -5,6 +5,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -16,7 +17,6 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFullName } from 'lib/nameUtils';
@@ -36,9 +36,7 @@ interface OrderPageConsumerInterface {
 const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
-  const { showLoading, showModal } = useMutationCallbacks({
-    reload: true,
-  });
+  const { showModal } = useAppContext();
 
   const [confirmOrderMutation] = useConfirmOrder();
   const [cancelOrderMutation] = useCancelOrder();
@@ -62,7 +60,6 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
             <FixedButtons>
               <Button
                 onClick={() => {
-                  showLoading();
                   confirmOrderMutation({
                     orderId: `${order._id}`,
                   }).catch(console.log);
@@ -80,7 +77,6 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
                       testId: 'cancel-order-modal',
                       message: `Вы уверены, что хотите отменить заказ № ${order.orderId} ?`,
                       confirm: () => {
-                        showLoading();
                         cancelOrderMutation({
                           orderId: `${order._id}`,
                         }).catch(console.log);

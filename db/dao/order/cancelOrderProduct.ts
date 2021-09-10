@@ -1,4 +1,8 @@
-import { ORDER_LOG_VARIANT_CANCEL, ORDER_STATUS_CANCELED } from 'config/common';
+import {
+  ORDER_LOG_VARIANT_CANCEL,
+  ORDER_LOG_VARIANT_CANCEL_PRODUCT,
+  ORDER_STATUS_CANCELED,
+} from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -8,8 +12,8 @@ import {
 import {
   OrderLogModel,
   OrderModel,
-  OrderPayloadModel,
   OrderProductModel,
+  OrderProductPayloadModel,
   OrderStatusModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -18,14 +22,14 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams, getSessionUser } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface CancelOrderInputInterface {
-  orderId: string;
+export interface CancelOrderProductInputInterface {
+  orderProductId: string;
 }
 
-export async function cancelOrder({
+export async function cancelOrderProduct({
   context,
   input,
-}: DaoPropsInterface<CancelOrderInputInterface>): Promise<OrderPayloadModel> {
+}: DaoPropsInterface<CancelOrderProductInputInterface>): Promise<OrderProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
@@ -35,7 +39,7 @@ export async function cancelOrder({
 
   const session = client.startSession();
 
-  let mutationPayload: OrderPayloadModel = {
+  let mutationPayload: OrderProductPayloadModel = {
     success: false,
     message: await getApiMessage('orders.makeAnOrder.error'),
   };
@@ -72,9 +76,22 @@ export async function cancelOrder({
         return;
       }
 
+      // order product
+      const orderProduct = await orderProductsCollection.findOne({
+        _id: new ObjectId(input.orderProductId),
+      });
+      if (!orderProduct) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('orders.updateOrder.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // Get order
       const order = await ordersCollection.findOne({
-        _id: new ObjectId(input.orderId),
+        _id: orderProduct.orderId,
       });
       if (!order) {
         mutationPayload = {
@@ -105,36 +122,16 @@ export async function cancelOrder({
         userId: sessionUser._id,
         prevStatusId: order.statusId,
         statusId: orderCancelStatus._id,
-        variant: ORDER_LOG_VARIANT_CANCEL,
+        productId: orderProduct._id,
+        variant: ORDER_LOG_VARIANT_CANCEL_PRODUCT,
         createdAt: new Date(),
       };
       await orderLogsCollection.insertOne(orderLog);
 
-      // Update order
-      const updatedOrderResult = await ordersCollection.findOneAndUpdate(
-        {
-          _id: order._id,
-        },
-        {
-          $set: {
-            statusId: orderCancelStatus._id,
-          },
-        },
-      );
-      const updatedOrder = updatedOrderResult.value;
-      if (!updatedOrderResult.ok || !updatedOrder) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('orders.updateOrder.error'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
       // Update order products
-      const updatedOrderProductsResult = await orderProductsCollection.updateMany(
+      const updatedOrderProductsResult = await orderProductsCollection.findOneAndUpdate(
         {
-          orderId: order._id,
+          _id: orderProduct._id,
         },
         {
           $set: {
@@ -142,8 +139,12 @@ export async function cancelOrder({
             isCanceled: true,
           },
         },
+        {
+          returnDocument: 'after',
+        },
       );
-      if (!updatedOrderProductsResult.result.ok) {
+      const updatedOrderProducts = updatedOrderProductsResult.value;
+      if (!updatedOrderProductsResult.ok || !updatedOrderProducts) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('orders.updateOrder.error'),
@@ -152,9 +153,52 @@ export async function cancelOrder({
         return;
       }
 
+      // cancel order if all products are canceled
+      const orderProducts = await orderProductsCollection
+        .find({
+          orderId: order._id,
+        })
+        .toArray();
+      const canceledProducts = orderProducts.filter(({ isCanceled }) => isCanceled);
+      if (orderProducts.length === canceledProducts.length) {
+        const updatedOrderResult = await ordersCollection.findOneAndUpdate(
+          {
+            _id: order._id,
+          },
+          {
+            $set: {
+              statusId: orderCancelStatus._id,
+              isCanceled: true,
+            },
+          },
+        );
+        const updatedOrder = updatedOrderResult.value;
+        if (!updatedOrderResult.ok || !updatedOrder) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('orders.updateOrder.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        // create order log
+        const orderLog: OrderLogModel = {
+          _id: new ObjectId(),
+          orderId: order._id,
+          userId: sessionUser._id,
+          prevStatusId: order.statusId,
+          statusId: orderCancelStatus._id,
+          variant: ORDER_LOG_VARIANT_CANCEL,
+          createdAt: new Date(),
+        };
+        await orderLogsCollection.insertOne(orderLog);
+      }
+
       mutationPayload = {
         success: true,
         message: await getApiMessage('orders.updateOrder.success'),
+        payload: updatedOrderProducts,
       };
     });
 

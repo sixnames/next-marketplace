@@ -11,6 +11,7 @@ import Title from 'components/Title';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
+import { useCancelOrderProduct } from 'hooks/mutations/order/useOrderMutations';
 import Image from 'next/image';
 import * as React from 'react';
 
@@ -20,18 +21,19 @@ interface OrderProductProductInterface {
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
   const { showModal } = useAppContext();
-  const { originalName, shopProduct, itemId, price, amount, totalPrice, status } = orderProduct;
+  const { originalName, shopProduct, itemId, price, amount, totalPrice, status, isCanceled } =
+    orderProduct;
   const productImageSrc = shopProduct
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
 
+  const [cancelOrderProductMutation] = useCancelOrderProduct();
+
   return (
     <div
-      className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${
-        status?.isCanceled ? 'opacity-60' : ''
-      }`}
+      className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
     >
       <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
         <Image
@@ -58,7 +60,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
                 <div className='text-red-500 font-medium'>Товар магазина не найден</div>
               )}
             </div>
-            {!status?.isCanceled ? (
+            {!isCanceled ? (
               <div className='mt-4'>
                 <Button
                   size={'small'}
@@ -70,7 +72,9 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
                         testId: 'cancel-order-product-modal',
                         message: `Вы уверенны, что хотите отменть товар ${originalName}?`,
                         confirm: () => {
-                          console.log('confirm');
+                          cancelOrderProductMutation({
+                            orderProductId: `${orderProduct._id}`,
+                          }).catch(console.log);
                         },
                       },
                     });

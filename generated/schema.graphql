@@ -1582,6 +1582,7 @@ Order log variant enum.
 """
 enum OrderLogVariant {
   cancel
+  cancelProduct
   confirm
   status
 }

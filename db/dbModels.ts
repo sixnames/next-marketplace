@@ -437,6 +437,7 @@ export enum OrderLogVariantModel {
   status = 'status',
   confirm = 'confirm',
   cancel = 'cancel',
+  cancelProduct = 'cancelProduct',
 }
 
 export interface OrderLogModel {
@@ -444,6 +445,7 @@ export interface OrderLogModel {
   variant: OrderLogVariantModel;
   userId: ObjectIdModel;
   orderId: ObjectIdModel;
+  productId?: ObjectIdModel;
   prevStatusId?: ObjectIdModel | null;
   statusId: ObjectIdModel;
   createdAt: DateModel;
@@ -494,6 +496,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companyId: ObjectIdModel;
   companyItemId: string;
   reservationDate?: DateModel | null;
+  isCanceled?: boolean;
 }
 
 export interface ProductConnectionItemModel {
@@ -862,6 +865,7 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
+export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
 
 export interface CartPayloadModel {
   success: boolean;

@@ -644,6 +644,8 @@ export interface SsrConfigsInterface {
   /// Catalogue
   mainBannerAutoplaySpeed: number;
   showCardArticle: boolean;
+  stickyNavVisibleCategoriesCount: number;
+  stickyNavVisibleSubCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
   catalogueFilterVisibleAttributesCount: number;

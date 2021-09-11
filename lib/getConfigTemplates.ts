@@ -867,6 +867,38 @@ export function getConfigTemplates({
       companySlug,
       group: 'catalogue',
       variant: 'number' as ConfigVariantModel,
+      slug: 'stickyNavVisibleCategoriesCount',
+      name: 'Количество видимых категорий в выпадающем меню шапки сайта.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['4'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'stickyNavVisibleSubCategoriesCount',
+      name: 'Количество видимых подкатегорий в выпадающем меню шапки сайта.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['5'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
       slug: 'stickyNavVisibleAttributesCount',
       name: 'Количество видимых аттрибутов в выпадающем меню шапки сайта.',
       description: '',

@@ -64,6 +64,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     stickyNavVisibleOptionsCount: 5,
     catalogueFilterVisibleAttributesCount: 5,
     catalogueFilterVisibleOptionsCount: 5,
+    stickyNavVisibleCategoriesCount: 4,
+    stickyNavVisibleSubCategoriesCount: 5,
     snippetAttributesCount: 5,
     cardListFeaturesCount: 5,
     catalogueMetaPrefix: '',

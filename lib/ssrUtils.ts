@@ -632,6 +632,10 @@ export const getSsrConfigs = async ({
     noNaN(getCurrentConfig('snippetAttributesCount')?.singleValue) || 5;
   const stickyNavVisibleAttributesCount =
     noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
+  const stickyNavVisibleCategoriesCount =
+    noNaN(getCurrentConfig('stickyNavVisibleCategoriesCount')?.singleValue) || 4;
+  const stickyNavVisibleSubCategoriesCount =
+    noNaN(getCurrentConfig('stickyNavVisibleSubCategoriesCount')?.singleValue) || 5;
   const stickyNavVisibleOptionsCount =
     noNaN(getCurrentConfig('stickyNavVisibleOptionsCount')?.singleValue) || 5;
   const telegram = getCurrentConfig('telegram')?.singleValue || '';
@@ -651,6 +655,8 @@ export const getSsrConfigs = async ({
     cardMetaPrefix,
     catalogueFilterVisibleAttributesCount,
     catalogueFilterVisibleOptionsCount,
+    stickyNavVisibleCategoriesCount,
+    stickyNavVisibleSubCategoriesCount,
     catalogueMetaPrefix,
     contactEmail,
     contactsContent,

@@ -250,6 +250,7 @@ export type GetFieldLocaleType = (i18nField?: Record<string, string> | null) => 
 export interface GetRequestParamsPayloadInterface {
   locale: string;
   city: string;
+  companySlug: string;
   getI18nLocale<T>(i18nField: Record<string, T>): T;
   getCityData<T>(cityField: Record<string, T>): T;
   getFieldLocale: GetFieldLocaleType;
@@ -263,6 +264,7 @@ export const getRequestParams = async (
 ): Promise<GetRequestParamsPayloadInterface> => {
   const locale = getSessionLocale(context);
   const city = getSessionCity(context);
+  const companySlug = getSessionCompanySlug(context);
 
   function getI18nLocale<T>(i18nField: Record<string, T>): T {
     return getI18nLocaleValue(i18nField, locale);
@@ -313,6 +315,7 @@ export const getRequestParams = async (
   return {
     locale,
     city,
+    companySlug,
     getI18nLocale,
     getFieldLocale,
     getCityData,

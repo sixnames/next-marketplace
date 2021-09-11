@@ -55,7 +55,6 @@ import {
 import { getDatabase } from 'db/mongodb';
 import {
   CityInterface,
-  ConfigInterface,
   PageInterface,
   PagesGroupInterface,
   RubricInterface,
@@ -66,7 +65,14 @@ import {
   SiteLayoutCatalogueCreatedPages,
   SiteLayoutProviderInterface,
 } from 'layout/SiteLayoutProvider';
-import { getCityFieldLocaleString, getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
+import {
+  castConfigs,
+  getConfigBooleanValue,
+  getConfigListValue,
+  getConfigNumberValue,
+  getConfigStringValue,
+} from 'lib/configsUtils';
+import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -551,103 +557,254 @@ export const getSsrConfigs = async ({
     .toArray();
 
   const initialConfigs = [...companyConfigs, ...projectConfigs];
-  const configs = initialConfigs.map((config) => {
-    const value = getCityFieldLocaleString({ cityField: config.cities, city, locale });
-    const singleValue = (value || [])[0];
-    return {
-      ...config,
-      value,
-      singleValue,
-    };
+  const configs = castConfigs({
+    configs: initialConfigs,
+    locale,
+    city,
   });
 
-  const getCurrentConfig = (slug: string): ConfigInterface | undefined => {
-    return configs.find((config) => config.slug === slug);
-  };
-
-  const getConfigBooleanValue = (slug: string): boolean => {
-    const config = getCurrentConfig(slug);
-    return config?.singleValue === 'true';
-  };
-
   // get configs
-  const actualAddress = getCurrentConfig('actualAddress')?.singleValue || '';
-  const androidChrome192 = getCurrentConfig('android-chrome-192x192')?.singleValue || '';
-  const androidChrome512 = getCurrentConfig('android-chrome-512x512')?.singleValue || '';
-  const appleTouchIcon = getCurrentConfig('apple-touch-icon')?.singleValue || '';
-  const cardListFeaturesCount = noNaN(getCurrentConfig('cardListFeaturesCount')?.singleValue) || 5;
-  const cardMetaPrefix = getCurrentConfig('cardMetaPrefix')?.singleValue || '';
+  const actualAddress = getConfigStringValue({
+    configs,
+    slug: 'actualAddress',
+  });
+  const androidChrome192 = getConfigStringValue({
+    configs,
+    slug: 'android-chrome-192x192',
+  });
+  const androidChrome512 = getConfigStringValue({
+    configs,
+    slug: 'android-chrome-512x512',
+  });
+  const appleTouchIcon = getConfigStringValue({
+    configs,
+    slug: 'apple-touch-icon',
+  });
+  const cardListFeaturesCount =
+    getConfigNumberValue({
+      configs,
+      slug: 'cardListFeaturesCount',
+    }) || 5;
+  const cardMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'cardMetaPrefix',
+  });
   const catalogueFilterVisibleAttributesCount =
-    noNaN(getCurrentConfig('catalogueFilterVisibleAttributesCount')?.singleValue) || 10;
+    getConfigNumberValue({
+      configs,
+      slug: 'catalogueFilterVisibleAttributesCount',
+    }) || 10;
   const catalogueFilterVisibleOptionsCount =
-    noNaN(getCurrentConfig('catalogueFilterVisibleOptionsCount')?.singleValue) || 5;
-  const catalogueMetaPrefix = getCurrentConfig('catalogueMetaPrefix')?.singleValue || '';
-  const contactEmail = getCurrentConfig('contactEmail')?.value || [];
-  const contactsContent = getCurrentConfig('contactsContent')?.singleValue || '';
-  const facebook = getCurrentConfig('facebook')?.singleValue || '';
-  const faviconIco = getCurrentConfig('favicon.ico')?.singleValue || '';
-  const googleAnalytics = getCurrentConfig('googleAnalytics')?.singleValue || '';
-  const headerTopBarBgDarkTheme = getCurrentConfig('headerTopBarBgDarkTheme')?.singleValue || '';
-  const headerTopBarTextDarkTheme =
-    getCurrentConfig('headerTopBarTextDarkTheme')?.singleValue || '';
-  const headerTopBarTextLightTheme =
-    getCurrentConfig('headerTopBarTextLightTheme')?.singleValue || '';
-  const iconSvg = getCurrentConfig('icon.svg')?.singleValue || '';
-  const instagram = getCurrentConfig('instagram')?.singleValue || '';
+    getConfigNumberValue({
+      configs,
+      slug: 'catalogueFilterVisibleOptionsCount',
+    }) || 5;
+  const catalogueMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'catalogueMetaPrefix',
+  });
+  const contactEmail = getConfigListValue({
+    configs,
+    slug: 'contactEmail',
+  });
+  const contactsContent = getConfigStringValue({
+    configs,
+    slug: 'contactsContent',
+  });
+  const facebook = getConfigStringValue({
+    configs,
+    slug: 'facebook',
+  });
+  const faviconIco = getConfigStringValue({
+    configs,
+    slug: 'favicon.ico',
+  });
+  const googleAnalytics = getConfigStringValue({
+    configs,
+    slug: 'googleAnalytics',
+  });
+  const headerTopBarBgDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'headerTopBarBgDarkTheme',
+  });
+  const headerTopBarTextDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'headerTopBarTextDarkTheme',
+  });
+  const headerTopBarTextLightTheme = getConfigStringValue({
+    configs,
+    slug: 'headerTopBarTextLightTheme',
+  });
+  const iconSvg = getConfigStringValue({
+    configs,
+    slug: 'icon.svg',
+  });
+  const instagram = getConfigStringValue({
+    configs,
+    slug: 'instagram',
+  });
   const mainBannerAutoplaySpeed =
-    noNaN(getCurrentConfig('mainBannerAutoplaySpeed')?.singleValue) || 5000;
-  const odnoklassniki = getCurrentConfig('odnoklassniki')?.singleValue || '';
-  const pageDefaultDescription = getCurrentConfig('pageDefaultDescription')?.singleValue || '';
-  const pageDefaultPreviewImage = getCurrentConfig('pageDefaultPreviewImage')?.singleValue || '';
-  const pageDefaultTitle = getCurrentConfig('pageDefaultTitle')?.singleValue || '';
-  const phone = getCurrentConfig('phone')?.value || [];
-  const seoText = getCurrentConfig('seoText')?.singleValue || '';
-  const seoTextTitle = getCurrentConfig('seoTextTitle')?.singleValue || '';
-  const showAdultModal = getConfigBooleanValue('showAdultModal');
-  const showBlog = getConfigBooleanValue('showBlog');
-  const showBlogPostViews = getConfigBooleanValue('showBlogPostViews');
-  const showCardArticle = getConfigBooleanValue('showCardArticle');
-  const siteFoundationYear = noNaN(getCurrentConfig('siteFoundationYear')?.singleValue);
-  const siteLogo = getCurrentConfig('siteLogo')?.singleValue || '';
-  const siteLogoDark = getCurrentConfig('siteLogoDark')?.singleValue || '';
-  const siteLogoWidth = getCurrentConfig('siteLogoWidth')?.singleValue || '';
-  const siteMobileLogoWidth = getCurrentConfig('siteMobileLogoWidth')?.singleValue || '';
-  const siteName = getCurrentConfig('siteName')?.singleValue || '';
-  const siteNavBarBgDarkTheme = getCurrentConfig('siteNavBarBgDarkTheme')?.singleValue || '';
-  const siteNavBarBgLightTheme = getCurrentConfig('siteNavBarBgLightTheme')?.singleValue || '';
-  const siteNavBarTextDarkTheme = getCurrentConfig('siteNavBarTextDarkTheme')?.singleValue || '';
-  const siteNavBarTextLightTheme = getCurrentConfig('siteNavBarTextLightTheme')?.singleValue || '';
-  const siteNavDropdownAttributeDarkTheme =
-    getCurrentConfig('siteNavDropdownAttributeDarkTheme')?.singleValue || '';
-  const siteNavDropdownAttributeLightTheme =
-    getCurrentConfig('siteNavDropdownAttributeLightTheme')?.singleValue || '';
-  const siteNavDropdownBgDarkTheme =
-    getCurrentConfig('siteNavDropdownBgDarkTheme')?.singleValue || '';
-  const siteNavDropdownBgLightTheme =
-    getCurrentConfig('siteNavDropdownBgLightTheme')?.singleValue || '';
-  const siteNavDropdownTextDarkTheme =
-    getCurrentConfig('siteNavDropdownTextDarkTheme')?.singleValue || '';
-  const siteNavDropdownTextLightTheme =
-    getCurrentConfig('siteNavDropdownTextLightTheme')?.singleValue || '';
-  const siteThemeColor = getCurrentConfig('siteThemeColor')?.singleValue || '';
-  const siteTopBarBgLightTheme = getCurrentConfig('siteTopBarBgLightTheme')?.singleValue || '';
+    getConfigNumberValue({
+      configs,
+      slug: 'mainBannerAutoplaySpeed',
+    }) || 5000;
+  const odnoklassniki = getConfigStringValue({
+    configs,
+    slug: 'odnoklassniki',
+  });
+  const pageDefaultDescription = getConfigStringValue({
+    configs,
+    slug: 'pageDefaultDescription',
+  });
+  const pageDefaultPreviewImage = getConfigStringValue({
+    configs,
+    slug: 'pageDefaultPreviewImage',
+  });
+  const pageDefaultTitle = getConfigStringValue({
+    configs,
+    slug: 'pageDefaultTitle',
+  });
+  const phone = getConfigListValue({
+    configs,
+    slug: 'phone',
+  });
+  const seoText = getConfigStringValue({
+    configs,
+    slug: 'seoText',
+  });
+  const seoTextTitle = getConfigStringValue({
+    configs,
+    slug: 'seoTextTitle',
+  });
+  const showAdultModal = getConfigBooleanValue({ configs, slug: 'showAdultModal' });
+  const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
+  const showBlogPostViews = getConfigBooleanValue({ configs, slug: 'showBlogPostViews' });
+  const showCardArticle = getConfigBooleanValue({ configs, slug: 'showCardArticle' });
+  const siteFoundationYear = getConfigNumberValue({
+    configs,
+    slug: 'siteFoundationYear',
+  });
+  const siteLogo = getConfigStringValue({
+    configs,
+    slug: 'siteLogo',
+  });
+  const siteLogoDark = getConfigStringValue({
+    configs,
+    slug: 'siteLogoDark',
+  });
+  const siteLogoWidth = getConfigStringValue({
+    configs,
+    slug: 'siteLogoWidth',
+  });
+  const siteMobileLogoWidth = getConfigStringValue({
+    configs,
+    slug: 'siteMobileLogoWidth',
+  });
+  const siteName = getConfigStringValue({
+    configs,
+    slug: 'siteName',
+  });
+  const siteNavBarBgDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavBarBgDarkTheme',
+  });
+  const siteNavBarBgLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavBarBgLightTheme',
+  });
+  const siteNavBarTextDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavBarTextDarkTheme',
+  });
+  const siteNavBarTextLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavBarTextLightTheme',
+  });
+  const siteNavDropdownAttributeDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownAttributeDarkTheme',
+  });
+  const siteNavDropdownAttributeLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownAttributeLightTheme',
+  });
+  const siteNavDropdownBgDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownBgDarkTheme',
+  });
+  const siteNavDropdownBgLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownBgLightTheme',
+  });
+  const siteNavDropdownTextDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownTextDarkTheme',
+  });
+  const siteNavDropdownTextLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteNavDropdownTextLightTheme',
+  });
+  const siteThemeColor = getConfigStringValue({
+    configs,
+    slug: 'siteThemeColor',
+  });
+  const siteTopBarBgLightTheme = getConfigStringValue({
+    configs,
+    slug: 'siteTopBarBgLightTheme',
+  });
   const snippetAttributesCount =
-    noNaN(getCurrentConfig('snippetAttributesCount')?.singleValue) || 5;
+    getConfigNumberValue({
+      configs,
+      slug: 'snippetAttributesCount',
+    }) || 5;
   const stickyNavVisibleAttributesCount =
-    noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
+    getConfigNumberValue({
+      configs,
+      slug: 'stickyNavVisibleAttributesCount',
+    }) || 5;
   const stickyNavVisibleCategoriesCount =
-    noNaN(getCurrentConfig('stickyNavVisibleCategoriesCount')?.singleValue) || 4;
+    getConfigNumberValue({
+      configs,
+      slug: 'stickyNavVisibleCategoriesCount',
+    }) || 4;
   const stickyNavVisibleSubCategoriesCount =
-    noNaN(getCurrentConfig('stickyNavVisibleSubCategoriesCount')?.singleValue) || 5;
+    getConfigNumberValue({
+      configs,
+      slug: 'stickyNavVisibleSubCategoriesCount',
+    }) || 5;
   const stickyNavVisibleOptionsCount =
-    noNaN(getCurrentConfig('stickyNavVisibleOptionsCount')?.singleValue) || 5;
-  const telegram = getCurrentConfig('telegram')?.singleValue || '';
-  const twitter = getCurrentConfig('twitter')?.singleValue || '';
-  const useUniqueConstructor = getConfigBooleanValue('useUniqueConstructor');
-  const vkontakte = getCurrentConfig('vkontakte')?.singleValue || '';
-  const yaMetrica = getCurrentConfig('yaMetrica')?.singleValue || '';
-  const yaVerification = getCurrentConfig('yaVerification')?.singleValue || '';
-  const youtube = getCurrentConfig('youtube')?.singleValue || '';
+    getConfigNumberValue({
+      configs,
+      slug: 'stickyNavVisibleOptionsCount',
+    }) || 5;
+  const telegram = getConfigStringValue({
+    configs,
+    slug: 'telegram',
+  });
+  const twitter = getConfigStringValue({
+    configs,
+    slug: 'twitter',
+  });
+  const useUniqueConstructor = getConfigBooleanValue({
+    configs,
+    slug: 'useUniqueConstructor',
+  });
+  const vkontakte = getConfigStringValue({
+    configs,
+    slug: 'vkontakte',
+  });
+  const yaMetrica = getConfigStringValue({
+    configs,
+    slug: 'yaMetrica',
+  });
+  const yaVerification = getConfigStringValue({
+    configs,
+    slug: 'yaVerification',
+  });
+  const youtube = getConfigStringValue({
+    configs,
+    slug: 'youtube',
+  });
 
   return {
     actualAddress,

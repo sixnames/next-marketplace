@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'config/common';
 import {
   AlgoliaShopProductInterface,
   deleteAlgoliaObjects,
@@ -380,7 +380,7 @@ export const ShopMutations = extendType({
                 address: {
                   formattedAddress: values.address.formattedAddress,
                   point: {
-                    type: 'Point',
+                    type: GEO_POINT_TYPE,
                     coordinates: [values.address.point.lng, values.address.point.lat],
                   },
                 },

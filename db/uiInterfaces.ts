@@ -637,11 +637,15 @@ export interface SsrConfigsInterface {
   pageDefaultTitle: string;
   pageDefaultDescription: string;
   seoTextTitle: string;
+  actualAddress: string;
+  contactsContent: string;
   seoText: string;
 
   /// Catalogue
   mainBannerAutoplaySpeed: number;
   showCardArticle: boolean;
+  stickyNavVisibleCategoriesCount: number;
+  stickyNavVisibleSubCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
   catalogueFilterVisibleAttributesCount: number;

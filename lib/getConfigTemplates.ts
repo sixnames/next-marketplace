@@ -14,6 +14,7 @@ export interface GetConfigTemplatesInterface {
   email?: string[];
   companySlug: string;
   foundationYear?: string;
+  address?: string;
 }
 
 export function getConfigTemplates({
@@ -23,6 +24,7 @@ export function getConfigTemplates({
   email,
   companySlug,
   foundationYear = `${new Date().getFullYear()}`,
+  address,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   const objectStorageDomain = `${process.env.OBJECT_STORAGE_DOMAIN}`;
 
@@ -612,6 +614,38 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'address' as ConfigVariantModel,
+      slug: 'actualAddress',
+      name: 'Фактический адрес компании',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [address || '{}'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'constructor' as ConfigVariantModel,
+      slug: 'contactsContent',
+      name: 'Контент на странице контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [PAGE_EDITOR_DEFAULT_VALUE_STRING],
+        },
+      },
+    },
 
     // SEO
     {
@@ -825,6 +859,38 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'stickyNavVisibleCategoriesCount',
+      name: 'Количество видимых категорий в выпадающем меню шапки сайта.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['4'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: 'number' as ConfigVariantModel,
+      slug: 'stickyNavVisibleSubCategoriesCount',
+      name: 'Количество видимых подкатегорий в выпадающем меню шапки сайта.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['5'],
         },
       },
     },

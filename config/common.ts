@@ -1,6 +1,11 @@
 // ID Counters
 import { Value } from '@react-page/editor';
-import { GenderModel, OrderLogVariantModel, PageStateModel } from '../db/dbModels';
+import {
+  ConfigVariantModel,
+  GenderModel,
+  OrderLogVariantModel,
+  PageStateModel,
+} from '../db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
@@ -75,17 +80,17 @@ export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
 export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
 export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
-export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 // Configs
-export const CONFIG_VARIANT_STRING = 'string';
-export const CONFIG_VARIANT_NUMBER = 'number';
-export const CONFIG_VARIANT_PHONE = 'tel';
-export const CONFIG_VARIANT_EMAIL = 'email';
-export const CONFIG_VARIANT_ASSET = 'asset';
-export const CONFIG_VARIANT_BOOLEAN = 'boolean';
-export const CONFIG_VARIANT_CONSTRUCTOR = 'constructor';
-export const CONFIG_VARIANT_COLOR = 'color';
+export const CONFIG_VARIANT_STRING = 'string' as ConfigVariantModel;
+export const CONFIG_VARIANT_NUMBER = 'number' as ConfigVariantModel;
+export const CONFIG_VARIANT_PHONE = 'tel' as ConfigVariantModel;
+export const CONFIG_VARIANT_EMAIL = 'email' as ConfigVariantModel;
+export const CONFIG_VARIANT_ASSET = 'asset' as ConfigVariantModel;
+export const CONFIG_VARIANT_BOOLEAN = 'boolean' as ConfigVariantModel;
+export const CONFIG_VARIANT_CONSTRUCTOR = 'constructor' as ConfigVariantModel;
+export const CONFIG_VARIANT_COLOR = 'color' as ConfigVariantModel;
+export const CONFIG_VARIANT_ADDRESS = 'address' as ConfigVariantModel;
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -96,6 +101,7 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_BOOLEAN,
   CONFIG_VARIANT_CONSTRUCTOR,
   CONFIG_VARIANT_COLOR,
+  CONFIG_VARIANT_ADDRESS,
 ];
 
 export const CONFIG_GROUP_GLOBALS = 'globals';

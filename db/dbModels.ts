@@ -1,3 +1,4 @@
+import { GEO_POINT_TYPE } from 'config/common';
 import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
@@ -63,7 +64,7 @@ export interface FormattedPhoneModel {
 
 export interface PointGeoJSONModel {
   // Field that specifies the GeoJSON object type.
-  type: 'Point';
+  type: typeof GEO_POINT_TYPE;
 
   // Coordinates that specifies the object’s coordinates.
   // If specifying latitude and longitude coordinates,
@@ -308,6 +309,7 @@ export enum ConfigVariantModel {
   boolean = 'boolean',
   color = 'color',
   constructor = 'constructor',
+  address = 'address',
 }
 
 // I18n model. Each key is locale with value for current locale

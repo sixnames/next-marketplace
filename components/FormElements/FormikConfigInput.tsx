@@ -2,24 +2,35 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import ButtonCross from 'components/ButtonCross';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
+import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
 import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import PageEditor from 'components/PageEditor';
 import Tooltip from 'components/Tooltip';
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import {
+  CONFIG_VARIANT_ADDRESS,
+  CONFIG_VARIANT_BOOLEAN,
+  CONFIG_VARIANT_CONSTRUCTOR,
+  CONFIG_VARIANT_NUMBER,
+  CONFIG_VARIANT_STRING,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+  GEO_POINT_TYPE,
+} from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
+import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import { useUpdateConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
+import { GeocodeResultInterface } from 'lib/geocode';
 import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
@@ -203,9 +214,12 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
     schema: updateConfigSchema,
   });
   const { slug: configSlug, name, cities: configCities, _id, multi, description, variant } = config;
-  const initialType = variant === 'string' ? 'text' : variant;
+  const initialType = variant === CONFIG_VARIANT_STRING ? 'text' : variant;
   const type = initialType as InputType;
-  const isConstructor = variant === 'constructor';
+  const isConstructor = variant === CONFIG_VARIANT_CONSTRUCTOR;
+  const isBoolean = variant === CONFIG_VARIANT_BOOLEAN;
+  const isAddress = variant === CONFIG_VARIANT_ADDRESS;
+  const isNumber = variant === CONFIG_VARIANT_NUMBER;
 
   const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
     const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
@@ -214,18 +228,41 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
     }
     acc[cityKey] = Object.keys(cityLocales).reduce((localesAcc: JSONObjectModel, localeKey) => {
       const locale = cityLocales[localeKey] as string[];
-
       if (!locale) {
         return localesAcc;
       }
 
-      if (variant === 'number') {
+      if (isNumber) {
         localesAcc[localeKey] = locale.map((value) => noNaN(value));
         return localesAcc;
       }
 
-      if (variant === 'boolean') {
+      if (isBoolean) {
         localesAcc[localeKey] = locale.map((value) => value === 'true');
+        return localesAcc;
+      }
+
+      if (isAddress) {
+        const value = locale[0];
+        if (!value) {
+          localesAcc[localeKey] = [];
+          return localesAcc;
+        }
+
+        const parsedValue = JSON.parse(value) as AddressModel;
+        if (!parsedValue?.formattedAddress || !parsedValue?.point) {
+          localesAcc[localeKey] = [];
+          return localesAcc;
+        }
+
+        const geocodeResult: GeocodeResultInterface = {
+          formattedAddress: parsedValue.formattedAddress,
+          point: {
+            lat: parsedValue.point.coordinates[1],
+            lng: parsedValue.point.coordinates[0],
+          },
+        };
+        localesAcc[localeKey] = [geocodeResult];
         return localesAcc;
       }
 
@@ -267,12 +304,28 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
                   }
 
                   const localeValue = alwaysArray(localeValueArray).map((value) => {
-                    if (config.variant === 'boolean') {
+                    if (isBoolean) {
                       if (!value) {
                         return 'false';
                       }
                       return `${value}`;
                     }
+
+                    if (isAddress) {
+                      if (!value) {
+                        return '{}';
+                      }
+                      const initialValue = value as GeocodeResultInterface;
+                      const finalValue: AddressModel = {
+                        formattedAddress: initialValue.formattedAddress,
+                        point: {
+                          type: GEO_POINT_TYPE,
+                          coordinates: [initialValue.point.lng, initialValue.point.lat],
+                        },
+                      };
+                      return JSON.stringify(finalValue);
+                    }
+
                     return `${value}`;
                   });
                   localeAcc[localeKey] = localeValue;
@@ -297,9 +350,74 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => 
       config.name,
       config.slug,
       config.variant,
+      isAddress,
+      isBoolean,
       updateConfigMutation,
     ],
   );
+
+  if (isAddress) {
+    return (
+      <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
+        <div
+          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          data-cy={`${configSlug}-config-name`}
+        >
+          <span>{name}</span>
+          {description ? (
+            <React.Fragment>
+              {' '}
+              <Tooltip title={description}>
+                <div className='inline-block cursor-pointer ml-3'>
+                  <Icon className='w-5 h-5' name={'question-circle'} />
+                </div>
+              </Tooltip>
+            </React.Fragment>
+          ) : null}
+        </div>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            updateConfigMutationHandler(values);
+          }}
+        >
+          {() => {
+            const fieldName = `cities.${DEFAULT_CITY}.${DEFAULT_LOCALE}[0]`;
+
+            return (
+              <Form>
+                {cities.map(({ name, slug }) => {
+                  const cityTestId = `${configSlug}-${slug}`;
+                  return (
+                    <Accordion
+                      isOpen={slug === DEFAULT_CITY}
+                      testId={cityTestId}
+                      title={`${name}`}
+                      key={slug}
+                    >
+                      <div className='ml-8 pt-[var(--lineGap-200)]'>
+                        <FormikAddressInput name={fieldName} />
+                      </div>
+                    </Accordion>
+                  );
+                })}
+                <div className='flex mb-12 mt-4'>
+                  <Button
+                    theme={'secondary'}
+                    size={'small'}
+                    type={'submit'}
+                    testId={`${configSlug}-submit`}
+                  >
+                    Сохранить
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+    );
+  }
 
   if (isConstructor) {
     return (

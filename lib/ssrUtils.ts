@@ -542,6 +542,9 @@ export const getSsrConfigs = async ({
             $ne: CONFIG_GROUP_PROJECT,
           },
           companySlug: companySlug || DEFAULT_COMPANY_SLUG,
+          slug: {
+            $nin: ['smsApiKey', 'smsApiEmail', 'emailApiHost', 'emailApiLogin', 'emailApiPassword'],
+          },
         },
       },
     ])

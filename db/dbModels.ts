@@ -310,6 +310,7 @@ export enum ConfigVariantModel {
   color = 'color',
   constructor = 'constructor',
   address = 'address',
+  password = 'password',
 }
 
 // I18n model. Each key is locale with value for current locale

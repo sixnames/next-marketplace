@@ -31,7 +31,7 @@ export const sendEmail = async ({
     const emailApiConfigs = await configsCollection
       .find({
         slug: {
-          $in: ['emailApiHost', 'emailApiLogin', 'emailApiPassword'],
+          $in: ['emailApiHost', 'emailApiLogin', 'emailApiPassword', 'siteName'],
         },
         companySlug,
       })
@@ -53,6 +53,10 @@ export const sendEmail = async ({
       configs,
       slug: 'emailApiPassword',
     });
+    const siteName = getConfigStringValue({
+      configs,
+      slug: 'siteName',
+    });
     if (!emailApiHost || !emailApiLogin || !emailApiPassword) {
       return;
     }
@@ -70,7 +74,7 @@ export const sendEmail = async ({
 
     // send mail with defined transport object
     await transporter.sendMail({
-      from: `<${emailApiLogin}>`, // sender address '"Fred Foo 👻" <foo@example.com>'
+      from: `${siteName ? `"${siteName}" ` : ''}<${emailApiLogin}>`, // sender address '"Fred Foo 👻" <foo@example.com>'
       to, // list of receivers
       subject, // Subject line
       text, // plain text body

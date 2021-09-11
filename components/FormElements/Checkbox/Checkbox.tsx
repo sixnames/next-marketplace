@@ -27,7 +27,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   const disabledClassName = disabled
     ? 'opacity-60 pointer-events-none secondary-text'
     : 'text-theme';
-  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-secondary overflow-hidden cursor-pointer ${additionalClassName} ${errorClassName} ${disabledClassName}`;
+  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-checkbox overflow-hidden cursor-pointer ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
   return (
     <label className={checkboxClassName}>

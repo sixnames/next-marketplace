@@ -1,18 +1,20 @@
-name: Deploy to the stage
+name: Deploy to the Winepoint
 
 on:
-  pull_request:
-    branches: [ develop ]
+  workflow_dispatch:
+    types: [opened, deleted]
+  push:
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: deploy
+      - name: Winepoint
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www/stage && git pull && yarn install && yarn build && pm2 reload stage
+          command: cd www/winepoint && git pull && yarn install && yarn build && pm2 reload wp
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

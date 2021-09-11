@@ -168,7 +168,9 @@ export function generateTitle({
       const separator = optionResult.length > 0 && acc.length > 0 ? [titleSeparator] : [];
       return [...acc, ...separator, ...optionResult];
     }, []);
-    const initialAttributeValue = `${attributeName}${arrayValue.join(' ')}${metricValue}`;
+    const initialAttributeValue = `${attributeName.toLowerCase()}${arrayValue.join(
+      ' ',
+    )}${metricValue}`;
     const value = capitalise ? initialAttributeValue : initialAttributeValue.toLocaleLowerCase();
 
     // price

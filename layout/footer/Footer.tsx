@@ -28,6 +28,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const odnoklassnikiLink = configs.odnoklassniki;
   const youtubeLink = configs.youtube;
   const twitterLink = configs.twitter;
+  const telegramLink = configs.telegram;
   const showBlog = configs.showBlog;
   const showSocials =
     facebookLink ||
@@ -35,6 +36,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
     vkontakteLink ||
     odnoklassnikiLink ||
     youtubeLink ||
+    telegramLink ||
     twitterLink;
 
   const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
@@ -73,6 +75,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                   odnoklassnikiLink={odnoklassnikiLink}
                   youtubeLink={youtubeLink}
                   twitterLink={twitterLink}
+                  telegramLink={telegramLink}
                 />
               </div>
             ) : null}

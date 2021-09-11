@@ -194,7 +194,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '15 000 – 30 00',
+          ru: '15 000 – 30 000',
         },
         slug: `15000_30000`,
       },

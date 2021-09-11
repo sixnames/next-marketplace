@@ -2,6 +2,7 @@ import {
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
   DEFAULT_CITY,
+  GEO_POINT_TYPE,
 } from '../../../../config/common';
 import { ShopModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -40,7 +41,7 @@ const shops: ShopModel[] = [
     address: {
       formattedAddress: 'Ходынский бульвар, 20а, Москва, Россия, 125252',
       point: {
-        type: 'Point',
+        type: GEO_POINT_TYPE,
         coordinates: [37.5228921272735, 55.790804890785395],
       },
     },
@@ -73,7 +74,7 @@ const shops: ShopModel[] = [
     address: {
       formattedAddress: 'улица Пятницкая, 27а, Москва, Russia',
       point: {
-        type: 'Point',
+        type: GEO_POINT_TYPE,
         coordinates: [37.62867021460195, 55.74116803925581],
       },
     },
@@ -108,7 +109,7 @@ const shops: ShopModel[] = [
     address: {
       formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
       point: {
-        type: 'Point',
+        type: GEO_POINT_TYPE,
         coordinates: [37.522890631943376, 55.79065483867902],
       },
     },
@@ -143,7 +144,7 @@ const shops: ShopModel[] = [
     address: {
       formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
       point: {
-        type: 'Point',
+        type: GEO_POINT_TYPE,
         coordinates: [37.522890631943376, 55.79065483867902],
       },
     },

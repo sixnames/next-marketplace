@@ -1,3 +1,4 @@
+import { GEO_POINT_TYPE } from 'config/common';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { updateCompanyDomain } from 'lib/companyUtils';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
@@ -800,7 +801,7 @@ export const CompanyMutations = extendType({
               address: {
                 formattedAddress: values.address.formattedAddress,
                 point: {
-                  type: 'Point',
+                  type: GEO_POINT_TYPE,
                   coordinates: [values.address.point.lng, values.address.point.lat],
                 },
               },

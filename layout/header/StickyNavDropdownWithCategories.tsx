@@ -78,6 +78,9 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
 }) => {
   const { categories, name, icon } = category;
   const categoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+  const { configs } = useConfigContext();
+  const stickyNavVisibleSubCategoriesCount = configs.stickyNavVisibleSubCategoriesCount;
+
   return (
     <div className='flex flex-col'>
       <div style={attributeStyle} className='flex items-center pb-1 font-medium'>
@@ -99,22 +102,25 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
         </Link>
       </div>
       <ul className='flex-grow flex flex-col'>
-        {(categories || []).map((childCategory) => {
+        {(categories || []).map((childCategory, index) => {
           const childCategoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`;
-          return (
-            <li key={`${childCategory._id}`}>
-              <Link
-                onClick={hideDropdown}
-                style={attributeLinkStyle}
-                testId={`header-nav-dropdown-option`}
-                prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
-                className='flex items-center py-1 text-secondary-text'
-              >
-                {childCategory.name}
-              </Link>
-            </li>
-          );
+          if (index < stickyNavVisibleSubCategoriesCount) {
+            return (
+              <li key={`${childCategory._id}`}>
+                <Link
+                  onClick={hideDropdown}
+                  style={attributeLinkStyle}
+                  testId={`header-nav-dropdown-option`}
+                  prefetch={false}
+                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
+                  className='flex items-center py-1 text-secondary-text'
+                >
+                  {childCategory.name}
+                </Link>
+              </li>
+            );
+          }
+          return null;
         })}
       </ul>
     </div>
@@ -130,22 +136,29 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   categories,
   hideDropdown,
 }) => {
+  const { configs } = useConfigContext();
+  const stickyNavVisibleCategoriesCount = configs.stickyNavVisibleCategoriesCount;
+
   return (
     <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
       <Inner>
         <div className='grid grid-cols-6'>
           <div className='grid gap-x-4 gap-y-8 grid-cols-4 col-span-4 border-r border-border-300 pr-8'>
-            {(categories || []).map((category) => {
-              return (
-                <StickyNavCategory
-                  hideDropdown={hideDropdown}
-                  key={`${category._id}`}
-                  category={category}
-                  rubricSlug={rubricSlug}
-                  attributeStyle={attributeStyle}
-                  attributeLinkStyle={attributeLinkStyle}
-                />
-              );
+            {(categories || []).map((category, index) => {
+              if (index < stickyNavVisibleCategoriesCount) {
+                return (
+                  <StickyNavCategory
+                    hideDropdown={hideDropdown}
+                    key={`${category._id}`}
+                    category={category}
+                    rubricSlug={rubricSlug}
+                    attributeStyle={attributeStyle}
+                    attributeLinkStyle={attributeLinkStyle}
+                  />
+                );
+              }
+
+              return null;
             })}
           </div>
           <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2'>

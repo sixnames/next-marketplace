@@ -1,4 +1,8 @@
 import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LOCALE } from 'config/common';
+import { COL_CONFIGS } from 'db/collectionNames';
+import { ConfigModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import fetch from 'node-fetch';
 import qs from 'qs';
@@ -7,12 +11,44 @@ interface SmsSenderInterface {
   text: string;
   sign: string;
   numbers: string[];
+  companySlug: string;
+  city: string;
+  locale: string;
 }
 
-export async function smsSender({ text, sign, numbers }: SmsSenderInterface) {
+export async function smsSender({
+  text,
+  sign,
+  numbers,
+  companySlug,
+  city,
+  locale,
+}: SmsSenderInterface) {
   try {
-    const apiKey = process.env.SMS_API_KEY;
-    const apiEmail = process.env.SMS_API_EMAIL;
+    // get sms api configs for current company
+    const { db } = await getDatabase();
+    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const smsApiConfigs = await configsCollection
+      .find({
+        slug: {
+          $in: ['smsApiKey', 'smsApiEmail'],
+        },
+        companySlug,
+      })
+      .toArray();
+    const configs = castConfigs({
+      configs: smsApiConfigs,
+      locale,
+      city,
+    });
+    const apiKey = getConfigStringValue({
+      configs,
+      slug: 'emailApiHost',
+    });
+    const apiEmail = getConfigStringValue({
+      configs,
+      slug: 'emailApiLogin',
+    });
     if (!apiKey || !apiEmail || numbers.length < 1) {
       return;
     }
@@ -37,23 +73,25 @@ export async function smsSender({ text, sign, numbers }: SmsSenderInterface) {
     const finalParamsAsString = finalParamsArray.join('&');
 
     const url = `https://${apiEmail}:${apiKey}@gate.smsaero.ru/v2/sms/send?${finalParamsAsString}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    console.log(json);
+    await fetch(url);
   } catch (e) {
     console.log(`smsSender Error`);
     console.log(e);
   }
 }
 
-interface SendSmsInterface {
-  locale: string;
-  sign: string;
+interface SendSmsInterface extends Omit<SmsSenderInterface, 'text'> {
   orderId: string;
-  numbers: string[];
 }
 
-export async function sendNewOrderSms({ locale, sign, orderId, numbers }: SendSmsInterface) {
+export async function sendNewOrderSms({
+  locale,
+  sign,
+  orderId,
+  numbers,
+  city,
+  companySlug,
+}: SendSmsInterface) {
   const messageI18n = {
     [DEFAULT_LOCALE]: `№${orderId}`,
     [SECONDARY_LOCALE]: `№${orderId}`,
@@ -67,5 +105,8 @@ export async function sendNewOrderSms({ locale, sign, orderId, numbers }: SendSm
     text,
     sign,
     numbers,
+    locale,
+    city,
+    companySlug,
   });
 }

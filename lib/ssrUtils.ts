@@ -567,143 +567,141 @@ export const getSsrConfigs = async ({
     return config?.singleValue === 'true';
   };
 
-  // Site globals
-  const siteName = getCurrentConfig('siteName')?.singleValue || '';
-  const siteFoundationYear = noNaN(getCurrentConfig('siteFoundationYear')?.singleValue);
-  const yaVerification = getCurrentConfig('yaVerification')?.singleValue || '';
-  const yaMetrica = getCurrentConfig('yaMetrica')?.singleValue || '';
-  const googleAnalytics = getCurrentConfig('googleAnalytics')?.singleValue || '';
-
-  // Site ui
-  const siteLogo = getCurrentConfig('siteLogo')?.singleValue || '';
-  const siteLogoDark = getCurrentConfig('siteLogoDark')?.singleValue || '';
-  const siteLogoWidth = getCurrentConfig('siteLogoWidth')?.singleValue || '';
-  const siteMobileLogoWidth = getCurrentConfig('siteMobileLogoWidth')?.singleValue || '';
-  const siteThemeColor = getCurrentConfig('siteThemeColor')?.singleValue || '';
-  const siteTopBarBgLightTheme = getCurrentConfig('siteTopBarBgLightTheme')?.singleValue || '';
-  const headerTopBarBgDarkTheme = getCurrentConfig('headerTopBarBgDarkTheme')?.singleValue || '';
-  const headerTopBarTextLightTheme =
-    getCurrentConfig('headerTopBarTextLightTheme')?.singleValue || '';
-  const headerTopBarTextDarkTheme =
-    getCurrentConfig('headerTopBarTextDarkTheme')?.singleValue || '';
-  const siteNavBarBgLightTheme = getCurrentConfig('siteNavBarBgLightTheme')?.singleValue || '';
-  const siteNavBarBgDarkTheme = getCurrentConfig('siteNavBarBgDarkTheme')?.singleValue || '';
-  const siteNavBarTextLightTheme = getCurrentConfig('siteNavBarTextLightTheme')?.singleValue || '';
-  const siteNavBarTextDarkTheme = getCurrentConfig('siteNavBarTextDarkTheme')?.singleValue || '';
-  const siteNavDropdownBgLightTheme =
-    getCurrentConfig('siteNavDropdownBgLightTheme')?.singleValue || '';
-  const siteNavDropdownBgDarkTheme =
-    getCurrentConfig('siteNavDropdownBgDarkTheme')?.singleValue || '';
-  const siteNavDropdownTextLightTheme =
-    getCurrentConfig('siteNavDropdownTextLightTheme')?.singleValue || '';
-  const siteNavDropdownTextDarkTheme =
-    getCurrentConfig('siteNavDropdownTextDarkTheme')?.singleValue || '';
-  const siteNavDropdownAttributeLightTheme =
-    getCurrentConfig('siteNavDropdownAttributeLightTheme')?.singleValue || '';
-  const siteNavDropdownAttributeDarkTheme =
-    getCurrentConfig('siteNavDropdownAttributeDarkTheme')?.singleValue || '';
-  const showAdultModal = getConfigBooleanValue('showAdultModal');
-  const showBlog = getConfigBooleanValue('showBlog');
-  const showBlogPostViews = getConfigBooleanValue('showBlogPostViews');
-
-  // Contacts
-  const contactEmail = getCurrentConfig('contactEmail')?.value || [];
-  const phone = getCurrentConfig('phone')?.value || [];
-  const facebook = getCurrentConfig('facebook')?.singleValue || '';
-  const instagram = getCurrentConfig('instagram')?.singleValue || '';
-  const vkontakte = getCurrentConfig('vkontakte')?.singleValue || '';
-  const odnoklassniki = getCurrentConfig('odnoklassniki')?.singleValue || '';
-  const youtube = getCurrentConfig('youtube')?.singleValue || '';
-  const twitter = getCurrentConfig('twitter')?.singleValue || '';
-  const telegram = getCurrentConfig('telegram')?.singleValue || '';
-  const pageDefaultPreviewImage = getCurrentConfig('pageDefaultPreviewImage')?.singleValue || '';
+  // get configs
+  const actualAddress = getCurrentConfig('actualAddress')?.singleValue || '';
   const androidChrome192 = getCurrentConfig('android-chrome-192x192')?.singleValue || '';
   const androidChrome512 = getCurrentConfig('android-chrome-512x512')?.singleValue || '';
   const appleTouchIcon = getCurrentConfig('apple-touch-icon')?.singleValue || '';
-  const faviconIco = getCurrentConfig('favicon.ico')?.singleValue || '';
-  const iconSvg = getCurrentConfig('icon.svg')?.singleValue || '';
-  const pageDefaultTitle = getCurrentConfig('pageDefaultTitle')?.singleValue || '';
-  const pageDefaultDescription = getCurrentConfig('pageDefaultDescription')?.singleValue || '';
-  const seoTextTitle = getCurrentConfig('seoTextTitle')?.singleValue || '';
-  const seoText = getCurrentConfig('seoText')?.singleValue || '';
-
-  /// Catalogue
-  const mainBannerAutoplaySpeed =
-    noNaN(getCurrentConfig('mainBannerAutoplaySpeed')?.singleValue) || 5000;
-  const showCardArticle = getConfigBooleanValue('showCardArticle');
-  const useUniqueConstructor = getConfigBooleanValue('useUniqueConstructor');
-  const stickyNavVisibleAttributesCount =
-    noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
-  const stickyNavVisibleOptionsCount =
-    noNaN(getCurrentConfig('stickyNavVisibleOptionsCount')?.singleValue) || 5;
+  const cardListFeaturesCount = noNaN(getCurrentConfig('cardListFeaturesCount')?.singleValue) || 5;
+  const cardMetaPrefix = getCurrentConfig('cardMetaPrefix')?.singleValue || '';
   const catalogueFilterVisibleAttributesCount =
     noNaN(getCurrentConfig('catalogueFilterVisibleAttributesCount')?.singleValue) || 10;
   const catalogueFilterVisibleOptionsCount =
     noNaN(getCurrentConfig('catalogueFilterVisibleOptionsCount')?.singleValue) || 5;
+  const catalogueMetaPrefix = getCurrentConfig('catalogueMetaPrefix')?.singleValue || '';
+  const contactEmail = getCurrentConfig('contactEmail')?.value || [];
+  const contactsContent = getCurrentConfig('contactsContent')?.singleValue || '';
+  const facebook = getCurrentConfig('facebook')?.singleValue || '';
+  const faviconIco = getCurrentConfig('favicon.ico')?.singleValue || '';
+  const googleAnalytics = getCurrentConfig('googleAnalytics')?.singleValue || '';
+  const headerTopBarBgDarkTheme = getCurrentConfig('headerTopBarBgDarkTheme')?.singleValue || '';
+  const headerTopBarTextDarkTheme =
+    getCurrentConfig('headerTopBarTextDarkTheme')?.singleValue || '';
+  const headerTopBarTextLightTheme =
+    getCurrentConfig('headerTopBarTextLightTheme')?.singleValue || '';
+  const iconSvg = getCurrentConfig('icon.svg')?.singleValue || '';
+  const instagram = getCurrentConfig('instagram')?.singleValue || '';
+  const mainBannerAutoplaySpeed =
+    noNaN(getCurrentConfig('mainBannerAutoplaySpeed')?.singleValue) || 5000;
+  const odnoklassniki = getCurrentConfig('odnoklassniki')?.singleValue || '';
+  const pageDefaultDescription = getCurrentConfig('pageDefaultDescription')?.singleValue || '';
+  const pageDefaultPreviewImage = getCurrentConfig('pageDefaultPreviewImage')?.singleValue || '';
+  const pageDefaultTitle = getCurrentConfig('pageDefaultTitle')?.singleValue || '';
+  const phone = getCurrentConfig('phone')?.value || [];
+  const seoText = getCurrentConfig('seoText')?.singleValue || '';
+  const seoTextTitle = getCurrentConfig('seoTextTitle')?.singleValue || '';
+  const showAdultModal = getConfigBooleanValue('showAdultModal');
+  const showBlog = getConfigBooleanValue('showBlog');
+  const showBlogPostViews = getConfigBooleanValue('showBlogPostViews');
+  const showCardArticle = getConfigBooleanValue('showCardArticle');
+  const siteFoundationYear = noNaN(getCurrentConfig('siteFoundationYear')?.singleValue);
+  const siteLogo = getCurrentConfig('siteLogo')?.singleValue || '';
+  const siteLogoDark = getCurrentConfig('siteLogoDark')?.singleValue || '';
+  const siteLogoWidth = getCurrentConfig('siteLogoWidth')?.singleValue || '';
+  const siteMobileLogoWidth = getCurrentConfig('siteMobileLogoWidth')?.singleValue || '';
+  const siteName = getCurrentConfig('siteName')?.singleValue || '';
+  const siteNavBarBgDarkTheme = getCurrentConfig('siteNavBarBgDarkTheme')?.singleValue || '';
+  const siteNavBarBgLightTheme = getCurrentConfig('siteNavBarBgLightTheme')?.singleValue || '';
+  const siteNavBarTextDarkTheme = getCurrentConfig('siteNavBarTextDarkTheme')?.singleValue || '';
+  const siteNavBarTextLightTheme = getCurrentConfig('siteNavBarTextLightTheme')?.singleValue || '';
+  const siteNavDropdownAttributeDarkTheme =
+    getCurrentConfig('siteNavDropdownAttributeDarkTheme')?.singleValue || '';
+  const siteNavDropdownAttributeLightTheme =
+    getCurrentConfig('siteNavDropdownAttributeLightTheme')?.singleValue || '';
+  const siteNavDropdownBgDarkTheme =
+    getCurrentConfig('siteNavDropdownBgDarkTheme')?.singleValue || '';
+  const siteNavDropdownBgLightTheme =
+    getCurrentConfig('siteNavDropdownBgLightTheme')?.singleValue || '';
+  const siteNavDropdownTextDarkTheme =
+    getCurrentConfig('siteNavDropdownTextDarkTheme')?.singleValue || '';
+  const siteNavDropdownTextLightTheme =
+    getCurrentConfig('siteNavDropdownTextLightTheme')?.singleValue || '';
+  const siteThemeColor = getCurrentConfig('siteThemeColor')?.singleValue || '';
+  const siteTopBarBgLightTheme = getCurrentConfig('siteTopBarBgLightTheme')?.singleValue || '';
   const snippetAttributesCount =
     noNaN(getCurrentConfig('snippetAttributesCount')?.singleValue) || 5;
-  const cardListFeaturesCount = noNaN(getCurrentConfig('cardListFeaturesCount')?.singleValue) || 5;
-  const catalogueMetaPrefix = getCurrentConfig('catalogueMetaPrefix')?.singleValue || '';
-  const cardMetaPrefix = getCurrentConfig('cardMetaPrefix')?.singleValue || '';
+  const stickyNavVisibleAttributesCount =
+    noNaN(getCurrentConfig('stickyNavVisibleAttributesCount')?.singleValue) || 5;
+  const stickyNavVisibleOptionsCount =
+    noNaN(getCurrentConfig('stickyNavVisibleOptionsCount')?.singleValue) || 5;
+  const telegram = getCurrentConfig('telegram')?.singleValue || '';
+  const twitter = getCurrentConfig('twitter')?.singleValue || '';
+  const useUniqueConstructor = getConfigBooleanValue('useUniqueConstructor');
+  const vkontakte = getCurrentConfig('vkontakte')?.singleValue || '';
+  const yaMetrica = getCurrentConfig('yaMetrica')?.singleValue || '';
+  const yaVerification = getCurrentConfig('yaVerification')?.singleValue || '';
+  const youtube = getCurrentConfig('youtube')?.singleValue || '';
 
   return {
-    siteName,
-    siteFoundationYear,
-    yaVerification,
-    yaMetrica,
+    actualAddress,
+    androidChrome192,
+    androidChrome512,
+    appleTouchIcon,
+    cardListFeaturesCount,
+    cardMetaPrefix,
+    catalogueFilterVisibleAttributesCount,
+    catalogueFilterVisibleOptionsCount,
+    catalogueMetaPrefix,
+    contactEmail,
+    contactsContent,
+    facebook,
+    faviconIco,
     googleAnalytics,
+    headerTopBarBgDarkTheme,
+    headerTopBarTextDarkTheme,
+    headerTopBarTextLightTheme,
+    iconSvg,
+    instagram,
+    mainBannerAutoplaySpeed,
+    odnoklassniki,
+    pageDefaultDescription,
+    pageDefaultPreviewImage,
+    pageDefaultTitle,
+    phone,
+    seoText,
+    seoTextTitle,
+    showAdultModal,
+    showBlog,
+    showBlogPostViews,
+    showCardArticle,
+    siteFoundationYear,
     siteLogo,
     siteLogoDark,
     siteLogoWidth,
     siteMobileLogoWidth,
+    siteName,
+    siteNavBarBgDarkTheme,
+    siteNavBarBgLightTheme,
+    siteNavBarTextDarkTheme,
+    siteNavBarTextLightTheme,
+    siteNavDropdownAttributeDarkTheme,
+    siteNavDropdownAttributeLightTheme,
+    siteNavDropdownBgDarkTheme,
+    siteNavDropdownBgLightTheme,
+    siteNavDropdownTextDarkTheme,
+    siteNavDropdownTextLightTheme,
     siteThemeColor,
     siteTopBarBgLightTheme,
-    headerTopBarBgDarkTheme,
-    headerTopBarTextLightTheme,
-    headerTopBarTextDarkTheme,
-    siteNavBarBgLightTheme,
-    siteNavBarBgDarkTheme,
-    siteNavBarTextLightTheme,
-    siteNavBarTextDarkTheme,
-    siteNavDropdownBgLightTheme,
-    siteNavDropdownBgDarkTheme,
-    siteNavDropdownTextLightTheme,
-    siteNavDropdownTextDarkTheme,
-    siteNavDropdownAttributeLightTheme,
-    siteNavDropdownAttributeDarkTheme,
-    showAdultModal,
-    showBlog,
-    showBlogPostViews,
-    contactEmail,
-    phone,
-    facebook,
-    instagram,
-    vkontakte,
-    odnoklassniki,
-    youtube,
-    twitter,
-    telegram,
-    pageDefaultPreviewImage,
-    androidChrome192,
-    androidChrome512,
-    appleTouchIcon,
-    faviconIco,
-    iconSvg,
-    pageDefaultTitle,
-    pageDefaultDescription,
-    seoTextTitle,
-    seoText,
-    mainBannerAutoplaySpeed,
-    showCardArticle,
-    useUniqueConstructor,
+    snippetAttributesCount,
     stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount,
-    catalogueFilterVisibleAttributesCount,
-    catalogueFilterVisibleOptionsCount,
-    snippetAttributesCount,
-    cardListFeaturesCount,
-    catalogueMetaPrefix,
-    cardMetaPrefix,
+    telegram,
+    twitter,
+    useUniqueConstructor,
+    vkontakte,
+    yaMetrica,
+    yaVerification,
+    youtube,
   };
 };
 

@@ -14,6 +14,7 @@ export interface GetConfigTemplatesInterface {
   email?: string[];
   companySlug: string;
   foundationYear?: string;
+  address?: string;
 }
 
 export function getConfigTemplates({
@@ -23,6 +24,7 @@ export function getConfigTemplates({
   email,
   companySlug,
   foundationYear = `${new Date().getFullYear()}`,
+  address,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   const objectStorageDomain = `${process.env.OBJECT_STORAGE_DOMAIN}`;
 
@@ -609,6 +611,38 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'address' as ConfigVariantModel,
+      slug: 'actualAddress',
+      name: 'Фактический адрес компании',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [address || ''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: 'constructor' as ConfigVariantModel,
+      slug: 'contactsContent',
+      name: 'Контент на странице контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [PAGE_EDITOR_DEFAULT_VALUE_STRING],
         },
       },
     },

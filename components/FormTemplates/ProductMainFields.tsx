@@ -97,7 +97,6 @@ const ProductMainFields: React.FC = () => {
         name={'descriptionI18n'}
         testId={'descriptionI18n'}
         showInlineError
-        isRequired
       />
     </React.Fragment>
   );

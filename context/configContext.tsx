@@ -52,6 +52,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     appleTouchIcon: '',
     faviconIco: '',
     iconSvg: '',
+    contactsContent: '',
+    actualAddress: '',
     pageDefaultTitle: '',
     pageDefaultDescription: '',
     seoTextTitle: '',

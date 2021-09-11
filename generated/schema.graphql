@@ -429,6 +429,7 @@ type ConfigPayload implements Payload {
 Site config variant enum.
 """
 enum ConfigVariant {
+  address
   asset
   boolean
   color

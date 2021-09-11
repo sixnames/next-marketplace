@@ -1,3 +1,4 @@
+import { getFieldStringLocale } from 'lib/i18n';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -17,16 +18,16 @@ import {
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
-  ProductAttributeModel,
   ProductConnectionItemModel,
+  ProductConnectionModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -378,11 +379,16 @@ export const OptionsGroupMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
+        const { getApiMessage, locale } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+          COL_PRODUCT_CONNECTION_ITEMS,
+        );
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
 
         const session = client.startSession();
 
@@ -421,14 +427,52 @@ export const OptionsGroupMutations = extendType({
             }
 
             // Check if options group is used in attributes
-            const used = await attributesCollection.findOne({ optionsGroupId: _id });
-            if (used) {
+            const used = await attributesCollection.find({ optionsGroupId: _id }).toArray();
+            if (used.length > 0) {
+              const message = await getApiMessage('optionsGroups.delete.used');
+              const attributesNames = used.reduce((acc: string, attribute) => {
+                const name = getFieldStringLocale(attribute.nameI18n, locale);
+                if (name) {
+                  return `${acc}, ${name}`;
+                }
+                return acc;
+              }, '');
               mutationPayload = {
                 success: false,
-                message: await getApiMessage('optionsGroups.delete.used'),
+                message: `${message}. Атрибуты: ${attributesNames}`,
               };
               await session.abortTransaction();
               return;
+            }
+
+            // cleanup product connections
+            const options = await optionsCollection
+              .find({
+                optionsGroupId: _id,
+              })
+              .toArray();
+            for await (const option of options) {
+              const optionId = option._id;
+              const connectionItems = await productConnectionItemsCollection
+                .find({
+                  optionId,
+                })
+                .toArray();
+              for await (const connectionItem of connectionItems) {
+                await productConnectionsCollection.findOneAndUpdate(
+                  {
+                    _id: connectionItem.connectionId,
+                  },
+                  {
+                    $pull: {
+                      productsIds: connectionItem.productId,
+                    },
+                  },
+                );
+                await productConnectionItemsCollection.findOneAndDelete({
+                  _id: connectionItem._id,
+                });
+              }
             }
 
             // Delete options group
@@ -725,11 +769,11 @@ export const OptionsGroupMutations = extendType({
 
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
             COL_PRODUCT_CONNECTION_ITEMS,
           );
+          const productConnectionsCollection =
+            db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -742,26 +786,26 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Check if option is used in product attributes
-          const usedInProductAttributes = await productAttributesCollection.findOne({
-            selectedOptionsIds: optionId,
-          });
-          if (usedInProductAttributes) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.deleteOption.used'),
-            };
-          }
-
-          // Check if option is used in product connections
-          const usedInProductConnections = await productConnectionItemsCollection.findOne({
-            optionId,
-          });
-          if (usedInProductConnections) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.deleteOption.used'),
-            };
+          // cleanup product connections
+          const connectionItems = await productConnectionItemsCollection
+            .find({
+              optionId,
+            })
+            .toArray();
+          for await (const connectionItem of connectionItems) {
+            await productConnectionsCollection.findOneAndUpdate(
+              {
+                _id: connectionItem.connectionId,
+              },
+              {
+                $pull: {
+                  productsIds: connectionItem.productId,
+                },
+              },
+            );
+            await productConnectionItemsCollection.findOneAndDelete({
+              _id: connectionItem._id,
+            });
           }
 
           // Update options group options list

@@ -450,7 +450,6 @@
 
   --textColor: var(--wp-dark-gray-300);
   --textSecondaryColor: var(--wp-mid-gray-100);
-  --linkColor: var(--theme);
 
   --appNavBackground: var(--wp-dark-gray-400);
   --border-100: rgba(28, 29, 29, 0.08);
@@ -660,7 +659,7 @@ svg {
 }
 
 a {
-  color: var(--linkColor);
+  color: var(--theme);
   text-decoration: none;
   transition: color 0.2s;
 }

@@ -21,7 +21,6 @@ module.exports = {
       },
       colors: {
         theme: `var(--theme)`,
-        'link-text': `var(--linkColor)`,
         'primary-text': `var(--textColor)`,
         'secondary-text': `var(--textSecondaryColor)`,
         checkbox: `var(--checkboxBg)`,

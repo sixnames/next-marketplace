@@ -64,21 +64,22 @@ import { ObjectId } from 'mongodb';
 
 interface CastOptionsForBreadcrumbsInterface {
   category: CategoryInterface;
-  rubricSlug: string;
   acc: CatalogueBreadcrumbModel[];
+  hrefAcc: string;
 }
 
 function castCategoriesForBreadcrumbs({
   category,
-  rubricSlug,
   acc,
+  hrefAcc,
 }: CastOptionsForBreadcrumbsInterface): ProductCardBreadcrumbModel[] {
-  const optionSlug = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+  const categorySlug = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
   const newAcc = [...acc];
+  const href = `${hrefAcc}/${categorySlug}`;
   newAcc.push({
     _id: category._id,
     name: `${category.name}`,
-    href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
+    href,
   });
 
   if (!category.categories || category.categories.length < 1) {
@@ -88,8 +89,8 @@ function castCategoriesForBreadcrumbs({
   return category.categories.reduce((innerAcc: ProductCardBreadcrumbModel[], childCategory) => {
     const castedOptionAcc = castCategoriesForBreadcrumbs({
       category: childCategory,
-      rubricSlug,
       acc: [],
+      hrefAcc: href,
     });
     return [...innerAcc, ...castedOptionAcc];
   }, newAcc);
@@ -753,9 +754,9 @@ export async function getCardData({
     const breadcrumbCategories = cardCategories.reduce(
       (acc: ProductCardBreadcrumbModel[], category) => {
         const categoryList = castCategoriesForBreadcrumbs({
-          rubricSlug: rubric.slug,
           category,
           acc: [],
+          hrefAcc: `${ROUTE_CATALOGUE}/${rubric.slug}`,
         });
         return [...acc, ...categoryList];
       },

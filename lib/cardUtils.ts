@@ -13,6 +13,7 @@ import {
   SORT_ASC,
   SORT_DESC,
   CATALOGUE_CATEGORY_KEY,
+  GENDER_IT,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -60,6 +61,7 @@ import {
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
 import { generateCardTitle } from 'lib/titleUtils';
+import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 
 interface CastOptionsForBreadcrumbsInterface {
@@ -247,6 +249,7 @@ export async function getCardData({
                   nameI18n: true,
                   showRubricNameInProductTitle: true,
                   showCategoryInProductTitle: true,
+                  catalogueTitle: true,
                   variant: {
                     $arrayElemAt: ['$variant', 0],
                   },
@@ -750,9 +753,11 @@ export async function getCardData({
 
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
+    let breadcrumbsGender = rubric?.catalogueTitle.gender || GENDER_IT;
     // Collect breadcrumbs configs for all product categories
     const breadcrumbCategories = cardCategories.reduce(
       (acc: ProductCardBreadcrumbModel[], category) => {
+        breadcrumbsGender = category.gender || GENDER_IT;
         const categoryList = castCategoriesForBreadcrumbs({
           category,
           acc: [],
@@ -787,12 +792,17 @@ export async function getCardData({
       }
 
       // Get option name
-      const filterNameString = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
+      const variant = get(firstSelectedOption, `variants.${breadcrumbsGender}.${locale}`);
+      const name = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
+      let optionValue = name;
+      if (variant) {
+        optionValue = variant;
+      }
 
       // Push breadcrumb config to the list
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
-        name: filterNameString,
+        name: optionValue,
         href: `${ROUTE_CATALOGUE}/${rubric.slug}/${productAttribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }

@@ -626,7 +626,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [address || ''],
+          [DEFAULT_LOCALE]: [address || '{}'],
         },
       },
     },

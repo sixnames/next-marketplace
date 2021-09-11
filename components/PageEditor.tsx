@@ -20,7 +20,7 @@ import { Languages } from '@react-page/editor/lib/core/EditorStore';
 import { CellPlugin } from '@react-page/editor/lib/core/types/plugins';
 
 // video
-import html5video from '@react-page/plugins-html5-video';
+// import html5video from '@react-page/plugins-html5-video';
 import video from '@react-page/plugins-video';
 
 // text color
@@ -77,7 +77,7 @@ const cellPlugins = (imageUpload?: ImageUploadType): CellPlugin[] => [
   video,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  html5video,
+  // html5video,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   spacer,

@@ -21,9 +21,9 @@ module.exports = {
       },
       colors: {
         theme: `var(--theme)`,
-        'link-text': `var(--linkColor)`,
         'primary-text': `var(--textColor)`,
         'secondary-text': `var(--textSecondaryColor)`,
+        checkbox: `var(--checkboxBg)`,
         'border-100': `var(--border-100)`,
         'border-200': `var(--border-200)`,
         'border-300': `var(--border-300)`,
@@ -42,6 +42,7 @@ module.exports = {
         'wp-light-gray-200': `var(--wp-light-gray-200)`,
         'wp-light-gray-300': `var(--wp-light-gray-300)`,
         primary: `var(--primaryBackground)`,
+        'primary-dark': `var(--primaryBackgroundDark)`,
         'primary-transparent': `var(--primaryBackgroundTransparent)`,
         secondary: {
           DEFAULT: `var(--secondaryBackground)`,

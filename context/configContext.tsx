@@ -45,6 +45,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     odnoklassniki: '',
     youtube: '',
     twitter: '',
+    telegram: '',
     pageDefaultPreviewImage: '',
     androidChrome192: '',
     androidChrome512: '',

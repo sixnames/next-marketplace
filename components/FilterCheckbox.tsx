@@ -29,7 +29,7 @@ const FilterCheckboxLink: React.FC<FilterCheckboxLinkInterface> = ({
           className ? className : ''
         }`}
       >
-        <span className='relative text-theme w-[18px] h-[18px] rounded border-1 bg-secondary overflow-hidden text-theme`'>
+        <span className='relative text-theme w-[18px] h-[18px] rounded border-1 bg-checkbox overflow-hidden text-theme`'>
           {isSelected ? (
             <Icon className='absolute w-[10px] h-[10px] top-[4px] left-[4px] z-10' name={'check'} />
           ) : null}

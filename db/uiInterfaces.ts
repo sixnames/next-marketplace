@@ -623,6 +623,7 @@ export interface SsrConfigsInterface {
   phone: string[];
   facebook: string;
   instagram: string;
+  telegram: string;
   vkontakte: string;
   odnoklassniki: string;
   youtube: string;

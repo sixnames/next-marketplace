@@ -1,4 +1,4 @@
-name: Deploy to the production
+name: Deploy to the Kolesabu
 
 on:
   workflow_dispatch:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: deploy
+      - name: Kolesabu
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www/winepoint && git pull && yarn install && yarn build && cd && cd www/toysforjoys && git pull && yarn install && yarn build && cd && cd www/aroundgrill && git pull && yarn install && yarn build && cd && cd www/kolesabu && git pull && yarn install && yarn build && pm2 reload all
+          command: cd www/kolesabu && git pull && yarn install && yarn build && pm2 reload kolesabu
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

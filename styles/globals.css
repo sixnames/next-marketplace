@@ -439,6 +439,7 @@
   /*Main styles*/
   --primaryBackground-RGB: var(--wp-white-RGB);
   --primaryBackground: var(--wp-white);
+  --primaryBackgroundDark: #e6e6e6;
   --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
@@ -449,7 +450,6 @@
 
   --textColor: var(--wp-dark-gray-300);
   --textSecondaryColor: var(--wp-mid-gray-100);
-  --linkColor: var(--theme);
 
   --appNavBackground: var(--wp-dark-gray-400);
   --border-100: rgba(28, 29, 29, 0.08);
@@ -529,6 +529,7 @@
   --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
 
   /*Inputs*/
+  --checkboxBg: #cfd4dc;
   --inputTextColor: var(--textColor);
   --inputBackground: var(--wp-white);
   --inputBorderRGB: 170, 172, 176;
@@ -551,6 +552,7 @@
 
 .dark {
   --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
+  --primaryBackgroundDark: #181d23;
   --primaryBackgroundTransparent: rgba(var(--primaryBackground-RGB), 0);
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
@@ -563,6 +565,7 @@
   --textColor: var(--wp-white);
   --textSecondaryColor: var(--wp-light-gray-100);
 
+  --checkboxBg: #444c58;
   --inputTextColor: var(--textColor);
   --inputBackground: var(--wp-dark-gray-300);
   --inputBorderRGB: 255, 255, 255;
@@ -656,7 +659,7 @@ svg {
 }
 
 a {
-  color: var(--linkColor);
+  color: var(--theme);
   text-decoration: none;
   transition: color 0.2s;
 }

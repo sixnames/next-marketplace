@@ -19,6 +19,7 @@ const ContactsRoute: React.FC = () => {
   const odnoklassnikiLink = configs.odnoklassniki;
   const youtubeLink = configs.youtube;
   const twitterLink = configs.twitter;
+  const telegramLink = configs.telegram;
   const showSocials =
     facebookLink ||
     instagramLink ||
@@ -66,6 +67,7 @@ const ContactsRoute: React.FC = () => {
               odnoklassnikiLink={odnoklassnikiLink}
               youtubeLink={youtubeLink}
               twitterLink={twitterLink}
+              telegramLink={telegramLink}
             />
           </div>
         ) : null}

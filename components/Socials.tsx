@@ -32,6 +32,7 @@ interface SocialsInterface {
   odnoklassnikiLink?: string | null;
   youtubeLink?: string | null;
   twitterLink?: string | null;
+  telegramLink?: string | null;
 }
 
 const Socials: React.FC<SocialsInterface> = ({
@@ -41,6 +42,7 @@ const Socials: React.FC<SocialsInterface> = ({
   odnoklassnikiLink,
   twitterLink,
   youtubeLink,
+  telegramLink,
 }) => {
   return (
     <div className='flex items-center'>
@@ -49,6 +51,7 @@ const Socials: React.FC<SocialsInterface> = ({
       <SocialLink href={vkontakteLink} icon={'vkontakte'} />
       <SocialLink href={odnoklassnikiLink} icon={'odnoklassniki'} />
       <SocialLink href={twitterLink} icon={'twitter'} />
+      <SocialLink href={telegramLink} icon={'telegram'} />
       <SocialLink href={youtubeLink} icon={'youtube'} />
     </div>
   );

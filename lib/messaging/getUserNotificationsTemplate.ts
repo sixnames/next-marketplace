@@ -58,7 +58,7 @@ export function getUserNotificationsTemplate(
       sms: userNotifications?.companyNewOrder?.sms,
       email: userNotifications?.companyNewOrder?.email,
       nameI18n: {
-        [DEFAULT_LOCALE]: 'Новый заказ для сотрудника сайта',
+        [DEFAULT_LOCALE]: 'Новый заказ для сотрудника компании',
         [SECONDARY_LOCALE]: 'New order for company manager',
       },
     },
@@ -67,7 +67,7 @@ export function getUserNotificationsTemplate(
       sms: userNotifications?.companyConfirmedOrder?.sms,
       email: userNotifications?.companyConfirmedOrder?.email,
       nameI18n: {
-        [DEFAULT_LOCALE]: 'Подтверждение заказа для сотрудника сайта',
+        [DEFAULT_LOCALE]: 'Подтверждение заказа для сотрудника компании',
         [SECONDARY_LOCALE]: 'Confirmed order for company manager',
       },
     },
@@ -76,7 +76,7 @@ export function getUserNotificationsTemplate(
       sms: userNotifications?.companyCanceledOrder?.sms,
       email: userNotifications?.companyCanceledOrder?.email,
       nameI18n: {
-        [DEFAULT_LOCALE]: 'Отмена заказа для сотрудника сайта',
+        [DEFAULT_LOCALE]: 'Отмена заказа для сотрудника компании',
         [SECONDARY_LOCALE]: 'Canceled order for company manager',
       },
     },
@@ -85,7 +85,7 @@ export function getUserNotificationsTemplate(
       sms: userNotifications?.companyCanceledOrderProduct?.sms,
       email: userNotifications?.companyCanceledOrderProduct?.email,
       nameI18n: {
-        [DEFAULT_LOCALE]: 'Отмена товара заказа для сотрудника сайта',
+        [DEFAULT_LOCALE]: 'Отмена товара заказа для сотрудника компании',
         [SECONDARY_LOCALE]: 'Canceled order product for company manager',
       },
     },

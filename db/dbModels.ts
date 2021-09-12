@@ -743,6 +743,31 @@ export interface NotSyncedProductModel {
   createdAt: DateModel;
 }
 
+export interface NotificationConfigModel {
+  sms?: boolean | null;
+  email?: boolean | null;
+}
+
+export interface UserNotificationsModel {
+  // customer
+  newOrder?: NotificationConfigModel | null;
+  confirmedOrder?: NotificationConfigModel | null;
+  canceledOrder?: NotificationConfigModel | null;
+  canceledOrderProduct?: NotificationConfigModel | null;
+
+  // admin
+  adminNewOrder?: NotificationConfigModel | null;
+  adminConfirmedOrder?: NotificationConfigModel | null;
+  adminCanceledOrder?: NotificationConfigModel | null;
+  adminCanceledOrderProduct?: NotificationConfigModel | null;
+
+  // company
+  companyNewOrder?: NotificationConfigModel | null;
+  companyConfirmedOrder?: NotificationConfigModel | null;
+  companyCanceledOrder?: NotificationConfigModel | null;
+  companyCanceledOrderProduct?: NotificationConfigModel | null;
+}
+
 export interface UserModel extends BaseModel, TimestampModel {
   name: string;
   lastName?: string | null;
@@ -753,6 +778,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
+  notifications?: UserNotificationsModel | null;
 }
 
 // Pages

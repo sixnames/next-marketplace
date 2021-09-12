@@ -84,7 +84,7 @@ const UserNotificationsConsumer: React.FC<UseNotificationsConsumerInterface> = (
 
   return (
     <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
-      <Inner testId={'user-details-page'}>
+      <Inner testId={'user-notifications-page'}>
         <Formik
           enableReinitialize
           validationSchema={validationSchema}

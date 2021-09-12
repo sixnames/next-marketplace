@@ -1,4 +1,5 @@
 import { aggregatePagination } from 'db/dao/aggregatePagination';
+import { getUserInitialNotificationsConf } from 'lib/messaging/getUserNotificationsTemplate';
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
 import {
   getOperationPermission,
@@ -252,6 +253,7 @@ export const NotificationConfigInput = inputObjectType({
   name: 'NotificationConfigInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.nonNull.string('group');
     t.boolean('sms');
     t.boolean('email');
   },
@@ -290,7 +292,7 @@ export const UpdateUserInput = inputObjectType({
     t.nonNull.email('email');
     t.nonNull.phone('phone');
     t.nonNull.objectId('roleId');
-    t.field('notifications', {
+    t.nonNull.field('notifications', {
       type: 'UserNotificationsInput',
     });
   },
@@ -401,6 +403,7 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
+            notifications: getUserInitialNotificationsConf(),
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -797,6 +800,7 @@ export const UserMutations = mutationType({
             itemId,
             password,
             roleId: guestRole._id,
+            notifications: getUserInitialNotificationsConf(),
             createdAt: new Date(),
             updatedAt: new Date(),
           });

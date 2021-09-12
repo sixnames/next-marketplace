@@ -745,6 +745,7 @@ export interface NotSyncedProductModel {
 
 export interface NotificationConfigModel {
   nameI18n: TranslationModel;
+  group: string;
   sms?: boolean | null;
   email?: boolean | null;
 }
@@ -779,7 +780,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
-  notifications?: UserNotificationsModel | null;
+  notifications: UserNotificationsModel;
 }
 
 // Pages

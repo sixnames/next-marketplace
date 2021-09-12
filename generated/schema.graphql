@@ -1497,6 +1497,7 @@ type NavItemPayload implements Payload {
 
 input NotificationConfigInput {
   email: Boolean
+  group: String!
   nameI18n: JSONObject!
   sms: Boolean
 }
@@ -2880,7 +2881,7 @@ input UpdateUserInput {
   email: EmailAddress!
   lastName: String
   name: String!
-  notifications: UserNotificationsInput
+  notifications: UserNotificationsInput!
   phone: PhoneNumber!
   roleId: ObjectId!
   secondName: String

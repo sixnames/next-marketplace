@@ -38,6 +38,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
+import { getUserInitialNotificationsConf } from 'lib/messaging/getUserNotificationsTemplate';
 import { sendOrderCreatedEmail } from 'lib/messaging/orderCreatedEmail';
 import { signUpEmail } from 'lib/messaging/signUpEmail';
 import { sendNewOrderSms } from 'lib/messaging/smsUtils';
@@ -164,6 +165,7 @@ export async function makeAnOrder({
           phone: phoneToRaw(input.phone),
           itemId,
           password,
+          notifications: getUserInitialNotificationsConf(),
           createdAt: new Date(),
           updatedAt: new Date(),
         });

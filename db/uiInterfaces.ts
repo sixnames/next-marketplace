@@ -55,9 +55,9 @@ import {
   TranslationModel,
   UserModel,
   UserNotificationsModel,
-} from 'db/dbModels';
+} from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MessageSlug } from 'types/messageSlugTypes';
+import { MessageSlug } from '../types/messageSlugTypes';
 
 // Blog
 export interface BlogAttributeInterface extends BlogAttributeModel {
@@ -400,7 +400,10 @@ export interface UserInterface extends UserModel {
   companies?: CompanyInterface[];
   formattedPhone?: FormattedPhoneModel | null;
   orders?: OrderInterface[] | null;
-  notifications?: UserNotificationsInterface | null;
+  notifications: UserNotificationsInterface;
+  customerNotifications?: NotificationConfigInterface[] | null;
+  adminNotifications?: NotificationConfigInterface[] | null;
+  companyNotifications?: NotificationConfigInterface[] | null;
 }
 
 export interface CatalogueDataInterface {

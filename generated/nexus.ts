@@ -512,6 +512,7 @@ export interface NexusGenInputs {
   NotificationConfigInput: {
     // input type
     email?: boolean | null; // Boolean
+    group: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     sms?: boolean | null; // Boolean
   };
@@ -975,7 +976,7 @@ export interface NexusGenInputs {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     lastName?: string | null; // String
     name: string; // String!
-    notifications?: NexusGenInputs['UserNotificationsInput'] | null; // UserNotificationsInput
+    notifications: NexusGenInputs['UserNotificationsInput']; // UserNotificationsInput!
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
     secondName?: string | null; // String

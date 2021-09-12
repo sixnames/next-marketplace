@@ -1,4 +1,4 @@
-import { sendEmail, SendEmailInterface } from 'lib/messaging/mailer';
+import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
 interface SignUpEmailTemplateInterface {
   userName: string;

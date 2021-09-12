@@ -2,7 +2,7 @@ import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { sendEmail, SendEmailInterface } from 'lib/messaging/mailer';
+import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
 interface OrderCreatedEmailTemplateInterface {
   orderItemId: string;

@@ -15,7 +15,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getUserNotifications } from 'lib/messaging/getUserNotificationsTemplate';
+import { getUserNotifications } from 'lib/getUserNotificationsTemplate';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';

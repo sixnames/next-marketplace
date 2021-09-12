@@ -38,10 +38,9 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { getUserInitialNotificationsConf } from 'lib/messaging/getUserNotificationsTemplate';
-import { sendOrderCreatedEmail } from 'lib/messaging/orderCreatedEmail';
-import { signUpEmail } from 'lib/messaging/signUpEmail';
-import { sendNewOrderSms } from 'lib/messaging/smsUtils';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
+import { sendOrderCreatedEmail } from 'lib/email/orderCreatedEmail';
+import { signUpEmail } from 'lib/email/signUpEmail';
 import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getRequestParams,
@@ -49,6 +48,7 @@ import {
   getSessionCart,
   getSessionUser,
 } from 'lib/sessionHelpers';
+import { sendOrderCreatedSms } from 'lib/sms/orderCreatedSms';
 import { ObjectId } from 'mongodb';
 import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
@@ -402,7 +402,7 @@ export async function makeAnOrder({
           locale,
         };
         await sendOrderCreatedEmail(notificationConfig);
-        await sendNewOrderSms(notificationConfig);
+        await sendOrderCreatedSms(notificationConfig);
       }
 
       // success

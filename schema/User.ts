@@ -1,5 +1,5 @@
 import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { getUserInitialNotificationsConf } from 'lib/messaging/getUserNotificationsTemplate';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { arg, inputObjectType, mutationType, nonNull, objectType, queryType } from 'nexus';
 import {
   getOperationPermission,
@@ -25,8 +25,8 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import generator from 'generate-password';
 import { compare, hash } from 'bcryptjs';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { sendPasswordUpdatedEmail } from 'lib/messaging/passwordUpdatedEmail';
-import { signUpEmail } from 'lib/messaging/signUpEmail';
+import { sendPasswordUpdatedEmail } from 'lib/email/passwordUpdatedEmail';
+import { signUpEmail } from 'lib/email/signUpEmail';
 import {
   createUserSchema,
   signUpSchema,

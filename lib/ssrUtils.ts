@@ -1092,6 +1092,7 @@ export async function getPageSessionUser({
           password: false,
           createdAt: false,
           updatedAt: false,
+          notifications: false,
         },
       },
     ])

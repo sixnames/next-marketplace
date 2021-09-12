@@ -454,7 +454,7 @@ export async function getCatalogueAttributes({
           ? selectedFilterOptions.map((option) => {
               return {
                 ...option,
-                name: `${getFieldStringLocale(attribute.nameI18n, locale)} ${option.name}`,
+                name: `${getFieldStringLocale(attribute.nameI18n, locale)} - ${option.name}`,
               };
             })
           : selectedFilterOptions,

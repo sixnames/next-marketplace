@@ -9,7 +9,7 @@ interface SendOrderCreatedSmsInterface extends Omit<SmsSenderInterface, 'text' |
   customer: UserModel;
 }
 
-export async function sendOrderCreatedSms({
+export async function sendOrderConfirmedSms({
   locale,
   orderItemId,
   customer,
@@ -24,12 +24,10 @@ export async function sendOrderCreatedSms({
   });
 
   // customer
-  if (customer && customer.notifications?.newOrder?.sms) {
+  if (customer && customer.notifications?.confirmedOrder?.sms) {
     const text = `
         Здравствуйте ${customer.name}!
-        Спасибо за заказ!
-        Номер вашего заказа ${orderItemId}
-        Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
+        Заказ № ${orderItemId} подтверждён.
     `;
 
     await smsSender({
@@ -42,7 +40,7 @@ export async function sendOrderCreatedSms({
   }
 
   // company admins
-  const text = `Поступил новый заказ № ${orderItemId}`;
+  const text = `Заказ № ${orderItemId} подтверждён.`;
   if (company) {
     const adminIds = [...company.staffIds, company.ownerId];
     const users = await usersCollection
@@ -50,7 +48,7 @@ export async function sendOrderCreatedSms({
         _id: {
           $in: adminIds,
         },
-        'notifications.companyNewOrder.sms': true,
+        'notifications.companyConfirmedOrder.sms': true,
       })
       .toArray();
     const numbers = users.map(({ phone }) => phone);
@@ -68,7 +66,7 @@ export async function sendOrderCreatedSms({
   // site admins
   const users = await usersCollection
     .find({
-      'notifications.adminNewOrder.sms': true,
+      'notifications.adminConfirmedOrder.sms': true,
     })
     .toArray();
   const numbers = users.map(({ phone }) => phone);

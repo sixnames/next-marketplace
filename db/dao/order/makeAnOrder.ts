@@ -392,7 +392,7 @@ export async function makeAnOrder({
         return;
       }
 
-      // Send order confirmation email to the user
+      // send order notifications
       for await (const order of ordersInCart) {
         const notificationConfig = {
           customer: user,

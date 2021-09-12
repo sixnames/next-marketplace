@@ -10,7 +10,7 @@ interface SendOrderCreatedEmailInterface
   customer: UserModel;
 }
 
-export const sendOrderCreatedEmail = async ({
+export const sendOrderConfirmedEmail = async ({
   customer,
   orderItemId,
   companySlug,
@@ -22,22 +22,18 @@ export const sendOrderCreatedEmail = async ({
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
 
   // customer
-  if (customer && customer.notifications?.newOrder?.email) {
+  if (customer && customer.notifications?.confirmedOrder?.email) {
     const text = `
         Здравствуйте ${customer.name}!
-        Спасибо за заказ!
-        Номер вашего заказа ${orderItemId}
-        Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
+        Заказ № ${orderItemId} подтверждён.
     `;
     const content = `
       <div>
         <h2>Здравствуйте ${customer.name}!</h2>
-        <h3>Спасибо за заказ!</h3>
-        <h4>Номер вашего заказа ${orderItemId}</h4>
-        <p>Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.</p>
+        <h4>Заказ № ${orderItemId} подтверждён.</h4>
       </div>
       `;
-    const subject = 'Спасибо за заказ!';
+    const subject = 'Заказ подтверждён.';
 
     await sendEmail({
       text,
@@ -51,11 +47,11 @@ export const sendOrderCreatedEmail = async ({
   }
 
   // admin email content
-  const subject = 'Новый заказ';
-  const text = `Поступил новый заказ № ${orderItemId}`;
+  const subject = 'Заказ подтверждён.';
+  const text = `Заказ № ${orderItemId} подтверждён.`;
   const content = `
       <div>
-        <h1>Поступил новый заказ № ${orderItemId}</h1>
+        <h1>Заказ № ${orderItemId} подтверждён.</h1>
       </div>
       `;
 
@@ -70,7 +66,7 @@ export const sendOrderCreatedEmail = async ({
         _id: {
           $in: adminIds,
         },
-        'notifications.companyNewOrder.email': true,
+        'notifications.companyConfirmedOrder.email': true,
       })
       .toArray();
     const emails = users.map(({ email }) => email);
@@ -91,7 +87,7 @@ export const sendOrderCreatedEmail = async ({
   // site admins
   const users = await usersCollection
     .find({
-      'notifications.adminNewOrder.email': true,
+      'notifications.adminConfirmedOrder.email': true,
     })
     .toArray();
   const emails = users.map(({ email }) => email);

@@ -22,9 +22,15 @@ interface SendPasswordUpdatedEmailInterface
 export const sendPasswordUpdatedEmail = async ({
   to,
   userName,
+  companySlug,
+  city,
+  locale,
 }: SendPasswordUpdatedEmailInterface) => {
   await sendEmail({
     to,
+    city,
+    locale,
+    companySlug,
     text: `Здравствуйте ${userName}! Ваш пароль обновлён.`,
     subject: 'Обновление пароля',
     content: passwordUpdatedEmailTemplate({ userName }),

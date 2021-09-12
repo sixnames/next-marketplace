@@ -22,9 +22,19 @@ interface SignUpEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject'>,
     SignUpEmailTemplateInterface {}
 
-export const signUpEmail = async ({ to, userName, password }: SignUpEmailInterface) => {
+export const signUpEmail = async ({
+  to,
+  userName,
+  password,
+  companySlug,
+  city,
+  locale,
+}: SignUpEmailInterface) => {
   await sendEmail({
     to,
+    companySlug,
+    city,
+    locale,
     text: `Здравствуйте ${userName}! Вы удачно зарегистрировались.`,
     subject: 'Регистрация',
     content: signUpEmailTemplate({ userName, password }),

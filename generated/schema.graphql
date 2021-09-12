@@ -436,6 +436,7 @@ enum ConfigVariant {
   constructor
   email
   number
+  password
   string
   tel
 }

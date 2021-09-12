@@ -40,25 +40,34 @@ const ContactsRoute: React.FC = () => {
   return (
     <Inner>
       <div className='pt-10'>
-        <Title>Контакты {configSiteName}</Title>
-
         <div
           className={`mb-16 ${
             actualAddress && actualAddress.point ? 'grid lg:grid-cols-2 gap-12' : ''
           }`}
         >
           <div>
+            <Title>Контакты {configSiteName}</Title>
+
             {actualAddress && actualAddress.formattedAddress ? (
-              <address className='mb-6 text-lg font-medium not-italic'>
-                {actualAddress.formattedAddress}
-              </address>
+              <div className='mb-8 font-medium not-italic'>
+                <div className='mb-1 text-secondary-text'>Наш адрес</div>
+                <a
+                  className='text-primary-text hover:text-theme hover:no-underline'
+                  target={'_blank'}
+                  rel={'nofollow noreferrer'}
+                  href={`http://www.google.com/maps/place/${actualAddress.point.coordinates[1]},${actualAddress.point.coordinates[0]}`}
+                >
+                  {actualAddress.formattedAddress}
+                </a>
+              </div>
             ) : null}
-            <div className='mb-4 space-y-2'>
+            <div className='mb-8 space-y-2'>
+              <div className='mb-1 text-secondary-text'>Контактный телефон</div>
               {phone.map((phoneItem) => {
                 return (
                   <a
                     key={phoneItem}
-                    className='block text-secondary-text hover:text-theme hover:no-underline'
+                    className='block text-primary-text hover:text-theme hover:no-underline'
                     href={`tel:${phoneItem}`}
                   >
                     {phoneToReadable(phoneItem)}
@@ -66,9 +75,10 @@ const ContactsRoute: React.FC = () => {
                 );
               })}
             </div>
-            <div className='mb-4'>
+            <div className='mb-8'>
+              <div className='mb-1 text-secondary-text'>Email</div>
               <a
-                className='text-secondary-text hover:text-theme hover:no-underline'
+                className='text-primary-text hover:text-theme hover:no-underline'
                 href={`mailTo:${contactEmail}`}
               >
                 {contactEmail}
@@ -76,6 +86,7 @@ const ContactsRoute: React.FC = () => {
             </div>
             {showSocials ? (
               <div className='mt-auto pt-6'>
+                <div className='mb-1 text-secondary-text'>Мы в соцсетях</div>
                 <Socials
                   facebookLink={facebookLink}
                   instagramLink={instagramLink}

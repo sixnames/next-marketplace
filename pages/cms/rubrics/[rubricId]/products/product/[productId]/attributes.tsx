@@ -215,6 +215,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                             testId: 'multi-select-attribute-options-modal',
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             title: `${attribute.name}`,
+                            notShowAsAlphabet: attribute.notShowAsAlphabet,
                             onSubmit: (value) => {
                               showLoading();
                               updateProductSelectAttributeMutation({

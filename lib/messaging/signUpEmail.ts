@@ -35,7 +35,7 @@ export const signUpEmail = async ({
     companySlug,
     city,
     locale,
-    text: `Здравствуйте ${userName}! Вы удачно зарегистрировались.`,
+    text: `Здравствуйте ${userName}! Вы удачно зарегистрировались. Ваш пароль для авторизации ${password}`,
     subject: 'Регистрация',
     content: signUpEmailTemplate({ userName, password }),
   });

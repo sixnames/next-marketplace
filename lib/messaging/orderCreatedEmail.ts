@@ -1,3 +1,7 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
+import { CompanyModel, UserModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/messaging/mailer';
 
 interface OrderCreatedEmailTemplateInterface {
@@ -15,36 +19,92 @@ export const orderCreatedEmailTemplate = ({
     <h3>Спасибо за заказ!</h3>
     <h4>Номер вашего заказа ${orderItemId}</h4>
     <p>Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.</p>
-    <p>Также, мы дарим вам дисконтную карту, по которой вы сможете получать скидки на все последующие заказы.</p>
   </div>
   `;
 };
 
 interface SendOrderCreatedEmailInterface
-  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject'>,
-    OrderCreatedEmailTemplateInterface {}
+  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
+  orderItemId: string;
+  customer: UserModel;
+}
 
 export const sendOrderCreatedEmail = async ({
-  to,
-  userName,
+  customer,
   orderItemId,
   companySlug,
   city,
   locale,
 }: SendOrderCreatedEmailInterface) => {
-  await sendEmail({
-    text: `
-        Здравствуйте ${userName}!
+  const { db } = await getDatabase();
+  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+
+  const text = `
+        Здравствуйте ${customer.name}!
         Спасибо за заказ!
         Номер вашего заказа ${orderItemId}
         Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
-        Также, мы дарим вам дисконтную карту, по которой вы сможете получать скидки на все последующие заказы.
-    `,
-    to,
+    `;
+  const content = orderCreatedEmailTemplate({
+    userName: customer.name,
+    orderItemId,
+  });
+  const subject = 'Спасибо за заказ!';
+
+  // send email to the customer
+  if (customer && customer.notifications?.newOrder?.email) {
+    await sendEmail({
+      text,
+      to: customer.email,
+      city,
+      locale,
+      companySlug,
+      subject,
+      content,
+    });
+  }
+
+  // send email to company admins
+  const company = await companiesCollection.findOne({
+    slug: companySlug,
+  });
+  if (company) {
+    const adminIds = [...company.staffIds, company.ownerId];
+    const users = await usersCollection
+      .find({
+        _id: {
+          $in: adminIds,
+        },
+        'notifications.companyNewOrder.email': true,
+      })
+      .toArray();
+    const emails = users.map(({ email }) => email);
+    await sendEmail({
+      text,
+      to: emails,
+      city,
+      locale,
+      companySlug,
+      subject,
+      content,
+    });
+  }
+
+  // send email to site admins
+  const users = await usersCollection
+    .find({
+      'notifications.adminNewOrder.email': true,
+    })
+    .toArray();
+  const emails = users.map(({ email }) => email);
+  await sendEmail({
+    text,
+    to: emails,
     city,
     locale,
-    companySlug,
-    subject: 'Спасибо за заказ!',
-    content: orderCreatedEmailTemplate({ userName, orderItemId }),
+    companySlug: DEFAULT_COMPANY_SLUG,
+    subject,
+    content,
   });
 };

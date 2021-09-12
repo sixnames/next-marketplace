@@ -392,8 +392,7 @@ export async function makeAnOrder({
       // Send order confirmation email to the user
       for await (const order of ordersInCart) {
         await sendOrderCreatedEmail({
-          to: user.email,
-          userName: user.name,
+          customer: user,
           orderItemId: order.itemId,
           companySlug,
           city,

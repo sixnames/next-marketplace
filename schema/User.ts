@@ -640,7 +640,7 @@ export const UserMutations = mutationType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
+          const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
           const sessionUser = await getSessionUser(context);
           const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -687,6 +687,9 @@ export const UserMutations = mutationType({
           await sendPasswordUpdatedEmail({
             to: updatedUser.email,
             userName: updatedUser.name,
+            companySlug,
+            city,
+            locale,
           });
 
           return {
@@ -724,7 +727,7 @@ export const UserMutations = mutationType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
+          const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
           const { db } = await getDatabase();
           const usersCollection = db.collection<UserModel>(COL_USERS);
           const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -775,6 +778,9 @@ export const UserMutations = mutationType({
             to: createdUser.email,
             userName: createdUser.name,
             password: input.password,
+            companySlug,
+            city,
+            locale,
           });
 
           return {

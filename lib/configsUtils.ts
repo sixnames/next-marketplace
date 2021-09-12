@@ -2,8 +2,10 @@ import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'conf
 import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ConfigInterface } from 'db/uiInterfaces';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
+import { getCityFieldLocaleString } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 
@@ -86,4 +88,54 @@ export async function getConfigPageData({
     normalConfigs: castDbData(notAssetConfigs),
     currentCompany: company,
   };
+}
+
+interface CastConfigsInterface {
+  configs: ConfigModel[];
+  city: string;
+  locale: string;
+}
+
+export function castConfigs({ configs, city, locale }: CastConfigsInterface): ConfigInterface[] {
+  return configs.map((config) => {
+    const value = getCityFieldLocaleString({ cityField: config.cities, city, locale });
+    const singleValue = (value || [])[0];
+    return {
+      ...config,
+      value,
+      singleValue,
+    };
+  });
+}
+
+interface GetCurrentConfigInterface {
+  configs: ConfigInterface[];
+  slug: string;
+}
+
+export function getCurrentConfig({
+  slug,
+  configs,
+}: GetCurrentConfigInterface): ConfigInterface | undefined {
+  return configs.find((config) => config.slug === slug);
+}
+
+export function getConfigBooleanValue({ configs, slug }: GetCurrentConfigInterface): boolean {
+  const config = getCurrentConfig({ slug, configs });
+  return config?.singleValue === 'true';
+}
+
+export function getConfigStringValue({ configs, slug }: GetCurrentConfigInterface): string {
+  const config = getCurrentConfig({ slug, configs });
+  return config?.singleValue || '';
+}
+
+export function getConfigNumberValue({ configs, slug }: GetCurrentConfigInterface): number {
+  const config = getCurrentConfig({ slug, configs });
+  return noNaN(config?.singleValue);
+}
+
+export function getConfigListValue({ configs, slug }: GetCurrentConfigInterface): string[] {
+  const config = getCurrentConfig({ slug, configs });
+  return config?.value || [];
 }

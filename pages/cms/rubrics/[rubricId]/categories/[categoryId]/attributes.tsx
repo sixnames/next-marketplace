@@ -393,6 +393,14 @@ export const getServerSideProps = async (
     },
   );
 
+  // child categories
+  const childCategories = await categoriesCollection
+    .find({
+      parentTreeIds: initialCategory._id,
+    })
+    .toArray();
+  const childCategoriesIds = childCategories.map(({ _id }) => _id);
+
   const siblingsQuery = initialCategory.parentId
     ? {
         _id: { $ne: initialCategory._id },
@@ -416,25 +424,36 @@ export const getServerSideProps = async (
         },
       })
       .toArray();
-    const rubricAttributes = await rubricAttributesCollection
-      .find({
-        rubricId: initialCategory.rubricId,
-        categoryId: null,
-      })
-      .toArray();
-
-    rubricAttributes.forEach(({ attributesGroupId }) => {
-      if (attributesGroupId) {
-        excludedAttributesGroupsIds.push(attributesGroupId);
-      }
-    });
-
     siblingsRubricAttributes.forEach(({ attributesGroupId }) => {
       if (attributesGroupId) {
         excludedAttributesGroupsIds.push(attributesGroupId);
       }
     });
   }
+
+  const rubricAttributes = await rubricAttributesCollection
+    .find({
+      rubricId: initialCategory.rubricId,
+      categoryId: null,
+    })
+    .toArray();
+  const childCategoryAttributes = await rubricAttributesCollection
+    .find({
+      categoryId: {
+        $in: childCategoriesIds,
+      },
+    })
+    .toArray();
+  rubricAttributes.forEach(({ attributesGroupId }) => {
+    if (attributesGroupId) {
+      excludedAttributesGroupsIds.push(attributesGroupId);
+    }
+  });
+  childCategoryAttributes.forEach(({ attributesGroupId }) => {
+    if (attributesGroupId) {
+      excludedAttributesGroupsIds.push(attributesGroupId);
+    }
+  });
 
   const { sessionLocale } = props;
 

@@ -28,9 +28,11 @@ export const sendOrderCreatedEmail = async ({
   to,
   userName,
   orderItemId,
+  companySlug,
+  city,
+  locale,
 }: SendOrderCreatedEmailInterface) => {
   await sendEmail({
-    to,
     text: `
         Здравствуйте ${userName}!
         Спасибо за заказ!
@@ -38,6 +40,10 @@ export const sendOrderCreatedEmail = async ({
         Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
         Также, мы дарим вам дисконтную карту, по которой вы сможете получать скидки на все последующие заказы.
     `,
+    to,
+    city,
+    locale,
+    companySlug,
     subject: 'Спасибо за заказ!',
     content: orderCreatedEmailTemplate({ userName, orderItemId }),
   });

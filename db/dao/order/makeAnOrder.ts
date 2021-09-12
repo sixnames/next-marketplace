@@ -40,6 +40,7 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { sendOrderCreatedEmail } from 'lib/messaging/orderCreatedEmail';
 import { signUpEmail } from 'lib/messaging/signUpEmail';
+import { sendNewOrderSms } from 'lib/messaging/smsUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getRequestParams,
@@ -391,13 +392,15 @@ export async function makeAnOrder({
 
       // Send order confirmation email to the user
       for await (const order of ordersInCart) {
-        await sendOrderCreatedEmail({
+        const notificationConfig = {
           customer: user,
           orderItemId: order.itemId,
           companySlug,
           city,
           locale,
-        });
+        };
+        await sendOrderCreatedEmail(notificationConfig);
+        await sendNewOrderSms(notificationConfig);
       }
 
       // success

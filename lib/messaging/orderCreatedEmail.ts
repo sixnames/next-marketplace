@@ -52,7 +52,7 @@ export const sendOrderCreatedEmail = async ({
   });
   const subject = 'Спасибо за заказ!';
 
-  // send email to the customer
+  // customer
   if (customer && customer.notifications?.newOrder?.email) {
     await sendEmail({
       text,
@@ -65,7 +65,7 @@ export const sendOrderCreatedEmail = async ({
     });
   }
 
-  // send email to company admins
+  // company admins
   const company = await companiesCollection.findOne({
     slug: companySlug,
   });
@@ -91,7 +91,7 @@ export const sendOrderCreatedEmail = async ({
     });
   }
 
-  // send email to site admins
+  // site admins
   const users = await usersCollection
     .find({
       'notifications.adminNewOrder.email': true,

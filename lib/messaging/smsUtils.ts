@@ -1,29 +1,20 @@
-import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LOCALE } from 'config/common';
-import { COL_CONFIGS } from 'db/collectionNames';
-import { ConfigModel } from 'db/dbModels';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_COMPANIES, COL_CONFIGS, COL_USERS } from 'db/collectionNames';
+import { CompanyModel, ConfigModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
-import { getFieldStringLocale } from 'lib/i18n';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
 interface SmsSenderInterface {
   text: string;
-  sign: string;
   numbers: string[];
   companySlug: string;
   city: string;
   locale: string;
 }
 
-export async function smsSender({
-  text,
-  sign,
-  numbers,
-  companySlug,
-  city,
-  locale,
-}: SmsSenderInterface) {
+export async function smsSender({ text, numbers, companySlug, city, locale }: SmsSenderInterface) {
   try {
     // get sms api configs for current company
     const { db } = await getDatabase();
@@ -48,6 +39,10 @@ export async function smsSender({
     const apiEmail = getConfigStringValue({
       configs,
       slug: 'emailApiLogin',
+    });
+    const sign = getConfigStringValue({
+      configs,
+      slug: 'smsApiSign',
     });
     if (!apiKey || !apiEmail || numbers.length < 1) {
       return;
@@ -80,33 +75,76 @@ export async function smsSender({
   }
 }
 
-interface SendSmsInterface extends Omit<SmsSenderInterface, 'text'> {
-  orderId: string;
+interface SendSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
+  orderItemId: string;
+  customer: UserModel;
 }
 
 export async function sendNewOrderSms({
   locale,
-  sign,
-  orderId,
-  numbers,
+  orderItemId,
+  customer,
   city,
   companySlug,
 }: SendSmsInterface) {
-  const messageI18n = {
-    [DEFAULT_LOCALE]: `№${orderId}`,
-    [SECONDARY_LOCALE]: `№${orderId}`,
-  };
-  const text = getFieldStringLocale(messageI18n, locale);
-  if (text === LOCALE_NOT_FOUND_FIELD_MESSAGE || !text) {
-    return;
+  const { db } = await getDatabase();
+  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const company = await companiesCollection.findOne({
+    slug: companySlug,
+  });
+
+  const text = `
+        Здравствуйте ${customer.name}!
+        Спасибо за заказ!
+        Номер вашего заказа ${orderItemId}
+        Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
+    `;
+
+  // customer
+  if (customer && customer.notifications?.newOrder?.sms) {
+    await smsSender({
+      text,
+      numbers: [customer.phone],
+      locale,
+      city,
+      companySlug,
+    });
   }
 
+  // company admins
+  if (company) {
+    const adminIds = [...company.staffIds, company.ownerId];
+    const users = await usersCollection
+      .find({
+        _id: {
+          $in: adminIds,
+        },
+        'notifications.companyNewOrder.sms': true,
+      })
+      .toArray();
+    const numbers = users.map(({ phone }) => phone);
+    await smsSender({
+      text,
+      numbers,
+      locale,
+      city,
+      companySlug,
+    });
+  }
+
+  // site admins
+  const users = await usersCollection
+    .find({
+      'notifications.adminNewOrder.sms': true,
+    })
+    .toArray();
+  const numbers = users.map(({ phone }) => phone);
   await smsSender({
     text,
-    sign,
     numbers,
     locale,
     city,
-    companySlug,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 }

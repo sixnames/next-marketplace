@@ -23,6 +23,7 @@ import {
   ManufacturerModel,
   MetricModel,
   NavItemModel,
+  NotificationConfigModel,
   NotSyncedProductModel,
   ObjectIdModel,
   OptionModel,
@@ -53,6 +54,7 @@ import {
   SupplierModel,
   TranslationModel,
   UserModel,
+  UserNotificationsModel,
 } from 'db/dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from 'types/messageSlugTypes';
@@ -367,6 +369,30 @@ export interface NotSyncedProductInterface extends NotSyncedProductModel {
   shop?: ShopInterface | null;
 }
 
+export interface NotificationConfigInterface extends NotificationConfigModel {
+  name?: string | null;
+}
+
+export interface UserNotificationsInterface extends UserNotificationsModel {
+  // customer
+  newOrder?: NotificationConfigInterface | null;
+  confirmedOrder?: NotificationConfigInterface | null;
+  canceledOrder?: NotificationConfigInterface | null;
+  canceledOrderProduct?: NotificationConfigInterface | null;
+
+  // admin
+  adminNewOrder?: NotificationConfigInterface | null;
+  adminConfirmedOrder?: NotificationConfigInterface | null;
+  adminCanceledOrder?: NotificationConfigInterface | null;
+  adminCanceledOrderProduct?: NotificationConfigInterface | null;
+
+  // company
+  companyNewOrder?: NotificationConfigInterface | null;
+  companyConfirmedOrder?: NotificationConfigInterface | null;
+  companyCanceledOrder?: NotificationConfigInterface | null;
+  companyCanceledOrderProduct?: NotificationConfigInterface | null;
+}
+
 export interface UserInterface extends UserModel {
   role?: RoleInterface | null;
   fullName?: string;
@@ -374,6 +400,7 @@ export interface UserInterface extends UserModel {
   companies?: CompanyInterface[];
   formattedPhone?: FormattedPhoneModel | null;
   orders?: OrderInterface[] | null;
+  notifications?: UserNotificationsInterface | null;
 }
 
 export interface CatalogueDataInterface {

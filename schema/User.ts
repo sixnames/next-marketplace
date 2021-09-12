@@ -248,6 +248,38 @@ export const CreateUserInput = inputObjectType({
   },
 });
 
+export const NotificationConfigInput = inputObjectType({
+  name: 'NotificationConfigInput',
+  definition(t) {
+    t.nonNull.json('nameI18n');
+    t.boolean('sms');
+    t.boolean('email');
+  },
+});
+
+export const UserNotificationsInput = inputObjectType({
+  name: 'UserNotificationsInput',
+  definition(t) {
+    // customer
+    t.field('newOrder', { type: 'NotificationConfigInput' });
+    t.field('confirmedOrder', { type: 'NotificationConfigInput' });
+    t.field('canceledOrder', { type: 'NotificationConfigInput' });
+    t.field('canceledOrderProduct', { type: 'NotificationConfigInput' });
+
+    // admin
+    t.field('adminNewOrder', { type: 'NotificationConfigInput' });
+    t.field('adminConfirmedOrder', { type: 'NotificationConfigInput' });
+    t.field('adminCanceledOrder', { type: 'NotificationConfigInput' });
+    t.field('adminCanceledOrderProduct', { type: 'NotificationConfigInput' });
+
+    // company
+    t.field('companyNewOrder', { type: 'NotificationConfigInput' });
+    t.field('companyConfirmedOrder', { type: 'NotificationConfigInput' });
+    t.field('companyCanceledOrder', { type: 'NotificationConfigInput' });
+    t.field('companyCanceledOrderProduct', { type: 'NotificationConfigInput' });
+  },
+});
+
 export const UpdateUserInput = inputObjectType({
   name: 'UpdateUserInput',
   definition(t) {
@@ -258,6 +290,9 @@ export const UpdateUserInput = inputObjectType({
     t.nonNull.email('email');
     t.nonNull.phone('phone');
     t.nonNull.objectId('roleId');
+    t.field('notifications', {
+      type: 'UserNotificationsInput',
+    });
   },
 });
 

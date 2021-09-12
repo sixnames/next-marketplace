@@ -509,6 +509,12 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
+  NotificationConfigInput: {
+    // input type
+    email?: boolean | null; // Boolean
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    sms?: boolean | null; // Boolean
+  };
   OptionAlphabetInput: {
     // input type
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -969,6 +975,7 @@ export interface NexusGenInputs {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     lastName?: string | null; // String
     name: string; // String!
+    notifications?: NexusGenInputs['UserNotificationsInput'] | null; // UserNotificationsInput
     phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
     secondName?: string | null; // String
@@ -978,6 +985,21 @@ export interface NexusGenInputs {
     // input type
     newPassword: string; // String!
     userId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
+  UserNotificationsInput: {
+    // input type
+    adminCanceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    adminCanceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    adminConfirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    adminNewOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    canceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    canceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    companyCanceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    companyCanceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    companyConfirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    companyNewOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    confirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
+    newOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
   };
 }
 

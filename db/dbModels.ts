@@ -744,6 +744,7 @@ export interface NotSyncedProductModel {
 }
 
 export interface NotificationConfigModel {
+  nameI18n: TranslationModel;
   sms?: boolean | null;
   email?: boolean | null;
 }

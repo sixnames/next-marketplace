@@ -109,6 +109,22 @@ export function getConfigTemplates({
       companySlug,
       group: 'globals',
       variant: CONFIG_VARIANT_STRING,
+      slug: 'smsApiSign',
+      name: 'SMS API подпись',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'globals',
+      variant: CONFIG_VARIANT_STRING,
       slug: 'emailApiHost',
       name: 'Email API Хост',
       description: '',

@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
+  LOCALE_NOT_FOUND_FIELD_MESSAGE,
 } from 'config/common';
 import { ObjectIdModel } from 'db/dbModels';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
@@ -75,9 +76,10 @@ export function getAttributeReadableValue({
 
   // String
   if (productAttribute.variant === ATTRIBUTE_VARIANT_STRING) {
-    return productAttribute.textI18n
-      ? `${getFieldStringLocale(productAttribute.textI18n, locale)}${metricName}`
-      : null;
+    const text = getFieldStringLocale(productAttribute.textI18n, locale);
+    if (text !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
+      return `${text}${metricName}`;
+    }
   }
 
   // Number

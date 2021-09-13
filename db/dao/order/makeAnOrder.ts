@@ -38,8 +38,9 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { sendOrderCreatedEmail } from 'lib/messaging/orderCreatedEmail';
-import { signUpEmail } from 'lib/messaging/signUpEmail';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
+import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
+import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getRequestParams,
@@ -47,6 +48,7 @@ import {
   getSessionCart,
   getSessionUser,
 } from 'lib/sessionHelpers';
+import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
 import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
@@ -163,6 +165,7 @@ export async function makeAnOrder({
           phone: phoneToRaw(input.phone),
           itemId,
           password,
+          notifications: getUserInitialNotificationsConf(),
           createdAt: new Date(),
           updatedAt: new Date(),
         });
@@ -178,7 +181,7 @@ export async function makeAnOrder({
         user = createdUser;
 
         // Send user creation email confirmation
-        await signUpEmail({
+        await sendSignUpEmail({
           to: createdUser.email,
           userName: createdUser.name,
           password: newPassword,
@@ -389,16 +392,17 @@ export async function makeAnOrder({
         return;
       }
 
-      // Send order confirmation email to the user
+      // send order notifications
       for await (const order of ordersInCart) {
-        await sendOrderCreatedEmail({
-          to: user.email,
-          userName: user.name,
+        const notificationConfig = {
+          customer: user,
           orderItemId: order.itemId,
           companySlug,
           city,
           locale,
-        });
+        };
+        await sendOrderCreatedEmail(notificationConfig);
+        await sendOrderCreatedSms(notificationConfig);
       }
 
       // success

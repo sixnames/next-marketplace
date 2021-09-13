@@ -4,6 +4,7 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_USERS,
 } from 'db/collectionNames';
 import {
   OrderLogModel,
@@ -11,11 +12,14 @@ import {
   OrderPayloadModel,
   OrderProductModel,
   OrderStatusModel,
+  UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { sendOrderConfirmedEmail } from 'lib/email/sendOrderConfirmedEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { sendOrderConfirmedSms } from 'lib/sms/sendOrderConfirmedSms';
 import { ObjectId } from 'mongodb';
 
 export interface ConfirmOrderInputInterface {
@@ -26,12 +30,13 @@ export async function confirmOrder({
   context,
   input,
 }: DaoPropsInterface<ConfirmOrderInputInterface>): Promise<OrderPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, city, locale, companySlug } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const usersCollection = db.collection<UserModel>(COL_USERS);
 
   const session = client.startSession();
 
@@ -188,9 +193,26 @@ export async function confirmOrder({
         return;
       }
 
+      // send order notifications
+      const customer = await usersCollection.findOne({
+        _id: updatedOrder.customerId,
+      });
+      if (customer) {
+        const notificationConfig = {
+          customer,
+          orderItemId: order.itemId,
+          companySlug,
+          city,
+          locale,
+        };
+        await sendOrderConfirmedEmail(notificationConfig);
+        await sendOrderConfirmedSms(notificationConfig);
+      }
+
       mutationPayload = {
         success: true,
         message: await getApiMessage('orders.updateOrder.success'),
+        payload: updatedOrder,
       };
     });
 

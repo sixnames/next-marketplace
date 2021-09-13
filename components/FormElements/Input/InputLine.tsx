@@ -9,7 +9,7 @@ export interface InputLinePropsInterface {
   lineClass?: string;
   lineContentClass?: string;
   labelClass?: string;
-  label?: string;
+  label?: string | null;
   low?: boolean;
   wide?: boolean;
   labelPostfix?: any;

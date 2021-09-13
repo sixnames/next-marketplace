@@ -3,7 +3,7 @@ import {
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   SECONDARY_LOCALE,
-} from 'config/common';
+} from '../config/common';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
   let translation: T = i18nField[locale];

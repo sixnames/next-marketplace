@@ -3,7 +3,7 @@ import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import nodemailer from 'nodemailer';
-import { getEmailTemplate } from 'lib/messaging/emailTemplate';
+import { getEmailTemplate } from 'lib/email/emailTemplate';
 
 export interface SendEmailInterface {
   subject: string;

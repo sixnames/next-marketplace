@@ -191,6 +191,11 @@ export const SORT_ASC_STR = 'ASC';
 export const SORT_DESC = -1;
 export const SORT_DESC_STR = 'DESC';
 
+// NOTIFICATIONS
+export const NOTIFICATIONS_GROUP_CUSTOMER = 'customer';
+export const NOTIFICATIONS_GROUP_ADMIN = 'admin';
+export const NOTIFICATIONS_GROUP_COMPANY = 'company';
+
 // CATALOGUE
 export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '5';

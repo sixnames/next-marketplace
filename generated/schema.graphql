@@ -1495,6 +1495,13 @@ type NavItemPayload implements Payload {
   success: Boolean!
 }
 
+input NotificationConfigInput {
+  email: Boolean
+  group: String!
+  nameI18n: JSONObject!
+  sms: Boolean
+}
+
 """
 Mongo object id scalar type
 """
@@ -2874,6 +2881,7 @@ input UpdateUserInput {
   email: EmailAddress!
   lastName: String
   name: String!
+  notifications: UserNotificationsInput!
   phone: PhoneNumber!
   roleId: ObjectId!
   secondName: String
@@ -2900,6 +2908,21 @@ type User implements Base & Timestamp {
   secondName: String
   shortName: String!
   updatedAt: Date!
+}
+
+input UserNotificationsInput {
+  adminCanceledOrder: NotificationConfigInput
+  adminCanceledOrderProduct: NotificationConfigInput
+  adminConfirmedOrder: NotificationConfigInput
+  adminNewOrder: NotificationConfigInput
+  canceledOrder: NotificationConfigInput
+  canceledOrderProduct: NotificationConfigInput
+  companyCanceledOrder: NotificationConfigInput
+  companyCanceledOrderProduct: NotificationConfigInput
+  companyConfirmedOrder: NotificationConfigInput
+  companyNewOrder: NotificationConfigInput
+  confirmedOrder: NotificationConfigInput
+  newOrder: NotificationConfigInput
 }
 
 type UserPayload implements Payload {

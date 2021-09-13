@@ -33,6 +33,12 @@ const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, bread
         exact: true,
       },
       {
+        name: 'Оповещения',
+        testId: 'user-notifications',
+        path: `${ROUTE_CMS}/users/user/${user._id}/notifications`,
+        exact: true,
+      },
+      {
         name: 'Пароль',
         testId: 'user-password',
         path: `${ROUTE_CMS}/users/user/${user._id}/password`,

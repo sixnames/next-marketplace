@@ -8,6 +8,7 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_USERS,
 } from 'db/collectionNames';
 import {
   OrderLogModel,
@@ -15,11 +16,14 @@ import {
   OrderProductModel,
   OrderProductPayloadModel,
   OrderStatusModel,
+  UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { sendOrderProductCanceledEmail } from 'lib/email/sendOrderProductCanceledEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { sendOrderProductCanceledSms } from 'lib/sms/sendOrderProductCanceledSms';
 import { ObjectId } from 'mongodb';
 
 export interface CancelOrderProductInputInterface {
@@ -30,12 +34,13 @@ export async function cancelOrderProduct({
   context,
   input,
 }: DaoPropsInterface<CancelOrderProductInputInterface>): Promise<OrderProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale, city, companySlug } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const usersCollection = db.collection<UserModel>(COL_USERS);
 
   const session = client.startSession();
 
@@ -192,6 +197,23 @@ export async function cancelOrderProduct({
           createdAt: new Date(),
         };
         await orderLogsCollection.insertOne(orderLog);
+      }
+
+      // send order notifications
+      const customer = await usersCollection.findOne({
+        _id: order.customerId,
+      });
+      if (customer) {
+        const notificationConfig = {
+          customer,
+          orderItemId: order.itemId,
+          productOriginalName: updatedOrderProducts.originalName,
+          companySlug,
+          city,
+          locale,
+        };
+        await sendOrderProductCanceledEmail(notificationConfig);
+        await sendOrderProductCanceledSms(notificationConfig);
       }
 
       mutationPayload = {

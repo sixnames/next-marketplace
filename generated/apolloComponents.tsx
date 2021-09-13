@@ -475,7 +475,9 @@ export enum ConfigVariant {
   Asset = 'asset',
   Boolean = 'boolean',
   Constructor = 'constructor',
-  Color = 'color'
+  Color = 'color',
+  Address = 'address',
+  Password = 'password'
 }
 
 export type Contacts = {
@@ -1768,6 +1770,12 @@ export type NavItemPayload = Payload & {
   payload?: Maybe<NavItem>;
 };
 
+export type NotificationConfigInput = {
+  nameI18n: Scalars['JSONObject'];
+  sms?: Maybe<Scalars['Boolean']>;
+  email?: Maybe<Scalars['Boolean']>;
+};
+
 
 export type Option = {
   __typename?: 'Option';
@@ -1858,7 +1866,8 @@ export enum OrderLogVariant {
   Status = 'status',
   Confirm = 'confirm',
   Cancel = 'cancel',
-  CancelProduct = 'cancelProduct'
+  CancelProduct = 'cancelProduct',
+  UpdateProduct = 'updateProduct'
 }
 
 export type OrderProduct = {
@@ -3194,6 +3203,7 @@ export type UpdateUserInput = {
   email: Scalars['EmailAddress'];
   phone: Scalars['PhoneNumber'];
   roleId: Scalars['ObjectId'];
+  notifications?: Maybe<UserNotificationsInput>;
 };
 
 export type UpdateUserPasswordInput = {
@@ -3217,6 +3227,21 @@ export type User = Base & Timestamp & {
   shortName: Scalars['String'];
   formattedPhone: FormattedPhone;
   role: Role;
+};
+
+export type UserNotificationsInput = {
+  newOrder?: Maybe<NotificationConfigInput>;
+  confirmedOrder?: Maybe<NotificationConfigInput>;
+  canceledOrder?: Maybe<NotificationConfigInput>;
+  canceledOrderProduct?: Maybe<NotificationConfigInput>;
+  adminNewOrder?: Maybe<NotificationConfigInput>;
+  adminConfirmedOrder?: Maybe<NotificationConfigInput>;
+  adminCanceledOrder?: Maybe<NotificationConfigInput>;
+  adminCanceledOrderProduct?: Maybe<NotificationConfigInput>;
+  companyNewOrder?: Maybe<NotificationConfigInput>;
+  companyConfirmedOrder?: Maybe<NotificationConfigInput>;
+  companyCanceledOrder?: Maybe<NotificationConfigInput>;
+  companyCanceledOrderProduct?: Maybe<NotificationConfigInput>;
 };
 
 export type UserPayload = Payload & {

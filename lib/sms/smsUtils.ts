@@ -21,7 +21,7 @@ export async function smsSender({ text, numbers, companySlug, city, locale }: Sm
     const smsApiConfigs = await configsCollection
       .find({
         slug: {
-          $in: ['smsApiKey', 'smsApiEmail'],
+          $in: ['smsApiKey', 'smsApiEmail', 'smsApiSign'],
         },
         companySlug,
       })
@@ -33,17 +33,17 @@ export async function smsSender({ text, numbers, companySlug, city, locale }: Sm
     });
     const apiKey = getConfigStringValue({
       configs,
-      slug: 'emailApiHost',
+      slug: 'smsApiKey',
     });
     const apiEmail = getConfigStringValue({
       configs,
-      slug: 'emailApiLogin',
+      slug: 'smsApiEmail',
     });
     const sign = getConfigStringValue({
       configs,
       slug: 'smsApiSign',
     });
-    if (!apiKey || !apiEmail || numbers.length < 1) {
+    if (!apiKey || !apiEmail || !sign || numbers.length < 1) {
       return;
     }
 

@@ -88,7 +88,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
       accessor: 'owner',
       headTitle: 'Владелец',
       render: ({ cellData }) => {
-        return cellData.shortName;
+        return cellData?.shortName || 'Пользователь не найден';
       },
     },
     {

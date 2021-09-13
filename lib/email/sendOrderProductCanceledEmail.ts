@@ -4,28 +4,30 @@ import { CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
-interface SendOrderCanceledEmailInterface
+interface SendOrderProductCanceledEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
   orderItemId: string;
+  productOriginalName: string;
   customer: UserModel;
 }
 
-export const sendOrderCanceledEmail = async ({
+export const sendOrderProductCanceledEmail = async ({
   customer,
   orderItemId,
   companySlug,
+  productOriginalName,
   city,
   locale,
-}: SendOrderCanceledEmailInterface) => {
+}: SendOrderProductCanceledEmailInterface) => {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
 
   // customer
-  if (customer && customer.notifications?.canceledOrder?.email) {
+  if (customer && customer.notifications?.canceledOrderProduct?.email) {
     const text = `
         Здравствуйте ${customer.name}!
-        Заказ № ${orderItemId} отменён.
+        Товар ${productOriginalName} отменён в заказе № ${orderItemId}.
     `;
     const content = `
       <div>
@@ -33,7 +35,7 @@ export const sendOrderCanceledEmail = async ({
         <h4>Заказ № ${orderItemId} подтверждён.</h4>
       </div>
       `;
-    const subject = 'Заказ отменён.';
+    const subject = 'Товар отменён.';
 
     await sendEmail({
       text,
@@ -47,11 +49,11 @@ export const sendOrderCanceledEmail = async ({
   }
 
   // admin email content
-  const subject = 'Заказ отменён.';
-  const text = `Заказ № ${orderItemId} отменён.`;
+  const subject = 'Товар отменён.';
+  const text = `Товар ${productOriginalName} отменён в заказе № ${orderItemId}.`;
   const content = `
       <div>
-        <h1>Заказ № ${orderItemId} отменён.</h1>
+        <h1>Товар ${productOriginalName} отменён в заказе № ${orderItemId}.</h1>
       </div>
       `;
 
@@ -66,7 +68,7 @@ export const sendOrderCanceledEmail = async ({
         _id: {
           $in: adminIds,
         },
-        'notifications.companyCanceledOrder.email': true,
+        'notifications.companyCanceledOrderProduct.email': true,
       })
       .toArray();
     const emails = users.map(({ email }) => email);
@@ -87,7 +89,7 @@ export const sendOrderCanceledEmail = async ({
   // site admins
   const users = await usersCollection
     .find({
-      'notifications.adminCanceledOrder.email': true,
+      'notifications.adminCanceledOrderProduct.email': true,
     })
     .toArray();
   const emails = users.map(({ email }) => email);

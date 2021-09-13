@@ -25,12 +25,7 @@ export async function sendOrderCreatedSms({
 
   // customer
   if (customer && customer.notifications?.newOrder?.sms) {
-    const text = `
-        Здравствуйте ${customer.name}!
-        Спасибо за заказ!
-        Номер вашего заказа ${orderItemId}
-        Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.
-    `;
+    const text = `Здравствуйте ${customer.name}! Спасибо за заказ! Номер вашего заказа ${orderItemId}`;
 
     await smsSender({
       text,

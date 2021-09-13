@@ -4,10 +4,10 @@ import {
   NOTIFICATIONS_GROUP_COMPANY,
   NOTIFICATIONS_GROUP_CUSTOMER,
   SECONDARY_LOCALE,
-} from 'config/common';
-import { NotificationConfigModel, UserNotificationsModel } from 'db/dbModels';
-import { NotificationConfigInterface, UserNotificationsInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
+} from '../config/common';
+import { NotificationConfigModel, UserNotificationsModel } from '../db/dbModels';
+import { NotificationConfigInterface, UserNotificationsInterface } from '../db/uiInterfaces';
+import { getFieldStringLocale } from '../lib/i18n';
 import { get, set } from 'lodash';
 
 export function getUserNotificationsTemplate(

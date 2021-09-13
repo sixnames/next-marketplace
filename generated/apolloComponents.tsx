@@ -1772,6 +1772,7 @@ export type NavItemPayload = Payload & {
 
 export type NotificationConfigInput = {
   nameI18n: Scalars['JSONObject'];
+  group: Scalars['String'];
   sms?: Maybe<Scalars['Boolean']>;
   email?: Maybe<Scalars['Boolean']>;
 };
@@ -3203,7 +3204,7 @@ export type UpdateUserInput = {
   email: Scalars['EmailAddress'];
   phone: Scalars['PhoneNumber'];
   roleId: Scalars['ObjectId'];
-  notifications?: Maybe<UserNotificationsInput>;
+  notifications: UserNotificationsInput;
 };
 
 export type UpdateUserPasswordInput = {

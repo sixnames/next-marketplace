@@ -4,7 +4,7 @@ import { CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
-interface SendOrderCreatedSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
+interface SendOrderConfirmedSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
   orderItemId: string;
   customer: UserModel;
 }
@@ -15,7 +15,7 @@ export async function sendOrderConfirmedSms({
   customer,
   city,
   companySlug,
-}: SendOrderCreatedSmsInterface) {
+}: SendOrderConfirmedSmsInterface) {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);

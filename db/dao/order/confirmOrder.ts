@@ -16,10 +16,10 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { sendOrderConfirmedEmail } from 'lib/email/orderConfirmedEmail';
+import { sendOrderConfirmedEmail } from 'lib/email/sendOrderConfirmedEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { sendOrderConfirmedSms } from 'lib/sms/orderConfirmedSms';
+import { sendOrderConfirmedSms } from 'lib/sms/sendOrderConfirmedSms';
 import { ObjectId } from 'mongodb';
 
 export interface ConfirmOrderInputInterface {

@@ -4,6 +4,7 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_USERS,
 } from 'db/collectionNames';
 import {
   OrderLogModel,
@@ -11,11 +12,14 @@ import {
   OrderPayloadModel,
   OrderProductModel,
   OrderStatusModel,
+  UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { sendOrderCanceledEmail } from 'lib/email/sendOrderCanceledEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { sendOrderCanceledSms } from 'lib/sms/sendOrderCanceledSms';
 import { ObjectId } from 'mongodb';
 
 export interface CancelOrderInputInterface {
@@ -26,12 +30,13 @@ export async function cancelOrder({
   context,
   input,
 }: DaoPropsInterface<CancelOrderInputInterface>): Promise<OrderPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale, city, companySlug } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const usersCollection = db.collection<UserModel>(COL_USERS);
 
   const session = client.startSession();
 
@@ -149,6 +154,22 @@ export async function cancelOrder({
         };
         await session.abortTransaction();
         return;
+      }
+
+      // send order notifications
+      const customer = await usersCollection.findOne({
+        _id: updatedOrder.customerId,
+      });
+      if (customer) {
+        const notificationConfig = {
+          customer,
+          orderItemId: order.itemId,
+          companySlug,
+          city,
+          locale,
+        };
+        await sendOrderCanceledEmail(notificationConfig);
+        await sendOrderCanceledSms(notificationConfig);
       }
 
       mutationPayload = {

@@ -4,7 +4,7 @@ import { CompanyModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
-interface SendOrderCreatedEmailInterface
+interface SendOrderConfirmedEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
   orderItemId: string;
   customer: UserModel;
@@ -16,7 +16,7 @@ export const sendOrderConfirmedEmail = async ({
   companySlug,
   city,
   locale,
-}: SendOrderCreatedEmailInterface) => {
+}: SendOrderConfirmedEmailInterface) => {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);

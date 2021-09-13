@@ -39,8 +39,8 @@ import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
-import { sendOrderCreatedEmail } from 'lib/email/orderCreatedEmail';
-import { signUpEmail } from 'lib/email/signUpEmail';
+import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
+import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getRequestParams,
@@ -48,7 +48,7 @@ import {
   getSessionCart,
   getSessionUser,
 } from 'lib/sessionHelpers';
-import { sendOrderCreatedSms } from 'lib/sms/orderCreatedSms';
+import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
 import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
@@ -181,7 +181,7 @@ export async function makeAnOrder({
         user = createdUser;
 
         // Send user creation email confirmation
-        await signUpEmail({
+        await sendSignUpEmail({
           to: createdUser.email,
           userName: createdUser.name,
           password: newPassword,

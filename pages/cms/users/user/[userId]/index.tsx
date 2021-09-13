@@ -48,6 +48,7 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
     phone: user.phone,
     roleId: user.roleId,
     userId: user._id,
+    notifications: user.notifications,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

@@ -10,13 +10,13 @@ export const sendSignUpEmail = async ({
   to,
   userName,
   password,
-  companySlug,
+  companySiteSlug,
   city,
   locale,
 }: SendSignUpEmailInterface) => {
   await sendEmail({
     to,
-    companySlug,
+    companySiteSlug,
     city,
     locale,
     text: `Здравствуйте ${userName}! Вы удачно зарегистрировались. Ваш пароль для авторизации ${password}`,

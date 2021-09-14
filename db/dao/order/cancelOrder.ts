@@ -165,6 +165,7 @@ export async function cancelOrder({
           customer,
           orderItemId: order.orderId,
           companyId: order.companyId,
+          companySiteSlug: order.companySiteSlug,
           city,
           locale,
         };

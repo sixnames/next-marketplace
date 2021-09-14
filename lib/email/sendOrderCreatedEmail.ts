@@ -5,7 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
 interface SendOrderCreatedEmailInterface
-  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to' | 'companySlug'> {
+  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
@@ -15,6 +15,7 @@ export const sendOrderCreatedEmail = async ({
   customer,
   orderItemId,
   companyId,
+  companySiteSlug,
   city,
   locale,
 }: SendOrderCreatedEmailInterface) => {
@@ -24,7 +25,6 @@ export const sendOrderCreatedEmail = async ({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
-  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.newOrder?.email) {
@@ -49,7 +49,7 @@ export const sendOrderCreatedEmail = async ({
       to: customer.email,
       city,
       locale,
-      companySlug,
+      companySiteSlug,
       subject,
       content,
     });
@@ -83,7 +83,7 @@ export const sendOrderCreatedEmail = async ({
         to: emails,
         city,
         locale,
-        companySlug,
+        companySiteSlug,
         subject,
         content,
       });
@@ -104,7 +104,7 @@ export const sendOrderCreatedEmail = async ({
       to: emails,
       city,
       locale,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,
       content,
     });

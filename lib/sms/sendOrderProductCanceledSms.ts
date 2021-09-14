@@ -5,7 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
 interface SendOrderProductCanceledSmsInterface
-  extends Omit<SmsSenderInterface, 'text' | 'numbers' | 'companySlug'> {
+  extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
   orderItemId: string;
   productOriginalName: string;
   customer: UserModel;
@@ -18,6 +18,7 @@ export async function sendOrderProductCanceledSms({
   customer,
   city,
   companyId,
+  companySiteSlug,
   productOriginalName,
 }: SendOrderProductCanceledSmsInterface) {
   const { db } = await getDatabase();
@@ -26,7 +27,6 @@ export async function sendOrderProductCanceledSms({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
-  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.canceledOrderProduct?.sms) {
@@ -40,7 +40,7 @@ export async function sendOrderProductCanceledSms({
       numbers: [customer.phone],
       locale,
       city,
-      companySlug,
+      companySiteSlug,
     });
   }
 
@@ -63,7 +63,7 @@ export async function sendOrderProductCanceledSms({
         numbers,
         locale,
         city,
-        companySlug,
+        companySiteSlug,
       });
     }
   }
@@ -81,7 +81,7 @@ export async function sendOrderProductCanceledSms({
       numbers,
       locale,
       city,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySiteSlug: DEFAULT_COMPANY_SLUG,
     });
   }
 }

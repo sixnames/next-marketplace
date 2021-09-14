@@ -810,16 +810,18 @@ export const ProductMutations = extendType({
                 productSlug: createdProduct.slug,
               });
             }
-            const newAttributesResult = await productAttributesCollection.insertMany(
-              createdProductAttributes,
-            );
-            if (!newAttributesResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
+            if (createdProductAttributes.length > 0) {
+              const newAttributesResult = await productAttributesCollection.insertMany(
+                createdProductAttributes,
+              );
+              if (!newAttributesResult.result.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage(`products.create.error`),
+                };
+                await session.abortTransaction();
+                return;
+              }
             }
 
             // Get source product card contents
@@ -838,16 +840,18 @@ export const ProductMutations = extendType({
                 productSlug: createdProduct.slug,
               });
             }
-            const newCardContentsResult = await productCardContentsCollection.insertMany(
-              createdProductCardContents,
-            );
-            if (!newCardContentsResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
+            if (createdProductCardContents.length > 0) {
+              const newCardContentsResult = await productCardContentsCollection.insertMany(
+                createdProductCardContents,
+              );
+              if (!newCardContentsResult.result.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage(`products.create.error`),
+                };
+                await session.abortTransaction();
+                return;
+              }
             }
 
             // Create algolia object

@@ -66,7 +66,6 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
                   objectFit='contain'
                 />
                 <Link
-                  testId={`${testId}-image-grid`}
                   target={'_blank'}
                   className='block absolute z-10 inset-0 text-indent-full'
                   href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}

@@ -6,6 +6,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -39,7 +40,17 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
     return null;
   }
 
-  const { shop, oldPrice, discountedPercent, price, originalName, itemId, mainImage } = shopProduct;
+  const {
+    shop,
+    oldPrice,
+    discountedPercent,
+    price,
+    originalName,
+    itemId,
+    mainImage,
+    rubricSlug,
+    slug,
+  } = shopProduct;
 
   return (
     <div className={classes.productHolder}>
@@ -54,13 +65,28 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                 layout='fill'
                 objectFit='contain'
               />
+              <Link
+                target={'_blank'}
+                className='block absolute z-10 inset-0 text-indent-full'
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+              >
+                {originalName}
+              </Link>
             </div>
           </div>
           <div>
             <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
             <div className={classes.productContent}>
               <div>
-                <div className={classes.productName}>{originalName}</div>
+                <div className={classes.productName}>
+                  <Link
+                    target={'_blank'}
+                    className='block text-primary-text hover:no-underline hover:text-primary-text'
+                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                  >
+                    {originalName}
+                  </Link>
+                </div>
               </div>
 
               <div>

@@ -1,16 +1,21 @@
+import ContentItemControls from 'components/ContentItemControls';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
+import { useDeleteOrder } from 'hooks/mutations/order/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getShortName } from 'lib/nameUtils';
@@ -28,7 +33,9 @@ interface OrdersRouteInterface {
 }
 
 const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
+  const { showModal } = useAppContext();
   const router = useRouter();
+  const [deleteOrder] = useDeleteOrder();
 
   const columns: TableColumn<OrderInterface>[] = [
     {
@@ -85,6 +92,37 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
       headTitle: 'Email',
       render: ({ cellData }) => {
         return <LinkEmail value={cellData} />;
+      },
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={dataItem.itemId}
+              updateTitle={'Детали заказа'}
+              updateHandler={() => {
+                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
+                  console.log(e);
+                });
+              }}
+              deleteTitle={'Удалить заказ'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    message: `Вы уверенны, что хотите удалить заказ № ${dataItem.itemId}?`,
+                    confirm: () => {
+                      deleteOrder({
+                        orderId: `${dataItem._id}`,
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+        );
       },
     },
   ];

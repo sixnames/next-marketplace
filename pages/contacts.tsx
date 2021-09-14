@@ -4,6 +4,7 @@ import Socials from 'components/Socials';
 import Title from 'components/Title';
 import WpMap from 'components/WpMap';
 import { useConfigContext } from 'context/configContext';
+import { useThemeContext } from 'context/themeContext';
 import { AddressModel } from 'db/dbModels';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { noNaN } from 'lib/numbers';
@@ -14,6 +15,7 @@ import * as React from 'react';
 
 const ContactsRoute: React.FC = () => {
   const mapRef = React.useRef<any>(null);
+  const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
   const configSiteName = configs.siteName;
   const contactEmail = configs.contactEmail;
@@ -37,6 +39,10 @@ const ContactsRoute: React.FC = () => {
     youtubeLink ||
     twitterLink;
 
+  const lightThemeMarker = configs.mapMarkerLightTheme;
+  const darkThemeMarker = configs.mapMarkerDarkTheme;
+  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
+
   return (
     <Inner>
       <div className='pt-10'>
@@ -55,7 +61,7 @@ const ContactsRoute: React.FC = () => {
                   className='text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                   rel={'nofollow noreferrer'}
-                  href={`http://www.google.com/maps/place/${actualAddress.point.coordinates[1]},${actualAddress.point.coordinates[0]}`}
+                  href={`https://www.google.com/maps/place/${actualAddress.point.coordinates[1]},${actualAddress.point.coordinates[0]}`}
                 >
                   {actualAddress.formattedAddress}
                 </a>
@@ -108,6 +114,7 @@ const ContactsRoute: React.FC = () => {
                   {
                     _id: 'address',
                     name: actualAddress.formattedAddress,
+                    icon: marker,
                     address: {
                       ...actualAddress,
                       formattedCoordinates: {

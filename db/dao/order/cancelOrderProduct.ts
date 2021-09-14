@@ -209,6 +209,7 @@ export async function cancelOrderProduct({
           orderItemId: order.orderId,
           productOriginalName: updatedOrderProducts.originalName,
           companyId: order.companyId,
+          companySiteSlug: order.companySiteSlug,
           city,
           locale,
         };

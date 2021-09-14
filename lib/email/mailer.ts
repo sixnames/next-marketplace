@@ -10,7 +10,7 @@ export interface SendEmailInterface {
   content: string;
   text: string;
   to: string | string[];
-  companySlug: string;
+  companySiteSlug: string;
   city: string;
   locale: string;
 }
@@ -20,7 +20,7 @@ export const sendEmail = async ({
   subject,
   text,
   to,
-  companySlug,
+  companySiteSlug,
   city,
   locale,
 }: SendEmailInterface) => {
@@ -34,7 +34,7 @@ export const sendEmail = async ({
         slug: {
           $in: ['emailApiHost', 'emailApiLogin', 'emailApiPassword', 'siteName'],
         },
-        companySlug,
+        companySlug: companySiteSlug,
       })
       .toArray();
     const configs = castConfigs({

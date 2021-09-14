@@ -8,7 +8,7 @@ interface SendPasswordUpdatedEmailInterface
 export const sendPasswordUpdatedEmail = async ({
   to,
   userName,
-  companySlug,
+  companySiteSlug,
   city,
   locale,
 }: SendPasswordUpdatedEmailInterface) => {
@@ -16,7 +16,7 @@ export const sendPasswordUpdatedEmail = async ({
     to,
     city,
     locale,
-    companySlug,
+    companySiteSlug,
     text: `Здравствуйте ${userName}! Ваш пароль обновлён.`,
     subject: 'Обновление пароля',
     content: `

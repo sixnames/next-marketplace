@@ -805,8 +805,22 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'youtube',
   });
+  const buyButtonText = getConfigStringValue({
+    configs,
+    slug: 'buyButtonText',
+  });
+  const mapMarkerDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'mapMarkerDarkTheme',
+  });
+  const mapMarkerLightTheme = getConfigStringValue({
+    configs,
+    slug: 'mapMarkerLightTheme',
+  });
 
   return {
+    mapMarkerDarkTheme,
+    mapMarkerLightTheme,
     actualAddress,
     androidChrome192,
     androidChrome512,
@@ -868,6 +882,7 @@ export const getSsrConfigs = async ({
     yaMetrica,
     yaVerification,
     youtube,
+    buyButtonText,
   };
 };
 

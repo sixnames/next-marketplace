@@ -8,12 +8,18 @@ import qs from 'qs';
 export interface SmsSenderInterface {
   text: string;
   numbers: string[];
-  companySlug: string;
+  companySiteSlug: string;
   city: string;
   locale: string;
 }
 
-export async function smsSender({ text, numbers, companySlug, city, locale }: SmsSenderInterface) {
+export async function smsSender({
+  text,
+  numbers,
+  companySiteSlug,
+  city,
+  locale,
+}: SmsSenderInterface) {
   try {
     // get sms api configs for current company
     const { db } = await getDatabase();
@@ -23,7 +29,7 @@ export async function smsSender({ text, numbers, companySlug, city, locale }: Sm
         slug: {
           $in: ['smsApiKey', 'smsApiEmail', 'smsApiSign'],
         },
-        companySlug,
+        companySlug: companySiteSlug,
       })
       .toArray();
     const configs = castConfigs({

@@ -86,10 +86,11 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           markers={shops.map((shop) => {
             const lightThemeMarker = shop.mapMarker?.lightTheme;
             const darkThemeMarker = shop.mapMarker?.darkTheme;
+            const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
 
             return {
               _id: shop._id,
-              icon: isDark ? darkThemeMarker : lightThemeMarker,
+              icon: marker,
               name: shop.name,
               address: shop.address,
             };

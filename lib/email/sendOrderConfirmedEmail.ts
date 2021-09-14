@@ -5,7 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
 interface SendOrderConfirmedEmailInterface
-  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to' | 'companySlug'> {
+  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
@@ -15,6 +15,7 @@ export const sendOrderConfirmedEmail = async ({
   customer,
   orderItemId,
   companyId,
+  companySiteSlug,
   city,
   locale,
 }: SendOrderConfirmedEmailInterface) => {
@@ -24,7 +25,6 @@ export const sendOrderConfirmedEmail = async ({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
-  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.confirmedOrder?.email) {
@@ -45,7 +45,7 @@ export const sendOrderConfirmedEmail = async ({
       to: customer.email,
       city,
       locale,
-      companySlug,
+      companySiteSlug,
       subject,
       content,
     });
@@ -79,7 +79,7 @@ export const sendOrderConfirmedEmail = async ({
         to: emails,
         city,
         locale,
-        companySlug,
+        companySiteSlug,
         subject,
         content,
       });
@@ -99,7 +99,7 @@ export const sendOrderConfirmedEmail = async ({
       to: emails,
       city,
       locale,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,
       content,
     });

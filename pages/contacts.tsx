@@ -41,6 +41,7 @@ const ContactsRoute: React.FC = () => {
 
   const lightThemeMarker = configs.mapMarkerLightTheme;
   const darkThemeMarker = configs.mapMarkerDarkTheme;
+  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
 
   return (
     <Inner>
@@ -113,7 +114,7 @@ const ContactsRoute: React.FC = () => {
                   {
                     _id: 'address',
                     name: actualAddress.formattedAddress,
-                    icon: isDark ? darkThemeMarker : lightThemeMarker,
+                    icon: marker,
                     address: {
                       ...actualAddress,
                       formattedCoordinates: {

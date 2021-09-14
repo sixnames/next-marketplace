@@ -4,13 +4,14 @@ import ButtonCross from 'components/ButtonCross';
 import ControlButton from 'components/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import { useConfigContext } from 'context/configContext';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
-import { ROUTE_PROFILE } from 'config/common';
+import { ROUTE_CATALOGUE, ROUTE_PROFILE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -33,6 +34,8 @@ interface CartProductFrameInterface {
   originalName: string;
   shopProducts?: ShopProductInterface[];
   testId: number | string;
+  rubricSlug: string;
+  slug: string;
 }
 
 const CartProductFrame: React.FC<CartProductFrameInterface> = ({
@@ -43,6 +46,8 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   originalName,
   shopProducts,
   testId,
+  rubricSlug,
+  slug,
 }) => {
   const { deleteProductFromCart } = useSiteContext();
 
@@ -60,6 +65,14 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
                   layout='fill'
                   objectFit='contain'
                 />
+                <Link
+                  testId={`${testId}-image-grid`}
+                  target={'_blank'}
+                  className='block absolute z-10 inset-0 text-indent-full'
+                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                >
+                  {originalName}
+                </Link>
               </div>
             </div>
           </div>
@@ -93,15 +106,30 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
 interface CartProductMainDataInterface {
   itemId: string;
   originalName: string;
+  rubricSlug: string;
+  slug: string;
 }
 
-const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ itemId, originalName }) => {
+const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
+  itemId,
+  originalName,
+  rubricSlug,
+  slug,
+}) => {
   return (
     <React.Fragment>
       <div>
         <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
       </div>
-      <div className={classes.productName}>{originalName}</div>
+      <div className={classes.productName}>
+        <Link
+          target={'_blank'}
+          className='block text-primary-text hover:no-underline hover:text-primary-text'
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+        >
+          {originalName}
+        </Link>
+      </div>
     </React.Fragment>
   );
 };
@@ -118,10 +146,21 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
     return null;
   }
 
-  const { itemId, originalName, shopProducts, cardPrices, shopsCount, mainImage } = product;
+  const {
+    itemId,
+    originalName,
+    shopProducts,
+    cardPrices,
+    shopsCount,
+    mainImage,
+    rubricSlug,
+    slug,
+  } = product;
 
   return (
     <CartProductFrame
+      rubricSlug={rubricSlug}
+      slug={slug}
       testId={testId}
       cartProductId={`${_id}`}
       mainImage={mainImage}
@@ -131,7 +170,12 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
     >
       <div className={classes.productGrid}>
         <div>
-          <CartProductMainData itemId={itemId} originalName={originalName} />
+          <CartProductMainData
+            rubricSlug={rubricSlug}
+            slug={slug}
+            itemId={itemId}
+            originalName={originalName}
+          />
         </div>
 
         <div className={classes.productGridRight}>
@@ -160,10 +204,22 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     return null;
   }
 
-  const { price, oldPrice, discountedPercent, available, shop, itemId, originalName, mainImage } =
-    shopProduct;
+  const {
+    price,
+    oldPrice,
+    discountedPercent,
+    available,
+    shop,
+    itemId,
+    originalName,
+    mainImage,
+    rubricSlug,
+    slug,
+  } = shopProduct;
   return (
     <CartProductFrame
+      rubricSlug={rubricSlug}
+      slug={slug}
       testId={testId}
       cartProductId={`${_id}`}
       mainImage={mainImage}
@@ -171,7 +227,12 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     >
       <div className={classes.productGrid}>
         <div>
-          <CartProductMainData itemId={itemId} originalName={originalName} />
+          <CartProductMainData
+            rubricSlug={rubricSlug}
+            slug={slug}
+            itemId={itemId}
+            originalName={originalName}
+          />
           <SpinnerInput
             name={'amount'}
             value={amount}

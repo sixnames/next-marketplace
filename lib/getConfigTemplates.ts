@@ -1146,5 +1146,21 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'buyButtonText',
+      name: 'Текст кнопки при оформлении заказа',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
   ];
 }

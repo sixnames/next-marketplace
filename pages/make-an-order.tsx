@@ -11,6 +11,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
@@ -102,6 +103,7 @@ interface MakeAnOrderRouteInterface {
 
 const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   const router = useRouter();
+  const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
   const { loadingCart, cart, makeAnOrder } = useSiteContext();
   const { me } = useUserContext();
@@ -272,7 +274,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                   <div className={classes.aside}>
                     <CartAside
                       cart={cart}
-                      buttonText={'подтвердить заказ'}
+                      buttonText={configs.buyButtonText}
                       backLinkHref={`/cart`}
                       buttonType={'submit'}
                     />

@@ -5,6 +5,7 @@ import ControlButton from 'components/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
 import ProductShopPrices from 'components/ProductShopPrices';
+import { useConfigContext } from 'context/configContext';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -220,6 +221,7 @@ const CartRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   const { cart, loadingCart } = useSiteContext();
+  const { configs } = useConfigContext();
 
   if (loadingCart && !cart) {
     return (
@@ -308,7 +310,7 @@ const CartRoute: React.FC = () => {
           <div className={classes.aside}>
             <CartAside
               cart={cart}
-              buttonText={'Купить'}
+              buttonText={configs.buyButtonText}
               onConfirmHandler={() => {
                 router.push(`/make-an-order`).catch(() => {
                   showErrorNotification();

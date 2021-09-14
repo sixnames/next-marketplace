@@ -805,6 +805,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'youtube',
   });
+  const buyButtonText = getConfigStringValue({
+    configs,
+    slug: 'buyButtonText',
+  });
 
   return {
     actualAddress,
@@ -868,6 +872,7 @@ export const getSsrConfigs = async ({
     yaMetrica,
     yaVerification,
     youtube,
+    buyButtonText,
   };
 };
 

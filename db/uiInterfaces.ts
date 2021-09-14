@@ -687,6 +687,7 @@ export interface SsrConfigsInterface {
 
   // Project
   useUniqueConstructor: boolean;
+  buyButtonText: string;
 }
 
 export interface DaoPropsInterface<TInput> {

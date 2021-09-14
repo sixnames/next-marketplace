@@ -71,6 +71,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     catalogueMetaPrefix: '',
     cardMetaPrefix: '',
     useUniqueConstructor: false,
+    buyButtonText: '',
   },
 });
 

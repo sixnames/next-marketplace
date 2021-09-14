@@ -18,6 +18,7 @@ export interface CatalogueFilterInterface {
   selectedAttributes: CatalogueFilterAttributeInterface[];
   catalogueCounterString: string;
   rubricSlug: string;
+  clearSlug: string;
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
   companyId?: string;

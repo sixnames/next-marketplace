@@ -296,6 +296,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             filterLayoutVariant={catalogueData.catalogueFilterLayout}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
+            clearSlug={state.clearSlug}
             catalogueCounterString={catalogueCounterString}
             rubricSlug={state.rubricSlug}
             isFilterVisible={isFilterVisible}

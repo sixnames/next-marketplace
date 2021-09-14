@@ -21,7 +21,7 @@ const useUsersListColumns = (
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/users/${dataItem._id}`}>
+        <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>
           <a>{cellData}</a>
         </Link>
       ),

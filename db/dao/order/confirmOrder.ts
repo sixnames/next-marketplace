@@ -30,7 +30,7 @@ export async function confirmOrder({
   context,
   input,
 }: DaoPropsInterface<ConfirmOrderInputInterface>): Promise<OrderPayloadModel> {
-  const { getApiMessage, city, locale, companySlug } = await getRequestParams(context);
+  const { getApiMessage, city, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
@@ -199,9 +199,9 @@ export async function confirmOrder({
       });
       if (customer) {
         const notificationConfig = {
-          customer,
-          orderItemId: order.itemId,
-          companySlug,
+          customer: user,
+          orderItemId: order.orderId,
+          companyId: order.companyId,
           city,
           locale,
         };

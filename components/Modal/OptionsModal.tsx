@@ -29,6 +29,7 @@ export interface OptionsModalCommonPropsInterface {
   initialEmptyListMessage?: string;
   testId?: string;
   notShowAsAlphabet?: boolean | null;
+  initiallySelectedOptions?: OptionsModalOptionInterface[];
 }
 
 export interface OptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -53,12 +54,13 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   initialEmptyListMessage = defaultEmptyListMessage,
   notShowAsAlphabet,
   testId,
+  initiallySelectedOptions = [],
 }) => {
   const [emptyListMessage, setEmptyListMessage] = React.useState<string | null>(null);
   const [state, setState] = React.useState<OptionsModalLetterInterface[] | null>(null);
   const [search, setSearch] = React.useState<string | null>(null);
-  const [selectedOptions, setSelectedOptions] = React.useState<OptionsModalOptionInterface[]>([]);
-
+  const [selectedOptions, setSelectedOptions] =
+    React.useState<OptionsModalOptionInterface[]>(initiallySelectedOptions);
   const isCheckbox = React.useMemo(() => optionVariant === 'checkbox', [optionVariant]);
   const inputIcon = React.useMemo(() => {
     return isCheckbox ? (

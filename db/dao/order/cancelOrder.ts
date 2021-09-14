@@ -30,7 +30,7 @@ export async function cancelOrder({
   context,
   input,
 }: DaoPropsInterface<CancelOrderInputInterface>): Promise<OrderPayloadModel> {
-  const { getApiMessage, locale, city, companySlug } = await getRequestParams(context);
+  const { getApiMessage, locale, city } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
@@ -163,8 +163,8 @@ export async function cancelOrder({
       if (customer) {
         const notificationConfig = {
           customer,
-          orderItemId: order.itemId,
-          companySlug,
+          orderItemId: order.orderId,
+          companyId: order.companyId,
           city,
           locale,
         };

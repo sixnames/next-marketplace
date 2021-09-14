@@ -578,6 +578,7 @@ interface CastCatalogueFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilterOptions: string[];
+  categoryFilters: string[];
   sortBy: string | null;
   sortDir: 1 | -1;
   sortFilterOptions: string[];
@@ -601,6 +602,7 @@ export function castCatalogueFilters({
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
+  const categoryFilters: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
@@ -662,6 +664,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === CATALOGUE_CATEGORY_KEY) {
         realFilterOptions.push(filterOptionSlug);
+        categoryFilters.push(filterOption);
         return;
       }
 
@@ -680,6 +683,7 @@ export function castCatalogueFilters({
     minPrice,
     maxPrice,
     realFilterOptions,
+    categoryFilters,
     sortBy,
     sortDir: castedSortDir,
     sortFilterOptions,
@@ -745,6 +749,7 @@ export const getCatalogueData = async ({
       noFiltersSelected,
       skip,
       limit,
+      categoryFilters,
       page: payloadPage,
     } = castCatalogueFilters({
       filters,
@@ -1261,9 +1266,20 @@ export const getCatalogueData = async ({
       }
     });
 
+    // get clearSlug
+    let clearSlug = `${rubricSlug}/${sortPathname}`;
+    if (!rubric.variant?.showCategoriesInFilter) {
+      const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
+        .filter((pathPart) => {
+          return pathPart;
+        })
+        .join('/');
+      clearSlug = `${clearPath}`;
+    }
+
     return {
       _id: rubric._id,
-      clearSlug: `${ROUTE_CATALOGUE}/${rubricSlug}/${sortPathname}`,
+      clearSlug,
       filters,
       rubricName,
       rubricSlug: rubric.slug,

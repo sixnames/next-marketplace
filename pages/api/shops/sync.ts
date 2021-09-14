@@ -202,8 +202,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Save not synced shop products
-    if (notSyncedProducts.length > 0) {
-      await notSyncedProductsCollection.insertMany(notSyncedProducts);
+    for await (const notSyncedProduct of notSyncedProducts) {
+      const existingSyncError = await notSyncedProductsCollection.findOne({
+        barcode: notSyncedProduct.barcode,
+        shopId: notSyncedProduct.shopId,
+      });
+
+      if (existingSyncError) {
+        await notSyncedProductsCollection.findOneAndUpdate(
+          {
+            _id: existingSyncError._id,
+          },
+          {
+            $set: {
+              available: existingSyncError.available,
+              price: existingSyncError.price,
+              name: existingSyncError.name,
+            },
+          },
+        );
+      } else await notSyncedProductsCollection.insertOne(notSyncedProduct);
     }
 
     res.status(200).send({

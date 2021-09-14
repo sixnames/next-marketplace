@@ -1,12 +1,14 @@
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, UserModel } from 'db/dbModels';
+import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
-interface SendOrderCreatedSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
+interface SendOrderCreatedSmsInterface
+  extends Omit<SmsSenderInterface, 'text' | 'numbers' | 'companySlug'> {
   orderItemId: string;
   customer: UserModel;
+  companyId: ObjectIdModel;
 }
 
 export async function sendOrderCreatedSms({
@@ -14,14 +16,15 @@ export async function sendOrderCreatedSms({
   orderItemId,
   customer,
   city,
-  companySlug,
+  companyId,
 }: SendOrderCreatedSmsInterface) {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const company = await companiesCollection.findOne({
-    slug: companySlug,
+    _id: companyId,
   });
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.newOrder?.sms) {

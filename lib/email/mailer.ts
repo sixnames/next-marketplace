@@ -26,6 +26,7 @@ export const sendEmail = async ({
 }: SendEmailInterface) => {
   try {
     // get email api configs for current company
+    const isDev = process.env.DEV_ENV;
     const { db } = await getDatabase();
     const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
     const emailApiConfigs = await configsCollection
@@ -57,20 +58,30 @@ export const sendEmail = async ({
       configs,
       slug: 'siteName',
     });
-    if (!emailApiHost || !emailApiLogin || !emailApiPassword) {
+    if ((!emailApiHost || !emailApiLogin || !emailApiPassword) && !isDev) {
       return;
     }
 
     // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-      host: emailApiHost,
-      port: 465,
-      secure: true,
-      auth: {
-        user: emailApiLogin,
-        pass: emailApiPassword,
-      },
-    });
+    const config = isDev
+      ? {
+          host: 'localhost',
+          port: 1025,
+          auth: {
+            user: 'project.1',
+            pass: 'secret.1',
+          },
+        }
+      : {
+          host: emailApiHost,
+          port: 465,
+          secure: true,
+          auth: {
+            user: emailApiLogin,
+            pass: emailApiPassword,
+          },
+        };
+    const transporter = nodemailer.createTransport(config);
 
     // send mail with defined transport object
     await transporter.sendMail({

@@ -5,6 +5,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
 import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
+import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -27,6 +28,7 @@ import {
 import { ProductModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  OptionInterface,
   ProductAttributeInterface,
   ProductAttributesGroupASTInterface,
   ProductInterface,
@@ -53,6 +55,15 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { Form, Formik } from 'formik';
+
+function castSelectedOptions(option: OptionInterface): OptionsModalOptionInterface {
+  return {
+    _id: option._id,
+    slug: option.slug,
+    name: `${option.name}`,
+    options: (option.options || []).map(castSelectedOptions),
+  };
+}
 
 interface ProductAttributesInterface {
   product: ProductInterface;
@@ -164,6 +175,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                             optionVariant: 'radio',
                             title: `${attribute.name}`,
                             notShowAsAlphabet: attribute.notShowAsAlphabet,
+                            initiallySelectedOptions: (attribute.options || []).map(
+                              castSelectedOptions,
+                            ),
                             onSubmit: (value) => {
                               showLoading();
                               updateProductSelectAttributeMutation({
@@ -216,6 +230,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                             optionsGroupId: `${attribute.optionsGroupId}`,
                             title: `${attribute.name}`,
                             notShowAsAlphabet: attribute.notShowAsAlphabet,
+                            initiallySelectedOptions: (attribute.options || []).map(
+                              castSelectedOptions,
+                            ),
                             onSubmit: (value) => {
                               showLoading();
                               updateProductSelectAttributeMutation({

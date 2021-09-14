@@ -55,9 +55,9 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <div className='relative'>
         <CmsOrderDetails order={order} title={title} />
-        {order.status?.isPending ? (
-          <Inner>
-            <FixedButtons>
+        <Inner>
+          <FixedButtons>
+            {order.status?.isPending ? (
               <Button
                 onClick={() => {
                   confirmOrderMutation({
@@ -67,7 +67,9 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
               >
                 Подтвердить заказ
               </Button>
+            ) : null}
 
+            {!order.status?.isCanceled && !order.status?.isDone ? (
               <Button
                 theme={'secondary'}
                 onClick={() => {
@@ -87,9 +89,9 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
               >
                 Отменить заказ
               </Button>
-            </FixedButtons>
-          </Inner>
-        ) : null}
+            ) : null}
+          </FixedButtons>
+        </Inner>
       </div>
     </AppContentWrapper>
   );

@@ -1,14 +1,15 @@
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, UserModel } from 'db/dbModels';
+import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
 interface SendOrderProductCanceledSmsInterface
-  extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
+  extends Omit<SmsSenderInterface, 'text' | 'numbers' | 'companySlug'> {
   orderItemId: string;
   productOriginalName: string;
   customer: UserModel;
+  companyId: ObjectIdModel;
 }
 
 export async function sendOrderProductCanceledSms({
@@ -16,15 +17,16 @@ export async function sendOrderProductCanceledSms({
   orderItemId,
   customer,
   city,
-  companySlug,
+  companyId,
   productOriginalName,
 }: SendOrderProductCanceledSmsInterface) {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const company = await companiesCollection.findOne({
-    slug: companySlug,
+    _id: companyId,
   });
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.canceledOrderProduct?.sms) {

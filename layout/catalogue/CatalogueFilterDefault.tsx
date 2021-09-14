@@ -92,6 +92,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   companyId,
   route,
   isSearchResult,
+  clearSlug,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -124,7 +125,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
             <div className='flex items-baseline justify-between mb-4'>
               <span className='text-lg font-bold'>Выбранные</span>
               <Link
-                href={`${route}/${rubricSlug}`}
+                href={`${route}/${clearSlug}`}
                 className='font-medium text-theme'
                 onClick={hideFilterHandler}
               >

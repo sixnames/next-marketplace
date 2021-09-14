@@ -1,25 +1,30 @@
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, UserModel } from 'db/dbModels';
+import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
 
 interface SendOrderConfirmedEmailInterface
-  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
+  extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to' | 'companySlug'> {
   orderItemId: string;
   customer: UserModel;
+  companyId: ObjectIdModel;
 }
 
 export const sendOrderConfirmedEmail = async ({
   customer,
   orderItemId,
-  companySlug,
+  companyId,
   city,
   locale,
 }: SendOrderConfirmedEmailInterface) => {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const company = await companiesCollection.findOne({
+    _id: companyId,
+  });
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.confirmedOrder?.email) {
@@ -56,9 +61,6 @@ export const sendOrderConfirmedEmail = async ({
       `;
 
   // company admins
-  const company = await companiesCollection.findOne({
-    slug: companySlug,
-  });
   if (company) {
     const adminIds = [...company.staffIds, company.ownerId];
     const users = await usersCollection

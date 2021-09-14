@@ -396,8 +396,8 @@ export async function makeAnOrder({
       for await (const order of ordersInCart) {
         const notificationConfig = {
           customer: user,
-          orderItemId: order.itemId,
-          companySlug,
+          orderItemId: order.orderId,
+          companyId: order.companyId,
           city,
           locale,
         };

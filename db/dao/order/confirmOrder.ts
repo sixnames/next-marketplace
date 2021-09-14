@@ -200,7 +200,7 @@ export async function confirmOrder({
       if (customer) {
         const notificationConfig = {
           customer: user,
-          orderItemId: order.itemId,
+          orderItemId: order.orderId,
           companyId: order.companyId,
           city,
           locale,

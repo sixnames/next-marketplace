@@ -206,7 +206,7 @@ export async function cancelOrderProduct({
       if (customer) {
         const notificationConfig = {
           customer,
-          orderItemId: order.itemId,
+          orderItemId: order.orderId,
           productOriginalName: updatedOrderProducts.originalName,
           companyId: order.companyId,
           city,

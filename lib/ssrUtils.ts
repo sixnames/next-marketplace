@@ -809,8 +809,18 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'buyButtonText',
   });
+  const mapMarkerDarkTheme = getConfigStringValue({
+    configs,
+    slug: 'mapMarkerDarkTheme',
+  });
+  const mapMarkerLightTheme = getConfigStringValue({
+    configs,
+    slug: 'mapMarkerLightTheme',
+  });
 
   return {
+    mapMarkerDarkTheme,
+    mapMarkerLightTheme,
     actualAddress,
     androidChrome192,
     androidChrome512,

@@ -670,6 +670,8 @@ export interface SsrConfigsInterface {
   actualAddress: string;
   contactsContent: string;
   seoText: string;
+  mapMarkerDarkTheme: string;
+  mapMarkerLightTheme: string;
 
   /// Catalogue
   mainBannerAutoplaySpeed: number;

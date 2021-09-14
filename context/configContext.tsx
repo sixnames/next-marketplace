@@ -72,6 +72,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardMetaPrefix: '',
     useUniqueConstructor: false,
     buyButtonText: '',
+    mapMarkerDarkTheme: '',
+    mapMarkerLightTheme: '',
   },
 });
 

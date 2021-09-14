@@ -87,6 +87,27 @@ export const ordersMessages: MessageBaseInterface[] = [
     },
   },
   {
+    slug: 'orders.deleteOrder.notFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Заказ не найден.`,
+      [SECONDARY_LOCALE]: `Order not found.`,
+    },
+  },
+  {
+    slug: 'orders.deleteOrder.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка удаления заказа.`,
+      [SECONDARY_LOCALE]: `Order delete error.`,
+    },
+  },
+  {
+    slug: 'orders.deleteOrder.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Заказ удалён.`,
+      [SECONDARY_LOCALE]: `Order removed.`,
+    },
+  },
+  {
     slug: 'validation.orders.reservationDate',
     messageI18n: {
       [DEFAULT_LOCALE]: `Дата отгрузки обязательна к заполнению.`,

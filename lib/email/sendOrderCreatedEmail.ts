@@ -77,9 +77,6 @@ export const sendOrderCreatedEmail = async ({
       .toArray();
     const emails = users.map(({ email }) => email);
 
-    console.log('company >>>>>>>>>>>>>>>>>>');
-    console.log(emails);
-
     if (emails.length > 0) {
       await sendEmail({
         text,

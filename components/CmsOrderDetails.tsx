@@ -9,6 +9,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import {
   useCancelOrderProduct,
@@ -27,10 +28,12 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
   const [touched, setTouched] = React.useState<boolean>(false);
 
   const { showModal } = useAppContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { originalName, shopProduct, itemId, price, totalPrice, status, isCanceled } = orderProduct;
   const productImageSrc = shopProduct
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+  const minAmount = 1;
   const imageWidth = 35;
   const imageHeight = 120;
 
@@ -83,10 +86,16 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
                   circle
                   theme={'secondary-b'}
                   onClick={() => {
-                    updateOrderProductMutation({
-                      orderProductId: `${orderProduct._id}`,
-                      amount,
-                    }).catch(console.log);
+                    if (amount < minAmount) {
+                      showErrorNotification({
+                        title: `Количество не может быть ниже ${minAmount}`,
+                      });
+                    } else {
+                      updateOrderProductMutation({
+                        orderProductId: `${orderProduct._id}`,
+                        amount,
+                      }).catch(console.log);
+                    }
                   }}
                 />
 

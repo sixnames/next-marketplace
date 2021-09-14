@@ -288,10 +288,16 @@ export const CategoryMutations = extendType({
             collectionName: COL_CATEGORIES,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
-            additionalQuery: {
-              _id: { $ne: categoryId },
-              rubricId,
-            },
+            additionalQuery: category.parentId
+              ? {
+                  _id: { $ne: categoryId },
+                  parentId: category.parentId,
+                  rubricId: category.rubricId,
+                }
+              : {
+                  _id: { $ne: categoryId },
+                  rubricId: category.rubricId,
+                },
           });
           if (exist) {
             return {

@@ -397,11 +397,17 @@ export async function makeAnOrder({
         const notificationConfig = {
           customer: user,
           orderItemId: order.itemId,
-          companySlug,
+          companySlug: order.companySiteSlug,
           city,
           locale,
         };
-        await sendOrderCreatedEmail(notificationConfig);
+        await sendOrderCreatedEmail({
+          customer: user,
+          orderItemId: order.itemId,
+          companyId: order.companyId,
+          city,
+          locale,
+        });
         await sendOrderCreatedSms(notificationConfig);
       }
 

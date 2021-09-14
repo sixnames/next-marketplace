@@ -1267,10 +1267,14 @@ export const getCatalogueData = async ({
     });
 
     // get clearSlug
-    let clearSlug = `/${rubricSlug}/${sortPathname}`;
+    let clearSlug = `${rubricSlug}/${sortPathname}`;
     if (!rubric.variant?.showCategoriesInFilter) {
-      const clearPath = [rubricSlug, ...categoryFilters, sortPathname].join('/');
-      clearSlug = `/${clearPath}`;
+      const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
+        .filter((pathPart) => {
+          return pathPart;
+        })
+        .join('/');
+      clearSlug = `${clearPath}`;
     }
 
     return {

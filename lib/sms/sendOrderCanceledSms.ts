@@ -4,8 +4,7 @@ import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
-interface SendOrderCanceledSmsInterface
-  extends Omit<SmsSenderInterface, 'text' | 'numbers' | 'companySlug'> {
+interface SendOrderCanceledSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
@@ -15,6 +14,7 @@ export async function sendOrderCanceledSms({
   locale,
   orderItemId,
   customer,
+  companySiteSlug,
   city,
   companyId,
 }: SendOrderCanceledSmsInterface) {
@@ -24,7 +24,6 @@ export async function sendOrderCanceledSms({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
-  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // customer
   if (customer && customer.notifications?.canceledOrder?.sms) {
@@ -38,7 +37,7 @@ export async function sendOrderCanceledSms({
       numbers: [customer.phone],
       locale,
       city,
-      companySlug,
+      companySiteSlug,
     });
   }
 
@@ -61,7 +60,7 @@ export async function sendOrderCanceledSms({
         numbers,
         locale,
         city,
-        companySlug,
+        companySiteSlug,
       });
     }
   }
@@ -79,7 +78,7 @@ export async function sendOrderCanceledSms({
       numbers,
       locale,
       city,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySiteSlug: DEFAULT_COMPANY_SLUG,
     });
   }
 }

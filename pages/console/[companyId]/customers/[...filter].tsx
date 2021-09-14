@@ -5,7 +5,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
-import { COL_ORDERS, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_ORDERS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
@@ -198,12 +198,18 @@ export const getServerSideProps = async (
             companyId: new ObjectId(`${companyId}`),
           },
         },
+        ...searchStage,
+        {
+          $group: {
+            _id: '$customerId',
+          },
+        },
         {
           $lookup: {
             from: COL_USERS,
             as: 'user',
             let: {
-              customerId: '$customerId',
+              customerId: '$_id',
             },
             pipeline: [
               {
@@ -213,90 +219,10 @@ export const getServerSideProps = async (
                   },
                 },
               },
-              ...searchStage,
-              {
-                $facet: {
-                  docs: [
-                    {
-                      $sort: {
-                        _id: SORT_DESC,
-                      },
-                    },
-                    {
-                      $skip: skip,
-                    },
-                    {
-                      $limit: limit,
-                    },
-                    {
-                      $lookup: {
-                        from: COL_ROLES,
-                        as: 'role',
-                        let: { roleId: '$roleId' },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$_id', '$$roleId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        role: { $arrayElemAt: ['$role', 0] },
-                      },
-                    },
-                    {
-                      $project: {
-                        password: false,
-                      },
-                    },
-                  ],
-                  countAllDocs: [
-                    {
-                      $count: 'totalDocs',
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  totalDocs: '$totalDocsObject.totalDocs',
-                },
-              },
-              {
-                $addFields: {
-                  totalPagesFloat: {
-                    $divide: ['$totalDocs', limit],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  totalPages: {
-                    $ceil: '$totalPagesFloat',
-                  },
-                },
-              },
               {
                 $project: {
-                  docs: 1,
-                  totalDocs: 1,
-                  totalPages: 1,
-                  hasPrevPage: {
-                    $gt: [page, DEFAULT_PAGE],
-                  },
-                  hasNextPage: {
-                    $lt: [page, '$totalPages'],
-                  },
+                  password: false,
+                  notifications: false,
                 },
               },
             ],
@@ -309,12 +235,72 @@ export const getServerSideProps = async (
             },
           },
         },
+        {
+          $facet: {
+            docs: [
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $skip: skip,
+              },
+              {
+                $limit: limit,
+              },
+            ],
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+          },
+        },
+        {
+          $addFields: {
+            totalDocs: '$totalDocsObject.totalDocs',
+          },
+        },
+        {
+          $addFields: {
+            totalPagesFloat: {
+              $divide: ['$totalDocs', limit],
+            },
+          },
+        },
+        {
+          $addFields: {
+            totalPages: {
+              $ceil: '$totalPagesFloat',
+            },
+          },
+        },
+        {
+          $project: {
+            docs: 1,
+            totalDocs: 1,
+            totalPages: 1,
+            hasPrevPage: {
+              $gt: [page, DEFAULT_PAGE],
+            },
+            hasNextPage: {
+              $lt: [page, '$totalPages'],
+            },
+          },
+        },
       ],
       { allowDiskUse: true },
     )
     .toArray();
 
   const usersResult = usersAggregationResult[0];
+
   if (!usersResult) {
     const payload: UsersConsumerInterface = {
       clearSlug,

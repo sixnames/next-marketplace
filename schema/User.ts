@@ -725,7 +725,7 @@ export const UserMutations = mutationType({
           await sendPasswordUpdatedEmail({
             to: updatedUser.email,
             userName: updatedUser.name,
-            companySlug,
+            companySiteSlug: companySlug,
             city,
             locale,
           });
@@ -817,7 +817,7 @@ export const UserMutations = mutationType({
             to: createdUser.email,
             userName: createdUser.name,
             password: input.password,
-            companySlug,
+            companySiteSlug: companySlug,
             city,
             locale,
           });

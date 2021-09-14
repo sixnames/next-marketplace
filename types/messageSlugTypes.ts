@@ -630,6 +630,9 @@ export type MessageSlug =
   | 'orders.updateOrder.statusNotFound'
   | 'orders.updateOrder.error'
   | 'orders.updateOrder.success'
+  | 'orders.deleteOrder.notFound'
+  | 'orders.deleteOrder.error'
+  | 'orders.deleteOrder.success'
   // Orders validation
   | 'validation.orders.reservationDate'
 

@@ -670,6 +670,8 @@ export interface SsrConfigsInterface {
   actualAddress: string;
   contactsContent: string;
   seoText: string;
+  mapMarkerDarkTheme: string;
+  mapMarkerLightTheme: string;
 
   /// Catalogue
   mainBannerAutoplaySpeed: number;
@@ -687,6 +689,7 @@ export interface SsrConfigsInterface {
 
   // Project
   useUniqueConstructor: boolean;
+  buyButtonText: string;
 }
 
 export interface DaoPropsInterface<TInput> {

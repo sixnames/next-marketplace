@@ -740,6 +740,38 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'contacts',
+      variant: CONFIG_VARIANT_ASSET,
+      slug: 'mapMarkerDarkTheme',
+      name: 'Изображение маркера на карте с тёмной темой (40 x 40)',
+      description: '',
+      multi: false,
+      acceptedFormats: ['image/svg+xml', 'image/png'],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [`/marker.svg`],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_ASSET,
+      slug: 'mapMarkerLightTheme',
+      name: 'Изображение маркера на карте со светлой темой (40 x 40)',
+      description: '',
+      multi: false,
+      acceptedFormats: ['image/svg+xml', 'image/png'],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [`/marker.svg`],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
       variant: CONFIG_VARIANT_CONSTRUCTOR,
       slug: 'contactsContent',
       name: 'Контент на странице контактов',
@@ -1143,6 +1175,22 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'buyButtonText',
+      name: 'Текст кнопки при оформлении заказа',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },

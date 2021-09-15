@@ -3154,6 +3154,7 @@ export type UpdateRubricVariantInput = {
   showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
   showSnippetArticle?: Maybe<Scalars['Boolean']>;
+  showCardArticle?: Maybe<Scalars['Boolean']>;
   showSnippetRating?: Maybe<Scalars['Boolean']>;
   showSnippetButtonsOnHover?: Maybe<Scalars['Boolean']>;
   showCardButtonsBackground?: Maybe<Scalars['Boolean']>;

@@ -154,6 +154,7 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.boolean('showSnippetConnections');
     t.boolean('showSnippetBackground');
     t.boolean('showSnippetArticle');
+    t.boolean('showCardArticle');
     t.boolean('showSnippetRating');
     t.boolean('showSnippetButtonsOnHover');
     t.boolean('showCardButtonsBackground');

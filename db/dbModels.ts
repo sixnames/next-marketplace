@@ -634,6 +634,7 @@ export interface RubricVariantModel {
   showSnippetConnections?: boolean | null;
   showSnippetBackground?: boolean | null;
   showSnippetArticle?: boolean | null;
+  showCardArticle?: boolean | null;
   showSnippetRating?: boolean | null;
   showSnippetButtonsOnHover?: boolean | null;
   showCardButtonsBackground?: boolean | null;

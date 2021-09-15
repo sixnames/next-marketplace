@@ -2834,6 +2834,7 @@ input UpdateRubricVariantInput {
   nameI18n: JSONObject!
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
+  showCardArticle: Boolean
   showCardBrands: Boolean
   showCardButtonsBackground: Boolean
   showCardImagesSlider: Boolean

@@ -988,22 +988,6 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'catalogue',
-      variant: CONFIG_VARIANT_BOOLEAN,
-      slug: 'showCardArticle',
-      name: 'Показывать артикул в карточке товара',
-      description: '',
-      multi: false,
-      acceptedFormats: [],
-      cities: {
-        [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['false'],
-        },
-      },
-    },
-    {
-      _id: new ObjectId(),
-      companySlug,
-      group: 'catalogue',
       variant: CONFIG_VARIANT_NUMBER,
       slug: 'stickyNavVisibleCategoriesCount',
       name: 'Количество видимых категорий в выпадающем меню шапки сайта.',

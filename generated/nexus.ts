@@ -929,6 +929,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
+    showCardArticle?: boolean | null; // Boolean
     showCardBrands?: boolean | null; // Boolean
     showCardButtonsBackground?: boolean | null; // Boolean
     showCardImagesSlider?: boolean | null; // Boolean

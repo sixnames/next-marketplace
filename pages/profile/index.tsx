@@ -4,10 +4,11 @@ import ControlButtonChevron from 'components/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
+import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Tooltip from 'components/Tooltip';
-import { ROUTE_SIGN_IN } from 'config/common';
+import { ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {
   COL_ORDER_PRODUCTS,
@@ -42,6 +43,8 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
 }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, shopProduct, itemId, price, amount, totalPrice, productId } = orderProduct;
+  const rubricSlug = `${shopProduct?.rubricSlug}`;
+  const slug = `${shopProduct?.slug}`;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
@@ -65,13 +68,28 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           width={imageWidth}
           height={imageHeight}
         />
+        <Link
+          target={'_blank'}
+          className='block absolute z-10 inset-0 text-indent-full'
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+        >
+          {originalName}
+        </Link>
       </div>
 
       <div className='flex-grow'>
         <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
-          <div className='text-lg font-bold flex-grow'>{originalName}</div>
+          <div className='text-lg font-bold flex-grow'>
+            <Link
+              target={'_blank'}
+              className='block text-primary-text hover:no-underline hover:text-primary-text'
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            >
+              {originalName}
+            </Link>
+          </div>
 
           <div>
             <div className='flex items-baseline ml-auto flex-grow-0'>

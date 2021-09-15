@@ -6,7 +6,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MetricModalInterface } from 'components/Modal/MetricModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { SORT_DESC } from 'config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, METRIC_MODAL } from 'config/modalVariants';
 import { COL_METRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -158,7 +158,7 @@ export const getServerSideProps = async (
     .aggregate([
       {
         $sort: {
-          _id: SORT_DESC,
+          [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
         },
       },
     ])

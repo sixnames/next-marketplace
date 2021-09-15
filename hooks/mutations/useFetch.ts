@@ -63,6 +63,9 @@ export function useFetch<T>({
         }
         onError(json);
       } catch (e) {
+        if (process.env.DEV_ENV) {
+          console.log(e);
+        }
         setLoading(false);
         setError(e);
         return payload;

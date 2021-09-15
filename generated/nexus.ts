@@ -493,12 +493,6 @@ export interface NexusGenInputs {
     // input type
     excludedRubricsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
   };
-  GetNewOrdersCounterInput: {
-    // input type
-    companyId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    customerId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    shopId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-  };
   GetProductShopsInput: {
     // input type
     productId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1940,7 +1934,6 @@ export interface NexusGenFieldTypes {
     getManufacturer: NexusGenRootTypes['Manufacturer']; // Manufacturer!
     getManufacturerAlphabetLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
-    getNewOrdersCounter: number; // Int!
     getOptionAlphabetLists: NexusGenRootTypes['OptionsAlphabetList'][]; // [OptionsAlphabetList!]!
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
     getOptionsGroupVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -3078,7 +3071,6 @@ export interface NexusGenFieldTypeNames {
     getManufacturer: 'Manufacturer';
     getManufacturerAlphabetLists: 'ManufacturersAlphabetList';
     getManufacturerBySlug: 'Manufacturer';
-    getNewOrdersCounter: 'Int';
     getOptionAlphabetLists: 'OptionsAlphabetList';
     getOptionsGroup: 'OptionsGroup';
     getOptionsGroupVariantsOptions: 'SelectOption';
@@ -4029,10 +4021,6 @@ export interface NexusGenArgTypes {
     getManufacturerBySlug: {
       // args
       slug: string; // String!
-    };
-    getNewOrdersCounter: {
-      // args
-      input?: NexusGenInputs['GetNewOrdersCounterInput'] | null; // GetNewOrdersCounterInput
     };
     getOptionAlphabetLists: {
       // args

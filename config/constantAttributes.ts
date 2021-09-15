@@ -250,7 +250,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '500 000 – 1000 000',
+          ru: '500 000 – 1 000 000',
         },
         slug: `500000_1000000`,
       },
@@ -258,7 +258,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '1000 000 – 1500 000',
+          ru: '1 000 000 – 1 500 000',
         },
         slug: `1000000_1500000`,
       },
@@ -266,7 +266,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '1500 000 – 3000 000',
+          ru: '1 500 000 – 3 000 000',
         },
         slug: `1500000_3000000`,
       },
@@ -274,7 +274,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '3000 000 – 3500 000',
+          ru: '3 000 000 – 3 500 000',
         },
         slug: `3000000_3500000`,
       },
@@ -282,7 +282,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '3500 000 – 4000 000',
+          ru: '3 500 000 – 4 000 000',
         },
         slug: `3500000_4000000`,
       },
@@ -290,7 +290,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '4000 000 – 4500 000',
+          ru: '4 000 000 – 4 500 000',
         },
         slug: `4000000_4500000`,
       },
@@ -298,7 +298,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '4500 000 – 5000 000',
+          ru: '4 500 000 – 5 000 000',
         },
         slug: `4500000_5000000`,
       },
@@ -306,7 +306,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
         _id: new ObjectId(),
         ...commonOptionFields,
         nameI18n: {
-          ru: '5000 000 – 10 000 000',
+          ru: '5 000 000 – 10 000 000',
         },
         slug: `5000000_10000000`,
       },

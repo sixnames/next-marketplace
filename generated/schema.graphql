@@ -757,12 +757,6 @@ input GetAllRubricsInput {
   excludedRubricsIds: [ObjectId!]
 }
 
-input GetNewOrdersCounterInput {
-  companyId: ObjectId
-  customerId: ObjectId
-  shopId: ObjectId
-}
-
 input GetProductShopsInput {
   productId: ObjectId!
   sortBy: String = "price"
@@ -2052,11 +2046,6 @@ type Query {
   getManufacturerBySlug(slug: String!): Manufacturer!
 
   """
-  Should return new orders counter
-  """
-  getNewOrdersCounter(input: GetNewOrdersCounterInput): Int!
-
-  """
   Should return options grouped by alphabet
   """
   getOptionAlphabetLists(input: OptionAlphabetInput!): [OptionsAlphabetList!]!
@@ -2766,7 +2755,7 @@ input UpdateProductSelectAttributeInput {
 
 input UpdateProductSupplierInput {
   productId: ObjectId!
-  supplierSlug: String
+  supplierSlugs: [String!]!
 }
 
 input UpdateProductTextAttributeInput {

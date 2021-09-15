@@ -255,6 +255,7 @@ export interface ProductInterface extends ProductModel {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
+  suppliers?: SupplierInterface[] | null;
   connections?: ProductConnectionInterface[];
   attributes?: ProductAttributeInterface[];
   attributesGroups?: ProductAttributesGroupInterface[] | null;

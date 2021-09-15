@@ -1,4 +1,3 @@
-import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner';
@@ -60,7 +59,7 @@ interface ProductBrandsInterface {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
-  supplier?: SupplierInterface | null;
+  suppliers?: SupplierInterface[] | null;
   rubric: RubricInterface;
 }
 
@@ -71,7 +70,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brand,
   brandCollection,
   manufacturer,
-  supplier,
+  suppliers,
   rubric,
 }) => {
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
@@ -130,12 +129,36 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
             low
             testId={'brand-input'}
             value={brand ? `${brand.name}` : emptyValue}
+            onClear={
+              product.brandSlug
+                ? () => {
+                    showLoading();
+                    updateProductBrandMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          brandSlug: null,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }
+                : undefined
+            }
             onClick={() => {
               showModal<BrandOptionsModalInterface>({
                 variant: BRAND_OPTIONS_MODAL,
                 props: {
                   testId: 'brand-options-modal',
                   optionVariant: 'radio',
+                  initiallySelectedOptions: brand
+                    ? [
+                        {
+                          _id: brand._id,
+                          name: `${brand.name}`,
+                          slug: brand.slug,
+                        },
+                      ]
+                    : [],
                   onSubmit: (selectedOptions) => {
                     const brand = selectedOptions[0];
 
@@ -157,28 +180,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
               });
             }}
           />
-
-          {product.brandSlug ? (
-            <div className='mt-4'>
-              <Button
-                testId={'clear-brand'}
-                onClick={() => {
-                  updateProductBrandMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        brandSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
-                }}
-                size={'small'}
-                theme={'secondary'}
-              >
-                Очистить
-              </Button>
-            </div>
-          ) : null}
         </InputLine>
 
         <InputLine label={!product.brandSlug ? 'Бренд не назначен' : 'Коллекция бренда'}>
@@ -187,6 +188,21 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
             testId={'brand-collection-input'}
             disabled={!product.brandSlug}
             value={brandCollection ? `${brandCollection.name}` : emptyValue}
+            onClear={
+              product.brandCollectionSlug
+                ? () => {
+                    showLoading();
+                    updateProductBrandCollectionMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          brandCollectionSlug: null,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }
+                : undefined
+            }
             onClick={() => {
               showModal<BrandCollectionOptionsModalInterface>({
                 variant: BRAND_COLLECTION_OPTIONS_MODAL,
@@ -194,6 +210,15 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                   testId: 'brand-collection-options-modal',
                   brandSlug: `${product.brandSlug}`,
                   optionVariant: 'radio',
+                  initiallySelectedOptions: brandCollection
+                    ? [
+                        {
+                          _id: brandCollection._id,
+                          name: `${brandCollection.name}`,
+                          slug: brandCollection.slug,
+                        },
+                      ]
+                    : [],
                   onSubmit: (selectedOptions) => {
                     const brandCollection = selectedOptions[0];
 
@@ -215,28 +240,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
               });
             }}
           />
-
-          {product.brandCollectionSlug ? (
-            <div className='mt-4'>
-              <Button
-                testId={'clear-brand-collection'}
-                onClick={() => {
-                  updateProductBrandCollectionMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        brandCollectionSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
-                }}
-                size={'small'}
-                theme={'secondary'}
-              >
-                Очистить
-              </Button>
-            </div>
-          ) : null}
         </InputLine>
 
         <InputLine label={'Производитель'}>
@@ -244,12 +247,36 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
             low
             testId={'manufacturer-input'}
             value={manufacturer ? `${manufacturer.name}` : emptyValue}
+            onClear={
+              product.manufacturerSlug
+                ? () => {
+                    showLoading();
+                    updateProductManufacturerMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          manufacturerSlug: null,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }
+                : undefined
+            }
             onClick={() => {
               showModal<ManufacturerOptionsModalInterface>({
                 variant: MANUFACTURER_OPTIONS_MODAL,
                 props: {
                   testId: 'manufacturer-options-modal',
                   optionVariant: 'radio',
+                  initiallySelectedOptions: manufacturer
+                    ? [
+                        {
+                          _id: manufacturer._id,
+                          name: `${manufacturer.name}`,
+                          slug: manufacturer.slug,
+                        },
+                      ]
+                    : [],
                   onSubmit: (selectedOptions) => {
                     const manufacturer = selectedOptions[0];
                     showLoading();
@@ -266,49 +293,59 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
               });
             }}
           />
-
-          {product.manufacturerSlug ? (
-            <div className='mt-4'>
-              <Button
-                testId={'clear-manufacturer'}
-                onClick={() => {
-                  updateProductManufacturerMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        manufacturerSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
-                }}
-                size={'small'}
-                theme={'secondary'}
-              >
-                Очистить
-              </Button>
-            </div>
-          ) : null}
         </InputLine>
 
-        <InputLine label={'Поставщик'}>
+        <InputLine label={'Поставщики'}>
           <FakeInput
             low
             testId={'supplier-input'}
-            value={supplier ? `${supplier.name}` : emptyValue}
-            onClick={() => {
-              showModal<SupplierOptionsModalInterface>({
-                variant: SUPPLIER_OPTIONS_MODAL,
-                props: {
-                  testId: 'supplier-options-modal',
-                  optionVariant: 'radio',
-                  onSubmit: (selectedOptions) => {
-                    const supplier = selectedOptions[0];
+            value={
+              suppliers && suppliers.length > 0
+                ? suppliers
+                    .map((supplier) => {
+                      return `${supplier.name}`;
+                    })
+                    .join(', ')
+                : emptyValue
+            }
+            onClear={
+              product.supplierSlugs && product.supplierSlugs.length > 0
+                ? () => {
                     showLoading();
                     updateProductSupplierMutation({
                       variables: {
                         input: {
                           productId: product._id,
-                          supplierSlug: supplier.slug,
+                          supplierSlugs: [],
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }
+                : undefined
+            }
+            onClick={() => {
+              showModal<SupplierOptionsModalInterface>({
+                variant: SUPPLIER_OPTIONS_MODAL,
+                props: {
+                  testId: 'supplier-options-modal',
+                  optionVariant: 'checkbox',
+                  initiallySelectedOptions:
+                    suppliers && suppliers.length > 0
+                      ? suppliers.map((supplier) => {
+                          return {
+                            _id: supplier._id,
+                            name: `${supplier.name}`,
+                            slug: supplier.slug,
+                          };
+                        })
+                      : [],
+                  onSubmit: (selectedOptions) => {
+                    showLoading();
+                    updateProductSupplierMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          supplierSlugs: selectedOptions.map(({ slug }) => slug),
                         },
                       },
                     }).catch((e) => console.log(e));
@@ -317,28 +354,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
               });
             }}
           />
-
-          {product.supplierSlug ? (
-            <div className='mt-4'>
-              <Button
-                testId={'clear-supplier'}
-                onClick={() => {
-                  updateProductSupplierMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        supplierSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
-                }}
-                size={'small'}
-                theme={'secondary'}
-              >
-                Очистить
-              </Button>
-            </div>
-          ) : null}
         </InputLine>
       </Inner>
     </CmsProductLayout>
@@ -354,7 +369,7 @@ const Product: NextPage<ProductPageInterface> = ({
   brandCollection,
   manufacturer,
   rubric,
-  supplier,
+  suppliers,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
@@ -364,7 +379,7 @@ const Product: NextPage<ProductPageInterface> = ({
         brand={brand}
         brandCollection={brandCollection}
         manufacturer={manufacturer}
-        supplier={supplier}
+        suppliers={suppliers}
       />
     </CmsLayout>
   );
@@ -436,26 +451,31 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const supplierEntity = product.supplierSlug
-    ? await suppliersCollection.findOne(
-        {
-          slug: product.supplierSlug,
-        },
-        {
-          projection: {
-            _id: true,
-            nameI18n: true,
-            slug: true,
-          },
-        },
-      )
-    : null;
-  const supplier = supplierEntity
-    ? {
-        ...supplierEntity,
-        name: getFieldStringLocale(supplierEntity.nameI18n, props.sessionLocale),
-      }
-    : null;
+  const initialSuppliers =
+    product.supplierSlugs && product.supplierSlugs.length > 0
+      ? await suppliersCollection
+          .find(
+            {
+              slug: {
+                $in: product.supplierSlugs,
+              },
+            },
+            {
+              projection: {
+                _id: true,
+                nameI18n: true,
+                slug: true,
+              },
+            },
+          )
+          .toArray()
+      : [];
+  const suppliers = initialSuppliers.map((supplier) => {
+    return {
+      ...supplier,
+      name: getFieldStringLocale(supplier.nameI18n, props.sessionLocale),
+    };
+  });
 
   const brandEntity = product.brandSlug
     ? await brandsCollection.findOne(
@@ -509,7 +529,7 @@ export const getServerSideProps = async (
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
-      supplier: castDbData(supplier),
+      suppliers: castDbData(suppliers),
       rubric: castDbData(rubric),
     },
   };

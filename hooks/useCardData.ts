@@ -14,7 +14,6 @@ interface UseCardDataPayloadInterface
     UseGetSimilarProductsPayloadInterface {
   addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
   addProductToCart: (input: AddProductToCartInput) => void;
-  showArticle: boolean;
   visibleListFeatures: ProductAttributeInterface[];
   visibleListFeaturesCount: number;
 }
@@ -34,7 +33,6 @@ const useCardData = ({
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { configs } = useConfigContext();
-  const showArticle = configs.showCardArticle;
 
   // visible list features slice
   const visibleListFeaturesCount = React.useMemo(() => {
@@ -59,7 +57,6 @@ const useCardData = ({
 
   return {
     ...cardData,
-    showArticle,
     shopsCounterPostfix,
     isShopless,
     addShoplessProductToCart,

@@ -121,29 +121,23 @@ export async function makeAnOrder({
         return;
       }
 
-      // Create new user if not authenticated
       let user = sessionUser;
-      if (!sessionUser) {
+      // Check if user already exist
+      const existingUser = await usersCollection.findOne({
+        $or: [{ email: input.email }, { phone: input.phone }],
+      });
+      if (existingUser) {
+        user = existingUser;
+      }
+
+      // Create new user if not authenticated
+      if (!user) {
         const guestRole = await rolesCollection.findOne({ slug: ROLE_SLUG_GUEST });
 
         if (!guestRole) {
           payload = {
             success: false,
             message: await getApiMessage('orders.makeAnOrder.guestRoleNotFound'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        // Check if user already exist
-        const exist = await usersCollection.findOne({
-          $or: [{ email: input.email }, { phone: input.phone }],
-        });
-
-        if (exist) {
-          payload = {
-            success: false,
-            message: await getApiMessage('users.create.duplicate'),
           };
           await session.abortTransaction();
           return;

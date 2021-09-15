@@ -1,4 +1,3 @@
-// import { ONE_MINUTE } from 'config/common';
 import { ONE_MINUTE } from 'config/common';
 import {
   GetNewOrdersCounterInputInterface,

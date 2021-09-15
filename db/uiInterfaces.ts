@@ -600,6 +600,7 @@ export interface InitialCardDataInterface {
   connections: ProductConnectionInterface[];
   showFeaturesSection: boolean;
   showCardImagesSlider: boolean;
+  showArticle: boolean;
   showCardBrands: boolean;
   cardBrandsLabel: string;
   isShopless: boolean;

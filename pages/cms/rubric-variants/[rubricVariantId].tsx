@@ -86,6 +86,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showSnippetConnections: rubricVariant.showSnippetConnections || false,
             showSnippetBackground: rubricVariant.showSnippetBackground || false,
             showSnippetArticle: rubricVariant.showSnippetArticle || false,
+            showCardArticle: rubricVariant.showCardArticle || false,
             showSnippetRating: rubricVariant.showSnippetRating || false,
             showSnippetButtonsOnHover: rubricVariant.showSnippetButtonsOnHover || false,
             showCardButtonsBackground: rubricVariant.showCardButtonsBackground || false,
@@ -130,6 +131,11 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 <FormikCheckboxLine
                   label={'Показывать артикул в сниппете'}
                   name={'showSnippetArticle'}
+                />
+
+                <FormikCheckboxLine
+                  label={'Показывать артикул в карточке'}
+                  name={'showCardArticle'}
                 />
 
                 <FormikCheckboxLine

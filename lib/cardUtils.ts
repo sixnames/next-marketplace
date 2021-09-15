@@ -866,6 +866,7 @@ export async function getCardData({
     const isSingleImage = cardAssets.length < minAssetsListCount;
     const showCardImagesSlider = !isSingleImage && Boolean(rubric?.variant?.showCardImagesSlider);
     const showCardBrands = Boolean(rubric?.variant?.showCardBrands);
+    const showArticle = Boolean(rubric?.variant?.showCardArticle);
     const cardBrandsLabel = getFieldStringLocale(rubric?.variant?.cardBrandsLabelI18n, locale);
 
     const shopsCounterPostfix =
@@ -935,6 +936,7 @@ export async function getCardData({
       shopsCounterPostfix,
       attributesGroups: cardAttributesGroups,
       assets: cardAssets,
+      showArticle,
       isSingleImage,
       showCardImagesSlider,
       showCardBrands,

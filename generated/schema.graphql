@@ -2755,7 +2755,7 @@ input UpdateProductSelectAttributeInput {
 
 input UpdateProductSupplierInput {
   productId: ObjectId!
-  supplierSlug: String
+  supplierSlugs: [String!]!
 }
 
 input UpdateProductTextAttributeInput {

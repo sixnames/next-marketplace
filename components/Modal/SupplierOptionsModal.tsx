@@ -7,7 +7,7 @@ export interface SupplierOptionsModalInterface extends OptionsModalCommonPropsIn
 }
 
 const SupplierOptionsModal: React.FC<SupplierOptionsModalInterface> = ({
-  title = 'Выберите поставщика',
+  title = 'Выберите поставщиков',
   slugs,
   ...props
 }) => {

@@ -448,7 +448,7 @@ export const SupplierMutations = extendType({
           }
 
           // Check if supplier is used in products
-          const used = await productsCollection.findOne({ supplierSlug: supplier.slug });
+          const used = await productsCollection.findOne({ supplierSlugs: supplier.slug });
           if (used) {
             return {
               success: false,

@@ -855,7 +855,7 @@ export interface NexusGenInputs {
   UpdateProductSupplierInput: {
     // input type
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    supplierSlug?: string | null; // String
+    supplierSlugs: string[]; // [String!]!
   };
   UpdateProductTextAttributeInput: {
     // input type

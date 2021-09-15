@@ -3072,7 +3072,7 @@ export type UpdateProductSelectAttributeInput = {
 
 export type UpdateProductSupplierInput = {
   productId: Scalars['ObjectId'];
-  supplierSlug?: Maybe<Scalars['String']>;
+  supplierSlugs: Array<Scalars['String']>;
 };
 
 export type UpdateProductTextAttributeInput = {

@@ -91,7 +91,7 @@ export const UpdateProductSupplierInput = inputObjectType({
   name: 'UpdateProductSupplierInput',
   definition(t) {
     t.nonNull.objectId('productId');
-    t.string('supplierSlug');
+    t.nonNull.list.nonNull.string('supplierSlugs');
   },
 });
 
@@ -524,7 +524,7 @@ export const ProductAttributeMutations = extendType({
             }
 
             const { input } = args;
-            const { productId, supplierSlug } = input;
+            const { productId, supplierSlugs } = input;
 
             // Check product availability
             const product = await productsCollection.findOne({ _id: productId });
@@ -543,7 +543,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 $set: {
-                  supplierSlug,
+                  supplierSlugs,
                   updatedAt: new Date(),
                 },
               },
@@ -567,7 +567,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 $set: {
-                  supplierSlug,
+                  supplierSlugs,
                   updatedAt: new Date(),
                 },
               },

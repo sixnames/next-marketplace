@@ -540,7 +540,7 @@ interface ProductMainFieldsInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   mainImage: string;
-  supplierSlug?: string | null;
+  supplierSlugs?: string[] | null;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;

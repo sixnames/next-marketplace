@@ -1,9 +1,15 @@
 import { ONE_MINUTE } from 'config/common';
-import { GetNewOrdersCounterInput, useGetNewOrdersCounterQuery } from 'generated/apolloComponents';
+import {
+  GetNewOrdersCounterInputInterface,
+  GetNewOrdersCounterPayload,
+} from 'db/dao/order/getNewOrdersCounter';
+import { noNaN } from 'lib/numbers';
+import { stringifyApiParams } from 'lib/qsUtils';
 import * as React from 'react';
+import useSWR from 'swr';
 
 export interface UseNewOrdersCounterInterface {
-  input?: GetNewOrdersCounterInput;
+  input?: GetNewOrdersCounterInputInterface;
   allowFetch?: boolean;
 }
 
@@ -12,18 +18,19 @@ export function useNewOrdersCounter({
   input,
 }: UseNewOrdersCounterInterface): null | number {
   const [counter, setCounter] = React.useState<null | number>(null);
-  const { data } = useGetNewOrdersCounterQuery({
-    pollInterval: ONE_MINUTE,
-    variables: {
-      input,
+  const params = React.useMemo(() => stringifyApiParams(input), [input]);
+  const { data, error } = useSWR<GetNewOrdersCounterPayload>(
+    allowFetch ? `/api/order/new-orders-counter${params}` : null,
+    {
+      refreshInterval: ONE_MINUTE,
     },
-  });
+  );
 
   React.useEffect(() => {
-    if (allowFetch && data && data.getNewOrdersCounter) {
-      setCounter(data.getNewOrdersCounter);
+    if (data && !error) {
+      setCounter(noNaN(data.payload));
     }
-  }, [allowFetch, data]);
+  }, [error, data]);
 
   return counter;
 }

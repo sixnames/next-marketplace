@@ -793,12 +793,6 @@ export type GetAllRubricsInput = {
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
 };
 
-export type GetNewOrdersCounterInput = {
-  companyId?: Maybe<Scalars['ObjectId']>;
-  shopId?: Maybe<Scalars['ObjectId']>;
-  customerId?: Maybe<Scalars['ObjectId']>;
-};
-
 export type GetProductShopsInput = {
   productId: Scalars['ObjectId'];
   sortBy?: Maybe<Scalars['String']>;
@@ -2198,8 +2192,6 @@ export type Query = {
   getOptionsGroup: OptionsGroup;
   /** Should return options groups list */
   getAllOptionsGroups: Array<OptionsGroup>;
-  /** Should return new orders counter */
-  getNewOrdersCounter: Scalars['Int'];
   /** Should return product by given id */
   getProduct?: Maybe<Product>;
   /** Should return product by given slug */
@@ -2367,11 +2359,6 @@ export type QueryGetOptionAlphabetListsArgs = {
 
 export type QueryGetOptionsGroupArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetNewOrdersCounterArgs = {
-  input?: Maybe<GetNewOrdersCounterInput>;
 };
 
 
@@ -3085,7 +3072,7 @@ export type UpdateProductSelectAttributeInput = {
 
 export type UpdateProductSupplierInput = {
   productId: Scalars['ObjectId'];
-  supplierSlug?: Maybe<Scalars['String']>;
+  supplierSlugs: Array<Scalars['String']>;
 };
 
 export type UpdateProductTextAttributeInput = {
@@ -5156,16 +5143,6 @@ export type GetValidationMessagesQuery = (
     { __typename?: 'Message' }
     & MessageFragment
   )> }
-);
-
-export type GetNewOrdersCounterQueryVariables = Exact<{
-  input?: Maybe<GetNewOrdersCounterInput>;
-}>;
-
-
-export type GetNewOrdersCounterQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'getNewOrdersCounter'>
 );
 
 export type RubricVariantFragment = (
@@ -10273,39 +10250,6 @@ export function useGetValidationMessagesLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetValidationMessagesQueryHookResult = ReturnType<typeof useGetValidationMessagesQuery>;
 export type GetValidationMessagesLazyQueryHookResult = ReturnType<typeof useGetValidationMessagesLazyQuery>;
 export type GetValidationMessagesQueryResult = Apollo.QueryResult<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>;
-export const GetNewOrdersCounterDocument = gql`
-    query GetNewOrdersCounter($input: GetNewOrdersCounterInput) {
-  getNewOrdersCounter(input: $input)
-}
-    `;
-
-/**
- * __useGetNewOrdersCounterQuery__
- *
- * To run a query within a React component, call `useGetNewOrdersCounterQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetNewOrdersCounterQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNewOrdersCounterQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetNewOrdersCounterQuery(baseOptions?: Apollo.QueryHookOptions<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>(GetNewOrdersCounterDocument, options);
-      }
-export function useGetNewOrdersCounterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>(GetNewOrdersCounterDocument, options);
-        }
-export type GetNewOrdersCounterQueryHookResult = ReturnType<typeof useGetNewOrdersCounterQuery>;
-export type GetNewOrdersCounterLazyQueryHookResult = ReturnType<typeof useGetNewOrdersCounterLazyQuery>;
-export type GetNewOrdersCounterQueryResult = Apollo.QueryResult<GetNewOrdersCounterQuery, GetNewOrdersCounterQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

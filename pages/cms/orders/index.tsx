@@ -6,36 +6,38 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager/Pager';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
-import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
-import { OrderModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/order/useOrderMutations';
+import { useConsoleOrders } from 'hooks/useConsoleOrders';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getShortName } from 'lib/nameUtils';
-import { castOrderStatus } from 'lib/orderUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 
-interface OrdersRouteInterface {
-  orders: OrderInterface[];
-}
-
-const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
+const OrdersRoute: React.FC = () => {
   const { showModal } = useAppContext();
   const router = useRouter();
   const [deleteOrder] = useDeleteOrder();
+  const { data, error } = useConsoleOrders();
+
+  if (error) {
+    return <RequestError />;
+  }
+
+  if (!data) {
+    return <Spinner isNested isTransparent />;
+  }
 
   const columns: TableColumn<OrderInterface>[] = [
     {
@@ -138,7 +140,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
         <div className='overflow-x-auto' data-cy={'orders-list'}>
           <Table<OrderInterface>
             columns={columns}
-            data={orders}
+            data={data}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
@@ -153,12 +155,12 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ orders }) => {
   );
 };
 
-interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
+interface OrdersInterface extends PagePropsInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <OrdersRoute orders={orders} />
+      <OrdersRoute />
     </CmsLayout>
   );
 };
@@ -166,8 +168,6 @@ const Orders: NextPage<OrdersInterface> = ({ pageUrls, orders }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -175,92 +175,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const initialOrders = await ordersCollection
-    .aggregate<OrderInterface>([
-      {
-        $lookup: {
-          from: COL_ORDER_STATUSES,
-          as: 'status',
-          localField: 'statusId',
-          foreignField: '_id',
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ORDER_CUSTOMERS,
-          as: 'customer',
-          localField: '_id',
-          foreignField: 'orderId',
-        },
-      },
-      {
-        $lookup: {
-          from: COL_SHOPS,
-          as: 'shop',
-          let: { shopId: '$shopId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$shopId', '$_id'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          status: {
-            $arrayElemAt: ['$status', 0],
-          },
-          customer: {
-            $arrayElemAt: ['$customer', 0],
-          },
-          productsCount: {
-            $size: '$shopProductIds',
-          },
-          shop: {
-            $arrayElemAt: ['$shop', 0],
-          },
-        },
-      },
-      {
-        $sort: {
-          createdAt: SORT_DESC,
-        },
-      },
-    ])
-    .toArray();
-
-  const orders: OrderInterface[] = [];
-  initialOrders.forEach((order) => {
-    orders.push({
-      ...order,
-      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
-        return acc + totalPrice;
-      }, 0),
-      status: castOrderStatus({
-        initialStatus: order.status,
-        locale: props.sessionLocale,
-      }),
-      customer: order.customer
-        ? {
-            ...order.customer,
-            shortName: getShortName(order.customer),
-            formattedPhone: {
-              raw: phoneToRaw(order.customer.phone),
-              readable: phoneToReadable(order.customer.phone),
-            },
-          }
-        : null,
-    });
-  });
-
   return {
     props: {
       ...props,
-      orders: castDbData(orders),
     },
   };
 };

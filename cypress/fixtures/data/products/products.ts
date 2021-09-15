@@ -287,7 +287,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       brandSlug: brand?.slug,
       brandCollectionSlug: brandCollection?.slug,
       manufacturerSlug: manufacturer?.slug,
-      supplierSlug: supplier?.slug,
+      supplierSlugs: supplier ? [supplier.slug] : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

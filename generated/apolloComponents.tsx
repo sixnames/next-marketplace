@@ -598,6 +598,11 @@ export type CreateOrderStatusInput = {
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
   index: Scalars['Int'];
+  isNew: Scalars['Boolean'];
+  isConfirmed: Scalars['Boolean'];
+  isPayed: Scalars['Boolean'];
+  isDone: Scalars['Boolean'];
+  isCanceled: Scalars['Boolean'];
 };
 
 export type CreatePageInput = {
@@ -2960,6 +2965,11 @@ export type UpdateOrderStatusInput = {
   nameI18n: Scalars['JSONObject'];
   color: Scalars['String'];
   index: Scalars['Int'];
+  isNew: Scalars['Boolean'];
+  isConfirmed: Scalars['Boolean'];
+  isPayed: Scalars['Boolean'];
+  isDone: Scalars['Boolean'];
+  isCanceled: Scalars['Boolean'];
 };
 
 export type UpdatePageInput = {

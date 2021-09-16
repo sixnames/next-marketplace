@@ -101,7 +101,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
           {/*art*/}
           {showSnippetArticle ? (
-            <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+            <div className='text-secondary-text mb-5 text-sm'>Артикул: {itemId}</div>
           ) : null}
         </div>
 

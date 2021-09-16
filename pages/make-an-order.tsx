@@ -194,10 +194,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title className={classes.cartTitle}>
-          Корзина
-          <span>{`(${productsCount})`}</span>
-        </Title>
+        <Title className={classes.cartTitle}>В корзине товаров {productsCount} шт.</Title>
         <Formik
           enableReinitialize={true}
           validationSchema={validationSchema}

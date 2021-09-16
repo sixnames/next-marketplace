@@ -554,6 +554,11 @@ input CreateOptionsGroupInput {
 input CreateOrderStatusInput {
   color: String!
   index: Int!
+  isCanceled: Boolean!
+  isConfirmed: Boolean!
+  isDone: Boolean!
+  isNew: Boolean!
+  isPayed: Boolean!
   nameI18n: JSONObject!
 }
 
@@ -2641,6 +2646,11 @@ input UpdateOptionsGroupInput {
 input UpdateOrderStatusInput {
   color: String!
   index: Int!
+  isCanceled: Boolean!
+  isConfirmed: Boolean!
+  isDone: Boolean!
+  isNew: Boolean!
+  isPayed: Boolean!
   nameI18n: JSONObject!
   orderStatusId: ObjectId!
 }

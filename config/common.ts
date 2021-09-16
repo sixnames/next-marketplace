@@ -251,6 +251,7 @@ export const ORDER_LOG_VARIANTS_ENUMS: OrderLogVariantModel[] = [
 ];
 
 // ORDER STATUSES SLUGS
+export const INITIAL_STATUS_INDEX = 0;
 export const ORDER_STATUS_PENDING = 'pending';
 export const ORDER_STATUS_CONFIRMED = 'confirmed';
 export const ORDER_STATUS_DONE = 'done';

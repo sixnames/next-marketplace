@@ -8,6 +8,7 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardContentModel,
+  ProductConnectionItemModel,
   ProductModel,
   RubricAttributeModel,
   RubricModel,
@@ -26,6 +27,7 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
+  COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
@@ -693,6 +695,9 @@ export const RubricMutations = extendType({
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const productCardContentsCollection =
           db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+          COL_PRODUCT_CONNECTION_ITEMS,
+        );
 
         const session = client.startSession();
 
@@ -842,14 +847,28 @@ export const RubricMutations = extendType({
               return;
             }
 
+            // Delete product connections
+            const removedProductConnectionsResult =
+              await productConnectionItemsCollection.deleteMany({
+                productId,
+              });
+            if (!removedProductConnectionsResult.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`rubrics.deleteProduct.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             // Delete product
             const removedProductResult = await productsCollection.findOneAndDelete({
               _id: productId,
             });
-            const removedShopProductResult = await shopProductsCollection.findOneAndDelete({
+            const removedShopProductResult = await shopProductsCollection.deleteMany({
               productId,
             });
-            if (!removedProductResult.ok || !removedShopProductResult.ok) {
+            if (!removedProductResult.ok || !removedShopProductResult.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),

@@ -1,8 +1,8 @@
 import { hash } from 'bcryptjs';
 import {
   DEFAULT_COMPANY_SLUG,
+  INITIAL_STATUS_INDEX,
   ORDER_LOG_VARIANT_STATUS,
-  ORDER_STATUS_PENDING,
   ROLE_SLUG_GUEST,
 } from 'config/common';
 import {
@@ -195,7 +195,7 @@ export async function makeAnOrder({
 
       // Get order initial status
       const initialStatus = await orderStatusesCollection.findOne({
-        slug: ORDER_STATUS_PENDING,
+        index: INITIAL_STATUS_INDEX,
       });
       if (!initialStatus) {
         payload = {

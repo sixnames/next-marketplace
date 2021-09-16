@@ -59,24 +59,22 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
     <div className={classes.productHolder}>
       <LayoutCard className={classes.product} testId={'cart-product'}>
         <div className={classes.productMainGrid}>
-          <div>
+          <div className='relative'>
             <div className={classes.productImage}>
-              <div className={classes.productImageHolder}>
-                <Image
-                  src={`${mainImage}`}
-                  alt={originalName}
-                  title={originalName}
-                  layout='fill'
-                  objectFit='contain'
-                />
-                <Link
-                  target={'_blank'}
-                  className='block absolute z-10 inset-0 text-indent-full'
-                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
-                >
-                  {originalName}
-                </Link>
-              </div>
+              <Image
+                src={`${mainImage}`}
+                alt={originalName}
+                title={originalName}
+                layout='fill'
+                objectFit='contain'
+              />
+              <Link
+                target={'_blank'}
+                className='block absolute z-10 inset-0 text-indent-full'
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+              >
+                {originalName}
+              </Link>
             </div>
           </div>
           <div className={classes.productContent}>

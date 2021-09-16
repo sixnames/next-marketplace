@@ -43,17 +43,11 @@
 }
 
 .productImage {
-  position: relative;
-  min-height: 15rem;
-  margin-bottom: 1rem;
-}
-
-.productImageHolder {
   position: absolute;
-  bottom: 0;
-  left: 15%;
-  width: 70%;
-  height: calc(100% + 1.5rem);
+  top: 1rem;
+  left: 1rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
 }
 
 .product .productRemove {
@@ -195,12 +189,6 @@
 
   .product .amountInput {
     background-color: var(--primaryBackground);
-  }
-
-  .productImageHolder {
-    left: 5%;
-    width: 90%;
-    height: 100%;
   }
 }
 

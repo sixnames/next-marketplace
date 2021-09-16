@@ -1,3 +1,4 @@
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { OrderStatusInterface } from 'db/uiInterfaces';
@@ -44,6 +45,11 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
     nameI18n: orderStatus?.nameI18n || {},
     color: orderStatus?.color || '',
     index: orderStatus?.index || 0,
+    isNew: orderStatus?.isCanceled || false,
+    isConfirmed: orderStatus?.isConfirmed || false,
+    isPayed: orderStatus?.isPayed || false,
+    isDone: orderStatus?.isDone || false,
+    isCanceled: orderStatus?.isCanceled || false,
   };
 
   return (
@@ -55,14 +61,23 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
+          const commonValues = {
+            nameI18n: values.nameI18n,
+            color: values.color,
+            index: values.index,
+            isNew: values.isNew,
+            isConfirmed: values.isConfirmed,
+            isPayed: values.isPayed,
+            isDone: values.isDone,
+            isCanceled: values.isCanceled,
+          };
+
           if (orderStatus) {
             updateOrderStatusMutation({
               variables: {
                 input: {
                   orderStatusId: `${orderStatus._id}`,
-                  nameI18n: values.nameI18n,
-                  color: values.color,
-                  index: values.index,
+                  ...commonValues,
                 },
               },
             }).catch(console.log);
@@ -71,11 +86,7 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
 
           createOrderStatusMutation({
             variables: {
-              input: {
-                nameI18n: values.nameI18n,
-                color: values.color,
-                index: values.index,
-              },
+              input: commonValues,
             },
           }).catch(console.log);
         }}
@@ -108,6 +119,12 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
                 isRequired
                 showInlineError
               />
+
+              <FormikCheckboxLine label={'Новый'} name={'isNew'} />
+              <FormikCheckboxLine label={'Подтверждён'} name={'isConfirmed'} />
+              <FormikCheckboxLine label={'Оплачен'} name={'isPayed'} />
+              <FormikCheckboxLine label={'Завершён'} name={'isDone'} />
+              <FormikCheckboxLine label={'Отменён'} name={'isCanceled'} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-order-status'}>

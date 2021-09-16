@@ -478,10 +478,6 @@ export interface CatalogueFilterAttributeInterface {
 
 export interface OrderStatusInterface extends OrderStatusModel {
   name?: string | null;
-  isPending?: boolean;
-  isConfirmed?: boolean;
-  isDone?: boolean;
-  isCanceled?: boolean;
 }
 
 export interface OrderLogInterface extends OrderLogModel {

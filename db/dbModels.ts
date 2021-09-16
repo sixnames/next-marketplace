@@ -433,6 +433,11 @@ export interface OrderStatusModel extends TimestampModel {
   slug: string;
   color: string;
   index: number;
+  isNew: boolean;
+  isConfirmed: boolean;
+  isPayed: boolean;
+  isDone: boolean;
+  isCanceled: boolean;
 }
 
 // Order log variant

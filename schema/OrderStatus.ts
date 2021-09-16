@@ -49,6 +49,11 @@ export const CreateOrderStatusInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.string('color');
     t.nonNull.int('index');
+    t.nonNull.boolean('isNew');
+    t.nonNull.boolean('isConfirmed');
+    t.nonNull.boolean('isPayed');
+    t.nonNull.boolean('isDone');
+    t.nonNull.boolean('isCanceled');
   },
 });
 
@@ -59,6 +64,11 @@ export const UpdateOrderStatusInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.string('color');
     t.nonNull.int('index');
+    t.nonNull.boolean('isNew');
+    t.nonNull.boolean('isConfirmed');
+    t.nonNull.boolean('isPayed');
+    t.nonNull.boolean('isDone');
+    t.nonNull.boolean('isCanceled');
   },
 });
 

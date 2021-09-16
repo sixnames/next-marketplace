@@ -328,6 +328,11 @@ export interface NexusGenInputs {
     // input type
     color: string; // String!
     index: number; // Int!
+    isCanceled: boolean; // Boolean!
+    isConfirmed: boolean; // Boolean!
+    isDone: boolean; // Boolean!
+    isNew: boolean; // Boolean!
+    isPayed: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreatePageInput: {
@@ -741,6 +746,11 @@ export interface NexusGenInputs {
     // input type
     color: string; // String!
     index: number; // Int!
+    isCanceled: boolean; // Boolean!
+    isConfirmed: boolean; // Boolean!
+    isDone: boolean; // Boolean!
+    isNew: boolean; // Boolean!
+    isPayed: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     orderStatusId: NexusGenScalars['ObjectId']; // ObjectId!
   };

@@ -57,7 +57,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
         <CmsOrderDetails order={order} title={title} />
         <Inner>
           <FixedButtons>
-            {order.status?.isPending ? (
+            {order.status?.isNew ? (
               <Button
                 onClick={() => {
                   confirmOrderMutation({

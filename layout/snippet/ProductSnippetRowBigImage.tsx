@@ -40,11 +40,11 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
   const bgClassName = showSnippetBackground
     ? 'bg-secondary dark:shadow-md'
-    : 'transition-all hover:shadow-md';
+    : 'transition-all border-border-200 border hover:shadow-md';
 
   return (
     <div
-      className={`group grid  rounded-md relative md:grid-cols-12 py-6 px-5 w-full ${bgClassName} ${
+      className={`group grid rounded-md relative md:grid-cols-12 py-6 px-5 w-full ${bgClassName} ${
         className ? className : ''
       }`}
     >

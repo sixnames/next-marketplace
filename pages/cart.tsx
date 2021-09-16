@@ -5,8 +5,12 @@ import ControlButton from 'components/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
+import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from 'components/ProductShopPrices';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
+import { useThemeContext } from 'context/themeContext';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -195,6 +199,8 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 };
 
 const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+  const { showModal } = useAppContext();
+  const { isDark } = useThemeContext();
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   const minAmount = 1;
@@ -215,6 +221,15 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     rubricSlug,
     slug,
   } = shopProduct;
+
+  if (!shop) {
+    return null;
+  }
+
+  const lightThemeMarker = shop.mapMarker?.lightTheme;
+  const darkThemeMarker = shop.mapMarker?.darkTheme;
+  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
+
   return (
     <CartProductFrame
       rubricSlug={rubricSlug}
@@ -266,10 +281,31 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
           <div className={classes.shop}>
             <div>
               <span>магазин: </span>
-              {shop?.name}
+              {shop.name}
             </div>
-            <div>{shop?.address.formattedAddress}</div>
-            <div className={classes.shopMap}>Смотреть на карте</div>
+            <div>{shop.address.formattedAddress}</div>
+            <div
+              className={classes.shopMap}
+              onClick={() => {
+                showModal<MapModalInterface>({
+                  variant: MAP_MODAL,
+                  props: {
+                    title: shop.name,
+                    testId: `shop-map-modal`,
+                    markers: [
+                      {
+                        _id: shop._id,
+                        icon: marker,
+                        name: shop.name,
+                        address: shop.address,
+                      },
+                    ],
+                  },
+                });
+              }}
+            >
+              Смотреть на карте
+            </div>
           </div>
         </div>
       </div>
@@ -348,10 +384,7 @@ const CartRoute: React.FC = () => {
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title className={classes.cartTitle}>
-          Корзина
-          <span>{`(${productsCount})`}</span>
-        </Title>
+        <Title className={classes.cartTitle}>В корзине товаров {productsCount} шт.</Title>
         <div className={classes.frame}>
           <div data-cy={'cart-products'}>
             {cartProducts.map((cartProduct, index) => {

@@ -70,7 +70,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
           {() => {
             return (
               <Form>
-                <CompanyMainFields />
+                <CompanyMainFields inConsole />
                 <Button type={'submit'} testId={'company-submit'}>
                   Сохранить
                 </Button>

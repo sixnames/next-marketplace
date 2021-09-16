@@ -1,8 +1,11 @@
+import LinkEmail from 'components/Link/LinkEmail';
+import LinkPhone from 'components/Link/LinkPhone';
+import { ROUTE_CMS } from 'config/common';
+import Link from 'next/link';
 import * as React from 'react';
 import { UpdateCompanyInput, UserInListFragment } from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
-import useUsersListColumns from '../../hooks/useUsersListColumns';
 import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from 'config/modalVariants';
 import ContentItemControls, { ContentItemControlsInterface } from 'components/ContentItemControls';
@@ -11,7 +14,7 @@ import FormikMultiLineInput from '../../components/FormElements/Input/FormikMult
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
 import Button from 'components/Button';
-import Table from 'components/Table';
+import Table, { TableColumn } from 'components/Table';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
   owner: UserInListFragment | null;
@@ -36,12 +39,52 @@ interface UsersSearchModalControlsInterface
   isDeleteDisabled?: (user: UserInListFragment) => boolean;
 }
 
-const CompanyMainFields: React.FC = () => {
+interface CompanyMainFieldsInterface {
+  inConsole?: boolean;
+}
+
+const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormMainValuesInterface>();
-  const columns = useUsersListColumns();
 
   const { owner, staff } = values;
+
+  const columns: TableColumn<UserInListFragment>[] = [
+    {
+      accessor: 'itemId',
+      headTitle: 'ID',
+      render: ({ cellData, dataItem }) => {
+        if (inConsole) {
+          return cellData;
+        }
+        return (
+          <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>
+            <a>{cellData}</a>
+          </Link>
+        );
+      },
+    },
+    {
+      accessor: 'fullName',
+      headTitle: 'Имя',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      accessor: 'formattedPhone',
+      headTitle: 'Телефон',
+      render: ({ cellData }) => <LinkPhone value={cellData} />,
+    },
+    {
+      accessor: 'email',
+      headTitle: 'Email',
+      render: ({ cellData }) => <LinkEmail value={cellData} />,
+    },
+    {
+      accessor: 'role',
+      headTitle: 'Роль',
+      render: ({ cellData }) => cellData.name,
+    },
+  ];
 
   function showUsersSearchModal({
     createTitle,
@@ -107,24 +150,26 @@ const CompanyMainFields: React.FC = () => {
 
       <FakeInput value={owner?.fullName} label={'Владелец'} testId={'ownerId'} />
 
-      <InputLine labelTag={'div'}>
-        <Button
-          theme={'secondary'}
-          size={'small'}
-          testId={'add-owner'}
-          onClick={() =>
-            showUsersSearchModal({
-              createTitle: 'Назначить владельцем компании',
-              createHandler: (user) => {
-                setFieldValue('owner', user);
-                hideModal();
-              },
-            })
-          }
-        >
-          {owner ? 'Изменить владельца' : 'Выбрать владельца'}
-        </Button>
-      </InputLine>
+      {inConsole ? null : (
+        <InputLine labelTag={'div'}>
+          <Button
+            theme={'secondary'}
+            size={'small'}
+            testId={'add-owner'}
+            onClick={() =>
+              showUsersSearchModal({
+                createTitle: 'Назначить владельцем компании',
+                createHandler: (user) => {
+                  setFieldValue('owner', user);
+                  hideModal();
+                },
+              })
+            }
+          >
+            {owner ? 'Изменить владельца' : 'Выбрать владельца'}
+          </Button>
+        </InputLine>
+      )}
 
       <InputLine label={'Персонал компании'} labelTag={'div'}>
         <Table<UserInListFragment>
@@ -135,24 +180,26 @@ const CompanyMainFields: React.FC = () => {
         />
       </InputLine>
 
-      <InputLine labelTag={'div'}>
-        <Button
-          theme={'secondary'}
-          size={'small'}
-          testId={'add-staff'}
-          onClick={() =>
-            showUsersSearchModal({
-              createTitle: 'Добавить в список сотрудников компании',
-              createHandler: (user) => {
-                setFieldValue(`staff[${staff.length}]`, user);
-                hideModal();
-              },
-            })
-          }
-        >
-          {'Добавить сотрудника'}
-        </Button>
-      </InputLine>
+      {inConsole ? null : (
+        <InputLine labelTag={'div'}>
+          <Button
+            theme={'secondary'}
+            size={'small'}
+            testId={'add-staff'}
+            onClick={() =>
+              showUsersSearchModal({
+                createTitle: 'Добавить в список сотрудников компании',
+                createHandler: (user) => {
+                  setFieldValue(`staff[${staff.length}]`, user);
+                  hideModal();
+                },
+              })
+            }
+          >
+            {'Добавить сотрудника'}
+          </Button>
+        </InputLine>
+      )}
     </React.Fragment>
   );
 };

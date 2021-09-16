@@ -22,7 +22,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
       render: ({ cellData, dataItem }) => (
         <Link
           testId={`order-${dataItem.itemId}-link`}
-          href={`${basePath}/${shop._id}/orders/${dataItem._id}`}
+          href={`${basePath}/${shop._id}/shop-orders/${dataItem._id}`}
         >
           {cellData}
         </Link>
@@ -82,7 +82,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
               data={shop.orders}
               testIdKey={'itemId'}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${basePath}/${shop._id}/orders/${dataItem._id}`).catch((e) => {
+                router.push(`${basePath}/${shop._id}/shop-orders/${dataItem._id}`).catch((e) => {
                   console.log(e);
                 });
               }}

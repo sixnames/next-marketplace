@@ -7,50 +7,13 @@ on:
     branches: [ main ]
 
 jobs:
-  # Aroundgrill
-  aroundgrill:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Aroundgrill
+      - name: Deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www/aroundgrill && git pull && yarn install && yarn build && pm2 reload aroundgrill
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USERNAME }}
-          privateKey: ${{ secrets.PROD_PRIVATE_KEY }}
-
-  # Winepoint
-  wp:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Winepoint
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: cd www/winepoint && git pull && yarn install && yarn build && pm2 reload wp
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USERNAME }}
-          privateKey: ${{ secrets.PROD_PRIVATE_KEY }}
-
-  # Kolesabu
-  kolesabu:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Kolesabu
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: cd www/kolesabu && git pull && yarn install && yarn build && pm2 reload kolesabu
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USERNAME }}
-          privateKey: ${{ secrets.PROD_PRIVATE_KEY }}
-
-  # Toysforjoys
-  toysforjoys:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Toysforjoys
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: cd www/toysforjoys && git pull && yarn install && yarn build && pm2 reload toysforjoys
+          command: cd www/aroundgrill && git pull && yarn install && yarn build && cd www/winepoint && git pull && yarn install && yarn build && cd www/kolesabu && git pull && yarn install && yarn build && cd www/toysforjoys && git pull && yarn install && yarn build && pm2 reload all
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USERNAME }}
           privateKey: ${{ secrets.PROD_PRIVATE_KEY }}

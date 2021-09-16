@@ -151,7 +151,18 @@ export const getServerSideProps = async (
               },
             },
             {
+              $lookup: {
+                from: COL_ORDER_STATUSES,
+                as: 'status',
+                localField: 'statusId',
+                foreignField: '_id',
+              },
+            },
+            {
               $addFields: {
+                status: {
+                  $arrayElemAt: ['$status', 0],
+                },
                 shopProduct: {
                   $arrayElemAt: ['$shopProduct', 0],
                 },
@@ -178,6 +189,15 @@ export const getServerSideProps = async (
     status: castOrderStatus({
       initialStatus: initialOrder.status,
       locale: props.sessionLocale,
+    }),
+    products: initialOrder.products?.map((product) => {
+      return {
+        ...product,
+        status: castOrderStatus({
+          initialStatus: product.status,
+          locale: props.sessionLocale,
+        }),
+      };
     }),
     customer: initialOrder.customer
       ? {

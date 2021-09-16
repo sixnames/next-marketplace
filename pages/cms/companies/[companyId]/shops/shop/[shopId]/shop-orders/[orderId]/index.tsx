@@ -14,6 +14,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -200,7 +201,18 @@ export const getServerSideProps = async (
               },
             },
             {
+              $lookup: {
+                from: COL_ORDER_STATUSES,
+                as: 'status',
+                localField: 'statusId',
+                foreignField: '_id',
+              },
+            },
+            {
               $addFields: {
+                status: {
+                  $arrayElemAt: ['$status', 0],
+                },
                 shopProduct: {
                   $arrayElemAt: ['$shopProduct', 0],
                 },
@@ -229,10 +241,19 @@ export const getServerSideProps = async (
           ...initialOrder.status,
           name: getFieldStringLocale(
             initialOrder.status.nameI18n,
-            initialProps.props.sessionLocale,
+            initialProps.props?.sessionLocale,
           ),
         }
       : null,
+    products: initialOrder.products?.map((product) => {
+      return {
+        ...product,
+        status: castOrderStatus({
+          initialStatus: product.status,
+          locale: initialProps.props?.sessionLocale,
+        }),
+      };
+    }),
     customer: initialOrder.customer
       ? {
           ...initialOrder.customer,

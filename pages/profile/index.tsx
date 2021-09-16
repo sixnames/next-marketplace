@@ -24,6 +24,7 @@ import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { castOrderStatus } from 'lib/orderUtils';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import * as React from 'react';
@@ -337,7 +338,18 @@ export async function getServerSideProps(
               },
             },
             {
+              $lookup: {
+                from: COL_ORDER_STATUSES,
+                as: 'status',
+                localField: 'statusId',
+                foreignField: '_id',
+              },
+            },
+            {
               $addFields: {
+                status: {
+                  $arrayElemAt: ['$status', 0],
+                },
                 shopProduct: {
                   $arrayElemAt: ['$shopProduct', 0],
                 },
@@ -355,9 +367,32 @@ export async function getServerSideProps(
   const orders = orderAggregation.map((order) => {
     return {
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+      totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
+        const productStatus = castOrderStatus({
+          initialStatus: status,
+          locale: props.sessionLocale,
+        });
+        if (productStatus && productStatus.isCanceled) {
+          return acc;
+        }
         return acc + totalPrice;
       }, 0),
+      products: order.products?.reduce((acc: OrderProductInterface[], product) => {
+        const productStatus = castOrderStatus({
+          initialStatus: product.status,
+          locale: props.sessionLocale,
+        });
+        if (!productStatus || productStatus.isCanceled) {
+          return acc;
+        }
+        return [
+          ...acc,
+          {
+            ...product,
+            status: productStatus,
+          },
+        ];
+      }, []),
       status: order.status
         ? {
             ...order.status,

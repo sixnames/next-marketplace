@@ -133,8 +133,8 @@ export interface SupplierInterface extends SupplierModel {
 }
 
 export interface CartProductInterface extends CartProductModel {
-  product?: ProductInterface;
-  shopProduct?: ShopProductInterface;
+  product?: ProductInterface | null;
+  shopProduct?: ShopProductInterface | null;
   isShopless?: boolean;
   totalPrice?: string;
 }
@@ -343,17 +343,17 @@ export interface CategoryInterface extends CategoryModel {
 
 export interface ShopProductInterface extends ShopProductModel {
   name?: string | null;
-  shop?: ShopInterface;
-  product?: ProductInterface;
-  products?: ProductInterface[];
-  connections?: ProductConnectionInterface[];
-  attributes?: ProductAttributeInterface[];
-  listFeatures?: ProductAttributeInterface[];
-  textFeatures?: ProductAttributeInterface[];
-  tagFeatures?: ProductAttributeInterface[];
-  iconFeatures?: ProductAttributeInterface[];
-  ratingFeatures?: ProductAttributeInterface[];
-  orders?: OrderInterface[];
+  shop?: ShopInterface | null;
+  product?: ProductInterface | null;
+  products?: ProductInterface[] | null;
+  connections?: ProductConnectionInterface[] | null;
+  attributes?: ProductAttributeInterface[] | null;
+  listFeatures?: ProductAttributeInterface[] | null;
+  textFeatures?: ProductAttributeInterface[] | null;
+  tagFeatures?: ProductAttributeInterface[] | null;
+  iconFeatures?: ProductAttributeInterface[] | null;
+  ratingFeatures?: ProductAttributeInterface[] | null;
+  orders?: OrderInterface[] | null;
   categories?: CategoryInterface[] | null;
 }
 
@@ -687,6 +687,7 @@ export interface SsrConfigsInterface {
 
   // Project
   useUniqueConstructor: boolean;
+  showReservationDate: boolean;
   buyButtonText: string;
 }
 

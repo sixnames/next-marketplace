@@ -37,7 +37,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
   const bgClassName = showSnippetBackground
     ? 'bg-secondary dark:shadow-md'
-    : 'transition-all hover:shadow-md';
+    : 'transition-all border-border-200 border hover:shadow-md';
 
   const columnsClassName =
     // 2

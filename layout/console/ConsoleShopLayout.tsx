@@ -29,7 +29,7 @@ const ConsoleShopLayout: React.FC<AppShopLayoutInterface> = ({
       {
         name: 'Заказы',
         testId: 'shop-orders',
-        path: `${basePath}/${shop._id}/orders`,
+        path: `${basePath}/${shop._id}/shop-orders`,
       },
       {
         name: 'Товары',

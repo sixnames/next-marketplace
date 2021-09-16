@@ -1,5 +1,4 @@
 import { CartInterface } from 'db/uiInterfaces';
-import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
 import classes from './CartAside.module.css';
 import Currency from 'components/Currency';
@@ -24,7 +23,6 @@ const CartAside: React.FC<CartAsideInterface> = ({
   buttonType,
 }) => {
   const { formattedTotalPrice, productsCount, isWithShopless } = cart;
-  const productsCountPostfix = getNumWord(productsCount, ['товар', 'товара', 'товаров']);
 
   return (
     <LayoutCard className={classes.cartAside} testId={'cart-aside'}>
@@ -34,7 +32,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
         <div className={classes.infoList}>
           <div className={classes.info}>
             <div>Товары</div>
-            <div className={classes.infoValue}>{`${productsCount} ${productsCountPostfix}`}</div>
+            <div className={classes.infoValue}>{`${productsCount} ед.`}</div>
           </div>
 
           <div className={classes.info}>

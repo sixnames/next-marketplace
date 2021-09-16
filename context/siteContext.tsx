@@ -198,85 +198,74 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 
   const addProductToCart = React.useCallback(
     (input: AddProductToCartInput) => {
-      showLoading();
       addProductToCartMutation({
         variables: {
           input,
         },
       }).catch(() => {
-        hideLoading();
         showErrorNotification();
       });
     },
-    [addProductToCartMutation, hideLoading, showErrorNotification, showLoading],
+    [addProductToCartMutation, showErrorNotification],
   );
 
   const addShoplessProductToCart = React.useCallback(
     (input: AddShoplessProductToCartInput) => {
-      showLoading();
       addShoplessProductToCartMutation({
         variables: {
           input,
         },
       }).catch(() => {
-        hideLoading();
         showErrorNotification();
       });
     },
-    [addShoplessProductToCartMutation, hideLoading, showErrorNotification, showLoading],
+    [addShoplessProductToCartMutation, showErrorNotification],
   );
 
   const addShopToCartProduct = React.useCallback(
     (input: AddShopToCartProductInput) => {
-      showLoading();
       addShopToCartProductMutation({
         variables: {
           input,
         },
       }).catch(() => {
-        hideLoading();
         showErrorNotification();
       });
     },
-    [addShopToCartProductMutation, hideLoading, showErrorNotification, showLoading],
+    [addShopToCartProductMutation, showErrorNotification],
   );
 
   const updateProductInCart = React.useCallback(
     (input: UpdateProductInCartInput) => {
-      showLoading();
       updateProductInCartMutation({
         variables: {
           input,
         },
       }).catch(() => {
-        hideLoading();
         showErrorNotification();
       });
     },
-    [hideLoading, showErrorNotification, showLoading, updateProductInCartMutation],
+    [showErrorNotification, updateProductInCartMutation],
   );
 
   const deleteProductFromCart = React.useCallback(
     (input: DeleteProductFromCartInput) => {
-      showLoading();
       deleteProductFromCartMutation({
         variables: {
           input,
         },
       }).catch(() => {
-        hideLoading();
         showErrorNotification();
       });
     },
-    [deleteProductFromCartMutation, hideLoading, showErrorNotification, showLoading],
+    [deleteProductFromCartMutation, showErrorNotification],
   );
 
   const clearCart = React.useCallback(() => {
-    showLoading();
     clearCartMutation().catch(() => {
       showErrorNotification();
     });
-  }, [clearCartMutation, showErrorNotification, showLoading]);
+  }, [clearCartMutation, showErrorNotification]);
 
   const makeAnOrder = React.useCallback(
     (input: MakeAnOrderInputInterface) => {

@@ -70,10 +70,11 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardListFeaturesCount: 5,
     catalogueMetaPrefix: '',
     cardMetaPrefix: '',
-    useUniqueConstructor: false,
-    buyButtonText: '',
     mapMarkerDarkTheme: '',
     mapMarkerLightTheme: '',
+    useUniqueConstructor: false,
+    showReservationDate: false,
+    buyButtonText: '',
   },
 });
 

@@ -11,7 +11,7 @@ import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
-import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
@@ -181,18 +181,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                 });
               }}
             >
-              на главную
-            </Button>
-            <Button
-              className={classes.emptyBtnsItem}
-              theme={'secondary'}
-              onClick={() => {
-                router.push(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-            >
-              каталог вин
+              В каталог
             </Button>
           </div>
         </Inner>

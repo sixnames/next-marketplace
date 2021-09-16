@@ -15,6 +15,7 @@ import {
   ShopProductInterface,
   ShopProductsGroupInterface,
 } from 'db/uiInterfaces';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getPageSessionUser } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -356,6 +357,34 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           {
             ...initialCartProduct,
             product,
+            shopProduct: initialCartProduct.shopProduct
+              ? {
+                  ...initialCartProduct.shopProduct,
+                  shop: initialCartProduct.shopProduct.shop
+                    ? {
+                        ...initialCartProduct.shopProduct.shop,
+                        address: {
+                          ...initialCartProduct.shopProduct.shop.address,
+                          formattedCoordinates: {
+                            lat: initialCartProduct.shopProduct.shop.address.point.coordinates[1],
+                            lng: initialCartProduct.shopProduct.shop.address.point.coordinates[0],
+                          },
+                        },
+                        contacts: {
+                          ...initialCartProduct.shopProduct.shop.contacts,
+                          formattedPhones: initialCartProduct.shopProduct.shop.contacts.phones.map(
+                            (phone) => {
+                              return {
+                                raw: phoneToRaw(phone),
+                                readable: phoneToReadable(phone),
+                              };
+                            },
+                          ),
+                        },
+                      }
+                    : null,
+                }
+              : null,
           },
         ];
       },

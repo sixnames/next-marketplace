@@ -32,7 +32,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
         <div className={classes.infoList}>
           <div className={classes.info}>
             <div>Товары</div>
-            <div className={classes.infoValue}>{`${productsCount} ед.`}</div>
+            <div className={classes.infoValue}>{`${productsCount} шт.`}</div>
           </div>
 
           <div className={classes.info}>

@@ -206,7 +206,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
-            reservationDate: '',
+            reservationDate: null,
           }}
           onSubmit={(values) => {
             makeAnOrder({
@@ -252,12 +252,14 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           isRequired
                         />
 
-                        <FormikDatePicker
-                          isRequired
-                          label={'Дата брони'}
-                          name={'reservationDate'}
-                          testId={'reservationDate'}
-                        />
+                        {configs.showReservationDate ? (
+                          <FormikDatePicker
+                            isRequired
+                            label={'Дата брони'}
+                            name={'reservationDate'}
+                            testId={'reservationDate'}
+                          />
+                        ) : null}
                       </div>
 
                       <div className={classes.group}>

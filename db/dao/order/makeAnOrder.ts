@@ -57,7 +57,7 @@ export interface MakeAnOrderInputInterface {
   name: string;
   phone: string;
   email: string;
-  reservationDate: string;
+  reservationDate?: string | null;
   comment?: string;
   companySlug?: string;
 }
@@ -263,7 +263,7 @@ export async function makeAnOrder({
             shopItemId: shop.itemId,
             companyId,
             companyItemId: company.itemId,
-            reservationDate: new Date(input.reservationDate),
+            reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
             createdAt: new Date(),
             updatedAt: new Date(),
           };

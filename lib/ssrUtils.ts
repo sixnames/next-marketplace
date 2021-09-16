@@ -817,8 +817,13 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'mapMarkerLightTheme',
   });
+  const showReservationDate = getConfigBooleanValue({
+    configs,
+    slug: 'showReservationDate',
+  });
 
   return {
+    showReservationDate,
     mapMarkerDarkTheme,
     mapMarkerLightTheme,
     actualAddress,

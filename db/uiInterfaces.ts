@@ -687,6 +687,7 @@ export interface SsrConfigsInterface {
 
   // Project
   useUniqueConstructor: boolean;
+  showReservationDate: boolean;
   buyButtonText: string;
 }
 

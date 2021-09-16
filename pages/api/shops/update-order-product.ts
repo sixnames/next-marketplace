@@ -1,4 +1,3 @@
-import { ORDER_STATUS_CANCELED, ORDER_STATUS_DONE } from 'config/common';
 import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { OrderProductModel, OrderStatusModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -104,10 +103,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // get order statuses
   const doneOrderStatus = await orderStatusesCollection.findOne({
-    slug: ORDER_STATUS_DONE,
+    isDone: true,
   });
   const canceledOrderStatus = await orderStatusesCollection.findOne({
-    slug: ORDER_STATUS_CANCELED,
+    isCanceled: true,
   });
   if (!doneOrderStatus || !canceledOrderStatus) {
     res.status(200).send({

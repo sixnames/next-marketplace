@@ -1,4 +1,3 @@
-import { ORDER_STATUS_PENDING } from 'config/common';
 import { COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
 import { OrderModel, OrderStatusModel, PayloadType } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -48,7 +47,7 @@ export async function getNewOrdersCounter({
       : {};
 
     const pendingOrderStatus = await orderStatusesCollection.findOne({
-      slug: ORDER_STATUS_PENDING,
+      isNew: true,
     });
 
     if (!pendingOrderStatus) {

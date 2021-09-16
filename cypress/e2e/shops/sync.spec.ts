@@ -1,4 +1,4 @@
-import { ORDER_STATUS_DONE, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import {
   SyncOrderResponseInterface,
   SyncOrderStatusesResponseInterface,
@@ -124,7 +124,7 @@ describe('Sync', () => {
         ...product,
         amount: 55,
         orderId: order.orderId,
-        status: ORDER_STATUS_DONE,
+        status: 'done',
       };
 
       cy.request({

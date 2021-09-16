@@ -1,4 +1,4 @@
-import { ORDER_LOG_VARIANT_CONFIRM, ORDER_STATUS_CANCELED, SORT_ASC } from 'config/common';
+import { ORDER_LOG_VARIANT_CONFIRM, SORT_ASC } from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -158,8 +158,8 @@ export async function confirmOrder({
       }
 
       // Get order cancel status
-      const orderCancelStatus = orderStatusesList.find(({ slug }) => {
-        return slug === ORDER_STATUS_CANCELED;
+      const orderCancelStatus = orderStatusesList.find(({ isCanceled }) => {
+        return isCanceled;
       });
       if (!orderCancelStatus) {
         mutationPayload = {

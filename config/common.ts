@@ -250,12 +250,6 @@ export const ORDER_LOG_VARIANTS_ENUMS: OrderLogVariantModel[] = [
   ORDER_LOG_VARIANT_UPDATE_PRODUCT,
 ];
 
-// ORDER STATUSES SLUGS
-export const ORDER_STATUS_PENDING = 'pending';
-export const ORDER_STATUS_CONFIRMED = 'confirmed';
-export const ORDER_STATUS_DONE = 'done';
-export const ORDER_STATUS_CANCELED = 'canceled';
-
 // LANGUAGES
 export const ISO_LANGUAGES = [
   {

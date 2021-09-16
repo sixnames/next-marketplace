@@ -129,6 +129,9 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       accessor: 'product',
       headTitle: 'Фото',
       render: ({ cellData }) => {
+        if (!cellData) {
+          return null;
+        }
         return (
           <TableRowImage
             src={cellData.mainImage}
@@ -141,7 +144,9 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     {
       accessor: 'product.originalName',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        return cellData || 'Товар не найден';
+      },
     },
     {
       accessor: 'product.active',
@@ -463,15 +468,17 @@ export const getServerSideProps = async (
   for await (const productConnection of product.connections || []) {
     const connectionProducts: ProductConnectionItemInterface[] = [];
     for await (const connectionProduct of productConnection.connectionProducts || []) {
-      connectionProducts.push({
-        ...connectionProduct,
-        option: connectionProduct.option
-          ? {
-              ...connectionProduct.option,
-              name: getFieldStringLocale(connectionProduct.option?.nameI18n, props.sessionLocale),
-            }
-          : null,
-      });
+      if (connectionProduct.product) {
+        connectionProducts.push({
+          ...connectionProduct,
+          option: connectionProduct.option
+            ? {
+                ...connectionProduct.option,
+                name: getFieldStringLocale(connectionProduct.option?.nameI18n, props.sessionLocale),
+              }
+            : null,
+        });
+      }
     }
 
     connections.push({

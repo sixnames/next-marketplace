@@ -61,6 +61,8 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         className={`rounded-md h-full flex flex-col ${
           showSnippetBackground && showSnippetButtonsOnHover
             ? 'lg:group-hover:bg-none lg:group-hover:shadow-none lg:bg-secondary lg:dark:shadow-md'
+            : showSnippetBackground
+            ? ''
             : 'group-hover:border-transparent border-border-200 border'
         }`}
       >

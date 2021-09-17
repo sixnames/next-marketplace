@@ -1,7 +1,11 @@
-import { SORT_DESC } from 'config/common';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  CATEGORY_SLUG_PREFIX_SEPARATOR,
+  CATEGORY_SLUG_PREFIX_WORD,
+  SORT_DESC,
+} from 'config/common';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
-import { ShopProductModel } from 'db/dbModels';
+import { ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -38,8 +42,35 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
+    // get product
+    const product = await productsCollection.findOne({
+      _id: finalProductId,
+    });
+    if (!product) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end('[]');
+      return;
+    }
+
+    // get category slugs
+    const categoriesSlugs = product.selectedOptionsSlugs.filter((slug) => {
+      const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+      return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1];
+    });
+    const categoriesMatch =
+      categoriesSlugs.length > 0
+        ? {
+            selectedOptionsSlugs: {
+              $all: categoriesSlugs,
+            },
+          }
+        : {};
+
+    // aggregate product similar products
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<ProductInterface>([
         {
@@ -116,6 +147,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               {
                 $match: {
                   ...companyRubricsMatch,
+                  ...categoriesMatch,
                   citySlug: city,
                   productId: {
                     $ne: finalProductId,
@@ -244,57 +276,60 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         },
       ])
       .toArray();
-    const product = shopProductsAggregation[0];
+    const productResult = shopProductsAggregation[0];
 
-    if (!product || !product.similarProducts) {
+    if (!productResult || !productResult.similarProducts) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end('[]');
       return;
     }
 
-    const similarProducts = product.similarProducts.reduce((acc: ProductInterface[], product) => {
-      const exist = acc.some(({ itemId }) => product.itemId === itemId);
-      if (exist) {
-        return acc;
-      }
+    const similarProducts = productResult.similarProducts.reduce(
+      (acc: ProductInterface[], product) => {
+        const exist = acc.some(({ itemId }) => product.itemId === itemId);
+        if (exist) {
+          return acc;
+        }
 
-      // title
-      const snippetTitle = generateSnippetTitle({
-        locale,
-        rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-        attributes: product.attributes || [],
-        fallbackTitle: product.originalName,
-        defaultKeyword: product.originalName,
-        defaultGender: product.gender,
-        titleCategoriesSlugs: product.titleCategoriesSlugs,
-        categories: getTreeFromList({
-          list: product.categories,
-          childrenFieldName: 'categories',
+        // title
+        const snippetTitle = generateSnippetTitle({
           locale,
-        }),
-      });
+          rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+          showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+          showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+          attributes: product.attributes || [],
+          fallbackTitle: product.originalName,
+          defaultKeyword: product.originalName,
+          defaultGender: product.gender,
+          titleCategoriesSlugs: product.titleCategoriesSlugs,
+          categories: getTreeFromList({
+            list: product.categories,
+            childrenFieldName: 'categories',
+            locale,
+          }),
+        });
 
-      const minPrice = noNaN(product.cardPrices?.min);
-      const maxPrice = noNaN(product.cardPrices?.max);
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${minPrice}`,
-        max: `${maxPrice}`,
-      };
+        const minPrice = noNaN(product.cardPrices?.min);
+        const maxPrice = noNaN(product.cardPrices?.max);
+        const cardPrices = {
+          _id: new ObjectId(),
+          min: `${minPrice}`,
+          max: `${maxPrice}`,
+        };
 
-      return [
-        ...acc,
-        {
-          ...product,
-          name: getFieldStringLocale(product.nameI18n, locale),
-          cardPrices,
-          snippetTitle,
-        },
-      ];
-    }, []);
+        return [
+          ...acc,
+          {
+            ...product,
+            name: getFieldStringLocale(product.nameI18n, locale),
+            cardPrices,
+            snippetTitle,
+          },
+        ];
+      },
+      [],
+    );
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');

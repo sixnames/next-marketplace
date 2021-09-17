@@ -69,7 +69,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
               {shopProduct ? (
                 <div>
                   Доступно:
-                  {` ${shopProduct.available}`}
+                  {` ${shopProduct.available} шт.`}
                 </div>
               ) : (
                 <div className='text-red-500 font-medium'>Товар магазина не найден</div>

@@ -15,6 +15,7 @@ interface FormikImageUploadInterface extends FormikInputPropsInterface {
 const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
   name,
   setImageHandler,
+  onClear,
   ...props
 }) => {
   const [files, setFiles] = React.useState<any[]>([]);
@@ -40,6 +41,9 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
             error={error}
             previewUrl={imageSrc}
             removeImageHandler={() => {
+              if (onClear) {
+                onClear();
+              }
               setFieldValue(name, []);
               setFiles([]);
             }}

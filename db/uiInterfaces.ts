@@ -280,6 +280,7 @@ export interface ProductInterface extends ProductModel {
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
+  totalAttributesCount?: number | null;
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
 }

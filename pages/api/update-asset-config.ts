@@ -3,6 +3,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
+  REQUEST_METHOD_DELETE,
 } from 'config/common';
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
@@ -56,6 +57,47 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  // delete asset
+  if (req.method === REQUEST_METHOD_DELETE) {
+    const updatedConfigResult = await configsCollection.findOneAndUpdate(
+      { _id: new ObjectId(_id) },
+      {
+        $set: {
+          cities: {
+            [DEFAULT_CITY]: {
+              [DEFAULT_LOCALE]: [''],
+            },
+          },
+        },
+      },
+      {
+        upsert: true,
+        returnDocument: 'after',
+      },
+    );
+    const updatedConfig = updatedConfigResult.value;
+    if (!updatedConfigResult.ok || !updatedConfig) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'configs.updateAsset.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: await getApiMessageValue({
+        slug: 'configs.updateAsset.success',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // update asset
   const assets = await storeRestApiUploads({
     files: formData.files,
     dist: `${ASSETS_DIST_CONFIGS}/${config.companySlug}`,

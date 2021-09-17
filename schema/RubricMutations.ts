@@ -117,11 +117,12 @@ export const DeleteAttributesGroupFromRubricInput = inputObjectType({
   },
 });
 
-export const UpdateAttributesGroupInRubricInput = inputObjectType({
+export const UpdateAttributeInRubricInput = inputObjectType({
   name: 'UpdateAttributeInRubricInput',
   definition(t) {
     t.nonNull.objectId('rubricId');
-    t.nonNull.objectId('attributeId');
+    t.nonNull.objectId('rubricAttributeId');
+    t.nonNull.boolean('showInRubricFilter');
   },
 });
 
@@ -669,6 +670,89 @@ export const RubricMutations = extendType({
           };
         } finally {
           await session.endSession();
+        }
+      },
+    });
+
+    // Should update rubric attribute
+    t.nonNull.field('updateAttributeInRubric', {
+      type: 'RubricPayload',
+      description: 'Should update rubric attribute',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateAttributeInRubricInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        try {
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const rubricAttributesCollection =
+            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+          const { input } = args;
+          const { rubricId, rubricAttributeId, showInRubricFilter } = input;
+
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateRubric',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Check rubric availability
+          const rubric = await rubricsCollection.findOne({ _id: rubricId });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.notFound'),
+            };
+          }
+
+          // Check rubric attribute availability
+          const rubricAttribute = await rubricAttributesCollection.findOne({
+            _id: rubricAttributeId,
+          });
+          if (!rubricAttribute) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.error'),
+            };
+          }
+
+          const updatedRubricAttributeResult = await rubricAttributesCollection.findOneAndUpdate(
+            { _id: rubricAttributeId },
+            {
+              $set: {
+                showInRubricFilter,
+              },
+            },
+          );
+          if (!updatedRubricAttributeResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('rubrics.update.success'),
+            payload: rubric,
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
         }
       },
     });

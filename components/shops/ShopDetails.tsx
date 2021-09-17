@@ -1,8 +1,9 @@
 import Button from 'components/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
+import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
 import { Form, Formik } from 'formik';
 import {
   UpdateShopInput,
@@ -105,22 +106,46 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                 <Form>
                   <ShopMainFields />
 
-                  <FormikImageUpload
-                    label={'Изображение маркера на карте с тёмной темой (40 x 40)'}
-                    name={'mapMarker.darkTheme'}
-                    testId={'dark-theme-marker'}
+                  <WpImageUpload
+                    previewUrl={shop.mapMarker?.lightTheme}
+                    label={'Изображение маркера на карте со светлой темой (40 x 40)'}
+                    testId={'light-theme-marker'}
                     width={'10rem'}
                     height={'10rem'}
-                    setImageHandler={(files) => {
+                    removeImageHandler={() => {
+                      showLoading();
+                      const formData = new FormData();
+                      formData.append('shopId', `${shop._id}`);
+
+                      fetch('/api/update-shop-marker', {
+                        method: REQUEST_METHOD_DELETE,
+                        body: formData,
+                      })
+                        .then((res) => {
+                          return res.json();
+                        })
+                        .then((json) => {
+                          if (json.success) {
+                            router.reload();
+                            return;
+                          }
+                          hideLoading();
+                          showErrorNotification({ title: json.message });
+                        })
+                        .catch(() => {
+                          hideLoading();
+                          showErrorNotification({ title: 'error' });
+                        });
+                    }}
+                    uploadImageHandler={(files) => {
                       if (files) {
                         showLoading();
                         const formData = new FormData();
                         formData.append('assets', files[0]);
                         formData.append('shopId', `${shop._id}`);
-                        formData.append('isDark', 'true');
 
                         fetch('/api/update-shop-marker', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {
@@ -142,21 +167,48 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                     }}
                   />
 
-                  <FormikImageUpload
-                    label={'Изображение маркера на карте со светлой темой (40 x 40)'}
-                    name={'mapMarker.lightTheme'}
-                    testId={'light-theme-marker'}
+                  <WpImageUpload
+                    previewUrl={shop.mapMarker?.darkTheme}
+                    label={'Изображение маркера на карте с тёмной темой (40 x 40)'}
+                    testId={'dark-theme-marker'}
                     width={'10rem'}
                     height={'10rem'}
-                    setImageHandler={(files) => {
+                    removeImageHandler={() => {
+                      showLoading();
+                      const formData = new FormData();
+                      formData.append('shopId', `${shop._id}`);
+                      formData.append('isDark', 'true');
+
+                      fetch('/api/update-shop-marker', {
+                        method: REQUEST_METHOD_DELETE,
+                        body: formData,
+                      })
+                        .then((res) => {
+                          return res.json();
+                        })
+                        .then((json) => {
+                          if (json.success) {
+                            router.reload();
+                            return;
+                          }
+                          hideLoading();
+                          showErrorNotification({ title: json.message });
+                        })
+                        .catch(() => {
+                          hideLoading();
+                          showErrorNotification({ title: 'error' });
+                        });
+                    }}
+                    uploadImageHandler={(files) => {
                       if (files) {
                         showLoading();
                         const formData = new FormData();
                         formData.append('assets', files[0]);
                         formData.append('shopId', `${shop._id}`);
+                        formData.append('isDark', 'true');
 
                         fetch('/api/update-shop-marker', {
-                          method: 'POST',
+                          method: REQUEST_METHOD_POST,
                           body: formData,
                         })
                           .then((res) => {

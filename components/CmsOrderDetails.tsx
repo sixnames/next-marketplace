@@ -1,7 +1,7 @@
 import Button from 'components/Button';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
-import Input from 'components/FormElements/Input/Input';
+import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
@@ -34,8 +34,6 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
     ? shopProduct.mainImage
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const minAmount = 1;
-  const imageWidth = 35;
-  const imageHeight = 120;
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();
   const [updateOrderProductMutation] = useUpdateOrderProduct();
@@ -50,14 +48,19 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
     <div
       className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
     >
-      <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
-        <Image
-          src={productImageSrc}
-          alt={`${originalName}`}
-          title={`${originalName}`}
-          width={imageWidth}
-          height={imageHeight}
-        />
+      <div className='flex items-center justify-center px-2 w-28 lg:w-32'>
+        <div className='relative flex justify-center'>
+          <Image
+            objectFit={'contain'}
+            objectPosition={'center'}
+            src={productImageSrc}
+            alt={`${originalName}`}
+            title={`${originalName}`}
+            width={240}
+            height={240}
+            quality={50}
+          />
+        </div>
       </div>
 
       <div className='flex-grow'>
@@ -69,7 +72,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
               {shopProduct ? (
                 <div>
                   Доступно:
-                  {` ${shopProduct.available}`}
+                  {` ${shopProduct.available} шт.`}
                 </div>
               ) : (
                 <div className='text-red-500 font-medium'>Товар магазина не найден</div>
@@ -147,16 +150,21 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
             {/*amount*/}
             <div className='flex gap-2 lg:justify-end text-secondary-text'>
               <div className='w-[100px]'>
-                <Input
-                  low
-                  disabled={isCanceled}
-                  value={amount}
-                  type={'number'}
-                  max={shopProduct?.available}
-                  min={1}
+                <SpinnerInput
                   name={'amount'}
+                  value={amount}
+                  min={minAmount}
+                  max={noNaN(shopProduct?.available)}
+                  testId={`cart-dropdown-product-${orderProduct.originalName}-amount`}
+                  plusTestId={`cart-dropdown-product-${orderProduct.originalName}-plus`}
+                  minusTestId={`cart-dropdown-product-${orderProduct.originalName}-minus`}
+                  // frameClassName='w-[var(--buttonMinWidth)]'
+                  size={'small'}
                   onChange={(e) => {
-                    setAmount(noNaN(e.target.value));
+                    const amount = noNaN(e.target.value);
+                    if (amount >= minAmount && amount <= noNaN(shopProduct?.available)) {
+                      setAmount(noNaN(e.target.value));
+                    }
                   }}
                 />
               </div>

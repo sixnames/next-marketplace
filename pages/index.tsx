@@ -202,7 +202,10 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
             <HorizontalScroll>
               {topProducts.map((product) => {
                 return (
-                  <div className='min-w-[280px] flex items-stretch' key={`${product._id}`}>
+                  <div
+                    className='min-w-[280px] max-w-[280px] flex items-stretch'
+                    key={`${product._id}`}
+                  >
                     <ProductSnippetGridBigImage
                       className='flex-grow'
                       showSnippetBackground

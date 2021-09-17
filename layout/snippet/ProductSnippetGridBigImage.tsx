@@ -33,7 +33,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     ? showSnippetButtonsOnHover
       ? 'transition-all bg-secondary lg:bg-transparent lg:hover:bg-secondary lg:hover:shadow-md'
       : 'bg-secondary dark:shadow-md'
-    : 'transition-all hover:shadow-md hover:border-border-200 border-transparent border';
+    : 'transition-all hover:shadow-md border border-transparent hover:border-border-200';
 
   const columnsClassName =
     // 2
@@ -63,7 +63,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             ? 'lg:group-hover:bg-none lg:group-hover:shadow-none lg:bg-secondary lg:dark:shadow-md'
             : showSnippetBackground
             ? ''
-            : 'group-hover:border-transparent border-border-200 border'
+            : 'border border-border-200 group-hover:border-transparent'
         }`}
       >
         <div className='px-4 pt-6'>
@@ -90,7 +90,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
 
           {/*original name*/}
-          <div className='text-lg mb-1'>
+          <div className='text-lg mb-4'>
             <Link
               testId={`${testId}-name-grid`}
               target={'_blank'}
@@ -100,15 +100,15 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               {snippetTitle}
             </Link>
           </div>
-
-          {/*art*/}
-          {showSnippetArticle ? (
-            <div className='text-secondary-text mb-5 text-sm'>Артикул: {itemId}</div>
-          ) : null}
         </div>
 
         {/*price*/}
-        <div className='flex justify-center mb-2 px-4 mt-auto'>
+        <div className='flex flex-col items-center justify-center px-4 mb-4 mt-auto'>
+          {/*art*/}
+          {showSnippetArticle ? (
+            <div className='text-secondary-text mb-2 text-sm'>Артикул: {itemId}</div>
+          ) : null}
+
           <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>

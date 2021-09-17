@@ -441,6 +441,12 @@ export interface OrderStatusModel extends TimestampModel {
   isCanceled: boolean;
 }
 
+export interface OrderRequestModel extends TimestampModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  userId: ObjectIdModel;
+}
+
 // Order log variant
 export enum OrderLogVariantModel {
   status = 'status',

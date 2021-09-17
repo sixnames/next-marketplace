@@ -74,21 +74,24 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                     testId: 'products-search-modal',
                     createTitle: 'Выбрать',
                     subtitle: (
-                      <div className='mb-8'>
-                        <Button
-                          testId={'create-product'}
-                          size={'small'}
-                          onClick={() => {
-                            showModal<CreateProductWithSyncErrorModalInterface>({
-                              variant: CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
-                              props: {
-                                notSyncedProduct: dataItem,
-                              },
-                            });
-                          }}
-                        >
-                          Создать товар
-                        </Button>
+                      <div>
+                        <div className='mb-6'>Вы ищите товар с названием {dataItem.name}</div>
+                        <div className='mb-8'>
+                          <Button
+                            testId={'create-product'}
+                            size={'small'}
+                            onClick={() => {
+                              showModal<CreateProductWithSyncErrorModalInterface>({
+                                variant: CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+                                props: {
+                                  notSyncedProduct: dataItem,
+                                },
+                              });
+                            }}
+                          >
+                            Создать товар
+                          </Button>
+                        </div>
                       </div>
                     ),
                     createHandler: (product) => {

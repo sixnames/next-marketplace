@@ -81,14 +81,19 @@ const ContactsRoute: React.FC = () => {
                 );
               })}
             </div>
-            <div className='mb-8'>
+            <div className='mb-8 space-y-2'>
               <div className='mb-1 text-secondary-text'>Email</div>
-              <a
-                className='text-primary-text hover:text-theme hover:no-underline'
-                href={`mailTo:${contactEmail}`}
-              >
-                {contactEmail}
-              </a>
+              {contactEmail.map((email) => {
+                return (
+                  <a
+                    key={email}
+                    className='block text-primary-text hover:text-theme hover:no-underline'
+                    href={`mailTo:${email}`}
+                  >
+                    {email}
+                  </a>
+                );
+              })}
             </div>
             {showSocials ? (
               <div className='mt-auto pt-6'>

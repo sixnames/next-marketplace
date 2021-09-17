@@ -1,4 +1,4 @@
-import { ASSETS_DIST_SHOPS } from 'config/common';
+import { ASSETS_DIST_SHOPS, REQUEST_METHOD_DELETE } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -51,7 +51,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shopId = new ObjectId(`${formData.fields.shopId}`);
   const isDark = Boolean(formData.fields.isDark);
 
-  // Check page availability
+  // Check availability
   const shop = await shopCollection.findOne({ _id: shopId });
   if (!shop) {
     res.status(500).send({
@@ -64,13 +64,55 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  // Delete page main banner
+  // delete asset
+  if (req.method === REQUEST_METHOD_DELETE) {
+    const updater = isDark
+      ? {
+          'mapMarker.darkTheme': null,
+        }
+      : {
+          'mapMarker.lightTheme': null,
+        };
+
+    const updatedShopResult = await shopCollection.findOneAndUpdate(
+      { _id: shop._id },
+      {
+        $set: updater,
+      },
+      {
+        upsert: true,
+        returnDocument: 'after',
+      },
+    );
+    const updatedShop = updatedShopResult.value;
+    if (!updatedShopResult.ok || !updatedShop) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'shops.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: await getApiMessageValue({
+        slug: 'shops.update.success',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // Delete old asset
   const oldAsset = isDark ? shop.mapMarker?.darkTheme : shop.mapMarker?.lightTheme;
   if (oldAsset) {
     await deleteUpload({ filePath: oldAsset });
   }
 
-  // Upload new company logo
+  // Upload new asset
   const uploadedAsset = await storeRestApiUploads({
     files: formData.files,
     itemId: shop.itemId,
@@ -108,7 +150,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         'mapMarker.lightTheme': asset.url,
       };
 
-  // Update company
+  // Update shop
   const updatedShopResult = await shopCollection.findOneAndUpdate(
     { _id: shop._id },
     {

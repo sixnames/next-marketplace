@@ -2,6 +2,7 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
+import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
@@ -76,6 +77,23 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       accessor: 'metric',
       headTitle: 'Единица измерения',
       render: ({ cellData }) => cellData?.name || null,
+    },
+    {
+      accessor: 'showInCategoryFilter',
+      headTitle: 'Показывать в фильтре рубрики',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <CheckBox
+            disabled
+            value={cellData}
+            name={dataItem.slug}
+            checked={cellData}
+            onChange={(e: any) => {
+              console.log(e?.target?.checked);
+            }}
+          />
+        );
+      },
     },
     {
       accessor: 'category',
@@ -464,6 +482,12 @@ export const getServerSideProps = async (
       attributes: (attributesGroup.attributes || []).map((attribute) => {
         return {
           ...attribute,
+          metric: attribute.metric
+            ? {
+                ...attribute.metric,
+                name: getFieldStringLocale(attribute.metric.nameI18n, sessionLocale),
+              }
+            : null,
           name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
           category: attribute.category
             ? {

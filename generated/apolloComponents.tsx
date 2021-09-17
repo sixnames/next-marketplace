@@ -1114,6 +1114,8 @@ export type Mutation = {
   addAttributesGroupToRubric: RubricPayload;
   /** Should delete attributes group from rubric */
   deleteAttributesGroupFromRubric: RubricPayload;
+  /** Should update rubric attribute */
+  updateAttributeInRubric: RubricPayload;
   /** Should remove product from rubric */
   deleteProductFromRubric: RubricPayload;
   /** Should create rubric variant */
@@ -1666,6 +1668,11 @@ export type MutationAddAttributesGroupToRubricArgs = {
 
 export type MutationDeleteAttributesGroupFromRubricArgs = {
   input: DeleteAttributesGroupFromRubricInput;
+};
+
+
+export type MutationUpdateAttributeInRubricArgs = {
+  input: UpdateAttributeInRubricInput;
 };
 
 
@@ -2831,7 +2838,8 @@ export type UpdateAttributeInGroupInput = {
 
 export type UpdateAttributeInRubricInput = {
   rubricId: Scalars['ObjectId'];
-  attributeId: Scalars['ObjectId'];
+  rubricAttributeId: Scalars['ObjectId'];
+  showInCategoryFilter: Scalars['Boolean'];
 };
 
 export type UpdateAttributesGroupInput = {
@@ -3454,6 +3462,19 @@ export type GetRubricAttributesQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, '_id' | 'name' | 'slug'>
+  ) }
+);
+
+export type UpdateAttributeInRubricMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type UpdateAttributeInRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributeInRubric: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
   ) }
 );
 
@@ -6136,6 +6157,40 @@ export function useGetRubricAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
 export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
 export type GetRubricAttributesQueryResult = Apollo.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
+export const UpdateAttributeInRubricDocument = gql`
+    mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+  updateAttributeInRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributeInRubricMutationFn = Apollo.MutationFunction<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
+
+/**
+ * __useUpdateAttributeInRubricMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributeInRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributeInRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributeInRubricMutation, { data, loading, error }] = useUpdateAttributeInRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>(UpdateAttributeInRubricDocument, options);
+      }
+export type UpdateAttributeInRubricMutationHookResult = ReturnType<typeof useUpdateAttributeInRubricMutation>;
+export type UpdateAttributeInRubricMutationResult = Apollo.MutationResult<UpdateAttributeInRubricMutation>;
+export type UpdateAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
 export const CreateAttributesGroupDocument = gql`
     mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
   createAttributesGroup(input: $input) {

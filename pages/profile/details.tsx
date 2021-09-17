@@ -24,7 +24,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'styles/ProfileDetailsRoute.module.css';
 import { updateMyProfileSchema } from 'validation/userSchema';
 import { signOut } from 'next-auth/client';
 
@@ -86,125 +85,121 @@ const ProfileDetailsRoute: React.FC = () => {
   const { email, phone, name, lastName, secondName } = me;
 
   return (
-    <div className={classes.profile} data-cy={'profile-details'}>
-      <div className={classes.form}>
-        <Formik<UpdateMyProfileInput>
-          validationSchema={validationSchema}
-          initialValues={{
-            name,
-            lastName,
-            secondName,
-            email,
-            phone,
-          }}
-          onSubmit={(values) => {
-            showModal<ConfirmModalInterface>({
-              variant: CONFIRM_MODAL,
-              props: {
-                testId: 'update-profile-modal',
-                message: 'При изменении профиля требуется повторная авторизация.',
-                confirm: () => {
-                  showLoading();
-                  updateMyProfileMutation({
-                    variables: {
-                      input: {
-                        ...values,
-                        phone: phoneToRaw(values.phone),
-                      },
+    <div data-cy={'profile-details'}>
+      <Formik<UpdateMyProfileInput>
+        validationSchema={validationSchema}
+        initialValues={{
+          name,
+          lastName,
+          secondName,
+          email,
+          phone,
+        }}
+        onSubmit={(values) => {
+          showModal<ConfirmModalInterface>({
+            variant: CONFIRM_MODAL,
+            props: {
+              testId: 'update-profile-modal',
+              message: 'При изменении профиля требуется повторная авторизация.',
+              confirm: () => {
+                showLoading();
+                updateMyProfileMutation({
+                  variables: {
+                    input: {
+                      ...values,
+                      phone: phoneToRaw(values.phone),
                     },
-                  }).catch((e) => {
-                    console.log(e);
-                  });
-                },
+                  },
+                }).catch((e) => {
+                  console.log(e);
+                });
               },
-            });
-          }}
-        >
-          {() => {
-            return (
-              <Form>
-                <fieldset className={classes.group}>
-                  <Title tag={'legend'}>Персональные данные</Title>
+            },
+          });
+        }}
+      >
+        {() => {
+          return (
+            <Form>
+              <fieldset className='mb-20'>
+                <legend className='text-lg font-medium mb-4'>Персональные данные</legend>
 
-                  <FormikInput
-                    label={'Имя'}
-                    name={'name'}
-                    testId={'name'}
-                    isRequired
-                    showInlineError
-                  />
-                  <FormikInput
-                    label={'Фамилия'}
-                    name={'lastName'}
-                    testId={'lastName'}
-                    showInlineError
-                  />
-                  <FormikInput
-                    label={'Отчество'}
-                    name={'secondName'}
-                    testId={'secondName'}
-                    showInlineError
-                  />
-                </fieldset>
+                <FormikInput
+                  label={'Имя'}
+                  name={'name'}
+                  testId={'name'}
+                  isRequired
+                  showInlineError
+                />
+                <FormikInput
+                  label={'Фамилия'}
+                  name={'lastName'}
+                  testId={'lastName'}
+                  showInlineError
+                />
+                <FormikInput
+                  label={'Отчество'}
+                  name={'secondName'}
+                  testId={'secondName'}
+                  showInlineError
+                />
+              </fieldset>
 
-                <fieldset className={classes.group}>
-                  <Title tag={'legend'}>Контактные данные</Title>
+              <fieldset className='mb-20'>
+                <legend className='text-lg font-medium mb-4'>Контактные данные</legend>
 
-                  <FormikInput
-                    label={'Email'}
-                    type={'email'}
-                    name={'email'}
-                    testId={'email'}
-                    isRequired
-                    showInlineError
-                  />
-                  <FormikInput
-                    label={'Телефон'}
-                    type={'tel'}
-                    name={'phone'}
-                    testId={'phone'}
-                    isRequired
-                    showInlineError
-                  />
-                </fieldset>
+                <FormikInput
+                  label={'Email'}
+                  type={'email'}
+                  name={'email'}
+                  testId={'email'}
+                  isRequired
+                  showInlineError
+                />
+                <FormikInput
+                  label={'Телефон'}
+                  type={'tel'}
+                  name={'phone'}
+                  testId={'phone'}
+                  isRequired
+                  showInlineError
+                />
+              </fieldset>
 
-                <RowWithGap>
-                  <Button type={'submit'} testId={'submit-my-profile'}>
-                    Сохранить
-                  </Button>
-                </RowWithGap>
+              <RowWithGap>
+                <Button type={'submit'} testId={'submit-my-profile'}>
+                  Сохранить
+                </Button>
+              </RowWithGap>
 
-                <RowWithGap>
-                  <StringButton
-                    testId={'update-my-password'}
-                    onClick={() => {
-                      showModal<UpdateMyPasswordModalInterface>({
-                        variant: UPDATE_MY_PASSWORD_MODAL,
-                        props: {
-                          confirm: async (input) => {
-                            showLoading();
-                            updateMyPasswordMutation({
-                              variables: {
-                                input,
-                              },
-                            }).catch((e) => {
-                              console.log(e);
-                            });
-                          },
+              <RowWithGap>
+                <StringButton
+                  testId={'update-my-password'}
+                  onClick={() => {
+                    showModal<UpdateMyPasswordModalInterface>({
+                      variant: UPDATE_MY_PASSWORD_MODAL,
+                      props: {
+                        confirm: async (input) => {
+                          showLoading();
+                          updateMyPasswordMutation({
+                            variables: {
+                              input,
+                            },
+                          }).catch((e) => {
+                            console.log(e);
+                          });
                         },
-                      });
-                    }}
-                  >
-                    Изменить пароль
-                  </StringButton>
-                </RowWithGap>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-
-      <div className={classes.card}>User card with avatar</div>
+                      },
+                    });
+                  }}
+                >
+                  Изменить пароль
+                </StringButton>
+              </RowWithGap>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
@@ -215,6 +210,7 @@ const ProfileDetails: NextPage<ProfileDetailsInterface> = (props) => {
   return (
     <SiteLayoutProvider title={'Профиль'} {...props}>
       <ProfileLayout>
+        <Title size={'small'}>Профиль</Title>
         <ProfileDetailsRoute />
       </ProfileLayout>
     </SiteLayoutProvider>

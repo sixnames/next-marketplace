@@ -79,7 +79,7 @@ export const Product = objectType({
           showCategoryInProductTitle: source.rubric?.showCategoryInProductTitle,
           attributes: source.attributes || [],
           fallbackTitle: source.originalName,
-          defaultKeyword: source.originalName,
+          defaultKeyword: getFieldStringLocale(source.nameI18n, locale) || source.originalName,
           defaultGender: source.gender,
           titleCategoriesSlugs: source.titleCategoriesSlugs,
           categories: getTreeFromList({

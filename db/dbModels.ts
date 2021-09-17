@@ -437,7 +437,14 @@ export interface OrderStatusModel extends TimestampModel {
   isConfirmed: boolean;
   isPayed: boolean;
   isDone: boolean;
+  isCancelationRequest: boolean;
   isCanceled: boolean;
+}
+
+export interface OrderRequestModel extends TimestampModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  userId: ObjectIdModel;
 }
 
 // Order log variant

@@ -530,7 +530,8 @@ export async function getServerSideProps(
       attributes: attributes || [],
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
       fallbackTitle: restProduct.originalName,
-      defaultKeyword: restProduct.originalName,
+      defaultKeyword:
+        getFieldStringLocale(restProduct.nameI18n, sessionLocale) || restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: getTreeFromList({
         list: categories,

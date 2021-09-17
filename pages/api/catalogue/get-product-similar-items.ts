@@ -300,7 +300,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
           attributes: product.attributes || [],
           fallbackTitle: product.originalName,
-          defaultKeyword: product.originalName,
+          defaultKeyword: getFieldStringLocale(product.nameI18n, locale) || product.originalName,
           defaultGender: product.gender,
           titleCategoriesSlugs: product.titleCategoriesSlugs,
           categories: getTreeFromList({

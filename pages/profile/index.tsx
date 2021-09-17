@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
+import Title from 'components/Title';
 import Tooltip from 'components/Tooltip';
 import { ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
@@ -229,10 +230,12 @@ const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) =
     <div className='mb-8' data-cy={'profile-orders'}>
       {orders.length < 1 ? (
         <div>
+          <Title size={'small'}>История заказов</Title>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />
         </div>
       ) : (
         <React.Fragment>
+          <Title size={'small'}>История заказов</Title>
           {orders.map((order, orderIndex) => {
             return <ProfileOrder key={`${order._id}`} orderIndex={orderIndex} order={order} />;
           })}

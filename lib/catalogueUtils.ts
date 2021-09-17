@@ -775,10 +775,10 @@ export const getCatalogueData = async ({
           },
         };
 
-    const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
     const productsInitialMatch = {
-      ...companyRubricsMatch,
+      ...companyMatch,
       rubricSlug,
       citySlug: city,
       ...optionsStage,
@@ -826,6 +826,7 @@ export const getCatalogueData = async ({
           {
             $group: {
               _id: '$productId',
+              companyId: { $first: `$companyId` },
               itemId: { $first: '$itemId' },
               rubricId: { $first: '$rubricId' },
               rubricSlug: { $first: `$rubricSlug` },

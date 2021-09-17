@@ -121,7 +121,7 @@ export async function getCardData({
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
@@ -130,7 +130,7 @@ export async function getCardData({
           $match: {
             slug,
             citySlug: city,
-            ...companyRubricsMatch,
+            ...companyMatch,
           },
         },
         {

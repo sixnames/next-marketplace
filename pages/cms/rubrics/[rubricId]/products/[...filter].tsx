@@ -20,7 +20,7 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
-import { getPriceAttribute } from 'config/constantAttributes';
+import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCT_ATTRIBUTES,
@@ -29,13 +29,14 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
+import { getCatalogueRubricPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
   CatalogueProductPricesInterface,
+  CategoryInterface,
   ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
@@ -342,6 +343,7 @@ interface ProductsAggregationInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   rubric: RubricInterface;
+  categories?: CategoryInterface[] | null;
 }
 
 export const getServerSideProps = async (
@@ -537,6 +539,50 @@ export const getServerSideProps = async (
                 },
               },
             ],
+
+            // get catalogue categories
+            categories: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  rubricId: { $first: '$rubricId' },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              ...productCategoriesPipeline(),
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $unwind: {
+                  path: '$categories',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  categories: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$categories',
+                },
+              },
+            ],
+
             countAllDocs: [
               {
                 $count: 'totalDocs',
@@ -574,6 +620,7 @@ export const getServerSideProps = async (
           $project: {
             docs: 1,
             rubric: 1,
+            categories: 1,
             totalDocs: 1,
             options: 1,
             prices: 1,
@@ -613,9 +660,14 @@ export const getServerSideProps = async (
     };
   }
 
+  const priceAttribute = getPriceAttribute();
+  const categoryAttribute = getCategoryFilterAttribute({
+    locale,
+    categories: productsResult.categories,
+  });
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     selectedOptionsSlugs: [],
-    attributes: [getPriceAttribute(), ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: [],

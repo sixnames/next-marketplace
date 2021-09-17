@@ -33,7 +33,7 @@ export const getCommonOptionFields = (
 };
 
 interface GetCategoryFilterAttributeInterface {
-  categories: CategoryInterface[];
+  categories?: CategoryInterface[] | null;
   locale: string;
 }
 
@@ -43,7 +43,7 @@ export function getCategoryFilterAttribute({
 }: GetCategoryFilterAttributeInterface): RubricAttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
-  const initialOptions: OptionInterface[] = categories.map((category) => {
+  const initialOptions: OptionInterface[] = (categories || []).map((category) => {
     const option: OptionInterface = {
       ...commonOptionFields,
       _id: category._id,

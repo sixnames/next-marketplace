@@ -132,8 +132,8 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       const filters = alwaysArray(router.query.catalogue).join('/');
       const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
-      const companyIdParam = companyId ? `$companyId=${companyId}` : '';
-      const companySlugParam = companySlug ? `companySlug=${companySlug}` : '';
+      const companyIdParam = companyId ? `&companyId=${companyId}` : '';
+      const companySlugParam = companySlug ? `&companySlug=${companySlug}` : '';
 
       const params = `?page=${
         state.page + 1

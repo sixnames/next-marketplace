@@ -62,7 +62,6 @@ interface RubricProductsInterface extends AppPaginationInterface<ProductInterfac
   rubric: RubricInterface;
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  rubricAttributesCount: number;
 }
 
 const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
@@ -75,7 +74,6 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   page,
   totalPages,
   itemPath,
-  rubricAttributesCount,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -162,12 +160,12 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
     {
       accessor: 'attributesCount',
       headTitle: 'Атрибуты',
-      render: ({ cellData }) => {
+      render: ({ cellData, dataItem }) => {
         return (
           <div className='flex gap-2'>
             <div>{noNaN(cellData)}</div>
             <div>/</div>
-            <div>{noNaN(rubricAttributesCount)}</div>
+            <div>{noNaN(dataItem.totalAttributesCount)}</div>
           </div>
         );
       },
@@ -418,7 +416,6 @@ export const getServerSideProps = async (
         clearSlug: basePath,
         totalDocs: 0,
         totalPages: 0,
-        rubricAttributesCount: 0,
         hasNextPage: false,
         hasPrevPage: false,
         attributes: [],
@@ -675,6 +672,19 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
+  // count rubric attributes
+  const allRubricAttributes = await rubricAttributesCollection
+    .find({
+      rubricId: rubric._id,
+    })
+    .toArray();
+  const rubricAttributes = allRubricAttributes.filter(({ categoryId }) => {
+    return !categoryId;
+  });
+  const categoryAttributes = allRubricAttributes.filter(({ categoryId }) => {
+    return categoryId;
+  });
+
   const docs: ProductInterface[] = [];
   for await (const product of productsResult.docs) {
     const cardPrices = {
@@ -682,17 +692,22 @@ export const getServerSideProps = async (
       min: `${noNaN(product.cardPrices?.min)}`,
       max: `${noNaN(product.cardPrices?.max)}`,
     };
-    docs.push({
+
+    const productCategoryAttributes = categoryAttributes.filter((attribute) => {
+      return (
+        attribute.categorySlug && product.selectedOptionsSlugs.includes(attribute.categorySlug)
+      );
+    });
+
+    const castedProduct: ProductInterface = {
       ...product,
       cardPrices,
       name: getFieldStringLocale(product.nameI18n, locale),
-    });
-  }
+      totalAttributesCount: rubricAttributes.length + productCategoryAttributes.length,
+    };
 
-  // count rubric attributes
-  const rubricAttributesCount = await rubricAttributesCollection.countDocuments({
-    rubricId: rubric._id,
-  });
+    docs.push(castedProduct);
+  }
 
   const payload: RubricProductsInterface = {
     rubric: {
@@ -706,7 +721,6 @@ export const getServerSideProps = async (
     hasNextPage: productsResult.hasNextPage,
     hasPrevPage: productsResult.hasPrevPage,
     attributes: castedAttributes,
-    rubricAttributesCount,
     itemPath,
     selectedAttributes,
     page,

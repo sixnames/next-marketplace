@@ -122,7 +122,7 @@ export const UpdateAttributeInRubricInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('rubricId');
     t.nonNull.objectId('rubricAttributeId');
-    t.nonNull.boolean('showInCategoryFilter');
+    t.nonNull.boolean('showInRubricFilter');
   },
 });
 
@@ -693,7 +693,7 @@ export const RubricMutations = extendType({
           const rubricAttributesCollection =
             db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
           const { input } = args;
-          const { rubricId, rubricAttributeId, showInCategoryFilter } = input;
+          const { rubricId, rubricAttributeId, showInRubricFilter } = input;
 
           // Permission
           const { allow, message } = await getOperationPermission({
@@ -731,7 +731,7 @@ export const RubricMutations = extendType({
             { _id: rubricAttributeId },
             {
               $set: {
-                showInCategoryFilter,
+                showInRubricFilter,
               },
             },
           );

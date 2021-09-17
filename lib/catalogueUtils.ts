@@ -579,6 +579,7 @@ interface CastCatalogueFiltersPayloadInterface {
   maxPrice?: number | null;
   realFilterOptions: string[];
   categoryFilters: string[];
+  inCategory: boolean;
   sortBy: string | null;
   sortDir: 1 | -1;
   sortFilterOptions: string[];
@@ -684,6 +685,7 @@ export function castCatalogueFilters({
     maxPrice,
     realFilterOptions,
     categoryFilters,
+    inCategory: categoryFilters.length > 0,
     sortBy,
     sortDir: castedSortDir,
     sortFilterOptions,
@@ -750,6 +752,7 @@ export const getCatalogueData = async ({
       skip,
       limit,
       categoryFilters,
+      inCategory,
       page: payloadPage,
     } = castCatalogueFilters({
       filters,
@@ -1056,8 +1059,13 @@ export const getCatalogueData = async ({
       ];
     }
 
+    const rubricAttributes = inCategory
+      ? rubric.attributes || []
+      : (rubric.attributes || []).filter(({ showInRubricFilter }) => {
+          return showInRubricFilter;
+        });
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [priceAttribute, ...categoryAttribute, ...(rubric.attributes || [])],
+      attributes: [priceAttribute, ...categoryAttribute, ...rubricAttributes],
       locale,
       filters,
       selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,

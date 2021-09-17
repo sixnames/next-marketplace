@@ -2520,7 +2520,7 @@ input UpdateAttributeInGroupInput {
 input UpdateAttributeInRubricInput {
   rubricAttributeId: ObjectId!
   rubricId: ObjectId!
-  showInCategoryFilter: Boolean!
+  showInRubricFilter: Boolean!
 }
 
 input UpdateAttributesGroupInput {

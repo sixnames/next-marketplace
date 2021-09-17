@@ -2839,7 +2839,7 @@ export type UpdateAttributeInGroupInput = {
 export type UpdateAttributeInRubricInput = {
   rubricId: Scalars['ObjectId'];
   rubricAttributeId: Scalars['ObjectId'];
-  showInCategoryFilter: Scalars['Boolean'];
+  showInRubricFilter: Scalars['Boolean'];
 };
 
 export type UpdateAttributesGroupInput = {

@@ -141,6 +141,7 @@ export async function castAttributeForRubric({
     categoryId,
     categorySlug,
     attributesGroupId: new ObjectId(attributesGroup?._id),
+    showInRubricFilter: true,
     ...DEFAULT_COUNTERS_OBJECT,
   };
 }

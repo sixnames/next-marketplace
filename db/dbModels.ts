@@ -663,7 +663,7 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   rubricSlug: string;
   categoryId?: ObjectIdModel | null;
   categorySlug?: string | null;
-  showInCategoryFilter?: boolean | null;
+  showInRubricFilter: boolean;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {

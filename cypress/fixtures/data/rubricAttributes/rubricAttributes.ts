@@ -44,7 +44,7 @@ function getRubricAttributes({
       categorySlug,
       attributeId: attribute._id,
       attributesGroupId: attribute.attributesGroupId,
-      showInCategoryFilter: true,
+      showInRubricFilter: true,
     };
   });
 }

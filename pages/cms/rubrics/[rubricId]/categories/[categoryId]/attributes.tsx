@@ -79,7 +79,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       render: ({ cellData }) => cellData?.name || null,
     },
     {
-      accessor: 'showInCategoryFilter',
+      accessor: 'showInRubricFilter',
       headTitle: 'Показывать в фильтре рубрики',
       render: ({ cellData, dataItem }) => {
         return (

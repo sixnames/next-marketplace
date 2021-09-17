@@ -615,7 +615,7 @@ export interface NexusGenInputs {
     // input type
     rubricAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    showInCategoryFilter: boolean; // Boolean!
+    showInRubricFilter: boolean; // Boolean!
   };
   UpdateAttributesGroupInput: {
     // input type

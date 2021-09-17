@@ -90,7 +90,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
 
           {/*original name*/}
-          <div className='text-lg mb-1'>
+          <div className='text-lg mb-4'>
             <Link
               testId={`${testId}-name-grid`}
               target={'_blank'}
@@ -100,15 +100,15 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               {snippetTitle}
             </Link>
           </div>
-
-          {/*art*/}
-          {showSnippetArticle ? (
-            <div className='text-secondary-text mb-5 text-sm'>Артикул: {itemId}</div>
-          ) : null}
         </div>
 
         {/*price*/}
-        <div className='flex justify-center mb-2 px-4 mt-auto'>
+        <div className='flex flex-col items-center justify-center px-4 mb-4 mt-auto'>
+          {/*art*/}
+          {showSnippetArticle ? (
+            <div className='text-secondary-text mb-2 text-sm'>Артикул: {itemId}</div>
+          ) : null}
+
           <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>

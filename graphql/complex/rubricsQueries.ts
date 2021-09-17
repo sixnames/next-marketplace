@@ -184,3 +184,12 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
     }
   }
 `;
+
+export const UPDATE_RUBRIC_ATTRIBUTE_MUTATION = gql`
+  mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+    updateAttributeInRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;

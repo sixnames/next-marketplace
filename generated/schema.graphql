@@ -1235,6 +1235,11 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!
 
   """
+  Should update rubric attribute
+  """
+  updateAttributeInRubric(input: UpdateAttributeInRubricInput!): RubricPayload!
+
+  """
   Should update attributes group
   """
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayload!
@@ -2513,8 +2518,9 @@ input UpdateAttributeInGroupInput {
 }
 
 input UpdateAttributeInRubricInput {
-  attributeId: ObjectId!
+  rubricAttributeId: ObjectId!
   rubricId: ObjectId!
+  showInRubricFilter: Boolean!
 }
 
 input UpdateAttributesGroupInput {

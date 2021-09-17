@@ -94,6 +94,7 @@ export function getCategoryFilterAttribute({
     showNameInCardTitle: false,
     showNameInSelectedAttributes: false,
     showNameInSnippetTitle: false,
+    showInRubricFilter: true,
     positioningInTitle: {
       [DEFAULT_LOCALE]:
         ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleModel,
@@ -141,6 +142,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
     showNameInSnippetTitle: false,
     showInCard: false,
     capitalise: false,
+    showInRubricFilter: true,
     options: [
       {
         _id: new ObjectId(),

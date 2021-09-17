@@ -613,8 +613,9 @@ export interface NexusGenInputs {
   };
   UpdateAttributeInRubricInput: {
     // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    rubricAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    showInRubricFilter: boolean; // Boolean!
   };
   UpdateAttributesGroupInput: {
     // input type
@@ -1589,6 +1590,7 @@ export interface NexusGenFieldTypes {
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
+    updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     updateCatalogueCounters: boolean; // Boolean!
@@ -2726,6 +2728,7 @@ export interface NexusGenFieldTypeNames {
     repeatOrder: 'CartPayload';
     signUp: 'UserPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
+    updateAttributeInRubric: 'RubricPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
     updateCatalogueCounters: 'Boolean';
@@ -3740,6 +3743,10 @@ export interface NexusGenArgTypes {
     updateAttributeInGroup: {
       // args
       input: NexusGenInputs['UpdateAttributeInGroupInput']; // UpdateAttributeInGroupInput!
+    };
+    updateAttributeInRubric: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
     };
     updateAttributesGroup: {
       // args

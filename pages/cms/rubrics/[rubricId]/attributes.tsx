@@ -1,3 +1,4 @@
+import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
@@ -22,12 +23,14 @@ import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
+  useUpdateAttributeInRubricMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -55,6 +58,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const [updateAttributeInRubricMutation] = useUpdateAttributeInRubricMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateAttributeInRubric),
+    onError: onErrorCallback,
+  });
+
   const columns: TableColumn<RubricAttributeInterface>[] = [
     {
       accessor: 'name',
@@ -71,6 +79,30 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       accessor: 'metric',
       headTitle: 'Единица измерения',
       render: ({ cellData }) => cellData?.name || null,
+    },
+    {
+      accessor: 'showInRubricFilter',
+      headTitle: 'Показывать в фильтре рубрики',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <CheckBox
+            value={cellData}
+            name={dataItem.slug}
+            checked={cellData}
+            onChange={(e: any) => {
+              updateAttributeInRubricMutation({
+                variables: {
+                  input: {
+                    rubricAttributeId: dataItem._id,
+                    rubricId: rubric._id,
+                    showInRubricFilter: Boolean(e?.target?.checked),
+                  },
+                },
+              }).catch(console.log);
+            }}
+          />
+        );
+      },
     },
     {
       accessor: 'category',
@@ -338,28 +370,36 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
+  const attributesGroups = (initialRubric.attributesGroups || []).map((attributesGroup) => {
+    return {
+      ...attributesGroup,
+      name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
+      attributes: (attributesGroup.attributes || []).map((attribute) => {
+        return {
+          ...attribute,
+          name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
+          metric: attribute.metric
+            ? {
+                ...attribute.metric,
+                name: getFieldStringLocale(attribute.metric.nameI18n, sessionLocale),
+              }
+            : null,
+          category: attribute.category
+            ? {
+                ...attribute.category,
+                name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
+              }
+            : null,
+        };
+      }),
+    };
+  });
+
   const rawRubric: RubricInterface = {
     ...initialRubric,
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
     attributes: [],
-    attributesGroups: (initialRubric.attributesGroups || []).map((attributesGroup) => {
-      return {
-        ...attributesGroup,
-        name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-        attributes: (attributesGroup.attributes || []).map((attribute) => {
-          return {
-            ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
-            category: attribute.category
-              ? {
-                  ...attribute.category,
-                  name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
-                }
-              : null,
-          };
-        }),
-      };
-    }),
+    attributesGroups: sortByName(attributesGroups),
   };
 
   return {

@@ -53,6 +53,7 @@ export const CreateOrderStatusInput = inputObjectType({
     t.nonNull.boolean('isConfirmed');
     t.nonNull.boolean('isPayed');
     t.nonNull.boolean('isDone');
+    t.nonNull.boolean('isCancelationRequest');
     t.nonNull.boolean('isCanceled');
   },
 });
@@ -68,6 +69,7 @@ export const UpdateOrderStatusInput = inputObjectType({
     t.nonNull.boolean('isConfirmed');
     t.nonNull.boolean('isPayed');
     t.nonNull.boolean('isDone');
+    t.nonNull.boolean('isCancelationRequest');
     t.nonNull.boolean('isCanceled');
   },
 });

@@ -554,6 +554,7 @@ input CreateOptionsGroupInput {
 input CreateOrderStatusInput {
   color: String!
   index: Int!
+  isCancelationRequest: Boolean!
   isCanceled: Boolean!
   isConfirmed: Boolean!
   isDone: Boolean!
@@ -2652,6 +2653,7 @@ input UpdateOptionsGroupInput {
 input UpdateOrderStatusInput {
   color: String!
   index: Int!
+  isCancelationRequest: Boolean!
   isCanceled: Boolean!
   isConfirmed: Boolean!
   isDone: Boolean!

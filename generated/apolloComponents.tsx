@@ -602,6 +602,7 @@ export type CreateOrderStatusInput = {
   isConfirmed: Scalars['Boolean'];
   isPayed: Scalars['Boolean'];
   isDone: Scalars['Boolean'];
+  isCancelationRequest: Scalars['Boolean'];
   isCanceled: Scalars['Boolean'];
 };
 
@@ -2977,6 +2978,7 @@ export type UpdateOrderStatusInput = {
   isConfirmed: Scalars['Boolean'];
   isPayed: Scalars['Boolean'];
   isDone: Scalars['Boolean'];
+  isCancelationRequest: Scalars['Boolean'];
   isCanceled: Scalars['Boolean'];
 };
 

@@ -129,7 +129,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
                 className='font-medium text-theme'
                 onClick={hideFilterHandler}
               >
-                Очистить все
+                Сбросить фильтр
               </Link>
             </div>
 

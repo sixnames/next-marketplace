@@ -1,9 +1,4 @@
-import {
-  DEFAULT_CITY,
-  DEFAULT_LOCALE,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  SECONDARY_LOCALE,
-} from '../config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../config/common';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
   let translation: T = i18nField[locale];
@@ -43,7 +38,7 @@ export function getFieldStringLocale(
 
   // Set warning massage if fallback language not found
   if (!translation) {
-    translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+    translation = '';
   }
 
   return translation;

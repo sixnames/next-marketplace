@@ -1110,7 +1110,8 @@ export const getCatalogueData = async ({
         categories,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
         fallbackTitle: restProduct.originalName,
-        defaultKeyword: restProduct.originalName,
+        defaultKeyword:
+          getFieldStringLocale(restProduct.nameI18n, locale) || restProduct.originalName,
         defaultGender: restProduct.gender,
       });
 

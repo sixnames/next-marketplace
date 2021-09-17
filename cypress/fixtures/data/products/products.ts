@@ -275,10 +275,10 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       originalName: name,
       gender: GENDER_IT,
       nameI18n: {
-        ru: name,
+        ru: `${name} RU`,
       },
       descriptionI18n: {
-        ru: `Description ${name}`,
+        ru: `Description ${name} RU`,
       },
       mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,

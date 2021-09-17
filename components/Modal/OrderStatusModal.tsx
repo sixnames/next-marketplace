@@ -49,6 +49,7 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
     isConfirmed: orderStatus?.isConfirmed || false,
     isPayed: orderStatus?.isPayed || false,
     isDone: orderStatus?.isDone || false,
+    isCancelationRequest: orderStatus?.isCancelationRequest || false,
     isCanceled: orderStatus?.isCanceled || false,
   };
 
@@ -69,6 +70,7 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
             isConfirmed: values.isConfirmed,
             isPayed: values.isPayed,
             isDone: values.isDone,
+            isCancelationRequest: values.isCancelationRequest,
             isCanceled: values.isCanceled,
           };
 
@@ -124,6 +126,7 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
               <FormikCheckboxLine label={'Подтверждён'} name={'isConfirmed'} />
               <FormikCheckboxLine label={'Оплачен'} name={'isPayed'} />
               <FormikCheckboxLine label={'Завершён'} name={'isDone'} />
+              <FormikCheckboxLine label={'Запрос на отмену'} name={'isCancelationRequest'} />
               <FormikCheckboxLine label={'Отменён'} name={'isCanceled'} />
 
               <ModalButtons>

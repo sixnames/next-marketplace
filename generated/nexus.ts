@@ -328,6 +328,7 @@ export interface NexusGenInputs {
     // input type
     color: string; // String!
     index: number; // Int!
+    isCancelationRequest: boolean; // Boolean!
     isCanceled: boolean; // Boolean!
     isConfirmed: boolean; // Boolean!
     isDone: boolean; // Boolean!
@@ -747,6 +748,7 @@ export interface NexusGenInputs {
     // input type
     color: string; // String!
     index: number; // Int!
+    isCancelationRequest: boolean; // Boolean!
     isCanceled: boolean; // Boolean!
     isConfirmed: boolean; // Boolean!
     isDone: boolean; // Boolean!

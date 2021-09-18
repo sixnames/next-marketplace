@@ -33,7 +33,12 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { generateProductSlug } from 'lib/slugUtils';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_LOCALE,
+  VIEWS_COUNTER_STEP,
+} from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
@@ -234,6 +239,13 @@ export const ProductMutations = extendType({
               selectedAttributesIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
+              // TODO
+              cardTitleI18n: {
+                [DEFAULT_LOCALE]: values.originalName,
+              },
+              snippetTitleI18n: {
+                [DEFAULT_LOCALE]: values.originalName,
+              },
             });
             const createdProduct = createdProductResult.ops[0];
             if (!createdProductResult.result.ok || !createdProduct) {
@@ -1230,6 +1242,8 @@ export const ProductMutations = extendType({
               mainImage: product.mainImage,
               selectedOptionsSlugs: product.selectedOptionsSlugs,
               titleCategoriesSlugs: product.titleCategoriesSlugs,
+              snippetTitleI18n: product.snippetTitleI18n,
+              cardTitleI18n: product.cardTitleI18n,
               gender: product.gender,
               updatedAt: new Date(),
               createdAt: new Date(),
@@ -1408,6 +1422,13 @@ export const ProductMutations = extendType({
               titleCategoriesSlugs: [],
               createdAt: new Date(),
               updatedAt: new Date(),
+              // TODO
+              cardTitleI18n: {
+                [DEFAULT_LOCALE]: productFields.originalName,
+              },
+              snippetTitleI18n: {
+                [DEFAULT_LOCALE]: productFields.originalName,
+              },
             });
             const createdProduct = createdProductResult.ops[0];
             if (!createdProductResult.result.ok || !createdProduct) {
@@ -1482,6 +1503,8 @@ export const ProductMutations = extendType({
               mainImage: createdProduct.mainImage,
               selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
               titleCategoriesSlugs: createdProduct.titleCategoriesSlugs,
+              snippetTitleI18n: createdProduct.snippetTitleI18n,
+              cardTitleI18n: createdProduct.cardTitleI18n,
               gender: createdProduct.gender,
               updatedAt: new Date(),
               createdAt: new Date(),

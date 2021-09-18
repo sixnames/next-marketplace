@@ -280,13 +280,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       descriptionI18n: {
         ru: `Description ${name} RU`,
       },
-      // TODO
-      snippetTitleI18n: {
-        ru: `${name} RU`,
-      },
-      cardTitleI18n: {
-        ru: `${name} RU`,
-      },
       mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
       titleCategoriesSlugs,

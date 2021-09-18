@@ -1,6 +1,5 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { castAttributeForRubric } from 'lib/optionsUtils';
-import { updateProductTitlesWithUpdatedAttribute } from 'lib/titleUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -1059,11 +1058,6 @@ export const attributesGroupMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // update product titles
-            await updateProductTitlesWithUpdatedAttribute({
-              attributeId,
-            });
 
             mutationPayload = {
               success: true,

@@ -562,8 +562,6 @@ interface ProductMainFieldsInterface {
   active: boolean;
   slug: string;
   originalName: string;
-  snippetTitleI18n: TranslationModel;
-  cardTitleI18n: TranslationModel;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   rubricId: ObjectIdModel;

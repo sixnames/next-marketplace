@@ -80,8 +80,8 @@ export const constantTranslations = {
     },
   },
   catalogueTitleSeparator: {
-    [DEFAULT_LOCALE]: ' и ',
-    [SECONDARY_LOCALE]: ' and ',
+    [DEFAULT_LOCALE]: 'и',
+    [SECONDARY_LOCALE]: 'and',
   },
   catalogueFilter: {
     brands: {

@@ -11,7 +11,6 @@ import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE_KEY,
   LOCALE_HEADER,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
@@ -293,7 +292,7 @@ export const getRequestParams = async (
 
     // Set warning massage if fallback language not found
     if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+      translation = '';
     }
 
     return translation;

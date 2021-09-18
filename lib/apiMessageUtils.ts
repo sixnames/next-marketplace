@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import { COL_MESSAGES } from 'db/collectionNames';
 import { MessageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -19,7 +19,7 @@ export async function getApiMessageValue({
   const messageEntity = await messagesCollection.findOne({ slug });
 
   if (!messageEntity) {
-    return LOCALE_NOT_FOUND_FIELD_MESSAGE;
+    return 'Message translation not found';
   }
 
   return getI18nLocaleValue(messageEntity.messageI18n, locale || DEFAULT_LOCALE);

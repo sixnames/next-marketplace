@@ -56,7 +56,6 @@ export const CITY_COOKIE_KEY = 'city';
 export const LOCALE_COOKIE_KEY = 'locale';
 export const COMPANY_SLUG_COOKIE_KEY = 'companySlug';
 export const LOCALE_HEADER = 'content-language';
-export const LOCALE_NOT_FOUND_FIELD_MESSAGE = 'Field translation not found';
 
 // Cities and countries
 export const DEFAULT_COUNTRY = 'Россия';

@@ -94,6 +94,16 @@ const RubricMainFields: React.FC = () => {
         label={'Показывать названия категорий в заголовке товара'}
         name={'showCategoryInProductTitle'}
       />
+
+      <FormikCheckboxLine
+        label={'Показывать название бренда в заголовке сниппета'}
+        name={'showBrandInSnippetTitle'}
+      />
+
+      <FormikCheckboxLine
+        label={'Показывать название бренда в заголовке карточки'}
+        name={'showBrandInCardTitle'}
+      />
     </React.Fragment>
   );
 };

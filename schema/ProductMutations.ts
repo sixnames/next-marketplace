@@ -326,6 +326,7 @@ export const ProductMutations = extendType({
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
         const session = client.startSession();
 
@@ -366,6 +367,17 @@ export const ProductMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Get selected rubric
+            const rubric = await rubricsCollection.findOne({ _id: product.rubricId });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.update.error`),
               };
               await session.abortTransaction();
               return;

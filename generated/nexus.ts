@@ -391,6 +391,8 @@ export interface NexusGenInputs {
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showBrandInCardTitle?: boolean | null; // Boolean
+    showBrandInSnippetTitle?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -921,6 +923,8 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showBrandInCardTitle?: boolean | null; // Boolean
+    showBrandInSnippetTitle?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!

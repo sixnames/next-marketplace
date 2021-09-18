@@ -11,7 +11,6 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   ROUTE_CMS,
   SORT_ASC,
   SORT_DESC,
@@ -568,12 +567,9 @@ export const getServerSideProps = async (
           locale: props.sessionLocale,
         });
 
-        const finalReadableValue =
-          readableValue === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : readableValue;
-
         astGroup.attributes.push({
           ...currentProductAttribute,
-          readableValue: finalReadableValue,
+          readableValue: readableValue || '',
           name: getFieldStringLocale(currentProductAttribute.nameI18n, props.sessionLocale),
         });
         continue;

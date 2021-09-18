@@ -35,6 +35,8 @@ shops.forEach((shop) => {
 
           shopProducts.push({
             _id: getObjectId(`shopProduct ${shop.slug} ${product.slug} ${barcode}`),
+            barcode,
+            productId,
             shopId: shop._id,
             companyId: shop.companyId,
             citySlug: DEFAULT_CITY,
@@ -42,8 +44,6 @@ shops.forEach((shop) => {
             slug: product.slug,
             originalName: product.originalName,
             itemId: product.itemId,
-            barcode,
-            productId,
             active: product.active,
             brandCollectionSlug: product.brandCollectionSlug,
             brandSlug: product.brandSlug,

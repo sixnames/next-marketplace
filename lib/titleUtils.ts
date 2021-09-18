@@ -9,14 +9,28 @@ import {
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel, TranslationModel } from 'db/dbModels';
+import {
+  COL_BRANDS,
+  COL_CATEGORIES,
+  COL_LANGUAGES,
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
+import { GenderModel, LanguageModel, ObjectIdModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
   BrandInterface,
   CategoryInterface,
   OptionInterface,
+  ProductAttributeInterface,
+  ProductInterface,
+  ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { get } from 'lodash';
 
 interface TitleOptionInterface
@@ -246,7 +260,7 @@ export function generateTitle({
 
 interface GenerateProductTitlePrefixInterface {
   locale: string;
-  brand?: BrandInterface;
+  brand?: BrandInterface | null;
   rubricName?: string | null;
   defaultGender: string;
   titleCategoriesSlugs: string[];
@@ -331,8 +345,10 @@ function generateProductTitle({
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
   titleCategoriesSlugs,
+  brand,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
+    brand,
     locale,
     rubricName,
     categories,
@@ -380,4 +396,174 @@ export function generateSnippetTitle(props: GenerateCardTitleInterface): string 
     attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
     attributeVisibilityFieldName: 'showInSnippetTitle',
   });
+}
+
+interface UpdateProductTitlesInterface {
+  productId: ObjectIdModel;
+  rubricName?: string | null;
+  showBrandNameInProductTitle?: boolean | null;
+  showRubricNameInProductTitle?: boolean | null;
+  showCategoryInProductTitle?: boolean | null;
+}
+
+export async function updateProductTitles({
+  productId,
+  rubricName,
+  showBrandNameInProductTitle,
+  showCategoryInProductTitle,
+  showRubricNameInProductTitle,
+}: UpdateProductTitlesInterface): Promise<boolean> {
+  const { db } = await getDatabase();
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const productAttributesCollection =
+    db.collection<ProductAttributeInterface>(COL_PRODUCT_ATTRIBUTES);
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+
+  // get languages
+  const languages = await languagesCollection.find({});
+
+  // get product
+  const product = await productsCollection.findOne({ _id: productId });
+  if (!product) {
+    return false;
+  }
+
+  // get product attributes
+  const productAttributesAggregation = await productAttributesCollection
+    .aggregate([
+      {
+        $match: {
+          productId,
+        },
+      },
+      // lookup attribute options
+      {
+        $lookup: {
+          from: COL_OPTIONS,
+          as: 'options',
+          let: {
+            optionsGroupId: '$optionsGroupId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                    },
+                  ],
+                },
+                slug: {
+                  $in: product.selectedOptionsSlugs,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+
+  // get categories
+  const categories = await categoriesCollection
+    .find({
+      slug: {
+        $in: product.selectedOptionsSlugs,
+      },
+    })
+    .toArray();
+
+  // get brand
+  const brand = product.brandSlug
+    ? await brandsCollection.findOne({
+        slug: product.brandSlug,
+      })
+    : null;
+
+  const snippetTitleI18n: TranslationModel = {};
+  const cardTitleI18n: TranslationModel = {};
+
+  languages.forEach((language) => {
+    const locale = language.slug;
+    const attributes = productAttributesAggregation.map((attribute) => {
+      return {
+        ...attribute,
+        options: getTreeFromList({
+          list: attribute.options,
+          locale,
+          childrenFieldName: 'options',
+        }),
+      };
+    });
+    snippetTitleI18n[locale] = generateSnippetTitle({
+      attributes,
+      locale,
+      rubricName,
+      nameI18n: product.nameI18n,
+      originalName: product.originalName,
+      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      defaultGender: product.gender,
+      categories,
+      brand,
+      showBrandNameInProductTitle,
+      showCategoryInProductTitle,
+      showRubricNameInProductTitle,
+    });
+  });
+
+  languages.forEach((language) => {
+    const locale = language.slug;
+    const attributes = productAttributesAggregation.map((attribute) => {
+      return {
+        ...attribute,
+        options: getTreeFromList({
+          list: attribute.options,
+          locale,
+          childrenFieldName: 'options',
+        }),
+      };
+    });
+    cardTitleI18n[locale] = generateCardTitle({
+      attributes,
+      locale,
+      rubricName,
+      nameI18n: product.nameI18n,
+      originalName: product.originalName,
+      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      defaultGender: product.gender,
+      categories,
+      brand,
+      showBrandNameInProductTitle,
+      showCategoryInProductTitle,
+      showRubricNameInProductTitle,
+    });
+  });
+
+  // update product
+  const updater = {
+    $set: {
+      snippetTitleI18n,
+      cardTitleI18n,
+    },
+  };
+  await productsCollection.findOneAndUpdate(
+    {
+      _id: product._id,
+    },
+    updater,
+  );
+
+  // update shop products
+  await shopProductsCollection.updateMany(
+    {
+      productId: product._id,
+    },
+    updater,
+  );
+
+  return true;
 }

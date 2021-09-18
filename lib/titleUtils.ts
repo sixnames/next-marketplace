@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  FILTER_SEPARATOR,
   GENDER_IT,
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
@@ -120,7 +121,7 @@ export function generateTitle({
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
   // get initial keyword
-  const initialKeyword = defaultKeyword
+  const initialKeyword = !defaultKeyword
     ? ''
     : capitaliseKeyWord
     ? defaultKeyword
@@ -430,6 +431,13 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
   }
 
   // get product attributes
+  const optionsSlugs = product.selectedOptionsSlugs.reduce((acc: string[], slug) => {
+    const slugParts = slug.split(FILTER_SEPARATOR);
+    if (slugParts[1]) {
+      return [...acc, slugParts[1]];
+    }
+    return acc;
+  }, []);
   const productAttributesAggregation = await productAttributesCollection
     .aggregate([
       {
@@ -456,11 +464,25 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
                   ],
                 },
                 slug: {
-                  $in: product.selectedOptionsSlugs,
+                  $in: optionsSlugs,
                 },
               },
             },
           ],
+        },
+      },
+      {
+        $addFields: {
+          optionsCount: {
+            $size: '$options',
+          },
+        },
+      },
+      {
+        $match: {
+          optionsCount: {
+            $gt: 0,
+          },
         },
       },
     ])
@@ -485,7 +507,6 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
   const snippetTitleI18n: TranslationModel = {};
   const cardTitleI18n: TranslationModel = {};
 
-  // get snippet title for each language
   languages.forEach((language) => {
     const locale = language.slug;
     const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
@@ -499,7 +520,9 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
         }),
       };
     });
-    snippetTitleI18n[locale] = generateSnippetTitle({
+
+    // get snippet title for each language
+    const snippetTitle = generateSnippetTitle({
       attributes,
       locale,
       rubricName,
@@ -513,23 +536,10 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
     });
-  });
+    snippetTitleI18n[locale] = snippetTitle;
 
-  // get card title for each language
-  languages.forEach((language) => {
-    const locale = language.slug;
-    const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
-    const attributes = productAttributesAggregation.map((attribute) => {
-      return {
-        ...attribute,
-        options: getTreeFromList({
-          list: attribute.options,
-          locale,
-          childrenFieldName: 'options',
-        }),
-      };
-    });
-    cardTitleI18n[locale] = generateCardTitle({
+    // get card title for each language
+    const cardTitle = generateCardTitle({
       attributes,
       locale,
       rubricName,
@@ -543,6 +553,7 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
     });
+    cardTitleI18n[locale] = cardTitle;
   });
 
   // update product

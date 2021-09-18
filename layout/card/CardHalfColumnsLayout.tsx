@@ -63,11 +63,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer } = product;
+  const { brand, brandCollection, manufacturer, originalName } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner lowBottom lowTop>

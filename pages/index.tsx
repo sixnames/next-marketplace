@@ -529,9 +529,8 @@ export async function getServerSideProps(
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
       attributes: attributes || [],
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      fallbackTitle: restProduct.originalName,
-      defaultKeyword:
-        getFieldStringLocale(restProduct.nameI18n, sessionLocale) || restProduct.originalName,
+      nameI18n: restProduct.nameI18n,
+      originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: getTreeFromList({
         list: categories,

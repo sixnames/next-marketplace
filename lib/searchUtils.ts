@@ -612,9 +612,8 @@ export const getSearchData = async ({
         showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
         attributes: attributes || [],
-        fallbackTitle: restProduct.originalName,
-        defaultKeyword:
-          getFieldStringLocale(restProduct.nameI18n, locale) || restProduct.originalName,
+        nameI18n: restProduct.nameI18n,
+        originalName: restProduct.originalName,
         defaultGender: restProduct.gender,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
         categories: getTreeFromList({

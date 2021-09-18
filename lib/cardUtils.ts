@@ -882,9 +882,8 @@ export async function getCardData({
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       attributes: allProductAttributes,
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      fallbackTitle: restProduct.originalName,
-      defaultKeyword:
-        getFieldStringLocale(restProduct.nameI18n, locale) || restProduct.originalName,
+      nameI18n: restProduct.nameI18n,
+      originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: cardCategories,
     });

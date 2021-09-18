@@ -10,7 +10,7 @@ import {
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel } from 'db/dbModels';
+import { GenderModel, TranslationModel } from 'db/dbModels';
 import { AttributeInterface, CategoryInterface, OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
@@ -292,10 +292,17 @@ interface GenerateProductTitleInterface
   extends GenerateProductTitlePrefixInterface,
     Omit<
       GenerateTitleInterface,
-      'positionFieldName' | 'prefix' | 'capitaliseKeyWord' | 'attributeNameVisibilityFieldName'
+      | 'positionFieldName'
+      | 'prefix'
+      | 'capitaliseKeyWord'
+      | 'attributeNameVisibilityFieldName'
+      | 'fallbackTitle'
+      | 'defaultKeyword'
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
+  nameI18n?: TranslationModel | null;
+  originalName: string;
 }
 
 function generateProductTitle({
@@ -306,8 +313,8 @@ function generateProductTitle({
   showRubricNameInProductTitle,
   attributes,
   defaultGender,
-  fallbackTitle,
-  defaultKeyword,
+  nameI18n,
+  originalName,
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
@@ -323,11 +330,13 @@ function generateProductTitle({
     titleCategoriesSlugs,
   });
 
+  const keyword = getFieldStringLocale(nameI18n, locale) || originalName;
+
   return generateTitle({
     attributes,
     defaultGender,
-    fallbackTitle,
-    defaultKeyword,
+    fallbackTitle: keyword,
+    defaultKeyword: keyword,
     prefix,
     locale,
     currency,

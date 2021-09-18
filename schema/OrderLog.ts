@@ -1,12 +1,12 @@
 import { enumType, objectType } from 'nexus';
-import { ORDER_LOG_VARIANTS_ENUMS } from 'config/common';
+import { ORDER_LOG_VARIANT_ENUMS } from 'config/common';
 import { UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_USERS } from 'db/collectionNames';
 
 export const OrderLogVariant = enumType({
   name: 'OrderLogVariant',
-  members: ORDER_LOG_VARIANTS_ENUMS,
+  members: ORDER_LOG_VARIANT_ENUMS,
   description: 'Order log variant enum.',
 });
 

@@ -32,6 +32,7 @@ import {
   OrderLogModel,
   OrderModel,
   OrderProductModel,
+  OrderRequestModel,
   OrderStatusModel,
   PageModel,
   PagesGroupModel,
@@ -505,6 +506,12 @@ export interface OrderProductInterface extends OrderProductModel {
   status?: OrderStatusInterface | null;
 }
 
+export interface OrderRequestModelInterface extends OrderRequestModel {
+  user?: UserInterface | null;
+  confirmedBy?: UserInterface | null;
+  canceledBy?: UserInterface | null;
+}
+
 export interface OrderInterface extends OrderModel {
   user?: UserInterface | null;
   customer?: OrderCustomerInterface | null;
@@ -516,6 +523,7 @@ export interface OrderInterface extends OrderModel {
   productsCount?: number | null;
   totalPrice?: number | null;
   formattedTotalPrice?: string | null;
+  requests?: OrderRequestModelInterface[] | null;
 }
 
 export interface TopFilterInterface {

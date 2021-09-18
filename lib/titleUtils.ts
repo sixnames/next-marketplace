@@ -6,12 +6,16 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   GENDER_IT,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel } from 'db/dbModels';
-import { AttributeInterface, CategoryInterface, OptionInterface } from 'db/uiInterfaces';
+import { GenderModel, TranslationModel } from 'db/dbModels';
+import {
+  AttributeInterface,
+  BrandInterface,
+  CategoryInterface,
+  OptionInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 
@@ -94,16 +98,29 @@ export function generateTitle({
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
+  /*console.log({
+    attributes,
+    defaultGender,
+    fallbackTitle,
+    defaultKeyword,
+    prefix,
+    locale,
+    currency,
+    capitaliseKeyWord,
+    positionFieldName,
+    attributeVisibilityFieldName,
+    attributeNameVisibilityFieldName,
+  });*/
+
   // get initial keyword
-  const initialKeyword =
-    defaultKeyword === LOCALE_NOT_FOUND_FIELD_MESSAGE
-      ? ''
-      : capitaliseKeyWord
-      ? defaultKeyword
-      : `${defaultKeyword}`.toLowerCase();
+  const initialKeyword = !defaultKeyword
+    ? ''
+    : capitaliseKeyWord
+    ? defaultKeyword
+    : `${defaultKeyword}`.toLowerCase();
 
   // get title prefix
-  const finalPrefix = prefix === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : prefix;
+  const finalPrefix = prefix || '';
 
   // title initial parts
   const beginOfTitle: string[] = [];
@@ -243,10 +260,12 @@ export function generateTitle({
 
 interface GenerateProductTitlePrefixInterface {
   locale: string;
+  brand?: BrandInterface | null;
   rubricName?: string | null;
   defaultGender: string;
   titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
+  showBrandNameInProductTitle?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
 }
@@ -255,7 +274,9 @@ export function generateProductTitlePrefix({
   locale,
   rubricName,
   categories,
+  brand,
   defaultGender,
+  showBrandNameInProductTitle,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
   titleCategoriesSlugs,
@@ -283,7 +304,11 @@ export function generateProductTitlePrefix({
   }
   (categories || []).forEach(getCategoryNames);
 
-  const prefixArray = [rubricPrefix, ...categoryNames];
+  const brandName = showBrandNameInProductTitle
+    ? getFieldStringLocale(brand?.nameI18n, locale)
+    : '';
+
+  const prefixArray = [rubricPrefix, ...categoryNames, brandName];
   const filteredArray = prefixArray.filter((word) => word);
   return filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
 }
@@ -292,10 +317,17 @@ interface GenerateProductTitleInterface
   extends GenerateProductTitlePrefixInterface,
     Omit<
       GenerateTitleInterface,
-      'positionFieldName' | 'prefix' | 'capitaliseKeyWord' | 'attributeNameVisibilityFieldName'
+      | 'positionFieldName'
+      | 'prefix'
+      | 'capitaliseKeyWord'
+      | 'attributeNameVisibilityFieldName'
+      | 'fallbackTitle'
+      | 'defaultKeyword'
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
+  nameI18n?: TranslationModel | null;
+  originalName: string;
 }
 
 function generateProductTitle({
@@ -304,30 +336,36 @@ function generateProductTitle({
   categories,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
+  showBrandNameInProductTitle,
   attributes,
   defaultGender,
-  fallbackTitle,
-  defaultKeyword,
+  nameI18n,
+  originalName,
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
   titleCategoriesSlugs,
+  brand,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
+    brand,
     locale,
     rubricName,
     categories,
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
+    showBrandNameInProductTitle,
     titleCategoriesSlugs,
   });
+
+  const keyword = getFieldStringLocale(nameI18n, locale) || originalName;
 
   return generateTitle({
     attributes,
     defaultGender,
-    fallbackTitle,
-    defaultKeyword,
+    fallbackTitle: keyword,
+    defaultKeyword: keyword,
     prefix,
     locale,
     currency,

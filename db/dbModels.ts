@@ -441,12 +441,6 @@ export interface OrderStatusModel extends TimestampModel {
   isCanceled: boolean;
 }
 
-export interface OrderRequestModel extends TimestampModel {
-  _id: ObjectIdModel;
-  nameI18n: TranslationModel;
-  userId: ObjectIdModel;
-}
-
 // Order log variant
 export enum OrderLogVariantModel {
   status = 'status',
@@ -499,6 +493,26 @@ export interface OrderCustomerModel extends TimestampModel {
   orderId: ObjectIdModel;
 }
 
+export enum OrderRequestVariantModel {
+  cancelation = 'cancelation',
+}
+
+export enum OrderRequestStateModel {
+  new = 'new',
+  confirmed = 'confirmed',
+  canceled = 'canceled',
+}
+
+export interface OrderRequestModel extends TimestampModel {
+  _id: ObjectIdModel;
+  state: OrderRequestStateModel;
+  variant: OrderRequestVariantModel;
+  nameI18n: TranslationModel;
+  userId: ObjectIdModel;
+  confirmedById?: ObjectIdModel | null;
+  canceledById?: ObjectIdModel | null;
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -513,6 +527,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companyItemId: string;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
+  requests?: OrderRequestModel[] | null;
 }
 
 export interface ProductConnectionItemModel {
@@ -696,6 +711,8 @@ export interface RubricModel extends CountersModel {
   capitalise?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
+  showBrandInSnippetTitle?: boolean | null;
+  showBrandInCardTitle?: boolean | null;
   icon?: string;
   image?: string;
 }

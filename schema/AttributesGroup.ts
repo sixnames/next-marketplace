@@ -707,11 +707,16 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
+                  $group: {
+                    _id: '$rubricId',
+                  },
+                },
+                {
                   $lookup: {
                     from: COL_RUBRICS,
                     as: 'rubric',
                     let: {
-                      rubricId: '$rubricId',
+                      rubricId: '$_id',
                     },
                     pipeline: [
                       {
@@ -744,9 +749,9 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
-                  $group: {
-                    _id: '$_id',
-                    slug: { $first: '$slug' },
+                  $project: {
+                    _id: true,
+                    slug: true,
                   },
                 },
               ])
@@ -788,11 +793,16 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
+                  $group: {
+                    _id: '$categoryId',
+                  },
+                },
+                {
                   $lookup: {
                     from: COL_CATEGORIES,
                     as: 'category',
                     let: {
-                      categoryId: '$categoryId',
+                      categoryId: '$_id',
                     },
                     pipeline: [
                       {
@@ -825,11 +835,11 @@ export const attributesGroupMutations = extendType({
                   },
                 },
                 {
-                  $group: {
-                    _id: '$_id',
-                    slug: { $first: '$slug' },
-                    rubricSlug: { $first: '$rubricSlug' },
-                    rubricId: { $first: '$rubricId' },
+                  $project: {
+                    _id: true,
+                    slug: true,
+                    rubricSlug: true,
+                    rubricId: true,
                   },
                 },
               ])

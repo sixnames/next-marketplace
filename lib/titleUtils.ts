@@ -16,9 +16,16 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { GenderModel, LanguageModel, ObjectIdModel, TranslationModel } from 'db/dbModels';
+import {
+  GenderModel,
+  LanguageModel,
+  ObjectIdModel,
+  RubricModel,
+  TranslationModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
@@ -400,19 +407,10 @@ export function generateSnippetTitle(props: GenerateCardTitleInterface): string 
 
 interface UpdateProductTitlesInterface {
   productId: ObjectIdModel;
-  rubricName?: string | null;
-  showBrandNameInProductTitle?: boolean | null;
-  showRubricNameInProductTitle?: boolean | null;
-  showCategoryInProductTitle?: boolean | null;
+  rubric: RubricModel;
 }
 
-export async function updateProductTitles({
-  productId,
-  rubricName,
-  showBrandNameInProductTitle,
-  showCategoryInProductTitle,
-  showRubricNameInProductTitle,
-}: UpdateProductTitlesInterface): Promise<boolean> {
+export async function updateProductTitles({ productId, rubric }: UpdateProductTitlesInterface) {
   const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
@@ -428,7 +426,7 @@ export async function updateProductTitles({
   // get product
   const product = await productsCollection.findOne({ _id: productId });
   if (!product) {
-    return false;
+    return;
   }
 
   // get product attributes
@@ -487,8 +485,10 @@ export async function updateProductTitles({
   const snippetTitleI18n: TranslationModel = {};
   const cardTitleI18n: TranslationModel = {};
 
+  // get snippet title for each language
   languages.forEach((language) => {
     const locale = language.slug;
+    const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
     const attributes = productAttributesAggregation.map((attribute) => {
       return {
         ...attribute,
@@ -509,14 +509,16 @@ export async function updateProductTitles({
       defaultGender: product.gender,
       categories,
       brand,
-      showBrandNameInProductTitle,
-      showCategoryInProductTitle,
-      showRubricNameInProductTitle,
+      showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
     });
   });
 
+  // get card title for each language
   languages.forEach((language) => {
     const locale = language.slug;
+    const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
     const attributes = productAttributesAggregation.map((attribute) => {
       return {
         ...attribute,
@@ -537,9 +539,9 @@ export async function updateProductTitles({
       defaultGender: product.gender,
       categories,
       brand,
-      showBrandNameInProductTitle,
-      showCategoryInProductTitle,
-      showRubricNameInProductTitle,
+      showBrandNameInProductTitle: rubric.showBrandInCardTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
     });
   });
 
@@ -564,6 +566,40 @@ export async function updateProductTitles({
     },
     updater,
   );
+}
 
-  return true;
+interface UpdateRubricProductTitlesInterface {
+  rubricId: ObjectIdModel;
+}
+
+export async function updateRubricProductTitles({ rubricId }: UpdateRubricProductTitlesInterface) {
+  const { db } = await getDatabase();
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const rubric = await rubricsCollection.findOne({ _id: rubricId });
+  if (!rubric) {
+    return;
+  }
+
+  const products = await productsCollection
+    .aggregate([
+      {
+        $match: {
+          rubricSlug: rubric.slug,
+        },
+      },
+      {
+        $project: {
+          _id: true,
+        },
+      },
+    ])
+    .toArray();
+
+  for await (const product of products) {
+    await updateProductTitles({
+      productId: product._id,
+      rubric,
+    });
+  }
 }

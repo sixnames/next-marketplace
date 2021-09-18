@@ -17,6 +17,7 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -24,6 +25,8 @@ import {
   GenderModel,
   LanguageModel,
   ObjectIdModel,
+  ProductAttributeModel,
+  RubricAttributeModel,
   RubricModel,
   TranslationModel,
 } from 'db/dbModels';
@@ -119,6 +122,20 @@ export function generateTitle({
 }: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
+
+  /*console.log({
+    attributes,
+    defaultGender,
+    fallbackTitle,
+    defaultKeyword,
+    prefix,
+    locale,
+    currency,
+    capitaliseKeyWord,
+    positionFieldName,
+    attributeVisibilityFieldName,
+    attributeNameVisibilityFieldName,
+  });*/
 
   // get initial keyword
   const initialKeyword = !defaultKeyword
@@ -422,7 +439,7 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
 
   // get languages
-  const languages = await languagesCollection.find({});
+  const languages = await languagesCollection.find({}).toArray();
 
   // get product
   const product = await productsCollection.findOne({ _id: productId });
@@ -563,6 +580,8 @@ export async function updateProductTitles({ productId, rubric }: UpdateProductTi
       cardTitleI18n,
     },
   };
+
+  // console.log(updater);
   await productsCollection.findOneAndUpdate(
     {
       _id: product._id,
@@ -612,5 +631,130 @@ export async function updateRubricProductTitles({ rubricId }: UpdateRubricProduc
       productId: product._id,
       rubric,
     });
+  }
+}
+
+interface UpdateProductTitlesWithUpdatedAttributeInterface {
+  attributeId: ObjectIdModel;
+}
+
+export async function updateProductTitlesWithUpdatedAttribute({
+  attributeId,
+}: UpdateProductTitlesWithUpdatedAttributeInterface) {
+  const { db } = await getDatabase();
+  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+
+  const rubrics = await rubricAttributesCollection
+    .aggregate<RubricModel>([
+      {
+        $match: {
+          attributeId,
+        },
+      },
+      {
+        $group: {
+          _id: '$rubricId',
+        },
+      },
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubric',
+          let: {
+            rubricId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$_id'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: {
+            $arrayElemAt: ['$rubric', 0],
+          },
+        },
+      },
+      {
+        $match: {
+          rubric: {
+            $exists: true,
+          },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$rubric',
+        },
+      },
+    ])
+    .toArray();
+
+  for await (const rubric of rubrics) {
+    const productIdsAggregation = await productAttributesCollection
+      .aggregate([
+        {
+          $match: {
+            attributeId,
+          },
+        },
+        {
+          $group: {
+            _id: '$productId',
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            productIds: {
+              $addToSet: '$_id',
+            },
+          },
+        },
+        {
+          $unwind: {
+            path: '$productIds',
+          },
+        },
+        {
+          $project: {
+            _id: '$productIds',
+          },
+        },
+      ])
+      .toArray();
+    const productIds = productIdsAggregation.map(({ _id }) => _id);
+
+    const products = await productsCollection
+      .aggregate([
+        {
+          $match: {
+            _id: {
+              $in: productIds,
+            },
+          },
+        },
+        {
+          $project: {
+            _id: true,
+          },
+        },
+      ])
+      .toArray();
+
+    for await (const product of products) {
+      await updateProductTitles({
+        productId: product._id,
+        rubric,
+      });
+    }
   }
 }

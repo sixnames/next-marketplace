@@ -11,7 +11,12 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel, TranslationModel } from 'db/dbModels';
-import { AttributeInterface, CategoryInterface, OptionInterface } from 'db/uiInterfaces';
+import {
+  AttributeInterface,
+  BrandInterface,
+  CategoryInterface,
+  OptionInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 
@@ -243,10 +248,12 @@ export function generateTitle({
 
 interface GenerateProductTitlePrefixInterface {
   locale: string;
+  brand?: BrandInterface;
   rubricName?: string | null;
   defaultGender: string;
   titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
+  showBrandNameInProductTitle?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
 }
@@ -255,7 +262,9 @@ export function generateProductTitlePrefix({
   locale,
   rubricName,
   categories,
+  brand,
   defaultGender,
+  showBrandNameInProductTitle,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
   titleCategoriesSlugs,
@@ -283,7 +292,11 @@ export function generateProductTitlePrefix({
   }
   (categories || []).forEach(getCategoryNames);
 
-  const prefixArray = [rubricPrefix, ...categoryNames];
+  const brandName = showBrandNameInProductTitle
+    ? getFieldStringLocale(brand?.nameI18n, locale)
+    : '';
+
+  const prefixArray = [rubricPrefix, ...categoryNames, brandName];
   const filteredArray = prefixArray.filter((word) => word);
   return filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
 }
@@ -311,6 +324,7 @@ function generateProductTitle({
   categories,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
+  showBrandNameInProductTitle,
   attributes,
   defaultGender,
   nameI18n,
@@ -327,6 +341,7 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
+    showBrandNameInProductTitle,
     titleCategoriesSlugs,
   });
 

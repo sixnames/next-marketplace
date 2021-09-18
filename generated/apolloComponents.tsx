@@ -659,6 +659,8 @@ export type CreateRubricInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
   showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInCardTitle?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
   variantId: Scalars['ObjectId'];
@@ -3142,6 +3144,8 @@ export type UpdateRubricInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
   showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInCardTitle?: Maybe<Scalars['Boolean']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];

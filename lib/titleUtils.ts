@@ -6,7 +6,6 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   GENDER_IT,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -100,15 +99,14 @@ export function generateTitle({
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
   // get initial keyword
-  const initialKeyword =
-    defaultKeyword === LOCALE_NOT_FOUND_FIELD_MESSAGE
-      ? ''
-      : capitaliseKeyWord
-      ? defaultKeyword
-      : `${defaultKeyword}`.toLowerCase();
+  const initialKeyword = defaultKeyword
+    ? ''
+    : capitaliseKeyWord
+    ? defaultKeyword
+    : `${defaultKeyword}`.toLowerCase();
 
   // get title prefix
-  const finalPrefix = prefix === LOCALE_NOT_FOUND_FIELD_MESSAGE ? '' : prefix;
+  const finalPrefix = prefix || '';
 
   // title initial parts
   const beginOfTitle: string[] = [];

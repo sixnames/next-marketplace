@@ -277,6 +277,12 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       nameI18n: {
         ru: `${name} RU`,
       },
+      snippetTitleI18n: {
+        ru: `${name} RU`,
+      },
+      cardTitleI18n: {
+        ru: `${name} RU`,
+      },
       descriptionI18n: {
         ru: `Description ${name} RU`,
       },

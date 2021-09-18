@@ -3,12 +3,6 @@ declare namespace Cypress {
     subjectType?: string;
   }
 
-  interface GetByTranslationFieldCyInterface {
-    languages: any[] | null | undefined;
-    chosenLanguage?: string;
-    cyPrefix?: string;
-  }
-
   interface MakeAnOrderInterface {
     callback?: () => void;
     orderFields?: {
@@ -25,7 +19,6 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
-    getByTranslationFieldCy(props: GetByTranslationFieldCyInterface): Chainable<Element>;
     shouldSuccess(log?: string): void;
     shouldError(log?: string): void;
     shouldNotError(): void;

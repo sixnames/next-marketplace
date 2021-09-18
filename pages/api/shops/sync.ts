@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'config/common';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
@@ -180,6 +180,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           titleCategoriesSlugs: product.titleCategoriesSlugs,
           supplierSlugs: product.supplierSlugs,
           selectedAttributesIds: product.selectedAttributesIds,
+          snippetTitleI18n: {
+            [DEFAULT_LOCALE]: product.originalName,
+          },
+          cardTitleI18n: {
+            [DEFAULT_LOCALE]: product.originalName,
+          },
           gender: product.gender,
           barcode: barcodeItem,
           updatedAt: new Date(),

@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, LOCALE_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LOCALE } from '../config/common';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../config/common';
 import { MessageSlug } from '../types/messageSlugTypes';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 
@@ -12,7 +12,7 @@ export function getFieldValidationMessage({
   slug,
 }: GetFieldValidationMessageInterface): string {
   const currentMessage = messages.find((message) => message.slug === slug);
-  const errorMessage = `${slug} ${LOCALE_NOT_FOUND_FIELD_MESSAGE}`;
+  const errorMessage = `${slug} field message not found`;
   if (!currentMessage) {
     return errorMessage;
   }

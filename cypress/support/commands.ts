@@ -2,14 +2,8 @@ import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
 
 // noinspection ES6PreferShortImport
-import {
-  CATALOGUE_DEFAULT_RUBRIC_SLUG,
-  DEFAULT_LOCALE,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  ROUTE_CATALOGUE,
-  SECONDARY_LOCALE,
-} from '../../config/common';
-import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterface;
+import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from '../../config/common';
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -40,43 +34,6 @@ Cypress.Commands.add('getByCy', (testId) => {
   cy.wait(600);
   cy.get(`[data-cy="${testId}"]`);
 });
-
-Cypress.Commands.add(
-  'getByTranslationFieldCy',
-  ({
-    languages = [],
-    chosenLanguage = DEFAULT_LOCALE,
-    cyPrefix = '',
-  }: GetByTranslationFieldCyInterface) => {
-    let value: string;
-    const currentLang = (languages || []).find(({ key }) => key === chosenLanguage);
-    const defaultLang = (languages || []).find(({ key }) => key === DEFAULT_LOCALE);
-    const defaultLangValue = defaultLang ? defaultLang.value : LOCALE_NOT_FOUND_FIELD_MESSAGE;
-
-    if (!currentLang && chosenLanguage !== DEFAULT_LOCALE) {
-      const universalLang = (languages || []).find(({ key }) => key === SECONDARY_LOCALE);
-
-      if (!universalLang) {
-        value = defaultLangValue;
-        cy.getByCy(`${cyPrefix}-${value}`);
-        return;
-      }
-
-      value = universalLang ? universalLang.value : LOCALE_NOT_FOUND_FIELD_MESSAGE;
-      cy.getByCy(`${cyPrefix}-${value}`);
-      return;
-    }
-
-    if (!currentLang) {
-      value = defaultLangValue;
-      cy.getByCy(`${cyPrefix}-${value}`);
-      return;
-    }
-
-    value = currentLang ? currentLang.value : LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    cy.getByCy(`${cyPrefix}-${value}`);
-  },
-);
 
 Cypress.Commands.add('shouldSuccess', (log?: string) => {
   if (log) {

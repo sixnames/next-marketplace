@@ -7,7 +7,6 @@ import {
   FILTER_SEPARATOR,
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
   SORT_ASC,
@@ -892,7 +891,7 @@ export async function getCardData({
       product: {
         ...restProduct,
         name,
-        description: description === LOCALE_NOT_FOUND_FIELD_MESSAGE ? name : description,
+        description: description || cardTitle,
         brand: brand
           ? {
               ...brand,

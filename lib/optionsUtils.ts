@@ -1,10 +1,4 @@
-import {
-  ALL_ALPHABETS,
-  DEFAULT_COUNTERS_OBJECT,
-  DEFAULT_LOCALE,
-  GENDER_HE,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
-} from 'config/common';
+import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
 import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
 import {
   AlphabetListModelType,
@@ -74,7 +68,7 @@ export function getStringValueFromOptionsList({
       option.variants[gender] && option.variants[gender][locale]
         ? getFieldStringLocale(option.variants[gender], locale)
         : getFieldStringLocale(option.nameI18n, locale);
-    if (name !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
+    if (name) {
       names.push(name);
     }
   });

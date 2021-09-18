@@ -4,6 +4,8 @@ import {
   ConfigVariantModel,
   GenderModel,
   OrderLogVariantModel,
+  OrderRequestStateModel,
+  OrderRequestVariantModel,
   PageStateModel,
 } from '../db/dbModels';
 
@@ -242,12 +244,30 @@ export const ORDER_LOG_VARIANT_CANCEL = 'cancel' as OrderLogVariantModel;
 export const ORDER_LOG_VARIANT_CANCEL_PRODUCT = 'cancelProduct' as OrderLogVariantModel;
 export const ORDER_LOG_VARIANT_UPDATE_PRODUCT = 'updateProduct' as OrderLogVariantModel;
 
-export const ORDER_LOG_VARIANTS_ENUMS: OrderLogVariantModel[] = [
+export const ORDER_LOG_VARIANT_ENUMS: OrderLogVariantModel[] = [
   ORDER_LOG_VARIANT_STATUS,
   ORDER_LOG_VARIANT_CONFIRM,
   ORDER_LOG_VARIANT_CANCEL,
   ORDER_LOG_VARIANT_CANCEL_PRODUCT,
   ORDER_LOG_VARIANT_UPDATE_PRODUCT,
+];
+
+// ORDER REQUEST VARIANTS
+export const ORDER_REQUEST_VARIANT_CANCELATION = 'cancelation' as OrderRequestVariantModel;
+
+export const ORDER_REQUEST_VARIANT_ENUMS: OrderRequestVariantModel[] = [
+  ORDER_REQUEST_VARIANT_CANCELATION,
+];
+
+// ORDER REQUEST STATE
+export const ORDER_REQUEST_STATE_NEW = 'new' as OrderRequestStateModel;
+export const ORDER_REQUEST_STATE_CONFIRMED = 'confirmed' as OrderRequestStateModel;
+export const ORDER_REQUEST_STATE_CANCELED = 'canceled' as OrderRequestStateModel;
+
+export const ORDER_REQUEST_STATE_ENUMS: OrderRequestStateModel[] = [
+  ORDER_REQUEST_STATE_NEW,
+  ORDER_REQUEST_STATE_CONFIRMED,
+  ORDER_REQUEST_STATE_CANCELED,
 ];
 
 // LANGUAGES

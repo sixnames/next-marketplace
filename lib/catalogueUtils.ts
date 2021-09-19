@@ -44,7 +44,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGINATION_DEFAULT_LIMIT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
@@ -62,6 +62,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
+  BrandInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -409,7 +410,7 @@ export async function getCatalogueAttributes({
       }
 
       // If price attribute
-      if (slug === PRICE_ATTRIBUTE_SLUG) {
+      if (slug === CATALOGUE_PRICE_KEY) {
         const splittedOption = optionSlug.split(FILTER_SEPARATOR);
         const filterOptionValue = splittedOption[1];
         const prices = filterOptionValue.split('_');
@@ -513,6 +514,9 @@ interface CastOptionsForBreadcrumbsInterface {
   attribute: CatalogueFilterAttributeInterface;
   metricValue: string;
   rubricSlug: string;
+  isBrand: boolean;
+  currentBrand?: BrandInterface | null;
+  brands?: BrandInterface[] | null;
   acc: CatalogueBreadcrumbModel[];
 }
 
@@ -521,10 +525,35 @@ function castOptionsForBreadcrumbs({
   attribute,
   rubricSlug,
   metricValue,
+  currentBrand,
+  isBrand,
+  brands,
   acc,
 }: CastOptionsForBreadcrumbsInterface): CatalogueBreadcrumbModel[] {
   const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
   const newAcc = [...acc];
+  const brand = isBrand
+    ? (brands || []).find(({ slug }) => {
+        return slug === option.slug;
+      })
+    : null;
+
+  if (isBrand) {
+    if (!brand?.showAsCatalogueBreadcrumb && !currentBrand) {
+      return acc;
+    }
+
+    if (currentBrand) {
+      const collections = currentBrand?.collections;
+      const currentBrandCollection = (collections || []).find(({ slug }) => {
+        return slug === option.slug;
+      });
+      if (!currentBrandCollection?.showAsCatalogueBreadcrumb) {
+        return acc;
+      }
+    }
+  }
+
   if (option.isSelected) {
     newAcc.push({
       _id: option._id,
@@ -543,6 +572,9 @@ function castOptionsForBreadcrumbs({
       attribute,
       rubricSlug,
       metricValue,
+      brands,
+      isBrand,
+      currentBrand: brand,
       acc: [],
     });
     return [...innerAcc, ...castedOptionAcc];
@@ -661,7 +693,7 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === PRICE_ATTRIBUTE_SLUG) {
+      if (filterAttributeSlug === CATALOGUE_PRICE_KEY) {
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -1442,16 +1474,19 @@ export const getCatalogueData = async ({
 
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
-      const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+      const isPrice = slug === CATALOGUE_PRICE_KEY;
+      const isBrand = slug === CATALOGUE_BRAND_KEY;
       let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
       if (isPrice) {
         metricValue = currency;
       }
 
-      if (showAsCatalogueBreadcrumb || isPrice) {
+      if (showAsCatalogueBreadcrumb || isPrice || isBrand) {
         const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
           const tree = castOptionsForBreadcrumbs({
             option: option,
+            isBrand,
+            brands: shopProductsAggregationResult.brands,
             attribute: selectedAttribute,
             rubricSlug,
             metricValue,

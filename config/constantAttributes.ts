@@ -7,7 +7,7 @@ import {
   CATALOGUE_CATEGORY_KEY,
   DEFAULT_LOCALE,
   GENDER_IT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
   SECONDARY_LOCALE,
 } from 'config/common';
 import { ObjectIdModel } from 'db/dbModels';
@@ -204,7 +204,7 @@ export function getPriceAttribute(): RubricAttributeInterface {
       ru: 'Цена',
       en: 'Price',
     },
-    slug: PRICE_ATTRIBUTE_SLUG,
+    slug: CATALOGUE_PRICE_KEY,
     priorities: {},
     views: {},
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,

@@ -6,7 +6,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   GENDER_IT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel, TranslationModel } from 'db/dbModels';
@@ -155,7 +155,7 @@ export function generateTitle({
   // collect title parts
   attributes.forEach((attribute) => {
     const { nameI18n, options, capitalise, slug, metric } = attribute;
-    const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+    const isPrice = slug === CATALOGUE_PRICE_KEY;
     const visible = get(attribute, attributeVisibilityFieldName);
     if (!visible || !options || options.length < 1) {
       return;

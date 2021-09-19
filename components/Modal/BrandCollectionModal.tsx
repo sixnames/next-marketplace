@@ -66,6 +66,10 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
                   brandId,
                   nameI18n: values.nameI18n,
                   descriptionI18n: values.descriptionI18n,
+                  showAsBreadcrumb: values?.showAsBreadcrumb,
+                  showAsCatalogueBreadcrumb: values?.showAsCatalogueBreadcrumb,
+                  showInCardTitle: values?.showInCardTitle,
+                  showInSnippetTitle: values?.showInSnippetTitle,
                 },
               },
             }).catch(console.log);

@@ -10,6 +10,7 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
+  brandPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
@@ -833,6 +834,7 @@ export const getCatalogueData = async ({
               itemId: { $first: '$itemId' },
               rubricId: { $first: '$rubricId' },
               rubricSlug: { $first: `$rubricSlug` },
+              brandSlug: { $first: '$brandSlug' },
               slug: { $first: '$slug' },
               gender: { $first: '$gender' },
               mainImage: { $first: `$mainImage` },
@@ -890,6 +892,9 @@ export const getCatalogueData = async ({
 
                 // Lookup product attributes
                 ...productAttributesPipeline,
+
+                // Lookup product brand
+                ...brandPipeline,
 
                 // Lookup product categories
                 ...productCategoriesPipeline(),
@@ -1103,6 +1108,8 @@ export const getCatalogueData = async ({
       // title
       const snippetTitle = generateSnippetTitle({
         locale,
+        brand: restProduct.brand,
+        showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,

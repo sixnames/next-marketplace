@@ -8,6 +8,7 @@ import {
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_BRANDS,
   COL_CATEGORIES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
@@ -451,6 +452,34 @@ export const productAttributesPipeline = [
           },
         },
       ],
+    },
+  },
+];
+
+export const brandPipeline = [
+  {
+    $lookup: {
+      from: COL_BRANDS,
+      as: 'brand',
+      let: {
+        slug: '$brandSlug',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$$slug', '$slug'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      brand: {
+        $arrayElemAt: ['$brand', 0],
+      },
     },
   },
 ];

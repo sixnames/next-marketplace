@@ -1,5 +1,10 @@
 import { GEO_POINT_TYPE } from 'config/common';
-import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import {
+  AttributeInterface,
+  BrandInterface,
+  CategoryInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 
@@ -586,6 +591,7 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[] | null;
   rubric?: RubricInterface | null;
+  brand?: BrandInterface | null;
 }
 
 export interface ProductAssetsModel {

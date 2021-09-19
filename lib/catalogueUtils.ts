@@ -1080,6 +1080,9 @@ export const getCatalogueData = async ({
                                 _id: SORT_DESC,
                               },
                             },
+                            {
+                              $limit: visibleOptionsCount,
+                            },
                           ],
                         },
                       },

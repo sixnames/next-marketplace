@@ -248,8 +248,6 @@ export async function getCardData({
                   nameI18n: true,
                   showRubricNameInProductTitle: true,
                   showCategoryInProductTitle: true,
-                  showBrandInSnippetTitle: true,
-                  showBrandInCardTitle: true,
                   catalogueTitle: true,
                   variant: {
                     $arrayElemAt: ['$variant', 0],
@@ -885,7 +883,6 @@ export async function getCardData({
     const cardTitle = generateCardTitle({
       locale,
       brand,
-      showBrandNameInProductTitle: rubric.showBrandInCardTitle,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,

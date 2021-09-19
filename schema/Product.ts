@@ -78,7 +78,6 @@ export const Product = objectType({
           rubricName: getFieldStringLocale(source.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: source.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: source.rubric?.showCategoryInProductTitle,
-          showBrandNameInProductTitle: source.rubric?.showBrandInSnippetTitle,
           attributes: source.attributes || [],
           nameI18n: source.nameI18n,
           originalName: source.originalName,

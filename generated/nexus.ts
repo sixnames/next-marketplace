@@ -151,6 +151,10 @@ export interface NexusGenInputs {
     brandId: NexusGenScalars['ObjectId']; // ObjectId!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showAsBreadcrumb?: boolean | null; // Boolean
+    showAsCatalogueBreadcrumb?: boolean | null; // Boolean
+    showInCardTitle?: boolean | null; // Boolean
+    showInSnippetTitle?: boolean | null; // Boolean
   };
   AddOptionToGroupInput: {
     // input type
@@ -267,6 +271,10 @@ export interface NexusGenInputs {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showAsBreadcrumb?: boolean | null; // Boolean
+    showAsCatalogueBreadcrumb?: boolean | null; // Boolean
+    showInCardTitle?: boolean | null; // Boolean
+    showInSnippetTitle?: boolean | null; // Boolean
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   CreateCategoryInput: {
@@ -391,8 +399,8 @@ export interface NexusGenInputs {
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showBrandInCardTitle?: boolean | null; // Boolean
-    showBrandInSnippetTitle?: boolean | null; // Boolean
+    showBrandInFilter?: boolean | null; // Boolean
+    showBrandInNav?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -630,6 +638,10 @@ export interface NexusGenInputs {
     brandId: NexusGenScalars['ObjectId']; // ObjectId!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showAsBreadcrumb?: boolean | null; // Boolean
+    showAsCatalogueBreadcrumb?: boolean | null; // Boolean
+    showInCardTitle?: boolean | null; // Boolean
+    showInSnippetTitle?: boolean | null; // Boolean
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   UpdateCategoryInput: {
@@ -653,6 +665,10 @@ export interface NexusGenInputs {
     brandId: NexusGenScalars['ObjectId']; // ObjectId!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showAsBreadcrumb?: boolean | null; // Boolean
+    showAsCatalogueBreadcrumb?: boolean | null; // Boolean
+    showInCardTitle?: boolean | null; // Boolean
+    showInSnippetTitle?: boolean | null; // Boolean
   };
   UpdateCompanyInput: {
     // input type
@@ -923,8 +939,8 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showBrandInCardTitle?: boolean | null; // Boolean
-    showBrandInSnippetTitle?: boolean | null; // Boolean
+    showBrandInFilter?: boolean | null; // Boolean
+    showBrandInNav?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
     variantId: NexusGenScalars['ObjectId']; // ObjectId!

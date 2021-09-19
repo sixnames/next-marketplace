@@ -250,7 +250,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                         nameI18n: true,
                         showRubricNameInProductTitle: true,
                         showCategoryInProductTitle: true,
-                        showBrandInSnippetTitle: true,
                       },
                     },
                   ],
@@ -305,7 +304,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         const snippetTitle = generateSnippetTitle({
           locale,
           brand: product.brand,
-          showBrandNameInProductTitle: product.rubric?.showBrandInSnippetTitle,
           rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,

@@ -246,7 +246,17 @@ export interface AttributesGroupModel {
   attributesIds: ObjectIdModel[];
 }
 
-export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
+export interface BrandBaseModel {
+  // breadcrumbs
+  showAsBreadcrumb?: boolean | null;
+  showAsCatalogueBreadcrumb?: boolean | null;
+
+  // titles
+  showInCardTitle?: boolean | null;
+  showInSnippetTitle?: boolean | null;
+}
+
+export interface BrandModel extends BaseModel, TimestampModel, CountersModel, BrandBaseModel {
   slug: string;
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
@@ -254,7 +264,11 @@ export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   logo?: string;
 }
 
-export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
+export interface BrandCollectionModel
+  extends BaseModel,
+    TimestampModel,
+    CountersModel,
+    BrandBaseModel {
   slug: string;
   nameI18n: TranslationModel;
   brandSlug: string;
@@ -717,8 +731,8 @@ export interface RubricModel extends CountersModel {
   capitalise?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
-  showBrandInSnippetTitle?: boolean | null;
-  showBrandInCardTitle?: boolean | null;
+  showBrandInNav?: boolean | null;
+  showBrandInFilter?: boolean | null;
   icon?: string;
   image?: string;
 }

@@ -265,7 +265,6 @@ interface GenerateProductTitlePrefixInterface {
   defaultGender: string;
   titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
-  showBrandNameInProductTitle?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
 }
@@ -276,7 +275,6 @@ export function generateProductTitlePrefix({
   categories,
   brand,
   defaultGender,
-  showBrandNameInProductTitle,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
   titleCategoriesSlugs,
@@ -304,9 +302,7 @@ export function generateProductTitlePrefix({
   }
   (categories || []).forEach(getCategoryNames);
 
-  const brandName = showBrandNameInProductTitle
-    ? getFieldStringLocale(brand?.nameI18n, locale)
-    : '';
+  const brandName = getFieldStringLocale(brand?.nameI18n, locale);
 
   const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
@@ -337,7 +333,6 @@ function generateProductTitle({
   categories,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
-  showBrandNameInProductTitle,
   attributes,
   defaultGender,
   nameI18n,
@@ -356,7 +351,6 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
-    showBrandNameInProductTitle,
     titleCategoriesSlugs,
   });
 

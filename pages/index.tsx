@@ -507,7 +507,6 @@ export async function getServerSideProps(
                 nameI18n: true,
                 showRubricNameInProductTitle: true,
                 showCategoryInProductTitle: true,
-                showBrandInSnippetTitle: true,
               },
             },
           ],
@@ -534,7 +533,6 @@ export async function getServerSideProps(
     const snippetTitle = generateSnippetTitle({
       locale: sessionLocale,
       brand: restProduct.brand,
-      showBrandNameInProductTitle: rubric?.showBrandInSnippetTitle,
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,

@@ -1,6 +1,13 @@
 import { DEFAULT_COUNTERS_OBJECT, ASSETS_DIST_BRANDS } from '../../../../config/common';
-import { BrandModel } from '../../../../db/dbModels';
+import { BrandBaseModel, BrandModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+
+const booleans: BrandBaseModel = {
+  showAsBreadcrumb: true,
+  showAsCatalogueBreadcrumb: true,
+  showInCardTitle: true,
+  showInSnippetTitle: true,
+};
 
 const brands: BrandModel[] = [
   {
@@ -14,6 +21,7 @@ const brands: BrandModel[] = [
     url: ['https://brandA.com'],
     createdAt: new Date(),
     updatedAt: new Date(),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -27,6 +35,7 @@ const brands: BrandModel[] = [
     url: ['https://brandB.com'],
     createdAt: new Date(),
     updatedAt: new Date(),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

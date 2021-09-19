@@ -1,6 +1,13 @@
 import { DEFAULT_COUNTERS_OBJECT } from '../../../../config/common';
-import { BrandCollectionModel } from '../../../../db/dbModels';
+import { BrandBaseModel, BrandCollectionModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+
+const booleans: BrandBaseModel = {
+  showAsBreadcrumb: true,
+  showAsCatalogueBreadcrumb: true,
+  showInCardTitle: true,
+  showInSnippetTitle: true,
+};
 
 const brandCollections: BrandCollectionModel[] = [
   {
@@ -14,6 +21,7 @@ const brandCollections: BrandCollectionModel[] = [
     },
     createdAt: new Date(),
     updatedAt: new Date(),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -27,6 +35,7 @@ const brandCollections: BrandCollectionModel[] = [
     },
     createdAt: new Date(),
     updatedAt: new Date(),
+    ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

@@ -480,7 +480,6 @@ export const getServerSideProps = async (
       const snippetTitle = generateSnippetTitle({
         locale,
         brand: restProduct.brand,
-        showBrandNameInProductTitle: rubric?.showBrandInSnippetTitle,
         rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
         showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric?.showCategoryInProductTitle,

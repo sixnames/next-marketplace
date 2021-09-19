@@ -96,13 +96,13 @@ const RubricMainFields: React.FC = () => {
       />
 
       <FormikCheckboxLine
-        label={'Показывать название бренда в заголовке сниппета'}
-        name={'showBrandInSnippetTitle'}
+        label={'Показывать бренды в выпадающем меню каталога'}
+        name={'showBrandInNav'}
       />
 
       <FormikCheckboxLine
-        label={'Показывать название бренда в заголовке карточки'}
-        name={'showBrandInCardTitle'}
+        label={'Показывать бренды в фильтре каталога'}
+        name={'showBrandInFilter'}
       />
     </React.Fragment>
   );

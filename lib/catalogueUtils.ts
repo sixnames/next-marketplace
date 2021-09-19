@@ -228,6 +228,7 @@ export interface GetCatalogueAttributesInterface {
   visibleOptionsCount?: number | null;
   rubricGender?: string;
   selectedOptionsSlugs?: string[];
+  brands?: BrandInterface[] | null;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -250,6 +251,8 @@ interface CastOptionPayloadInterface {
 interface FilterSelectedOptionsInterface {
   option: OptionInterface;
   attributeSlug: string;
+  isBrand?: boolean;
+  currentBrand?: BrandInterface | null;
 }
 
 export async function getCatalogueAttributes({
@@ -262,6 +265,7 @@ export async function getCatalogueAttributes({
   visibleAttributesCount,
   rubricGender,
   selectedOptionsSlugs = [],
+  brands,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const { db } = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -289,15 +293,39 @@ export async function getCatalogueAttributes({
   function filterSelectedOptions({
     option,
     attributeSlug,
+    currentBrand,
   }: FilterSelectedOptionsInterface): OptionInterface | null {
     const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
+    const isBrand = attributeSlug === CATALOGUE_BRAND_KEY;
+    const brand = isBrand
+      ? (brands || []).find(({ slug }) => {
+          return slug === option.slug;
+        })
+      : null;
+
+    if (isBrand && !brand?.showInCatalogueTitle) {
+      return null;
+    }
+
+    if (currentBrand) {
+      const collection = (currentBrand.collections || []).find(({ slug }) => {
+        return slug === option.slug;
+      });
+      if (!collection?.showInCatalogueTitle) {
+        return null;
+      }
+    }
+
     const isSelected = realFilter.includes(optionSlug);
     const nestedOptions = (option.options || []).map((nestedOption) => {
       return filterSelectedOptions({
+        isBrand,
+        currentBrand: brand,
         option: nestedOption,
-        attributeSlug,
+        attributeSlug: isBrand ? CATALOGUE_BRAND_COLLECTION_KEY : attributeSlug,
       });
     });
+
     const filteredNestedOptions = filterOptionsList(nestedOptions);
 
     if (isSelected) {
@@ -481,10 +509,10 @@ export async function getCatalogueAttributes({
           attributeSlug: castedAttribute.slug,
         });
       });
+
       const attributeFilteredSelectedOptions = filterOptionsList(attributeSelectedOptions);
       selectedFilters.push({
         ...attribute,
-        // options: selectedOptions,
         options: attributeFilteredSelectedOptions,
       });
     }
@@ -1301,6 +1329,7 @@ export const getCatalogueData = async ({
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount,
       rubricGender: rubric.catalogueTitle.gender,
+      brands: shopProductsAggregationResult.brands,
       // visibleAttributesCount,
     });
     // console.log(JSON.stringify(castedAttributes, null, 2));
@@ -1457,6 +1486,7 @@ export const getCatalogueData = async ({
       capitaliseKeyWord: rubric.capitalise,
       locale,
       currency,
+      log: true,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

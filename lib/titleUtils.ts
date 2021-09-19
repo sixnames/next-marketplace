@@ -94,23 +94,15 @@ export function generateTitle({
   positionFieldName,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
+  log,
 }: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
-  /*console.log({
-    attributes,
-    defaultGender,
-    fallbackTitle,
-    defaultKeyword,
-    prefix,
-    locale,
-    currency,
-    capitaliseKeyWord,
-    positionFieldName,
-    attributeVisibilityFieldName,
-    attributeNameVisibilityFieldName,
-  });*/
+  if (log) {
+    console.log(' ');
+    // console.log(JSON.stringify(attributes, null, 2));
+  }
 
   // get initial keyword
   const initialKeyword = !defaultKeyword

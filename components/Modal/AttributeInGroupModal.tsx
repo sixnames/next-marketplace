@@ -10,8 +10,6 @@ import Spinner from 'components/Spinner';
 import Button from 'components/Button';
 import {
   AddAttributeToGroupInput,
-  AttributeVariant,
-  AttributeViewVariant,
   UpdateAttributeInGroupInput,
   useGetNewAttributeOptionsQuery,
 } from 'generated/apolloComponents';
@@ -25,6 +23,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
 } from 'config/common';
 
@@ -72,11 +71,12 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
     [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   };
 
+  // @ts-ignore
   const initialValues: AddAttributeToGroupModalValuesType = attribute
     ? {
         nameI18n: attribute.nameI18n,
-        variant: `${attribute.variant}` as AttributeVariant,
-        viewVariant: `${attribute.viewVariant}` as AttributeViewVariant,
+        variant: attribute.variant,
+        viewVariant: attribute.viewVariant,
         metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle || positioningInTitle,
@@ -99,8 +99,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       }
     : {
         nameI18n: {},
-        variant: '' as AttributeVariant,
-        viewVariant: '' as AttributeViewVariant,
+        variant: ATTRIBUTE_VARIANT_SELECT,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         metricId: null,
         optionsGroupId: null,
         positioningInTitle,
@@ -175,11 +175,15 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
               <FormikSelect
                 isRequired={
+                  // @ts-ignore
                   variant === ATTRIBUTE_VARIANT_SELECT ||
+                  // @ts-ignore
                   variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT
                 }
                 disabled={
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
                 }
                 firstOption
@@ -192,7 +196,9 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
               <FormikTranslationsSelect
                 disabled={
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
                 }
                 name={'positioningInTitle'}
@@ -204,7 +210,9 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
               <FormikTranslationsSelect
                 disabled={
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  // @ts-ignore
                   variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
                 }
                 name={'positioningInCardTitle'}

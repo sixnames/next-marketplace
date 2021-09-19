@@ -1,6 +1,9 @@
 // ID Counters
 import { Value } from '@react-page/editor';
 import {
+  AttributePositionInTitleModel,
+  AttributeVariantModel,
+  AttributeViewVariantModel,
   ConfigVariantModel,
   GenderModel,
   OrderLogVariantModel,
@@ -127,10 +130,10 @@ export const OPTIONS_GROUP_VARIANT_ENUMS = [
 ];
 
 // ATTRIBUTE VARIANTS
-export const ATTRIBUTE_VARIANT_SELECT = 'select';
-export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect';
-export const ATTRIBUTE_VARIANT_STRING = 'string';
-export const ATTRIBUTE_VARIANT_NUMBER = 'number';
+export const ATTRIBUTE_VARIANT_SELECT = 'select' as AttributeVariantModel;
+export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect' as AttributeVariantModel;
+export const ATTRIBUTE_VARIANT_STRING = 'string' as AttributeVariantModel;
+export const ATTRIBUTE_VARIANT_NUMBER = 'number' as AttributeVariantModel;
 
 export const ATTRIBUTE_VARIANTS_ENUMS = [
   ATTRIBUTE_VARIANT_SELECT,
@@ -140,11 +143,11 @@ export const ATTRIBUTE_VARIANTS_ENUMS = [
 ];
 
 // ATTRIBUTE VIEW VARIANTS
-export const ATTRIBUTE_VIEW_VARIANT_LIST = 'list';
-export const ATTRIBUTE_VIEW_VARIANT_TEXT = 'text';
-export const ATTRIBUTE_VIEW_VARIANT_TAG = 'tag';
-export const ATTRIBUTE_VIEW_VARIANT_ICON = 'icon';
-export const ATTRIBUTE_VIEW_VARIANT_OUTER_RATING = 'outerRating';
+export const ATTRIBUTE_VIEW_VARIANT_LIST = 'list' as AttributeViewVariantModel;
+export const ATTRIBUTE_VIEW_VARIANT_TEXT = 'text' as AttributeViewVariantModel;
+export const ATTRIBUTE_VIEW_VARIANT_TAG = 'tag' as AttributeViewVariantModel;
+export const ATTRIBUTE_VIEW_VARIANT_ICON = 'icon' as AttributeViewVariantModel;
+export const ATTRIBUTE_VIEW_VARIANT_OUTER_RATING = 'outerRating' as AttributeViewVariantModel;
 
 export const ATTRIBUTE_VIEW_VARIANTS_ENUMS = [
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -155,11 +158,14 @@ export const ATTRIBUTE_VIEW_VARIANTS_ENUMS = [
 ];
 
 // ATTRIBUTE POSITIONS IN TITLE
-export const ATTRIBUTE_POSITION_IN_TITLE_BEGIN = 'begin';
-export const ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD = 'beforeKeyword';
-export const ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD = 'replaceKeyword';
-export const ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD = 'afterKeyword';
-export const ATTRIBUTE_POSITION_IN_TITLE_END = 'end';
+export const ATTRIBUTE_POSITION_IN_TITLE_BEGIN = 'begin' as AttributePositionInTitleModel;
+export const ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD =
+  'beforeKeyword' as AttributePositionInTitleModel;
+export const ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD =
+  'replaceKeyword' as AttributePositionInTitleModel;
+export const ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD =
+  'afterKeyword' as AttributePositionInTitleModel;
+export const ATTRIBUTE_POSITION_IN_TITLE_END = 'end' as AttributePositionInTitleModel;
 
 export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,

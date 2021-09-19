@@ -443,6 +443,7 @@ export interface CatalogueProductsAggregationInterface {
   rubric: RubricInterface;
   rubrics?: RubricInterface[] | null;
   categories?: CategoryInterface[];
+  brands?: BrandInterface[];
   selectedOptionsSlugs: string[];
 }
 

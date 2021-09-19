@@ -119,7 +119,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       },
     },
     {
-      accessor: 'originalName',
+      accessor: 'snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },

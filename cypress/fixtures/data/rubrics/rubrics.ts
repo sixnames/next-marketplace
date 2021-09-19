@@ -7,6 +7,8 @@ const booleans = {
   active: true,
   showRubricNameInProductTitle: true,
   showCategoryInProductTitle: true,
+  showBrandInCardTitle: true,
+  showBrandInSnippetTitle: true,
 };
 
 const rubrics: RubricModel[] = [

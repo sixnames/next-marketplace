@@ -1,14 +1,23 @@
 import { FILTER_SEPARATOR, DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
-import { ShopProductModel } from 'db/dbModels';
+import {
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
+import {
+  brandPipeline,
+  getCatalogueRubricPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
-  CatalogueProductOptionInterface,
-  CatalogueProductPricesInterface,
   RubricInterface,
   ShopInterface,
+  ShopProductInterface,
+  ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
@@ -16,6 +25,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -67,23 +77,12 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   );
 };
 
-interface ShopProductsAggregationInterface {
-  docs: ShopProductModel[];
-  rubric: RubricInterface;
-  totalDocs: number;
-  totalPages: number;
-  prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
   const { query } = context;
@@ -198,6 +197,56 @@ export const getServerSideProps = async (
             },
             {
               $limit: limit,
+            },
+
+            // Lookup product brand
+            ...brandPipeline,
+
+            // Lookup product categories
+            ...productCategoriesPipeline(),
+
+            // Lookup product attributes
+            {
+              $lookup: {
+                from: COL_PRODUCT_ATTRIBUTES,
+                as: 'attributes',
+                let: { productId: '$productId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$productId', '$productId'],
+                      },
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: COL_OPTIONS,
+                      as: 'options',
+                      let: {
+                        optionsGroupId: '$optionsGroupId',
+                        selectedOptionsIds: '$selectedOptionsIds',
+                      },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $and: [
+                                {
+                                  $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                                },
+                                {
+                                  $in: ['$_id', '$$selectedOptionsIds'],
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
             },
           ],
           options: [
@@ -333,6 +382,7 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
+  const locale = initialProps.props?.sessionLocale;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
     shop,
@@ -348,15 +398,32 @@ export const getServerSideProps = async (
     basePath,
     selectedAttributes,
     page,
-    docs: shopProductsResult.docs.reduce((acc: ShopProductModel[], shopProduct) => {
-      const { nameI18n, ...restShopProduct } = shopProduct;
+    docs: shopProductsResult.docs.reduce((acc: ShopProductInterface[], shopProduct) => {
+      const { nameI18n, ...restProduct } = shopProduct;
+
+      // title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: restProduct.brand,
+        showBrandNameInProductTitle: rubric?.showBrandInSnippetTitle,
+        rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
+        attributes: restProduct.attributes || [],
+        categories: restProduct.categories,
+        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+        nameI18n,
+        originalName: restProduct.originalName,
+        defaultGender: restProduct.gender,
+      });
 
       return [
         ...acc,
         {
-          ...restShopProduct,
+          ...restProduct,
+          snippetTitle,
           nameI18n,
-          name: getFieldStringLocale(nameI18n, initialProps.props?.sessionLocale),
+          name: getFieldStringLocale(nameI18n, locale),
         },
       ];
     }, []),

@@ -121,14 +121,14 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         return (
           <TableRowImage
             src={`${dataItem.mainImage}`}
-            alt={`${dataItem.originalName}`}
-            title={`${dataItem.originalName}`}
+            alt={`${dataItem.snippetTitle}`}
+            title={`${dataItem.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'originalName',
+      accessor: 'snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -312,14 +312,14 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
         return (
           <TableRowImage
             src={`${dataItem.mainImage}`}
-            alt={`${dataItem.originalName}`}
-            title={`${dataItem.originalName}`}
+            alt={`${dataItem.snippetTitle}`}
+            title={`${dataItem.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'originalName',
+      accessor: 'snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },

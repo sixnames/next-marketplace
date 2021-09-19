@@ -4,7 +4,11 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
@@ -168,6 +172,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   itemId: { $first: '$itemId' },
                   rubricId: { $first: '$rubricId' },
                   rubricSlug: { $first: `$rubricSlug` },
+                  brandSlug: { $first: `$brandSlug` },
                   slug: { $first: '$slug' },
                   gender: { $first: '$gender' },
                   mainImage: { $first: `$mainImage` },
@@ -213,6 +218,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 },
               },
 
+              // Lookup product brand
+              ...brandPipeline,
+
               // Lookup product attributes
               ...productAttributesPipeline,
 
@@ -242,6 +250,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                         nameI18n: true,
                         showRubricNameInProductTitle: true,
                         showCategoryInProductTitle: true,
+                        showBrandInSnippetTitle: true,
                       },
                     },
                   ],
@@ -295,6 +304,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         // title
         const snippetTitle = generateSnippetTitle({
           locale,
+          brand: product.brand,
+          showBrandNameInProductTitle: product.rubric?.showBrandInSnippetTitle,
           rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
           showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,

@@ -1,4 +1,8 @@
-import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
@@ -308,6 +312,7 @@ export const CatalogueQueries = extendType({
                   itemId: { $first: '$itemId' },
                   rubricId: { $first: '$rubricId' },
                   rubricSlug: { $first: `$rubricSlug` },
+                  brandSlug: { $first: '$brandSlug' },
                   slug: { $first: '$slug' },
                   gender: { $first: '$gender' },
                   mainImage: { $first: `$mainImage` },
@@ -368,6 +373,7 @@ export const CatalogueQueries = extendType({
                         nameI18n: true,
                         showRubricNameInProductTitle: true,
                         showCategoryInProductTitle: true,
+                        showBrandInSnippetTitle: true,
                       },
                     },
                   ],
@@ -376,6 +382,9 @@ export const CatalogueQueries = extendType({
 
               // Lookup product attributes
               ...productAttributesPipeline,
+
+              // Lookup product brand
+              ...brandPipeline,
 
               // Lookup product categories
               ...productCategoriesPipeline(),
@@ -493,6 +502,7 @@ export const CatalogueQueries = extendType({
                   itemId: { $first: '$itemId' },
                   rubricId: { $first: '$rubricId' },
                   rubricSlug: { $first: `$rubricSlug` },
+                  brandSlug: { $first: '$brandSlug' },
                   slug: { $first: '$slug' },
                   gender: { $first: '$gender' },
                   mainImage: { $first: `$mainImage` },
@@ -552,6 +562,7 @@ export const CatalogueQueries = extendType({
                         nameI18n: true,
                         showRubricNameInProductTitle: true,
                         showCategoryInProductTitle: true,
+                        showBrandInSnippetTitle: true,
                       },
                     },
                   ],
@@ -560,6 +571,9 @@ export const CatalogueQueries = extendType({
 
               // Lookup product attributes
               ...productAttributesPipeline,
+
+              // Lookup product brand
+              ...brandPipeline,
 
               // Lookup product categories
               ...productCategoriesPipeline(),

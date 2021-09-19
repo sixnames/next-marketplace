@@ -308,9 +308,10 @@ export function generateProductTitlePrefix({
     ? getFieldStringLocale(brand?.nameI18n, locale)
     : '';
 
-  const prefixArray = [rubricPrefix, ...categoryNames, brandName];
+  const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
-  return filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
+  const prefix = filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
+  return `${prefix}${brandName ? ` ${brandName}` : ''}`;
 }
 
 interface GenerateProductTitleInterface

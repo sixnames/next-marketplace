@@ -13,7 +13,12 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  getCatalogueRubricPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -30,6 +35,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -327,6 +333,17 @@ export const getServerSideProps = async (
             {
               $limit: limit,
             },
+            // Lookup product brand
+            ...brandPipeline,
+
+            // Lookup product attributes
+            ...productAttributesPipeline,
+
+            // Lookup product brand
+            ...brandPipeline,
+
+            // Lookup product categories
+            ...productCategoriesPipeline(),
           ],
           options: [
             {
@@ -450,10 +467,27 @@ export const getServerSideProps = async (
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
   const docs: ProductInterface[] = [];
-  for await (const facet of productsResult.docs) {
+  for await (const product of productsResult.docs) {
+    // title
+    const snippetTitle = generateSnippetTitle({
+      locale,
+      brand: product.brand,
+      showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
+      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      attributes: product.attributes || [],
+      categories: product.categories,
+      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      nameI18n: product.nameI18n,
+      originalName: product.originalName,
+      defaultGender: product.gender,
+    });
+
     docs.push({
-      ...facet,
-      name: getFieldStringLocale(facet.nameI18n, locale),
+      ...product,
+      snippetTitle,
+      name: getFieldStringLocale(product.nameI18n, locale),
     });
   }
 

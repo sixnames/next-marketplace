@@ -4,7 +4,6 @@ import {
   AlphabetListModelType,
   AttributeModel,
   AttributesGroupModel,
-  GenderModel,
   LanguageModel,
   ObjectIdModel,
   RubricAttributeModel,
@@ -48,14 +47,14 @@ export interface GetStringValueFromOptionsList {
   options: OptionInterface[];
   locale: string;
   metricName?: string;
-  gender?: GenderModel;
+  gender?: string;
 }
 
 export function getStringValueFromOptionsList({
   options,
   locale,
   metricName,
-  gender = GENDER_HE as GenderModel,
+  gender = GENDER_HE,
 }: GetStringValueFromOptionsList): string {
   if (options.length < 1) {
     return '';

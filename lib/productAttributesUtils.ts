@@ -54,6 +54,7 @@ export interface GetAttributeReadableValueInterface {
 export function getAttributeReadableValue({
   productAttribute,
   locale,
+  gender,
 }: GetAttributeReadableValueInterface): string | null {
   const metricName = productAttribute.metric
     ? ` ${getFieldStringLocale(productAttribute.metric.nameI18n, locale)}`
@@ -70,6 +71,7 @@ export function getAttributeReadableValue({
       options: productAttribute.options,
       locale,
       metricName,
+      gender,
     });
   }
 
@@ -92,15 +94,18 @@ export function getAttributeReadableValue({
 export interface CastProductAttributeForUiInterface {
   productAttribute: ProductAttributeInterface;
   locale: string;
+  gender?: string;
 }
 
 export function castProductAttributeForUi({
   productAttribute,
   locale,
+  gender,
 }: CastProductAttributeForUiInterface): ProductAttributeInterface | null {
   const readableValue = getAttributeReadableValue({
     productAttribute,
     locale,
+    gender,
   });
 
   if (!readableValue) {
@@ -135,6 +140,7 @@ export interface GetProductCurrentViewCastedAttributes {
   attributes: ProductAttributeInterface[];
   viewVariant: string;
   locale: string;
+  gender?: string;
 }
 
 export function getProductCurrentViewCastedAttributes({
@@ -142,6 +148,7 @@ export function getProductCurrentViewCastedAttributes({
   attributes,
   viewVariant,
   locale,
+  gender,
 }: GetProductCurrentViewCastedAttributes): ProductAttributeInterface[] {
   const currentViewAttributes = getProductCurrentViewAttributes({
     attributes,
@@ -157,6 +164,7 @@ export function getProductCurrentViewCastedAttributes({
       const castedAttribute = castProductAttributeForUi({
         productAttribute,
         locale,
+        gender,
       });
 
       if (!castedAttribute) {

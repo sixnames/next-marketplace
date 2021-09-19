@@ -207,7 +207,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
               {topProducts.map((product) => {
                 return (
                   <div
-                    className='min-w-[280px] max-w-[280px] flex items-stretch'
+                    className='min-w-[220px] max-w-[220px] md:min-w-[280px] md:max-w-[280px] flex items-stretch'
                     key={`${product._id}`}
                   >
                     <ProductSnippetGridBigImage

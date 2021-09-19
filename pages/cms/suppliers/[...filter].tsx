@@ -30,7 +30,7 @@ import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierS
 
 type SuppliersConsumerInterface = AppPaginationInterface<SupplierInterface>;
 
-const pageTitle = 'Производители';
+const pageTitle = 'Поставщики';
 
 const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, totalPages }) => {
   const setPageHandler = useNavigateToPageHandler();

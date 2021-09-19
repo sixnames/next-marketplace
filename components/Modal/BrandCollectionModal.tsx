@@ -46,6 +46,7 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
     showAsCatalogueBreadcrumb: brandCollection?.showAsCatalogueBreadcrumb || false,
     showInCardTitle: brandCollection?.showInCardTitle || false,
     showInSnippetTitle: brandCollection?.showInSnippetTitle || false,
+    showInCatalogueTitle: brandCollection?.showInCatalogueTitle || false,
     brandId,
   };
 
@@ -70,6 +71,7 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
                   showAsCatalogueBreadcrumb: values?.showAsCatalogueBreadcrumb,
                   showInCardTitle: values?.showInCardTitle,
                   showInSnippetTitle: values?.showInSnippetTitle,
+                  showInCatalogueTitle: values?.showInCatalogueTitle,
                 },
               },
             }).catch(console.log);
@@ -112,6 +114,11 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
               <FormikCheckboxLine
                 label={'Показывать в крошках каталога'}
                 name={'showAsCatalogueBreadcrumb'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать в заголовке каталога'}
+                name={'showInCatalogueTitle'}
               />
 
               <FormikCheckboxLine

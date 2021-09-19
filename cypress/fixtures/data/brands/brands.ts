@@ -7,6 +7,7 @@ const booleans: BrandBaseModel = {
   showAsCatalogueBreadcrumb: true,
   showInCardTitle: true,
   showInSnippetTitle: true,
+  showInCatalogueTitle: true,
 };
 
 const brands: BrandModel[] = [

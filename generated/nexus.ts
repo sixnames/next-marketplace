@@ -154,6 +154,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb?: boolean | null; // Boolean
     showAsCatalogueBreadcrumb?: boolean | null; // Boolean
     showInCardTitle?: boolean | null; // Boolean
+    showInCatalogueTitle?: boolean | null; // Boolean
     showInSnippetTitle?: boolean | null; // Boolean
   };
   AddOptionToGroupInput: {
@@ -274,6 +275,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb?: boolean | null; // Boolean
     showAsCatalogueBreadcrumb?: boolean | null; // Boolean
     showInCardTitle?: boolean | null; // Boolean
+    showInCatalogueTitle?: boolean | null; // Boolean
     showInSnippetTitle?: boolean | null; // Boolean
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
@@ -641,6 +643,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb?: boolean | null; // Boolean
     showAsCatalogueBreadcrumb?: boolean | null; // Boolean
     showInCardTitle?: boolean | null; // Boolean
+    showInCatalogueTitle?: boolean | null; // Boolean
     showInSnippetTitle?: boolean | null; // Boolean
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
@@ -668,6 +671,7 @@ export interface NexusGenInputs {
     showAsBreadcrumb?: boolean | null; // Boolean
     showAsCatalogueBreadcrumb?: boolean | null; // Boolean
     showInCardTitle?: boolean | null; // Boolean
+    showInCatalogueTitle?: boolean | null; // Boolean
     showInSnippetTitle?: boolean | null; // Boolean
   };
   UpdateCompanyInput: {

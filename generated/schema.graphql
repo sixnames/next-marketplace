@@ -50,6 +50,7 @@ input AddCollectionToBrandInput {
   showAsBreadcrumb: Boolean
   showAsCatalogueBreadcrumb: Boolean
   showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
   showInSnippetTitle: Boolean
 }
 
@@ -500,6 +501,7 @@ input CreateBrandInput {
   showAsBreadcrumb: Boolean
   showAsCatalogueBreadcrumb: Boolean
   showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
   showInSnippetTitle: Boolean
   url: [URL!]
 }
@@ -2546,6 +2548,7 @@ input UpdateBrandInput {
   showAsBreadcrumb: Boolean
   showAsCatalogueBreadcrumb: Boolean
   showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
   showInSnippetTitle: Boolean
   url: [URL!]
 }
@@ -2573,6 +2576,7 @@ input UpdateCollectionInBrandInput {
   showAsBreadcrumb: Boolean
   showAsCatalogueBreadcrumb: Boolean
   showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
   showInSnippetTitle: Boolean
 }
 

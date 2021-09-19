@@ -254,6 +254,7 @@ export interface BrandBaseModel {
   // titles
   showInCardTitle?: boolean | null;
   showInSnippetTitle?: boolean | null;
+  showInCatalogueTitle?: boolean | null;
 }
 
 export interface BrandModel extends BaseModel, TimestampModel, CountersModel, BrandBaseModel {

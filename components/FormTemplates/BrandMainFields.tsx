@@ -35,6 +35,8 @@ const BrandMainFields: React.FC = () => {
         name={'showAsCatalogueBreadcrumb'}
       />
 
+      <FormikCheckboxLine label={'Показывать в заголовке каталога'} name={'showInCatalogueTitle'} />
+
       <FormikCheckboxLine label={'Показывать в заголовке карточки'} name={'showInCardTitle'} />
 
       <FormikCheckboxLine label={'Показывать в заголовке сниппета'} name={'showInSnippetTitle'} />

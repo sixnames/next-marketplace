@@ -28,6 +28,7 @@ const CreateBrandModal: React.FC = () => {
     showAsCatalogueBreadcrumb: false,
     showInCardTitle: false,
     showInSnippetTitle: false,
+    showInCatalogueTitle: false,
   };
 
   return (

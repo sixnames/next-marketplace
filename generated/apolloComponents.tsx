@@ -76,6 +76,7 @@ export type AddCollectionToBrandInput = {
   showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
   showInCardTitle?: Maybe<Scalars['Boolean']>;
   showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type AddOptionToGroupInput = {
@@ -545,6 +546,7 @@ export type CreateBrandInput = {
   showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
   showInCardTitle?: Maybe<Scalars['Boolean']>;
   showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateCategoryInput = {
@@ -2867,6 +2869,7 @@ export type UpdateBrandInput = {
   showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
   showInCardTitle?: Maybe<Scalars['Boolean']>;
   showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateCategoryInput = {
@@ -2893,6 +2896,7 @@ export type UpdateCollectionInBrandInput = {
   showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
   showInCardTitle?: Maybe<Scalars['Boolean']>;
   showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateCompanyInput = {

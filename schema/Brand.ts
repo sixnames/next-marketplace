@@ -257,6 +257,7 @@ export const CreateBrandInput = inputObjectType({
     t.boolean('showAsCatalogueBreadcrumb');
     t.boolean('showInCardTitle');
     t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -271,6 +272,7 @@ export const UpdateBrandInput = inputObjectType({
     t.boolean('showAsCatalogueBreadcrumb');
     t.boolean('showInCardTitle');
     t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -284,6 +286,7 @@ export const AddCollectionToBrandInput = inputObjectType({
     t.boolean('showAsCatalogueBreadcrumb');
     t.boolean('showInCardTitle');
     t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -298,6 +301,7 @@ export const UpdateCollectionInBrandInput = inputObjectType({
     t.boolean('showAsCatalogueBreadcrumb');
     t.boolean('showInCardTitle');
     t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 

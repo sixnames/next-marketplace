@@ -52,6 +52,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
     showAsCatalogueBreadcrumb: brand.showAsCatalogueBreadcrumb || false,
     showInCardTitle: brand.showInCardTitle || false,
     showInSnippetTitle: brand.showInSnippetTitle || false,
+    showInCatalogueTitle: brand.showInCatalogueTitle || false,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

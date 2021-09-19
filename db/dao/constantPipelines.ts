@@ -1,11 +1,4 @@
-import {
-  FILTER_SEPARATOR,
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_CITY,
-  SORT_DESC,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-} from 'config/common';
+import { FILTER_SEPARATOR, DEFAULT_COMPANY_SLUG, DEFAULT_CITY, SORT_DESC } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_BRANDS,
@@ -419,9 +412,6 @@ export const productAttributesPipeline = [
           $match: {
             $expr: {
               $eq: ['$$productId', '$productId'],
-            },
-            viewVariant: {
-              $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
             },
           },
         },

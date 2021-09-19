@@ -15,7 +15,11 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { productAttributesPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -433,6 +437,7 @@ export async function getServerSideProps(
           itemId: { $first: '$itemId' },
           rubricId: { $first: '$rubricId' },
           rubricSlug: { $first: `$rubricSlug` },
+          brandSlug: { $first: '$brandSlug' },
           slug: { $first: '$slug' },
           gender: { $first: '$gender' },
           mainImage: { $first: `$mainImage` },
@@ -473,6 +478,9 @@ export async function getServerSideProps(
       // Lookup product attributes
       ...productAttributesPipeline,
 
+      // Lookup product brand
+      ...brandPipeline,
+
       // Lookup product categories
       ...productCategoriesPipeline(),
 
@@ -499,6 +507,7 @@ export async function getServerSideProps(
                 nameI18n: true,
                 showRubricNameInProductTitle: true,
                 showCategoryInProductTitle: true,
+                showBrandInSnippetTitle: true,
               },
             },
           ],
@@ -524,6 +533,8 @@ export async function getServerSideProps(
     // title
     const snippetTitle = generateSnippetTitle({
       locale: sessionLocale,
+      brand: restProduct.brand,
+      showBrandNameInProductTitle: rubric?.showBrandInSnippetTitle,
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,

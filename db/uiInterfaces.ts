@@ -357,6 +357,7 @@ export interface ShopProductInterface extends ShopProductModel {
   ratingFeatures?: ProductAttributeInterface[] | null;
   orders?: OrderInterface[] | null;
   categories?: CategoryInterface[] | null;
+  brand?: BrandInterface | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -706,4 +707,15 @@ export interface DaoPropsInterface<TInput> {
     req: NextApiRequest;
     res: NextApiResponse;
   };
+}
+
+export interface ShopProductsAggregationInterface {
+  docs: ShopProductInterface[];
+  rubric: RubricInterface;
+  totalDocs: number;
+  totalPages: number;
+  prices: CatalogueProductPricesInterface[];
+  options: CatalogueProductOptionInterface[];
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
 }

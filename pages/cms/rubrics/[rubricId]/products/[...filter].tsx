@@ -29,7 +29,12 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getCatalogueRubricPipeline, productCategoriesPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  getCatalogueRubricPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/dao/constantPipelines';
 import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -52,6 +57,7 @@ import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -112,7 +118,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
       },
     },
     {
-      accessor: 'originalName',
+      accessor: 'snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -469,6 +475,19 @@ export const getServerSideProps = async (
               {
                 $limit: limit,
               },
+
+              // Lookup product brand
+              ...brandPipeline,
+
+              // Lookup product attributes
+              ...productAttributesPipeline,
+
+              // Lookup product brand
+              ...brandPipeline,
+
+              // Lookup product categories
+              ...productCategoriesPipeline(),
+
               {
                 $lookup: {
                   from: COL_PRODUCT_ATTRIBUTES,
@@ -537,7 +556,7 @@ export const getServerSideProps = async (
               },
             ],
 
-            // get catalogue categories
+            // Lookup categories
             categories: [
               {
                 $unwind: {
@@ -618,6 +637,7 @@ export const getServerSideProps = async (
             docs: 1,
             rubric: 1,
             categories: 1,
+            brand: 1,
             totalDocs: 1,
             options: 1,
             prices: 1,
@@ -699,9 +719,26 @@ export const getServerSideProps = async (
       );
     });
 
+    // title
+    const snippetTitle = generateSnippetTitle({
+      locale,
+      brand: product.brand,
+      showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
+      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      attributes: product.attributes || [],
+      categories: product.categories,
+      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      nameI18n: product.nameI18n,
+      originalName: product.originalName,
+      defaultGender: product.gender,
+    });
+
     const castedProduct: ProductInterface = {
       ...product,
       cardPrices,
+      snippetTitle,
       name: getFieldStringLocale(product.nameI18n, locale),
       totalAttributesCount: rubricAttributes.length + productCategoryAttributes.length,
     };

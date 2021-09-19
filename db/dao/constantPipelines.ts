@@ -1,13 +1,7 @@
-import {
-  FILTER_SEPARATOR,
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_CITY,
-  SORT_DESC,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-} from 'config/common';
+import { FILTER_SEPARATOR, DEFAULT_COMPANY_SLUG, DEFAULT_CITY, SORT_DESC } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_BRANDS,
   COL_CATEGORIES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
@@ -419,9 +413,6 @@ export const productAttributesPipeline = [
             $expr: {
               $eq: ['$$productId', '$productId'],
             },
-            viewVariant: {
-              $in: [ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANT_OUTER_RATING],
-            },
           },
         },
         {
@@ -451,6 +442,34 @@ export const productAttributesPipeline = [
           },
         },
       ],
+    },
+  },
+];
+
+export const brandPipeline = [
+  {
+    $lookup: {
+      from: COL_BRANDS,
+      as: 'brand',
+      let: {
+        slug: '$brandSlug',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$$slug', '$slug'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      brand: {
+        $arrayElemAt: ['$brand', 0],
+      },
     },
   },
 ];

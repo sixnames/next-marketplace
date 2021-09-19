@@ -28,7 +28,7 @@ shops.forEach((shop) => {
         product.barcode?.forEach((barcode) => {
           const available = 5;
           const withDiscount = i % 2 === 0;
-          const price = Math.round(Math.random() * 1000);
+          const price = Math.round(Math.random() * 1000) * 100;
           const oldPrice = price + Math.round(price / 3);
           const pricePercent = oldPrice / 100;
           const discountedPercent = 100 - Math.floor(price / pricePercent);

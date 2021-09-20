@@ -9,8 +9,8 @@ import {
   ROUTE_CMS,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductCardContentModel, ProductModel, RubricModel } from 'db/dbModels';
+import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
+import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -22,7 +22,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsProduct } from 'lib/productUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -174,8 +174,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const productCardContentsCollection =
     db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const { props } = await getAppInitialData({ context });
@@ -185,23 +183,18 @@ export const getServerSideProps = async (
     };
   }
 
-  const product = await productsCollection.findOne({
-    _id: new ObjectId(`${productId}`),
-  });
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
+  const { product, rubric } = payload;
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,

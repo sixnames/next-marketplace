@@ -1,5 +1,5 @@
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS, CATALOGUE_PRICE_KEY } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
@@ -29,7 +29,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
-  const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+  const isPrice = slug === CATALOGUE_PRICE_KEY;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
   return (
@@ -136,7 +136,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
             <div className='flex flex-wrap gap-2'>
               {selectedAttributes.map((attribute) => {
                 const { metric, slug } = attribute;
-                const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+                const isPrice = slug === CATALOGUE_PRICE_KEY;
                 const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
                 return attribute.options.map((option) => {
                   const key = `${option.slug}`;

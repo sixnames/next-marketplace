@@ -36,7 +36,7 @@ interface CartProductFrameInterface {
   isShopsVisible?: boolean;
   mainImage: string;
   originalName: string;
-  shopProducts?: ShopProductInterface[];
+  shopProducts?: ShopProductInterface[] | null;
   testId: number | string;
   rubricSlug: string;
   slug: string;

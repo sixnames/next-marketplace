@@ -16,18 +16,9 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
   COL_SUPPLIERS,
 } from 'db/collectionNames';
-import {
-  BrandCollectionModel,
-  BrandModel,
-  ManufacturerModel,
-  ProductModel,
-  RubricModel,
-  SupplierModel,
-} from 'db/dbModels';
+import { BrandCollectionModel, BrandModel, ManufacturerModel, SupplierModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   BrandCollectionInterface,
@@ -48,8 +39,8 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -391,8 +382,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
@@ -404,31 +393,17 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-      {
-        $project: {
-          attributes: false,
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
+  const { product, rubric } = payload;
 
   const manufacturerEntity = product.manufacturerSlug
     ? await manufacturersCollection.findOne(
@@ -516,11 +491,6 @@ export const getServerSideProps = async (
         name: getFieldStringLocale(brandCollectionEntity.nameI18n, props.sessionLocale),
       }
     : null;
-
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
 
   return {
     props: {

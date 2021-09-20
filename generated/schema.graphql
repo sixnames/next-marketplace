@@ -47,6 +47,11 @@ input AddCollectionToBrandInput {
   brandId: ObjectId!
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
+  showAsBreadcrumb: Boolean
+  showAsCatalogueBreadcrumb: Boolean
+  showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
+  showInSnippetTitle: Boolean
 }
 
 input AddOptionToGroupInput {
@@ -493,6 +498,11 @@ input CreateAttributesGroupInput {
 input CreateBrandInput {
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
+  showAsBreadcrumb: Boolean
+  showAsCatalogueBreadcrumb: Boolean
+  showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
+  showInSnippetTitle: Boolean
   url: [URL!]
 }
 
@@ -617,8 +627,8 @@ input CreateRubricInput {
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   shortDescriptionI18n: JSONObject!
-  showBrandInCardTitle: Boolean
-  showBrandInSnippetTitle: Boolean
+  showBrandInFilter: Boolean
+  showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
   variantId: ObjectId!
@@ -2535,6 +2545,11 @@ input UpdateBrandInput {
   brandId: ObjectId!
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
+  showAsBreadcrumb: Boolean
+  showAsCatalogueBreadcrumb: Boolean
+  showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
+  showInSnippetTitle: Boolean
   url: [URL!]
 }
 
@@ -2558,6 +2573,11 @@ input UpdateCollectionInBrandInput {
   brandId: ObjectId!
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
+  showAsBreadcrumb: Boolean
+  showAsCatalogueBreadcrumb: Boolean
+  showInCardTitle: Boolean
+  showInCatalogueTitle: Boolean
+  showInSnippetTitle: Boolean
 }
 
 input UpdateCompanyInput {
@@ -2828,8 +2848,8 @@ input UpdateRubricInput {
   nameI18n: JSONObject!
   rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
-  showBrandInCardTitle: Boolean
-  showBrandInSnippetTitle: Boolean
+  showBrandInFilter: Boolean
+  showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
   variantId: ObjectId!

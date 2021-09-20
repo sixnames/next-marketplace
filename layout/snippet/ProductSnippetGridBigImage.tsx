@@ -27,6 +27,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     itemId,
     shopProductsIds,
     snippetTitle,
+    name,
   } = product;
 
   const bgClassName = showSnippetBackground
@@ -89,16 +90,17 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             </Link>
           </div>
 
-          {/*original name*/}
-          <div className='text-lg mb-4'>
+          {/*name*/}
+          <div className='mb-4'>
             <Link
               testId={`${testId}-name-grid`}
               target={'_blank'}
-              className='block text-primary-text hover:no-underline hover:text-primary-text'
+              className='text-lg block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
               {snippetTitle}
             </Link>
+            {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
           </div>
         </div>
 

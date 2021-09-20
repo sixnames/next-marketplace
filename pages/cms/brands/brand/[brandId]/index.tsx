@@ -48,6 +48,11 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
     nameI18n: brand.nameI18n,
     descriptionI18n: brand.descriptionI18n,
     url: !brand.url || brand.url.length < 1 ? [''] : brand.url,
+    showAsBreadcrumb: brand.showAsBreadcrumb || false,
+    showAsCatalogueBreadcrumb: brand.showAsCatalogueBreadcrumb || false,
+    showInCardTitle: brand.showInCardTitle || false,
+    showInSnippetTitle: brand.showInSnippetTitle || false,
+    showInCatalogueTitle: brand.showInCatalogueTitle || false,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

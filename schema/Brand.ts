@@ -253,6 +253,11 @@ export const CreateBrandInput = inputObjectType({
     t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
+    t.boolean('showAsBreadcrumb');
+    t.boolean('showAsCatalogueBreadcrumb');
+    t.boolean('showInCardTitle');
+    t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -263,6 +268,11 @@ export const UpdateBrandInput = inputObjectType({
     t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
+    t.boolean('showAsBreadcrumb');
+    t.boolean('showAsCatalogueBreadcrumb');
+    t.boolean('showInCardTitle');
+    t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -272,6 +282,11 @@ export const AddCollectionToBrandInput = inputObjectType({
     t.nonNull.objectId('brandId');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
+    t.boolean('showAsBreadcrumb');
+    t.boolean('showAsCatalogueBreadcrumb');
+    t.boolean('showInCardTitle');
+    t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 
@@ -282,6 +297,11 @@ export const UpdateCollectionInBrandInput = inputObjectType({
     t.nonNull.objectId('brandCollectionId');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
+    t.boolean('showAsBreadcrumb');
+    t.boolean('showAsCatalogueBreadcrumb');
+    t.boolean('showInCardTitle');
+    t.boolean('showInSnippetTitle');
+    t.boolean('showInCatalogueTitle');
   },
 });
 

@@ -33,6 +33,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
     rubricSlug,
     shopProductsIds,
     snippetTitle,
+    name,
   } = product;
 
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
@@ -89,16 +90,17 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
         ) : null}
 
-        {/*original name*/}
-        <div className='text-2xl font-medium mb-1'>
+        {/*name*/}
+        <div className='mb-3'>
           <Link
             testId={`${testId}-name-row`}
             target={'_blank'}
-            className='block text-primary-text hover:no-underline hover:text-primary-text'
+            className='block text-2xl font-medium text-primary-text hover:no-underline hover:text-primary-text'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {snippetTitle}
           </Link>
+          {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
         </div>
 
         {/*list features*/}

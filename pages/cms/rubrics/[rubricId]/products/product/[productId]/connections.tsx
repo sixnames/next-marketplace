@@ -8,19 +8,9 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { FILTER_SEPARATOR, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import { ProductConnectionItemModel, ProductModel, RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ProductConnectionItemModel } from 'db/dbModels';
 import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
@@ -36,9 +26,8 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
-import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -142,7 +131,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       },
     },
     {
-      accessor: 'product.originalName',
+      accessor: 'product.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => {
         return cellData || 'Товар не найден';
@@ -314,9 +303,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
-  const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -324,195 +310,23 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate<ProductInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_PRODUCT_CONNECTIONS,
-          as: 'connections',
-          let: { productId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: ['$$productId', '$productsIds'],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_ATTRIBUTES,
-                as: 'attribute',
-                let: { attributeId: '$attributeId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$attributeId', '$_id'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                attribute: {
-                  $arrayElemAt: ['$attribute', 0],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_PRODUCT_CONNECTION_ITEMS,
-                as: 'connectionProducts',
-                let: { connectionId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$connectionId', '$connectionId'],
-                      },
-                    },
-                  },
-                  {
-                    $sort: {
-                      _id: SORT_DESC,
-                    },
-                  },
-                  {
-                    $lookup: {
-                      from: COL_OPTIONS,
-                      as: 'option',
-                      let: { optionId: '$optionId' },
-                      pipeline: [
-                        {
-                          $match: {
-                            $expr: {
-                              $eq: ['$$optionId', '$_id'],
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                  {
-                    $lookup: {
-                      from: COL_PRODUCTS,
-                      as: 'product',
-                      let: { productId: '$productId' },
-                      pipeline: [
-                        {
-                          $match: {
-                            $expr: {
-                              $eq: ['$$productId', '$_id'],
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                  {
-                    $addFields: {
-                      product: {
-                        $arrayElemAt: ['$product', 0],
-                      },
-                      option: {
-                        $arrayElemAt: ['$option', 0],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: COL_PRODUCT_ATTRIBUTES,
-          as: 'attributes',
-          let: { productId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$productId', '$productId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
-  // connections
-  const connections: ProductConnectionInterface[] = [];
-  for await (const productConnection of product.connections || []) {
-    const connectionProducts: ProductConnectionItemInterface[] = [];
-    for await (const connectionProduct of productConnection.connectionProducts || []) {
-      if (connectionProduct.product) {
-        connectionProducts.push({
-          ...connectionProduct,
-          option: connectionProduct.option
-            ? {
-                ...connectionProduct.option,
-                name: getFieldStringLocale(connectionProduct.option?.nameI18n, props.sessionLocale),
-              }
-            : null,
-        });
-      }
-    }
-
-    connections.push({
-      ...productConnection,
-      attribute: productConnection.attribute
-        ? {
-            ...productConnection.attribute,
-            name: getFieldStringLocale(productConnection.attribute?.nameI18n, props.sessionLocale),
-          }
-        : null,
-      connectionProducts,
-    });
-  }
-
-  const rawProduct: ProductInterface = {
-    ...product,
-    connections,
-    attributes: (product.attributes || []).map((productAttribute) => {
-      return {
-        ...productAttribute,
-        name: getFieldStringLocale(productAttribute.nameI18n, props.sessionLocale),
-      };
-    }),
-  };
-
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
+  const { product, rubric } = payload;
 
   return {
     props: {
       ...props,
-      product: castDbData(rawProduct),
+      product: castDbData(product),
       rubric: castDbData(rubric),
     },
   };

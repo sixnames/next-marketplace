@@ -20,7 +20,11 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
-import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getPriceAttribute,
+} from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCT_ATTRIBUTES,
@@ -31,6 +35,8 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterCmsBrandsPipeline,
+  filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
@@ -40,9 +46,8 @@ import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
-  CatalogueProductPricesInterface,
-  CategoryInterface,
   ProductInterface,
+  ProductsAggregationInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
@@ -339,17 +344,6 @@ const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...pr
   );
 };
 
-interface ProductsAggregationInterface {
-  docs: ProductInterface[];
-  totalDocs: number;
-  totalPages: number;
-  prices: CatalogueProductPricesInterface[];
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  rubric: RubricInterface;
-  categories?: CategoryInterface[] | null;
-}
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
@@ -556,55 +550,21 @@ export const getServerSideProps = async (
               },
             ],
 
-            // Lookup categories
-            categories: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              ...productCategoriesPipeline(),
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $unwind: {
-                  path: '$categories',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  categories: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$categories',
-                },
-              },
-            ],
+            // get rubrics
+            rubrics: rubricsPipeline,
 
+            // get categories
+            categories: filterCmsCategoriesPipeline,
+
+            // get brands and brand collections
+            brands: filterCmsBrandsPipeline,
+
+            // count documents
             countAllDocs: [
               {
                 $count: 'totalDocs',
               },
             ],
-            rubrics: rubricsPipeline,
           },
         },
         {
@@ -637,7 +597,7 @@ export const getServerSideProps = async (
             docs: 1,
             rubric: 1,
             categories: 1,
-            brand: 1,
+            brands: 1,
             totalDocs: 1,
             options: 1,
             prices: 1,
@@ -677,14 +637,24 @@ export const getServerSideProps = async (
     };
   }
 
+  // price attribute
   const priceAttribute = getPriceAttribute();
+
+  // category attribute
   const categoryAttribute = getCategoryFilterAttribute({
     locale,
     categories: productsResult.categories,
   });
+
+  // brand attribute
+  const brandAttribute = getBrandFilterAttribute({
+    locale,
+    brands: productsResult.brands,
+  });
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     selectedOptionsSlugs: [],
-    attributes: [priceAttribute, categoryAttribute, ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: [],
@@ -723,14 +693,12 @@ export const getServerSideProps = async (
     const snippetTitle = generateSnippetTitle({
       locale,
       brand: product.brand,
-      showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       attributes: product.attributes || [],
       categories: product.categories,
       titleCategoriesSlugs: product.titleCategoriesSlugs,
-      nameI18n: product.nameI18n,
       originalName: product.originalName,
       defaultGender: product.gender,
     });

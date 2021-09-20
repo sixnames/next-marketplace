@@ -24,6 +24,11 @@ const CreateBrandModal: React.FC = () => {
     descriptionI18n: {},
     nameI18n: {},
     url: [''],
+    showAsBreadcrumb: false,
+    showAsCatalogueBreadcrumb: false,
+    showInCardTitle: false,
+    showInSnippetTitle: false,
+    showInCatalogueTitle: false,
   };
 
   return (

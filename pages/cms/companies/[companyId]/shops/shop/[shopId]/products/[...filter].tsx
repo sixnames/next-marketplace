@@ -5,7 +5,11 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
-import { getPriceAttribute } from 'config/constantAttributes';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getPriceAttribute,
+} from 'config/constantAttributes';
 import {
   COL_COMPANIES,
   COL_OPTIONS,
@@ -17,6 +21,8 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterCmsBrandsPipeline,
+  filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
   productCategoriesPipeline,
 } from 'db/dao/constantPipelines';
@@ -373,7 +379,15 @@ export const getServerSideProps = async (
               $count: 'totalDocs',
             },
           ],
+
+          // get rubrics
           rubrics: rubricsPipeline,
+
+          // get categories
+          categories: filterCmsCategoriesPipeline,
+
+          // get brands and brand collections
+          brands: filterCmsBrandsPipeline,
         },
       },
       {
@@ -405,6 +419,8 @@ export const getServerSideProps = async (
         $project: {
           docs: 1,
           rubric: 1,
+          categories: 1,
+          brands: 1,
           totalDocs: 1,
           options: 1,
           prices: 1,
@@ -442,9 +458,26 @@ export const getServerSideProps = async (
     };
   }
 
+  const locale = initialProps.props.sessionLocale;
+
+  // price attribute
+  const priceAttribute = getPriceAttribute();
+
+  // category attribute
+  const categoryAttribute = getCategoryFilterAttribute({
+    locale,
+    categories: shopProductsResult.categories,
+  });
+
+  // brand attribute
+  const brandAttribute = getBrandFilterAttribute({
+    locale,
+    brands: shopProductsResult.brands,
+  });
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     selectedOptionsSlugs: [],
-    attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: shopProductsResult.prices,
@@ -457,7 +490,6 @@ export const getServerSideProps = async (
     rubricId: rubric._id,
   });
 
-  const locale = initialProps.props?.sessionLocale;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
     shop,

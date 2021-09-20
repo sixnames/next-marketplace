@@ -6,8 +6,6 @@ import {
 } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
   COL_CITIES,
   COL_CONFIGS,
   COL_COUNTRIES,
@@ -17,6 +15,7 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterBrandsPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
@@ -1077,114 +1076,27 @@ export const getCatalogueData = async ({
                 },
               ],
 
-              // get catalogue brands and brand collections
-              brands: [
-                {
-                  $group: {
-                    _id: '$brandSlug',
-                    collectionSlugs: {
-                      $addToSet: '$brandCollectionSlug',
+              // get brands and brand collections
+              brands: filterBrandsPipeline({
+                additionalStage: [
+                  {
+                    $addFields: {
+                      views: { $max: `$views.${realCompanySlug}.${city}` },
+                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
                     },
                   },
-                },
-                {
-                  $lookup: {
-                    from: COL_BRANDS,
-                    as: 'brand',
-                    let: {
-                      slug: '$_id',
-                      collectionSlugs: '$collectionSlugs',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$slug', '$$slug'],
-                          },
-                        },
-                      },
-                      {
-                        $lookup: {
-                          from: COL_BRAND_COLLECTIONS,
-                          as: 'collections',
-                          let: {
-                            brandId: '$_id',
-                          },
-                          pipeline: [
-                            {
-                              $match: {
-                                $and: [
-                                  {
-                                    $expr: {
-                                      $eq: ['$brandId', '$$brandId'],
-                                    },
-                                  },
-                                  {
-                                    $expr: {
-                                      $in: ['$slug', '$$collectionSlugs'],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              $addFields: {
-                                views: { $max: `$views.${realCompanySlug}.${city}` },
-                                priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                              },
-                            },
-                            {
-                              $sort: {
-                                priorities: SORT_DESC,
-                                views: SORT_DESC,
-                                _id: SORT_DESC,
-                              },
-                            },
-                            {
-                              $limit: visibleOptionsCount,
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $addFields: {
-                    brand: {
-                      $arrayElemAt: ['$brand', 0],
+                  {
+                    $sort: {
+                      priorities: SORT_DESC,
+                      views: SORT_DESC,
+                      _id: SORT_DESC,
                     },
                   },
-                },
-                {
-                  $match: {
-                    brand: {
-                      $exists: true,
-                    },
+                  {
+                    $limit: visibleOptionsCount,
                   },
-                },
-                {
-                  $replaceRoot: {
-                    newRoot: '$brand',
-                  },
-                },
-                {
-                  $addFields: {
-                    views: { $max: `$views.${realCompanySlug}.${city}` },
-                    priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
-                  },
-                },
-                {
-                  $sort: {
-                    priorities: SORT_DESC,
-                    views: SORT_DESC,
-                    _id: SORT_DESC,
-                  },
-                },
-                {
-                  $limit: visibleOptionsCount,
-                },
-              ],
+                ],
+              }),
 
               // count documents
               countAllDocs: [

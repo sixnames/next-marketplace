@@ -718,6 +718,20 @@ export interface ShopProductsAggregationInterface {
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
+  categories?: CategoryInterface[] | null;
+  brands?: BrandInterface[] | null;
   hasPrevPage: boolean;
   hasNextPage: boolean;
+}
+
+export interface ProductsAggregationInterface {
+  docs: ProductInterface[];
+  totalDocs: number;
+  totalPages: number;
+  prices: CatalogueProductPricesInterface[];
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  rubric: RubricInterface;
+  categories?: CategoryInterface[] | null;
+  brands?: BrandInterface[] | null;
 }

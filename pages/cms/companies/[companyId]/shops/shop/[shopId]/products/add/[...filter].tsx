@@ -5,7 +5,11 @@ import {
   ROUTE_CMS,
   SORT_DESC,
 } from 'config/common';
-import { getPriceAttribute } from 'config/constantAttributes';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getPriceAttribute,
+} from 'config/constantAttributes';
 import {
   COL_COMPANIES,
   COL_PRODUCTS,
@@ -15,6 +19,8 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterCmsBrandsPipeline,
+  filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
@@ -22,9 +28,8 @@ import {
 import { ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
-  CatalogueProductOptionInterface,
-  CatalogueProductPricesInterface,
   ProductInterface,
+  ProductsAggregationInterface,
   RubricInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
@@ -153,17 +158,6 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
     </CmsLayout>
   );
 };
-
-interface ProductsAggregationInterface {
-  docs: ProductInterface[];
-  rubric: RubricInterface;
-  totalDocs: number;
-  totalPages: number;
-  prices: CatalogueProductPricesInterface[];
-  options: CatalogueProductOptionInterface[];
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
@@ -387,7 +381,15 @@ export const getServerSideProps = async (
               $count: 'totalDocs',
             },
           ],
+
+          // get rubrics
           rubrics: rubricsPipeline,
+
+          // get categories
+          categories: filterCmsCategoriesPipeline,
+
+          // get brands and brand collections
+          brands: filterCmsBrandsPipeline,
         },
       },
       {
@@ -419,6 +421,8 @@ export const getServerSideProps = async (
         $project: {
           docs: 1,
           rubric: 1,
+          categories: 1,
+          brands: 1,
           totalDocs: 1,
           options: 1,
           prices: 1,
@@ -456,9 +460,24 @@ export const getServerSideProps = async (
     };
   }
 
+  // price attribute
+  const priceAttribute = getPriceAttribute();
+
+  // category attribute
+  const categoryAttribute = getCategoryFilterAttribute({
+    locale,
+    categories: productsResult.categories,
+  });
+
+  // brand attribute
+  const brandAttribute = getBrandFilterAttribute({
+    locale,
+    brands: productsResult.brands,
+  });
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
     selectedOptionsSlugs: [],
-    attributes: [getPriceAttribute(), ...(rubric.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: [],

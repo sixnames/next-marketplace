@@ -228,7 +228,7 @@ export const CATALOGUE_VIEW_STORAGE_KEY = 'catalogueView';
 export const CATALOGUE_VIEW_ROW = 'row';
 export const CATALOGUE_VIEW_GRID = 'grid';
 export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
-export const CATALOGUE_TOP_SHOPS_LIMIT = 10;
+export const CMS_FILTER_BRANDS_LIMIT = 20;
 export const CATALOGUE_TOP_FILTERS_LIMIT = 10;
 
 export const NEGATIVE_INDEX = -1;

@@ -1,4 +1,10 @@
-import { FILTER_SEPARATOR, DEFAULT_COMPANY_SLUG, DEFAULT_CITY, SORT_DESC } from 'config/common';
+import {
+  FILTER_SEPARATOR,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_CITY,
+  SORT_DESC,
+  CMS_FILTER_BRANDS_LIMIT,
+} from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -515,6 +521,105 @@ export const brandPipeline = [
   },
 ];
 
+interface FilterBrandsPipelineInterface {
+  additionalStage?: any[];
+}
+
+export const filterBrandsPipeline = ({ additionalStage }: FilterBrandsPipelineInterface) => {
+  const finalAdditionalStage = additionalStage || [];
+
+  return [
+    {
+      $group: {
+        _id: '$brandSlug',
+        collectionSlugs: {
+          $addToSet: '$brandCollectionSlug',
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: COL_BRANDS,
+        as: 'brand',
+        let: {
+          slug: '$_id',
+          collectionSlugs: '$collectionSlugs',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$slug', '$$slug'],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: COL_BRAND_COLLECTIONS,
+              as: 'collections',
+              let: {
+                brandId: '$_id',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $and: [
+                      {
+                        $expr: {
+                          $eq: ['$brandId', '$$brandId'],
+                        },
+                      },
+                      {
+                        $expr: {
+                          $in: ['$slug', '$$collectionSlugs'],
+                        },
+                      },
+                    ],
+                  },
+                },
+                ...finalAdditionalStage,
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        brand: {
+          $arrayElemAt: ['$brand', 0],
+        },
+      },
+    },
+    {
+      $match: {
+        brand: {
+          $exists: true,
+        },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: '$brand',
+      },
+    },
+    ...finalAdditionalStage,
+  ];
+};
+
+export const filterCmsBrandsPipeline = filterBrandsPipeline({
+  additionalStage: [
+    {
+      $sort: {
+        _id: SORT_DESC,
+      },
+    },
+    {
+      $limit: CMS_FILTER_BRANDS_LIMIT,
+    },
+  ],
+});
+
 export const productCategoriesPipeline = (additionalStages: Record<any, any>[] = []) => {
   return [
     {
@@ -548,3 +653,45 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
     },
   ];
 };
+
+export const filterCmsCategoriesPipeline = [
+  {
+    $unwind: {
+      path: '$selectedOptionsSlugs',
+      preserveNullAndEmptyArrays: true,
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      rubricId: { $first: '$rubricId' },
+      selectedOptionsSlugs: {
+        $addToSet: '$selectedOptionsSlugs',
+      },
+    },
+  },
+  ...productCategoriesPipeline(),
+  {
+    $sort: {
+      _id: SORT_DESC,
+    },
+  },
+  {
+    $unwind: {
+      path: '$categories',
+      preserveNullAndEmptyArrays: true,
+    },
+  },
+  {
+    $match: {
+      categories: {
+        $exists: true,
+      },
+    },
+  },
+  {
+    $replaceRoot: {
+      newRoot: '$categories',
+    },
+  },
+];

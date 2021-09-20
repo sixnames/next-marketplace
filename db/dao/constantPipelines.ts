@@ -490,7 +490,6 @@ export const brandPipeline = [
               },
               {
                 $project: {
-                  nameI18n: false,
                   descriptionI18n: false,
                 },
               },

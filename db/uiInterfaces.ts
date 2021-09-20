@@ -251,26 +251,26 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
-  available?: boolean;
+  available?: boolean | null;
   assets?: ProductAssetsModel | null;
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
   suppliers?: SupplierInterface[] | null;
-  connections?: ProductConnectionInterface[];
-  attributes?: ProductAttributeInterface[];
+  connections?: ProductConnectionInterface[] | null;
+  attributes?: ProductAttributeInterface[] | null;
   attributesGroups?: ProductAttributesGroupInterface[] | null;
-  listFeatures?: ProductAttributeInterface[];
-  textFeatures?: ProductAttributeInterface[];
-  tagFeatures?: ProductAttributeInterface[];
-  iconFeatures?: ProductAttributeInterface[];
-  ratingFeatures?: ProductAttributeInterface[];
-  cardShopProducts?: ShopProductInterface[];
-  price?: number;
-  cardBreadcrumbs?: ProductCardBreadcrumbModel[];
-  shopProductIds?: ObjectIdModel[];
-  shopProducts?: ShopProductInterface[];
-  shopProduct?: ShopProductInterface;
+  listFeatures?: ProductAttributeInterface[] | null;
+  textFeatures?: ProductAttributeInterface[] | null;
+  tagFeatures?: ProductAttributeInterface[] | null;
+  iconFeatures?: ProductAttributeInterface[] | null;
+  ratingFeatures?: ProductAttributeInterface[] | null;
+  cardShopProducts?: ShopProductInterface[] | null;
+  price?: number | null;
+  cardBreadcrumbs?: ProductCardBreadcrumbModel[] | null;
+  shopProductIds?: ObjectIdModel[] | null;
+  shopProducts?: ShopProductInterface[] | null;
+  shopProduct?: ShopProductInterface | null;
   rubric?: RubricInterface | null;
   rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
   stringAttributesAST?: ProductAttributesGroupASTInterface | null;
@@ -284,6 +284,7 @@ export interface ProductInterface extends ProductModel {
   totalAttributesCount?: number | null;
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
+  cardTitle?: string | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

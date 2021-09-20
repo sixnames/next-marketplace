@@ -71,7 +71,7 @@ interface GenerateTitleInterface {
     | 'showNameInTitle'
     | 'showNameInCardTitle'
     | 'showNameInSnippetTitle';
-  attributes: TitleAttributeInterface[];
+  attributes?: TitleAttributeInterface[] | null;
   fallbackTitle: string;
   prefix?: string | null;
   defaultKeyword?: string;
@@ -119,7 +119,7 @@ export function generateTitle({
   let finalGender = defaultGender;
 
   // set final gender
-  attributes.forEach((attribute) => {
+  (attributes || []).forEach((attribute) => {
     const { options } = attribute;
     const attributePositionField = get(attribute, positionFieldName);
     const positionInTitleForCurrentLocale = getFieldStringLocale(attributePositionField, locale);
@@ -139,7 +139,7 @@ export function generateTitle({
   });
 
   // collect title parts
-  attributes.forEach((attribute) => {
+  (attributes || []).forEach((attribute) => {
     const { nameI18n, options, capitalise, slug, metric } = attribute;
     const isPrice = slug === CATALOGUE_PRICE_KEY;
     const visible = get(attribute, attributeVisibilityFieldName);

@@ -6,9 +6,6 @@ import ProductMainFields, {
 } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductModel, RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
@@ -17,8 +14,7 @@ import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
+import { getCmsProduct } from 'lib/productUtils';
 import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -146,9 +142,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
-  const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
 
   if (!props || !productId || !rubricId) {
@@ -157,42 +150,22 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-      {
-        $project: {
-          attributes: false,
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
-
   return {
     props: {
       ...props,
-      product: castDbData(product),
-      rubric: castDbData(rubric),
+      product: castDbData(payload.product),
+      rubric: castDbData(payload.rubric),
     },
   };
 };

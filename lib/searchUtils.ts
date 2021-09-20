@@ -619,7 +619,6 @@ export const getSearchData = async ({
         showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
         attributes: attributes || [],
-        nameI18n: restProduct.nameI18n,
         originalName: restProduct.originalName,
         defaultGender: restProduct.gender,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,

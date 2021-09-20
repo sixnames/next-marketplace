@@ -539,7 +539,6 @@ export async function getServerSideProps(
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
       attributes: attributes || [],
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      nameI18n: restProduct.nameI18n,
       originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: getTreeFromList({

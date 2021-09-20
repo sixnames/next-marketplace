@@ -309,7 +309,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
           attributes: product.attributes || [],
-          nameI18n: product.nameI18n,
           originalName: product.originalName,
           defaultGender: product.gender,
           titleCategoriesSlugs: product.titleCategoriesSlugs,

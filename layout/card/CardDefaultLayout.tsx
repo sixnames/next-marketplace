@@ -28,14 +28,17 @@ interface CardTitleInterface {
   tag?: keyof JSX.IntrinsicElements;
   showArticle: boolean;
   cardTitle: string;
+  name?: string | null;
 }
 
-const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, itemId }) => {
+const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, name, itemId }) => {
   return (
     <div className='mb-6'>
       <Title className='mb-1' low>
         {cardTitle}
       </Title>
+
+      {name ? <div className='text-secondary-text mb-2'>{name}</div> : null}
 
       <div className='flex justify-between items-center'>
         {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
@@ -77,23 +80,24 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, originalName } = product;
+  const { brand, brandCollection, manufacturer, name } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
-            {/*desktop title*/}
+            {/*mobile title*/}
             <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
               <CardTitle
                 showArticle={showArticle}
                 productId={product._id}
                 itemId={product.itemId}
                 cardTitle={cardTitle}
+                name={name}
               />
             </div>
 
@@ -135,6 +139,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     showArticle={showArticle}
                     productId={product._id}
                     itemId={product.itemId}
+                    name={name}
                   />
                 </div>
 

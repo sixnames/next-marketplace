@@ -443,7 +443,6 @@ export const getServerSideProps = async (
         attributes: restProduct.attributes || [],
         categories: restProduct.categories,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-        nameI18n,
         originalName: restProduct.originalName,
         defaultGender: restProduct.gender,
       });

@@ -9,7 +9,7 @@ import {
   CATALOGUE_PRICE_KEY,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel, TranslationModel } from 'db/dbModels';
+import { GenderModel } from 'db/dbModels';
 import {
   AttributeInterface,
   BrandInterface,
@@ -324,7 +324,6 @@ interface GenerateProductTitleInterface
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
-  nameI18n?: TranslationModel | null;
   originalName: string;
 }
 
@@ -336,7 +335,6 @@ function generateProductTitle({
   showRubricNameInProductTitle,
   attributes,
   defaultGender,
-  nameI18n,
   originalName,
   currency,
   attributeVisibilityFieldName,
@@ -357,13 +355,11 @@ function generateProductTitle({
     brandVisibilityFieldName,
   });
 
-  const keyword = getFieldStringLocale(nameI18n, locale) || originalName;
-
   return generateTitle({
     attributes,
     defaultGender,
-    fallbackTitle: keyword,
-    defaultKeyword: keyword,
+    fallbackTitle: originalName,
+    defaultKeyword: originalName,
     prefix,
     locale,
     currency,

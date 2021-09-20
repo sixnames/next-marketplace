@@ -434,7 +434,6 @@ export const getServerSideProps = async (
       attributes: product.attributes || [],
       categories: product.categories,
       titleCategoriesSlugs: product.titleCategoriesSlugs,
-      nameI18n: product.nameI18n,
       originalName: product.originalName,
       defaultGender: product.gender,
     });

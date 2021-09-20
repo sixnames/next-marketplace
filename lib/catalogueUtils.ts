@@ -1280,7 +1280,6 @@ export const getCatalogueData = async ({
         attributes: attributes || [],
         categories,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-        nameI18n: restProduct.nameI18n,
         originalName: restProduct.originalName,
         defaultGender: restProduct.gender,
       });

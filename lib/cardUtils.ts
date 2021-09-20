@@ -13,6 +13,8 @@ import {
   SORT_DESC,
   CATALOGUE_CATEGORY_KEY,
   GENDER_IT,
+  CATALOGUE_BRAND_KEY,
+  CATALOGUE_BRAND_COLLECTION_KEY,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -758,7 +760,8 @@ export async function getCardData({
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
     let breadcrumbsGender = rubric?.catalogueTitle.gender || GENDER_IT;
-    // Collect breadcrumbs configs for all product categories
+
+    // category breadcrumbs
     const breadcrumbCategories = cardCategories.reduce(
       (acc: ProductCardBreadcrumbModel[], category) => {
         breadcrumbsGender = category.gender || GENDER_IT;
@@ -774,6 +777,24 @@ export async function getCardData({
     breadcrumbCategories.forEach((breadcrumb) => {
       attributesBreadcrumbs.push(breadcrumb);
     });
+
+    // brand breadcrumb
+    if (brand?.showAsBreadcrumb) {
+      attributesBreadcrumbs.push({
+        _id: brand._id,
+        name: getFieldStringLocale(brand.nameI18n, locale),
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${CATALOGUE_BRAND_KEY}${FILTER_SEPARATOR}${brand.slug}`,
+      });
+    }
+
+    // brand collection breadcrumb
+    if (brandCollection?.showAsBreadcrumb) {
+      attributesBreadcrumbs.push({
+        _id: brandCollection._id,
+        name: getFieldStringLocale(brandCollection.nameI18n, locale),
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${CATALOGUE_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.slug}`,
+      });
+    }
 
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
@@ -893,7 +914,6 @@ export async function getCardData({
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       attributes: allProductAttributes,
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      nameI18n: restProduct.nameI18n,
       originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: cardCategories,

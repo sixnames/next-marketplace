@@ -240,6 +240,7 @@ export const getSearchData = async ({
               rubricId: { $first: '$rubricId' },
               rubricSlug: { $first: `$rubricSlug` },
               brandSlug: { $first: `$brandSlug` },
+              brandCollectionSlug: { $first: '$brandCollectionSlug' },
               slug: { $first: '$slug' },
               mainImage: { $first: `$mainImage` },
               originalName: { $first: `$originalName` },

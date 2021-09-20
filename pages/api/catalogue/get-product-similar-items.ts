@@ -173,6 +173,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   rubricId: { $first: '$rubricId' },
                   rubricSlug: { $first: `$rubricSlug` },
                   brandSlug: { $first: `$brandSlug` },
+                  brandCollectionSlug: { $first: '$brandCollectionSlug' },
                   slug: { $first: '$slug' },
                   gender: { $first: '$gender' },
                   mainImage: { $first: `$mainImage` },

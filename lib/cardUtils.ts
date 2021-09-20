@@ -176,8 +176,8 @@ export async function getCardData({
             rubricSlug: { $first: `$rubricSlug` },
             manufacturerSlug: { $first: `$manufacturerSlug` },
             brandSlug: { $first: `$brandSlug` },
-            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
             brandCollectionSlug: { $first: `$brandCollectionSlug` },
+            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
             selectedOptionsSlugs: {
               $first: '$selectedOptionsSlugs',
             },
@@ -882,7 +882,12 @@ export async function getCardData({
     // title
     const cardTitle = generateCardTitle({
       locale,
-      brand,
+      brand: brand
+        ? {
+            ...brand,
+            collections: brandCollection ? [brandCollection] : [],
+          }
+        : null,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,

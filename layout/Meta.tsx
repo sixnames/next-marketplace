@@ -9,7 +9,7 @@ export interface PageUrlsInterface {
   domain: string;
 }
 
-interface MetaInterface {
+export interface MetaInterface {
   title?: string;
   description?: string;
   previewImage?: string;

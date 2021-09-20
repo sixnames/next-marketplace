@@ -94,15 +94,9 @@ export function generateTitle({
   positionFieldName,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
-  log,
 }: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
-
-  if (log) {
-    console.log(' ');
-    // console.log(JSON.stringify(attributes, null, 2));
-  }
 
   // get initial keyword
   const initialKeyword = !defaultKeyword
@@ -259,6 +253,7 @@ interface GenerateProductTitlePrefixInterface {
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
+  brandVisibilityFieldName: string;
 }
 
 export function generateProductTitlePrefix({
@@ -270,6 +265,7 @@ export function generateProductTitlePrefix({
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
   titleCategoriesSlugs,
+  brandVisibilityFieldName,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
   const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
@@ -294,12 +290,25 @@ export function generateProductTitlePrefix({
   }
   (categories || []).forEach(getCategoryNames);
 
-  const brandName = getFieldStringLocale(brand?.nameI18n, locale);
+  const isBrandVisible = get(brand, brandVisibilityFieldName);
+  const brandName = isBrandVisible ? getFieldStringLocale(brand?.nameI18n, locale) : '';
+  const collectionNames = (brand?.collections || [])
+    .reduce((acc: string[], collection) => {
+      const isCollectionVisible = get(collection, brandVisibilityFieldName);
+      if (!isBrandVisible || !isCollectionVisible) {
+        return acc;
+      }
+      const collectionName = getFieldStringLocale(collection?.nameI18n, locale) || '';
+      return [...acc, collectionName];
+    }, [])
+    .join(' ');
 
   const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
   const prefix = filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
-  return `${prefix}${brandName ? ` ${brandName}` : ''}`;
+  return `${prefix}${brandName ? ` ${brandName}` : ''}${
+    collectionNames ? ` ${collectionNames}` : ''
+  }`;
 }
 
 interface GenerateProductTitleInterface
@@ -333,6 +342,7 @@ function generateProductTitle({
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
   titleCategoriesSlugs,
+  brandVisibilityFieldName,
   brand,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
@@ -344,6 +354,7 @@ function generateProductTitle({
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
     titleCategoriesSlugs,
+    brandVisibilityFieldName,
   });
 
   const keyword = getFieldStringLocale(nameI18n, locale) || originalName;
@@ -366,12 +377,13 @@ function generateProductTitle({
 interface GenerateCardTitleInterface
   extends Omit<
     GenerateProductTitleInterface,
-    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName'
+    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName' | 'brandVisibilityFieldName'
   > {}
 
 export function generateCardTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    brandVisibilityFieldName: 'showInCardTitle',
     attributeNameVisibilityFieldName: 'showNameInCardTitle',
     attributeVisibilityFieldName: 'showInCardTitle',
   });
@@ -380,6 +392,7 @@ export function generateCardTitle(props: GenerateCardTitleInterface): string {
 export function generateSnippetTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    brandVisibilityFieldName: 'showInSnippetTitle',
     attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
     attributeVisibilityFieldName: 'showInSnippetTitle',
   });

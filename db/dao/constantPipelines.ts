@@ -1,6 +1,7 @@
 import { FILTER_SEPARATOR, DEFAULT_COMPANY_SLUG, DEFAULT_CITY, SORT_DESC } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
   COL_OPTIONS,
@@ -453,6 +454,7 @@ export const brandPipeline = [
       as: 'brand',
       let: {
         slug: '$brandSlug',
+        brandCollectionSlug: '$brandCollectionSlug',
       },
       pipeline: [
         {
@@ -460,6 +462,46 @@ export const brandPipeline = [
             $expr: {
               $eq: ['$$slug', '$slug'],
             },
+          },
+        },
+        {
+          $lookup: {
+            from: COL_BRAND_COLLECTIONS,
+            as: 'collections',
+            let: {
+              brandId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $and: [
+                    {
+                      $expr: {
+                        $eq: ['$brandId', '$$brandId'],
+                      },
+                    },
+                    {
+                      $expr: {
+                        $eq: ['$slug', '$$brandCollectionSlug'],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $project: {
+                  nameI18n: false,
+                  descriptionI18n: false,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $project: {
+            url: false,
+            descriptionI18n: false,
+            logo: false,
           },
         },
       ],

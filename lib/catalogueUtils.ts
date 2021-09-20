@@ -1,5 +1,9 @@
 import { CatalogueInterface } from 'components/Catalogue';
-import { getCategoryFilterAttribute, getPriceAttribute } from 'config/constantAttributes';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getPriceAttribute,
+} from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_CITIES,
@@ -11,6 +15,7 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterBrandsPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
@@ -38,7 +43,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGINATION_DEFAULT_LIMIT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
@@ -50,10 +55,13 @@ import {
   RUBRIC_KEY,
   DEFAULT_CURRENCY,
   CATALOGUE_CATEGORY_KEY,
+  CATALOGUE_BRAND_KEY,
+  CATALOGUE_BRAND_COLLECTION_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
+  BrandInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -218,7 +226,8 @@ export interface GetCatalogueAttributesInterface {
   visibleAttributesCount?: number | null;
   visibleOptionsCount?: number | null;
   rubricGender?: string;
-  selectedOptionsSlugs: string[];
+  selectedOptionsSlugs?: string[];
+  brands?: BrandInterface[] | null;
 }
 
 export interface GetCatalogueAttributesPayloadInterface {
@@ -241,6 +250,8 @@ interface CastOptionPayloadInterface {
 interface FilterSelectedOptionsInterface {
   option: OptionInterface;
   attributeSlug: string;
+  isBrand?: boolean;
+  currentBrand?: BrandInterface | null;
 }
 
 export async function getCatalogueAttributes({
@@ -252,7 +263,8 @@ export async function getCatalogueAttributes({
   visibleOptionsCount,
   visibleAttributesCount,
   rubricGender,
-  selectedOptionsSlugs,
+  selectedOptionsSlugs = [],
+  brands,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const { db } = await getDatabase();
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -280,15 +292,39 @@ export async function getCatalogueAttributes({
   function filterSelectedOptions({
     option,
     attributeSlug,
+    currentBrand,
   }: FilterSelectedOptionsInterface): OptionInterface | null {
     const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
+    const isBrand = attributeSlug === CATALOGUE_BRAND_KEY;
+    const brand = isBrand
+      ? (brands || []).find(({ slug }) => {
+          return slug === option.slug;
+        })
+      : null;
+
+    if (isBrand && !brand?.showInCatalogueTitle) {
+      return null;
+    }
+
+    if (currentBrand) {
+      const collection = (currentBrand.collections || []).find(({ slug }) => {
+        return slug === option.slug;
+      });
+      if (!collection?.showInCatalogueTitle) {
+        return null;
+      }
+    }
+
     const isSelected = realFilter.includes(optionSlug);
     const nestedOptions = (option.options || []).map((nestedOption) => {
       return filterSelectedOptions({
+        isBrand,
+        currentBrand: brand,
         option: nestedOption,
-        attributeSlug,
+        attributeSlug: isBrand ? CATALOGUE_BRAND_COLLECTION_KEY : attributeSlug,
       });
     });
+
     const filteredNestedOptions = filterOptionsList(nestedOptions);
 
     if (isSelected) {
@@ -328,13 +364,17 @@ export async function getCatalogueAttributes({
       : [...realFilter, optionSlug].join('/');
 
     const isCategory = attribute.slug === CATALOGUE_CATEGORY_KEY;
+    const isBrand = attribute.slug === CATALOGUE_BRAND_KEY;
     const nestedOptions: CatalogueFilterAttributeOptionInterface[] = [];
 
-    if (isCategory) {
+    if (isCategory || isBrand) {
       for await (const nestedOption of option.options || []) {
         const { castedOption } = await castOption({
           option: nestedOption,
-          attribute,
+          attribute: {
+            ...attribute,
+            slug: isBrand ? CATALOGUE_BRAND_COLLECTION_KEY : attribute.slug,
+          },
         });
         nestedOptions.push(castedOption);
       }
@@ -397,7 +437,7 @@ export async function getCatalogueAttributes({
       }
 
       // If price attribute
-      if (slug === PRICE_ATTRIBUTE_SLUG) {
+      if (slug === CATALOGUE_PRICE_KEY) {
         const splittedOption = optionSlug.split(FILTER_SEPARATOR);
         const filterOptionValue = splittedOption[1];
         const prices = filterOptionValue.split('_');
@@ -468,10 +508,10 @@ export async function getCatalogueAttributes({
           attributeSlug: castedAttribute.slug,
         });
       });
+
       const attributeFilteredSelectedOptions = filterOptionsList(attributeSelectedOptions);
       selectedFilters.push({
         ...attribute,
-        // options: selectedOptions,
         options: attributeFilteredSelectedOptions,
       });
     }
@@ -501,6 +541,9 @@ interface CastOptionsForBreadcrumbsInterface {
   attribute: CatalogueFilterAttributeInterface;
   metricValue: string;
   rubricSlug: string;
+  isBrand: boolean;
+  currentBrand?: BrandInterface | null;
+  brands?: BrandInterface[] | null;
   acc: CatalogueBreadcrumbModel[];
 }
 
@@ -509,10 +552,35 @@ function castOptionsForBreadcrumbs({
   attribute,
   rubricSlug,
   metricValue,
+  currentBrand,
+  isBrand,
+  brands,
   acc,
 }: CastOptionsForBreadcrumbsInterface): CatalogueBreadcrumbModel[] {
   const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
   const newAcc = [...acc];
+  const brand = isBrand
+    ? (brands || []).find(({ slug }) => {
+        return slug === option.slug;
+      })
+    : null;
+
+  if (isBrand) {
+    if (!brand?.showAsCatalogueBreadcrumb && !currentBrand) {
+      return acc;
+    }
+
+    if (currentBrand) {
+      const collections = currentBrand?.collections;
+      const currentBrandCollection = (collections || []).find(({ slug }) => {
+        return slug === option.slug;
+      });
+      if (!currentBrandCollection?.showAsCatalogueBreadcrumb) {
+        return acc;
+      }
+    }
+  }
+
   if (option.isSelected) {
     newAcc.push({
       _id: option._id,
@@ -531,6 +599,9 @@ function castOptionsForBreadcrumbs({
       attribute,
       rubricSlug,
       metricValue,
+      brands,
+      isBrand,
+      currentBrand: brand,
       acc: [],
     });
     return [...innerAcc, ...castedOptionAcc];
@@ -580,6 +651,8 @@ interface CastCatalogueFiltersPayloadInterface {
   maxPrice?: number | null;
   realFilterOptions: string[];
   categoryFilters: string[];
+  brandFilters: string[];
+  brandCollectionFilters: string[];
   inCategory: boolean;
   sortBy: string | null;
   sortDir: 1 | -1;
@@ -605,6 +678,8 @@ export function castCatalogueFilters({
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
   const categoryFilters: string[] = [];
+  const brandFilters: string[] = [];
+  const brandCollectionFilters: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
@@ -645,7 +720,7 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === PRICE_ATTRIBUTE_SLUG) {
+      if (filterAttributeSlug === CATALOGUE_PRICE_KEY) {
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -670,6 +745,22 @@ export function castCatalogueFilters({
         return;
       }
 
+      if (filterAttributeSlug === CATALOGUE_BRAND_KEY) {
+        const slugParts = filterOption.split(FILTER_SEPARATOR);
+        if (slugParts[1]) {
+          brandFilters.push(slugParts[1]);
+        }
+        return;
+      }
+
+      if (filterAttributeSlug === CATALOGUE_BRAND_COLLECTION_KEY) {
+        const slugParts = filterOption.split(FILTER_SEPARATOR);
+        if (slugParts[1]) {
+          brandCollectionFilters.push(slugParts[1]);
+        }
+        return;
+      }
+
       realFilterOptions.push(filterOption);
     }
   });
@@ -686,6 +777,8 @@ export function castCatalogueFilters({
     maxPrice,
     realFilterOptions,
     categoryFilters,
+    brandFilters,
+    brandCollectionFilters,
     inCategory: categoryFilters.length > 0,
     sortBy,
     sortDir: castedSortDir,
@@ -753,6 +846,8 @@ export const getCatalogueData = async ({
       skip,
       limit,
       categoryFilters,
+      brandFilters,
+      brandCollectionFilters,
       inCategory,
       page: payloadPage,
     } = castCatalogueFilters({
@@ -779,12 +874,31 @@ export const getCatalogueData = async ({
           },
         };
 
-    const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const brandStage =
+      brandFilters.length > 0
+        ? {
+            brandSlug: {
+              $in: brandFilters,
+            },
+          }
+        : {};
 
+    const brandCollectionStage =
+      brandCollectionFilters.length > 0
+        ? {
+            brandCollectionSlug: {
+              $in: brandCollectionFilters,
+            },
+          }
+        : {};
+
+    const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
       ...companyMatch,
       rubricSlug,
       citySlug: city,
+      ...brandStage,
+      ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
     };
@@ -835,6 +949,7 @@ export const getCatalogueData = async ({
               rubricId: { $first: '$rubricId' },
               rubricSlug: { $first: `$rubricSlug` },
               brandSlug: { $first: '$brandSlug' },
+              brandCollectionSlug: { $first: '$brandCollectionSlug' },
               slug: { $first: '$slug' },
               gender: { $first: '$gender' },
               mainImage: { $first: `$mainImage` },
@@ -926,20 +1041,21 @@ export const getCatalogueData = async ({
                     },
                   },
                 },
-                ...productCategoriesPipeline(),
-                {
-                  $addFields: {
-                    views: { $max: `$views.${realCompanySlug}.${city}` },
-                    priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
+                ...productCategoriesPipeline([
+                  {
+                    $addFields: {
+                      views: { $max: `$views.${realCompanySlug}.${city}` },
+                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
+                    },
                   },
-                },
-                {
-                  $sort: {
-                    priorities: SORT_DESC,
-                    views: SORT_DESC,
-                    _id: SORT_DESC,
+                  {
+                    $sort: {
+                      priorities: SORT_DESC,
+                      views: SORT_DESC,
+                      _id: SORT_DESC,
+                    },
                   },
-                },
+                ]),
                 {
                   $unwind: {
                     path: '$categories',
@@ -959,12 +1075,37 @@ export const getCatalogueData = async ({
                   },
                 },
               ],
+
+              // get brands and brand collections
+              brands: filterBrandsPipeline({
+                additionalStage: [
+                  {
+                    $addFields: {
+                      views: { $max: `$views.${realCompanySlug}.${city}` },
+                      priorities: { $max: `$priorities.${realCompanySlug}.${city}` },
+                    },
+                  },
+                  {
+                    $sort: {
+                      priorities: SORT_DESC,
+                      views: SORT_DESC,
+                      _id: SORT_DESC,
+                    },
+                  },
+                  {
+                    $limit: visibleOptionsCount,
+                  },
+                ],
+              }),
+
+              // count documents
               countAllDocs: [
                 {
                   $count: 'totalDocs',
                 },
               ],
 
+              // get rubric
               rubric: rubricsPipeline,
 
               selectedOptionsSlugs: [
@@ -1002,6 +1143,7 @@ export const getCatalogueData = async ({
             $project: {
               docs: 1,
               categories: 1,
+              brands: 1,
               totalProducts: 1,
               prices: 1,
               rubric: 1,
@@ -1049,17 +1191,38 @@ export const getCatalogueData = async ({
 
     // Get filter attributes
     // const beforeOptions = new Date().getTime();
+
+    // price attribute
     const priceAttribute = getPriceAttribute();
+
+    // category attribute
     let categoryAttribute: RubricAttributeInterface[] = [];
     const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
     if (
       shopProductsAggregationResult.categories &&
-      shopProductsAggregationResult.categories.length > 0
+      shopProductsAggregationResult.categories.length > 0 &&
+      showCategoriesInFilter
     ) {
       categoryAttribute = [
         getCategoryFilterAttribute({
           locale,
           categories: shopProductsAggregationResult.categories,
+        }),
+      ];
+    }
+
+    // brand attribute
+    let brandAttribute: RubricAttributeInterface[] = [];
+    const showBrandInFilter = Boolean(rubric?.showBrandInFilter);
+    if (
+      shopProductsAggregationResult.brands &&
+      shopProductsAggregationResult.brands.length > 0 &&
+      showBrandInFilter
+    ) {
+      brandAttribute = [
+        getBrandFilterAttribute({
+          locale,
+          brands: shopProductsAggregationResult.brands,
         }),
       ];
     }
@@ -1070,7 +1233,7 @@ export const getCatalogueData = async ({
           return showInRubricFilter;
         });
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [priceAttribute, ...categoryAttribute, ...rubricAttributes],
+      attributes: [priceAttribute, ...categoryAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
       filters,
       selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,
@@ -1078,8 +1241,10 @@ export const getCatalogueData = async ({
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount,
       rubricGender: rubric.catalogueTitle.gender,
+      brands: shopProductsAggregationResult.brands,
       // visibleAttributesCount,
     });
+    // console.log(JSON.stringify(castedAttributes, null, 2));
     // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
     // Get catalogue products
@@ -1109,14 +1274,12 @@ export const getCatalogueData = async ({
       const snippetTitle = generateSnippetTitle({
         locale,
         brand: restProduct.brand,
-        showBrandNameInProductTitle: rubric.showBrandInSnippetTitle,
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
         attributes: attributes || [],
         categories,
         titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-        nameI18n: restProduct.nameI18n,
         originalName: restProduct.originalName,
         defaultGender: restProduct.gender,
       });
@@ -1234,17 +1397,11 @@ export const getCatalogueData = async ({
       capitaliseKeyWord: rubric.capitalise,
       locale,
       currency,
+      log: true,
     });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
     // console.log('Total time: ', new Date().getTime() - timeStart);
-
-    // final filter attributes
-    const finalAttributes = showCategoriesInFilter
-      ? castedAttributes
-      : castedAttributes.filter(({ slug }) => {
-          return slug !== CATALOGUE_CATEGORY_KEY;
-        });
 
     // get catalogue breadcrumbs
     const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
@@ -1258,16 +1415,19 @@ export const getCatalogueData = async ({
 
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
-      const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+      const isPrice = slug === CATALOGUE_PRICE_KEY;
+      const isBrand = slug === CATALOGUE_BRAND_KEY;
       let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
       if (isPrice) {
         metricValue = currency;
       }
 
-      if (showAsCatalogueBreadcrumb || isPrice) {
+      if (showAsCatalogueBreadcrumb || isPrice || isBrand) {
         const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
           const tree = castOptionsForBreadcrumbs({
             option: option,
+            isBrand,
+            brands: shopProductsAggregationResult.brands,
             attribute: selectedAttribute,
             rubricSlug,
             metricValue,
@@ -1284,7 +1444,7 @@ export const getCatalogueData = async ({
 
     // get clearSlug
     let clearSlug = `${rubricSlug}/${sortPathname}`;
-    if (!rubric.variant?.showCategoriesInFilter) {
+    if (showCategoriesInFilter) {
       const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
         .filter((pathPart) => {
           return pathPart;
@@ -1303,7 +1463,7 @@ export const getCatalogueData = async ({
       catalogueTitle,
       catalogueFilterLayout: rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT,
       totalProducts: noNaN(shopProductsAggregationResult.totalProducts),
-      attributes: finalAttributes,
+      attributes: castedAttributes,
       selectedAttributes: showCategoriesInFilter
         ? selectedAttributes
         : selectedAttributes.filter(({ slug }) => {

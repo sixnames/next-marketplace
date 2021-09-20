@@ -72,6 +72,11 @@ export type AddCollectionToBrandInput = {
   brandId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCardTitle?: Maybe<Scalars['Boolean']>;
+  showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type AddOptionToGroupInput = {
@@ -537,6 +542,11 @@ export type CreateBrandInput = {
   url?: Maybe<Array<Scalars['URL']>>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCardTitle?: Maybe<Scalars['Boolean']>;
+  showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateCategoryInput = {
@@ -659,8 +669,8 @@ export type CreateRubricInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
   showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInSnippetTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInCardTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInNav?: Maybe<Scalars['Boolean']>;
+  showBrandInFilter?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
   variantId: Scalars['ObjectId'];
@@ -2855,6 +2865,11 @@ export type UpdateBrandInput = {
   url?: Maybe<Array<Scalars['URL']>>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCardTitle?: Maybe<Scalars['Boolean']>;
+  showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateCategoryInput = {
@@ -2877,6 +2892,11 @@ export type UpdateCollectionInBrandInput = {
   brandCollectionId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showAsCatalogueBreadcrumb?: Maybe<Scalars['Boolean']>;
+  showInCardTitle?: Maybe<Scalars['Boolean']>;
+  showInSnippetTitle?: Maybe<Scalars['Boolean']>;
+  showInCatalogueTitle?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateCompanyInput = {
@@ -3144,8 +3164,8 @@ export type UpdateRubricInput = {
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
   showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInSnippetTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInCardTitle?: Maybe<Scalars['Boolean']>;
+  showBrandInNav?: Maybe<Scalars['Boolean']>;
+  showBrandInFilter?: Maybe<Scalars['Boolean']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];

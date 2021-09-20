@@ -1,21 +1,23 @@
 import {
+  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_TAG,
+  CATALOGUE_BRAND_KEY,
   CATALOGUE_CATEGORY_KEY,
   DEFAULT_LOCALE,
   GENDER_IT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
   SECONDARY_LOCALE,
 } from 'config/common';
+import { ObjectIdModel } from 'db/dbModels';
 import {
-  AttributePositionInTitleModel,
-  AttributeVariantModel,
-  AttributeViewVariantModel,
-  GenderModel,
-  ObjectIdModel,
-} from 'db/dbModels';
-import { CategoryInterface, OptionInterface, RubricAttributeInterface } from 'db/uiInterfaces';
+  BrandInterface,
+  CategoryInterface,
+  OptionInterface,
+  RubricAttributeInterface,
+} from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 
@@ -27,7 +29,7 @@ export const getCommonOptionFields = (
     views: {},
     options: [],
     variants: {},
-    gender: GENDER_IT as GenderModel,
+    gender: GENDER_IT,
     optionsGroupId,
   };
 };
@@ -79,8 +81,8 @@ export function getCategoryFilterAttribute({
     views: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
-    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as AttributeViewVariantModel,
-    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
+    variant: ATTRIBUTE_VARIANT_SELECT,
     showAsBreadcrumb: false,
     showInCard: true,
     showAsCatalogueBreadcrumb: true,
@@ -96,10 +98,90 @@ export function getCategoryFilterAttribute({
     showNameInSnippetTitle: false,
     showInRubricFilter: true,
     positioningInTitle: {
-      [DEFAULT_LOCALE]:
-        ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleModel,
-      [SECONDARY_LOCALE]:
-        ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleModel,
+      [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+      [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+    },
+    options,
+  };
+
+  return attribute;
+}
+
+interface GetBrandFilterAttributeInterface {
+  brands?: BrandInterface[] | null;
+  locale: string;
+}
+
+export function getBrandFilterAttribute({
+  brands,
+  locale,
+}: GetBrandFilterAttributeInterface): RubricAttributeInterface {
+  const optionsGroupId = new ObjectId();
+  const commonOptionFields = getCommonOptionFields(optionsGroupId);
+
+  function castBrandToOption(brand: BrandInterface): OptionInterface {
+    const option: OptionInterface = {
+      ...commonOptionFields,
+      _id: brand._id,
+      nameI18n: brand.nameI18n,
+      name: getFieldStringLocale(brand.nameI18n, locale),
+      slug: brand.slug,
+      priorities: brand.priorities,
+      views: brand.views,
+      gender: GENDER_IT,
+      options: (brand.collections || []).map((collection) => {
+        return {
+          ...commonOptionFields,
+          _id: collection._id,
+          nameI18n: collection.nameI18n,
+          name: getFieldStringLocale(collection.nameI18n, locale),
+          slug: collection.slug,
+          priorities: collection.priorities,
+          views: collection.views,
+          gender: GENDER_IT,
+        };
+      }),
+    };
+    return option;
+  }
+
+  const options: OptionInterface[] = (brands || []).map(castBrandToOption);
+
+  const attribute: RubricAttributeInterface = {
+    _id: new ObjectId(),
+    attributeId: new ObjectId(),
+    rubricId: new ObjectId(),
+    rubricSlug: 'slug',
+    attributesGroupId: new ObjectId(),
+    optionsGroupId,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Бренд',
+      [SECONDARY_LOCALE]: 'Brand',
+    },
+    slug: CATALOGUE_BRAND_KEY,
+    priorities: {},
+    views: {},
+    showInCatalogueNav: false,
+    showInCatalogueFilter: true,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
+    variant: ATTRIBUTE_VARIANT_SELECT,
+    showAsBreadcrumb: false,
+    showInCard: true,
+    showAsCatalogueBreadcrumb: true,
+    capitalise: true,
+    notShowAsAlphabet: true,
+    showInSnippet: false,
+    showInCardTitle: true,
+    showInCatalogueTitle: true,
+    showInSnippetTitle: true,
+    showNameInTitle: false,
+    showNameInCardTitle: false,
+    showNameInSelectedAttributes: false,
+    showNameInSnippetTitle: false,
+    showInRubricFilter: true,
+    positioningInTitle: {
+      [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+      [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
     },
     options,
   };
@@ -122,11 +204,11 @@ export function getPriceAttribute(): RubricAttributeInterface {
       ru: 'Цена',
       en: 'Price',
     },
-    slug: PRICE_ATTRIBUTE_SLUG,
+    slug: CATALOGUE_PRICE_KEY,
     priorities: {},
     views: {},
-    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as AttributeViewVariantModel,
-    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
+    variant: ATTRIBUTE_VARIANT_SELECT,
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
     showAsBreadcrumb: false,

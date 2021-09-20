@@ -3,8 +3,7 @@ import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import Tooltip from 'components/Tooltip';
 import { ROUTE_CMS } from 'config/common';
-import { COL_CATEGORIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductModel, RubricModel } from 'db/dbModels';
+import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
@@ -19,9 +18,8 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
-import { ObjectId } from 'mongodb';
+import { getCmsProduct } from 'lib/productUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -191,8 +189,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
@@ -201,32 +197,23 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate<ProductInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  // Get rubric
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
+  const { rubric, product } = payload;
+
   // Get rubric categories
   const initialCategories = await categoriesCollection
     .find({
-      rubricId: initialRubric._id,
+      rubricId: rubric._id,
     })
     .toArray();
   const categories: ProductCategoryInterface[] = initialCategories.map((category) => {
@@ -241,11 +228,6 @@ export const getServerSideProps = async (
     list: categories,
     childrenFieldName: 'categories',
   });
-
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
 
   return {
     props: {

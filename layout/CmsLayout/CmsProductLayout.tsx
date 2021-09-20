@@ -69,11 +69,11 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
-        <title>{product.originalName}</title>
+        <title>{product.cardTitle}</title>
       </Head>
       <Inner lowBottom>
         <Title subtitle={`Арт. ${product.itemId}`} testId={`${product.originalName}-product-title`}>
-          {product.originalName}
+          {product.cardTitle}
         </Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />

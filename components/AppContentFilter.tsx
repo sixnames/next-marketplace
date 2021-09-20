@@ -1,7 +1,7 @@
 import FilterCheckbox from 'components/FilterCheckbox';
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
-import { PRICE_ATTRIBUTE_SLUG } from 'config/common';
+import { CATALOGUE_PRICE_KEY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
@@ -23,7 +23,7 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
   const hiddenOptions = options.slice(+maxVisibleOptions);
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
   const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
-  const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+  const isPrice = slug === CATALOGUE_PRICE_KEY;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
   return (

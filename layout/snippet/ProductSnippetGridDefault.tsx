@@ -32,6 +32,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
     rubricSlug,
     itemId,
     shopProductsIds,
+    name,
   } = product;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
@@ -87,16 +88,17 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
         <div className='col-span-9 flex flex-col pt-12 pr-5 gap-4 min-h-[235px]'>
           <div className='mb-auto'>
-            {/*original name*/}
-            <div className='text-lg sm:text-xl font-medium mb-1'>
+            {/*name*/}
+            <div className='mb-3'>
               <Link
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
-                className='block text-primary-text hover:no-underline hover:text-primary-text'
+                className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {snippetTitle}
               </Link>
+              {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
             </div>
 
             {/*art*/}

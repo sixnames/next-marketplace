@@ -6,10 +6,10 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   GENDER_IT,
-  PRICE_ATTRIBUTE_SLUG,
+  CATALOGUE_PRICE_KEY,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { GenderModel, TranslationModel } from 'db/dbModels';
+import { GenderModel } from 'db/dbModels';
 import {
   AttributeInterface,
   BrandInterface,
@@ -71,7 +71,7 @@ interface GenerateTitleInterface {
     | 'showNameInTitle'
     | 'showNameInCardTitle'
     | 'showNameInSnippetTitle';
-  attributes: TitleAttributeInterface[];
+  attributes?: TitleAttributeInterface[] | null;
   fallbackTitle: string;
   prefix?: string | null;
   defaultKeyword?: string;
@@ -98,20 +98,6 @@ export function generateTitle({
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
 
-  /*console.log({
-    attributes,
-    defaultGender,
-    fallbackTitle,
-    defaultKeyword,
-    prefix,
-    locale,
-    currency,
-    capitaliseKeyWord,
-    positionFieldName,
-    attributeVisibilityFieldName,
-    attributeNameVisibilityFieldName,
-  });*/
-
   // get initial keyword
   const initialKeyword = !defaultKeyword
     ? ''
@@ -133,7 +119,7 @@ export function generateTitle({
   let finalGender = defaultGender;
 
   // set final gender
-  attributes.forEach((attribute) => {
+  (attributes || []).forEach((attribute) => {
     const { options } = attribute;
     const attributePositionField = get(attribute, positionFieldName);
     const positionInTitleForCurrentLocale = getFieldStringLocale(attributePositionField, locale);
@@ -153,9 +139,9 @@ export function generateTitle({
   });
 
   // collect title parts
-  attributes.forEach((attribute) => {
+  (attributes || []).forEach((attribute) => {
     const { nameI18n, options, capitalise, slug, metric } = attribute;
-    const isPrice = slug === PRICE_ATTRIBUTE_SLUG;
+    const isPrice = slug === CATALOGUE_PRICE_KEY;
     const visible = get(attribute, attributeVisibilityFieldName);
     if (!visible || !options || options.length < 1) {
       return;
@@ -265,9 +251,9 @@ interface GenerateProductTitlePrefixInterface {
   defaultGender: string;
   titleCategoriesSlugs: string[];
   categories?: CategoryInterface[] | null;
-  showBrandNameInProductTitle?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
+  brandVisibilityFieldName: string;
 }
 
 export function generateProductTitlePrefix({
@@ -276,10 +262,10 @@ export function generateProductTitlePrefix({
   categories,
   brand,
   defaultGender,
-  showBrandNameInProductTitle,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
   titleCategoriesSlugs,
+  brandVisibilityFieldName,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
   const rubricPrefix = showRubricNameInProductTitle && rubricName ? rubricName : '';
@@ -304,14 +290,25 @@ export function generateProductTitlePrefix({
   }
   (categories || []).forEach(getCategoryNames);
 
-  const brandName = showBrandNameInProductTitle
-    ? getFieldStringLocale(brand?.nameI18n, locale)
-    : '';
+  const isBrandVisible = get(brand, brandVisibilityFieldName);
+  const brandName = isBrandVisible ? getFieldStringLocale(brand?.nameI18n, locale) : '';
+  const collectionNames = (brand?.collections || [])
+    .reduce((acc: string[], collection) => {
+      const isCollectionVisible = get(collection, brandVisibilityFieldName);
+      if (!isBrandVisible || !isCollectionVisible) {
+        return acc;
+      }
+      const collectionName = getFieldStringLocale(collection?.nameI18n, locale) || '';
+      return [...acc, collectionName];
+    }, [])
+    .join(' ');
 
   const prefixArray = [rubricPrefix, ...categoryNames];
   const filteredArray = prefixArray.filter((word) => word);
   const prefix = filteredArray.length > 0 ? capitalize(filteredArray.join(' ')) : '';
-  return `${prefix}${brandName ? ` ${brandName}` : ''}`;
+  return `${prefix}${brandName ? ` ${brandName}` : ''}${
+    collectionNames ? ` ${collectionNames}` : ''
+  }`;
 }
 
 interface GenerateProductTitleInterface
@@ -327,7 +324,6 @@ interface GenerateProductTitleInterface
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
-  nameI18n?: TranslationModel | null;
   originalName: string;
 }
 
@@ -337,15 +333,14 @@ function generateProductTitle({
   categories,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
-  showBrandNameInProductTitle,
   attributes,
   defaultGender,
-  nameI18n,
   originalName,
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
   titleCategoriesSlugs,
+  brandVisibilityFieldName,
   brand,
 }: GenerateProductTitleInterface): string {
   const prefix = generateProductTitlePrefix({
@@ -356,17 +351,15 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
-    showBrandNameInProductTitle,
     titleCategoriesSlugs,
+    brandVisibilityFieldName,
   });
-
-  const keyword = getFieldStringLocale(nameI18n, locale) || originalName;
 
   return generateTitle({
     attributes,
     defaultGender,
-    fallbackTitle: keyword,
-    defaultKeyword: keyword,
+    fallbackTitle: originalName,
+    defaultKeyword: originalName,
     prefix,
     locale,
     currency,
@@ -380,12 +373,13 @@ function generateProductTitle({
 interface GenerateCardTitleInterface
   extends Omit<
     GenerateProductTitleInterface,
-    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName'
+    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName' | 'brandVisibilityFieldName'
   > {}
 
 export function generateCardTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    brandVisibilityFieldName: 'showInCardTitle',
     attributeNameVisibilityFieldName: 'showNameInCardTitle',
     attributeVisibilityFieldName: 'showInCardTitle',
   });
@@ -394,6 +388,7 @@ export function generateCardTitle(props: GenerateCardTitleInterface): string {
 export function generateSnippetTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    brandVisibilityFieldName: 'showInSnippetTitle',
     attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
     attributeVisibilityFieldName: 'showInSnippetTitle',
   });

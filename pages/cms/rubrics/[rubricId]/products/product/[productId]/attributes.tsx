@@ -17,14 +17,7 @@ import {
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
-import {
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import { ProductModel, RubricModel } from 'db/dbModels';
+import { COL_RUBRIC_ATTRIBUTES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   OptionInterface,
@@ -46,6 +39,7 @@ import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
+import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -395,10 +389,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const rubricAttributessCollection =
-    db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
+  const rubricAttributesCollection = db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -406,74 +397,18 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate<ProductInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_PRODUCT_ATTRIBUTES,
-          as: 'attributes',
-          let: { productId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$productId', '$productId'],
-                },
-              },
-            },
-            {
-              $sort: {
-                variant: SORT_DESC,
-                _id: SORT_DESC,
-              },
-            },
-            {
-              $lookup: {
-                from: COL_OPTIONS,
-                as: 'options',
-                let: {
-                  optionsGroupId: '$optionsGroupId',
-                  selectedOptionsIds: '$selectedOptionsIds',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $and: [
-                          {
-                            $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                          },
-                          {
-                            $in: ['$_id', '$$selectedOptionsIds'],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
+
+  const { product, rubric } = payload;
 
   // Get rubric and categories attributes
   const rubricAttributesCommonPipeline = [
@@ -494,11 +429,11 @@ export const getServerSideProps = async (
     },
   ];
 
-  const rubricAttributesAST = await rubricAttributessCollection
+  const rubricAttributesAST = await rubricAttributesCollection
     .aggregate<RubricAttributesGroupASTInterface>([
       {
         $match: {
-          rubricId: product.rubricId,
+          rubricId: rubric._id,
           categoryId: null,
         },
       },
@@ -506,11 +441,11 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
-  const categoryAttributesAST = await rubricAttributessCollection
+  const categoryAttributesAST = await rubricAttributesCollection
     .aggregate<RubricAttributesGroupASTInterface>([
       {
         $match: {
-          rubricId: product.rubricId,
+          rubricId: rubric._id,
           categorySlug: {
             $in: product.selectedOptionsSlugs,
           },
@@ -615,11 +550,6 @@ export const getServerSideProps = async (
     numberAttributesAST,
     multipleSelectAttributesAST,
     selectAttributesAST,
-  };
-
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
   };
 
   return {

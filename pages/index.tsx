@@ -207,7 +207,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
               {topProducts.map((product) => {
                 return (
                   <div
-                    className='min-w-[280px] max-w-[280px] flex items-stretch'
+                    className='min-w-[220px] max-w-[220px] md:min-w-[280px] md:max-w-[280px] flex items-stretch'
                     key={`${product._id}`}
                   >
                     <ProductSnippetGridBigImage
@@ -438,6 +438,7 @@ export async function getServerSideProps(
           rubricId: { $first: '$rubricId' },
           rubricSlug: { $first: `$rubricSlug` },
           brandSlug: { $first: '$brandSlug' },
+          brandCollectionSlug: { $first: '$brandCollectionSlug' },
           slug: { $first: '$slug' },
           gender: { $first: '$gender' },
           mainImage: { $first: `$mainImage` },
@@ -507,7 +508,6 @@ export async function getServerSideProps(
                 nameI18n: true,
                 showRubricNameInProductTitle: true,
                 showCategoryInProductTitle: true,
-                showBrandInSnippetTitle: true,
               },
             },
           ],
@@ -534,13 +534,11 @@ export async function getServerSideProps(
     const snippetTitle = generateSnippetTitle({
       locale: sessionLocale,
       brand: restProduct.brand,
-      showBrandNameInProductTitle: rubric?.showBrandInSnippetTitle,
       rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
       attributes: attributes || [],
       titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      nameI18n: restProduct.nameI18n,
       originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: getTreeFromList({

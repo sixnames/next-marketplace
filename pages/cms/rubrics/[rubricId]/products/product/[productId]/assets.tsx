@@ -2,9 +2,6 @@ import AssetsManager from 'components/AssetsManager';
 import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { ProductModel, RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useDeleteProductAssetMutation,
@@ -15,9 +12,8 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -150,9 +146,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
-  const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -160,52 +153,22 @@ export const getServerSideProps = async (
     };
   }
 
-  const productAggregation = await productsCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${productId}`),
-        },
-      },
-      {
-        $lookup: {
-          as: 'assets',
-          from: COL_PRODUCT_ASSETS,
-          localField: '_id',
-          foreignField: 'productId',
-        },
-      },
-      {
-        $addFields: {
-          assets: {
-            $arrayElemAt: ['$assets', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-  const product = productAggregation[0];
-
-  const initialRubric = await rubricsCollection.findOne({
-    _id: new ObjectId(`${rubricId}`),
+  const payload = await getCmsProduct({
+    locale: props.sessionLocale,
+    productId: `${productId}`,
   });
 
-  if (!product || !initialRubric) {
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
-  const rubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, props.sessionLocale),
-  };
-
   return {
     props: {
       ...props,
-      product: castDbData(product),
-      rubric: castDbData(rubric),
+      product: castDbData(payload.product),
+      rubric: castDbData(payload.rubric),
     },
   };
 };

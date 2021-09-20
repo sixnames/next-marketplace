@@ -33,6 +33,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
     rubricSlug,
     shopProductsIds,
     snippetTitle,
+    name,
   } = product;
 
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
@@ -88,16 +89,18 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
 
         <div className='grid gap-4 grid-cols-7 flex-grow'>
           <div className='flex flex-col col-span-7 md:col-span-5'>
-            {/*original name*/}
-            <div className='text-2xl font-medium mb-1'>
+            {/*name*/}
+            <div className='mb-3'>
               <Link
                 testId={`${testId}-name-row`}
                 target={'_blank'}
-                className='block text-primary-text hover:no-underline hover:text-primary-text'
+                className='text-2xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {snippetTitle}
               </Link>
+
+              {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
             </div>
 
             {/*list features*/}

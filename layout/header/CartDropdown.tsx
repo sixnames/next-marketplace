@@ -58,7 +58,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             const { product, shopProduct, _id, amount } = cartProduct;
 
             if (shopProduct) {
-              const { mainImage, originalName } = shopProduct;
+              const { mainImage, snippetTitle } = shopProduct;
               return (
                 <div
                   key={`${_id}`}
@@ -70,8 +70,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       <Image
                         src={`${mainImage}`}
                         objectFit='contain'
-                        alt={originalName}
-                        title={originalName}
+                        alt={`${snippetTitle}`}
+                        title={`${snippetTitle}`}
                         width={70}
                         height={185}
                       />
@@ -79,7 +79,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   </div>
                   <div className={productContentClassName}>
                     <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
-                      {originalName}
+                      {snippetTitle}
                     </div>
 
                     <ProductShopPrices
@@ -142,7 +142,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               return null;
             }
 
-            const { mainImage, originalName, shopsCount, cardPrices } = product;
+            const { mainImage, snippetTitle, shopsCount, cardPrices } = product;
 
             return (
               <div key={`${_id}`} className={productClassName} data-cy={`cart-dropdown-product`}>
@@ -151,8 +151,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     <Image
                       src={`${mainImage}`}
                       objectFit='contain'
-                      alt={originalName}
-                      title={originalName}
+                      alt={`${snippetTitle}`}
+                      title={`${snippetTitle}`}
                       width={70}
                       height={185}
                     />
@@ -160,7 +160,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 </div>
                 <div className={productContentClassName}>
                   <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
-                    {originalName}
+                    {snippetTitle}
                   </div>
 
                   <ProductSnippetPrice

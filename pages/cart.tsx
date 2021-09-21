@@ -35,7 +35,7 @@ interface CartProductFrameInterface {
   cartProductId: string;
   isShopsVisible?: boolean;
   mainImage: string;
-  originalName: string;
+  snippetTitle?: string | null;
   shopProducts?: ShopProductInterface[] | null;
   testId: number | string;
   rubricSlug: string;
@@ -47,7 +47,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   children,
   isShopsVisible,
   mainImage,
-  originalName,
+  snippetTitle,
   shopProducts,
   testId,
   rubricSlug,
@@ -63,8 +63,8 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
             <div className={classes.productImage}>
               <Image
                 src={`${mainImage}`}
-                alt={originalName}
-                title={originalName}
+                alt={`${snippetTitle}`}
+                title={`${snippetTitle}`}
                 layout='fill'
                 objectFit='contain'
               />
@@ -73,7 +73,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
                 className='block absolute z-10 inset-0 text-indent-full'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
-                {originalName}
+                {snippetTitle}
               </Link>
             </div>
           </div>
@@ -106,14 +106,14 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
 
 interface CartProductMainDataInterface {
   itemId: string;
-  originalName: string;
+  snippetTitle?: string | null;
   rubricSlug: string;
   slug: string;
 }
 
 const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
   itemId,
-  originalName,
+  snippetTitle,
   rubricSlug,
   slug,
 }) => {
@@ -128,7 +128,7 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
           className='block text-primary-text hover:no-underline hover:text-primary-text'
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
         >
-          {originalName}
+          {snippetTitle}
         </Link>
       </div>
     </React.Fragment>
@@ -149,7 +149,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 
   const {
     itemId,
-    originalName,
+    snippetTitle,
     shopProducts,
     cardPrices,
     shopsCount,
@@ -165,7 +165,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
       testId={testId}
       cartProductId={`${_id}`}
       mainImage={mainImage}
-      originalName={originalName}
+      snippetTitle={snippetTitle}
       shopProducts={shopProducts}
       isShopsVisible={isShopsVisible}
     >
@@ -175,7 +175,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
             rubricSlug={rubricSlug}
             slug={slug}
             itemId={itemId}
-            originalName={originalName}
+            snippetTitle={snippetTitle}
           />
         </div>
 
@@ -214,7 +214,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     available,
     shop,
     itemId,
-    originalName,
+    snippetTitle,
     mainImage,
     rubricSlug,
     slug,
@@ -235,7 +235,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       testId={testId}
       cartProductId={`${_id}`}
       mainImage={mainImage}
-      originalName={originalName}
+      snippetTitle={snippetTitle}
     >
       <div className={classes.productGrid}>
         <div>
@@ -243,7 +243,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
             rubricSlug={rubricSlug}
             slug={slug}
             itemId={itemId}
-            originalName={originalName}
+            snippetTitle={snippetTitle}
           />
           <SpinnerInput
             name={'amount'}

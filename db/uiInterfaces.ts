@@ -359,6 +359,9 @@ export interface ShopProductInterface extends ShopProductModel {
   orders?: OrderInterface[] | null;
   categories?: CategoryInterface[] | null;
   brand?: BrandInterface | null;
+  snippetTitle?: string | null;
+  cardTitle?: string | null;
+  rubric?: RubricInterface | null;
 }
 
 export interface ShopInterface extends ShopModel {

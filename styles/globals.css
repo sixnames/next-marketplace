@@ -112,6 +112,10 @@
     transition: background-color 5000s ease-in-out 0s;
   }
 
+  select {
+    -webkit-appearance: none;
+  }
+
   input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0;
   }

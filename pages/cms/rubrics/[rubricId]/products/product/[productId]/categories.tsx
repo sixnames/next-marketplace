@@ -145,7 +145,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
         href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
       {
-        name: product.originalName,
+        name: `${product.cardTitle}`,
         href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
       },
     ],

@@ -57,7 +57,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: originalName,
+    currentPageName: `${product.cardTitle}`,
     config: [
       {
         name: 'Рубрикатор',

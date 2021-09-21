@@ -7,6 +7,13 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  productRubricPipeline,
+  shopProductAttributesPipeline,
+} from 'db/dao/constantPipelines';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -15,15 +22,20 @@ import {
   ShopProductInterface,
   ShopProductsGroupInterface,
 } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { getPageSessionUser } from 'lib/ssrUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 
+// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> shop product snippet title
+// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> product snippet title
+
 export interface CartQueryInterface {
-  city: string;
-  locale: string;
   companyId?: string;
 }
 
@@ -36,11 +48,12 @@ interface ShopProductPipelineInterface {
 async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { db } = await getDatabase();
+    const { locale, city } = await getRequestParams({ req, res });
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const { query } = req;
     const anyQuery = query as unknown;
-    const { locale, city, companyId } = anyQuery as CartQueryInterface;
+    const { companyId } = anyQuery as CartQueryInterface;
     const session = await getSession({ req });
 
     // Get session
@@ -72,14 +85,19 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               ...companyIdStage,
             },
           },
-          {
-            $project: {
-              assets: false,
-              selectedOptionsSlugs: false,
-              priorities: false,
-              views: false,
-            },
-          },
+          // Lookup product rubric
+          ...productRubricPipeline,
+
+          // Lookup product attributes
+          ...shopProductAttributesPipeline,
+
+          // Lookup product brand
+          ...brandPipeline,
+
+          // Lookup product categories
+          ...productCategoriesPipeline(),
+
+          // Lookup product shop
           {
             $lookup: {
               from: COL_SHOPS,
@@ -148,12 +166,19 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                       },
                     },
                   },
-                  {
-                    $project: {
-                      selectedOptionsSlugs: false,
-                      name: false,
-                    },
-                  },
+
+                  // Lookup product rubric
+                  ...productRubricPipeline,
+
+                  // Lookup product attributes
+                  ...productAttributesPipeline,
+
+                  // Lookup product brand
+                  ...brandPipeline,
+
+                  // Lookup product categories
+                  ...productCategoriesPipeline(),
+
                   shopProductPipeline({
                     letStage: { productId: '$_id' },
                     as: 'shopProducts',
@@ -341,8 +366,29 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
           const maxPriceShopProduct = sortedShopProductsByPrice[0];
 
+          // title
+          const categories = getTreeFromList({
+            list: product.categories,
+            childrenFieldName: 'categories',
+            locale,
+          });
+
+          const snippetTitle = generateSnippetTitle({
+            locale,
+            brand: product.brand,
+            rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+            showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+            showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+            attributes: product.attributes,
+            titleCategoriesSlugs: product.titleCategoriesSlugs,
+            originalName: product.originalName,
+            defaultGender: product.gender,
+            categories,
+          });
+
           product = {
             ...product,
+            snippetTitle,
             shopProducts: finalShopProducts,
             cardPrices: {
               _id: new ObjectId(),
@@ -352,39 +398,62 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           };
         }
 
+        const shopProduct = initialCartProduct.shopProduct;
+        const shopProductCategories = getTreeFromList({
+          list: shopProduct?.categories,
+          childrenFieldName: 'categories',
+          locale,
+        });
+
+        const shopProductSnippetTitle = shopProduct
+          ? generateSnippetTitle({
+              locale,
+              brand: shopProduct.brand,
+              rubricName: getFieldStringLocale(shopProduct.rubric?.nameI18n, locale),
+              showRubricNameInProductTitle: shopProduct.rubric?.showRubricNameInProductTitle,
+              showCategoryInProductTitle: shopProduct.rubric?.showCategoryInProductTitle,
+              attributes: shopProduct.attributes,
+              titleCategoriesSlugs: shopProduct.titleCategoriesSlugs,
+              originalName: shopProduct.originalName,
+              defaultGender: shopProduct.gender,
+              categories: shopProductCategories,
+            })
+          : null;
+
+        const finaleShopProduct: ShopProductInterface | null = shopProduct
+          ? {
+              ...shopProduct,
+              snippetTitle: shopProductSnippetTitle,
+              shop: shopProduct.shop
+                ? {
+                    ...shopProduct.shop,
+                    address: {
+                      ...shopProduct.shop.address,
+                      formattedCoordinates: {
+                        lat: shopProduct.shop.address.point.coordinates[1],
+                        lng: shopProduct.shop.address.point.coordinates[0],
+                      },
+                    },
+                    contacts: {
+                      ...shopProduct.shop.contacts,
+                      formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
+                        return {
+                          raw: phoneToRaw(phone),
+                          readable: phoneToReadable(phone),
+                        };
+                      }),
+                    },
+                  }
+                : null,
+            }
+          : null;
+
         return [
           ...acc,
           {
             ...initialCartProduct,
             product,
-            shopProduct: initialCartProduct.shopProduct
-              ? {
-                  ...initialCartProduct.shopProduct,
-                  shop: initialCartProduct.shopProduct.shop
-                    ? {
-                        ...initialCartProduct.shopProduct.shop,
-                        address: {
-                          ...initialCartProduct.shopProduct.shop.address,
-                          formattedCoordinates: {
-                            lat: initialCartProduct.shopProduct.shop.address.point.coordinates[1],
-                            lng: initialCartProduct.shopProduct.shop.address.point.coordinates[0],
-                          },
-                        },
-                        contacts: {
-                          ...initialCartProduct.shopProduct.shop.contacts,
-                          formattedPhones: initialCartProduct.shopProduct.shop.contacts.phones.map(
-                            (phone) => {
-                              return {
-                                raw: phoneToRaw(phone),
-                                readable: phoneToReadable(phone),
-                              };
-                            },
-                          ),
-                        },
-                      }
-                    : null,
-                }
-              : null,
+            shopProduct: finaleShopProduct,
           },
         ];
       },

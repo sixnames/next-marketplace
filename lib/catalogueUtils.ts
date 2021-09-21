@@ -663,6 +663,11 @@ interface CastCatalogueFiltersPayloadInterface {
   skip: number;
   limit: number;
   clearSlug: string;
+  pricesStage: Record<any, any>;
+  optionsStage: Record<any, any>;
+  brandStage: Record<any, any>;
+  brandCollectionStage: Record<any, any>;
+  sortStage: Record<any, any>;
 }
 
 interface CastCatalogueFiltersInterface {
@@ -770,6 +775,61 @@ export function castCatalogueFilters({
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
+  const pricesStage =
+    minPrice && maxPrice
+      ? {
+          price: {
+            $gte: minPrice,
+            $lte: maxPrice,
+          },
+        }
+      : {};
+
+  const optionsStage = noFiltersSelected
+    ? {}
+    : {
+        selectedOptionsSlugs: {
+          $all: realFilterOptions,
+        },
+      };
+
+  const brandStage =
+    brandFilters.length > 0
+      ? {
+          brandSlug: {
+            $in: brandFilters,
+          },
+        }
+      : {};
+
+  const brandCollectionStage =
+    brandCollectionFilters.length > 0
+      ? {
+          brandCollectionSlug: {
+            $in: brandCollectionFilters,
+          },
+        }
+      : {};
+
+  // sort stage
+  let sortStage: Record<any, any> = {
+    priorities: SORT_DESC,
+    views: SORT_DESC,
+    available: SORT_DESC,
+    _id: SORT_DESC,
+  };
+
+  // sort by price
+  if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
+    sortStage = {
+      minPrice: sortDir,
+      priorities: SORT_DESC,
+      views: SORT_DESC,
+      available: SORT_DESC,
+      _id: SORT_DESC,
+    };
+  }
+
   return {
     rubricSlug: rubricSlug.length > 0 ? rubricSlug : null,
     clearSlug: sortPathname,
@@ -787,6 +847,11 @@ export function castCatalogueFilters({
     page,
     limit,
     skip,
+    pricesStage,
+    optionsStage,
+    brandStage,
+    brandCollectionStage,
+    sortStage,
   };
 }
 
@@ -836,61 +901,22 @@ export const getCatalogueData = async ({
 
     // Cast selected filters
     const {
-      minPrice,
-      maxPrice,
-      realFilterOptions,
-      sortBy,
-      sortDir,
       sortFilterOptions,
-      noFiltersSelected,
       skip,
       limit,
       categoryFilters,
-      brandFilters,
-      brandCollectionFilters,
       inCategory,
       page: payloadPage,
+      brandStage,
+      brandCollectionStage,
+      optionsStage,
+      pricesStage,
+      sortStage,
     } = castCatalogueFilters({
       filters,
       initialPage: page,
       initialLimit: CATALOGUE_PRODUCTS_LIMIT,
     });
-
-    const pricesStage =
-      minPrice && maxPrice
-        ? {
-            price: {
-              $gte: minPrice,
-              $lte: maxPrice,
-            },
-          }
-        : {};
-
-    const optionsStage = noFiltersSelected
-      ? {}
-      : {
-          selectedOptionsSlugs: {
-            $all: realFilterOptions,
-          },
-        };
-
-    const brandStage =
-      brandFilters.length > 0
-        ? {
-            brandSlug: {
-              $in: brandFilters,
-            },
-          }
-        : {};
-
-    const brandCollectionStage =
-      brandCollectionFilters.length > 0
-        ? {
-            brandCollectionSlug: {
-              $in: brandCollectionFilters,
-            },
-          }
-        : {};
 
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
@@ -902,25 +928,6 @@ export const getCatalogueData = async ({
       ...optionsStage,
       ...pricesStage,
     };
-
-    // sort stage
-    let sortStage: any = {
-      priorities: SORT_DESC,
-      views: SORT_DESC,
-      available: SORT_DESC,
-      _id: SORT_DESC,
-    };
-
-    // sort by price
-    if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
-      sortStage = {
-        minPrice: sortDir,
-        priorities: SORT_DESC,
-        views: SORT_DESC,
-        available: SORT_DESC,
-        _id: SORT_DESC,
-      };
-    }
 
     const rubricsPipeline = getCatalogueRubricPipeline({
       city,
@@ -1233,7 +1240,7 @@ export const getCatalogueData = async ({
           return showInRubricFilter;
         });
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [priceAttribute, ...categoryAttribute, ...brandAttribute, ...rubricAttributes],
+      attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
       filters,
       selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,

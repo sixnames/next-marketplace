@@ -23,6 +23,7 @@ import {
 } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -169,54 +170,18 @@ export const getServerSideProps = async (
   // const city = shop.citySlug;
 
   // Cast filters
-  const { realFilterOptions, sortFilterOptions, noFiltersSelected, page, skip, limit } =
-    castCatalogueFilters({
-      filters: restFilter,
-    });
-
-  // Products stages
-  const optionsStage = noFiltersSelected
-    ? {}
-    : {
-        selectedOptionsSlugs: {
-          $all: realFilterOptions,
-        },
-      };
-
-  const languages = initialProps.props.initialData.languages;
-  const searchByName = languages.map(({ slug }) => {
-    return {
-      [`nameI18n.${slug}`]: {
-        $regex: search,
-        $options: 'i',
-      },
-    };
+  const {
+    sortFilterOptions,
+    page,
+    skip,
+    limit,
+    pricesStage,
+    brandCollectionStage,
+    brandStage,
+    optionsStage,
+  } = castCatalogueFilters({
+    filters: restFilter,
   });
-  const searchStage = search
-    ? {
-        $or: [
-          ...searchByName,
-          {
-            originalName: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            barcode: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
 
   const rubricIdObjectId = new ObjectId(rubricId);
 
@@ -237,6 +202,62 @@ export const getServerSideProps = async (
     .toArray();
   const excludedProductsIds = shopProductsAggregation.map(({ productId }) => productId);
 
+  // algolia
+  let searchIds: ObjectId[] = [];
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+      search: `${search}`,
+      excludedProductsIds,
+    });
+
+    // return empty page if no search results
+    if (searchIds.length < 1) {
+      const rubric = await rubricsCollection.findOne({
+        _id: new ObjectId(rubricId),
+      });
+
+      if (!rubric) {
+        return {
+          notFound: true,
+        };
+      }
+
+      const payload: ShopAddProductsListRouteReduced = {
+        shop,
+        rubricId: rubric._id.toHexString(),
+        rubricName: getFieldStringLocale(rubric.nameI18n, initialProps.props?.sessionLocale),
+        clearSlug: basePath,
+        totalDocs: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+        attributes: [],
+        selectedAttributes: [],
+        page,
+        docs: [],
+      };
+
+      const castedPayload = castDbData(payload);
+
+      return {
+        props: {
+          ...initialProps.props,
+          ...castedPayload,
+        },
+      };
+    }
+  }
+
+  const searchStage =
+    search && search.length > 0 && searchIds.length > 0
+      ? {
+          _id: {
+            $in: searchIds,
+          },
+        }
+      : {};
+
   const rubricsPipeline = getCatalogueRubricPipeline();
 
   const productsAggregation = await productsCollection
@@ -245,8 +266,12 @@ export const getServerSideProps = async (
         $match: {
           rubricId: rubricIdObjectId,
           _id: { $nin: excludedProductsIds },
-          ...searchStage,
+          ...brandStage,
+          ...brandCollectionStage,
           ...optionsStage,
+          ...pricesStage,
+          ...optionsStage,
+          ...searchStage,
         },
       },
       {

@@ -5,7 +5,7 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
 import { CompanyModel } from 'db/dbModels';
-import Meta, { PageUrlsInterface } from 'layout/Meta';
+import Meta, { MetaInterface } from 'layout/Meta';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
 import {
@@ -14,11 +14,9 @@ import {
 } from 'layout/SiteLayoutProvider';
 import * as React from 'react';
 
-interface CompanyDefaultLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages {
-  title?: string;
-  description?: string;
-  previewImage?: string;
-  pageUrls: PageUrlsInterface;
+interface CompanyDefaultLayoutConsumerInterface
+  extends SiteLayoutCatalogueCreatedPages,
+    MetaInterface {
   company?: CompanyModel | null;
 }
 
@@ -28,6 +26,9 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   description,
   pageUrls,
   company,
+  previewImage,
+  siteName,
+  foundationYear,
   headerPageGroups,
   footerPageGroups,
 }) => {
@@ -42,7 +43,14 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   return (
     <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
       <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
-      <Meta title={title} description={description} pageUrls={pageUrls} />
+      <Meta
+        title={title}
+        description={description}
+        pageUrls={pageUrls}
+        previewImage={previewImage}
+        siteName={siteName}
+        foundationYear={foundationYear}
+      />
       <Header headerPageGroups={headerPageGroups} company={company} />
 
       <div className='flex flex-col flex-grow'>

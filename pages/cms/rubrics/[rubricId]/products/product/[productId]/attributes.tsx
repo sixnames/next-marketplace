@@ -38,6 +38,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { sortByName } from 'lib/optionsUtils';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
@@ -527,20 +528,25 @@ export const getServerSideProps = async (
       astGroup.attributes.push(newProductAttribute);
     }
 
+    const finalAstGroup = {
+      ...astGroup,
+      attributes: sortByName(astGroup.attributes),
+    };
+
     if (variant === ATTRIBUTE_VARIANT_STRING) {
-      stringAttributesAST = astGroup;
+      stringAttributesAST = finalAstGroup;
     }
 
     if (variant === ATTRIBUTE_VARIANT_NUMBER) {
-      numberAttributesAST = astGroup;
+      numberAttributesAST = finalAstGroup;
     }
 
     if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
-      multipleSelectAttributesAST = astGroup;
+      multipleSelectAttributesAST = finalAstGroup;
     }
 
     if (variant === ATTRIBUTE_VARIANT_SELECT) {
-      selectAttributesAST = astGroup;
+      selectAttributesAST = finalAstGroup;
     }
   }
 

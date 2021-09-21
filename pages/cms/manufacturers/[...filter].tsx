@@ -8,7 +8,14 @@ import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ISO_LANGUAGES, DEFAULT_PAGE, SORT_DESC } from 'config/common';
+import {
+  ISO_LANGUAGES,
+  DEFAULT_PAGE,
+  SORT_DESC,
+  DEFAULT_LOCALE,
+  SORT_ASC,
+  CMS_BRANDS_LIMIT,
+} from 'config/common';
 import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'config/modalVariants';
 import { COL_MANUFACTURERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -208,6 +215,7 @@ export const getServerSideProps = async (
     clearSlug,
   } = castCatalogueFilters({
     filters: alwaysArray(filter),
+    initialLimit: CMS_BRANDS_LIMIT,
   });
   const itemPath = ``;
 
@@ -258,6 +266,7 @@ export const getServerSideProps = async (
             docs: [
               {
                 $sort: {
+                  [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
                   _id: SORT_DESC,
                 },
               },

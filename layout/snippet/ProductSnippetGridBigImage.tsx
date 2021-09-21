@@ -106,12 +106,14 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
         {/*price*/}
         <div className='flex flex-col items-center justify-center px-4 mb-4 mt-auto'>
+          <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
+
           {/*art*/}
           {showSnippetArticle ? (
-            <div className='text-secondary-text mb-2 text-sm'>Артикул: {itemId}</div>
+            <div className='text-secondary-text mb-2 opacity-0 group-hover:opacity-100 transition-opacity text-sm'>
+              Артикул: {itemId}
+            </div>
           ) : null}
-
-          <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>
 

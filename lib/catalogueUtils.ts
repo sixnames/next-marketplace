@@ -1233,7 +1233,7 @@ export const getCatalogueData = async ({
           return showInRubricFilter;
         });
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [priceAttribute, ...categoryAttribute, ...brandAttribute, ...rubricAttributes],
+      attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
       filters,
       selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,

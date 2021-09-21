@@ -278,7 +278,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
           <div className={classes.shop}>
             <div>
-              <span>магазин: </span>
+              <span>Магазин: </span>
               {shop.name}
             </div>
             <div>{shop.address.formattedAddress}</div>

@@ -8,17 +8,12 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
 import Spinner from 'components/Spinner';
-import Meta, { PageUrlsInterface } from '../Meta';
+import Meta, { MetaInterface } from '../Meta';
 import { useAppContext } from 'context/appContext';
 import { SiteContextProvider } from 'context/siteContext';
 import Modal from 'components/Modal/Modal';
 
-interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages {
-  title?: string;
-  description?: string;
-  previewImage?: string;
-  pageUrls: PageUrlsInterface;
-}
+interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
@@ -27,6 +22,9 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   pageUrls,
   footerPageGroups,
   headerPageGroups,
+  previewImage,
+  siteName,
+  foundationYear,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -39,7 +37,14 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
       <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
-      <Meta title={title} description={description} pageUrls={pageUrls} />
+      <Meta
+        title={title}
+        description={description}
+        pageUrls={pageUrls}
+        previewImage={previewImage}
+        siteName={siteName}
+        foundationYear={foundationYear}
+      />
 
       <Header headerPageGroups={headerPageGroups} />
 
@@ -67,6 +72,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   company,
   footerPageGroups,
   headerPageGroups,
+  ...props
 }) => {
   return (
     <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
@@ -76,6 +82,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
         pageUrls={pageUrls}
         footerPageGroups={footerPageGroups}
         headerPageGroups={headerPageGroups}
+        {...props}
       >
         {children}
       </SiteLayoutConsumer>

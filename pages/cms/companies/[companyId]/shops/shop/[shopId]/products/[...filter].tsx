@@ -152,11 +152,11 @@ export const getServerSideProps = async (
 
   // Cast filters
   const {
-    minPrice,
-    maxPrice,
-    realFilterOptions,
     sortFilterOptions,
-    noFiltersSelected,
+    brandStage,
+    brandCollectionStage,
+    pricesStage,
+    optionsStage,
     page,
     skip,
     limit,
@@ -164,25 +164,6 @@ export const getServerSideProps = async (
     filters: restFilter,
   });
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
-
-  // Products stages
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          price: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
-
-  const optionsStage = noFiltersSelected
-    ? {}
-    : {
-        selectedOptionsSlugs: {
-          $all: realFilterOptions,
-        },
-      };
 
   // algolia
   let searchIds: ObjectId[] = [];
@@ -248,9 +229,11 @@ export const getServerSideProps = async (
         $match: {
           shopId: shop._id,
           rubricId: new ObjectId(rubricId),
-          ...searchStage,
-          ...pricesStage,
+          ...brandStage,
+          ...brandCollectionStage,
           ...optionsStage,
+          ...pricesStage,
+          ...searchStage,
         },
       },
       {

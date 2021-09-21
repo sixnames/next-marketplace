@@ -1,17 +1,10 @@
-import { SORT_DESC } from 'config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-} from 'db/collectionNames';
+import { COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
+  productConnectionsSimplePipeline,
+  productRubricPipeline,
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -67,31 +60,7 @@ export async function getCmsProduct({
       },
 
       // Lookup product rubric
-      {
-        $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubric',
-          let: {
-            rubricId: '$rubricId',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$rubricId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          rubric: {
-            $arrayElemAt: ['$rubric', 0],
-          },
-        },
-      },
+      ...productRubricPipeline,
 
       // Lookup product attributes
       ...productAttributesPipeline,
@@ -103,117 +72,7 @@ export async function getCmsProduct({
       ...productCategoriesPipeline(),
 
       // Lookup product connections
-      {
-        $lookup: {
-          from: COL_PRODUCT_CONNECTIONS,
-          as: 'connections',
-          let: { productId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: ['$$productId', '$productsIds'],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_ATTRIBUTES,
-                as: 'attribute',
-                let: { attributeId: '$attributeId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$attributeId', '$_id'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                attribute: {
-                  $arrayElemAt: ['$attribute', 0],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_PRODUCT_CONNECTION_ITEMS,
-                as: 'connectionProducts',
-                let: { connectionId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$connectionId', '$connectionId'],
-                      },
-                    },
-                  },
-                  {
-                    $sort: {
-                      _id: SORT_DESC,
-                    },
-                  },
-                  {
-                    $lookup: {
-                      from: COL_OPTIONS,
-                      as: 'option',
-                      let: { optionId: '$optionId' },
-                      pipeline: [
-                        {
-                          $match: {
-                            $expr: {
-                              $eq: ['$$optionId', '$_id'],
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                  {
-                    $lookup: {
-                      from: COL_PRODUCTS,
-                      as: 'product',
-                      let: { productId: '$productId' },
-                      pipeline: [
-                        {
-                          $match: {
-                            $expr: {
-                              $eq: ['$$productId', '$_id'],
-                            },
-                          },
-                        },
-
-                        // Lookup product attributes
-                        ...productAttributesPipeline,
-
-                        // Lookup product brand
-                        ...brandPipeline,
-
-                        // Lookup product categories
-                        ...productCategoriesPipeline(),
-                      ],
-                    },
-                  },
-                  {
-                    $addFields: {
-                      product: {
-                        $arrayElemAt: ['$product', 0],
-                      },
-                      option: {
-                        $arrayElemAt: ['$option', 0],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
+      ...productConnectionsSimplePipeline,
     ])
     .toArray();
   const initialProduct = productAggregation[0];
@@ -237,7 +96,7 @@ export async function getCmsProduct({
   });
 
   // title
-  const cardTitle = generateCardTitle({
+  const titleProps = {
     locale,
     brand: initialProduct.brand,
     rubricName: getFieldStringLocale(rubric.nameI18n, locale),
@@ -248,7 +107,9 @@ export async function getCmsProduct({
     originalName: restProduct.originalName,
     defaultGender: restProduct.gender,
     categories,
-  });
+  };
+  const cardTitle = generateCardTitle(titleProps);
+  const snippetTitle = generateSnippetTitle(titleProps);
 
   // connections
   const connections: ProductConnectionInterface[] = [];
@@ -307,6 +168,7 @@ export async function getCmsProduct({
   const product: ProductInterface = {
     ...initialProduct,
     cardTitle,
+    snippetTitle,
     connections,
     attributes,
   };

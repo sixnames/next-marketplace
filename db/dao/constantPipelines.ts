@@ -14,6 +14,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
   COL_RUBRIC_ATTRIBUTES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -453,6 +454,53 @@ export const productAttributesPipeline = [
   },
 ];
 
+export const shopProductAttributesPipeline = [
+  {
+    $lookup: {
+      from: COL_PRODUCT_ATTRIBUTES,
+      as: 'attributes',
+      let: {
+        productId: '$productId',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$$productId', '$productId'],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: COL_OPTIONS,
+            as: 'options',
+            let: {
+              optionsGroupId: '$optionsGroupId',
+              selectedOptionsIds: '$selectedOptionsIds',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                      },
+                      {
+                        $in: ['$_id', '$$selectedOptionsIds'],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+];
+
 export const brandPipeline = [
   {
     $lookup: {
@@ -692,6 +740,148 @@ export const filterCmsCategoriesPipeline = [
   {
     $replaceRoot: {
       newRoot: '$categories',
+    },
+  },
+];
+
+export const productRubricPipeline = [
+  {
+    $lookup: {
+      from: COL_RUBRICS,
+      as: 'rubric',
+      let: {
+        rubricId: '$rubricId',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$_id', '$$rubricId'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      rubric: {
+        $arrayElemAt: ['$rubric', 0],
+      },
+    },
+  },
+];
+
+export const productConnectionsSimplePipeline = [
+  {
+    $lookup: {
+      from: COL_PRODUCT_CONNECTIONS,
+      as: 'connections',
+      let: { productId: '$_id' },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $in: ['$$productId', '$productsIds'],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: COL_ATTRIBUTES,
+            as: 'attribute',
+            let: { attributeId: '$attributeId' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$attributeId', '$_id'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            attribute: {
+              $arrayElemAt: ['$attribute', 0],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: COL_PRODUCT_CONNECTION_ITEMS,
+            as: 'connectionProducts',
+            let: { connectionId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$connectionId', '$connectionId'],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_OPTIONS,
+                  as: 'option',
+                  let: { optionId: '$optionId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$optionId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_PRODUCTS,
+                  as: 'product',
+                  let: { productId: '$productId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$_id'],
+                        },
+                      },
+                    },
+
+                    // Lookup product attributes
+                    ...productAttributesPipeline,
+
+                    // Lookup product brand
+                    ...brandPipeline,
+
+                    // Lookup product categories
+                    ...productCategoriesPipeline(),
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  product: {
+                    $arrayElemAt: ['$product', 0],
+                  },
+                  option: {
+                    $arrayElemAt: ['$option', 0],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
     },
   },
 ];

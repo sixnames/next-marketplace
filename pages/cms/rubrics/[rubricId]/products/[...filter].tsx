@@ -370,22 +370,21 @@ export const getServerSideProps = async (
   const locale = initialProps.props.sessionLocale;
 
   // Cast filters
-  const { realFilterOptions, noFiltersSelected, page, skip, limit, clearSlug } =
-    castCatalogueFilters({
-      filters: restFilter,
-    });
+  const {
+    page,
+    skip,
+    limit,
+    clearSlug,
+    optionsStage,
+    brandCollectionStage,
+    brandStage,
+    pricesStage,
+  } = castCatalogueFilters({
+    filters: restFilter,
+  });
 
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
-
-  // Products stages
-  const optionsStage = noFiltersSelected
-    ? {}
-    : {
-        selectedOptionsSlugs: {
-          $all: realFilterOptions,
-        },
-      };
 
   // algolia
   let searchIds: ObjectId[] = [];
@@ -451,8 +450,11 @@ export const getServerSideProps = async (
         {
           $match: {
             rubricId: new ObjectId(`${rubricId}`),
-            ...searchStage,
+            ...brandStage,
+            ...brandCollectionStage,
             ...optionsStage,
+            ...pricesStage,
+            ...searchStage,
           },
         },
         {

@@ -72,7 +72,12 @@ interface AppContentFilterInterface {
   className?: string;
 }
 
-const AppContentFilter: React.FC<AppContentFilterInterface> = ({ attributes, className }) => {
+const AppContentFilter: React.FC<AppContentFilterInterface> = ({
+  attributes,
+  selectedAttributes,
+  className,
+}) => {
+  console.log(selectedAttributes);
   return (
     <div className={className ? className : ''}>
       {attributes.map((attribute) => {

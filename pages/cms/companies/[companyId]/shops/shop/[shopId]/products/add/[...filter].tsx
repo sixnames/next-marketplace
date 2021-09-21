@@ -210,21 +210,20 @@ export const getServerSideProps = async (
   // const city = shop.citySlug;
 
   // Cast filters
-  const { realFilterOptions, sortFilterOptions, noFiltersSelected, page, skip, limit } =
-    castCatalogueFilters({
-      filters: restFilter,
-    });
+  const {
+    sortFilterOptions,
+    page,
+    skip,
+    limit,
+    pricesStage,
+    brandCollectionStage,
+    brandStage,
+    optionsStage,
+  } = castCatalogueFilters({
+    filters: restFilter,
+  });
 
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
-
-  // Products stages
-  const optionsStage = noFiltersSelected
-    ? {}
-    : {
-        selectedOptionsSlugs: {
-          $all: realFilterOptions,
-        },
-      };
 
   const rubricIdObjectId = new ObjectId(rubricId);
 
@@ -309,8 +308,12 @@ export const getServerSideProps = async (
         $match: {
           rubricId: rubricIdObjectId,
           _id: { $nin: excludedProductsIds },
-          ...searchStage,
+          ...brandStage,
+          ...brandCollectionStage,
           ...optionsStage,
+          ...pricesStage,
+          ...optionsStage,
+          ...searchStage,
         },
       },
       {

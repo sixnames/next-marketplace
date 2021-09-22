@@ -203,7 +203,7 @@ export interface CountersModel {
 export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
-  attributesGroupId?: ObjectIdModel | null;
+  attributesGroupId: ObjectIdModel;
   nameI18n: TranslationModel;
   optionsGroupId?: ObjectIdModel | null;
   metric?: MetricModel | null;

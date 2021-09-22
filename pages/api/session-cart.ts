@@ -325,7 +325,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const cartProducts = sessionCart.cartProducts.reduce(
       (acc: CartProductInterface[], initialCartProduct) => {
         let product = initialCartProduct.product;
-        if (product) {
+        if (product && product.shopProducts && product.shopProducts.length > 0) {
           const groupedByShops = (product.shopProducts || []).reduce(
             (acc: ShopProductsGroupInterface[], shopProduct) => {
               const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
@@ -359,7 +359,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           });
 
           const sortedShopProductsByPrice = finalShopProducts.sort((a, b) => {
-            return b.price - a.price;
+            return b?.price - a?.price;
           });
 
           const minPriceShopProduct =
@@ -392,8 +392,8 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             shopProducts: finalShopProducts,
             cardPrices: {
               _id: new ObjectId(),
-              min: `${minPriceShopProduct.price}`,
-              max: `${maxPriceShopProduct.price}`,
+              min: `${minPriceShopProduct?.price}`,
+              max: `${maxPriceShopProduct?.price}`,
             },
           };
         }

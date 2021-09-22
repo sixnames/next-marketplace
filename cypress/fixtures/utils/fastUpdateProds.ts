@@ -1,5 +1,5 @@
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ATTRIBUTES, COL_RUBRIC_ATTRIBUTES } from '../../../db/collectionNames';
+import { COL_ATTRIBUTES, COL_PRODUCT_ATTRIBUTES } from '../../../db/collectionNames';
 require('dotenv').config();
 
 async function updateProds() {
@@ -11,7 +11,7 @@ async function updateProds() {
 
     // update attributes
     console.log(`Updating attributes in ${dbConfig.dbName} db`);
-    const rubricAttributesCollection = db.collection(COL_RUBRIC_ATTRIBUTES);
+    const rubricAttributesCollection = db.collection(COL_PRODUCT_ATTRIBUTES);
     const attributesCollection = db.collection(COL_ATTRIBUTES);
     const productAttributesList = await rubricAttributesCollection
       .aggregate([
@@ -25,15 +25,13 @@ async function updateProds() {
         },
       ])
       .toArray();
-    console.log(productAttributesList.length);
 
     for await (const rubricAttribute of productAttributesList) {
-      const attribute = await attributesCollection.find({
+      const attribute = await attributesCollection.findOne({
         _id: rubricAttribute._id,
       });
-      if (!attribute) {
-        console.log('Not found ', rubricAttribute._id);
 
+      if (!attribute) {
         const res = await rubricAttributesCollection.countDocuments({
           _id: {
             $in: rubricAttribute.ids,

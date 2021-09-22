@@ -505,7 +505,7 @@ export const attributesGroupMutations = extendType({
 
             // Check if used in rubrics
             const usedInRubricAttributes = await rubricAttributesCollection.findOne({
-              _id: {
+              attributeId: {
                 $in: group.attributesIds,
               },
             });

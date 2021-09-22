@@ -1,21 +1,17 @@
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { useGetAllRubricVariantsQuery } from 'generated/apolloComponents';
+import { RubricVariant, SelectOption } from 'generated/apolloComponents';
 import * as React from 'react';
 
-const RubricMainFields: React.FC = () => {
-  const { data, loading, error } = useGetAllRubricVariantsQuery();
-
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
-  if (error || !data) {
-    return <RequestError />;
-  }
-
+interface RubricMainFieldsInterface {
+  rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];
+  genderOptions: Pick<SelectOption, '_id' | 'name'>[];
+}
+const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
+  genderOptions,
+  rubricVariants,
+}) => {
   return (
     <React.Fragment>
       <FormikTranslationsInput
@@ -71,7 +67,7 @@ const RubricMainFields: React.FC = () => {
         testId={'catalogueTitle-gender'}
         showInlineError
         isRequired
-        options={data.getGenderOptions}
+        options={genderOptions}
       />
 
       <FormikSelect
@@ -80,7 +76,7 @@ const RubricMainFields: React.FC = () => {
         label={'Тип рубрики'}
         name={'variantId'}
         testId={'variantId'}
-        options={data.getAllRubricVariants}
+        options={rubricVariants}
       />
 
       <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />

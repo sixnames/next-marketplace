@@ -193,46 +193,44 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         <div key={`${_id}`} className='mb-12'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
-                            {(connectionProducts || []).map(
-                              ({ option, productSlug, shopProduct }) => {
-                                const mainImage = shopProduct?.mainImage;
-                                const isCurrent = productSlug === product.slug;
-                                const name = `${option?.name} ${
-                                  attribute?.metric ? ` ${attribute.metric.name}` : ''
-                                }`;
+                            {(connectionProducts || []).map(({ option, shopProduct }) => {
+                              const mainImage = shopProduct?.mainImage;
+                              const isCurrent = shopProduct?.slug === product.slug;
+                              const name = `${option?.name} ${
+                                attribute?.metric ? ` ${attribute.metric.name}` : ''
+                              }`;
 
-                                if (!mainImage) {
-                                  return null;
-                                }
+                              if (!mainImage) {
+                                return null;
+                              }
 
-                                return (
-                                  <div
-                                    key={`${option?.name}`}
-                                    className={`relative text-center ${
-                                      isCurrent ? 'text-theme' : 'hover:text-theme'
-                                    }`}
-                                  >
-                                    <div className='relative h-16 w-full'>
-                                      <Image
-                                        src={mainImage}
-                                        alt={name}
-                                        layout='fill'
-                                        objectFit='contain'
-                                      />
-                                    </div>
-                                    <div className='mt-3 text-sm'>{name}</div>
-                                    {isCurrent ? null : (
-                                      <Link
-                                        className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                        href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
-                                      >
-                                        {name}
-                                      </Link>
-                                    )}
+                              return (
+                                <div
+                                  key={`${option?.name}`}
+                                  className={`relative text-center ${
+                                    isCurrent ? 'text-theme' : 'hover:text-theme'
+                                  }`}
+                                >
+                                  <div className='relative h-16 w-full'>
+                                    <Image
+                                      src={mainImage}
+                                      alt={name}
+                                      layout='fill'
+                                      objectFit='contain'
+                                    />
                                   </div>
-                                );
-                              },
-                            )}
+                                  <div className='mt-3 text-sm'>{name}</div>
+                                  {isCurrent ? null : (
+                                    <Link
+                                      className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
+                                      href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.slug}`}
+                                    >
+                                      {name}
+                                    </Link>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       );

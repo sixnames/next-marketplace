@@ -2,13 +2,19 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import { ROUTE_CMS } from 'config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
+import {
+  UpdateRubricInput,
+  useGetAllRubricVariantsQuery,
+  useUpdateRubricMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -33,10 +39,22 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
+  const { data, loading, error } = useGetAllRubricVariantsQuery();
+
   const [updateRubricMutation] = useUpdateRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });
+
+  if (loading) {
+    return <Spinner isNested isTransparent />;
+  }
+  if (error) {
+    return <RequestError />;
+  }
+  if (!data) {
+    return <RequestError />;
+  }
 
   const {
     _id = '',
@@ -102,7 +120,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           {() => {
             return (
               <Form>
-                <RubricMainFields />
+                <RubricMainFields
+                  rubricVariants={data.getAllRubricVariants}
+                  genderOptions={data.getGenderOptions}
+                />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'rubric-submit'}>

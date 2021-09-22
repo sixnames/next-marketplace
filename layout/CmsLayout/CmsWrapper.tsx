@@ -5,6 +5,7 @@ import Spinner from 'components/Spinner';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { ROUTE_CONSOLE } from 'config/common';
 import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import { useUserContext } from 'context/userContext';
 import { CompanyInterface } from 'db/uiInterfaces';
 import useCompact from 'hooks/useCompact';
@@ -29,6 +30,7 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
   const { isLoading, isModal } = useAppContext();
   const { me } = useUserContext();
   const { isCompact, toggleCompactHandler } = compact;
+  const { configs } = useConfigContext();
 
   if (!me) {
     return <Spinner />;
@@ -37,9 +39,14 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
   const navItems = company ? me.role?.appNavigation : me.role?.cmsNavigation;
   const basePath = company ? `${ROUTE_CONSOLE}/${company._id}` : '';
 
+  // Metrics
+  const yaMetrica = configs.yaMetrica;
+  const googleAnalytics = configs.googleAnalytics;
+
   return (
     <div className={`min-h-full-height text-primary-text bg-primary`}>
       <Meta title={title} pageUrls={pageUrls} />
+      <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
       {/*top bar*/}
       <div className='fixed top-0 z-30 inset-x-0 flex items-center justify-between h-[60px] shadow-md bg-[#2B3039]'>

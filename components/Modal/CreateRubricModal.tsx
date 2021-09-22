@@ -1,11 +1,17 @@
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
+import RequestError from 'components/RequestError';
+import Spinner from 'components/Spinner';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
 import Button from 'components/Button';
-import { CreateRubricInput, Gender } from 'generated/apolloComponents';
+import {
+  CreateRubricInput,
+  Gender,
+  useGetAllRubricVariantsQuery,
+} from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { createRubricSchema } from 'validation/rubricSchema';
@@ -19,6 +25,17 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
   const validationSchema = useValidationSchema({
     schema: createRubricSchema,
   });
+  const { data, loading, error } = useGetAllRubricVariantsQuery();
+
+  if (loading) {
+    return <Spinner isNested isTransparent />;
+  }
+  if (error) {
+    return <RequestError />;
+  }
+  if (!data) {
+    return <RequestError />;
+  }
 
   return (
     <ModalFrame testId={'create-rubric-modal'}>
@@ -30,7 +47,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
           nameI18n: {},
           descriptionI18n: {},
           shortDescriptionI18n: {},
-          variantId: null,
+          variantId: data.getAllRubricVariants[0]?._id || null,
           capitalise: false,
           showRubricNameInProductTitle: false,
           showCategoryInProductTitle: false,
@@ -50,7 +67,10 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
         {() => {
           return (
             <Form>
-              <RubricMainFields />
+              <RubricMainFields
+                rubricVariants={data.getAllRubricVariants}
+                genderOptions={data.getGenderOptions}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'rubric-submit'}>

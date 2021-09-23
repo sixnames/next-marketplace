@@ -1,5 +1,4 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { castAttributeForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -10,23 +9,17 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
-  CategoryModel,
   MetricModel,
   ProductAttributeModel,
   ProductConnectionModel,
-  RubricAttributeModel,
-  RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
-  COL_CATEGORIES,
   COL_METRICS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTIONS,
-  COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -442,8 +435,6 @@ export const attributesGroupMutations = extendType({
         const attributesGroupCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const rubricAttributesCollection =
-          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
@@ -495,21 +486,6 @@ export const attributesGroupMutations = extendType({
               },
             });
             if (usedInProductAttributes || usedInProductCollections) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.delete.used`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if used in rubrics
-            const usedInRubricAttributes = await rubricAttributesCollection.findOne({
-              attributeId: {
-                $in: group.attributesIds,
-              },
-            });
-            if (usedInRubricAttributes) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.delete.used`),
@@ -581,8 +557,6 @@ export const attributesGroupMutations = extendType({
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const rubricAttributesCollection =
-          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -698,178 +672,7 @@ export const attributesGroupMutations = extendType({
             }
 
             // Add new attribute to the rubrics
-            const rubrics = await rubricAttributesCollection
-              .aggregate<RubricModel>([
-                {
-                  $match: {
-                    attributesGroupId,
-                    categoryId: null,
-                  },
-                },
-                {
-                  $group: {
-                    _id: '$rubricId',
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_RUBRICS,
-                    as: 'rubric',
-                    let: {
-                      rubricId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$rubricId', '$_id'],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $addFields: {
-                    rubric: {
-                      $arrayElemAt: ['$rubric', 0],
-                    },
-                  },
-                },
-                {
-                  $match: {
-                    rubric: {
-                      $exists: true,
-                    },
-                  },
-                },
-                {
-                  $replaceRoot: {
-                    newRoot: '$rubric',
-                  },
-                },
-                {
-                  $project: {
-                    _id: true,
-                    slug: true,
-                  },
-                },
-              ])
-              .toArray();
-
-            if (rubrics.length > 0) {
-              const rubricAttributes: RubricAttributeModel[] = [];
-              for await (const rubric of rubrics) {
-                const rubricAttribute = await castAttributeForRubric({
-                  attribute: createdAttribute,
-                  rubricSlug: rubric.slug,
-                  rubricId: rubric._id,
-                });
-                rubricAttributes.push(rubricAttribute);
-              }
-
-              const createdAttributesResult = await rubricAttributesCollection.insertMany(
-                rubricAttributes,
-              );
-              if (!createdAttributesResult.result.ok) {
-                mutationPayload = {
-                  success: false,
-                  message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
-                };
-                await session.abortTransaction();
-                return;
-              }
-            }
-
             // Add new attribute to the categories
-            const categories = await rubricAttributesCollection
-              .aggregate<CategoryModel>([
-                {
-                  $match: {
-                    attributesGroupId,
-                    categoryId: {
-                      $exists: true,
-                    },
-                  },
-                },
-                {
-                  $group: {
-                    _id: '$categoryId',
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_CATEGORIES,
-                    as: 'category',
-                    let: {
-                      categoryId: '$_id',
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$categoryId', '$_id'],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $addFields: {
-                    category: {
-                      $arrayElemAt: ['$category', 0],
-                    },
-                  },
-                },
-                {
-                  $match: {
-                    category: {
-                      $exists: true,
-                    },
-                  },
-                },
-                {
-                  $replaceRoot: {
-                    newRoot: '$category',
-                  },
-                },
-                {
-                  $project: {
-                    _id: true,
-                    slug: true,
-                    rubricSlug: true,
-                    rubricId: true,
-                  },
-                },
-              ])
-              .toArray();
-
-            if (categories.length > 0) {
-              const rubricAttributes: RubricAttributeModel[] = [];
-              for await (const category of categories) {
-                const categoryAttribute = await castAttributeForRubric({
-                  attribute: createdAttribute,
-                  rubricSlug: category.rubricSlug,
-                  rubricId: category.rubricId,
-                  categorySlug: category.slug,
-                  categoryId: category._id,
-                });
-                rubricAttributes.push(categoryAttribute);
-              }
-
-              const createdAttributesResult = await rubricAttributesCollection.insertMany(
-                rubricAttributes,
-              );
-              if (!createdAttributesResult.result.ok) {
-                mutationPayload = {
-                  success: false,
-                  message: await getApiMessage('attributesGroups.addAttribute.attributeError'),
-                };
-                await session.abortTransaction();
-                return;
-              }
-            }
 
             mutationPayload = {
               success: true,
@@ -909,8 +712,6 @@ export const attributesGroupMutations = extendType({
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const rubricAttributesCollection =
-          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
@@ -1021,25 +822,6 @@ export const attributesGroupMutations = extendType({
               return;
             }
 
-            // Update rubric attribute
-            const updatedRubricAttributeResult = await rubricAttributesCollection.updateMany(
-              { attributeId },
-              {
-                $set: {
-                  ...values,
-                  metric,
-                },
-              },
-            );
-            if (!updatedRubricAttributeResult.result.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             // Update product attribute
             const updatedProductAttributeResult = await productAttributesCollection.updateMany(
               { attributeId },
@@ -1092,8 +874,6 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const rubricAttributesCollection =
-          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const attributesGroupCollection =
@@ -1147,14 +927,11 @@ export const attributesGroupMutations = extendType({
               return;
             }
 
-            // Delete attribute form rubrics and products
-            const removedRubricAttributes = await rubricAttributesCollection.deleteMany({
-              attributeId,
-            });
+            // Delete attribute form products
             const removedProductAttributes = await productAttributesCollection.deleteMany({
               attributeId,
             });
-            if (!removedRubricAttributes.result.ok || !removedProductAttributes.result.ok) {
+            if (!removedProductAttributes.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),

@@ -12,7 +12,7 @@ import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
 import options from '../options/options';
-import rubricAttributes from '../rubricAttributes/rubricAttributes';
+import attributes from '../attributes/attributes';
 import manufacturers from '../manufacturers/manufacturers';
 import suppliers from '../suppliers/suppliers';
 import brands from '../brands/brands';
@@ -46,6 +46,7 @@ const brandCollectionsAttributeSlug = 'brandCollections';
 let counter = 0;
 
 const products = rubrics.reduce((acc: ProductModel[], rubric) => {
+  const attributesGroupIds = rubric.attributesGroupIds;
   const rubricSlug = rubric.slug;
 
   interface AddedAttributeInterface {
@@ -107,10 +108,12 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     const selectedAttributesIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
     const titleCategoriesSlugs: string[] = [];
-
+    const rubricAttributes = attributes.filter(({ attributesGroupId }) => {
+      return attributesGroupIds.some((_id) => _id.equals(attributesGroupId));
+    });
     rubricAttributes.forEach((attribute) => {
-      if (attribute.rubricSlug === rubricSlug && attribute.showInCatalogueFilter) {
-        selectedAttributesIds.push(attribute.attributeId);
+      if (attribute.showInCatalogueFilter) {
+        selectedAttributesIds.push(attribute._id);
 
         const attributeOptions = options.filter(({ optionsGroupId }) => {
           return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);

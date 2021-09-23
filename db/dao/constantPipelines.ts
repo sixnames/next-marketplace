@@ -15,7 +15,6 @@ import {
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -183,15 +182,18 @@ export function getCatalogueRubricPipeline(
           // Lookup rubric attributes
           {
             $lookup: {
-              from: COL_RUBRIC_ATTRIBUTES,
+              from: COL_ATTRIBUTES,
               as: 'attributes',
+              let: {
+                attributesGroupIds: '$attributesGroupIds',
+              },
               pipeline: [
                 {
                   $match: {
                     $expr: {
                       $and: [
                         {
-                          $eq: ['$$rubricId', '$rubricId'],
+                          $in: ['$attributesGroupId', '$$attributesGroupIds'],
                         },
                         {
                           $in: ['$slug', '$$attributesSlugs'],

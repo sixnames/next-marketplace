@@ -626,9 +626,8 @@ export interface NexusGenInputs {
   };
   UpdateAttributeInRubricInput: {
     // input type
-    rubricAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    showInRubricFilter: boolean; // Boolean!
   };
   UpdateAttributesGroupInput: {
     // input type
@@ -1144,8 +1143,27 @@ export interface NexusGenObjects {
   RoleRule: dbModels.RoleRuleModel;
   RoleRulePayload: dbModels.RoleRulePayloadModel;
   Rubric: dbModels.RubricModel;
-  RubricAttribute: dbModels.RubricAttributeModel;
-  RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
+  RubricAttribute: {
+    // root type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    metric?: NexusGenRootTypes['Metric'] | null; // Metric
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    showInCatalogueFilter: boolean; // Boolean!
+    showInCatalogueNav: boolean; // Boolean!
+    slug?: string | null; // String
+    variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
+    viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
+    views: NexusGenScalars['JSONObject']; // JSONObject!
+  };
+  RubricAttributesGroup: {
+    // root type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+  };
   RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
   RubricOption: {
     // root type
@@ -1865,7 +1883,7 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    productSlug: NexusGenScalars['ObjectId']; // ObjectId!
+    productSlug: string; // String!
   };
   ProductAttribute: {
     // field return type
@@ -3003,7 +3021,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     assets: 'Asset';
     productId: 'ObjectId';
-    productSlug: 'ObjectId';
+    productSlug: 'String';
   };
   ProductAttribute: {
     // field return type name

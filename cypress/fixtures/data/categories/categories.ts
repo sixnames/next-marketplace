@@ -4,7 +4,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../../config/common';
 import { CategoryModel } from '../../../../db/dbModels';
-import { getObjectId } from 'mongo-seeding';
+import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 const categories: CategoryModel[] = [
   {
@@ -18,6 +18,10 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый',
     },
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики виски',
+    ]),
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -31,6 +35,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A',
     },
+    attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -48,6 +53,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-1',
     },
+    attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -65,6 +71,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-2',
     },
+    attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -77,6 +84,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Купажированный',
     },
+    attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

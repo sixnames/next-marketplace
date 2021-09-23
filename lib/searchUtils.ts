@@ -11,12 +11,7 @@ import {
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
-import {
-  COL_OPTIONS,
-  COL_RUBRIC_ATTRIBUTES,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -376,6 +371,7 @@ export const getSearchData = async ({
                     as: 'rubric',
                     let: {
                       rubricId: '$_id',
+                      attributesGroupIds: '$attributesGroupIds',
                       attributesSlugs: '$attributesSlugs',
                       optionsSlugs: '$optionsSlugs',
                     },
@@ -391,7 +387,7 @@ export const getSearchData = async ({
                       // Lookup rubric attributes
                       {
                         $lookup: {
-                          from: COL_RUBRIC_ATTRIBUTES,
+                          from: COL_ATTRIBUTES,
                           as: 'attributes',
                           pipeline: [
                             {
@@ -400,7 +396,7 @@ export const getSearchData = async ({
                                 $expr: {
                                   $and: [
                                     {
-                                      $eq: ['$$rubricId', '$rubricId'],
+                                      $in: ['$attributesGroupId', '$$attributesGroupIds'],
                                     },
                                     {
                                       $in: ['$slug', '$$attributesSlugs'],

@@ -70,7 +70,6 @@ import {
   OptionInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
-  RubricAttributeInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -190,7 +189,6 @@ CastRubricsToCatalogueAttributeInterface): CatalogueFilterAttributeInterface {
 
   const castedAttribute: CatalogueFilterAttributeInterface = {
     _id: new ObjectId(),
-    attributeId: new ObjectId(),
     clearSlug,
     slug: RUBRIC_KEY,
     name: getFieldStringLocale(
@@ -219,7 +217,7 @@ CastRubricsToCatalogueAttributeInterface): CatalogueFilterAttributeInterface {
 
 export interface GetCatalogueAttributesInterface {
   filters: string[];
-  attributes: RubricAttributeInterface[];
+  attributes: AttributeInterface[];
   locale: string;
   productsPrices: CatalogueProductPricesInterface[];
   basePath: string;
@@ -238,7 +236,7 @@ export interface GetCatalogueAttributesPayloadInterface {
 
 interface CastOptionInterface {
   option: OptionInterface;
-  attribute: RubricAttributeInterface;
+  attribute: AttributeInterface;
 }
 
 interface CastOptionPayloadInterface {
@@ -475,7 +473,6 @@ export async function getCatalogueAttributes({
 
     const castedAttribute: CatalogueFilterAttributeInterface = {
       _id: attribute._id,
-      attributeId: attribute.attributeId,
       clearSlug,
       slug: attribute.slug,
       name: getFieldStringLocale(attribute.nameI18n, locale),
@@ -1203,7 +1200,7 @@ export const getCatalogueData = async ({
     const priceAttribute = getPriceAttribute();
 
     // category attribute
-    let categoryAttribute: RubricAttributeInterface[] = [];
+    let categoryAttribute: AttributeInterface[] = [];
     const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
     if (
       shopProductsAggregationResult.categories &&
@@ -1219,7 +1216,7 @@ export const getCatalogueData = async ({
     }
 
     // brand attribute
-    let brandAttribute: RubricAttributeInterface[] = [];
+    let brandAttribute: AttributeInterface[] = [];
     const showBrandInFilter = Boolean(rubric?.showBrandInFilter);
     if (
       shopProductsAggregationResult.brands &&
@@ -1236,8 +1233,10 @@ export const getCatalogueData = async ({
 
     const rubricAttributes = inCategory
       ? rubric.attributes || []
-      : (rubric.attributes || []).filter(({ showInRubricFilter }) => {
-          return showInRubricFilter;
+      : (rubric.attributes || []).filter(({ _id }) => {
+          return rubric?.filterVisibleAttributeIds.some((attributeId) => {
+            return attributeId.equals(_id);
+          });
         });
     const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],

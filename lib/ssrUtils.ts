@@ -21,6 +21,7 @@ import {
   CONFIG_GROUP_PROJECT,
 } from 'config/common';
 import {
+  COL_ATTRIBUTES,
   COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
@@ -33,13 +34,13 @@ import {
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_ROLES,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
 } from 'db/collectionNames';
 import {
+  AttributeModel,
   CategoryModel,
   CityModel,
   CompanyModel,
@@ -47,7 +48,6 @@ import {
   CountryModel,
   LanguageModel,
   ObjectIdModel,
-  RubricAttributeModel,
   RubricModel,
   ShopProductModel,
   UserModel,
@@ -125,7 +125,7 @@ export const getCatalogueNavRubrics = async ({
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // Get configs
@@ -319,7 +319,7 @@ export const getCatalogueNavRubrics = async ({
     });
 
     if (rubricConfig) {
-      const rubricAttributesAggregation = await rubricAttributesCollection
+      const rubricAttributesAggregation = await attributesCollection
         .aggregate([
           {
             $match: {

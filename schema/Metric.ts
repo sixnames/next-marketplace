@@ -9,14 +9,8 @@ import {
   MetricModel,
   MetricPayloadModel,
   ProductAttributeModel,
-  RubricAttributeModel,
 } from 'db/dbModels';
-import {
-  COL_ATTRIBUTES,
-  COL_METRICS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRIC_ATTRIBUTES,
-} from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCT_ATTRIBUTES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { SORT_ASC } from 'config/common';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -181,8 +175,6 @@ export const MetricMutations = extendType({
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const rubricAttributesCollection =
-          db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -285,21 +277,7 @@ export const MetricMutations = extendType({
                 },
               },
             );
-
-            // Update rubric attributes metric
-            const updatedRubricAttributesResult = await rubricAttributesCollection.updateMany(
-              { 'metric._id': metricId },
-              {
-                $set: {
-                  metric: updatedMetric,
-                },
-              },
-            );
-            if (
-              !updatedAttributesResult.result.ok ||
-              !updatedProductAttributesResult.result.ok ||
-              !updatedRubricAttributesResult.result.ok
-            ) {
+            if (!updatedAttributesResult.result.ok || !updatedProductAttributesResult.result.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('metrics.update.error'),

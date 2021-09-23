@@ -1,24 +1,5 @@
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
-import { RubricVariantModel } from 'db/dbModels';
-import { OptionInterface, RubricAttributeInterface } from 'db/uiInterfaces';
+import { AttributeInterface, OptionInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { getObjectId } from 'mongo-seeding';
-
-export const STANDARD_RUBRIC_VARIANT: RubricVariantModel = {
-  _id: getObjectId('rubricVariant standard'),
-  slug: DEFAULT_COMPANY_SLUG,
-  companySlug: DEFAULT_COMPANY_SLUG,
-  showCardButtonsBackground: true,
-  showSnippetArticle: true,
-  showSnippetBackground: true,
-  showSnippetButtonsOnHover: false,
-  showSnippetRating: true,
-  gridCatalogueColumns: 2,
-  nameI18n: {
-    [DEFAULT_LOCALE]: 'Стандартная',
-    [SECONDARY_LOCALE]: 'Standard',
-  },
-};
 
 export interface GetRubricNavOptionsInterface {
   options: OptionInterface[];
@@ -43,14 +24,14 @@ export function getRubricNavOptions({
 
 export interface GetRubricNavAttributesInterface {
   locale: string;
-  attributes: RubricAttributeInterface[];
+  attributes: AttributeInterface[];
 }
 
 export function getRubricNavAttributes({
   locale,
   attributes,
-}: GetRubricNavAttributesInterface): RubricAttributeInterface[] {
-  const sortedAttributes: RubricAttributeInterface[] = [];
+}: GetRubricNavAttributesInterface): AttributeInterface[] {
+  const sortedAttributes: AttributeInterface[] = [];
   attributes.forEach((attribute) => {
     if ((attribute.options || []).length < 1) {
       return;

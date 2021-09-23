@@ -46,8 +46,6 @@ import {
   ProductModel,
   RoleModel,
   RoleRuleModel,
-  RubricAttributeModel,
-  RubricAttributesGroupModel,
   RubricModel,
   RubricVariantModel,
   ShopModel,
@@ -102,6 +100,7 @@ export interface AttributeInterface extends AttributeModel {
   metric?: MetricInterface | null;
   optionsGroup?: OptionsGroupInterface | null;
   options?: OptionInterface[] | null;
+  totalOptionsCount?: number | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
@@ -225,7 +224,7 @@ export interface ProductAttributeInterface extends ProductAttributeModel {
 
 export interface RubricAttributesGroupASTInterface {
   _id: string;
-  attributes: RubricAttributeInterface[];
+  attributes: AttributeInterface[];
 }
 
 export interface ProductAttributesGroupASTInterface {
@@ -307,38 +306,24 @@ export interface RubricVariantInterface extends RubricVariantModel {
   cardBrandsLabel?: string | null;
 }
 
-export interface RubricAttributeInterface extends RubricAttributeModel {
-  options?: OptionInterface[] | null;
-  name?: string | null;
-  metric?: MetricInterface | null;
-  rubric?: RubricInterface | null;
-  totalOptionsCount?: number | null;
-  category?: CategoryInterface | null;
-}
-
-export interface RubricAttributesGroupInterface extends RubricAttributesGroupModel {
-  attributes?: RubricAttributeInterface[] | null;
-  name?: string | null;
-}
-
 export interface RubricInterface extends RubricModel {
   name?: string | null;
-  attributes?: RubricAttributeInterface[] | null;
-  navItems?: RubricAttributeInterface[] | null;
+  attributes?: AttributeInterface[] | null;
+  navItems?: AttributeInterface[] | null;
   activeProductsCount?: number | null;
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
-  attributesGroups?: RubricAttributesGroupInterface[] | null;
+  attributesGroups?: AttributesGroupInterface[] | null;
   categories?: CategoryInterface[] | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
   name?: string | null;
-  attributes?: RubricAttributeInterface[] | null;
+  attributes?: AttributeInterface[] | null;
   activeProductsCount?: number | null;
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
-  attributesGroups?: RubricAttributesGroupInterface[] | null;
+  attributesGroups?: AttributesGroupInterface[] | null;
   rubric?: RubricInterface | null;
   categories?: CategoryInterface[] | null;
   icon?: IconModel | null;
@@ -471,7 +456,6 @@ export interface CatalogueFilterAttributeOptionInterface {
 
 export interface CatalogueFilterAttributeInterface {
   _id: ObjectIdModel;
-  attributeId: ObjectIdModel;
   clearSlug: string;
   slug: string;
   name: string;

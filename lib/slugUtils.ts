@@ -21,15 +21,6 @@ export const generateDefaultLangSlug = (languages: TranslationModel) => {
   return generateSlug(defaultValue);
 };
 
-export interface GenerateProductSlugInterface {
-  originalName: string;
-  itemId: string;
-}
-
-export const generateProductSlug = ({ originalName, itemId }: GenerateProductSlugInterface) => {
-  return generateSlug(`${originalName} ${itemId}`);
-};
-
 export interface GenerateCompanySlugInterface {
   name: string;
   itemId: string;

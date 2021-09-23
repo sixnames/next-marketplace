@@ -9,7 +9,6 @@ import {
 } from '../../../../config/common';
 import { ObjectIdModel, OptionModel, ProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-const cyrillicToTranslit = require('cyrillic-to-translit-js');
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
 import options from '../options/options';
@@ -18,17 +17,6 @@ import manufacturers from '../manufacturers/manufacturers';
 import suppliers from '../suppliers/suppliers';
 import brands from '../brands/brands';
 import brandCollections from '../brandCollections/brandCollections';
-
-const generateSlug = (name: string) => {
-  const translit = new cyrillicToTranslit();
-  const cleanString = name
-    ? name
-        .replace('-', ' ')
-        .replace(/[$-/:-?{-~!"^_`\[\]]/g, '')
-        .toLocaleLowerCase()
-    : '';
-  return translit.transform(cleanString, '_');
-};
 
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
@@ -271,7 +259,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
       barcode: [itemId, `${itemId}9999`],
-      slug: generateSlug(name),
+      slug: itemId,
       originalName: name,
       gender: GENDER_IT,
       nameI18n: {

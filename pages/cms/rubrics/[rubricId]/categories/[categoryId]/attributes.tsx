@@ -60,59 +60,56 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     onError: onErrorCallback,
   });
 
-  const columns = (columnCategory: CategoryInterface) => {
-    const payload: TableColumn<AttributeInterface>[] = [
-      {
-        accessor: 'name',
-        headTitle: 'Название',
-        render: ({ cellData }) => cellData,
+  const columns = (columnCategory?: CategoryInterface): TableColumn<AttributeInterface>[] => [
+    {
+      accessor: 'name',
+      headTitle: 'Название',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      accessor: 'variant',
+      headTitle: 'Тип',
+      render: ({ cellData }) =>
+        getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
+    },
+    {
+      accessor: 'metric',
+      headTitle: 'Единица измерения',
+      render: ({ cellData }) => cellData?.name || null,
+    },
+    {
+      accessor: 'showInRubricFilter',
+      headTitle: 'Показывать в фильтре рубрики',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <CheckBox
+            disabled
+            value={cellData}
+            name={dataItem.slug}
+            checked={cellData}
+            onChange={(e: any) => {
+              console.log(e?.target?.checked);
+            }}
+          />
+        );
       },
-      {
-        accessor: 'variant',
-        headTitle: 'Тип',
-        render: ({ cellData }) =>
-          getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
-      },
-      {
-        accessor: 'metric',
-        headTitle: 'Единица измерения',
-        render: ({ cellData }) => cellData?.name || null,
-      },
-      {
-        accessor: 'showInRubricFilter',
-        headTitle: 'Показывать в фильтре рубрики',
-        render: ({ cellData, dataItem }) => {
+    },
+    {
+      headTitle: 'Категория',
+      render: () => {
+        if (columnCategory && columnCategory._id !== category._id) {
           return (
-            <CheckBox
-              disabled
-              value={cellData}
-              name={dataItem.slug}
-              checked={cellData}
-              onChange={(e: any) => {
-                console.log(e?.target?.checked);
-              }}
-            />
+            <Link
+              href={`${ROUTE_CMS}/rubrics/${columnCategory.rubric?._id}/categories/${columnCategory._id}/attributes`}
+            >
+              {columnCategory.name}
+            </Link>
           );
-        },
+        }
+        return 'На уровне рубрики';
       },
-      {
-        headTitle: 'Категория',
-        render: () => {
-          if (columnCategory && columnCategory._id !== category._id) {
-            return (
-              <Link
-                href={`${ROUTE_CMS}/rubrics/${columnCategory.rubric?._id}/categories/${columnCategory._id}/attributes`}
-              >
-                {columnCategory.name}
-              </Link>
-            );
-          }
-          return null;
-        },
-      },
-    ];
-    return payload;
-  };
+    },
+  ];
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Атрибуты',
@@ -222,6 +219,37 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 );
               })}
             </React.Fragment>
+          );
+        })}
+
+        {(category.rubric?.attributesGroups || []).map((attributesGroup) => {
+          const { name, attributes, _id } = attributesGroup;
+
+          return (
+            <div key={`${_id}`} className='mb-12'>
+              <Accordion
+                isOpen
+                title={`${name}`}
+                titleRight={
+                  <ContentItemControls
+                    testId={`${attributesGroup.name}`}
+                    justifyContent={'flex-end'}
+                    isDeleteDisabled
+                    deleteTitle={'Удалить группу атрибутов из категории'}
+                    deleteHandler={() => null}
+                  />
+                }
+              >
+                <div className={`overflow-x-auto mt-4`}>
+                  <Table<AttributeInterface>
+                    data={attributes}
+                    columns={columns()}
+                    emptyMessage={'Список атрибутов пуст'}
+                    testIdKey={'nameString'}
+                  />
+                </div>
+              </Accordion>
+            </div>
           );
         })}
 

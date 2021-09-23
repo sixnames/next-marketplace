@@ -14,12 +14,12 @@ import { useLocaleContext } from 'context/localeContext';
 import {
   COL_ATTRIBUTES_GROUPS,
   COL_CATEGORIES,
-  COL_RUBRIC_ATTRIBUTES,
+  COL_ATTRIBUTES,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
@@ -29,9 +29,8 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castRubricForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -63,7 +62,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<RubricAttributeInterface>[] = [
+  const columns = (category?: CategoryInterface): TableColumn<AttributeInterface>[] => [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -105,15 +104,14 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       },
     },
     {
-      accessor: 'category',
       headTitle: 'Категория',
-      render: ({ cellData }) => {
-        if (cellData) {
+      render: () => {
+        if (category) {
           return (
             <Link
-              href={`${ROUTE_CMS}/rubrics/${rubric?._id}/categories/${cellData._id}/attributes`}
+              href={`${ROUTE_CMS}/rubrics/${rubric?._id}/categories/${category._id}/attributes`}
             >
-              {cellData.name}
+              {category.name}
             </Link>
           );
         }
@@ -141,10 +139,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       <Inner testId={'rubric-attributes'}>
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
-          const isAttributeDisabled = (attributes || []).some((attribute) => {
-            return attribute.categoryId;
-          });
-
           return (
             <div key={`${_id}`} className='mb-12'>
               <Accordion
@@ -155,7 +149,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                     testId={`${attributesGroup.name}`}
                     justifyContent={'flex-end'}
                     deleteTitle={'Удалить группу атрибутов из рубрики'}
-                    isDeleteDisabled={isAttributeDisabled}
                     deleteHandler={() => {
                       showModal({
                         variant: CONFIRM_MODAL,
@@ -180,15 +173,51 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<RubricAttributeInterface>
+                  <Table<AttributeInterface>
                     data={attributes}
-                    columns={columns}
+                    columns={columns()}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />
                 </div>
               </Accordion>
             </div>
+          );
+        })}
+
+        {(rubric.categories || []).map((category) => {
+          return (
+            <React.Fragment key={`${category._id}`}>
+              {(category.attributesGroups || []).map((attributesGroup) => {
+                const { name, attributes, _id } = attributesGroup;
+                return (
+                  <div key={`${_id}`} className='mb-12'>
+                    <Accordion
+                      isOpen
+                      title={`${name}`}
+                      titleRight={
+                        <ContentItemControls
+                          testId={`${attributesGroup.name}`}
+                          justifyContent={'flex-end'}
+                          isDeleteDisabled
+                          deleteTitle={'Удалить группу атрибутов из рубрики'}
+                          deleteHandler={() => null}
+                        />
+                      }
+                    >
+                      <div className={`overflow-x-auto mt-4`}>
+                        <Table<AttributeInterface>
+                          data={attributes}
+                          columns={columns(category)}
+                          emptyMessage={'Список атрибутов пуст'}
+                          testIdKey={'nameString'}
+                        />
+                      </div>
+                    </Accordion>
+                  </div>
+                );
+              })}
+            </React.Fragment>
           );
         })}
 
@@ -251,6 +280,53 @@ export const getServerSideProps = async (
     };
   }
 
+  const attributesStage = [
+    {
+      $lookup: {
+        from: COL_ATTRIBUTES_GROUPS,
+        as: 'attributesGroups',
+        let: {
+          attributesGroupIds: '$attributesGroupIds',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ['$attributesGroupId', '$$attributesGroupIds'],
+              },
+            },
+          },
+
+          // get attributes
+          {
+            $lookup: {
+              from: COL_ATTRIBUTES,
+              as: 'attributes',
+              let: {
+                attributesGroupId: '$_id',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$attributesGroupId', '$$attributesGroupId'],
+                    },
+                  },
+                },
+                {
+                  $sort: {
+                    [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                    _id: SORT_DESC,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ];
+
   const initialRubrics = await rubricsCollection
     .aggregate<RubricInterface>([
       {
@@ -264,10 +340,14 @@ export const getServerSideProps = async (
           views: false,
         },
       },
+      // get attributes
+      ...attributesStage,
+
+      // get categories
       {
         $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
-          as: 'attributesGroups',
+          from: COL_CATEGORIES,
+          as: 'categories',
           let: {
             rubricId: '$_id',
           },
@@ -275,88 +355,13 @@ export const getServerSideProps = async (
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$$rubricId', '$rubricId'] }],
+                  $eq: ['$rubricId', '$$rubricId'],
                 },
-              },
-            },
-            {
-              $sort: {
-                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                _id: SORT_DESC,
               },
             },
 
-            // get category
-            {
-              $lookup: {
-                from: COL_CATEGORIES,
-                as: 'category',
-                let: {
-                  categoryId: '$categoryId',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$_id', '$$categoryId'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-
-            // get attributes group
-            {
-              $lookup: {
-                from: COL_ATTRIBUTES_GROUPS,
-                as: 'attributesGroup',
-                let: {
-                  attributesGroupId: '$attributesGroupId',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$_id', '$$attributesGroupId'],
-                      },
-                    },
-                  },
-                  {
-                    $sort: {
-                      [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                      _id: SORT_DESC,
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                attributesGroup: {
-                  $arrayElemAt: ['$attributesGroup', 0],
-                },
-                category: {
-                  $arrayElemAt: ['$category', 0],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: '$attributesGroupId',
-                nameI18n: {
-                  $first: '$attributesGroup.nameI18n',
-                },
-                attributes: {
-                  $push: '$$ROOT',
-                },
-              },
-            },
-            {
-              $project: {
-                'attributes.attributesGroup': false,
-              },
-            },
+            // get attributes groups
+            ...attributesStage,
           ],
         },
       },
@@ -369,38 +374,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const { sessionLocale } = props;
-  const attributesGroups = (initialRubric.attributesGroups || []).map((attributesGroup) => {
-    return {
-      ...attributesGroup,
-      name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-      attributes: (attributesGroup.attributes || []).map((attribute) => {
-        return {
-          ...attribute,
-          name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
-          metric: attribute.metric
-            ? {
-                ...attribute.metric,
-                name: getFieldStringLocale(attribute.metric.nameI18n, sessionLocale),
-              }
-            : null,
-          category: attribute.category
-            ? {
-                ...attribute.category,
-                name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
-              }
-            : null,
-        };
-      }),
-    };
+  const rawRubric = castRubricForUI({
+    rubric: initialRubric,
+    locale: props.sessionLocale,
   });
-
-  const rawRubric: RubricInterface = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
-    attributes: [],
-    attributesGroups: sortByName(attributesGroups),
-  };
 
   return {
     props: {

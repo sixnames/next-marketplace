@@ -5,7 +5,7 @@ import {
 } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
-import { CategoryInterface, RubricAttributeInterface, RubricInterface } from 'db/uiInterfaces';
+import { CategoryInterface, AttributeInterface, RubricInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import Inner from 'components/Inner';
@@ -22,7 +22,7 @@ interface AttributeStylesInterface {
 }
 
 export interface StickyNavAttributeInterface extends AttributeStylesInterface {
-  attribute: RubricAttributeInterface;
+  attribute: AttributeInterface;
   rubricSlug: string;
   hideDropdown: () => void;
 }
@@ -38,7 +38,7 @@ interface StylesInterface extends AttributeStylesInterface {
 }
 
 export interface StickyNavDropdownInterface extends StylesInterface {
-  attributes: RubricAttributeInterface[] | null | undefined;
+  attributes: AttributeInterface[] | null | undefined;
   rubricSlug: string;
   categories: CategoryInterface[];
   hideDropdown: () => void;

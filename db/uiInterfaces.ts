@@ -326,6 +326,7 @@ export interface CategoryInterface extends CategoryModel {
   attributesGroups?: AttributesGroupInterface[] | null;
   rubric?: RubricInterface | null;
   categories?: CategoryInterface[] | null;
+  parents?: CategoryInterface[] | null;
   icon?: IconModel | null;
 }
 

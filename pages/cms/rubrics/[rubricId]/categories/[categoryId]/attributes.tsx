@@ -14,12 +14,12 @@ import { useLocaleContext } from 'context/localeContext';
 import {
   COL_ATTRIBUTES_GROUPS,
   COL_CATEGORIES,
-  COL_RUBRIC_ATTRIBUTES,
+  COL_ATTRIBUTES,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, RubricAttributeInterface } from 'db/uiInterfaces';
+import { CategoryInterface, AttributeInterface } from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToCategoryMutation,
   useDeleteAttributesGroupFromCategoryMutation,
@@ -61,7 +61,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<RubricAttributeInterface>[] = [
+  const columns: TableColumn<AttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -179,7 +179,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<RubricAttributeInterface>
+                  <Table<AttributeInterface>
                     data={attributes}
                     columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
@@ -250,7 +250,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-  const rubricAttributesCollection = db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
+  const attributesCollection = db.collection<AttributeInterface>(COL_ATTRIBUTES);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
@@ -293,10 +293,21 @@ export const getServerSideProps = async (
         },
       },
 
+      // get category parents
+      {
+        $lookup: {
+          from: COL_CATEGORIES,
+          as: 'parents',
+          let: {
+            parentTreeIds: '$parentTreeIds',
+          },
+        },
+      },
+
       // get category attributes
       {
         $lookup: {
-          from: COL_RUBRIC_ATTRIBUTES,
+          from: COL_ATTRIBUTES,
           as: 'attributesGroups',
           let: {
             categoryId: '$_id',
@@ -435,7 +446,7 @@ export const getServerSideProps = async (
 
   if (siblings.length > 0) {
     const siblingsIds = siblings.map(({ _id }) => _id);
-    const siblingsRubricAttributes = await rubricAttributesCollection
+    const siblingsRubricAttributes = await attributesCollection
       .find({
         categoryId: {
           $in: siblingsIds,
@@ -449,13 +460,13 @@ export const getServerSideProps = async (
     });
   }
 
-  const rubricAttributes = await rubricAttributesCollection
+  const rubricAttributes = await attributesCollection
     .find({
       rubricId: initialCategory.rubricId,
       categoryId: null,
     })
     .toArray();
-  const childCategoryAttributes = await rubricAttributesCollection
+  const childCategoryAttributes = await attributesCollection
     .find({
       categoryId: {
         $in: childCategoriesIds,

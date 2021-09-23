@@ -28,9 +28,8 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/CmsLayout/CmsCategoryLayout';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castCategoryForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -61,57 +60,59 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<AttributeInterface>[] = [
-    {
-      accessor: 'name',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'variant',
-      headTitle: 'Тип',
-      render: ({ cellData }) =>
-        getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
-    },
-    {
-      accessor: 'metric',
-      headTitle: 'Единица измерения',
-      render: ({ cellData }) => cellData?.name || null,
-    },
-    {
-      accessor: 'showInRubricFilter',
-      headTitle: 'Показывать в фильтре рубрики',
-      render: ({ cellData, dataItem }) => {
-        return (
-          <CheckBox
-            disabled
-            value={cellData}
-            name={dataItem.slug}
-            checked={cellData}
-            onChange={(e: any) => {
-              console.log(e?.target?.checked);
-            }}
-          />
-        );
+  const columns = (columnCategory: CategoryInterface) => {
+    const payload: TableColumn<AttributeInterface>[] = [
+      {
+        accessor: 'name',
+        headTitle: 'Название',
+        render: ({ cellData }) => cellData,
       },
-    },
-    {
-      accessor: 'category',
-      headTitle: 'Категория',
-      render: ({ cellData }) => {
-        if (cellData && cellData._id !== category._id) {
+      {
+        accessor: 'variant',
+        headTitle: 'Тип',
+        render: ({ cellData }) =>
+          getConstantTranslation(`selectsOptions.attributeVariants.${cellData}.${locale}`),
+      },
+      {
+        accessor: 'metric',
+        headTitle: 'Единица измерения',
+        render: ({ cellData }) => cellData?.name || null,
+      },
+      {
+        accessor: 'showInRubricFilter',
+        headTitle: 'Показывать в фильтре рубрики',
+        render: ({ cellData, dataItem }) => {
           return (
-            <Link
-              href={`${ROUTE_CMS}/rubrics/${category.rubric?._id}/categories/${category._id}/attributes`}
-            >
-              {cellData.name}
-            </Link>
+            <CheckBox
+              disabled
+              value={cellData}
+              name={dataItem.slug}
+              checked={cellData}
+              onChange={(e: any) => {
+                console.log(e?.target?.checked);
+              }}
+            />
           );
-        }
-        return null;
+        },
       },
-    },
-  ];
+      {
+        headTitle: 'Категория',
+        render: () => {
+          if (columnCategory && columnCategory._id !== category._id) {
+            return (
+              <Link
+                href={`${ROUTE_CMS}/rubrics/${columnCategory.rubric?._id}/categories/${columnCategory._id}/attributes`}
+              >
+                {columnCategory.name}
+              </Link>
+            );
+          }
+          return null;
+        },
+      },
+    ];
+    return payload;
+  };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Атрибуты',
@@ -140,9 +141,6 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       <Inner testId={'category-attributes'}>
         {(category.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
-          const isAttributeDisabled = (attributes || []).some((attribute) => {
-            return attribute.categoryId !== category._id;
-          });
 
           return (
             <div key={`${_id}`} className='mb-12'>
@@ -154,7 +152,6 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                     testId={`${attributesGroup.name}`}
                     justifyContent={'flex-end'}
                     deleteTitle={'Удалить группу атрибутов из категории'}
-                    isDeleteDisabled={isAttributeDisabled}
                     deleteHandler={() => {
                       showModal({
                         variant: CONFIRM_MODAL,
@@ -181,13 +178,50 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 <div className={`overflow-x-auto mt-4`}>
                   <Table<AttributeInterface>
                     data={attributes}
-                    columns={columns}
+                    columns={columns(category)}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />
                 </div>
               </Accordion>
             </div>
+          );
+        })}
+
+        {(category.parents || []).map((parent) => {
+          return (
+            <React.Fragment key={`${parent._id}`}>
+              {(parent.attributesGroups || []).map((attributesGroup) => {
+                const { name, attributes, _id } = attributesGroup;
+
+                return (
+                  <div key={`${_id}`} className='mb-12'>
+                    <Accordion
+                      isOpen
+                      title={`${name}`}
+                      titleRight={
+                        <ContentItemControls
+                          testId={`${attributesGroup.name}`}
+                          justifyContent={'flex-end'}
+                          isDeleteDisabled
+                          deleteTitle={'Удалить группу атрибутов из категории'}
+                          deleteHandler={() => null}
+                        />
+                      }
+                    >
+                      <div className={`overflow-x-auto mt-4`}>
+                        <Table<AttributeInterface>
+                          data={attributes}
+                          columns={columns(parent)}
+                          emptyMessage={'Список атрибутов пуст'}
+                          testIdKey={'nameString'}
+                        />
+                      </div>
+                    </Accordion>
+                  </div>
+                );
+              })}
+            </React.Fragment>
           );
         })}
 
@@ -259,6 +293,53 @@ export const getServerSideProps = async (
     };
   }
 
+  const attributesStage = [
+    {
+      $lookup: {
+        from: COL_ATTRIBUTES_GROUPS,
+        as: 'attributesGroups',
+        let: {
+          attributesGroupIds: '$attributesGroupIds',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ['$attributesGroupId', '$$attributesGroupIds'],
+              },
+            },
+          },
+
+          // get attributes
+          {
+            $lookup: {
+              from: COL_ATTRIBUTES,
+              as: 'attributes',
+              let: {
+                attributesGroupId: '$_id',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$attributesGroupId', '$$attributesGroupId'],
+                    },
+                  },
+                },
+                {
+                  $sort: {
+                    [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
+                    _id: SORT_DESC,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ];
+
   const categoriesAggregation = await categoriesCollection
     .aggregate([
       {
@@ -266,6 +347,10 @@ export const getServerSideProps = async (
           _id: new ObjectId(`${query.categoryId}`),
         },
       },
+
+      // get attributes groups
+      ...attributesStage,
+
       // get category rubric
       {
         $lookup: {
@@ -282,6 +367,8 @@ export const getServerSideProps = async (
                 },
               },
             },
+            // get attributes groups
+            ...attributesStage,
           ],
         },
       },
@@ -299,110 +386,27 @@ export const getServerSideProps = async (
           from: COL_CATEGORIES,
           as: 'parents',
           let: {
+            currentId: '$_id',
             parentTreeIds: '$parentTreeIds',
-          },
-        },
-      },
-
-      // get category attributes
-      {
-        $lookup: {
-          from: COL_ATTRIBUTES,
-          as: 'attributesGroups',
-          let: {
-            categoryId: '$_id',
-            parentTreeIds: '$parentTreeIds',
-            rubricId: '$rubricId',
           },
           pipeline: [
             {
               $match: {
-                $or: [
-                  {
-                    $expr: {
-                      $in: ['$categoryId', '$$parentTreeIds'],
+                $expr: {
+                  $and: [
+                    {
+                      $in: ['$_id', '$$parentTreeIds'],
                     },
-                  },
-                  {
-                    $expr: {
-                      $eq: ['$categoryId', '$$categoryId'],
+                    {
+                      $ne: ['$_id', '$$currentId'],
                     },
-                  },
-                ],
-              },
-            },
-            {
-              $sort: {
-                [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                _id: SORT_DESC,
+                  ],
+                },
               },
             },
 
-            // get category
-            {
-              $lookup: {
-                from: COL_CATEGORIES,
-                as: 'category',
-                let: {
-                  categoryId: '$categoryId',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$_id', '$$categoryId'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-
-            // get attributes group
-            {
-              $lookup: {
-                from: COL_ATTRIBUTES_GROUPS,
-                as: 'attributesGroup',
-                let: {
-                  attributesGroupId: '$attributesGroupId',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$_id', '$$attributesGroupId'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                attributesGroup: {
-                  $arrayElemAt: ['$attributesGroup', 0],
-                },
-                category: {
-                  $arrayElemAt: ['$category', 0],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: '$attributesGroupId',
-                nameI18n: {
-                  $first: '$attributesGroup.nameI18n',
-                },
-                attributes: {
-                  $push: '$$ROOT',
-                },
-              },
-            },
-            {
-              $project: {
-                'attributes.attributesGroup': false,
-              },
-            },
+            // get attributes groups
+            ...attributesStage,
           ],
         },
       },
@@ -416,20 +420,17 @@ export const getServerSideProps = async (
   }
 
   // get excluded attributes groups ids
-  const excludedAttributesGroupsIds: ObjectIdModel[] = (initialCategory.attributesGroups || []).map(
-    ({ _id }) => {
-      return _id;
+  const excludedAttributesGroupsIds = (initialCategory.parents || []).reduce(
+    (acc: ObjectIdModel[], { attributesGroupIds }) => {
+      return [...acc, ...attributesGroupIds];
     },
+    [],
   );
+  (initialCategory.rubric?.attributesGroupIds || []).forEach((_id) => {
+    excludedAttributesGroupsIds.push(_id);
+  });
 
-  // child categories
-  const childCategories = await categoriesCollection
-    .find({
-      parentTreeIds: initialCategory._id,
-    })
-    .toArray();
-  const childCategoriesIds = childCategories.map(({ _id }) => _id);
-
+  // siblings
   const siblingsQuery = initialCategory.parentId
     ? {
         _id: { $ne: initialCategory._id },
@@ -443,7 +444,6 @@ export const getServerSideProps = async (
       };
 
   const siblings = await categoriesCollection.find(siblingsQuery).toArray();
-
   if (siblings.length > 0) {
     const siblingsIds = siblings.map(({ _id }) => _id);
     const siblingsRubricAttributes = await attributesCollection
@@ -460,69 +460,11 @@ export const getServerSideProps = async (
     });
   }
 
-  const rubricAttributes = await attributesCollection
-    .find({
-      rubricId: initialCategory.rubricId,
-      categoryId: null,
-    })
-    .toArray();
-  const childCategoryAttributes = await attributesCollection
-    .find({
-      categoryId: {
-        $in: childCategoriesIds,
-      },
-    })
-    .toArray();
-  rubricAttributes.forEach(({ attributesGroupId }) => {
-    if (attributesGroupId) {
-      excludedAttributesGroupsIds.push(attributesGroupId);
-    }
+  const locale = props.sessionLocale;
+  const category = castCategoryForUI({
+    category: initialCategory,
+    locale,
   });
-  childCategoryAttributes.forEach(({ attributesGroupId }) => {
-    if (attributesGroupId) {
-      excludedAttributesGroupsIds.push(attributesGroupId);
-    }
-  });
-
-  const { sessionLocale } = props;
-
-  const castedAttributesGroups = (initialCategory.attributesGroups || []).map((attributesGroup) => {
-    return {
-      ...attributesGroup,
-      name: getFieldStringLocale(attributesGroup.nameI18n, sessionLocale),
-      attributes: (attributesGroup.attributes || []).map((attribute) => {
-        return {
-          ...attribute,
-          metric: attribute.metric
-            ? {
-                ...attribute.metric,
-                name: getFieldStringLocale(attribute.metric.nameI18n, sessionLocale),
-              }
-            : null,
-          name: getFieldStringLocale(attribute.nameI18n, sessionLocale),
-          category: attribute.category
-            ? {
-                ...attribute.category,
-                name: getFieldStringLocale(attribute.category.nameI18n, sessionLocale),
-              }
-            : null,
-        };
-      }),
-    };
-  });
-
-  const category: CategoryInterface = {
-    ...initialCategory,
-    name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
-    attributes: [],
-    rubric: initialCategory.rubric
-      ? {
-          ...initialCategory.rubric,
-          name: getFieldStringLocale(initialCategory.rubric.nameI18n, sessionLocale),
-        }
-      : null,
-    attributesGroups: sortByName(castedAttributesGroups),
-  };
 
   return {
     props: {

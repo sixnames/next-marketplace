@@ -320,10 +320,10 @@ export interface RubricInterface extends RubricModel {
 export interface CategoryInterface extends CategoryModel {
   name?: string | null;
   attributes?: AttributeInterface[] | null;
+  attributesGroups?: AttributesGroupInterface[] | null;
   activeProductsCount?: number | null;
   productsCount?: number | null;
   variant?: RubricVariantInterface | null;
-  attributesGroups?: AttributesGroupInterface[] | null;
   rubric?: RubricInterface | null;
   categories?: CategoryInterface[] | null;
   parents?: CategoryInterface[] | null;

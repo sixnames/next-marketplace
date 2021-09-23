@@ -7,16 +7,12 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
-import {
-  COL_ATTRIBUTES_GROUPS,
-  COL_CATEGORIES,
-  COL_ATTRIBUTES,
-  COL_RUBRICS,
-} from 'db/collectionNames';
+import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
@@ -280,53 +276,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const attributesStage = [
-    {
-      $lookup: {
-        from: COL_ATTRIBUTES_GROUPS,
-        as: 'attributesGroups',
-        let: {
-          attributesGroupIds: '$attributesGroupIds',
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$attributesGroupId', '$$attributesGroupIds'],
-              },
-            },
-          },
-
-          // get attributes
-          {
-            $lookup: {
-              from: COL_ATTRIBUTES,
-              as: 'attributes',
-              let: {
-                attributesGroupId: '$_id',
-              },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$attributesGroupId', '$$attributesGroupId'],
-                    },
-                  },
-                },
-                {
-                  $sort: {
-                    [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-                    _id: SORT_DESC,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ];
-
   const initialRubrics = await rubricsCollection
     .aggregate<RubricInterface>([
       {
@@ -341,7 +290,7 @@ export const getServerSideProps = async (
         },
       },
       // get attributes
-      ...attributesStage,
+      ...rubricAttributeGroupsPipeline,
 
       // get categories
       {
@@ -361,7 +310,7 @@ export const getServerSideProps = async (
             },
 
             // get attributes groups
-            ...attributesStage,
+            ...rubricAttributeGroupsPipeline,
           ],
         },
       },

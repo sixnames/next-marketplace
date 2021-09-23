@@ -7,6 +7,7 @@ import {
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
@@ -883,6 +884,61 @@ export const productConnectionsSimplePipeline = [
             ],
           },
         },
+      ],
+    },
+  },
+];
+
+export const rubricAttributesGroupAttributesPipeline = [
+  {
+    $lookup: {
+      from: COL_ATTRIBUTES,
+      as: 'attributes',
+      let: {
+        attributesGroupId: '$_id',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$attributesGroupId', '$$attributesGroupId'],
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: SORT_DESC,
+          },
+        },
+      ],
+    },
+  },
+];
+
+export const rubricAttributeGroupsPipeline = [
+  {
+    $lookup: {
+      from: COL_ATTRIBUTES_GROUPS,
+      as: 'attributesGroups',
+      let: {
+        attributesGroupIds: '$attributesGroupIds',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $in: ['$_id', '$$attributesGroupIds'],
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: SORT_DESC,
+          },
+        },
+
+        // get attributes
+        ...rubricAttributesGroupAttributesPipeline,
       ],
     },
   },

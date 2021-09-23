@@ -222,16 +222,6 @@ export interface ProductAttributeInterface extends ProductAttributeModel {
   metric?: MetricInterface | null;
 }
 
-export interface RubricAttributesGroupASTInterface {
-  _id: string;
-  attributes: AttributeInterface[];
-}
-
-export interface ProductAttributesGroupASTInterface {
-  _id: string;
-  attributes: ProductAttributeInterface[];
-}
-
 export interface ProductCategoryInterface extends CategoryInterface {
   selected: boolean;
   categories: ProductCategoryInterface[];
@@ -271,11 +261,10 @@ export interface ProductInterface extends ProductModel {
   shopProducts?: ShopProductInterface[] | null;
   shopProduct?: ShopProductInterface | null;
   rubric?: RubricInterface | null;
-  rubricAttributesAST?: RubricAttributesGroupASTInterface[] | null;
-  stringAttributesAST?: ProductAttributesGroupASTInterface | null;
-  numberAttributesAST?: ProductAttributesGroupASTInterface | null;
-  multipleSelectAttributesAST?: ProductAttributesGroupASTInterface | null;
-  selectAttributesAST?: ProductAttributesGroupASTInterface | null;
+  stringAttributesAST?: ProductAttributeInterface[] | null;
+  numberAttributesAST?: ProductAttributeInterface[] | null;
+  multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
+  selectAttributesAST?: ProductAttributeInterface[] | null;
   similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;

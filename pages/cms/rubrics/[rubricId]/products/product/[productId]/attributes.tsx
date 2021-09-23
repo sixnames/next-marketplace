@@ -12,21 +12,19 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ROUTE_CMS,
-  SORT_ASC,
-  SORT_DESC,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
-import { COL_RUBRIC_ATTRIBUTES } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { rubricAttributesGroupAttributesPipeline } from 'db/dao/constantPipelines';
+import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   OptionInterface,
   ProductAttributeInterface,
-  ProductAttributesGroupASTInterface,
   ProductInterface,
-  RubricAttributeInterface,
-  RubricAttributesGroupASTInterface,
   RubricInterface,
+  AttributesGroupInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductNumberAttributeMutation,
@@ -38,7 +36,6 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { sortByName } from 'lib/optionsUtils';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
@@ -149,7 +146,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
             </div>
 
             <div className={selectsListClassName}>
-              {selectAttributesAST.attributes.map((attribute) => {
+              {(selectAttributesAST || []).map((attribute) => {
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
@@ -205,7 +202,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
             </div>
 
             <div className={selectsListClassName}>
-              {multipleSelectAttributesAST.attributes.map((attribute) => {
+              {(multipleSelectAttributesAST || []).map((attribute) => {
                 return (
                   <FakeInput
                     value={`${attribute.readableValue || ''}`}
@@ -253,14 +250,14 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
 
         {numberAttributesAST ? (
           <Formik
-            initialValues={numberAttributesAST}
+            initialValues={{ attributes: numberAttributesAST }}
             onSubmit={(values) => {
               showLoading();
               updateProductNumberAttributeMutation({
                 variables: {
                   input: {
                     productId: product._id,
-                    attributes: values.attributes.map((attribute) => {
+                    attributes: (values.attributes || []).map((attribute) => {
                       return {
                         attributeId: attribute.attributeId,
                         productAttributeId: attribute._id,
@@ -287,7 +284,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
 
                     <div className='relative'>
                       <div className={selectsListClassName}>
-                        {numberAttributesAST.attributes.map((attribute, index) => {
+                        {(numberAttributesAST || []).map((attribute, index) => {
                           return (
                             <FormikInput
                               type={'number'}
@@ -315,14 +312,14 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
 
         {stringAttributesAST ? (
           <Formik
-            initialValues={stringAttributesAST}
+            initialValues={{ attributes: stringAttributesAST }}
             onSubmit={(values) => {
               showLoading();
               updateProductTextAttributeMutation({
                 variables: {
                   input: {
                     productId: product._id,
-                    attributes: values.attributes.map((attribute) => {
+                    attributes: (values.attributes || []).map((attribute) => {
                       return {
                         attributeId: attribute.attributeId,
                         productAttributeId: attribute._id,
@@ -345,7 +342,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                     </div>
 
                     <div className='relative'>
-                      {stringAttributesAST.attributes.map((attribute, index) => {
+                      {(stringAttributesAST || []).map((attribute, index) => {
                         return (
                           <FormikTranslationsInput
                             variant={'textarea'}
@@ -390,7 +387,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const rubricAttributesCollection = db.collection<RubricAttributeInterface>(COL_RUBRIC_ATTRIBUTES);
+  const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -409,146 +406,96 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, rubric } = payload;
+  const { product, rubric, categoriesList } = payload;
+  const attributesGroupIds: ObjectIdModel[] = rubric.attributesGroupIds;
+  categoriesList.forEach((category) => {
+    category.attributesGroupIds.forEach((_id) => {
+      attributesGroupIds.push(_id);
+    });
+  });
 
-  // Get rubric and categories attributes
-  const rubricAttributesCommonPipeline = [
-    {
-      $sort: {
-        variant: SORT_DESC,
-        [`nameI18n.${props.sessionLocale}`]: SORT_ASC,
-        _id: SORT_DESC,
-      },
-    },
-    {
-      $group: {
-        _id: '$variant',
-        attributes: {
-          $push: '$$ROOT',
-        },
-      },
-    },
-  ];
-
-  const rubricAttributesAST = await rubricAttributesCollection
-    .aggregate<RubricAttributesGroupASTInterface>([
+  const rubricAttributes = await attributesGroupsCollection
+    .aggregate([
       {
         $match: {
-          rubricId: rubric._id,
-          categoryId: null,
-        },
-      },
-      ...rubricAttributesCommonPipeline,
-    ])
-    .toArray();
-
-  const categoryAttributesAST = await rubricAttributesCollection
-    .aggregate<RubricAttributesGroupASTInterface>([
-      {
-        $match: {
-          rubricId: rubric._id,
-          categorySlug: {
-            $in: product.selectedOptionsSlugs,
+          _id: {
+            $in: attributesGroupIds,
           },
         },
       },
-      ...rubricAttributesCommonPipeline,
+      // get attributes
+      ...rubricAttributesGroupAttributesPipeline,
     ])
     .toArray();
 
   // Cast rubric attributes to product attributes
   const { attributes, ...restProduct } = product;
-  let stringAttributesAST: ProductAttributesGroupASTInterface | null = null;
-  let numberAttributesAST: ProductAttributesGroupASTInterface | null = null;
-  let multipleSelectAttributesAST: ProductAttributesGroupASTInterface | null = null;
-  let selectAttributesAST: ProductAttributesGroupASTInterface | null = null;
+  let stringAttributesAST: ProductAttributeInterface[] = [];
+  let numberAttributesAST: ProductAttributeInterface[] = [];
+  let multipleSelectAttributesAST: ProductAttributeInterface[] = [];
+  let selectAttributesAST: ProductAttributeInterface[] = [];
 
-  const initialAttributesAST = [...rubricAttributesAST, ...categoryAttributesAST];
-  const allAttributesAST = initialAttributesAST.reduce(
-    (acc: RubricAttributesGroupASTInterface[], group) => {
-      const existingGroup = acc.find(({ _id }) => {
-        return _id === group._id;
+  rubricAttributes.forEach((group) => {
+    const groupAttributes: ProductAttributeInterface[] = [];
+
+    (group.attributes || []).forEach((attribute) => {
+      const currentProductAttribute = (attributes || []).find(({ attributeId }) => {
+        return attributeId.equals(attribute._id);
       });
 
-      if (existingGroup) {
-        return [
-          ...acc,
-          {
-            ...existingGroup,
-            attributes: [...existingGroup.attributes, ...group.attributes],
-          },
-        ];
-      }
-
-      return [...acc, group];
-    },
-    [],
-  );
-
-  for await (const rubricAttributesASTGroup of allAttributesAST) {
-    const variant = rubricAttributesASTGroup._id;
-    const astGroup: ProductAttributesGroupASTInterface = {
-      _id: variant,
-      attributes: [],
-    };
-
-    for await (const attributeAST of rubricAttributesASTGroup.attributes) {
-      const productAttributes = attributes || [];
-      const currentProductAttribute = productAttributes.find(({ attributeId }) => {
-        return attributeId.equals(attributeAST.attributeId);
-      });
       if (currentProductAttribute) {
         const readableValue = getAttributeReadableValue({
           productAttribute: currentProductAttribute,
           locale: props.sessionLocale,
         });
 
-        astGroup.attributes.push({
+        groupAttributes.push({
           ...currentProductAttribute,
           readableValue: readableValue || '',
           name: getFieldStringLocale(currentProductAttribute.nameI18n, props.sessionLocale),
         });
-        continue;
+      } else {
+        const newProductAttribute: ProductAttributeInterface = {
+          ...attribute,
+          _id: new ObjectId(),
+          name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+          rubricId: rubric._id,
+          rubricSlug: rubric.slug,
+          attributeId: attribute._id,
+          productId: product._id,
+          productSlug: product.slug,
+          selectedOptionsIds: [],
+          selectedOptionsSlugs: [],
+          number: undefined,
+          textI18n: {},
+          showAsBreadcrumb: false,
+          showInCard: true,
+        };
+
+        groupAttributes.push(newProductAttribute);
+      }
+    });
+
+    groupAttributes.forEach((productAttribute) => {
+      const variant = productAttribute.variant;
+
+      if (variant === ATTRIBUTE_VARIANT_STRING) {
+        stringAttributesAST.push(productAttribute);
       }
 
-      const newProductAttribute: ProductAttributeInterface = {
-        ...attributeAST,
-        _id: new ObjectId(),
-        name: getFieldStringLocale(attributeAST.nameI18n, props.sessionLocale),
-        productId: product._id,
-        productSlug: product.slug,
-        selectedOptionsIds: [],
-        selectedOptionsSlugs: [],
-        number: undefined,
-        textI18n: {},
-        showAsBreadcrumb: false,
-        showInCard: true,
-      };
+      if (variant === ATTRIBUTE_VARIANT_NUMBER) {
+        numberAttributesAST.push(productAttribute);
+      }
 
-      astGroup.attributes.push(newProductAttribute);
-    }
+      if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
+        multipleSelectAttributesAST.push(productAttribute);
+      }
 
-    const finalAstGroup = {
-      ...astGroup,
-      attributes: sortByName(astGroup.attributes),
-    };
-
-    if (variant === ATTRIBUTE_VARIANT_STRING) {
-      stringAttributesAST = finalAstGroup;
-    }
-
-    if (variant === ATTRIBUTE_VARIANT_NUMBER) {
-      numberAttributesAST = finalAstGroup;
-    }
-
-    if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
-      multipleSelectAttributesAST = finalAstGroup;
-    }
-
-    if (variant === ATTRIBUTE_VARIANT_SELECT) {
-      selectAttributesAST = finalAstGroup;
-    }
-  }
+      if (variant === ATTRIBUTE_VARIANT_SELECT) {
+        selectAttributesAST.push(productAttribute);
+      }
+    });
+  });
 
   const finalProduct: ProductInterface = {
     ...restProduct,

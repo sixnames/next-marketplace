@@ -337,6 +337,8 @@ export interface ShopProductInterface extends ShopProductModel {
   snippetTitle?: string | null;
   cardTitle?: string | null;
   rubric?: RubricInterface | null;
+  attributesCount?: number | null;
+  totalAttributesCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {

@@ -5,10 +5,83 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
 } from 'config/common';
+import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
-import { ProductAttributeInterface } from 'db/uiInterfaces';
+import { getDatabase } from 'db/mongodb';
+import {
+  AttributeInterface,
+  CategoryInterface,
+  ProductAttributeInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getStringValueFromOptionsList, sortByName } from 'lib/optionsUtils';
+import { ObjectId } from 'mongodb';
+
+export async function getRubricAllAttributes(
+  rubricId: ObjectIdModel,
+): Promise<AttributeInterface[]> {
+  const { db } = await getDatabase();
+  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const rubricAggregationResult = await rubricsCollection
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(rubricId),
+        },
+      },
+      ...rubricAttributeGroupsPipeline,
+    ])
+    .toArray();
+  const rubric = rubricAggregationResult[0];
+  if (!rubric) {
+    return [];
+  }
+
+  const rubricAttributes: AttributeInterface[] = [];
+  (rubric.attributesGroups || []).forEach((group) => {
+    (group.attributes || []).forEach((attribute) => {
+      const exist = rubricAttributes.some(({ _id }) => _id.equals(attribute._id));
+      if (!exist) {
+        rubricAttributes.push(attribute);
+      }
+    });
+  });
+  return rubricAttributes;
+}
+
+export async function getCategoryAllAttributes(
+  categorySlugs: string[],
+): Promise<AttributeInterface[]> {
+  const { db } = await getDatabase();
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const categories = await categoriesCollection
+    .aggregate([
+      {
+        $match: {
+          slug: {
+            $in: categorySlugs,
+          },
+        },
+      },
+      ...rubricAttributeGroupsPipeline,
+    ])
+    .toArray();
+
+  const categoryAttributes: AttributeInterface[] = [];
+  categories.forEach((category) => {
+    (category.attributesGroups || []).forEach((group) => {
+      (group.attributes || []).forEach((attribute) => {
+        const exist = categoryAttributes.some(({ _id }) => _id.equals(attribute._id));
+        if (!exist) {
+          categoryAttributes.push(attribute);
+        }
+      });
+    });
+  });
+  return categoryAttributes;
+}
 
 export interface GetProductCurrentViewAttributesInterface {
   attributes: ProductAttributeInterface[];

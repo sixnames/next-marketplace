@@ -62,9 +62,7 @@ export function getCatalogueRubricPipeline(
 
   const rubricAttributesViewVariant =
     viewVariant === 'filter'
-      ? {
-          showInCatalogueFilter: true,
-        }
+      ? {}
       : {
           showInCatalogueNav: true,
         };

@@ -29,7 +29,6 @@ import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -41,7 +40,6 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
 } from 'db/dao/constantPipelines';
-import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
@@ -61,6 +59,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getCategoryAllAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
@@ -350,7 +349,6 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -664,18 +662,8 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
-  // count rubric attributes
-  const allRubricAttributes = await rubricAttributesCollection
-    .find({
-      rubricId: rubric._id,
-    })
-    .toArray();
-  const rubricAttributes = allRubricAttributes.filter(({ categoryId }) => {
-    return !categoryId;
-  });
-  const categoryAttributes = allRubricAttributes.filter(({ categoryId }) => {
-    return categoryId;
-  });
+  // rubric attributes
+  const allRubricAttributes = await getRubricAllAttributes(rubricId);
 
   const docs: ProductInterface[] = [];
   for await (const product of productsResult.docs) {
@@ -685,11 +673,7 @@ export const getServerSideProps = async (
       max: `${noNaN(product.cardPrices?.max)}`,
     };
 
-    const productCategoryAttributes = categoryAttributes.filter((attribute) => {
-      return (
-        attribute.categorySlug && product.selectedOptionsSlugs.includes(attribute.categorySlug)
-      );
-    });
+    const productCategoryAttributes = await getCategoryAllAttributes(product.selectedOptionsSlugs);
 
     // title
     const snippetTitle = generateSnippetTitle({
@@ -710,7 +694,7 @@ export const getServerSideProps = async (
       cardPrices,
       snippetTitle,
       name: getFieldStringLocale(product.nameI18n, locale),
-      totalAttributesCount: rubricAttributes.length + productCategoryAttributes.length,
+      totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
     };
 
     docs.push(castedProduct);

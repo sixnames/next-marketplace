@@ -32,7 +32,6 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { generateProductSlug } from 'lib/slugUtils';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
@@ -218,14 +217,13 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ originalName: values.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...values,
               _id: productId,
               itemId,
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              slug,
+              slug: itemId,
               rubricId,
               rubricSlug: rubric.slug,
               active: false,
@@ -248,7 +246,7 @@ export const ProductMutations = extendType({
             // Create product assets
             const createdAssetsResult = await productAssetsCollection.insertOne({
               productId,
-              productSlug: slug,
+              productSlug: itemId,
               assets: [
                 {
                   index: 1,
@@ -324,7 +322,6 @@ export const ProductMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
@@ -383,12 +380,6 @@ export const ProductMutations = extendType({
               return;
             }
 
-            // Create new slug for product
-            const updatedSlug = generateProductSlug({
-              originalName: values.originalName,
-              itemId: product.itemId,
-            });
-
             // Update product
             const updatedProductResult = await productsCollection.findOneAndUpdate(
               {
@@ -397,7 +388,6 @@ export const ProductMutations = extendType({
               {
                 $set: {
                   ...values,
-                  slug: updatedSlug,
                   updatedAt: new Date(),
                 },
               },
@@ -413,7 +403,6 @@ export const ProductMutations = extendType({
               },
               {
                 $set: {
-                  slug: updatedSlug,
                   nameI18n: values.nameI18n,
                   descriptionI18n: values.descriptionI18n,
                   originalName: values.originalName,
@@ -423,24 +412,11 @@ export const ProductMutations = extendType({
               },
             );
 
-            // update assets
-            const updatedProductAssetResult = await productAssetsCollection.updateMany(
-              {
-                productId,
-              },
-              {
-                $set: {
-                  slug: updatedSlug,
-                },
-              },
-            );
-
             const updatedProduct = updatedProductResult.value;
             if (
               !updatedProductResult.ok ||
               !updatedProduct ||
-              !updatedShopProductResult.result.ok ||
-              !updatedProductAssetResult.result.ok
+              !updatedShopProductResult.result.ok
             ) {
               mutationPayload = {
                 success: false,
@@ -758,15 +734,14 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ originalName: values.originalName, itemId });
             const newProductId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...sourceProduct,
               ...values,
               _id: newProductId,
               itemId,
+              slug: itemId,
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              slug,
               rubricId: sourceProduct.rubricId,
               rubricSlug: sourceProduct.rubricSlug,
               active: true,
@@ -788,7 +763,7 @@ export const ProductMutations = extendType({
             // Create product assets
             const createdAssetsResult = await productAssetsCollection.insertOne({
               productId: newProductId,
-              productSlug: slug,
+              productSlug: itemId,
               assets: [
                 {
                   index: 1,
@@ -1404,14 +1379,13 @@ export const ProductMutations = extendType({
 
             // Create product
             const itemId = await getNextItemId(COL_PRODUCTS);
-            const slug = generateProductSlug({ originalName: productFields.originalName, itemId });
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...productFields,
               _id: productId,
               itemId,
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              slug,
+              slug: itemId,
               rubricId: rubric._id,
               rubricSlug: rubric.slug,
               active: false,

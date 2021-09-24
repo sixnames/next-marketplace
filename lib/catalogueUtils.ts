@@ -19,6 +19,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
+import { filterAttributesPipeline } from 'db/dao/constantPipelines';
 import {
   AttributeViewVariantModel,
   CatalogueBreadcrumbModel,
@@ -51,6 +52,7 @@ import {
   CATALOGUE_BRAND_KEY,
   CATALOGUE_BRAND_COLLECTION_KEY,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  DEFAULT_SORT_STAGE,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -785,11 +787,7 @@ export function castCatalogueFilters({
       : {};
 
   // sort stage
-  const defaultSortStage = {
-    priorities: SORT_DESC,
-    views: SORT_DESC,
-    _id: SORT_DESC,
-  };
+  const defaultSortStage = DEFAULT_SORT_STAGE;
   let sortStage: Record<any, any> = defaultSortStage;
 
   // sort by price
@@ -832,6 +830,7 @@ export function castCatalogueFilters({
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
+  basePath: string;
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
@@ -852,6 +851,7 @@ export const getCatalogueData = async ({
   snippetVisibleAttributesCount,
   visibleOptionsCount,
   currency,
+  basePath,
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -1362,143 +1362,7 @@ export const getCatalogueData = async ({
             ],
 
             // attributes facet
-            attributes: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  selectedOptionsSlugs: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  slugArray: {
-                    $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  attributeSlug: {
-                    $arrayElemAt: ['$slugArray', 0],
-                  },
-                  optionSlug: {
-                    $arrayElemAt: ['$slugArray', 1],
-                  },
-                },
-              },
-              {
-                $group: {
-                  _id: '$attributeSlug',
-                  optionSlugs: {
-                    $addToSet: '$optionSlug',
-                  },
-                },
-              },
-
-              // get attributes
-              {
-                $lookup: {
-                  from: COL_ATTRIBUTES,
-                  as: 'attribute',
-                  let: {
-                    attributeSlug: '$_id',
-                    optionSlugs: '$optionSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            {
-                              $eq: ['$slug', '$$attributeSlug'],
-                            },
-                          ],
-                        },
-                      },
-                    },
-                    {
-                      $sort: defaultSortStage,
-                    },
-                    // get attribute options
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        let: {
-                          optionsGroupId: '$optionsGroupId',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $eq: ['$$optionsGroupId', '$optionsGroupId'],
-                                  },
-                                  {
-                                    $in: ['$slug', '$$optionSlugs'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                          {
-                            $sort: defaultSortStage,
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        totalOptionsCount: {
-                          $size: '$options',
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  attribute: {
-                    $arrayElemAt: ['$attribute', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  attribute: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$attribute',
-                },
-              },
-            ],
+            attributes: filterAttributesPipeline(defaultSortStage),
           },
         },
 
@@ -1581,7 +1445,7 @@ export const getCatalogueData = async ({
       locale,
       filters: input.filters,
       productsPrices: prices,
-      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      basePath,
       visibleOptionsCount,
       rubricGender: rubric.catalogueTitle.gender,
       brands,
@@ -1851,6 +1715,7 @@ export async function getCatalogueServerSideProps(
     companySlug: props.company?.slug,
     companyId: props.company?._id,
     currency: props.initialData.currency,
+    basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
     visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {

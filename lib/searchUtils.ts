@@ -540,7 +540,6 @@ export const getSearchData = async ({
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
       visibleOptionsCount,
-      selectedOptionsSlugs: [],
       // visibleAttributesCount,
     });
 
@@ -553,7 +552,6 @@ export const getSearchData = async ({
         productsPrices: shopProductsAggregationResult.prices,
         basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
         visibleOptionsCount,
-        selectedOptionsSlugs: [],
         // visibleAttributesCount,
       });
 

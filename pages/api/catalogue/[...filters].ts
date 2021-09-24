@@ -1,3 +1,4 @@
+import { ROUTE_CATALOGUE } from 'config/common';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -35,6 +36,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companyId,
       currency,
       city,
+      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount: noNaN(visibleOptionsCount) || 5,
       snippetVisibleAttributesCount: noNaN(snippetVisibleAttributesCount) || 5,
       input: {

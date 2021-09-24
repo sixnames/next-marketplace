@@ -745,6 +745,146 @@ export const filterCmsCategoriesPipeline = [
   },
 ];
 
+export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
+  return [
+    {
+      $unwind: {
+        path: '$selectedOptionsSlugs',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        selectedOptionsSlugs: {
+          $addToSet: '$selectedOptionsSlugs',
+        },
+      },
+    },
+    {
+      $unwind: {
+        path: '$selectedOptionsSlugs',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $match: {
+        selectedOptionsSlugs: {
+          $exists: true,
+        },
+      },
+    },
+    {
+      $addFields: {
+        slugArray: {
+          $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+        },
+      },
+    },
+    {
+      $addFields: {
+        attributeSlug: {
+          $arrayElemAt: ['$slugArray', 0],
+        },
+        optionSlug: {
+          $arrayElemAt: ['$slugArray', 1],
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$attributeSlug',
+        optionSlugs: {
+          $addToSet: '$optionSlug',
+        },
+      },
+    },
+
+    // get attributes
+    {
+      $lookup: {
+        from: COL_ATTRIBUTES,
+        as: 'attribute',
+        let: {
+          attributeSlug: '$_id',
+          optionSlugs: '$optionSlugs',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ['$slug', '$$attributeSlug'],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $sort: sortStage,
+          },
+          // get attribute options
+          {
+            $lookup: {
+              from: COL_OPTIONS,
+              as: 'options',
+              let: {
+                optionsGroupId: '$optionsGroupId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                        },
+                        {
+                          $in: ['$slug', '$$optionSlugs'],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $sort: sortStage,
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              totalOptionsCount: {
+                $size: '$options',
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        attribute: {
+          $arrayElemAt: ['$attribute', 0],
+        },
+      },
+    },
+    {
+      $match: {
+        attribute: {
+          $exists: true,
+        },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: '$attribute',
+      },
+    },
+  ];
+};
+
 export const productRubricPipeline = [
   {
     $lookup: {

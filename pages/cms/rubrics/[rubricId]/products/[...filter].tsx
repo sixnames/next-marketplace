@@ -15,10 +15,10 @@ import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import {
   FILTER_SEPARATOR,
-  DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
   SORT_DESC,
+  DEFAULT_SORT_STAGE,
 } from 'config/common';
 import {
   getBrandFilterAttribute,
@@ -34,6 +34,7 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterAttributesPipeline,
   filterCmsBrandsPipeline,
   filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
@@ -565,6 +566,9 @@ export const getServerSideProps = async (
                 $count: 'totalDocs',
               },
             ],
+
+            // get attributes
+            attributes: filterAttributesPipeline(DEFAULT_SORT_STAGE),
           },
         },
         {
@@ -589,24 +593,6 @@ export const getServerSideProps = async (
           $addFields: {
             totalPages: {
               $ceil: '$totalPagesFloat',
-            },
-          },
-        },
-        {
-          $project: {
-            docs: 1,
-            rubric: 1,
-            categories: 1,
-            brands: 1,
-            totalDocs: 1,
-            options: 1,
-            prices: 1,
-            totalPages: 1,
-            hasPrevPage: {
-              $gt: [page, DEFAULT_PAGE],
-            },
-            hasNextPage: {
-              $lt: [page, '$totalPages'],
             },
           },
         },
@@ -652,9 +638,11 @@ export const getServerSideProps = async (
     brands: productsResult.brands,
   });
 
+  // rubric attributes
+  const rubricAttributes = productsResult.attributes || [];
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    selectedOptionsSlugs: [],
-    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...rubricAttributes],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: [],

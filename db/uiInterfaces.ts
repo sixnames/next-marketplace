@@ -701,6 +701,7 @@ export interface ShopProductsAggregationInterface {
   brands?: BrandInterface[] | null;
   hasPrevPage: boolean;
   hasNextPage: boolean;
+  attributes?: AttributeInterface[] | null;
 }
 
 export interface ProductsAggregationInterface {
@@ -713,4 +714,5 @@ export interface ProductsAggregationInterface {
   rubric: RubricInterface;
   categories?: CategoryInterface[] | null;
   brands?: BrandInterface[] | null;
+  attributes?: AttributeInterface[] | null;
 }

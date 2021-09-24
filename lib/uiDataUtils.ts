@@ -62,6 +62,12 @@ export function castOptionForUI({ option, locale }: CastOptionForUI): OptionInte
   return {
     ...option,
     name: getFieldStringLocale(option.nameI18n, locale),
+    options: (option.options || []).map((nestedOption) => {
+      return castOptionForUI({
+        option: nestedOption,
+        locale,
+      });
+    }),
   };
 }
 
@@ -74,6 +80,12 @@ export function castAttributeForUI({ attribute, locale }: CastAttributeForUI): A
   return {
     ...attribute,
     name: getFieldStringLocale(attribute.nameI18n, locale),
+    options: (attribute.options || []).map((option) => {
+      return castOptionForUI({
+        option,
+        locale,
+      });
+    }),
     metric: attribute.metric
       ? {
           ...attribute.metric,

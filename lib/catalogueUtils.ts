@@ -640,6 +640,7 @@ interface CastCatalogueFiltersPayloadInterface {
   brandStage: Record<any, any>;
   brandCollectionStage: Record<any, any>;
   sortStage: Record<any, any>;
+  defaultSortStage: Record<any, any>;
 }
 
 interface CastCatalogueFiltersInterface {
@@ -784,16 +785,17 @@ export function castCatalogueFilters({
       : {};
 
   // sort stage
-  let sortStage: Record<any, any> = {
+  const defaultSortStage = {
     priorities: SORT_DESC,
     views: SORT_DESC,
     _id: SORT_DESC,
   };
+  let sortStage: Record<any, any> = defaultSortStage;
 
   // sort by price
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
-      minPrice: sortDir,
+      minPrice: castedSortDir,
       priorities: SORT_DESC,
       views: SORT_DESC,
       available: SORT_DESC,
@@ -823,6 +825,7 @@ export function castCatalogueFilters({
     brandStage,
     brandCollectionStage,
     sortStage,
+    defaultSortStage,
   };
 }
 
@@ -868,6 +871,7 @@ export const getCatalogueData = async ({
       categoryFilters,
       inCategory,
       sortStage,
+      defaultSortStage,
       brandStage,
       brandCollectionStage,
       optionsStage,
@@ -971,9 +975,7 @@ export const getCatalogueData = async ({
             // docs facet
             docs: [
               {
-                $sort: {
-                  ...sortStage,
-                },
+                $sort: sortStage,
               },
               {
                 $skip: skip,
@@ -1157,7 +1159,7 @@ export const getCatalogueData = async ({
                       },
                     },
                     {
-                      $sort: sortStage,
+                      $sort: defaultSortStage,
                     },
                   ],
                 },
@@ -1239,7 +1241,7 @@ export const getCatalogueData = async ({
                             },
                           },
                           {
-                            $sort: sortStage,
+                            $sort: defaultSortStage,
                           },
                           {
                             $limit: visibleOptionsCount,
@@ -1276,7 +1278,7 @@ export const getCatalogueData = async ({
                 },
               },
               {
-                $sort: sortStage,
+                $sort: defaultSortStage,
               },
               {
                 $limit: visibleOptionsCount,
@@ -1436,7 +1438,7 @@ export const getCatalogueData = async ({
                       },
                     },
                     {
-                      $sort: sortStage,
+                      $sort: defaultSortStage,
                     },
                     // get attribute options
                     {
@@ -1462,7 +1464,7 @@ export const getCatalogueData = async ({
                             },
                           },
                           {
-                            $sort: sortStage,
+                            $sort: defaultSortStage,
                           },
                         ],
                       },

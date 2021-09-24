@@ -1603,7 +1603,7 @@ export const getCatalogueData = async ({
       // product attributes
       const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
         const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-        const optionSlug = slugParts[0];
+        const optionSlug = slugParts[1];
         if (!optionSlug) {
           return acc;
         }
@@ -1618,9 +1618,11 @@ export const getCatalogueData = async ({
           if (!existingAttribute) {
             return acc;
           }
-          const options = (attribute.options || []).filter(({ slug }) => {
+
+          const options = (existingAttribute.options || []).filter(({ slug }) => {
             return optionSlugs.includes(slug);
           });
+
           const productAttribute: ProductAttributeInterface = {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, locale),

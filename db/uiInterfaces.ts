@@ -426,7 +426,6 @@ export interface CatalogueProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
-  selectedOptionsSlugs: string[];
 }
 
 export interface ProductsPaginationAggregationInterface {

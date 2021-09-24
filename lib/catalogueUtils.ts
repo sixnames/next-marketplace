@@ -24,7 +24,6 @@ import {
   CatalogueBreadcrumbModel,
   ConfigModel,
   ObjectIdModel,
-  OptionModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -221,7 +220,6 @@ export interface GetCatalogueAttributesInterface {
   visibleAttributesCount?: number | null;
   visibleOptionsCount?: number | null;
   rubricGender?: string;
-  selectedOptionsSlugs?: string[];
   brands?: BrandInterface[] | null;
 }
 
@@ -258,11 +256,8 @@ export async function getCatalogueAttributes({
   visibleOptionsCount,
   visibleAttributesCount,
   rubricGender,
-  selectedOptionsSlugs = [],
   brands,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
-  const { db } = await getDatabase();
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
   const selectedFilters: AttributeInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
@@ -374,24 +369,7 @@ export async function getCatalogueAttributes({
         nestedOptions.push(castedOption);
       }
     } else {
-      const castedSelectedOptionsSlugs = selectedOptionsSlugs.map((slug) => {
-        const slugParts = slug.split(FILTER_SEPARATOR);
-        return slugParts[1];
-      });
-      const initialNestedOptions = await optionsCollection
-        .aggregate([
-          {
-            $match: {
-              parentId: option._id,
-              slug: {
-                $in: castedSelectedOptionsSlugs,
-              },
-            },
-          },
-        ])
-        .toArray();
-
-      for await (const nestedOption of initialNestedOptions) {
+      for await (const nestedOption of option.options || []) {
         const { castedOption } = await castOption({
           option: nestedOption,
           attribute,
@@ -874,9 +852,9 @@ export const getCatalogueData = async ({
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    console.log(' ');
-    console.log('===========================================================');
-    const timeStart = new Date().getTime();
+    // console.log(' ');
+    // console.log('===========================================================');
+    // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
@@ -1119,73 +1097,6 @@ export const getCatalogueData = async ({
                   ],
                 },
               },
-
-              // get product brand
-              /*{
-                $lookup: {
-                  from: COL_BRANDS,
-                  as: 'brand',
-                  let: {
-                    slug: '$brandSlug',
-                    brandCollectionSlug: '$brandCollectionSlug',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$slug', '$slug'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_BRAND_COLLECTIONS,
-                        as: 'collections',
-                        let: {
-                          brandId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $and: [
-                                {
-                                  $expr: {
-                                    $eq: ['$brandId', '$$brandId'],
-                                  },
-                                },
-                                {
-                                  $expr: {
-                                    $eq: ['$slug', '$$brandCollectionSlug'],
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $project: {
-                              descriptionI18n: false,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $project: {
-                        url: false,
-                        descriptionI18n: false,
-                        logo: false,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  brand: {
-                    $arrayElemAt: ['$brand', 0],
-                  },
-                },
-              },*/
             ],
 
             // prices facet
@@ -1379,24 +1290,6 @@ export const getCatalogueData = async ({
               },
             ],
 
-            // selectedOptionsSlugs facet
-            selectedOptionsSlugs: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  slugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-            ],
-
             // rubric facet
             rubric: [
               {
@@ -1461,61 +1354,6 @@ export const getCatalogueData = async ({
                 $replaceRoot: {
                   newRoot: {
                     $arrayElemAt: ['$rubric', 0],
-                  },
-                },
-              },
-            ],
-
-            test: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  selectedOptionsSlugs: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  slugArray: {
-                    $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  attributeSlug: {
-                    $arrayElemAt: ['$slugArray', 0],
-                  },
-                  optionSlug: {
-                    $arrayElemAt: ['$slugArray', 1],
-                  },
-                },
-              },
-              {
-                $group: {
-                  _id: '$attributeSlug',
-                  optionSlugs: {
-                    $addToSet: '$optionSlug',
                   },
                 },
               },
@@ -1667,7 +1505,6 @@ export const getCatalogueData = async ({
           $addFields: {
             totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
             rubric: { $arrayElemAt: ['$rubric', 0] },
-            selectedOptionsSlugs: { $arrayElemAt: ['$selectedOptionsSlugs', 0] },
           },
         },
         {
@@ -1675,7 +1512,6 @@ export const getCatalogueData = async ({
             countAllDocs: null,
             totalDocsObject: null,
             totalProducts: '$totalDocsObject.totalDocs',
-            selectedOptionsSlugs: '$selectedOptionsSlugs.slugs',
           },
         },
       ])
@@ -1685,16 +1521,8 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    const {
-      docs,
-      totalProducts,
-      attributes,
-      rubric,
-      brands,
-      categories,
-      selectedOptionsSlugs,
-      prices,
-    } = productDataAggregation;
+    const { docs, totalProducts, attributes, rubric, brands, categories, prices } =
+      productDataAggregation;
     if (!rubric) {
       return fallbackPayload;
     }
@@ -1728,7 +1556,15 @@ export const getCatalogueData = async ({
     }
 
     // rubric attributes
-    const initialAttributes = attributes || [];
+    const initialAttributes = (attributes || []).map((attribute) => {
+      return {
+        ...attribute,
+        options: getTreeFromList({
+          list: attribute.options,
+          childrenFieldName: 'options',
+        }),
+      };
+    });
     const rubricAttributes = inCategory
       ? initialAttributes
       : initialAttributes.filter(({ _id }) => {
@@ -1742,7 +1578,6 @@ export const getCatalogueData = async ({
       attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
       filters: input.filters,
-      selectedOptionsSlugs,
       productsPrices: prices,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount,
@@ -1952,7 +1787,7 @@ export const getCatalogueData = async ({
       clearSlug = `${clearPath}`;
     }
 
-    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+    // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     return {
       _id: rubric._id,

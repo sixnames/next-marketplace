@@ -1242,7 +1242,6 @@ export const getCatalogueData = async ({
       attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
       filters,
-      selectedOptionsSlugs: shopProductsAggregationResult.selectedOptionsSlugs,
       productsPrices: shopProductsAggregationResult.prices,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount,

@@ -1,21 +1,12 @@
-import {
-  ProductAssetsModel,
-  ProductAttributeModel,
-  ProductCardContentModel,
-  ProductConnectionItemModel,
-  ProductModel,
-  ShopProductModel,
-} from '../../../db/dbModels';
+import { ObjectIdModel, RubricModel } from '../../../db/dbModels';
 import { dbsConfig, getProdDb } from './getProdDb';
-import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CARD_CONTENTS,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
+import { COL_RUBRICS } from '../../../db/collectionNames';
 require('dotenv').config();
+
+interface Temp {
+  attributeId: ObjectIdModel;
+  attributesGroupId: ObjectIdModel;
+}
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
@@ -25,90 +16,53 @@ async function updateProds() {
     console.log(' ');
 
     // update products
-    console.log(`Updating products in ${dbConfig.dbName} db`);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const productAttributesCollection =
-      db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-    const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-    const productCardContentsCollection =
-      db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-    const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-      COL_PRODUCT_CONNECTION_ITEMS,
-    );
-    const products = await productsCollection
-      .aggregate([
-        {
-          $project: {
-            _id: true,
-            itemId: true,
-          },
-        },
-      ])
-      .toArray();
-    for await (const product of products) {
-      // product
-      await productsCollection.findOneAndUpdate(
-        {
-          _id: product._id,
-        },
-        {
-          $set: {
-            slug: product.itemId,
-          },
-        },
-      );
+    console.log(`Updating rubrics in ${dbConfig.dbName} db`);
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const rubricAttributesCollection = db.collection<Temp>('rubricAttributes');
 
-      const finder = {
-        productId: product._id,
-      };
+    const rubrics = await rubricsCollection.find({}).toArray();
+    for await (const rubric of rubrics) {
+      const attributesGroupIds: ObjectIdModel[] = [];
+      const filterVisibleAttributeIds: ObjectIdModel[] = [];
 
-      // shop product
-      await shopProductsCollection.updateMany(finder, {
-        $set: {
-          slug: product.itemId,
-        },
+      const rubricAttributes = await rubricAttributesCollection
+        .find({
+          rubricId: rubric._id,
+        })
+        .toArray();
+      rubricAttributes.forEach(({ attributeId, attributesGroupId }) => {
+        const attributeIdExist = filterVisibleAttributeIds.some((_id) => {
+          return _id.equals(attributeId);
+        });
+        if (!attributeIdExist) {
+          filterVisibleAttributeIds.push(attributeId);
+        }
+
+        const attributesGroupIdExist = attributesGroupIds.some((_id) => {
+          return _id.equals(attributesGroupId);
+        });
+        if (!attributesGroupIdExist) {
+          attributesGroupIds.push(attributeId);
+        }
       });
 
-      const updater = {
-        $set: {
-          productSlug: product.itemId,
-        },
-      };
+      console.log({
+        attributesGroupIds: attributesGroupIds.length,
+        filterVisibleAttributeIds: filterVisibleAttributeIds.length,
+      });
 
-      // attributes
-      await productAttributesCollection.updateMany(
+      await rubricsCollection.findOneAndUpdate(
+        { _id: rubric._id },
         {
-          productId: product._id,
+          $set: {
+            attributesGroupIds,
+            filterVisibleAttributeIds,
+          },
         },
-        updater,
-      );
-
-      // assets
-      await productAssetsCollection.updateMany(
-        {
-          productId: product._id,
-        },
-        updater,
-      );
-
-      // contents
-      await productCardContentsCollection.updateMany(
-        {
-          productId: product._id,
-        },
-        updater,
-      );
-
-      // connections
-      await productConnectionItemsCollection.updateMany(
-        {
-          productId: product._id,
-        },
-        updater,
       );
     }
-    console.log(`products updated in ${dbConfig.dbName} db`);
+
+    console.log(`rubrics updated in ${dbConfig.dbName} db`);
 
     // disconnect form db
     await client.close();

@@ -39,7 +39,10 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
         return category.attributesGroupIds.some((_id) => _id.equals(attributesGroupId));
       });
       currentCategoryAttributes.forEach((attribute) => {
-        rubricAttributes.push(attribute);
+        const exist = rubricAttributes.some(({ _id }) => attribute._id.equals(_id));
+        if (!exist) {
+          rubricAttributes.push(attribute);
+        }
       });
     });
 

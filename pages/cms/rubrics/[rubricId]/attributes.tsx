@@ -76,21 +76,20 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       render: ({ cellData }) => cellData?.name || null,
     },
     {
-      accessor: 'showInRubricFilter',
       headTitle: 'Показывать в фильтре рубрики',
-      render: ({ cellData, dataItem }) => {
+      render: ({ dataItem }) => {
+        const checked = rubric.filterVisibleAttributeIds.includes(dataItem._id);
         return (
           <CheckBox
-            value={cellData}
+            value={dataItem.slug}
             name={dataItem.slug}
-            checked={cellData}
-            onChange={(e: any) => {
+            checked={checked}
+            onChange={() => {
               updateAttributeInRubricMutation({
                 variables: {
                   input: {
-                    rubricAttributeId: dataItem._id,
+                    attributeId: dataItem._id,
                     rubricId: rubric._id,
-                    showInRubricFilter: Boolean(e?.target?.checked),
                   },
                 },
               }).catch(console.log);

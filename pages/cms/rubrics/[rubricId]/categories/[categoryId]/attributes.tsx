@@ -77,15 +77,14 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       accessor: 'showInRubricFilter',
       headTitle: 'Показывать в фильтре рубрики',
       render: ({ cellData, dataItem }) => {
+        const checked = category.rubric?.filterVisibleAttributeIds.includes(dataItem._id);
         return (
           <CheckBox
             disabled
             value={cellData}
             name={dataItem.slug}
-            checked={cellData}
-            onChange={(e: any) => {
-              console.log(e?.target?.checked);
-            }}
+            checked={checked}
+            onChange={() => undefined}
           />
         );
       },

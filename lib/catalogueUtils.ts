@@ -1466,6 +1466,61 @@ export const getCatalogueData = async ({
               },
             ],
 
+            test: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  selectedOptionsSlugs: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  slugArray: {
+                    $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  attributeSlug: {
+                    $arrayElemAt: ['$slugArray', 0],
+                  },
+                  optionSlug: {
+                    $arrayElemAt: ['$slugArray', 1],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: '$attributeSlug',
+                  optionSlugs: {
+                    $addToSet: '$optionSlug',
+                  },
+                },
+              },
+            ],
+
             // attributes facet
             attributes: [
               {
@@ -1644,9 +1699,7 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    // Get filter attributes
-    // const beforeOptions = new Date().getTime();
-
+    // get filter attributes
     // price attribute
     const priceAttribute = getPriceAttribute();
 

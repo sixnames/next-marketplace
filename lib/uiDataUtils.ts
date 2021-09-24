@@ -1,6 +1,87 @@
-import { AttributesGroupInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import {
+  AttributeInterface,
+  AttributesGroupInterface,
+  CategoryInterface,
+  OptionInterface,
+  ProductConnectionInterface,
+  ProductConnectionItemInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { sortByName } from 'lib/optionsUtils';
+
+interface CastProductConnectionForUI {
+  connection: ProductConnectionInterface;
+  locale: string;
+}
+
+export function castProductConnectionForUI({
+  connection,
+  locale,
+}: CastProductConnectionForUI): ProductConnectionInterface | null {
+  const connectionProducts = (connection.connectionProducts || []).reduce(
+    (acc: ProductConnectionItemInterface[], connectionProduct) => {
+      if (!connectionProduct.shopProduct || !connectionProduct.option) {
+        return acc;
+      }
+
+      return [
+        ...acc,
+        {
+          ...connectionProduct,
+          option: castOptionForUI({
+            option: connectionProduct.option,
+            locale,
+          }),
+        },
+      ];
+    },
+    [],
+  );
+
+  if (!connection.attribute) {
+    return null;
+  }
+
+  return {
+    ...connection,
+    connectionProducts,
+    attribute: castAttributeForUI({
+      attribute: connection.attribute,
+      locale,
+    }),
+  };
+}
+
+interface CastOptionForUI {
+  option: OptionInterface;
+  locale: string;
+}
+
+export function castOptionForUI({ option, locale }: CastOptionForUI): OptionInterface {
+  return {
+    ...option,
+    name: getFieldStringLocale(option.nameI18n, locale),
+  };
+}
+
+interface CastAttributeForUI {
+  attribute: AttributeInterface;
+  locale: string;
+}
+
+export function castAttributeForUI({ attribute, locale }: CastAttributeForUI): AttributeInterface {
+  return {
+    ...attribute,
+    name: getFieldStringLocale(attribute.nameI18n, locale),
+    metric: attribute.metric
+      ? {
+          ...attribute.metric,
+          name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+        }
+      : null,
+  };
+}
 
 interface CastAttributesGroupForUI {
   attributesGroup: AttributesGroupInterface;

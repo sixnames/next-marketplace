@@ -1,4 +1,9 @@
 import { CatalogueInterface } from 'components/Catalogue';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getPriceAttribute,
+} from 'config/constantAttributes';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import {
   COL_ATTRIBUTES,
@@ -46,6 +51,7 @@ import {
   CATALOGUE_CATEGORY_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_BRAND_COLLECTION_KEY,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -57,12 +63,19 @@ import {
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
   OptionInterface,
+  ProductAttributeInterface,
+  ProductConnectionInterface,
+  ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getTreeFromList } from 'lib/optionsUtils';
+import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
+import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
@@ -1108,7 +1121,7 @@ export const getCatalogueData = async ({
               },
 
               // get product brand
-              {
+              /*{
                 $lookup: {
                   from: COL_BRANDS,
                   as: 'brand',
@@ -1172,7 +1185,7 @@ export const getCatalogueData = async ({
                     $arrayElemAt: ['$brand', 0],
                   },
                 },
-              },
+              },*/
             ],
 
             // prices facet
@@ -1553,16 +1566,6 @@ export const getCatalogueData = async ({
                                   },
                                 ],
                               },
-                              /*$or: [
-                                {
-                                  parentId: {
-                                    $exists: false,
-                                  },
-                                },
-                                {
-                                  parentId: null,
-                                },
-                              ],*/
                             },
                           },
                           {
@@ -1627,11 +1630,297 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    console.log(productDataAggregation);
-    // console.log(JSON.stringify(productDataAggregation.docs[0], null, 2));
+    const {
+      docs,
+      totalProducts,
+      attributes,
+      rubric,
+      brands,
+      categories,
+      selectedOptionsSlugs,
+      prices,
+    } = productDataAggregation;
+    if (!rubric) {
+      return fallbackPayload;
+    }
+
+    // Get filter attributes
+    // const beforeOptions = new Date().getTime();
+
+    // price attribute
+    const priceAttribute = getPriceAttribute();
+
+    // category attribute
+    let categoryAttribute: AttributeInterface[] = [];
+    const showCategoriesInFilter = Boolean(rubric.variant?.showCategoriesInFilter);
+    if (categories && categories.length > 0 && showCategoriesInFilter) {
+      categoryAttribute = [
+        getCategoryFilterAttribute({
+          locale,
+          categories,
+        }),
+      ];
+    }
+
+    // brand attribute
+    let brandAttribute: AttributeInterface[] = [];
+    const showBrandInFilter = Boolean(rubric?.showBrandInFilter);
+    if (brands && brands.length > 0 && showBrandInFilter) {
+      brandAttribute = [
+        getBrandFilterAttribute({
+          locale,
+          brands: brands,
+        }),
+      ];
+    }
+
+    // rubric attributes
+    const initialAttributes = attributes || [];
+    const rubricAttributes = inCategory
+      ? initialAttributes
+      : initialAttributes.filter(({ _id }) => {
+          return (rubric?.filterVisibleAttributeIds || []).some((attributeId) => {
+            return attributeId.equals(_id);
+          });
+        });
+
+    // cast catalogue attributes
+    const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
+      attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
+      locale,
+      filters: input.filters,
+      selectedOptionsSlugs,
+      productsPrices: prices,
+      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      visibleOptionsCount,
+      rubricGender: rubric.catalogueTitle.gender,
+      brands,
+      // visibleAttributesCount,
+    });
+
+    // cast catalogue products
+    const products: ProductInterface[] = [];
+    docs.forEach((product) => {
+      // product prices
+      const minPrice = noNaN(product.cardPrices?.min);
+      const maxPrice = noNaN(product.cardPrices?.max);
+      const cardPrices = {
+        _id: new ObjectId(),
+        min: `${minPrice}`,
+        max: `${maxPrice}`,
+      };
+
+      // product attributes
+      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+        const optionSlug = slugParts[0];
+        if (!optionSlug) {
+          return acc;
+        }
+        return [...acc, optionSlug];
+      }, []);
+
+      const productAttributes = (product.attributes || []).reduce(
+        (acc: ProductAttributeInterface[], attribute) => {
+          const existingAttribute = (attributes || []).find(({ _id }) => {
+            return _id.equals(attribute.attributeId);
+          });
+          if (!existingAttribute) {
+            return acc;
+          }
+          const options = (attribute.options || []).filter(({ slug }) => {
+            return optionSlugs.includes(slug);
+          });
+          const productAttribute: ProductAttributeInterface = {
+            ...attribute,
+            name: getFieldStringLocale(attribute.nameI18n, locale),
+            metric: attribute.metric
+              ? {
+                  ...attribute.metric,
+                  name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+                }
+              : null,
+            options: getTreeFromList({
+              list: options,
+              childrenFieldName: 'options',
+              locale,
+            }),
+          };
+          return [...acc, productAttribute];
+        },
+        [],
+      );
+
+      // product categories
+      const initialProductCategories = (categories || []).filter(({ slug }) => {
+        return optionSlugs.includes(slug);
+      });
+      const productCategories = getTreeFromList({
+        list: initialProductCategories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      // product brand
+      const productBrand = product.brandSlug
+        ? (brands || []).find(({ slug }) => {
+            return slug === product.brandSlug;
+          })
+        : null;
+
+      // snippet title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: productBrand,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+        attributes: productAttributes,
+        categories: productCategories,
+        titleCategoriesSlugs: product.titleCategoriesSlugs,
+        originalName: product.originalName,
+        defaultGender: product.gender,
+      });
+
+      // list features
+      const initialListFeatures = getProductCurrentViewCastedAttributes({
+        attributes: productAttributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+        locale,
+      });
+      const listFeatures = initialListFeatures
+        .filter(({ showInSnippet }) => {
+          return showInSnippet;
+        })
+        .slice(0, snippetVisibleAttributesCount);
+
+      // rating features
+      const initialRatingFeatures = getProductCurrentViewCastedAttributes({
+        attributes: productAttributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+        locale,
+      });
+      const ratingFeatures = initialRatingFeatures.filter(({ showInSnippet }) => {
+        return showInSnippet;
+      });
+
+      // connections
+      const connections = (product.connections || []).reduce(
+        (acc: ProductConnectionInterface[], connection) => {
+          const castedConnection = castProductConnectionForUI({
+            connection,
+            locale,
+          });
+
+          if (!castedConnection) {
+            return acc;
+          }
+
+          return [...acc, castedConnection];
+        },
+        [],
+      );
+
+      products.push({
+        ...product,
+        listFeatures,
+        ratingFeatures,
+        name: getFieldStringLocale(product.nameI18n, locale),
+        cardPrices,
+        connections,
+        snippetTitle,
+      });
+    });
+
+    // get catalogue title
+    const catalogueTitle = generateTitle({
+      positionFieldName: 'positioningInTitle',
+      attributeNameVisibilityFieldName: 'showNameInTitle',
+      attributeVisibilityFieldName: 'showInCatalogueTitle',
+      defaultGender: rubric.catalogueTitle.gender,
+      fallbackTitle: getFieldStringLocale(rubric.catalogueTitle.defaultTitleI18n, locale),
+      defaultKeyword: getFieldStringLocale(rubric.catalogueTitle.keywordI18n, locale),
+      prefix: getFieldStringLocale(rubric.catalogueTitle.prefixI18n, locale),
+      attributes: selectedFilters,
+      capitaliseKeyWord: rubric.capitalise,
+      locale,
+      currency,
+    });
+
+    const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
+
+    // get catalogue breadcrumbs
+    const rubricName = getFieldStringLocale(rubric.nameI18n, locale);
+    const breadcrumbs: CatalogueBreadcrumbModel[] = [
+      {
+        _id: rubric._id,
+        name: rubricName,
+        href: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      },
+    ];
+
+    selectedAttributes.forEach((selectedAttribute) => {
+      const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
+      const isPrice = slug === CATALOGUE_PRICE_KEY;
+      const isBrand = slug === CATALOGUE_BRAND_KEY;
+      let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
+      if (isPrice) {
+        metricValue = currency;
+      }
+
+      if (showAsCatalogueBreadcrumb || isPrice || isBrand) {
+        const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
+          const tree = castOptionsForBreadcrumbs({
+            option: option,
+            isBrand,
+            brands,
+            attribute: selectedAttribute,
+            rubricSlug,
+            metricValue,
+            acc: [],
+          });
+          return [...acc, ...tree];
+        }, []);
+
+        optionBreadcrumbs.forEach((options) => {
+          breadcrumbs.push(options);
+        });
+      }
+    });
+
+    // get clearSlug
+    let clearSlug = `${rubricSlug}/${sortPathname}`;
+    if (showCategoriesInFilter) {
+      const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
+        .filter((pathPart) => {
+          return pathPart;
+        })
+        .join('/');
+      clearSlug = `${clearPath}`;
+    }
+
     console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
-    return fallbackPayload;
+    return {
+      _id: rubric._id,
+      clearSlug,
+      filters: input.filters,
+      rubricName,
+      rubricSlug: rubric.slug,
+      products,
+      catalogueTitle,
+      catalogueFilterLayout: rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT,
+      totalProducts: noNaN(totalProducts),
+      attributes: castedAttributes,
+      selectedAttributes: showCategoriesInFilter
+        ? selectedAttributes
+        : selectedAttributes.filter(({ slug }) => {
+            return slug !== CATALOGUE_CATEGORY_KEY;
+          }),
+      page,
+      breadcrumbs,
+      rubricVariant: rubric.variant,
+    };
   } catch (e) {
     console.log(e);
     return null;

@@ -19,6 +19,7 @@ import {
   PAGE_STATE_PUBLISHED,
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
+  COOKIE_CURRENCY,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -1209,6 +1210,13 @@ export async function getPageInitialState({
 
   // Set sessionCity as a cookie
   nookies.set(context, COOKIE_CITY, sessionCity, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
+  // Set currency as a cookie
+  nookies.set(context, COOKIE_CURRENCY, rawInitialData.currency, {
     httpOnly: true,
     path: '/',
     sameSite: 'strict',

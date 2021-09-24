@@ -1,12 +1,26 @@
 import { CatalogueInterface } from 'components/Catalogue';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
-import { COL_CONFIGS, COL_OPTIONS, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_CATEGORIES,
+  COL_CONFIGS,
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import {
   AttributeViewVariantModel,
   CatalogueBreadcrumbModel,
   ConfigModel,
   ObjectIdModel,
   OptionModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -41,6 +55,7 @@ import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
+  CatalogueProductsAggregationInterface,
   OptionInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
@@ -781,7 +796,6 @@ export function castCatalogueFilters({
   let sortStage: Record<any, any> = {
     priorities: SORT_DESC,
     views: SORT_DESC,
-    available: SORT_DESC,
     _id: SORT_DESC,
   };
 
@@ -840,43 +854,44 @@ export const getCatalogueData = async ({
   locale,
   city,
   input,
-  companySlug = DEFAULT_COMPANY_SLUG,
   companyId,
   snippetVisibleAttributesCount,
   visibleOptionsCount,
   currency,
+  ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
-    // console.log(' ');
-    // console.log('===========================================================');
-    // const timeStart = new Date().getTime();
+    console.log(' ');
+    console.log('===========================================================');
+    const timeStart = new Date().getTime();
     const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
-    // Args
+    // args
     const { rubricSlug } = input;
-    const realCompanySlug = companySlug || DEFAULT_COMPANY_SLUG;
+    const companySlug = props.companySlug || DEFAULT_COMPANY_SLUG;
 
-    // Cast selected filters
+    // cast selected filters
     const {
       sortFilterOptions,
-      skip,
-      limit,
       categoryFilters,
       inCategory,
-      page,
+      sortStage,
       brandStage,
       brandCollectionStage,
       optionsStage,
       pricesStage,
-      sortStage,
+      skip,
+      limit,
+      page,
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
       initialLimit: CATALOGUE_PRODUCTS_LIMIT,
     });
 
-    return {
+    // fallback
+    const fallbackPayload = {
       _id: new ObjectId(),
       clearSlug: `${ROUTE_CATALOGUE}/${input.rubricSlug}`,
       filters: input.filters,
@@ -889,8 +904,734 @@ export const getCatalogueData = async ({
       attributes: [],
       selectedAttributes: [],
       breadcrumbs: [],
-      page: 1,
+      page,
     };
+
+    // shop products initial match
+    const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const productsInitialMatch = {
+      ...companyMatch,
+      rubricSlug,
+      citySlug: city,
+      ...brandStage,
+      ...brandCollectionStage,
+      ...optionsStage,
+      ...pricesStage,
+    };
+
+    // aggregate catalogue initial data
+    const productDataAggregationResult = await shopProductsCollection
+      .aggregate<CatalogueProductsAggregationInterface>([
+        // match shop products
+        {
+          $match: productsInitialMatch,
+        },
+
+        // unwind selectedOptionsSlugs field
+        {
+          $unwind: {
+            path: '$selectedOptionsSlugs',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
+        // group shop products by productId field
+        {
+          $group: {
+            _id: '$productId',
+            companyId: { $first: `$companyId` },
+            itemId: { $first: '$itemId' },
+            rubricId: { $first: '$rubricId' },
+            rubricSlug: { $first: `$rubricSlug` },
+            brandSlug: { $first: '$brandSlug' },
+            brandCollectionSlug: { $first: '$brandCollectionSlug' },
+            slug: { $first: '$slug' },
+            gender: { $first: '$gender' },
+            mainImage: { $first: `$mainImage` },
+            originalName: { $first: `$originalName` },
+            nameI18n: { $first: `$nameI18n` },
+            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
+            views: { $max: `$views.${companySlug}.${city}` },
+            priorities: { $max: `$priorities.${companySlug}.${city}` },
+            minPrice: {
+              $min: '$price',
+            },
+            maxPrice: {
+              $min: '$price',
+            },
+            available: {
+              $max: '$available',
+            },
+            selectedOptionsSlugs: {
+              $addToSet: '$selectedOptionsSlugs',
+            },
+            shopsIds: {
+              $addToSet: '$shopId',
+            },
+            shopProductsIds: {
+              $addToSet: '$_id',
+            },
+          },
+        },
+
+        // catalogue data facets
+        {
+          $facet: {
+            // docs facet
+            docs: [
+              {
+                $sort: {
+                  ...sortStage,
+                },
+              },
+              {
+                $skip: skip,
+              },
+              {
+                $limit: limit,
+              },
+
+              // add ui prices
+              {
+                $addFields: {
+                  shopsCount: { $size: '$shopsIds' },
+                  cardPrices: {
+                    min: '$minPrice',
+                    max: '$maxPrice',
+                  },
+                },
+              },
+
+              // get product connections
+              {
+                $lookup: {
+                  from: COL_PRODUCT_CONNECTIONS,
+                  as: 'connections',
+                  let: {
+                    productId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $in: ['$$productId', '$productsIds'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_ATTRIBUTES,
+                        as: 'attribute',
+                        let: { attributeId: '$attributeId' },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$attributeId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        attribute: {
+                          $arrayElemAt: ['$attribute', 0],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_PRODUCT_CONNECTION_ITEMS,
+                        as: 'connectionProducts',
+                        let: {
+                          connectionId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$connectionId', '$$connectionId'],
+                              },
+                            },
+                          },
+                          {
+                            $lookup: {
+                              from: COL_OPTIONS,
+                              as: 'option',
+                              let: { optionId: '$optionId' },
+                              pipeline: [
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $eq: ['$$optionId', '$_id'],
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $addFields: {
+                              option: {
+                                $arrayElemAt: ['$option', 0],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // get product attributes
+              {
+                $lookup: {
+                  from: COL_PRODUCT_ATTRIBUTES,
+                  as: 'attributes',
+                  let: {
+                    productId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$productId'],
+                        },
+                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // get product brand
+              {
+                $lookup: {
+                  from: COL_BRANDS,
+                  as: 'brand',
+                  let: {
+                    slug: '$brandSlug',
+                    brandCollectionSlug: '$brandCollectionSlug',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$slug', '$slug'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_BRAND_COLLECTIONS,
+                        as: 'collections',
+                        let: {
+                          brandId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $and: [
+                                {
+                                  $expr: {
+                                    $eq: ['$brandId', '$$brandId'],
+                                  },
+                                },
+                                {
+                                  $expr: {
+                                    $eq: ['$slug', '$$brandCollectionSlug'],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $project: {
+                              descriptionI18n: false,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $project: {
+                        url: false,
+                        descriptionI18n: false,
+                        logo: false,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  brand: {
+                    $arrayElemAt: ['$brand', 0],
+                  },
+                },
+              },
+            ],
+
+            // prices facet
+            prices: [
+              {
+                $group: {
+                  _id: '$minPrice',
+                },
+              },
+            ],
+
+            // categories facet
+            categories: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  rubricId: { $first: '$rubricId' },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    rubricId: '$rubricId',
+                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $and: [
+                          {
+                            $expr: {
+                              $eq: ['$rubricId', '$$rubricId'],
+                            },
+                          },
+                          {
+                            $expr: {
+                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        views: { $max: `$views.${companySlug}.${city}` },
+                        priorities: { $max: `$priorities.${companySlug}.${city}` },
+                      },
+                    },
+                    {
+                      $sort: sortStage,
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: {
+                  path: '$categories',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  categories: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$categories',
+                },
+              },
+            ],
+
+            // brands facet
+            brands: [
+              {
+                $group: {
+                  _id: '$brandSlug',
+                  collectionSlugs: {
+                    $addToSet: '$brandCollectionSlug',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_BRANDS,
+                  as: 'brand',
+                  let: {
+                    slug: '$_id',
+                    collectionSlugs: '$collectionSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$slug', '$$slug'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_BRAND_COLLECTIONS,
+                        as: 'collections',
+                        let: {
+                          brandId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $and: [
+                                {
+                                  $expr: {
+                                    $eq: ['$brandId', '$$brandId'],
+                                  },
+                                },
+                                {
+                                  $expr: {
+                                    $in: ['$slug', '$$collectionSlugs'],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $addFields: {
+                              views: { $max: `$views.${companySlug}.${city}` },
+                              priorities: { $max: `$priorities.${companySlug}.${city}` },
+                            },
+                          },
+                          {
+                            $sort: sortStage,
+                          },
+                          {
+                            $limit: visibleOptionsCount,
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  brand: {
+                    $arrayElemAt: ['$brand', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  brand: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$brand',
+                },
+              },
+              {
+                $addFields: {
+                  views: { $max: `$views.${companySlug}.${city}` },
+                  priorities: { $max: `$priorities.${companySlug}.${city}` },
+                },
+              },
+              {
+                $sort: sortStage,
+              },
+              {
+                $limit: visibleOptionsCount,
+              },
+            ],
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
+
+            // selectedOptionsSlugs facet
+            selectedOptionsSlugs: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  slugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+            ],
+
+            // rubric facet
+            rubric: [
+              {
+                $group: {
+                  _id: '$rubricId',
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: {
+                    rubricId: '$_id',
+                    attributesSlugs: '$attributesSlugs',
+                    attributeConfigs: '$attributeConfigs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$rubricId'],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        views: false,
+                        priorities: false,
+                      },
+                    },
+
+                    // get rubric variant
+                    {
+                      $lookup: {
+                        from: COL_RUBRIC_VARIANTS,
+                        as: 'variant',
+                        let: {
+                          variantId: '$variantId',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$variantId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        variant: {
+                          $arrayElemAt: ['$variant', 0],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: {
+                    $arrayElemAt: ['$rubric', 0],
+                  },
+                },
+              },
+            ],
+
+            // attributes facet
+            attributes: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  selectedOptionsSlugs: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  slugArray: {
+                    $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  attributeSlug: {
+                    $arrayElemAt: ['$slugArray', 0],
+                  },
+                  optionSlug: {
+                    $arrayElemAt: ['$slugArray', 1],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: '$attributeSlug',
+                  optionSlugs: {
+                    $addToSet: '$optionSlug',
+                  },
+                },
+              },
+
+              // get attributes
+              {
+                $lookup: {
+                  from: COL_ATTRIBUTES,
+                  as: 'attribute',
+                  let: {
+                    attributeSlug: '$_id',
+                    optionSlugs: '$optionSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            {
+                              $eq: ['$slug', '$$attributeSlug'],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                    {
+                      $sort: sortStage,
+                    },
+                    // get attribute options
+                    {
+                      $lookup: {
+                        from: COL_OPTIONS,
+                        as: 'options',
+                        let: {
+                          optionsGroupId: '$optionsGroupId',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $and: [
+                                  {
+                                    $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                                  },
+                                  {
+                                    $in: ['$slug', '$$optionSlugs'],
+                                  },
+                                ],
+                              },
+                              /*$or: [
+                                {
+                                  parentId: {
+                                    $exists: false,
+                                  },
+                                },
+                                {
+                                  parentId: null,
+                                },
+                              ],*/
+                            },
+                          },
+                          {
+                            $sort: sortStage,
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        totalOptionsCount: {
+                          $size: '$options',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  attribute: {
+                    $arrayElemAt: ['$attribute', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  attribute: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$attribute',
+                },
+              },
+            ],
+          },
+        },
+
+        // cast facets
+        {
+          $addFields: {
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+            rubric: { $arrayElemAt: ['$rubric', 0] },
+            selectedOptionsSlugs: { $arrayElemAt: ['$selectedOptionsSlugs', 0] },
+          },
+        },
+        {
+          $addFields: {
+            countAllDocs: null,
+            totalDocsObject: null,
+            totalProducts: '$totalDocsObject.totalDocs',
+            selectedOptionsSlugs: '$selectedOptionsSlugs.slugs',
+          },
+        },
+      ])
+      .toArray();
+    const productDataAggregation = productDataAggregationResult[0];
+    if (!productDataAggregation) {
+      return fallbackPayload;
+    }
+
+    console.log(productDataAggregation);
+    // console.log(JSON.stringify(productDataAggregation.docs[0], null, 2));
+    console.log(`Shop products >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+
+    return fallbackPayload;
   } catch (e) {
     console.log(e);
     return null;

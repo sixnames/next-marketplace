@@ -7,7 +7,9 @@ import {
   CART_COOKIE_KEY,
   CITY_COOKIE_KEY,
   COMPANY_SLUG_COOKIE_KEY,
+  COOKIE_CURRENCY,
   DEFAULT_CITY,
+  DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   LOCALE_COOKIE_KEY,
   LOCALE_HEADER,
@@ -86,6 +88,12 @@ export const getSessionLocale = (context: NexusContext): string => {
     context?.req?.headers[LOCALE_HEADER] ||
     DEFAULT_LOCALE
   );
+};
+
+// Get locale slug form cookies
+export const getSessionCurrency = (context: NexusContext): string => {
+  const cookies = nookies.get(context);
+  return cookies?.[COOKIE_CURRENCY] || DEFAULT_CURRENCY;
 };
 
 // Get city slug form cookies
@@ -249,6 +257,7 @@ export type GetFieldLocaleType = (i18nField?: Record<string, string> | null) => 
 export interface GetRequestParamsPayloadInterface {
   locale: string;
   city: string;
+  currency: string;
   companySlug: string;
   getI18nLocale<T>(i18nField: Record<string, T>): T;
   getCityData<T>(cityField: Record<string, T>): T;
@@ -262,6 +271,7 @@ export const getRequestParams = async (
   context: NexusContext,
 ): Promise<GetRequestParamsPayloadInterface> => {
   const locale = getSessionLocale(context);
+  const currency = getSessionCurrency(context);
   const city = getSessionCity(context);
   const companySlug = getSessionCompanySlug(context);
 
@@ -314,6 +324,7 @@ export const getRequestParams = async (
   return {
     locale,
     city,
+    currency,
     companySlug,
     getI18nLocale,
     getFieldLocale,

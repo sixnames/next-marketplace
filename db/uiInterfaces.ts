@@ -423,6 +423,7 @@ export interface CatalogueProductsAggregationInterface {
   docs: ProductInterface[];
   rubric: RubricInterface;
   rubrics?: RubricInterface[] | null;
+  attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
   selectedOptionsSlugs: string[];

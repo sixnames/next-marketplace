@@ -44,6 +44,7 @@ export const ADULT_FALSE = 'false';
 export const COOKIE_COMPANY_SLUG = 'companySlug';
 export const COOKIE_LOCALE = 'locale';
 export const COOKIE_CITY = 'city';
+export const COOKIE_CURRENCY = 'currency';
 
 // THEME
 export const THEME_DARK = 'dark';

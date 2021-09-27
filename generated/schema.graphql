@@ -470,6 +470,7 @@ input CoordinatesInput {
 input CopyProductInput {
   active: Boolean!
   barcode: [String!]
+  cardDescriptionI18n: JSONObject
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
@@ -599,6 +600,7 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   active: Boolean!
   barcode: [String!]
+  cardDescriptionI18n: JSONObject
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
@@ -2762,6 +2764,7 @@ input UpdateProductInCartInput {
 input UpdateProductInput {
   active: Boolean!
   barcode: [String!]
+  cardDescriptionI18n: JSONObject
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject

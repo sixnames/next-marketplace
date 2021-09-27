@@ -12,6 +12,7 @@ import {
   RubricModel,
   ShopModel,
   ShopProductModel,
+  TranslationModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
@@ -32,10 +33,17 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  LOCALES,
+  VIEWS_COUNTER_STEP,
+} from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import fetch from 'node-fetch';
+import { get } from 'lodash';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -55,6 +63,7 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.field('gender', {
       type: 'Gender',
@@ -71,6 +80,7 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });
@@ -86,6 +96,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });
@@ -380,6 +391,23 @@ export const ProductMutations = extendType({
               return;
             }
 
+            // check description uniqueness
+            const cardDescriptionInfoI18n: TranslationModel = {};
+            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
+            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY;
+            if (uniqueTextApiUrl && uniqueTextApiKey) {
+              for await (const gender of LOCALES) {
+                const text = get(values, `cardDescriptionI18n.${gender}`);
+                if (text) {
+                  const url = `${uniqueTextApiUrl}?key=${uniqueTextApiKey}&text=${text}&test=1`;
+                  const encodedUrl = encodeURI(url);
+                  const res = await fetch(encodedUrl);
+                  const json = await res.json();
+                  console.log(json);
+                }
+              }
+            }
+
             // Update product
             const updatedProductResult = await productsCollection.findOneAndUpdate(
               {
@@ -388,6 +416,7 @@ export const ProductMutations = extendType({
               {
                 $set: {
                   ...values,
+                  cardDescriptionInfoI18n,
                   updatedAt: new Date(),
                 },
               },

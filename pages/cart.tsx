@@ -207,20 +207,10 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     return null;
   }
 
-  const {
-    price,
-    oldPrice,
-    discountedPercent,
-    available,
-    shop,
-    itemId,
-    snippetTitle,
-    mainImage,
-    rubricSlug,
-    slug,
-  } = shopProduct;
+  const { price, oldPrice, discountedPercent, available, shop, itemId, rubricSlug, product } =
+    shopProduct;
 
-  if (!shop) {
+  if (!shop || !product) {
     return null;
   }
 
@@ -231,19 +221,19 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
   return (
     <CartProductFrame
       rubricSlug={rubricSlug}
-      slug={slug}
+      slug={product.slug}
       testId={testId}
       cartProductId={`${_id}`}
-      mainImage={mainImage}
-      snippetTitle={snippetTitle}
+      mainImage={product.mainImage}
+      snippetTitle={product.snippetTitle}
     >
       <div className={classes.productGrid}>
         <div>
           <CartProductMainData
             rubricSlug={rubricSlug}
-            slug={slug}
+            slug={product.slug}
             itemId={itemId}
-            snippetTitle={snippetTitle}
+            snippetTitle={product.snippetTitle}
           />
           <SpinnerInput
             name={'amount'}

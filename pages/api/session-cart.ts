@@ -400,7 +400,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
 
         const shopProduct = initialCartProduct.shopProduct;
         const shopProductCategories = getTreeFromList({
-          list: shopProduct?.categories,
+          list: shopProduct?.product?.categories,
           childrenFieldName: 'categories',
           locale,
         });
@@ -408,52 +408,57 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
         const shopProductSnippetTitle = shopProduct
           ? generateSnippetTitle({
               locale,
-              brand: shopProduct.brand,
-              rubricName: getFieldStringLocale(shopProduct.rubric?.nameI18n, locale),
-              showRubricNameInProductTitle: shopProduct.rubric?.showRubricNameInProductTitle,
-              showCategoryInProductTitle: shopProduct.rubric?.showCategoryInProductTitle,
-              attributes: shopProduct.attributes,
-              titleCategoriesSlugs: shopProduct.titleCategoriesSlugs,
-              originalName: shopProduct.originalName,
-              defaultGender: shopProduct.gender,
+              brand: shopProduct?.product?.brand,
+              rubricName: getFieldStringLocale(shopProduct?.product?.rubric?.nameI18n, locale),
+              showRubricNameInProductTitle:
+                shopProduct?.product?.rubric?.showRubricNameInProductTitle,
+              showCategoryInProductTitle: shopProduct?.product?.rubric?.showCategoryInProductTitle,
+              attributes: shopProduct?.product?.attributes,
+              titleCategoriesSlugs: shopProduct?.product?.titleCategoriesSlugs,
+              originalName: `${shopProduct?.product?.originalName}`,
+              defaultGender: `${shopProduct?.product?.gender}`,
               categories: shopProductCategories,
             })
           : null;
 
-        const finaleShopProduct: ShopProductInterface | null = shopProduct
-          ? {
-              ...shopProduct,
-              snippetTitle: shopProductSnippetTitle,
-              shop: shopProduct.shop
-                ? {
-                    ...shopProduct.shop,
-                    address: {
-                      ...shopProduct.shop.address,
-                      formattedCoordinates: {
-                        lat: shopProduct.shop.address.point.coordinates[1],
-                        lng: shopProduct.shop.address.point.coordinates[0],
+        const finalShopProduct: ShopProductInterface | null =
+          shopProduct && shopProduct.product
+            ? {
+                ...shopProduct,
+                product: {
+                  ...shopProduct.product,
+                  snippetTitle: shopProductSnippetTitle,
+                },
+                shop: shopProduct.shop
+                  ? {
+                      ...shopProduct.shop,
+                      address: {
+                        ...shopProduct.shop.address,
+                        formattedCoordinates: {
+                          lat: shopProduct.shop.address.point.coordinates[1],
+                          lng: shopProduct.shop.address.point.coordinates[0],
+                        },
                       },
-                    },
-                    contacts: {
-                      ...shopProduct.shop.contacts,
-                      formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
-                        return {
-                          raw: phoneToRaw(phone),
-                          readable: phoneToReadable(phone),
-                        };
-                      }),
-                    },
-                  }
-                : null,
-            }
-          : null;
+                      contacts: {
+                        ...shopProduct.shop.contacts,
+                        formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
+                          return {
+                            raw: phoneToRaw(phone),
+                            readable: phoneToReadable(phone),
+                          };
+                        }),
+                      },
+                    }
+                  : null,
+              }
+            : null;
 
         return [
           ...acc,
           {
             ...initialCartProduct,
             product,
-            shopProduct: finaleShopProduct,
+            shopProduct: finalShopProduct,
           },
         ];
       },

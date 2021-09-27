@@ -321,25 +321,25 @@ export interface CategoryInterface extends CategoryModel {
 }
 
 export interface ShopProductInterface extends ShopProductModel {
-  name?: string | null;
   shop?: ShopInterface | null;
   product?: ProductInterface | null;
   products?: ProductInterface[] | null;
-  connections?: ProductConnectionInterface[] | null;
-  attributes?: ProductAttributeInterface[] | null;
-  listFeatures?: ProductAttributeInterface[] | null;
-  textFeatures?: ProductAttributeInterface[] | null;
-  tagFeatures?: ProductAttributeInterface[] | null;
-  iconFeatures?: ProductAttributeInterface[] | null;
-  ratingFeatures?: ProductAttributeInterface[] | null;
   orders?: OrderInterface[] | null;
-  categories?: CategoryInterface[] | null;
-  brand?: BrandInterface | null;
-  snippetTitle?: string | null;
-  cardTitle?: string | null;
-  rubric?: RubricInterface | null;
-  attributesCount?: number | null;
-  totalAttributesCount?: number | null;
+  // name?: string | null;
+  // connections?: ProductConnectionInterface[] | null;
+  // attributes?: ProductAttributeInterface[] | null;
+  // listFeatures?: ProductAttributeInterface[] | null;
+  // textFeatures?: ProductAttributeInterface[] | null;
+  // tagFeatures?: ProductAttributeInterface[] | null;
+  // iconFeatures?: ProductAttributeInterface[] | null;
+  // ratingFeatures?: ProductAttributeInterface[] | null;
+  // categories?: CategoryInterface[] | null;
+  // brand?: BrandInterface | null;
+  // snippetTitle?: string | null;
+  // cardTitle?: string | null;
+  // rubric?: RubricInterface | null;
+  // attributesCount?: number | null;
+  // totalAttributesCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {

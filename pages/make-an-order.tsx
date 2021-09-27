@@ -40,17 +40,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
     return null;
   }
 
-  const {
-    shop,
-    oldPrice,
-    discountedPercent,
-    price,
-    originalName,
-    itemId,
-    mainImage,
-    rubricSlug,
-    slug,
-  } = shopProduct;
+  const { shop, oldPrice, discountedPercent, price, product, itemId, rubricSlug } = shopProduct;
 
   return (
     <div className={classes.productHolder}>
@@ -59,18 +49,18 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
           <div className={classes.productImage}>
             <div className={classes.productImageHolder}>
               <Image
-                src={`${mainImage}`}
-                alt={originalName}
-                title={originalName}
+                src={`${product?.mainImage}`}
+                alt={product?.originalName}
+                title={product?.originalName}
                 layout='fill'
                 objectFit='contain'
               />
               <Link
                 target={'_blank'}
                 className='block absolute z-10 inset-0 text-indent-full'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${product?.slug}`}
               >
-                {originalName}
+                {product?.originalName}
               </Link>
             </div>
           </div>
@@ -82,9 +72,9 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                   <Link
                     target={'_blank'}
                     className='block text-primary-text hover:no-underline hover:text-primary-text'
-                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${product?.slug}`}
                   >
-                    {originalName}
+                    {product?.originalName}
                   </Link>
                 </div>
               </div>

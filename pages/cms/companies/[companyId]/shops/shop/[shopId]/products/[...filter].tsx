@@ -168,7 +168,7 @@ export const getServerSideProps = async (
   let searchIds: ObjectId[] = [];
   if (search) {
     searchIds = await getAlgoliaProductsSearch({
-      indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
       search: `${search}`,
     });
 
@@ -459,7 +459,10 @@ export const getServerSideProps = async (
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
   const docs: ShopProductInterface[] = [];
   for await (const shopProduct of shopProductsResult.docs) {
-    const { nameI18n, ...restProduct } = shopProduct;
+    const { product, ...restProduct } = shopProduct;
+    if (!product) {
+      continue;
+    }
 
     const productCategoryAttributes = await getCategoryAllAttributes(
       shopProduct.selectedOptionsSlugs,
@@ -468,23 +471,26 @@ export const getServerSideProps = async (
     // title
     const snippetTitle = generateSnippetTitle({
       locale,
-      brand: restProduct.brand,
+      brand: product.brand,
       rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
       showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
-      attributes: restProduct.attributes || [],
-      categories: restProduct.categories,
-      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      originalName: restProduct.originalName,
-      defaultGender: restProduct.gender,
+      attributes: product.attributes || [],
+      categories: product.categories,
+      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      originalName: product.originalName,
+      defaultGender: product.gender,
     });
 
     docs.push({
       ...restProduct,
-      snippetTitle,
-      nameI18n,
-      name: getFieldStringLocale(nameI18n, locale),
-      totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+      product: {
+        ...product,
+        snippetTitle,
+        nameI18n: product.nameI18n,
+        name: getFieldStringLocale(product.nameI18n, locale),
+        totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+      },
     });
   }
 

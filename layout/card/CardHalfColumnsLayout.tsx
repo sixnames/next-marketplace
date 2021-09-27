@@ -194,8 +194,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
                             {(connectionProducts || []).map(({ option, shopProduct }) => {
-                              const mainImage = shopProduct?.mainImage;
-                              const isCurrent = shopProduct?.slug === product.slug;
+                              const mainImage = shopProduct?.product?.mainImage;
+                              const isCurrent = shopProduct?.product?.slug === product.slug;
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -223,7 +223,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   {isCurrent ? null : (
                                     <Link
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.product?.slug}`}
                                     >
                                       {name}
                                     </Link>

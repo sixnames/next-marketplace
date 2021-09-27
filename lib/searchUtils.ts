@@ -130,7 +130,7 @@ export const getSearchData = async ({
 
     // Get algolia search result
     const searchIds = await getAlgoliaProductsSearch({
-      indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
       search,
     });
 

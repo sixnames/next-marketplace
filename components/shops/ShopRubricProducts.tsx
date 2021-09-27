@@ -109,9 +109,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return (
           <TableRowImage
             testId={'shop-product-main-image'}
-            src={`${dataItem.mainImage}`}
-            alt={`${dataItem.name}`}
-            title={`${dataItem.name}`}
+            src={`${dataItem.product?.mainImage}`}
+            alt={`${dataItem.product?.name}`}
+            title={`${dataItem.product?.name}`}
           />
         );
       },
@@ -166,7 +166,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           <div className='flex gap-2'>
             <div>{noNaN(cellData)}</div>
             <div>/</div>
-            <div>{noNaN(dataItem.totalAttributesCount)}</div>
+            <div>{noNaN(dataItem.product?.totalAttributesCount)}</div>
           </div>
         );
       },
@@ -201,7 +201,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   testId: `delete-shop-product-modal`,
-                  message: `Вы уверенны, что хотите удалить ${dataItem.originalName} из магазина?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.product?.originalName} из магазина?`,
                   confirm: () => {
                     showLoading();
                     deleteProductFromShopMutation({

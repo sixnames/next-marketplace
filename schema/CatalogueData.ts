@@ -134,7 +134,7 @@ export const CatalogueQueries = extendType({
         if (isSearchResult) {
           // Get algolia search result
           const searchIds = await getAlgoliaProductsSearch({
-            indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+            indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
             search: rubricSlug,
           });
           searchStage = {
@@ -474,7 +474,7 @@ export const CatalogueQueries = extendType({
 
           // const productsStart = new Date().getTime();
           const searchIds = await getAlgoliaProductsSearch({
-            indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+            indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
             search,
           });
           if (searchIds.length < 1) {

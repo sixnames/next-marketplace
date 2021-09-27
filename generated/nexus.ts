@@ -1573,7 +1573,6 @@ export interface NexusGenFieldTypes {
     addOptionToGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    addProductToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -2711,7 +2710,6 @@ export interface NexusGenFieldTypeNames {
     addOptionToGroup: 'OptionsGroupPayload';
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
-    addProductToShop: 'ShopPayload';
     addShopToCartProduct: 'CartPayload';
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
@@ -3538,10 +3536,6 @@ export interface NexusGenArgTypes {
     addProductToConnection: {
       // args
       input: NexusGenInputs['AddProductToConnectionInput']; // AddProductToConnectionInput!
-    };
-    addProductToShop: {
-      // args
-      input: NexusGenInputs['AddProductToShopInput']; // AddProductToShopInput!
     };
     addShopToCartProduct: {
       // args

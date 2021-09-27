@@ -46,7 +46,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, shopProduct, itemId, price, amount, totalPrice, productId } = orderProduct;
   const rubricSlug = `${shopProduct?.rubricSlug}`;
-  const slug = `${shopProduct?.slug}`;
+  const slug = `${shopProduct?.product?.slug}`;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
@@ -55,7 +55,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
   const productImageSrc = shopProduct
-    ? shopProduct.mainImage
+    ? `${shopProduct.product?.mainImage}`
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;

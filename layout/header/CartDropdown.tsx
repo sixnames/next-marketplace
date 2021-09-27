@@ -58,7 +58,11 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             const { product, shopProduct, _id, amount } = cartProduct;
 
             if (shopProduct) {
-              const { mainImage, snippetTitle } = shopProduct;
+              const { product } = shopProduct;
+              if (!product) {
+                return null;
+              }
+
               return (
                 <div
                   key={`${_id}`}
@@ -68,10 +72,10 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   <div className={productImageClassName}>
                     <div className={productImageHolderClassName}>
                       <Image
-                        src={`${mainImage}`}
+                        src={`${product.mainImage}`}
                         objectFit='contain'
-                        alt={`${snippetTitle}`}
-                        title={`${snippetTitle}`}
+                        alt={`${product.snippetTitle}`}
+                        title={`${product.snippetTitle}`}
                         width={70}
                         height={185}
                       />
@@ -79,7 +83,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   </div>
                   <div className={productContentClassName}>
                     <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
-                      {snippetTitle}
+                      {product.snippetTitle}
                     </div>
 
                     <ProductShopPrices

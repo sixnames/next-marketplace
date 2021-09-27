@@ -928,11 +928,6 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
 
   """
-  Should add product to the shop
-  """
-  addProductToShop(input: AddProductToShopInput!): ShopPayload!
-
-  """
   Should add shop to the cart product
   """
   addShopToCartProduct(input: AddShopToCartProductInput!): CartPayload!

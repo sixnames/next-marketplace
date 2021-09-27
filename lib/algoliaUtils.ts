@@ -1,22 +1,13 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
 import { HITS_PER_PAGE } from 'config/common';
-import { ProductModel, ShopProductModel } from 'db/dbModels';
+import { ProductModel } from 'db/dbModels';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
 export interface AlgoliaProductInterface
   extends Pick<
     ProductModel,
-    'nameI18n' | 'originalName' | 'itemId' | 'barcode' | 'descriptionI18n'
-  > {
-  _id: string;
-  objectID: string;
-}
-
-export interface AlgoliaShopProductInterface
-  extends Pick<
-    ShopProductModel,
     'nameI18n' | 'originalName' | 'itemId' | 'barcode' | 'descriptionI18n'
   > {
   _id: string;

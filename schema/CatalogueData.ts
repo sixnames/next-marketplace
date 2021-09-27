@@ -9,6 +9,7 @@ import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueU
 import { getAlphabetList } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
+  AttributeModel,
   BrandCollectionModel,
   BrandModel,
   CatalogueSearchResultModel,
@@ -19,13 +20,13 @@ import {
   OptionModel,
   ProductAttributeModel,
   ProductModel,
-  RubricAttributeModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
+  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
@@ -33,7 +34,6 @@ import {
   COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -639,8 +639,7 @@ export const CatalogueMutations = extendType({
           const { city } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const rubricAttributesCollection =
-            db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
             db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -743,19 +742,21 @@ export const CatalogueMutations = extendType({
 
             // Update attributes counters
             if (selectedAttributesSlugs.length > 0) {
-              await rubricAttributesCollection.updateMany(
+              await attributesCollection.updateMany(
                 {
-                  rubricId: rubric._id,
                   slug: {
                     $in: selectedAttributesSlugs,
                   },
                 },
-                counterUpdater,
+                {
+                  $inc: {
+                    [`views.${companySlug}.${city}.${rubric.slug}`]: VIEWS_COUNTER_STEP,
+                  },
+                },
               );
 
               await productAttributesCollection.updateMany(
                 {
-                  rubricId: rubric._id,
                   slug: {
                     $in: selectedAttributesSlugs,
                   },
@@ -763,17 +764,16 @@ export const CatalogueMutations = extendType({
                 counterUpdater,
               );
 
-              const selectedRubricAttributes = await rubricAttributesCollection
+              const selectedAttributes = await attributesCollection
                 .find({
-                  rubricId: rubric._id,
                   slug: {
                     $in: selectedAttributesSlugs,
                   },
                 })
                 .toArray();
 
-              for await (const rubricAttribute of selectedRubricAttributes) {
-                const { optionsGroupId } = rubricAttribute;
+              for await (const attribute of selectedAttributes) {
+                const { optionsGroupId } = attribute;
 
                 if (optionsGroupId) {
                   await optionsCollection.updateMany(

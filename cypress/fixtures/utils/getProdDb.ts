@@ -1,5 +1,6 @@
 import { ONE_WEEK } from '../../../config/common';
 import {
+  AttributeModel,
   BlogAttributeModel,
   BrandCollectionModel,
   BrandModel,
@@ -21,7 +22,6 @@ import {
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
-  RubricAttributeModel,
   RubricModel,
   ShopModel,
   ShopProductModel,
@@ -29,6 +29,7 @@ import {
   UserModel,
 } from '../../../db/dbModels';
 import {
+  COL_ATTRIBUTES,
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_POSTS,
   COL_BRAND_COLLECTIONS,
@@ -51,7 +52,6 @@ import {
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -242,25 +242,11 @@ export async function updateIndexes(db: Db) {
   await categoriesCollection.createIndex({ rubricId: 1 });
   await categoriesCollection.createIndex({ rubricId: 1, parentId: 1 });
 
-  // Rubric attributes
-  await createCollectionIfNotExist(COL_RUBRIC_ATTRIBUTES);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
-  await rubricAttributesCollection.createIndex({ attributeId: 1 });
-  await rubricAttributesCollection.createIndex({ rubricId: 1, showInCatalogueFilter: 1 });
-  await rubricAttributesCollection.createIndex({
-    rubricId: 1,
-    categoryId: 1,
-    showInCatalogueFilter: 1,
-  });
-  await rubricAttributesCollection.createIndex({
-    rubricId: 1,
-    showInCatalogueNav: 1,
-  });
-  await rubricAttributesCollection.createIndex({
-    rubricId: 1,
-    categoryId: 1,
-    showInCatalogueNav: 1,
-  });
+  // Attributes
+  await createCollectionIfNotExist(COL_ATTRIBUTES);
+  const rubricAttributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  await rubricAttributesCollection.createIndex({ attributesGroupId: 1, slug: 1 });
+  await rubricAttributesCollection.createIndex({ attributesGroupId: 1 });
 
   // Configs
   await createCollectionIfNotExist(COL_CONFIGS);

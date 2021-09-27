@@ -8,6 +8,7 @@ import {
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
+  CategoryInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
@@ -26,6 +27,7 @@ interface GetCmsProductInterface {
 interface GetCmsProductPayloadInterface {
   product: ProductInterface;
   rubric: RubricInterface;
+  categoriesList: CategoryInterface[];
 }
 
 export async function getCmsProduct({
@@ -176,5 +178,6 @@ export async function getCmsProduct({
   return {
     product,
     rubric: castedRubric,
+    categoriesList: initialProduct.categories || [],
   };
 }

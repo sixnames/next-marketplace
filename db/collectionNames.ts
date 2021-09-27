@@ -41,7 +41,6 @@ export const COL_ROLES = 'roles';
 export const COL_ROLE_RULES = 'roleRules';
 export const COL_RUBRICS = 'rubrics';
 export const COL_CATEGORIES = 'categories';
-export const COL_RUBRIC_ATTRIBUTES = 'rubricAttributes';
 export const COL_RUBRIC_VARIANTS = 'rubricVariants';
 export const COL_SHOPS = 'shops';
 export const COL_SHOP_PRODUCTS = 'shopProducts';

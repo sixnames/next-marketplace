@@ -1,9 +1,9 @@
 import {
   FILTER_SEPARATOR,
-  DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
   SORT_DESC,
+  DEFAULT_SORT_STAGE,
 } from 'config/common';
 import {
   getBrandFilterAttribute,
@@ -14,19 +14,18 @@ import {
   COL_COMPANIES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterAttributesPipeline,
   filterCmsBrandsPipeline,
   filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
   productCategoriesPipeline,
 } from 'db/dao/constantPipelines';
-import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   RubricInterface,
@@ -40,6 +39,7 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getCategoryAllAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
@@ -107,7 +107,6 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
   const { query } = context;
@@ -196,7 +195,6 @@ export const getServerSideProps = async (
         hasPrevPage: false,
         attributes: [],
         selectedAttributes: [],
-        rubricAttributesCount: 0,
         basePath,
         page,
         docs: [],
@@ -371,6 +369,9 @@ export const getServerSideProps = async (
 
           // get brands and brand collections
           brands: filterCmsBrandsPipeline,
+
+          // get attributes
+          attributes: filterAttributesPipeline(DEFAULT_SORT_STAGE),
         },
       },
       {
@@ -395,24 +396,6 @@ export const getServerSideProps = async (
         $addFields: {
           totalPages: {
             $ceil: '$totalPagesFloat',
-          },
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          rubric: 1,
-          categories: 1,
-          brands: 1,
-          totalDocs: 1,
-          options: 1,
-          prices: 1,
-          totalPages: 1,
-          hasPrevPage: {
-            $gt: [page, DEFAULT_PAGE],
-          },
-          hasNextPage: {
-            $lt: [page, '$totalPages'],
           },
         },
       },
@@ -458,9 +441,11 @@ export const getServerSideProps = async (
     brands: shopProductsResult.brands,
   });
 
+  // rubric attributes
+  const rubricAttributes = shopProductsResult.attributes || [];
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    selectedOptionsSlugs: [],
-    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...rubricAttributes],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: shopProductsResult.prices,
@@ -468,12 +453,41 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
-  // count rubric attributes
-  const rubricAttributesCount = await rubricAttributesCollection.countDocuments({
-    rubricId: rubric._id,
-  });
+  // rubric attributes
+  const allRubricAttributes = await getRubricAllAttributes(rubricId);
 
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
+  const docs: ShopProductInterface[] = [];
+  for await (const shopProduct of shopProductsResult.docs) {
+    const { nameI18n, ...restProduct } = shopProduct;
+
+    const productCategoryAttributes = await getCategoryAllAttributes(
+      shopProduct.selectedOptionsSlugs,
+    );
+
+    // title
+    const snippetTitle = generateSnippetTitle({
+      locale,
+      brand: restProduct.brand,
+      rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
+      showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
+      attributes: restProduct.attributes || [],
+      categories: restProduct.categories,
+      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+      originalName: restProduct.originalName,
+      defaultGender: restProduct.gender,
+    });
+
+    docs.push({
+      ...restProduct,
+      snippetTitle,
+      nameI18n,
+      name: getFieldStringLocale(nameI18n, locale),
+      totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+    });
+  }
+
   const payload: Omit<ShopRubricProductsInterface, 'layoutBasePath'> = {
     shop,
     rubricId: rubric._id.toHexString(),
@@ -484,37 +498,10 @@ export const getServerSideProps = async (
     hasNextPage: shopProductsResult.hasNextPage,
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
-    rubricAttributesCount,
     basePath,
     selectedAttributes,
     page,
-    docs: shopProductsResult.docs.reduce((acc: ShopProductInterface[], shopProduct) => {
-      const { nameI18n, ...restProduct } = shopProduct;
-
-      // title
-      const snippetTitle = generateSnippetTitle({
-        locale,
-        brand: restProduct.brand,
-        rubricName: getFieldStringLocale(rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
-        attributes: restProduct.attributes || [],
-        categories: restProduct.categories,
-        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-        originalName: restProduct.originalName,
-        defaultGender: restProduct.gender,
-      });
-
-      return [
-        ...acc,
-        {
-          ...restProduct,
-          snippetTitle,
-          nameI18n,
-          name: getFieldStringLocale(nameI18n, locale),
-        },
-      ];
-    }, []),
+    docs,
   };
 
   const castedPayload = castDbData(payload);

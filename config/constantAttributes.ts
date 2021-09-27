@@ -15,7 +15,7 @@ import {
   BrandInterface,
   CategoryInterface,
   OptionInterface,
-  RubricAttributeInterface,
+  AttributeInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -42,7 +42,7 @@ interface GetCategoryFilterAttributeInterface {
 export function getCategoryFilterAttribute({
   categories,
   locale,
-}: GetCategoryFilterAttributeInterface): RubricAttributeInterface {
+}: GetCategoryFilterAttributeInterface): AttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
   const initialOptions: OptionInterface[] = (categories || []).map((category) => {
@@ -65,11 +65,8 @@ export function getCategoryFilterAttribute({
     locale,
   });
 
-  const attribute: RubricAttributeInterface = {
+  const attribute: AttributeInterface = {
     _id: new ObjectId(),
-    attributeId: new ObjectId(),
-    rubricId: new ObjectId(),
-    rubricSlug: 'slug',
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
@@ -96,7 +93,6 @@ export function getCategoryFilterAttribute({
     showNameInCardTitle: false,
     showNameInSelectedAttributes: false,
     showNameInSnippetTitle: false,
-    showInRubricFilter: true,
     positioningInTitle: {
       [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
       [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
@@ -115,7 +111,7 @@ interface GetBrandFilterAttributeInterface {
 export function getBrandFilterAttribute({
   brands,
   locale,
-}: GetBrandFilterAttributeInterface): RubricAttributeInterface {
+}: GetBrandFilterAttributeInterface): AttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
@@ -147,11 +143,8 @@ export function getBrandFilterAttribute({
 
   const options: OptionInterface[] = (brands || []).map(castBrandToOption);
 
-  const attribute: RubricAttributeInterface = {
+  const attribute: AttributeInterface = {
     _id: new ObjectId(),
-    attributeId: new ObjectId(),
-    rubricId: new ObjectId(),
-    rubricSlug: 'slug',
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
@@ -178,7 +171,6 @@ export function getBrandFilterAttribute({
     showNameInCardTitle: false,
     showNameInSelectedAttributes: false,
     showNameInSnippetTitle: false,
-    showInRubricFilter: true,
     positioningInTitle: {
       [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
       [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
@@ -189,15 +181,12 @@ export function getBrandFilterAttribute({
   return attribute;
 }
 
-export function getPriceAttribute(): RubricAttributeInterface {
+export function getPriceAttribute(): AttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   return {
     _id: new ObjectId(),
-    attributeId: new ObjectId(),
-    rubricId: new ObjectId(),
-    rubricSlug: 'slug',
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
@@ -224,7 +213,6 @@ export function getPriceAttribute(): RubricAttributeInterface {
     showNameInSnippetTitle: false,
     showInCard: false,
     capitalise: false,
-    showInRubricFilter: true,
     options: [
       {
         _id: new ObjectId(),

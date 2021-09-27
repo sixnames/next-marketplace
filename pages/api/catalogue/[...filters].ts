@@ -1,8 +1,8 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSubdomain } from 'tldts';
 
 export interface CatalogueQueryInterface {
   filters: string[];
@@ -16,9 +16,9 @@ export interface CatalogueQueryInterface {
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { headers, query } = req;
+    const { locale, city, currency } = await getRequestParams({ req, res });
+    const { query } = req;
     const anyQuery = query as unknown;
-    const locale = req.cookies.locale || DEFAULT_LOCALE;
 
     const {
       filters,
@@ -29,14 +29,14 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       snippetVisibleAttributesCount,
     } = anyQuery as CatalogueQueryInterface;
     const [rubricSlug, ...restFilters] = filters;
-    const host = `${headers.host}`;
-    const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
-    const sessionCity = subdomain || DEFAULT_CITY;
+
     const rawCatalogueData = await getCatalogueData({
       locale,
       companySlug,
       companyId,
-      city: sessionCity,
+      currency,
+      city,
+      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       visibleOptionsCount: noNaN(visibleOptionsCount) || 5,
       snippetVisibleAttributesCount: noNaN(snippetVisibleAttributesCount) || 5,
       input: {

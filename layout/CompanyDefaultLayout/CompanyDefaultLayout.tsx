@@ -26,11 +26,11 @@ const CompanyDefaultLayoutConsumer: React.FC<CompanyDefaultLayoutConsumerInterfa
   description,
   pageUrls,
   company,
+  headerPageGroups,
+  footerPageGroups,
   previewImage,
   siteName,
   foundationYear,
-  headerPageGroups,
-  footerPageGroups,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();

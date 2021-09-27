@@ -199,8 +199,16 @@ export interface CountersModel {
   views: CountersItemModel;
   priorities: CountersItemModel;
 }
+export interface AttributeCountersItemModel {
+  [key: string]: any;
+}
 
-export interface AttributeModel {
+export interface AttributeCountersModel {
+  views?: AttributeCountersItemModel;
+  priorities?: AttributeCountersItemModel;
+}
+
+export interface AttributeModel extends AttributeCountersModel {
   _id: ObjectIdModel;
   slug: string;
   attributesGroupId: ObjectIdModel;
@@ -565,7 +573,7 @@ export interface ProductConnectionModel {
   productsIds: ObjectIdModel[];
 }
 
-export interface ProductAttributeModel extends AttributeModel, CountersModel {
+export interface ProductAttributeModel extends AttributeModel {
   _id: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
@@ -699,20 +707,6 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricAttributeModel extends AttributeModel, CountersModel {
-  _id: ObjectIdModel;
-  attributeId: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  categoryId?: ObjectIdModel | null;
-  categorySlug?: string | null;
-  showInRubricFilter: boolean;
-}
-
-export interface RubricAttributesGroupModel extends AttributesGroupModel {
-  attributes?: RubricAttributeModel[] | null;
-}
-
 export interface RubricCatalogueTitleModel {
   defaultTitleI18n: TranslationModel;
   prefixI18n?: TranslationModel | null;
@@ -730,6 +724,8 @@ export interface RubricModel extends CountersModel {
   active: boolean;
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
+  attributesGroupIds: ObjectIdModel[];
+  filterVisibleAttributeIds: ObjectIdModel[];
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
   showBrandInNav?: boolean | null;
@@ -744,6 +740,7 @@ export interface CategoryModel extends CountersModel {
   nameI18n: TranslationModel;
   gender?: GenderModel | null;
   parentTreeIds: ObjectIdModel[];
+  attributesGroupIds: ObjectIdModel[];
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;

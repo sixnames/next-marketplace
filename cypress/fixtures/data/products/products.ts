@@ -12,11 +12,12 @@ import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
 import options from '../options/options';
-import rubricAttributes from '../rubricAttributes/rubricAttributes';
+import attributes from '../attributes/attributes';
 import manufacturers from '../manufacturers/manufacturers';
 import suppliers from '../suppliers/suppliers';
 import brands from '../brands/brands';
 import brandCollections from '../brandCollections/brandCollections';
+import categories from '../categories/categories';
 
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
@@ -46,7 +47,25 @@ const brandCollectionsAttributeSlug = 'brandCollections';
 let counter = 0;
 
 const products = rubrics.reduce((acc: ProductModel[], rubric) => {
+  const attributesGroupIds = rubric.attributesGroupIds;
   const rubricSlug = rubric.slug;
+  const isForCategory = rubric.nameI18n.ru === 'Виски';
+
+  const rubricCategories = categories.filter(({ rubricId }) => {
+    return rubricId.equals(rubric._id);
+  });
+  rubricCategories.forEach((category) => {
+    category.attributesGroupIds.forEach((_id) => {
+      const exist = attributesGroupIds.some((groupId) => groupId.equals(_id));
+      if (!exist) {
+        attributesGroupIds.push(_id);
+      }
+    });
+  });
+
+  const rubricAttributes = attributes.filter(({ attributesGroupId }) => {
+    return attributesGroupIds.some((_id) => _id.equals(attributesGroupId));
+  });
 
   interface AddedAttributeInterface {
     attributeSlug: string;
@@ -107,10 +126,9 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     const selectedAttributesIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
     const titleCategoriesSlugs: string[] = [];
-
     rubricAttributes.forEach((attribute) => {
-      if (attribute.rubricSlug === rubricSlug && attribute.showInCatalogueFilter) {
-        selectedAttributesIds.push(attribute.attributeId);
+      if (attribute.showInCatalogueFilter) {
+        selectedAttributesIds.push(attribute._id);
 
         const attributeOptions = options.filter(({ optionsGroupId }) => {
           return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);
@@ -235,7 +253,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
     });
     const brandCollection = currentBrandCollections[brandCollectionIndex];
 
-    const isForCategory = rubric.nameI18n.ru === 'Виски';
     if (isForCategory) {
       const categoriesSlugsForTitle = [
         `${CATEGORY_SLUG_PREFIX}1`,

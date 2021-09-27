@@ -46,7 +46,6 @@ export interface ShopRubricProductsInterface
   rubricName: string;
   rubricId: string;
   layoutBasePath: string;
-  rubricAttributesCount: number;
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -62,7 +61,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricId,
   layoutBasePath,
   breadcrumbs,
-  rubricAttributesCount,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -163,12 +161,12 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'attributesCount',
       headTitle: 'Атрибуты',
       isHidden: !me?.role?.isStaff,
-      render: ({ cellData }) => {
+      render: ({ cellData, dataItem }) => {
         return (
           <div className='flex gap-2'>
             <div>{noNaN(cellData)}</div>
             <div>/</div>
-            <div>{noNaN(rubricAttributesCount)}</div>
+            <div>{noNaN(dataItem.totalAttributesCount)}</div>
           </div>
         );
       },

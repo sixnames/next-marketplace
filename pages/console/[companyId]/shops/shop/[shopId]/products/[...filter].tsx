@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR, DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { DEFAULT_SORT_STAGE, FILTER_SEPARATOR, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
@@ -13,6 +13,7 @@ import {
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterAttributesPipeline,
   filterCmsBrandsPipeline,
   filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
@@ -155,7 +156,6 @@ export const getServerSideProps = async (
         hasPrevPage: false,
         attributes: [],
         selectedAttributes: [],
-        rubricAttributesCount: 0,
         basePath,
         page,
         docs: [],
@@ -323,6 +323,9 @@ export const getServerSideProps = async (
 
           // get brands and brand collections
           brands: filterCmsBrandsPipeline,
+
+          // get attributes
+          attributes: filterAttributesPipeline(DEFAULT_SORT_STAGE),
         },
       },
       {
@@ -347,24 +350,6 @@ export const getServerSideProps = async (
         $addFields: {
           totalPages: {
             $ceil: '$totalPagesFloat',
-          },
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          rubric: 1,
-          categories: 1,
-          brands: 1,
-          totalDocs: 1,
-          options: 1,
-          prices: 1,
-          totalPages: 1,
-          hasPrevPage: {
-            $gt: [page, DEFAULT_PAGE],
-          },
-          hasNextPage: {
-            $lt: [page, '$totalPages'],
           },
         },
       },
@@ -410,9 +395,11 @@ export const getServerSideProps = async (
     brands: shopProductsResult.brands,
   });
 
+  // rubric attributes
+  const rubricAttributes = shopProductsResult.attributes || [];
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    selectedOptionsSlugs: [],
-    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...rubricAttributes],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: shopProductsResult.prices,
@@ -431,7 +418,6 @@ export const getServerSideProps = async (
     hasNextPage: shopProductsResult.hasNextPage,
     hasPrevPage: shopProductsResult.hasPrevPage,
     attributes: castedAttributes,
-    rubricAttributesCount: 0,
     basePath,
     selectedAttributes,
     page,

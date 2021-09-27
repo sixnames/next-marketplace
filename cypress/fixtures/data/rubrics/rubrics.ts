@@ -1,6 +1,7 @@
 import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../../config/common';
-import { GenderModel, RubricModel } from '../../../../db/dbModels';
-import { getObjectId } from 'mongo-seeding';
+import { GenderModel, ObjectIdModel, RubricModel } from '../../../../db/dbModels';
+import { getObjectId, getObjectIds } from 'mongo-seeding';
+import attributes from '../attributes/attributes';
 
 const booleans = {
   capitalise: true,
@@ -37,6 +38,21 @@ const rubrics: RubricModel[] = [
       gender: GENDER_IT as GenderModel,
     },
     variantId: getObjectId('rubricVariant alcohol'),
+    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
+      const exist =
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
+        attribute.attributesGroupId.equals(
+          getObjectId('attributesGroup Характеристики шампанского'),
+        );
+      if (exist) {
+        return [...acc, attribute._id];
+      }
+      return acc;
+    }, []),
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
+    ]),
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
@@ -65,6 +81,16 @@ const rubrics: RubricModel[] = [
       gender: GENDER_IT as GenderModel,
     },
     variantId: getObjectId('rubricVariant water'),
+    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
+      const exist =
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Характеристики виски'));
+      if (exist) {
+        return [...acc, attribute._id];
+      }
+      return acc;
+    }, []),
+    attributesGroupIds: [],
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
@@ -93,6 +119,19 @@ const rubrics: RubricModel[] = [
       gender: GENDER_IT as GenderModel,
     },
     variantId: getObjectId('rubricVariant alcohol'),
+    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
+      const exist =
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Характеристики вина'));
+      if (exist) {
+        return [...acc, attribute._id];
+      }
+      return acc;
+    }, []),
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики вина',
+    ]),
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },

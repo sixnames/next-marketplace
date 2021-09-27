@@ -1,13 +1,6 @@
-import { ALL_ALPHABETS, DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_LANGUAGES } from 'db/collectionNames';
-import {
-  AlphabetListModelType,
-  AttributeModel,
-  AttributesGroupModel,
-  LanguageModel,
-  ObjectIdModel,
-  RubricAttributeModel,
-} from 'db/dbModels';
+import { ALL_ALPHABETS, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
+import { COL_LANGUAGES } from 'db/collectionNames';
+import { AlphabetListModelType, LanguageModel, ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -101,42 +94,6 @@ export function findOptionInTree({
     }
   });
   return option;
-}
-
-interface CastAttributeForRubricInterface {
-  attribute: AttributeModel;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  categorySlug?: string;
-  categoryId?: ObjectIdModel;
-}
-
-export async function castAttributeForRubric({
-  attribute,
-  rubricId,
-  rubricSlug,
-  categoryId,
-  categorySlug,
-}: CastAttributeForRubricInterface): Promise<RubricAttributeModel> {
-  const { db } = await getDatabase();
-  const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-
-  const attributesGroup = await attributesGroupsCollection.findOne({
-    attributesIds: attribute._id,
-  });
-
-  return {
-    ...attribute,
-    _id: new ObjectId(),
-    attributeId: attribute._id,
-    rubricId,
-    rubricSlug,
-    categoryId,
-    categorySlug,
-    attributesGroupId: new ObjectId(attributesGroup?._id),
-    showInRubricFilter: true,
-    ...DEFAULT_COUNTERS_OBJECT,
-  };
 }
 
 interface GetAlphabetListInterface<TModel> {

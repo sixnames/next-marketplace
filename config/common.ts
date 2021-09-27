@@ -44,6 +44,7 @@ export const ADULT_FALSE = 'false';
 export const COOKIE_COMPANY_SLUG = 'companySlug';
 export const COOKIE_LOCALE = 'locale';
 export const COOKIE_CITY = 'city';
+export const COOKIE_CURRENCY = 'currency';
 
 // THEME
 export const THEME_DARK = 'dark';
@@ -197,6 +198,11 @@ export const SORT_ASC = 1;
 export const SORT_ASC_STR = 'ASC';
 export const SORT_DESC = -1;
 export const SORT_DESC_STR = 'DESC';
+export const DEFAULT_SORT_STAGE = {
+  priorities: SORT_DESC,
+  views: SORT_DESC,
+  _id: SORT_DESC,
+};
 
 // NOTIFICATIONS
 export const NOTIFICATIONS_GROUP_CUSTOMER = 'customer';

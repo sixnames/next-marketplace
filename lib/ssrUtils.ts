@@ -1,6 +1,4 @@
 import {
-  CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
-  CATALOGUE_NAV_VISIBLE_OPTIONS,
   DEFAULT_COMPANY_SLUG,
   COOKIE_CITY,
   COOKIE_COMPANY_SLUG,
@@ -19,8 +17,10 @@ import {
   PAGE_STATE_PUBLISHED,
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
+  COOKIE_CURRENCY,
 } from 'config/common';
 import {
+  COL_ATTRIBUTES,
   COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
@@ -33,13 +33,13 @@ import {
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_ROLES,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_USERS,
 } from 'db/collectionNames';
 import {
+  AttributeModel,
   CategoryModel,
   CityModel,
   CompanyModel,
@@ -47,7 +47,6 @@ import {
   CountryModel,
   LanguageModel,
   ObjectIdModel,
-  RubricAttributeModel,
   RubricModel,
   ShopProductModel,
   UserModel,
@@ -76,7 +75,7 @@ import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
-import { getRubricNavAttributes } from 'lib/rubricUtils';
+import { castAttributeForUI } from 'lib/uiDataUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
 import { Session } from 'next-auth';
@@ -89,6 +88,8 @@ export interface GetCatalogueNavRubricsInterface {
   locale: string;
   city: string;
   company?: CompanyModel | null;
+  stickyNavVisibleAttributesCount: number;
+  stickyNavVisibleOptionsCount: number;
 }
 
 interface CatalogueNavConfigItemInterface {
@@ -116,33 +117,18 @@ export const getCatalogueNavRubrics = async ({
   city,
   locale,
   company,
+  stickyNavVisibleAttributesCount,
+  stickyNavVisibleOptionsCount,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
+  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
-
-  // Get configs
-  const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
-    slug: 'stickyNavVisibleAttributesCount',
-    companySlug,
-  });
-  const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
-    slug: 'stickyNavVisibleOptionsCount',
-    companySlug,
-  });
-  const visibleAttributesCount =
-    noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_NAV_VISIBLE_ATTRIBUTES);
-  const visibleOptionsCount =
-    noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
 
@@ -154,18 +140,18 @@ export const getCatalogueNavRubrics = async ({
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
 
-  const attributesLimit = visibleAttributesCount
+  const attributesLimit = stickyNavVisibleAttributesCount
     ? [
         {
-          $limit: visibleAttributesCount,
+          $limit: stickyNavVisibleAttributesCount,
         },
       ]
     : [];
 
-  const optionsLimit = visibleOptionsCount
+  const optionsLimit = stickyNavVisibleOptionsCount
     ? [
         {
-          $limit: visibleOptionsCount,
+          $limit: stickyNavVisibleOptionsCount,
         },
       ]
     : [];
@@ -319,11 +305,10 @@ export const getCatalogueNavRubrics = async ({
     });
 
     if (rubricConfig) {
-      const rubricAttributesAggregation = await rubricAttributesCollection
+      const rubricAttributesAggregation = await attributesCollection
         .aggregate([
           {
             $match: {
-              rubricId: rubric._id,
               showInCatalogueNav: true,
               slug: {
                 $in: rubricConfig.attributeSlugs,
@@ -336,13 +321,25 @@ export const getCatalogueNavRubrics = async ({
           ...attributesLimit,
           {
             $project: {
+              capitalise: false,
               variant: false,
               viewVariant: false,
-              rubricId: false,
-              showInCatalogueNav: false,
+              positioningInTitle: false,
+              positioningInCardTitle: false,
+              showAsBreadcrumb: false,
+              showAsCatalogueBreadcrumb: false,
+              notShowAsAlphabet: false,
+              showInSnippet: false,
+              showInCard: false,
               showInCatalogueFilter: false,
-              views: false,
-              priorities: false,
+              showInCatalogueNav: false,
+              showInCatalogueTitle: false,
+              showInCardTitle: false,
+              showInSnippetTitle: false,
+              showNameInTitle: false,
+              showNameInSelectedAttributes: false,
+              showNameInCardTitle: false,
+              showNameInSnippetTitle: false,
             },
           },
           {
@@ -367,6 +364,13 @@ export const getCatalogueNavRubrics = async ({
             $addFields: {
               config: {
                 $arrayElemAt: ['$config', 0],
+              },
+            },
+          },
+          {
+            $match: {
+              config: {
+                $exists: true,
               },
             },
           },
@@ -493,15 +497,17 @@ export const getCatalogueNavRubrics = async ({
       rubrics.push({
         ...rubric,
         nameI18n: {},
-        name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
+        name: getFieldStringLocale(rubric.nameI18n, locale),
         categories: getTreeFromList({
           list: categories,
           childrenFieldName: 'categories',
           locale,
         }),
-        attributes: getRubricNavAttributes({
-          attributes: rubricAttributesAggregation || [],
-          locale,
+        attributes: rubricAttributesAggregation.map((attribute) => {
+          return castAttributeForUI({
+            attribute,
+            locale,
+          });
         }),
       });
     }
@@ -1214,6 +1220,13 @@ export async function getPageInitialState({
     sameSite: 'strict',
   });
 
+  // Set currency as a cookie
+  nookies.set(context, COOKIE_CURRENCY, rawInitialData.currency, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'strict',
+  });
+
   // Site theme accent color
   const themeColor = rawInitialData.configs.siteThemeColor;
   const fallbackColor = `219, 83, 96`;
@@ -1575,6 +1588,8 @@ export async function getSiteInitialData({
     locale: sessionLocale,
     city: sessionCity,
     company,
+    stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
+    stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
   });
   const navRubrics = castDbData(rawNavRubrics);
   const catalogueCreatedPages = await getCatalogueCreatedPages({

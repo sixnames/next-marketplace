@@ -15,10 +15,10 @@ import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import {
   FILTER_SEPARATOR,
-  DEFAULT_PAGE,
   QUERY_FILTER_PAGE,
   ROUTE_CMS,
   SORT_DESC,
+  DEFAULT_SORT_STAGE,
 } from 'config/common';
 import {
   getBrandFilterAttribute,
@@ -29,19 +29,18 @@ import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
-  COL_RUBRIC_ATTRIBUTES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
   brandPipeline,
+  filterAttributesPipeline,
   filterCmsBrandsPipeline,
   filterCmsCategoriesPipeline,
   getCatalogueRubricPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
 } from 'db/dao/constantPipelines';
-import { RubricAttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
@@ -61,6 +60,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getCategoryAllAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
@@ -350,7 +350,6 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-  const rubricAttributesCollection = db.collection<RubricAttributeModel>(COL_RUBRIC_ATTRIBUTES);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
@@ -567,6 +566,9 @@ export const getServerSideProps = async (
                 $count: 'totalDocs',
               },
             ],
+
+            // get attributes
+            attributes: filterAttributesPipeline(DEFAULT_SORT_STAGE),
           },
         },
         {
@@ -591,24 +593,6 @@ export const getServerSideProps = async (
           $addFields: {
             totalPages: {
               $ceil: '$totalPagesFloat',
-            },
-          },
-        },
-        {
-          $project: {
-            docs: 1,
-            rubric: 1,
-            categories: 1,
-            brands: 1,
-            totalDocs: 1,
-            options: 1,
-            prices: 1,
-            totalPages: 1,
-            hasPrevPage: {
-              $gt: [page, DEFAULT_PAGE],
-            },
-            hasNextPage: {
-              $lt: [page, '$totalPages'],
             },
           },
         },
@@ -654,9 +638,11 @@ export const getServerSideProps = async (
     brands: productsResult.brands,
   });
 
+  // rubric attributes
+  const rubricAttributes = productsResult.attributes || [];
+
   const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    selectedOptionsSlugs: [],
-    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...(rubric?.attributes || [])],
+    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...rubricAttributes],
     locale: initialProps.props.sessionLocale,
     filters: restFilter,
     productsPrices: [],
@@ -664,18 +650,8 @@ export const getServerSideProps = async (
   });
   // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
 
-  // count rubric attributes
-  const allRubricAttributes = await rubricAttributesCollection
-    .find({
-      rubricId: rubric._id,
-    })
-    .toArray();
-  const rubricAttributes = allRubricAttributes.filter(({ categoryId }) => {
-    return !categoryId;
-  });
-  const categoryAttributes = allRubricAttributes.filter(({ categoryId }) => {
-    return categoryId;
-  });
+  // rubric attributes
+  const allRubricAttributes = await getRubricAllAttributes(rubricId);
 
   const docs: ProductInterface[] = [];
   for await (const product of productsResult.docs) {
@@ -685,11 +661,7 @@ export const getServerSideProps = async (
       max: `${noNaN(product.cardPrices?.max)}`,
     };
 
-    const productCategoryAttributes = categoryAttributes.filter((attribute) => {
-      return (
-        attribute.categorySlug && product.selectedOptionsSlugs.includes(attribute.categorySlug)
-      );
-    });
+    const productCategoryAttributes = await getCategoryAllAttributes(product.selectedOptionsSlugs);
 
     // title
     const snippetTitle = generateSnippetTitle({
@@ -710,7 +682,7 @@ export const getServerSideProps = async (
       cardPrices,
       snippetTitle,
       name: getFieldStringLocale(product.nameI18n, locale),
-      totalAttributesCount: rubricAttributes.length + productCategoryAttributes.length,
+      totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
     };
 
     docs.push(castedProduct);

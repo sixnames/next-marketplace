@@ -24,8 +24,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/blog/useBlogMutations';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
@@ -129,9 +128,9 @@ interface BlogPostPageInterface
 
 const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, ...props }) => {
   return (
-    <SiteLayout {...props} title={`${post.title}`} description={`${post.description}`}>
+    <SiteLayoutProvider {...props} title={`${post.title}`} description={`${post.description}`}>
       <BlogPostPageConsumer post={post} />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 

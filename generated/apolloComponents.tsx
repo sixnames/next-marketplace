@@ -2049,7 +2049,7 @@ export type ProductAssets = {
   __typename?: 'ProductAssets';
   _id: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
-  productSlug: Scalars['ObjectId'];
+  productSlug: Scalars['String'];
   assets: Array<Asset>;
 };
 
@@ -2851,8 +2851,7 @@ export type UpdateAttributeInGroupInput = {
 
 export type UpdateAttributeInRubricInput = {
   rubricId: Scalars['ObjectId'];
-  rubricAttributeId: Scalars['ObjectId'];
-  showInRubricFilter: Scalars['Boolean'];
+  attributeId: Scalars['ObjectId'];
 };
 
 export type UpdateAttributesGroupInput = {

@@ -42,7 +42,7 @@ export const ProductAssets = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.objectId('productId');
-    t.nonNull.objectId('productSlug');
+    t.nonNull.string('productSlug');
     t.nonNull.list.nonNull.field('assets', {
       type: 'Asset',
     });

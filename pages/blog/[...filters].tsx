@@ -36,8 +36,7 @@ import {
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
 } from 'db/uiInterfaces';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -415,7 +414,7 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
   ...props
 }) => {
   return (
-    <SiteLayout {...props}>
+    <SiteLayoutProvider {...props}>
       <BlogListPageConsumer
         topPosts={topPosts}
         blogFilter={blogFilter}
@@ -423,7 +422,7 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
         meta={meta}
         isFilterVisible={isFilterVisible}
       />
-    </SiteLayout>
+    </SiteLayoutProvider>
   );
 };
 
@@ -777,7 +776,6 @@ export const getServerSideProps = async (
 
     const filterAttribute: CatalogueFilterAttributeInterface = {
       _id: attribute._id,
-      attributeId: attribute._id,
       slug: attribute.slug,
       clearSlug,
       isSelected,

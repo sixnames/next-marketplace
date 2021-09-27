@@ -1452,7 +1452,7 @@ export const getCatalogueData = async ({
 
     // cast catalogue products
     const products: ProductInterface[] = [];
-    docs.forEach((product, index) => {
+    docs.forEach((product) => {
       // product prices
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
@@ -1535,12 +1535,6 @@ export const getCatalogueData = async ({
         originalName: product.originalName,
         defaultGender: product.gender,
       });
-
-      if (index === 0) {
-        console.log({
-          productAttributes: productAttributes.length,
-        });
-      }
 
       // list features
       const initialListFeatures = getProductCurrentViewCastedAttributes({

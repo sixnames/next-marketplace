@@ -316,7 +316,7 @@ export const getServerSideProps = async (
     ])
     .toArray();
   const initialRubric = initialRubrics[0];
-  console.log(initialRubric);
+
   if (!initialRubric) {
     return {
       notFound: true,

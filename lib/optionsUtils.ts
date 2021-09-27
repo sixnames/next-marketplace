@@ -1,12 +1,18 @@
-import { ALL_ALPHABETS, DEFAULT_LOCALE, GENDER_HE } from 'config/common';
+import { ALL_ALPHABETS, DEFAULT_LOCALE, GENDER_ENUMS, GENDER_HE } from 'config/common';
 import { COL_LANGUAGES } from 'db/collectionNames';
-import { AlphabetListModelType, LanguageModel, ObjectIdModel } from 'db/dbModels';
+import {
+  AlphabetListModelType,
+  LanguageModel,
+  ObjectIdModel,
+  OptionVariantsModel,
+  TranslationModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
-// import trim from 'trim';
+import trim from 'trim';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
@@ -256,15 +262,35 @@ export function sortByName(list: any[]): any[] {
   });
 }
 
-/*interface TrimOptionNamesInterface {
-  nameI18n: Pick<OptionModel, 'nameI18n'>;
-  variants: Pick<OptionModel, 'variants'>;
-}*/
+export function trimTranslationField(fieldII18n: TranslationModel) {
+  return Object.keys(fieldII18n).reduce((acc: TranslationModel, key) => {
+    const value = fieldII18n[key];
+    if (!value) {
+      return acc;
+    }
+    acc[key] = trim(value);
+    return acc;
+  }, {});
+}
 
-/*export function trimOptionNames(props: TrimOptionNamesInterface): TrimOptionNamesInterface {
-  console.log(props);
+interface TrimOptionNamesInterface {
+  nameI18n: TranslationModel;
+  variants: OptionVariantsModel;
+}
+
+export function trimOptionNames(props: TrimOptionNamesInterface): TrimOptionNamesInterface {
+  const variants = GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
+    const genderTranslation = props.variants[gender];
+    if (!genderTranslation) {
+      acc[gender] = {};
+      return acc;
+    }
+    acc[gender] = trimTranslationField(genderTranslation);
+    return acc;
+  }, {});
+
   return {
-    nameI18n: {},
-    variants: {},
+    nameI18n: trimTranslationField(props.nameI18n),
+    variants,
   };
-}*/
+}

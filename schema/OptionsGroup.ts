@@ -1,6 +1,6 @@
 import { getFieldStringLocale } from 'lib/i18n';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree } from 'lib/optionsUtils';
+import { deleteDocumentsTree, trimOptionNames } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -600,8 +600,14 @@ export const OptionsGroupMutations = extendType({
           const newOptionSlug = await getNextItemId(COL_OPTIONS);
 
           // Add option
+          const { nameI18n, variants } = trimOptionNames({
+            nameI18n: values.nameI18n,
+            variants: values.variants,
+          });
           const createdOptionResult = await optionsCollection.insertOne({
             ...values,
+            nameI18n,
+            variants,
             slug: newOptionSlug,
             parentId,
             optionsGroupId,
@@ -703,11 +709,17 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Update option
+          const { nameI18n, variants } = trimOptionNames({
+            nameI18n: values.nameI18n,
+            variants: values.variants,
+          });
           const updatedOptionResult = await optionsCollection.findOneAndUpdate(
             { _id: optionId },
             {
               $set: {
                 ...values,
+                nameI18n,
+                variants,
                 parentId,
               },
             },

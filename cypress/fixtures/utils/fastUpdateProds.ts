@@ -43,7 +43,7 @@ async function updateProds() {
           return _id.equals(attributesGroupId);
         });
         if (!attributesGroupIdExist) {
-          attributesGroupIds.push(attributeId);
+          attributesGroupIds.push(attributesGroupId);
         }
       });
 
@@ -51,6 +51,16 @@ async function updateProds() {
         attributesGroupIds: attributesGroupIds.length,
         filterVisibleAttributeIds: filterVisibleAttributeIds.length,
       });
+
+      await rubricsCollection.findOneAndUpdate(
+        { _id: rubric._id },
+        {
+          $unset: {
+            attributesGroupIds: '',
+            filterVisibleAttributeIds: '',
+          },
+        },
+      );
 
       await rubricsCollection.findOneAndUpdate(
         { _id: rubric._id },
@@ -85,7 +95,7 @@ async function updateProds() {
           return _id.equals(attributesGroupId);
         });
         if (!attributesGroupIdExist) {
-          attributesGroupIds.push(attributeId);
+          attributesGroupIds.push(attributesGroupId);
         }
       });
 
@@ -93,6 +103,16 @@ async function updateProds() {
         attributesGroupIds: attributesGroupIds.length,
         filterVisibleAttributeIds: filterVisibleAttributeIds.length,
       });
+
+      await categoriesCollection.findOneAndUpdate(
+        { _id: category._id },
+        {
+          $unset: {
+            attributesGroupIds: '',
+            filterVisibleAttributeIds: '',
+          },
+        },
+      );
 
       await categoriesCollection.findOneAndUpdate(
         { _id: category._id },

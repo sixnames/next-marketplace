@@ -6,6 +6,7 @@ import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
+// import trim from 'trim';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
@@ -254,3 +255,16 @@ export function sortByName(list: any[]): any[] {
     return 0;
   });
 }
+
+/*interface TrimOptionNamesInterface {
+  nameI18n: Pick<OptionModel, 'nameI18n'>;
+  variants: Pick<OptionModel, 'variants'>;
+}*/
+
+/*export function trimOptionNames(props: TrimOptionNamesInterface): TrimOptionNamesInterface {
+  console.log(props);
+  return {
+    nameI18n: {},
+    variants: {},
+  };
+}*/

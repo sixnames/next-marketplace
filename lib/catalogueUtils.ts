@@ -1280,9 +1280,6 @@ export const getCatalogueData = async ({
               {
                 $sort: defaultSortStage,
               },
-              {
-                $limit: visibleOptionsCount,
-              },
             ],
 
             // countAllDocs facet
@@ -1389,6 +1386,7 @@ export const getCatalogueData = async ({
 
     const { docs, totalProducts, attributes, rubric, brands, categories, prices } =
       productDataAggregation;
+
     if (!rubric) {
       return fallbackPayload;
     }
@@ -1454,7 +1452,7 @@ export const getCatalogueData = async ({
 
     // cast catalogue products
     const products: ProductInterface[] = [];
-    docs.forEach((product) => {
+    docs.forEach((product, index) => {
       // product prices
       const minPrice = noNaN(product.cardPrices?.min);
       const maxPrice = noNaN(product.cardPrices?.max);
@@ -1509,7 +1507,7 @@ export const getCatalogueData = async ({
 
       // product categories
       const initialProductCategories = (categories || []).filter(({ slug }) => {
-        return optionSlugs.includes(slug);
+        return product.selectedOptionsSlugs.includes(slug);
       });
       const productCategories = getTreeFromList({
         list: initialProductCategories,
@@ -1537,6 +1535,12 @@ export const getCatalogueData = async ({
         originalName: product.originalName,
         defaultGender: product.gender,
       });
+
+      if (index === 0) {
+        console.log({
+          productAttributes: productAttributes.length,
+        });
+      }
 
       // list features
       const initialListFeatures = getProductCurrentViewCastedAttributes({

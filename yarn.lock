@@ -2192,6 +2192,11 @@
   resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.3.tgz#ff5e2f1902969d305225a047c8a0fd5c915cebef"
   integrity sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==
 
+"@types/trim@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@types/trim/-/trim-0.1.1.tgz#6cf7fa12b9e605c4b3da25f02a2c19eb86a79a81"
+  integrity sha512-msDmskBu0t+swWSnSMNjMo0Kgk5ZLbyMuEl3vxw7e/hKlJ+orQUV7J0S+FB5hp5T33GazBZIHAiyc6NNhpjf7A==
+
 "@types/uniqid@^5.3.1":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@types/uniqid/-/uniqid-5.3.1.tgz#a3b39529183b355a9445e18f3cc509ad3a017c29"
@@ -11350,6 +11355,11 @@ trim-repeated@^1.0.0:
   integrity sha1-42RqLqTokTEr9+rObPsFOAvAHCE=
   dependencies:
     escape-string-regexp "^1.0.2"
+
+trim@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/trim/-/trim-1.0.1.tgz#68e78f6178ccab9687a610752f4f5e5a7022ee8c"
+  integrity sha512-3JVP2YVqITUisXblCDq/Bi4P9457G/sdEamInkyvCsjbTcXLXIiG7XCb4kGMFWh6JGXesS3TKxOPtrncN/xe8w==
 
 ts-custom-error@^3.0.0:
   version "3.2.0"

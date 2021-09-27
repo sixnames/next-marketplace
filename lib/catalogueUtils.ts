@@ -1280,9 +1280,6 @@ export const getCatalogueData = async ({
               {
                 $sort: defaultSortStage,
               },
-              {
-                $limit: visibleOptionsCount,
-              },
             ],
 
             // countAllDocs facet
@@ -1389,6 +1386,7 @@ export const getCatalogueData = async ({
 
     const { docs, totalProducts, attributes, rubric, brands, categories, prices } =
       productDataAggregation;
+
     if (!rubric) {
       return fallbackPayload;
     }
@@ -1509,7 +1507,7 @@ export const getCatalogueData = async ({
 
       // product categories
       const initialProductCategories = (categories || []).filter(({ slug }) => {
-        return optionSlugs.includes(slug);
+        return product.selectedOptionsSlugs.includes(slug);
       });
       const productCategories = getTreeFromList({
         list: initialProductCategories,

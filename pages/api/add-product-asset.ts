@@ -56,8 +56,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Check product availability
   const product = await productsCollection.findOne({ _id: productId });
-  const initialAssets = await productAssetsCollection.findOne({ productId });
-  if (!product || !initialAssets) {
+  const initialAssetsDocument = await productAssetsCollection.findOne({ productId });
+  const initialAssets = initialAssetsDocument ? initialAssetsDocument.assets : [];
+  if (!product) {
     res.status(500).send({
       success: false,
       message: await getApiMessage('products.update.error'),
@@ -66,7 +67,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Update product assets
-  const sortedAssets = initialAssets.assets.sort((assetA, assetB) => {
+  const sortedAssets = initialAssets.sort((assetA, assetB) => {
     return assetB.index - assetA.index;
   });
   const firstAsset = sortedAssets[0];
@@ -92,7 +93,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     return;
   }
-  const finalAssets = [...initialAssets.assets, ...assets];
+  const finalAssets = [...initialAssets, ...assets];
   const mainImage = getMainImage(finalAssets);
 
   // Update product
@@ -107,6 +108,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
     {
       returnDocument: 'after',
+      upsert: true,
     },
   );
 

@@ -393,16 +393,23 @@ export const ProductMutations = extendType({
 
             // check description uniqueness
             const cardDescriptionInfoI18n: TranslationModel = {};
-            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY;
+            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL_2;
+            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY_2;
             if (uniqueTextApiUrl && uniqueTextApiKey) {
-              for await (const gender of LOCALES) {
-                const text = get(values, `cardDescriptionI18n.${gender}`);
+              for await (const locale of LOCALES) {
+                const text = get(values, `cardDescriptionI18n.${locale}`);
                 if (text) {
-                  const url = `${uniqueTextApiUrl}?key=${uniqueTextApiKey}&text=${text}&test=1`;
-                  const encodedUrl = encodeURI(url);
-                  const res = await fetch(encodedUrl);
+                  const body = {
+                    userkey: uniqueTextApiKey,
+                    text,
+                  };
+
+                  const res = await fetch(uniqueTextApiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                  });
                   const json = await res.json();
+
                   console.log(json);
                 }
               }

@@ -390,7 +390,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                           showSnippetArticle={state.rubricVariant?.showSnippetArticle}
                           showSnippetButtonsOnHover={state.rubricVariant?.showSnippetButtonsOnHover}
                           gridCatalogueColumns={state.rubricVariant?.gridCatalogueColumns}
-                          product={product}
+                          shopProduct={product}
                           key={`${product._id}`}
                           className={'flex-grow-0'}
                           testId={`catalogue-item-${index}`}
@@ -409,7 +409,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                         showSnippetArticle={state.rubricVariant?.showSnippetArticle}
                         showSnippetButtonsOnHover={state.rubricVariant?.showSnippetButtonsOnHover}
                         gridCatalogueColumns={state.rubricVariant?.gridCatalogueColumns}
-                        product={product}
+                        shopProduct={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${index}`}
                       />

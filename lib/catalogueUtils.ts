@@ -66,8 +66,8 @@ import {
   OptionInterface,
   ProductAttributeInterface,
   ProductConnectionInterface,
-  ProductInterface,
   RubricInterface,
+  ShopProductInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -1451,11 +1451,16 @@ export const getCatalogueData = async ({
     });
 
     // cast catalogue products
-    const products: ProductInterface[] = [];
-    docs.forEach((product) => {
+    const products: ShopProductInterface[] = [];
+    docs.forEach((shopProduct) => {
+      const product = shopProduct.product;
+      if (!product) {
+        return;
+      }
+
       // product prices
-      const minPrice = noNaN(product.cardPrices?.min);
-      const maxPrice = noNaN(product.cardPrices?.max);
+      const minPrice = noNaN(shopProduct.cardPrices?.min);
+      const maxPrice = noNaN(shopProduct.cardPrices?.max);
       const cardPrices = {
         _id: new ObjectId(),
         min: `${minPrice}`,
@@ -1463,7 +1468,7 @@ export const getCatalogueData = async ({
       };
 
       // product attributes
-      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+      const optionSlugs = shopProduct.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
         const slugParts = selectedSlug.split(FILTER_SEPARATOR);
         const optionSlug = slugParts[1];
         if (!optionSlug) {
@@ -1507,7 +1512,7 @@ export const getCatalogueData = async ({
 
       // product categories
       const initialProductCategories = (categories || []).filter(({ slug }) => {
-        return product.selectedOptionsSlugs.includes(slug);
+        return shopProduct.selectedOptionsSlugs.includes(slug);
       });
       const productCategories = getTreeFromList({
         list: initialProductCategories,
@@ -1516,9 +1521,9 @@ export const getCatalogueData = async ({
       });
 
       // product brand
-      const productBrand = product.brandSlug
+      const productBrand = shopProduct.brandSlug
         ? (brands || []).find(({ slug }) => {
-            return slug === product.brandSlug;
+            return slug === shopProduct.brandSlug;
           })
         : null;
 
@@ -1576,13 +1581,16 @@ export const getCatalogueData = async ({
       );
 
       products.push({
-        ...product,
-        listFeatures,
-        ratingFeatures,
-        name: getFieldStringLocale(product.nameI18n, locale),
-        cardPrices,
-        connections,
-        snippetTitle,
+        ...shopProduct,
+        product: {
+          ...product,
+          listFeatures,
+          ratingFeatures,
+          name: getFieldStringLocale(product.nameI18n, locale),
+          cardPrices,
+          connections,
+          snippetTitle,
+        },
       });
     });
 

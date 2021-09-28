@@ -1,10 +1,10 @@
 import HorizontalScroll from 'components/HorizontalScroll';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import * as React from 'react';
 
 interface CardSimilarProductsInterface {
-  similarProducts: ProductInterface[];
+  similarProducts: ShopProductInterface[];
 }
 
 const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarProducts }) => {
@@ -25,7 +25,7 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarPr
                 noAttributes
                 noSecondaryName
                 showSnippetBackground
-                product={product}
+                shopProduct={product}
               />
             </div>
           );

@@ -325,6 +325,8 @@ export interface ShopProductInterface extends ShopProductModel {
   product?: ProductInterface | null;
   products?: ProductInterface[] | null;
   orders?: OrderInterface[] | null;
+  cardPrices?: ProductCardPricesModel | null;
+  shopsCount?: number | null;
   // name?: string | null;
   // connections?: ProductConnectionInterface[] | null;
   // attributes?: ProductAttributeInterface[] | null;
@@ -400,7 +402,7 @@ export interface CatalogueDataInterface {
   rubricSlug: string;
   catalogueFilterLayout: string;
   rubricVariant?: RubricVariantInterface | null;
-  products: ProductInterface[];
+  products: ShopProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
@@ -421,7 +423,7 @@ export interface CatalogueProductPricesInterface {
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
-  docs: ProductInterface[];
+  docs: ShopProductInterface[];
   rubric: RubricInterface;
   rubrics?: RubricInterface[] | null;
   attributes?: AttributeInterface[] | null;
@@ -566,7 +568,7 @@ export interface ProductSnippetConfigInterface {
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
-  product: ProductInterface;
+  shopProduct: ShopProductInterface;
   testId?: string;
   className?: string;
   noAttributes?: boolean;

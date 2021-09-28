@@ -1,6 +1,6 @@
 import ControlButton from 'components/ControlButton';
 import { ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -21,7 +21,7 @@ type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
   | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['rubrics'];
 
-type ResultProducts = ProductInterface[];
+type ResultProducts = ShopProductInterface[];
 
 interface HeaderSearchResultInterface {
   rubrics: ResultRubrics;
@@ -77,7 +77,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
             <ProductSnippetGridBigImage
               gridCatalogueColumns={'full'}
               showSnippetBackground
-              product={product}
+              shopProduct={product}
               testId={`search-product`}
               key={`${product._id}`}
             />
@@ -116,9 +116,9 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
   const searchRubrics = data?.getCatalogueSearchResult.rubrics;
   const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
   const initialSearchProducts = data?.getCatalogueSearchResult.products as unknown;
-  const searchProducts = initialSearchProducts as ProductInterface[];
+  const searchProducts = initialSearchProducts as ShopProductInterface[];
   const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
-  const topProducts = initialTopProducts as ProductInterface[];
+  const topProducts = initialTopProducts as ShopProductInterface[];
 
   const isProductsFound = searchProducts && searchProducts.length > 0;
   const rubrics = searchRubrics && searchRubrics.length > 0 ? searchRubrics : topRubrics;

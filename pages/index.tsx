@@ -14,18 +14,13 @@ import {
   CATALOGUE_TOP_FILTERS_LIMIT,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-} from 'db/dao/constantPipelines';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
   PageInterface,
   PagesGroupInterface,
-  ProductInterface,
   ShopInterface,
   ShopProductInterface,
   TopFilterInterface,
@@ -47,7 +42,7 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
 
 interface HomeRoutInterface {
-  topProducts: ProductInterface[];
+  topProducts: ShopProductInterface[];
   topShops: ShopInterface[];
   topFilters: TopFilterInterface[];
   mobileTopFilters: MobileTopFilters;
@@ -213,7 +208,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
                     <ProductSnippetGridBigImage
                       className='flex-grow'
                       showSnippetBackground
-                      product={product}
+                      shopProduct={product}
                     />
                   </div>
                 );
@@ -424,7 +419,7 @@ export async function getServerSideProps(
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopProductsAggregation = await shopProductsCollection
-    .aggregate<ProductInterface>([
+    .aggregate([
       {
         $match: {
           ...companyRubricsMatch,
@@ -439,12 +434,6 @@ export async function getServerSideProps(
           rubricSlug: { $first: `$rubricSlug` },
           brandSlug: { $first: '$brandSlug' },
           brandCollectionSlug: { $first: '$brandCollectionSlug' },
-          slug: { $first: '$slug' },
-          gender: { $first: '$gender' },
-          mainImage: { $first: `$mainImage` },
-          originalName: { $first: `$originalName` },
-          nameI18n: { $first: `$nameI18n` },
-          titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
           views: { $max: `$views.${companySlug}.${sessionCity}` },
           priorities: { $max: `$priorities.${companySlug}.${sessionCity}` },
           minPrice: {
@@ -476,47 +465,11 @@ export async function getServerSideProps(
         $limit: CATALOGUE_TOP_PRODUCTS_LIMIT,
       },
 
-      // Lookup product attributes
-      ...productAttributesPipeline,
-
-      // Lookup product brand
-      ...brandPipeline,
-
-      // Lookup product categories
-      ...productCategoriesPipeline(),
-
-      // Lookup product rubric
-      {
-        $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubric',
-          let: {
-            rubricId: '$rubricId',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$rubricId', '$_id'],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: true,
-                slug: true,
-                nameI18n: true,
-                showRubricNameInProductTitle: true,
-                showCategoryInProductTitle: true,
-              },
-            },
-          ],
-        },
-      },
+      // get shop product fields
+      ...shopProductFieldsPipeline('$_id'),
 
       {
         $addFields: {
-          rubric: { $arrayElemAt: ['$rubric', 0] },
           shopsCount: { $size: '$shopProductsIds' },
           cardPrices: {
             min: '$minPrice',
@@ -527,30 +480,34 @@ export async function getServerSideProps(
     ])
     .toArray();
 
-  const topProducts = shopProductsAggregation.map((product) => {
-    const { attributes, categories, rubric, ...restProduct } = product;
+  const topProducts: ShopProductInterface[] = [];
+  shopProductsAggregation.forEach((shopProduct) => {
+    const { product, shopsCount, ...restShopProduct } = shopProduct;
+    if (!product) {
+      return;
+    }
 
     // title
     const snippetTitle = generateSnippetTitle({
       locale: sessionLocale,
-      brand: restProduct.brand,
-      rubricName: getFieldStringLocale(rubric?.nameI18n, sessionLocale),
-      showRubricNameInProductTitle: rubric?.showRubricNameInProductTitle,
-      showCategoryInProductTitle: rubric?.showCategoryInProductTitle,
-      attributes: attributes || [],
-      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      originalName: restProduct.originalName,
-      defaultGender: restProduct.gender,
+      brand: product?.brand,
+      rubricName: getFieldStringLocale(product?.rubric?.nameI18n, sessionLocale),
+      showRubricNameInProductTitle: product?.rubric?.showRubricNameInProductTitle,
+      showCategoryInProductTitle: product?.rubric?.showCategoryInProductTitle,
+      attributes: product?.attributes || [],
+      titleCategoriesSlugs: product?.titleCategoriesSlugs,
+      originalName: product?.originalName,
+      defaultGender: product?.gender,
       categories: getTreeFromList({
-        list: categories,
+        list: product?.categories,
         childrenFieldName: 'categories',
         locale: sessionLocale,
       }),
     });
 
     // prices
-    const minPrice = noNaN(product.cardPrices?.min);
-    const maxPrice = noNaN(product.cardPrices?.max);
+    const minPrice = noNaN(shopProduct.cardPrices?.min);
+    const maxPrice = noNaN(shopProduct.cardPrices?.max);
     const cardPrices = {
       _id: new ObjectId(),
       min: `${minPrice}`,
@@ -559,27 +516,31 @@ export async function getServerSideProps(
 
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
-      attributes: attributes || [],
+      attributes: product?.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       locale: sessionLocale,
     });
 
     // ratingFeatures
     const ratingFeatures = getProductCurrentViewCastedAttributes({
-      attributes: attributes || [],
+      attributes: product?.attributes || [],
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
       locale: sessionLocale,
     });
 
-    return {
-      ...restProduct,
-      listFeatures,
-      ratingFeatures,
-      name: getFieldStringLocale(product.nameI18n, sessionLocale),
-      cardPrices,
-      connections: [],
-      snippetTitle,
-    };
+    topProducts.push({
+      ...restShopProduct,
+      product: {
+        ...product,
+        shopsCount,
+        listFeatures,
+        ratingFeatures,
+        name: getFieldStringLocale(product?.nameI18n, sessionLocale),
+        cardPrices,
+        connections: [],
+        snippetTitle,
+      },
+    });
   });
 
   // Get top shops

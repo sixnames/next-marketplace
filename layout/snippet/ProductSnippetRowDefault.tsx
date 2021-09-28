@@ -11,7 +11,7 @@ import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
-  product,
+  shopProduct,
   testId,
   className,
   showSnippetBackground = true,
@@ -21,6 +21,10 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const { product } = shopProduct;
+  if (!product) {
+    return null;
+  }
   const {
     slug,
     cardPrices,
@@ -148,7 +152,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                       <div>
                         {(connectionProducts || []).map(({ option, productId }, index) => {
                           const isLast = (connectionProducts || []).length - 1 === index;
-                          const isCurrent = productId === product._id;
+                          const isCurrent = productId === shopProduct._id;
 
                           if (!option) {
                             return null;
@@ -213,13 +217,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                     if (shopProductsIds && shopProductsIds.length < 2) {
                       addProductToCart({
                         amount: 1,
-                        productId: product._id,
+                        productId: shopProduct._id,
                         shopProductId: `${shopProductsIds[0]}`,
                       });
                     } else {
                       addShoplessProductToCart({
                         amount: 1,
-                        productId: product._id,
+                        productId: shopProduct._id,
                       });
                     }
                   }}

@@ -621,8 +621,8 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   cardDescriptionInfoI18n?: TranslationModel | null;
 
   // types for aggregation
-  shopsCount?: number;
-  cardPrices?: ProductCardPricesModel;
+  shopsCount?: number | null;
+  cardPrices?: ProductCardPricesModel | null;
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[] | null;
   rubric?: RubricInterface | null;

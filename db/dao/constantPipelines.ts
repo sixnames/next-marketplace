@@ -1081,3 +1081,74 @@ export const rubricAttributeGroupsPipeline = [
     },
   },
 ];
+
+export const shopProductFieldsPipeline = (idFieldName: string) => {
+  return [
+    {
+      $lookup: {
+        from: COL_PRODUCTS,
+        as: 'product',
+        let: {
+          productId: idFieldName,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$$productId', '$_id'],
+              },
+            },
+          },
+
+          // Lookup product attributes
+          ...productAttributesPipeline,
+
+          // Lookup product brand
+          ...brandPipeline,
+
+          // Lookup product categories
+          ...productCategoriesPipeline(),
+
+          // Lookup product rubric
+          {
+            $lookup: {
+              from: COL_RUBRICS,
+              as: 'rubric',
+              let: {
+                rubricId: '$rubricId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$rubricId', '$_id'],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    _id: true,
+                    slug: true,
+                    nameI18n: true,
+                    showRubricNameInProductTitle: true,
+                    showCategoryInProductTitle: true,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              rubric: { $arrayElemAt: ['$rubric', 0] },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        product: { $arrayElemAt: ['$product', 0] },
+      },
+    },
+  ];
+};

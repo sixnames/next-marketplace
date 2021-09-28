@@ -17,6 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     // const formData = await parseRestApiFormData(req);
 
+    console.log('updated ====================');
     console.log('req >>>>>>>>>>>>>>>>>>>>>>');
     console.log(req);
     console.log('req enc <<<<<<<<<<<<<<<<<<<<<<');

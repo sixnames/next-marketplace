@@ -26,6 +26,7 @@ export async function checkProductDescriptionUniqueness({
           }/api/product/uniqueness/${productId.toHexString()}`,
           text,
         };
+
         const res = await fetch(uniqueTextApiUrl, {
           method: REQUEST_METHOD_POST,
           body: qs.stringify(body),

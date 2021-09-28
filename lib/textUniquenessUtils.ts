@@ -27,11 +27,6 @@ export async function checkProductDescriptionUniqueness({
           text,
         };
 
-        console.log('');
-        console.log('body');
-        console.log(JSON.stringify(body, null, 2));
-        console.log('');
-
         const res = await fetch(uniqueTextApiUrl, {
           method: REQUEST_METHOD_POST,
           body: qs.stringify(body),

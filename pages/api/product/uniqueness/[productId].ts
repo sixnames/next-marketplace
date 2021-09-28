@@ -24,11 +24,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     console.log('');
 
     const productId = new ObjectId(`${req.query.productId}`);
+    const product = await productsCollection.findOne({
+      _id: productId,
+    });
+    if (!product) {
+      res.status(200).send('ok');
+      return;
+    }
+
+    const cardDescriptionInfoI18n = product.cardDescriptionInfoI18n || {};
+    const body = req.body || {};
     await productsCollection.findOneAndUpdate(
       { _id: productId },
       {
         $set: {
-          cardDescriptionInfoI18n: req.body,
+          cardDescriptionInfoI18n: {
+            ...cardDescriptionInfoI18n,
+            ...body,
+          },
         },
       },
     );

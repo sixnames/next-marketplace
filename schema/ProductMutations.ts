@@ -37,6 +37,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
   LOCALES,
+  REQUEST_METHOD_POST,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -393,8 +394,8 @@ export const ProductMutations = extendType({
 
             // check description uniqueness
             const cardDescriptionInfoI18n: TranslationModel = {};
-            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL_2;
-            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY_2;
+            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
+            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY;
             if (uniqueTextApiUrl && uniqueTextApiKey) {
               for await (const locale of LOCALES) {
                 const text = get(values, `cardDescriptionI18n.${locale}`);
@@ -403,13 +404,14 @@ export const ProductMutations = extendType({
                     userkey: uniqueTextApiKey,
                     text,
                   };
-
                   const res = await fetch(uniqueTextApiUrl, {
-                    method: 'POST',
+                    method: REQUEST_METHOD_POST,
                     body: JSON.stringify(body),
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                    },
                   });
                   const json = await res.json();
-
                   console.log(json);
                 }
               }
@@ -527,6 +529,7 @@ export const ProductMutations = extendType({
 
           return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

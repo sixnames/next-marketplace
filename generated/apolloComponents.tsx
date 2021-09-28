@@ -515,6 +515,7 @@ export type CopyProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 
@@ -645,6 +646,7 @@ export type CreateProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   gender: Gender;
 };
@@ -3085,6 +3087,7 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
+  cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
   gender: Gender;
 };
 

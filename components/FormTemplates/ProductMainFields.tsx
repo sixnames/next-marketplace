@@ -93,6 +93,13 @@ const ProductMainFields: React.FC = () => {
       </div>
 
       <FormikTranslationsInput
+        variant={'textarea'}
+        label={'Описание карточки товара'}
+        name={'cardDescriptionI18n'}
+        testId={'cardDescriptionI18n'}
+      />
+
+      <FormikTranslationsInput
         label={'Мета-тег Description'}
         name={'descriptionI18n'}
         testId={'descriptionI18n'}

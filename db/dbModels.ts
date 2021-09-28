@@ -607,6 +607,8 @@ interface ProductMainFieldsInterface {
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
   barcode?: string[] | null;
+  cardDescriptionI18n?: TranslationModel | null;
+  cardDescriptionInfoI18n?: TranslationModel | null;
 
   // types for aggregation
   shopsCount?: number;

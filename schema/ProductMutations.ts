@@ -1,5 +1,6 @@
 import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { getParentTreeSlugs } from 'lib/optionsUtils';
+import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -55,6 +56,7 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.field('gender', {
       type: 'Gender',
@@ -71,6 +73,7 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });
@@ -86,6 +89,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
+    t.json('cardDescriptionI18n');
     t.nonNull.field('gender', {
       type: 'Gender',
     });
@@ -380,6 +384,12 @@ export const ProductMutations = extendType({
               return;
             }
 
+            // check description uniqueness
+            await checkProductDescriptionUniqueness({
+              productId,
+              cardDescriptionI18n: values.cardDescriptionI18n,
+            });
+
             // Update product
             const updatedProductResult = await productsCollection.findOneAndUpdate(
               {
@@ -491,6 +501,7 @@ export const ProductMutations = extendType({
 
           return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

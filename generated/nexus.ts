@@ -258,6 +258,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
+    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -373,6 +374,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
+    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -857,6 +859,7 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
+    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject

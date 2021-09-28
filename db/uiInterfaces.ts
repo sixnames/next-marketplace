@@ -273,6 +273,7 @@ export interface ProductInterface extends ProductModel {
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
+  cardDescription?: string | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

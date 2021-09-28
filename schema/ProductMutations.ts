@@ -386,7 +386,7 @@ export const ProductMutations = extendType({
 
             // check description uniqueness
             await checkProductDescriptionUniqueness({
-              productId,
+              product,
               cardDescriptionI18n: values.cardDescriptionI18n,
             });
 

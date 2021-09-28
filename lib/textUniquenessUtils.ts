@@ -1,16 +1,16 @@
 import { LOCALES, REQUEST_METHOD_POST } from 'config/common';
-import { ObjectIdModel, TranslationModel } from 'db/dbModels';
+import { ProductModel, TranslationModel } from 'db/dbModels';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
 interface CheckProductDescriptionUniquenessInterface {
   cardDescriptionI18n?: TranslationModel | null;
-  productId: ObjectIdModel;
+  product: ProductModel;
 }
 
 export async function checkProductDescriptionUniqueness({
-  productId,
+  product,
   cardDescriptionI18n,
 }: CheckProductDescriptionUniquenessInterface) {
   const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
@@ -18,12 +18,15 @@ export async function checkProductDescriptionUniqueness({
   if (uniqueTextApiUrl && uniqueTextApiKey) {
     for await (const locale of LOCALES) {
       const text = get(cardDescriptionI18n, locale);
-      if (text) {
+      const oldText = get(product.cardDescriptionI18n, locale);
+
+      if (text && text !== oldText) {
         const body = {
           userkey: uniqueTextApiKey,
+          exceptdomain: `${process.env.DEFAULT_DOMAIN}`,
           callback: `https://${
             process.env.DEFAULT_DOMAIN
-          }/api/product/uniqueness/${productId.toHexString()}`,
+          }/api/product/uniqueness/${product._id.toHexString()}/${locale}`,
           text,
         };
 

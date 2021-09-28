@@ -32,6 +32,7 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_PRODUCT_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
@@ -292,14 +293,37 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                     },
                     {
                       $lookup: {
-                        from: COL_PRODUCTS,
-                        as: 'product',
+                        from: COL_SHOP_PRODUCTS,
+                        as: 'shopProduct',
                         let: { productId: '$productId' },
                         pipeline: [
                           {
                             $match: {
                               $expr: {
-                                $eq: ['$$productId', '$_id'],
+                                $eq: ['$$productId', '$productId'],
+                              },
+                            },
+                          },
+                          {
+                            $lookup: {
+                              from: COL_PRODUCTS,
+                              as: 'product',
+                              let: { productId: '$productId' },
+                              pipeline: [
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $eq: ['$$productId', '$_id'],
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $addFields: {
+                              product: {
+                                $arrayElemAt: ['$product', 0],
                               },
                             },
                           },
@@ -308,8 +332,8 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                     },
                     {
                       $addFields: {
-                        product: {
-                          $arrayElemAt: ['$product', 0],
+                        shopProduct: {
+                          $arrayElemAt: ['$shopProduct', 0],
                         },
                         option: {
                           $arrayElemAt: ['$option', 0],
@@ -337,6 +361,33 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
+                },
+              },
+              // get attribute options
+              {
+                $lookup: {
+                  from: COL_OPTIONS,
+                  as: 'options',
+                  let: {
+                    optionsGroupId: '$optionsGroupId',
+                    selectedOptionsIds: '$selectedOptionsIds',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            {
+                              $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                            },
+                            {
+                              $in: ['$_id', '$$selectedOptionsIds'],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
                 },
               },
               {
@@ -512,11 +563,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const allProductAttributes = (attributesGroups || []).reduce(
       (acc: ProductAttributeInterface[], { attributes }) => {
-        const visibleAttributes = attributes.filter(({ showInCard }) => {
-          return showInCard;
-        });
-
-        return [...acc, ...visibleAttributes];
+        return [...acc, ...attributes];
       },
       [],
     );

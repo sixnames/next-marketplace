@@ -4,12 +4,6 @@ import { getDatabase } from 'db/mongodb';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { db } = await getDatabase();

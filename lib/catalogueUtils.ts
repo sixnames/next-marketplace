@@ -19,7 +19,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { filterAttributesPipeline } from 'db/dao/constantPipelines';
+import { filterAttributesPipeline, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import {
   AttributeViewVariantModel,
   CatalogueBreadcrumbModel,
@@ -995,6 +995,9 @@ export const getCatalogueData = async ({
                 },
               },
 
+              // get shop product fields
+              ...shopProductFieldsPipeline('$_id'),
+
               // get product connections
               {
                 $lookup: {
@@ -1584,6 +1587,7 @@ export const getCatalogueData = async ({
         ...shopProduct,
         product: {
           ...product,
+          shopsCount: shopProduct.shopsCount,
           listFeatures,
           ratingFeatures,
           name: getFieldStringLocale(product.nameI18n, locale),

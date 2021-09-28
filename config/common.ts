@@ -473,3 +473,5 @@ export const ALPHABET_RU = [
 export const NUMBERS_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
 export const ALL_ALPHABETS = [...ALPHABET_RU, ...ALPHABET_EN, ...NUMBERS_LIST];
+
+export const EMPTY_OBJECT_AS_STRING = '{}';

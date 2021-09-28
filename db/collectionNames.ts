@@ -32,6 +32,7 @@ export const COL_PAGES_GROUP = 'pagesGroups';
 export const COL_PAGES_GROUP_TEMPLATES = 'pagesGroupTemplates';
 export const COL_PAGE_TEMPLATES = 'pageTemplates';
 export const COL_PRODUCTS = 'products';
+export const COL_PRODUCT_SEO = 'productSeo';
 export const COL_PRODUCT_ASSETS = 'productAssets';
 export const COL_PRODUCT_CARD_CONTENTS = 'productCardContents';
 export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';

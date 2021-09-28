@@ -1,5 +1,7 @@
-import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { COL_PRODUCTS } from 'db/collectionNames';
+import { ProductModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
@@ -9,15 +11,22 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { locale } = await getRequestParams({ req, res });
-  console.log(req.query.productId);
-  console.log(req.body);
+  try {
+    const { db } = await getDatabase();
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productId = new ObjectId(`${req.query.productId}`);
+    await productsCollection.findOneAndUpdate(
+      { _id: productId },
+      {
+        $set: {
+          cardDescriptionInfoI18n: req.body,
+        },
+      },
+    );
 
-  res.status(200).send({
-    success: true,
-    message: await getApiMessageValue({
-      slug: 'products.update.success',
-      locale,
-    }),
-  });
+    res.status(200);
+  } catch (e) {
+    console.log(e);
+    res.status(200);
+  }
 };

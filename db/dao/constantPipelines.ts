@@ -18,7 +18,6 @@ import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 
 interface GetCatalogueRubricPipelineInterface {
@@ -300,113 +299,6 @@ export function getCatalogueRubricPipeline(
     },
   ];
 }
-
-export const productConnectionsPipeline = (city: string) => {
-  return [
-    {
-      $lookup: {
-        from: COL_PRODUCT_CONNECTIONS,
-        as: 'connections',
-        let: {
-          productId: '$_id',
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$$productId', '$productsIds'],
-              },
-            },
-          },
-          {
-            $lookup: {
-              from: COL_ATTRIBUTES,
-              as: 'attribute',
-              let: { attributeId: '$attributeId' },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$$attributeId', '$_id'],
-                    },
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              attribute: {
-                $arrayElemAt: ['$attribute', 0],
-              },
-            },
-          },
-          {
-            $lookup: {
-              from: COL_PRODUCT_CONNECTION_ITEMS,
-              as: 'connectionProducts',
-              let: {
-                connectionId: '$_id',
-              },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$connectionId', '$$connectionId'],
-                    },
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_OPTIONS,
-                    as: 'option',
-                    let: { optionId: '$optionId' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$optionId', '$_id'],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_SHOP_PRODUCTS,
-                    as: 'shopProduct',
-                    let: { productId: '$productId' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$productId', '$productId'],
-                          },
-                          citySlug: city,
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $addFields: {
-                    option: {
-                      $arrayElemAt: ['$option', 0],
-                    },
-                    shopProduct: {
-                      $arrayElemAt: ['$shopProduct', 0],
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ];
-};
 
 export const productAttributesPipeline = [
   {

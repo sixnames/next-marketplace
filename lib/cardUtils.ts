@@ -33,6 +33,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_SHOP_PRODUCTS,
+  COL_SHOPS,
 } from 'db/collectionNames';
 import { productCategoriesPipeline } from 'db/dao/constantPipelines';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
@@ -46,8 +47,7 @@ import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
-  ShopProductInterface,
-  ShopProductsGroupInterface,
+  ShopInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -471,6 +471,87 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
         },
 
         // get shop products and shops
+        {
+          $lookup: {
+            from: COL_SHOP_PRODUCTS,
+            as: 'shops',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $group: {
+                  _id: '$shopId',
+                  shopProducts: {
+                    $push: '$$ROOT',
+                  },
+                },
+              },
+
+              // get product shops
+              {
+                $lookup: {
+                  from: COL_SHOPS,
+                  as: 'shop',
+                  let: {
+                    shopId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$shopId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  shop: {
+                    $arrayElemAt: ['$shop', 0],
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  'shop.shopProducts': '$shopProducts',
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$shop',
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $addFields: {
+                  shopProducts: null,
+                  cardShopProduct: {
+                    $arrayElemAt: ['$shopProducts', 0],
+                  },
+                },
+              },
+            ],
+          },
+        },
 
         // final fields
         {
@@ -479,7 +560,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
               min: '$minPrice',
               max: '$maxPrice',
             },
-            // shopsCount: { $size: '$shopProducts' },
+            shopsCount: { $size: '$shops' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
             brand: { $arrayElemAt: ['$brand', 0] },
             brandCollection: { $arrayElemAt: ['$brandCollection', 0] },
@@ -505,11 +586,11 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       assets,
       connections,
       attributesGroups,
-      shopProducts,
       brand,
       brandCollection,
       manufacturer,
       categories,
+      shops,
       ...restProduct
     } = product;
 
@@ -627,61 +708,18 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     });
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
 
-    // cardShopProducts
-    const groupedByShops = (shopProducts || []).reduce(
-      (acc: ShopProductsGroupInterface[], shopProduct) => {
-        const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
-        if (existingShopIndex > -1) {
-          acc[existingShopIndex].shopProducts.push(shopProduct);
-          return acc;
-        }
-
-        return [
-          ...acc,
-          {
-            _id: shopProduct.shopId,
-            shopProducts: [shopProduct],
-          },
-        ];
-      },
-      [],
-    );
-
-    const finalShopProducts: ShopProductInterface[] = [];
-    groupedByShops.forEach((group) => {
-      const { shopProducts } = group;
-      const sortedShopProducts = shopProducts.sort((a, b) => {
-        return b.available - a.available;
-      });
-
-      const firstShopProduct = sortedShopProducts[0];
-      if (firstShopProduct) {
-        finalShopProducts.push(firstShopProduct);
-      }
-    });
-
-    // prices
-    const sortedShopProductsByPrice = finalShopProducts.sort((a, b) => {
-      return b.price - a.price;
-    });
-    const minPriceShopProduct = sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
-    const maxPriceShopProduct = sortedShopProductsByPrice[0];
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: `${minPriceShopProduct?.price}`,
-      max: `${maxPriceShopProduct?.price}`,
-    };
-
-    const cardShopProducts: ShopProductInterface[] = [];
-    finalShopProducts.forEach((shopProduct) => {
-      const { shop } = shopProduct;
-      if (!shop) {
-        return;
+    // cast shops and get card prices
+    const prices: number[] = [];
+    const finalCardShops = (shops || []).reduce((acc: ShopInterface[], shop) => {
+      if (!shop.cardShopProduct) {
+        return acc;
       }
 
-      cardShopProducts.push({
-        ...shopProduct,
-        shop: {
+      prices.push(shop.cardShopProduct.price);
+
+      return [
+        ...acc,
+        {
           ...shop,
           address: {
             ...shop.address,
@@ -700,8 +738,18 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             }),
           },
         },
-      });
+      ];
+    }, []);
+    const sortedPrices = prices.sort((a, b) => {
+      return a - b;
     });
+    const minPrice = sortedPrices[0];
+    const maxPrice = sortedPrices[sortedPrices.length - 1];
+    const cardPrices = {
+      _id: new ObjectId(),
+      min: `${noNaN(minPrice)}`,
+      max: `${noNaN(maxPrice)}`,
+    };
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // card content
@@ -814,7 +862,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const name = getFieldStringLocale(restProduct.nameI18n, locale);
     const description = getFieldStringLocale(restProduct.descriptionI18n, locale);
-    const shopsCount = finalShopProducts.length;
+    const shopsCount = finalCardShops.length;
     const isShopless = noNaN(shopsCount) < 1;
     const cardAssets = assets ? assets.assets : [];
     const cardAttributesGroups = (attributesGroups || []).reduce(
@@ -927,8 +975,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       tagFeatures,
       iconFeatures,
       ratingFeatures,
-      cardShopProducts,
-      shopProducts: [],
+      cardShops: finalCardShops,
       cardBreadcrumbs,
       shopsCount,
       isShopless,

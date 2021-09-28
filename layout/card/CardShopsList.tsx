@@ -1,23 +1,18 @@
 import ArrowTrigger from 'components/ArrowTrigger';
 import ShopsMap from 'components/ShopsMap';
-import { ShopInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { ShopInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import CardShop from 'routes/CardRoute/CardShop';
 
 interface CardShopsListInterface {
-  cardShopProducts?: ShopProductInterface[] | undefined;
+  cardShops?: ShopInterface[] | null;
 }
 
-const CardShopsList: React.FC<CardShopsListInterface> = ({ cardShopProducts }) => {
+const CardShopsList: React.FC<CardShopsListInterface> = ({ cardShops }) => {
   const [isMap, setIsMap] = React.useState<boolean>(false);
-  const shopsSnippets = React.useMemo(() => {
-    return (cardShopProducts || []).reduce((acc: ShopInterface[], { shop }) => {
-      if (!shop) {
-        return acc;
-      }
-      return [...acc, shop];
-    }, []);
-  }, [cardShopProducts]);
+  if (!cardShops) {
+    return null;
+  }
 
   return (
     <section id={`card-shops`} className='mb-28'>
@@ -34,18 +29,12 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({ cardShopProducts }) =
       <div data-cy={`card-shops`}>
         {isMap ? (
           <div data-cy={`card-shops-map`}>
-            <ShopsMap shops={shopsSnippets} />
+            <ShopsMap shops={cardShops} />
           </div>
         ) : (
           <div data-cy={`card-shops-list`}>
-            {(cardShopProducts || []).map((shopProduct, index) => {
-              return (
-                <CardShop
-                  testId={`1-${index}`}
-                  key={`${shopProduct._id}`}
-                  shopProduct={shopProduct}
-                />
-              );
+            {cardShops.map((shop, index) => {
+              return <CardShop testId={`1-${index}`} key={`${shop._id}`} shop={shop} />;
             })}
           </div>
         )}

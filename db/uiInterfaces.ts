@@ -274,6 +274,7 @@ export interface ProductInterface extends ProductModel {
   snippetTitle?: string | null;
   cardTitle?: string | null;
   cardDescription?: string | null;
+  shops?: ShopInterface[] | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -351,6 +352,8 @@ export interface ShopInterface extends ShopModel {
   address: AddressInterface;
   orders?: OrderInterface[];
   company?: CompanyInterface | null;
+  shopProducts?: ShopProductInterface[] | null;
+  cardShopProduct?: ShopProductInterface | null;
 }
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
@@ -598,14 +601,13 @@ export interface InitialCardDataInterface {
   shopsCounterPostfix: string;
   isSingleImage: boolean;
   assets: AssetModel[];
-  cardShopProducts: ShopProductInterface[];
+  cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
   cardContent: ProductCardContentInterface | null;
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
-  shopProducts: ShopProductInterface[];
 }
 
 export interface SsrConfigsInterface {

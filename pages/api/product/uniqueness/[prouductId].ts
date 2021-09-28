@@ -14,6 +14,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+
+    console.log('');
+    console.log('response query');
+    console.log(JSON.stringify(req.query, null, 2));
+    console.log('');
+    console.log('response body');
+    console.log(JSON.stringify(req.body || {}, null, 2));
+    console.log('');
+
     const productId = new ObjectId(`${req.query.productId}`);
     await productsCollection.findOneAndUpdate(
       { _id: productId },

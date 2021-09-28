@@ -6,40 +6,35 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   FILTER_SEPARATOR,
   DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
-  SORT_ASC,
-  SORT_DESC,
   CATALOGUE_CATEGORY_KEY,
   GENDER_IT,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_BRAND_COLLECTION_KEY,
+  DEFAULT_COMPANY_SLUG,
+  SORT_DESC,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
 import {
-  COL_ATTRIBUTES_GROUPS,
-  COL_BRAND_COLLECTIONS,
   COL_BRANDS,
-  COL_ICONS,
   COL_MANUFACTURERS,
-  COL_OPTIONS,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
-  COL_RUBRIC_VARIANTS,
+  COL_PRODUCTS,
+  COL_BRAND_COLLECTIONS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_OPTIONS,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
+  COL_RUBRIC_VARIANTS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
 } from 'db/collectionNames';
-import { productCategoriesPipeline, productConnectionsPipeline } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  ProductCardBreadcrumbModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { productCategoriesPipeline } from 'db/dao/constantPipelines';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
@@ -115,97 +110,31 @@ export async function getCardData({
   city,
   slug,
   companyId,
-  companySlug,
-  useUniqueConstructor,
-}: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
+  ...props
+}: // companySlug,
+// useUniqueConstructor,
+GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const companySlug = props.useUniqueConstructor ? props.companySlug : DEFAULT_COMPANY_SLUG;
+    const shopProductsMatch = {
+      citySlug: city,
+      ...companyMatch,
+    };
+
+    console.log({
+      shopProductsMatch,
+    });
 
     // const shopProductsStartTime = new Date().getTime();
-    const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ProductInterface>([
+    const shopProductsAggregation = await productsCollection
+      .aggregate([
         {
           $match: {
             slug,
-            citySlug: city,
-            ...companyMatch,
-          },
-        },
-        {
-          $sort: {
-            _id: SORT_DESC,
-          },
-        },
-
-        // Get shops
-        {
-          $lookup: {
-            from: COL_SHOPS,
-            as: 'shop',
-            let: {
-              shopId: '$shopId',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$shopId', '$_id'],
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            shop: { $arrayElemAt: ['$shop', 0] },
-          },
-        },
-        {
-          $group: {
-            _id: '$productId',
-            itemId: { $first: '$itemId' },
-            slug: { $first: '$slug' },
-            gender: { $first: '$gender' },
-            mainImage: { $first: `$mainImage` },
-            originalName: { $first: `$originalName` },
-            nameI18n: { $first: `$nameI18n` },
-            descriptionI18n: { $first: `descriptionI18n` },
-            rubricId: { $first: `$rubricId` },
-            rubricSlug: { $first: `$rubricSlug` },
-            manufacturerSlug: { $first: `$manufacturerSlug` },
-            brandSlug: { $first: `$brandSlug` },
-            brandCollectionSlug: { $first: `$brandCollectionSlug` },
-            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
-            selectedOptionsSlugs: {
-              $first: '$selectedOptionsSlugs',
-            },
-            minPrice: {
-              $min: '$price',
-            },
-            maxPrice: {
-              $max: '$price',
-            },
-            shopProductIds: {
-              $addToSet: '$_id',
-            },
-            shopProducts: {
-              $push: {
-                _id: '$_id',
-                price: '$price',
-                productId: '$productId',
-                available: '$available',
-                shopId: '$shopId',
-                oldPrices: '$oldPrices',
-                shop: '$shop',
-                formattedPrice: '$formattedPrice',
-                formattedOldPrice: '$formattedOldPrice',
-                discountedPercent: '$discountedPercent',
-              },
-            },
           },
         },
 
@@ -221,10 +150,12 @@ export async function getCardData({
               {
                 $match: {
                   $expr: {
-                    $eq: ['$$rubricId', '$_id'],
+                    $eq: ['$_id', '$$rubricId'],
                   },
                 },
               },
+
+              // get rubric variant
               {
                 $lookup: {
                   from: COL_RUBRIC_VARIANTS,
@@ -244,13 +175,7 @@ export async function getCardData({
                 },
               },
               {
-                $project: {
-                  _id: true,
-                  slug: true,
-                  nameI18n: true,
-                  showRubricNameInProductTitle: true,
-                  showCategoryInProductTitle: true,
-                  catalogueTitle: true,
+                $addFields: {
                   variant: {
                     $arrayElemAt: ['$variant', 0],
                   },
@@ -271,7 +196,7 @@ export async function getCardData({
             pipeline: [
               {
                 $match: {
-                  companySlug: useUniqueConstructor ? companySlug : DEFAULT_COMPANY_SLUG,
+                  companySlug,
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
@@ -281,38 +206,124 @@ export async function getCardData({
           },
         },
 
-        // Get product assets
+        // get product assets
         {
           $lookup: {
             from: COL_PRODUCT_ASSETS,
             as: 'assets',
-            let: {
-              productId: '$_id',
-            },
+            localField: '_id',
+            foreignField: 'productId',
+          },
+        },
+
+        // get product categories
+        ...productCategoriesPipeline(),
+
+        // get product connection
+        {
+          $lookup: {
+            from: COL_PRODUCT_CONNECTIONS,
+            as: 'connections',
+            let: { productId: '$_id' },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $eq: ['$$productId', '$productId'],
+                    $in: ['$$productId', '$productsIds'],
                   },
                 },
               },
               {
-                $sort: {
-                  index: SORT_ASC,
+                $lookup: {
+                  from: COL_ATTRIBUTES,
+                  as: 'attribute',
+                  let: { attributeId: '$attributeId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$attributeId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  attribute: {
+                    $arrayElemAt: ['$attribute', 0],
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_PRODUCT_CONNECTION_ITEMS,
+                  as: 'connectionProducts',
+                  let: { connectionId: '$_id' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$connectionId', '$connectionId'],
+                        },
+                      },
+                    },
+                    {
+                      $sort: {
+                        _id: SORT_DESC,
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_OPTIONS,
+                        as: 'option',
+                        let: { optionId: '$optionId' },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$optionId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_PRODUCTS,
+                        as: 'product',
+                        let: { productId: '$productId' },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$productId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        product: {
+                          $arrayElemAt: ['$product', 0],
+                        },
+                        option: {
+                          $arrayElemAt: ['$option', 0],
+                        },
+                      },
+                    },
+                  ],
                 },
               },
             ],
           },
         },
 
-        // Lookup product connection
-        ...productConnectionsPipeline(city),
-
-        // Lookup product categories
-        ...productCategoriesPipeline(),
-
-        // Get product attributes
+        // get product attributes
         {
           $lookup: {
             from: COL_PRODUCT_ATTRIBUTES,
@@ -326,86 +337,28 @@ export async function getCardData({
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
-                  $or: [
-                    {
-                      showInCard: true,
-                    },
-                    {
-                      showAsBreadcrumb: true,
-                    },
-                  ],
                 },
               },
               {
-                $sort: {
-                  views: SORT_DESC,
-                },
-              },
-
-              // get attribute selected options
-              {
-                $lookup: {
-                  from: COL_OPTIONS,
-                  as: 'options',
-                  let: {
-                    selectedOptionsIds: '$selectedOptionsIds',
+                $group: {
+                  _id: '$attributesGroupId',
+                  attributes: {
+                    $addToSet: '$$ROOT',
                   },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $in: ['$_id', '$$selectedOptionsIds'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_ICONS,
-                        as: 'icon',
-                        let: {
-                          documentId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              collectionName: COL_OPTIONS,
-                              $expr: {
-                                $eq: ['$documentId', '$$documentId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        icon: {
-                          $arrayElemAt: ['$icon', 0],
-                        },
-                      },
-                    },
-                    {
-                      $sort: {
-                        views: SORT_DESC,
-                      },
-                    },
-                  ],
                 },
               },
-
-              // get attributes group
               {
                 $lookup: {
                   from: COL_ATTRIBUTES_GROUPS,
                   as: 'attributesGroup',
                   let: {
-                    attributesGroupId: '$attributesGroupId',
+                    attributesGroupId: '$_id',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$_id', '$$attributesGroupId'],
+                          $eq: ['$$attributesGroupId', '$_id'],
                         },
                       },
                     },
@@ -420,84 +373,53 @@ export async function getCardData({
                 },
               },
               {
-                $group: {
-                  _id: '$attributesGroupId',
-                  nameI18n: {
-                    $first: '$attributesGroup.nameI18n',
-                  },
-                  attributes: {
-                    $push: '$$ROOT',
+                $match: {
+                  attributesGroup: {
+                    $exists: true,
                   },
                 },
               },
               {
-                $project: {
-                  'attributes.attributesGroup': false,
+                $addFields: {
+                  nameI18n: '$attributesGroup.nameI18n',
+                  attributesGroup: null,
                 },
               },
             ],
           },
         },
 
-        // Get product manufacturer
+        // get product manufacturer
         {
           $lookup: {
             from: COL_MANUFACTURERS,
             as: 'manufacturer',
-            let: {
-              manufacturerSlug: '$manufacturerSlug',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$manufacturerSlug', '$slug'],
-                  },
-                },
-              },
-            ],
+            localField: 'manufacturerSlug',
+            foreignField: 'slug',
           },
         },
 
-        // Get product brand
+        // get product brand
         {
           $lookup: {
             from: COL_BRANDS,
             as: 'brand',
-            let: {
-              brandSlug: '$brandSlug',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$brandSlug', '$slug'],
-                  },
-                },
-              },
-            ],
+            localField: 'brandSlug',
+            foreignField: 'slug',
           },
         },
 
-        // Get product brand collection
+        // get product brand collection
         {
           $lookup: {
             from: COL_BRAND_COLLECTIONS,
             as: 'brandCollection',
-            let: {
-              brandCollectionSlug: '$brandCollectionSlug',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$brandCollectionSlug', '$slug'],
-                  },
-                },
-              },
-            ],
+            localField: 'brandCollectionSlug',
+            foreignField: 'slug',
           },
         },
+
+        // get shop products and shops
 
         // final fields
         {
@@ -506,7 +428,7 @@ export async function getCardData({
               min: '$minPrice',
               max: '$maxPrice',
             },
-            shopsCount: { $size: '$shopProducts' },
+            // shopsCount: { $size: '$shopProducts' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
             brand: { $arrayElemAt: ['$brand', 0] },
             brandCollection: { $arrayElemAt: ['$brandCollection', 0] },
@@ -699,8 +621,8 @@ export async function getCardData({
     const maxPriceShopProduct = sortedShopProductsByPrice[0];
     const cardPrices = {
       _id: new ObjectId(),
-      min: `${minPriceShopProduct.price}`,
-      max: `${maxPriceShopProduct.price}`,
+      min: `${minPriceShopProduct?.price}`,
+      max: `${maxPriceShopProduct?.price}`,
     };
 
     const cardShopProducts: ShopProductInterface[] = [];

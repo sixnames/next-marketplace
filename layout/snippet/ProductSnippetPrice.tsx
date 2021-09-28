@@ -4,7 +4,7 @@ import Currency from 'components/Currency';
 interface ProductSnippetPriceInterface {
   value?: string | number | null;
   className?: string;
-  shopsCount?: number;
+  shopsCount?: number | null;
   size?: 'normal' | 'medium' | 'small';
 }
 

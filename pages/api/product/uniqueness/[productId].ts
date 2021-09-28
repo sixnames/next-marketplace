@@ -1,7 +1,7 @@
 import { COL_PRODUCTS } from 'db/collectionNames';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { parseRestApiFormData } from 'lib/restApi';
+// import { parseRestApiFormData } from 'lib/restApi';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -15,15 +15,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const formData = await parseRestApiFormData(req);
+    // const formData = await parseRestApiFormData(req);
 
-    console.log(' ');
-    console.log('req');
+    console.log('req >>>>>>>>>>>>>>>>>>>>>>');
     console.log(req);
-    console.log(' ');
-    console.log('req body >>>>>>>>>');
-    console.log(formData);
-    console.log(' ');
+    console.log('req enc <<<<<<<<<<<<<<<<<<<<<<');
+    // console.log('req body >>>>>>>>>');
+    // console.log(formData);
+    // console.log(' ');
 
     const productId = new ObjectId(`${req.query.productId}`);
     const product = await productsCollection.findOne({

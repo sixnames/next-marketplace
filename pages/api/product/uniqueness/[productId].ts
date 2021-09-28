@@ -10,14 +10,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
     console.log('');
-    console.log('req');
-    console.log(JSON.stringify(req, null, 2));
     console.log('');
-    console.log('req query');
-    console.log(JSON.stringify(req.query, null, 2));
+    console.log('req body >>>>>>>>>');
     console.log('');
-    console.log('req body');
-    console.log(JSON.stringify(req.body || {}, null, 2));
+    console.log(req.body);
     console.log('');
 
     const productId = new ObjectId(`${req.query.productId}`);

@@ -5,11 +5,11 @@ import { getDatabase } from 'db/mongodb';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export const config = {
+/*export const config = {
   api: {
     bodyParser: false,
   },
-};
+};*/
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -17,13 +17,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     // const formData = await parseRestApiFormData(req);
 
-    console.log('updated ====================');
     console.log('req >>>>>>>>>>>>>>>>>>>>>>');
     console.log(req);
-    console.log('req enc <<<<<<<<<<<<<<<<<<<<<<');
-    // console.log('req body >>>>>>>>>');
-    // console.log(formData);
-    // console.log(' ');
+    console.log('req end <<<<<<<<<<<<<<<<<<<<<<');
+    console.log('req body >>>>>>>>>');
+    console.log(req.body);
+    console.log(' ');
 
     const productId = new ObjectId(`${req.query.productId}`);
     const product = await productsCollection.findOne({

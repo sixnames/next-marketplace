@@ -16,10 +16,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
     console.log('');
-    console.log('response query');
+    console.log('req');
+    console.log(JSON.stringify(req, null, 2));
+    console.log('');
+    console.log('req query');
     console.log(JSON.stringify(req.query, null, 2));
     console.log('');
-    console.log('response body');
+    console.log('req body');
     console.log(JSON.stringify(req.body || {}, null, 2));
     console.log('');
 

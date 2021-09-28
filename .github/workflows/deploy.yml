@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   workflow_dispatch:
-    types: [opened, deleted]
+    types: [ opened, deleted ]
   push:
     branches: [ main ]
 

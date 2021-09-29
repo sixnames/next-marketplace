@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
+  LOCALES,
 } from 'config/common';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
@@ -250,4 +251,35 @@ export function getProductCurrentViewCastedAttributes({
   );
 
   return sortByName(castedAttributes);
+}
+
+export function countProductAttributes(attributes?: ProductAttributeInterface[] | null): number {
+  let counter = 0;
+  (attributes || []).forEach(({ variant, number, textI18n, selectedOptionsIds }) => {
+    if (variant === ATTRIBUTE_VARIANT_NUMBER && number) {
+      counter += 1;
+    }
+
+    if (
+      (variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) &&
+      selectedOptionsIds.length > 0
+    ) {
+      counter += 1;
+    }
+
+    if (variant === ATTRIBUTE_VARIANT_STRING && textI18n) {
+      const localesCounter = LOCALES.reduce((acc: number, locale) => {
+        const text = textI18n[locale];
+        if (text && text.length > 0) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+
+      if (localesCounter > 0) {
+        counter += 1;
+      }
+    }
+  });
+  return counter;
 }

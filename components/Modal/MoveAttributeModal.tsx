@@ -1,9 +1,10 @@
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import {
-  AddAttributesGroupToRubricInput,
   useGetAttributesGroupsForRubricQuery,
+  useMoveAttributeMutation,
 } from 'generated/apolloComponents';
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
@@ -11,30 +12,32 @@ import { Formik, Form } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
 import Button from 'components/Button';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { addAttributesGroupToRubricSchema } from 'validation/rubricSchema';
 
-export interface AddAttributesGroupToRubricModalInterface {
-  testId: string;
-  rubricId: string;
-  excludedIds: string[];
-  confirm: (values: AddAttributesGroupToRubricInput) => void;
+export interface MoveAttributeModalInterface {
+  oldAttributesGroupId: string;
+  attributeId: string;
 }
 
-const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalInterface> = ({
-  testId,
-  rubricId,
-  excludedIds,
-  confirm,
+const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
+  oldAttributesGroupId,
+  attributeId,
 }) => {
-  const validationSchema = useValidationSchema({
-    schema: addAttributesGroupToRubricSchema,
-  });
+  const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =
+    useMutationCallbacks({
+      reload: true,
+      withModal: true,
+    });
+
   const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
     fetchPolicy: 'network-only',
     variables: {
-      excludedIds,
+      excludedIds: [oldAttributesGroupId],
     },
+  });
+
+  const [moveAttributeMutation] = useMoveAttributeMutation({
+    onCompleted: (data) => onCompleteCallback(data.moveAttribute),
+    onError: onErrorCallback,
   });
 
   if (loading) {
@@ -52,13 +55,26 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
   const { getAllAttributesGroups } = data;
 
   return (
-    <ModalFrame testId={testId}>
+    <ModalFrame testId={'move-attribute-modal'}>
       <ModalTitle>Выберите группу атрибутов</ModalTitle>
-      <Formik<AddAttributesGroupToRubricInput>
-        validationSchema={validationSchema}
-        initialValues={{ attributesGroupId: null, rubricId }}
+      <Formik
+        initialValues={{ attributesGroupId: null }}
         onSubmit={(values) => {
-          confirm(values);
+          if (!values.attributesGroupId) {
+            showErrorNotification({
+              message: 'Выберите группу атрибутов',
+            });
+            return;
+          }
+          showLoading();
+          moveAttributeMutation({
+            variables: {
+              input: {
+                attributeId,
+                attributesGroupId: values.attributesGroupId,
+              },
+            },
+          }).catch(console.log);
         }}
       >
         {() => {
@@ -75,7 +91,7 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attributes-group-submit'}>
-                  Добавить
+                  Сохранить
                 </Button>
               </ModalButtons>
             </Form>
@@ -86,4 +102,4 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
   );
 };
 
-export default AddAttributesGroupToRubricModal;
+export default MoveAttributeModal;

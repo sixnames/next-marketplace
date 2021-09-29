@@ -4,12 +4,14 @@ import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
 
 export interface ContentItemControlsInterface {
   createTitle?: string;
+  moveTitle?: string;
   copyTitle?: string;
   addAssetTitle?: string;
   updateTitle?: string;
   deleteTitle?: string;
   size?: SizeType;
   createHandler?: () => void;
+  moveHandler?: () => void;
   copyHandler?: () => void;
   addAssetHandler?: () => void;
   updateHandler?: () => void;
@@ -20,6 +22,7 @@ export interface ContentItemControlsInterface {
   testId?: string | number | undefined;
   disabled?: boolean;
   isCreateDisabled?: boolean;
+  isMoveDisabled?: boolean;
   isCopyDisabled?: boolean;
   isUpdateDisabled?: boolean;
   isDeleteDisabled?: boolean;
@@ -28,12 +31,14 @@ export interface ContentItemControlsInterface {
 
 const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   createTitle,
+  moveTitle,
   updateTitle,
   copyTitle,
   addAssetTitle,
   deleteTitle,
   size = 'small',
   createHandler,
+  moveHandler,
   updateHandler,
   copyHandler,
   addAssetHandler,
@@ -44,6 +49,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   testId,
   disabled,
   isCreateDisabled,
+  isMoveDisabled,
   isUpdateDisabled,
   isAddAssetDisabled,
   isCopyDisabled,
@@ -64,6 +70,19 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-create`}
           disabled={disabled || isCreateDisabled}
+        />
+      ) : null}
+
+      {moveHandler ? (
+        <Button
+          circle
+          size={size}
+          icon={'move'}
+          title={moveTitle}
+          onClick={moveHandler}
+          theme={theme}
+          testId={`${testId}-move`}
+          disabled={disabled || isMoveDisabled}
         />
       ) : null}
 

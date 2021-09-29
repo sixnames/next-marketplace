@@ -529,25 +529,6 @@ export interface MobileTopFilters {
   hidden: TopFilterInterface[];
 }
 
-export interface AppPaginationAggregationInterface<Model> {
-  docs: Model[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
-export interface AppPaginationInterface<Model> {
-  docs: Model[];
-  totalDocs: number;
-  totalPages: number;
-  page: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  clearSlug: string;
-  itemPath?: string;
-}
-
 export interface PagesGroupInterface extends PagesGroupModel {
   name?: string | null;
   pages?: PageInterface[];
@@ -725,4 +706,29 @@ export interface ProductsAggregationInterface {
   categories?: CategoryInterface[] | null;
   brands?: BrandInterface[] | null;
   attributes?: AttributeInterface[] | null;
+}
+
+export interface AppPaginationAggregationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface AppPaginationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  page: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  clearSlug: string;
+  itemPath?: string;
+}
+
+export interface ConsoleRubricProductsInterface extends AppPaginationInterface<ProductInterface> {
+  rubric: RubricInterface;
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
 }

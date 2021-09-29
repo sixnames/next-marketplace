@@ -43,8 +43,7 @@ import {
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
-  AppPaginationInterface,
-  CatalogueFilterAttributeInterface,
+  ConsoleRubricProductsInterface,
   ProductInterface,
   ProductsAggregationInterface,
   RubricInterface,
@@ -69,13 +68,7 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface RubricProductsInterface extends AppPaginationInterface<ProductInterface> {
-  rubric: RubricInterface;
-  attributes: CatalogueFilterAttributeInterface[];
-  selectedAttributes: CatalogueFilterAttributeInterface[];
-}
-
-const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
+const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   rubric,
   attributes,
   clearSlug,
@@ -334,7 +327,7 @@ const RubricProductsConsumer: React.FC<RubricProductsInterface> = ({
   );
 };
 
-interface RubricProductsPageInterface extends PagePropsInterface, RubricProductsInterface {}
+interface RubricProductsPageInterface extends PagePropsInterface, ConsoleRubricProductsInterface {}
 
 const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
   return (
@@ -404,7 +397,7 @@ export const getServerSideProps = async (
         };
       }
 
-      const payload: RubricProductsInterface = {
+      const payload: ConsoleRubricProductsInterface = {
         rubric: {
           ...(rubric || {}),
           attributes: [],
@@ -687,7 +680,7 @@ export const getServerSideProps = async (
     docs.push(castedProduct);
   }
 
-  const payload: RubricProductsInterface = {
+  const payload: ConsoleRubricProductsInterface = {
     rubric: {
       ...(rubric || {}),
       attributes: [],

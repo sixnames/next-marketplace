@@ -713,9 +713,6 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
               },
             },
           },
-          {
-            $sort: sortStage,
-          },
           // get attribute options
           {
             $lookup: {
@@ -773,6 +770,9 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
       $replaceRoot: {
         newRoot: '$attribute',
       },
+    },
+    {
+      $sort: sortStage,
     },
   ];
 };

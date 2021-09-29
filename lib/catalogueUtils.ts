@@ -65,6 +65,7 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
+import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -833,7 +834,8 @@ export interface GetCatalogueDataInterface {
   visibleOptionsCount: number;
   currency: string;
   input: {
-    rubricSlug: string;
+    search?: string;
+    rubricSlug?: string;
     filters: string[];
     page: number;
   };
@@ -858,7 +860,7 @@ export const getCatalogueData = async ({
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // args
-    const { rubricSlug } = input;
+    const { rubricSlug, search } = input;
     const companySlug = props.companySlug || DEFAULT_COMPANY_SLUG;
 
     // cast selected filters
@@ -886,8 +888,8 @@ export const getCatalogueData = async ({
       _id: new ObjectId(),
       clearSlug: `${ROUTE_CATALOGUE}/${input.rubricSlug}`,
       filters: input.filters,
-      rubricName: rubricSlug,
-      rubricSlug,
+      rubricName: '',
+      rubricSlug: '',
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
@@ -898,11 +900,37 @@ export const getCatalogueData = async ({
       page,
     };
 
+    // rubric stage
+    const rubricStage = rubricSlug
+      ? {
+          rubricSlug,
+        }
+      : {};
+
+    // search stage
+    let searchStage = {};
+    let searchIds: ObjectIdModel[] = [];
+    if (search) {
+      searchIds = await getAlgoliaProductsSearch({
+        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+        search,
+      });
+      searchStage = {
+        productId: {
+          $in: searchIds,
+        },
+      };
+    }
+    if (search && searchIds.length < 1) {
+      return fallbackPayload;
+    }
+
     // shop products initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
+      ...searchStage,
       ...companyMatch,
-      rubricSlug,
+      ...rubricStage,
       citySlug: city,
       ...brandStage,
       ...brandCollectionStage,
@@ -1540,7 +1568,7 @@ export const getCatalogueData = async ({
         metricValue = currency;
       }
 
-      if (showAsCatalogueBreadcrumb || isPrice || isBrand) {
+      if ((showAsCatalogueBreadcrumb || isPrice || isBrand) && rubricSlug) {
         const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
           const tree = castOptionsForBreadcrumbs({
             option: option,

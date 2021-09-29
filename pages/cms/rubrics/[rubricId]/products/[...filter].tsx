@@ -26,12 +26,7 @@ import {
   getPriceAttribute,
 } from 'config/constantAttributes';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import {
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
   filterAttributesPipeline,
@@ -60,7 +55,11 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getCategoryAllAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
+import {
+  countProductAttributes,
+  getCategoryAllAttributes,
+  getRubricAllAttributes,
+} from 'lib/productAttributesUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
@@ -485,27 +484,6 @@ export const getServerSideProps = async (
 
               {
                 $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributesCount',
-                  let: { productId: '$_id' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                      },
-                    },
-                    {
-                      $project: {
-                        _id: true,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $lookup: {
                   from: COL_SHOP_PRODUCTS,
                   as: 'shopProducts',
                   let: { productId: '$_id' },
@@ -528,9 +506,6 @@ export const getServerSideProps = async (
               },
               {
                 $addFields: {
-                  attributesCount: {
-                    $size: '$attributesCount',
-                  },
                   shopsCount: {
                     $size: '$shopProducts',
                   },
@@ -682,6 +657,7 @@ export const getServerSideProps = async (
       cardPrices,
       snippetTitle,
       name: getFieldStringLocale(product.nameI18n, locale),
+      attributesCount: countProductAttributes(product.attributes),
       totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
     };
 

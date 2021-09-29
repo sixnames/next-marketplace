@@ -145,6 +145,14 @@ export const UpdateAttributesGroupInput = inputObjectType({
   },
 });
 
+export const MoveAttributeInput = inputObjectType({
+  name: 'MoveAttributeInput',
+  definition(t) {
+    t.nonNull.objectId('attributesGroupId');
+    t.nonNull.objectId('attributeId');
+  },
+});
+
 export const AddAttributeToGroupInput = inputObjectType({
   name: 'AddAttributeToGroupInput',
   definition(t) {
@@ -979,6 +987,196 @@ export const attributesGroupMutations = extendType({
               success: true,
               message: await getApiMessage('attributesGroups.deleteAttribute.success'),
               payload: updatedGroup,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should move attribute to another attributes group
+    t.nonNull.field('moveAttribute', {
+      type: 'AttributesGroupPayload',
+      description: 'Should move attribute to another attributes group',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'MoveAttributeInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const productAttributesCollection =
+          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+        const attributesGroupCollection =
+          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+        const session = client.startSession();
+
+        let mutationPayload: AttributesGroupPayloadModel = {
+          success: false,
+          message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateAttribute',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const {
+              input: { attributesGroupId, attributeId },
+            } = args;
+
+            // Check if attribute exist
+            const attribute = await attributesCollection.findOne({
+              _id: attributeId,
+            });
+            if (!attribute) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if old attributes group exist
+            const oldAttributesGroup = await attributesGroupCollection.findOne({
+              _id: attribute.attributesGroupId,
+            });
+            if (!oldAttributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check if new attributes group exist
+            const newAttributesGroup = await attributesGroupCollection.findOne({
+              _id: attributesGroupId,
+            });
+            if (!newAttributesGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update attribute
+            const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
+              {
+                _id: attributeId,
+              },
+              {
+                $set: {
+                  attributesGroupId,
+                },
+              },
+            );
+            if (!updatedAttributeResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Update product attributes
+            const updatedProductAttributes = await productAttributesCollection.updateMany(
+              {
+                attributeId,
+              },
+              {
+                $set: {
+                  attributesGroupId,
+                },
+              },
+            );
+            if (!updatedProductAttributes.result.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Remove attribute _id from old attributes group
+            const updatedOldGroupResult = await attributesGroupCollection.findOneAndUpdate(
+              { _id: oldAttributesGroup._id },
+              {
+                $pull: {
+                  attributesIds: attributeId,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedOldGroup = updatedOldGroupResult.value;
+            if (!updatedOldGroupResult.ok || !updatedOldGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // Add attribute _id to the new attributes group
+            const updatedNewGroupResult = await attributesGroupCollection.findOneAndUpdate(
+              { _id: oldAttributesGroup._id },
+              {
+                $push: {
+                  attributesIds: attributeId,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedNewGroup = updatedNewGroupResult.value;
+            if (!updatedNewGroupResult.ok || !updatedNewGroup) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('attributesGroups.updateAttribute.success'),
+              payload: updatedNewGroup,
             };
           });
 

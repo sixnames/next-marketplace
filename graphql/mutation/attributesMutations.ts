@@ -45,6 +45,15 @@ export const UPDATE_ATTRIBUTE_IN_GROUP_MUTATION = gql`
   }
 `;
 
+export const MOVE_ATTRIBUTE_MUTATION = gql`
+  mutation MoveAttribute($input: MoveAttributeInput!) {
+    moveAttribute(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const DELETE_ATTRIBUTE_FROM_GROUP_MUTATION = gql`
   mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
     deleteAttributeFromGroup(input: $input) {

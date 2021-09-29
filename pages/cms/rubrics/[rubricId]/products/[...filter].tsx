@@ -354,7 +354,6 @@ export const getServerSideProps = async (
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-
   // console.log(' ');
   // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
   // console.log('RubricProductsPage props ');

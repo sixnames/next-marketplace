@@ -8,10 +8,11 @@ import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
+  shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
-import { ProductModel, ShopProductModel } from 'db/dbModels';
+import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface } from 'db/uiInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -45,7 +46,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
@@ -76,7 +77,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
     // aggregate product similar products
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ProductInterface>([
+      .aggregate([
         {
           $match: {
             productId: finalProductId,
@@ -174,14 +175,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   rubricSlug: { $first: `$rubricSlug` },
                   brandSlug: { $first: `$brandSlug` },
                   brandCollectionSlug: { $first: '$brandCollectionSlug' },
-                  slug: { $first: '$slug' },
-                  gender: { $first: '$gender' },
-                  mainImage: { $first: `$mainImage` },
-                  originalName: { $first: `$originalName` },
-                  nameI18n: { $first: `$nameI18n` },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
-                  titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
                   selectedOptionsSlugs: {
                     $first: '$selectedOptionsSlugs',
                   },
@@ -219,16 +214,19 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 },
               },
 
-              // Lookup product brand
+              // get product brand
               ...brandPipeline,
 
-              // Lookup product attributes
+              // get product attributes
               ...productAttributesPipeline,
 
-              // Lookup product categories
+              // get product categories
               ...productCategoriesPipeline(),
 
-              // Lookup product rubric
+              // get shop product fields
+              ...shopProductFieldsPipeline('$_id'),
+
+              // get product rubric
               {
                 $lookup: {
                   from: COL_RUBRICS,
@@ -256,8 +254,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   ],
                 },
               },
-
-              // final fields
               {
                 $addFields: {
                   rubric: { $arrayElemAt: ['$rubric', 0] },
@@ -295,9 +291,13 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
     }
 
     const similarProducts = productResult.similarProducts.reduce(
-      (acc: ProductInterface[], product) => {
-        const exist = acc.some(({ itemId }) => product.itemId === itemId);
+      (acc: ShopProductInterface[], shopProduct) => {
+        const exist = acc.some(({ itemId }) => shopProduct.itemId === itemId);
         if (exist) {
+          return acc;
+        }
+        const product = shopProduct.product;
+        if (!product) {
           return acc;
         }
 
@@ -319,8 +319,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           }),
         });
 
-        const minPrice = noNaN(product.cardPrices?.min);
-        const maxPrice = noNaN(product.cardPrices?.max);
+        const minPrice = noNaN(shopProduct.cardPrices?.min);
+        const maxPrice = noNaN(shopProduct.cardPrices?.max);
         const cardPrices = {
           _id: new ObjectId(),
           min: `${minPrice}`,
@@ -330,10 +330,14 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         return [
           ...acc,
           {
-            ...product,
-            name: getFieldStringLocale(product.nameI18n, locale),
-            cardPrices,
-            snippetTitle,
+            ...shopProduct,
+            product: {
+              ...product,
+              shopsCount: shopProduct.shopsCount,
+              name: getFieldStringLocale(product.nameI18n, locale),
+              cardPrices,
+              snippetTitle,
+            },
           },
         ];
       },

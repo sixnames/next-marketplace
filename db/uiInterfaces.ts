@@ -265,7 +265,6 @@ export interface ProductInterface extends ProductModel {
   numberAttributesAST?: ProductAttributeInterface[] | null;
   multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
   selectAttributesAST?: ProductAttributeInterface[] | null;
-  similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
@@ -328,6 +327,7 @@ export interface ShopProductInterface extends ShopProductModel {
   orders?: OrderInterface[] | null;
   cardPrices?: ProductCardPricesModel | null;
   shopsCount?: number | null;
+  similarProducts?: ShopProductInterface[] | null;
   // name?: string | null;
   // connections?: ProductConnectionInterface[] | null;
   // attributes?: ProductAttributeInterface[] | null;

@@ -126,10 +126,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       ...companyMatch,
     };
 
-    console.log({
-      shopProductsMatch,
-    });
-
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await productsCollection
       .aggregate([
@@ -484,6 +480,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
+                  ...shopProductsMatch,
                 },
               },
               {

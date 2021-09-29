@@ -523,6 +523,11 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
+  MoveAttributeInput: {
+    // input type
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   NotificationConfigInput: {
     // input type
     email?: boolean | null; // Boolean
@@ -1633,6 +1638,7 @@ export interface NexusGenFieldTypes {
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     deleteUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
+    moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -2770,6 +2776,7 @@ export interface NexusGenFieldTypeNames {
     deleteSupplier: 'SupplierPayload';
     deleteUser: 'UserPayload';
     generateShopToken: 'ShopPayload';
+    moveAttribute: 'AttributesGroupPayload';
     repeatOrder: 'CartPayload';
     signUp: 'UserPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
@@ -3772,6 +3779,10 @@ export interface NexusGenArgTypes {
     generateShopToken: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
+    moveAttribute: {
+      // args
+      input: NexusGenInputs['MoveAttributeInput']; // MoveAttributeInput!
     };
     repeatOrder: {
       // args

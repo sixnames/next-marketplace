@@ -881,6 +881,11 @@ type MetricPayload implements Payload {
   success: Boolean!
 }
 
+input MoveAttributeInput {
+  attributeId: ObjectId!
+  attributesGroupId: ObjectId!
+}
+
 type Mutation {
   """
   Should create attribute and add it to the attributes group
@@ -1228,6 +1233,11 @@ type Mutation {
   Should generate shop token
   """
   generateShopToken(_id: ObjectId!): ShopPayload!
+
+  """
+  Should move attribute to another attributes group
+  """
+  moveAttribute(input: MoveAttributeInput!): AttributesGroupPayload!
 
   """
   Should add all products to the cart from user's old order

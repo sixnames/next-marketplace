@@ -940,12 +940,6 @@ export const getCatalogueData = async ({
             rubricSlug: { $first: `$rubricSlug` },
             brandSlug: { $first: '$brandSlug' },
             brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            slug: { $first: '$slug' },
-            gender: { $first: '$gender' },
-            mainImage: { $first: `$mainImage` },
-            originalName: { $first: `$originalName` },
-            nameI18n: { $first: `$nameI18n` },
-            titleCategoriesSlugs: { $first: `$titleCategoriesSlugs` },
             views: { $max: `$views.${companySlug}.${city}` },
             priorities: { $max: `$priorities.${companySlug}.${city}` },
             minPrice: {

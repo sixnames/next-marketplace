@@ -344,8 +344,7 @@ export const FLEX_CENTER = 'center';
 export const FLEX_END = 'flex-end';
 
 // SEARCH
-export const HEADER_SEARCH_RUBRICS_LIMIT = 4;
-export const HEADER_SEARCH_PRODUCTS_LIMIT = 4;
+export const HEADER_SEARCH_PRODUCTS_LIMIT = 5;
 
 // PAGES
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;

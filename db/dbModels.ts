@@ -4,6 +4,7 @@ import {
   BrandInterface,
   CategoryInterface,
   RubricInterface,
+  ShopProductInterface,
 } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
@@ -997,6 +998,5 @@ export interface ProductsPaginationPayloadModel {
 
 // Catalogue
 export interface CatalogueSearchResultModel {
-  rubrics: RubricModel[];
-  products: ProductModel[];
+  products: ShopProductInterface[];
 }

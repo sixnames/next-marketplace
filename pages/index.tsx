@@ -4,8 +4,6 @@ import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
 import ShopsMap from 'components/ShopsMap';
 import {
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   SORT_DESC,
   FILTER_SEPARATOR,
@@ -32,7 +30,6 @@ import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -457,7 +454,6 @@ export async function getServerSideProps(
         $sort: {
           priorities: SORT_DESC,
           views: SORT_DESC,
-          available: SORT_DESC,
           _id: SORT_DESC,
         },
       },
@@ -514,27 +510,11 @@ export async function getServerSideProps(
       max: `${maxPrice}`,
     };
 
-    // listFeatures
-    const listFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product?.attributes || [],
-      viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-      locale: sessionLocale,
-    });
-
-    // ratingFeatures
-    const ratingFeatures = getProductCurrentViewCastedAttributes({
-      attributes: product?.attributes || [],
-      viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-      locale: sessionLocale,
-    });
-
     topProducts.push({
       ...restShopProduct,
       product: {
         ...product,
         shopsCount,
-        listFeatures,
-        ratingFeatures,
         name: getFieldStringLocale(product?.nameI18n, sessionLocale),
         cardPrices,
         connections: [],

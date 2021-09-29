@@ -4,7 +4,6 @@ import {
   BrandInterface,
   CategoryInterface,
   RubricInterface,
-  ShopProductInterface,
 } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
@@ -994,9 +993,4 @@ export interface ProductsPaginationPayloadModel {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   docs: ProductModel[];
-}
-
-// Catalogue
-export interface CatalogueSearchResultModel {
-  products: ShopProductInterface[];
 }

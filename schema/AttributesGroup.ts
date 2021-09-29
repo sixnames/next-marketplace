@@ -1153,7 +1153,7 @@ export const attributesGroupMutations = extendType({
 
             // Add attribute _id to the new attributes group
             const updatedNewGroupResult = await attributesGroupCollection.findOneAndUpdate(
-              { _id: oldAttributesGroup._id },
+              { _id: attributesGroupId },
               {
                 $push: {
                   attributesIds: attributeId,

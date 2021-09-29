@@ -2,47 +2,48 @@ import * as React from 'react';
 import Spinner from 'components/Spinner';
 import dynamic from 'next/dynamic';
 import {
+  ADD_ASSETS_MODAL,
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
-  ATTRIBUTE_IN_GROUP_MODAL,
-  ATTRIBUTES_GROUP_MODAL,
-  CONFIRM_MODAL,
-  CREATE_NEW_PRODUCT_MODAL,
-  CREATE_RUBRIC_MODAL,
-  LANGUAGE_MODAL,
-  OPTION_IN_GROUP_MODAL,
-  OPTIONS_GROUP_MODAL,
-  RUBRIC_VARIANT_MODAL,
-  UPDATE_MY_PASSWORD_MODAL,
-  CREATE_CONNECTION_MODAL,
-  PRODUCT_SEARCH_MODAL,
-  USERS_SEARCH_MODAL,
-  CREATE_SHOP_MODAL,
-  SHOP_PRODUCT_MODAL,
-  CART_MODAL,
-  CREATE_ROLE_MODAL,
   ADULT_MODAL,
-  BRAND_OPTIONS_MODAL,
-  BRAND_COLLECTION_OPTIONS_MODAL,
-  MANUFACTURER_OPTIONS_MODAL,
+  ATTRIBUTES_GROUP_MODAL,
+  ATTRIBUTE_IN_GROUP_MODAL,
   ATTRIBUTE_OPTIONS_MODAL,
+  BLOG_ATTRIBUTE_MODAL,
+  BLOG_POST_MODAL,
+  BRAND_COLLECTION_MODAL,
+  BRAND_COLLECTION_OPTIONS_MODAL,
+  BRAND_OPTIONS_MODAL,
+  CART_MODAL,
   CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
-  CREATE_USER_MODAL,
-  NAV_ITEM_MODAL,
-  PAGES_GROUP_MODAL,
+  CONFIRM_MODAL,
+  CREATE_BRAND_MODAL,
+  CREATE_CATEGORY_MODAL,
+  CREATE_CONNECTION_MODAL,
+  CREATE_NEW_PRODUCT_MODAL,
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
-  MAP_MODAL,
-  CREATE_BRAND_MODAL,
-  BRAND_COLLECTION_MODAL,
+  CREATE_ROLE_MODAL,
+  CREATE_RUBRIC_MODAL,
+  CREATE_SHOP_MODAL,
+  CREATE_USER_MODAL,
+  LANGUAGE_MODAL,
   MANUFACTURER_MODAL,
-  SUPPLIER_MODAL,
+  MANUFACTURER_OPTIONS_MODAL,
+  MAP_MODAL,
   METRIC_MODAL,
+  MOVE_ATTRIBUTE_MODAL,
+  NAV_ITEM_MODAL,
+  OPTIONS_GROUP_MODAL,
+  OPTION_IN_GROUP_MODAL,
   ORDER_STATUS_MODAL,
+  PAGES_GROUP_MODAL,
+  PRODUCT_SEARCH_MODAL,
+  RUBRIC_VARIANT_MODAL,
+  SHOP_PRODUCT_MODAL,
+  SUPPLIER_MODAL,
   SUPPLIER_OPTIONS_MODAL,
-  ADD_ASSETS_MODAL,
-  CREATE_CATEGORY_MODAL,
-  BLOG_POST_MODAL,
-  BLOG_ATTRIBUTE_MODAL,
+  UPDATE_MY_PASSWORD_MODAL,
+  USERS_SEARCH_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -72,6 +73,7 @@ const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollect
 const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
 const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
 const AddAssetsModal = dynamic(() => import('components/Modal/AddAssetsModal'));
+const MoveAttributeModal = dynamic(() => import('components/Modal/MoveAttributeModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -187,6 +189,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === ORDER_STATUS_MODAL && <OrderStatusModal {...modalProps} />}
 
           {modalType === ADD_ASSETS_MODAL && <AddAssetsModal {...modalProps} />}
+
+          {modalType === MOVE_ATTRIBUTE_MODAL && <MoveAttributeModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

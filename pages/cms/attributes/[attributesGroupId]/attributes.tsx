@@ -2,10 +2,15 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
 import Table, { TableColumn } from 'components/Table';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
-import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
+import {
+  ATTRIBUTE_IN_GROUP_MODAL,
+  CONFIRM_MODAL,
+  MOVE_ATTRIBUTE_MODAL,
+} from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
   UpdateAttributeInGroupInput,
@@ -257,9 +262,20 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
         const { name } = dataItem;
         return (
           <ContentItemControls
+            testId={`${name}-attribute`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать атрибут'}
             updateHandler={() => updateAttributeHandler(dataItem)}
+            moveTitle={'Переместить атрибут'}
+            moveHandler={() => {
+              showModal<MoveAttributeModalInterface>({
+                variant: MOVE_ATTRIBUTE_MODAL,
+                props: {
+                  attributeId: `${dataItem._id}`,
+                  oldAttributesGroupId: `${dataItem.attributesGroupId}`,
+                },
+              });
+            }}
             deleteTitle={'Удалить атрибут'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
@@ -281,7 +297,6 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                 },
               });
             }}
-            testId={`${name}-attribute`}
           />
         );
       },

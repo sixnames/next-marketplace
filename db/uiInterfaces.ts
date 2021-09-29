@@ -404,7 +404,13 @@ export interface CatalogueDataInterface {
   rubricName: string;
   rubricSlug: string;
   catalogueFilterLayout: string;
-  rubricVariant?: RubricVariantInterface | null;
+  gridSnippetLayout: string;
+  rowSnippetLayout: string;
+  showSnippetConnections: boolean;
+  showSnippetBackground: boolean;
+  showSnippetArticle: boolean;
+  showSnippetButtonsOnHover: boolean;
+  gridCatalogueColumns: number;
   products: ShopProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
@@ -427,8 +433,7 @@ export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
   docs: ShopProductInterface[];
-  rubric: RubricInterface;
-  rubrics?: RubricInterface[] | null;
+  rubrics: RubricInterface[];
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];

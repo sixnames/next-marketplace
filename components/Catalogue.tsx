@@ -4,10 +4,6 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
-import {
-  GRID_SNIPPET_LAYOUT_BIG_IMAGE,
-  ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from 'config/constantSelects';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -44,7 +40,6 @@ interface CatalogueConsumerInterface {
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
-  route: string;
   isSearchResult?: boolean;
 }
 
@@ -52,7 +47,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   catalogueData,
   companyId,
   companySlug,
-  route,
   isSearchResult,
 }) => {
   const router = useRouter();
@@ -291,7 +285,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
-            route={route}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}
             attributes={catalogueData.attributes}
@@ -380,16 +373,12 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     if (isRowView) {
                       return (
                         <ProductSnippetRow
-                          layout={
-                            isSearchResult
-                              ? ROW_SNIPPET_LAYOUT_BIG_IMAGE
-                              : `${state.rubricVariant?.rowSnippetLayout}`
-                          }
-                          showSnippetConnections={state.rubricVariant?.showSnippetConnections}
-                          showSnippetBackground={state.rubricVariant?.showSnippetBackground}
-                          showSnippetArticle={state.rubricVariant?.showSnippetArticle}
-                          showSnippetButtonsOnHover={state.rubricVariant?.showSnippetButtonsOnHover}
-                          gridCatalogueColumns={state.rubricVariant?.gridCatalogueColumns}
+                          layout={state.rowSnippetLayout}
+                          showSnippetConnections={state.showSnippetConnections}
+                          showSnippetBackground={state.showSnippetBackground}
+                          showSnippetArticle={state.showSnippetArticle}
+                          showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
+                          gridCatalogueColumns={state.gridCatalogueColumns}
                           shopProduct={product}
                           key={`${product._id}`}
                           className={'flex-grow-0'}
@@ -400,15 +389,11 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                     return (
                       <ProductSnippetGrid
-                        layout={
-                          isSearchResult
-                            ? GRID_SNIPPET_LAYOUT_BIG_IMAGE
-                            : `${state.rubricVariant?.gridSnippetLayout}`
-                        }
-                        showSnippetBackground={state.rubricVariant?.showSnippetBackground}
-                        showSnippetArticle={state.rubricVariant?.showSnippetArticle}
-                        showSnippetButtonsOnHover={state.rubricVariant?.showSnippetButtonsOnHover}
-                        gridCatalogueColumns={state.rubricVariant?.gridCatalogueColumns}
+                        layout={state.gridSnippetLayout}
+                        showSnippetBackground={state.showSnippetBackground}
+                        showSnippetArticle={state.showSnippetArticle}
+                        showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
+                        gridCatalogueColumns={state.gridCatalogueColumns}
                         shopProduct={product}
                         key={`${product._id}`}
                         testId={`catalogue-item-${index}`}
@@ -443,7 +428,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
 export interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
-  route: string;
   isSearchResult?: boolean;
 }
 
@@ -451,7 +435,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
   company,
-  route,
   isSearchResult,
   ...props
 }) => {
@@ -478,7 +461,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
     >
       <CatalogueConsumer
         isSearchResult={isSearchResult}
-        route={route}
         catalogueData={catalogueData}
         companySlug={company?.slug}
         companyId={company?._id ? `${company?._id}` : undefined}

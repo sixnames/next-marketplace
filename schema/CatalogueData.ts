@@ -73,7 +73,7 @@ export const CatalogueQueries = extendType({
           maxPrice,
           realFilterOptions,
           noFiltersSelected,
-          rubricSlug: filterRubrics,
+          rubricFilters: filterRubrics,
         } = castCatalogueFilters({
           filters: filter,
         });

@@ -1,5 +1,6 @@
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { getParentTreeSlugs } from 'lib/optionsUtils';
+import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -12,7 +13,6 @@ import {
   RubricModel,
   ShopModel,
   ShopProductModel,
-  TranslationModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
@@ -33,16 +33,10 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import {
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_COUNTERS_OBJECT,
-  LOCALES,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { createProductSchema, updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
-import { get } from 'lodash';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -391,21 +385,10 @@ export const ProductMutations = extendType({
             }
 
             // check description uniqueness
-            const cardDescriptionInfoI18n: TranslationModel = {};
-            const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-            const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY;
-            if (uniqueTextApiUrl && uniqueTextApiKey) {
-              for await (const gender of LOCALES) {
-                const text = get(values, `cardDescriptionI18n.${gender}`);
-                if (text) {
-                  const url = `${uniqueTextApiUrl}?key=${uniqueTextApiKey}&text=${text}&test=1`;
-                  const encodedUrl = encodeURI(url);
-                  const res = await fetch(encodedUrl);
-                  const json = await res.json();
-                  console.log(json);
-                }
-              }
-            }
+            await checkProductDescriptionUniqueness({
+              product,
+              cardDescriptionI18n: values.cardDescriptionI18n,
+            });
 
             // Update product
             const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -415,7 +398,6 @@ export const ProductMutations = extendType({
               {
                 $set: {
                   ...values,
-                  cardDescriptionInfoI18n,
                   updatedAt: new Date(),
                 },
               },
@@ -487,6 +469,7 @@ export const ProductMutations = extendType({
 
           return mutationPayload;
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

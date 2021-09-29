@@ -3545,6 +3545,19 @@ export type UpdateAttributeInGroupMutation = (
   ) }
 );
 
+export type MoveAttributeMutationVariables = Exact<{
+  input: MoveAttributeInput;
+}>;
+
+
+export type MoveAttributeMutation = (
+  { __typename?: 'Mutation' }
+  & { moveAttribute: (
+    { __typename?: 'AttributesGroupPayload' }
+    & Pick<AttributesGroupPayload, 'success' | 'message'>
+  ) }
+);
+
 export type DeleteAttributeFromGroupMutationVariables = Exact<{
   input: DeleteAttributeFromGroupInput;
 }>;
@@ -6274,6 +6287,40 @@ export function useUpdateAttributeInGroupMutation(baseOptions?: Apollo.MutationH
 export type UpdateAttributeInGroupMutationHookResult = ReturnType<typeof useUpdateAttributeInGroupMutation>;
 export type UpdateAttributeInGroupMutationResult = Apollo.MutationResult<UpdateAttributeInGroupMutation>;
 export type UpdateAttributeInGroupMutationOptions = Apollo.BaseMutationOptions<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>;
+export const MoveAttributeDocument = gql`
+    mutation MoveAttribute($input: MoveAttributeInput!) {
+  moveAttribute(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type MoveAttributeMutationFn = Apollo.MutationFunction<MoveAttributeMutation, MoveAttributeMutationVariables>;
+
+/**
+ * __useMoveAttributeMutation__
+ *
+ * To run a mutation, you first call `useMoveAttributeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveAttributeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveAttributeMutation, { data, loading, error }] = useMoveAttributeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMoveAttributeMutation(baseOptions?: Apollo.MutationHookOptions<MoveAttributeMutation, MoveAttributeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MoveAttributeMutation, MoveAttributeMutationVariables>(MoveAttributeDocument, options);
+      }
+export type MoveAttributeMutationHookResult = ReturnType<typeof useMoveAttributeMutation>;
+export type MoveAttributeMutationResult = Apollo.MutationResult<MoveAttributeMutation>;
+export type MoveAttributeMutationOptions = Apollo.BaseMutationOptions<MoveAttributeMutation, MoveAttributeMutationVariables>;
 export const DeleteAttributeFromGroupDocument = gql`
     mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
   deleteAttributeFromGroup(input: $input) {

@@ -27,6 +27,7 @@ import {
   ShopProductModel,
   SupplierModel,
   UserModel,
+  ProductSeoModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -51,6 +52,7 @@ import {
   COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_SEO,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -285,6 +287,13 @@ export async function updateIndexes(db: Db) {
   await shopProductsCollection.createIndex({
     productId: 1,
     citySlug: 1,
+  });
+
+  // Product seo
+  await createCollectionIfNotExist(COL_PRODUCT_SEO);
+  const productSeoCollection = db.collection<ProductSeoModel>(COL_PRODUCT_SEO);
+  await productSeoCollection.createIndex({
+    productId: 1,
   });
 
   // catalogue nav

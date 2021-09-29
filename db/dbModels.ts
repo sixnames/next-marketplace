@@ -618,7 +618,6 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   gender: GenderModel;
   barcode?: string[] | null;
   cardDescriptionI18n?: TranslationModel | null;
-  cardDescriptionInfoI18n?: TranslationModel | null;
 
   // types for aggregation
   shopsCount?: number | null;
@@ -993,4 +992,66 @@ export interface ProductsPaginationPayloadModel {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   docs: ProductModel[];
+}
+
+// SEO
+export interface TextUniquenessApiResponseInterface {
+  uid: string;
+  text_unique: string;
+  json_result?: string;
+  spell_check?: string;
+  seo_check?: string;
+}
+
+export interface TextUniquenessApiJsonResultUrlModel {
+  url: string;
+  plagiat: number;
+}
+
+export interface TextUniquenessApiJsonResultModel {
+  date_check: string;
+  unique: number;
+  urls: TextUniquenessApiJsonResultUrlModel[];
+}
+
+export interface TextUniquenessApiSpellCheckModel {
+  error_type: string;
+  replacements: string[];
+  reason: string;
+  error_text: string;
+  start: number;
+  end: number;
+}
+
+export interface TextUniquenessApiSeoCheckModel {
+  count_chars_with_space: number;
+  count_chars_without_space: number;
+  count_words: number;
+  water_percent: number;
+  spam_percent: number;
+  mixed_words: string[];
+  list_keys: {
+    count: number;
+    key_title: string;
+  }[];
+  list_keys_group: {
+    count: number;
+    key_title: string;
+    sub_keys: string[];
+  }[];
+}
+
+export interface TextUniquenessApiParsedResponseModel {
+  uid: string;
+  locale: string;
+  textUnique?: string | null;
+  jsonResult?: TextUniquenessApiJsonResultModel | null;
+  spellCheck?: TextUniquenessApiSpellCheckModel[] | null;
+  seoCheck?: TextUniquenessApiSeoCheckModel | null;
+}
+
+export interface ProductSeoModel {
+  _id: ObjectIdModel;
+  productId: ObjectIdModel;
+  locales: TextUniquenessApiParsedResponseModel[];
 }

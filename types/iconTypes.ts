@@ -40,6 +40,7 @@ export const iconTypesList = [
   'marker-thin',
   'message',
   'moon',
+  'move',
   'payment',
   'pencil',
   'percent',

@@ -44,6 +44,7 @@ import {
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
+  ProductSeoModel,
   RoleModel,
   RoleRuleModel,
   RubricModel,
@@ -274,6 +275,7 @@ export interface ProductInterface extends ProductModel {
   cardTitle?: string | null;
   cardDescription?: string | null;
   shops?: ShopInterface[] | null;
+  seo?: ProductSeoModel | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

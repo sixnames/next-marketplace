@@ -12,7 +12,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-  shopProductAttributesPipeline,
+  shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -31,9 +31,6 @@ import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
-
-// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> shop product snippet title
-// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> product snippet title
 
 export interface CartQueryInterface {
   companyId?: string;
@@ -85,17 +82,9 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               ...companyIdStage,
             },
           },
-          // Lookup product rubric
-          ...productRubricPipeline,
 
-          // Lookup product attributes
-          ...shopProductAttributesPipeline,
-
-          // Lookup product brand
-          ...brandPipeline,
-
-          // Lookup product categories
-          ...productCategoriesPipeline(),
+          // get shop product fields
+          ...shopProductFieldsPipeline('$productId'),
 
           // Lookup product shop
           {

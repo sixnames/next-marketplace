@@ -9,12 +9,14 @@ import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
+import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -120,6 +122,43 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
             <div>{noNaN(cellData)}</div>
             <div>/</div>
             <div>{noNaN(dataItem.totalAttributesCount)}</div>
+          </div>
+        );
+      },
+    },
+    {
+      accessor: 'seo',
+      headTitle: 'Атрибуты',
+      render: ({ cellData }) => {
+        return (
+          <div className='space-y-3'>
+            {(cellData?.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
+              return (
+                <div key={seoLocale.locale}>
+                  <div className='mb-2 font-medium uppercase text-secondary-text'>
+                    {seoLocale.locale}
+                  </div>
+                  <div className='space-y-1 whitespace-nowrap'>
+                    <div className='flex gap-1'>
+                      <div>Слов</div>
+                      <div>{noNaN(seoLocale.seoCheck?.count_words)}</div>
+                    </div>
+
+                    <div className='flex gap-1'>
+                      <div>Символов</div>
+                      <div>{noNaN(seoLocale.seoCheck?.count_chars_with_space)}</div>
+                    </div>
+
+                    <div className='flex gap-1'>
+                      <div>Уникальность</div>
+                      <div>
+                        <Percent value={seoLocale.textUnique} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         );
       },

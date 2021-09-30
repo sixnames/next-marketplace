@@ -26,6 +26,7 @@ import {
   filterAttributesPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
+  productSeoPipeline,
   shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
@@ -206,6 +207,9 @@ export const getConsoleRubricProducts = async ({
 
               // get product categories
               ...productCategoriesPipeline(),
+
+              // get product seo info
+              ...productSeoPipeline,
 
               // count shop products
               {

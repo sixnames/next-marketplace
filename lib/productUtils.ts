@@ -45,7 +45,7 @@ export async function getCmsProduct({
         },
       },
 
-      // Lookup product assets
+      // get product assets
       {
         $lookup: {
           as: 'assets',
@@ -62,22 +62,22 @@ export async function getCmsProduct({
         },
       },
 
-      // Lookup product rubric
+      // get product rubric
       ...productRubricPipeline,
 
-      // Lookup product attributes
+      // get product attributes
       ...productAttributesPipeline,
 
-      // Lookup product brand
+      // get product brand
       ...brandPipeline,
 
-      // Lookup product categories
+      // get product categories
       ...productCategoriesPipeline(),
 
-      // Lookup product connections
+      // get product connections
       ...productConnectionsSimplePipeline,
 
-      // Lookup product seo info
+      // get product seo info
       ...productSeoPipeline,
     ])
     .toArray();

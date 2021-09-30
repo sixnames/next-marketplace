@@ -8,7 +8,7 @@ import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
-  product,
+  shopProduct,
   testId,
   className,
   showSnippetBackground = true,
@@ -17,18 +17,13 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns = 3,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const {
-    slug,
-    cardPrices,
-    _id,
-    shopsCount,
-    mainImage,
-    rubricSlug,
-    itemId,
-    shopProductsIds,
-    snippetTitle,
-    name,
-  } = product;
+  const { _id, rubricSlug, itemId, product } = shopProduct;
+
+  if (!product) {
+    return null;
+  }
+
+  const { slug, cardPrices, shopsCount, mainImage, shopProductsIds, snippetTitle, name } = product;
 
   const bgClassName = showSnippetBackground
     ? showSnippetButtonsOnHover

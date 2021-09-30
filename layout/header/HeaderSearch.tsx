@@ -1,128 +1,126 @@
 import ControlButton from 'components/ControlButton';
-import { ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
+import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from 'config/common';
+import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { useRouter } from 'next/router';
+import {
+  HeaderSearchInputInterface,
+  HeaderSearchPayloadInterface,
+} from 'pages/api/search/header-search';
 import * as React from 'react';
 import { useDebounce } from 'use-debounce';
 import Inner from 'components/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Input from 'components/FormElements/Input/Input';
-import {
-  GetCatalogueSearchResultQuery,
-  GetCatalogueSearchTopItemsQuery,
-  useGetCatalogueSearchResultLazyQuery,
-} from 'generated/apolloComponents';
 import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
 import Link from 'components/Link/Link';
 
-type ResultRubrics =
-  | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
-  | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['rubrics'];
-
-type ResultProducts = ProductInterface[];
-
 interface HeaderSearchResultInterface {
-  rubrics: ResultRubrics;
-  products: ResultProducts;
+  shopProducts?: ShopProductInterface[] | null;
   setIsSearchOpen: (value: boolean) => void;
   isProductsFound: boolean;
   string: string;
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
-  rubrics,
   setIsSearchOpen,
-  products,
+  shopProducts,
   isProductsFound,
   string,
 }) => {
-  return (
-    <div className='grid gap-10 grid-cols-1 md:grid-cols-12'>
-      <ul className='md:col-span-2'>
-        {rubrics.map((rubric) => {
-          const { name, slug } = rubric;
-          return (
-            <li key={slug} data-cy={'search-rubric'}>
-              <Link
-                onClick={() => setIsSearchOpen(false)}
-                href={`${ROUTE_CATALOGUE}/${slug}`}
-                testId={`search-rubric-${name}`}
-                className='flex items-center min-h-[var(--minLinkHeightSmall)] text-secondary-text hover:no-underline hover:text-theme'
-              >
-                <span className='overflow-ellipsis whitespace-nowrap'>{name}</span>
-              </Link>
-            </li>
-          );
-        })}
+  if (!shopProducts || shopProducts.length < 1) {
+    return null;
+  }
 
-        <li>
-          {isProductsFound ? (
-            <Link
-              onClick={() => {
-                setIsSearchOpen(false);
-              }}
-              className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
-              href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
-            >
-              <span className='overflow-ellipsis whitespace-nowrap'>Показать все результаты</span>
-            </Link>
-          ) : null}
-        </li>
-      </ul>
-      <div className='md:col-span-10 grid gap-6 items-stretch md:grid-cols-2 xl:grid-cols-4'>
-        {products.map((product) => {
+  return (
+    <div>
+      <div className='grid gap-6 items-stretch sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        {shopProducts.map((product) => {
           return (
             <ProductSnippetGridBigImage
               gridCatalogueColumns={'full'}
               showSnippetBackground
-              product={product}
+              shopProduct={product}
               testId={`search-product`}
               key={`${product._id}`}
             />
           );
         })}
       </div>
+      {isProductsFound ? (
+        <Link
+          className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
+          href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
+          onClick={() => {
+            setIsSearchOpen(false);
+          }}
+        >
+          <span className='overflow-ellipsis whitespace-nowrap'>Показать все результаты</span>
+        </Link>
+      ) : null}
     </div>
   );
 };
 
 interface HeaderSearchInterface {
-  initialData?: GetCatalogueSearchTopItemsQuery | null;
   setIsSearchOpen: (value: boolean) => void;
+  company?: CompanyInterface | null;
 }
 
-const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearchOpen }) => {
+const minSearchLength = 2;
+
+const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen, company }) => {
   const router = useRouter();
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [searchResult, setSearchResult] = React.useState<ShopProductInterface[] | null>(null);
+  const [topShopProducts, setTopShopProducts] = React.useState<ShopProductInterface[] | null>(null);
   const [string, setString] = React.useState<string>('');
   const [value] = useDebounce(string, 500);
-  const [getSearchResult, { data, loading, error }] = useGetCatalogueSearchResultLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        search: `${value}`,
-      },
-    },
-  });
-  const minSearchLength = 2;
 
+  // get top products
+  React.useEffect(() => {
+    if (!topShopProducts) {
+      setLoading(true);
+      const body: HeaderSearchInputInterface = {
+        companySlug: company?.slug,
+        companyId: company ? `${company._id}` : undefined,
+      };
+
+      fetch('/api/search/header-search', {
+        method: REQUEST_METHOD_POST,
+        body: JSON.stringify(body),
+      })
+        .then<HeaderSearchPayloadInterface>((res) => res.json())
+        .then((result) => {
+          setLoading(false);
+          setTopShopProducts(result.shopProducts);
+        })
+        .catch(console.log);
+    }
+  }, [company, topShopProducts]);
+
+  // get search result
   React.useEffect(() => {
     if (value && value.length > minSearchLength) {
-      getSearchResult();
+      setLoading(true);
+      const body: HeaderSearchInputInterface = {
+        companySlug: company?.slug,
+        companyId: company ? `${company._id}` : undefined,
+        search: value,
+      };
+
+      fetch('/api/search/header-search', {
+        method: REQUEST_METHOD_POST,
+        body: JSON.stringify(body),
+      })
+        .then<HeaderSearchPayloadInterface>((res) => res.json())
+        .then((result) => {
+          setLoading(false);
+          setSearchResult(result.shopProducts);
+        })
+        .catch(console.log);
     }
-  }, [getSearchResult, value]);
-
-  const searchRubrics = data?.getCatalogueSearchResult.rubrics;
-  const topRubrics = initialData?.getCatalogueSearchTopItems.rubrics;
-  const initialSearchProducts = data?.getCatalogueSearchResult.products as unknown;
-  const searchProducts = initialSearchProducts as ProductInterface[];
-  const initialTopProducts = initialData?.getCatalogueSearchTopItems.products as unknown;
-  const topProducts = initialTopProducts as ProductInterface[];
-
-  const isProductsFound = searchProducts && searchProducts.length > 0;
-  const rubrics = searchRubrics && searchRubrics.length > 0 ? searchRubrics : topRubrics;
-  const products = isProductsFound ? searchProducts : topProducts;
+  }, [company, value]);
 
   return (
     <div
@@ -164,10 +162,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
             <ControlButton icon={'cross'} onClick={() => setIsSearchOpen(false)} />
           </div>
 
-          {!loading &&
-          value.length > minSearchLength &&
-          data?.getCatalogueSearchResult.products &&
-          data.getCatalogueSearchResult.products.length < 1 ? (
+          {value.length > minSearchLength && searchResult && searchResult.length < 1 && !loading ? (
             <div
               style={{
                 fontSize: '1.125rem',
@@ -180,18 +175,20 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ initialData, setIsSearc
           ) : null}
 
           <div className='relative overflow-hidden'>
-            {loading ? <Spinner isNestedAbsolute isTransparent /> : null}
-
-            {error ? <RequestError /> : null}
-            {rubrics && products ? (
-              <HeaderSearchResult
-                setIsSearchOpen={setIsSearchOpen}
-                rubrics={rubrics}
-                products={products}
-                isProductsFound={isProductsFound}
-                string={string}
+            {loading ? (
+              <Spinner
+                isNestedAbsolute={Boolean(topShopProducts)}
+                isNested={!topShopProducts}
+                isTransparent
               />
             ) : null}
+
+            <HeaderSearchResult
+              setIsSearchOpen={setIsSearchOpen}
+              shopProducts={value.length > minSearchLength ? searchResult || [] : topShopProducts}
+              isProductsFound={false}
+              string={string}
+            />
           </div>
         </Inner>
       </OutsideClickHandler>

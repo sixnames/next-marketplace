@@ -72,7 +72,6 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
   hideFilterHandler,
   isFilterVisible,
   companyId,
-  route,
   isSearchResult,
   clearSlug,
 }) => {
@@ -106,11 +105,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
           <div className='mb-12'>
             <div className='flex items-baseline justify-between mb-4'>
               <span className='text-lg font-bold'>Выбранные</span>
-              <Link
-                href={`${route}/${clearSlug}`}
-                className='font-medium text-theme'
-                onClick={hideFilterHandler}
-              >
+              <Link href={clearSlug} className='font-medium text-theme' onClick={hideFilterHandler}>
                 Сбросить фильтр
               </Link>
             </div>

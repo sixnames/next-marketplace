@@ -1,131 +1,64 @@
-import { CategoryModel, ObjectIdModel, RubricModel } from '../../../db/dbModels';
+import addZero from 'add-zero';
+import { ID_COUNTER_DIGITS } from 'config/common';
+import { IdCounterModel, ShopProductModel } from 'db/dbModels';
+import { COL_ID_COUNTERS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_CATEGORIES, COL_RUBRICS } from '../../../db/collectionNames';
 require('dotenv').config();
 
-interface Temp {
-  attributeId: ObjectIdModel;
-  attributesGroupId: ObjectIdModel;
+interface TempShopProduct {
+  index: number;
+  shopProduct: ShopProductModel;
 }
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
 
-    // update products
-    console.log(`Updating rubrics in ${dbConfig.dbName} db`);
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-    const rubricAttributesCollection = db.collection<Temp>('rubricAttributes');
+    console.log(`Updating shop product itemId in ${dbConfig.dbName} db`);
+    const shopProducts = await shopProductsCollection.find({}).toArray();
+    await idCountersCollection.insertOne({
+      collection: COL_SHOP_PRODUCTS,
+      counter: shopProducts.length + 100,
+    });
 
-    const rubrics = await rubricsCollection.find({}).toArray();
-    for await (const rubric of rubrics) {
-      const attributesGroupIds: ObjectIdModel[] = [];
-      const filterVisibleAttributeIds: ObjectIdModel[] = [];
+    const shopProductsWithIndex: TempShopProduct[] = shopProducts.map((shopProduct, index) => {
+      return {
+        index,
+        shopProduct,
+      };
+    });
 
-      const rubricAttributes = await rubricAttributesCollection
-        .find({
-          rubricId: rubric._id,
-        })
-        .toArray();
-      rubricAttributes.forEach(({ attributeId, attributesGroupId }) => {
-        const attributeIdExist = filterVisibleAttributeIds.some((_id) => {
-          return _id.equals(attributeId);
-        });
-        if (!attributeIdExist) {
-          filterVisibleAttributeIds.push(attributeId);
-        }
-
-        const attributesGroupIdExist = attributesGroupIds.some((_id) => {
-          return _id.equals(attributesGroupId);
-        });
-        if (!attributesGroupIdExist) {
-          attributesGroupIds.push(attributesGroupId);
-        }
-      });
-
-      console.log({
-        attributesGroupIds: attributesGroupIds.length,
-        filterVisibleAttributeIds: filterVisibleAttributeIds.length,
-      });
-
-      await rubricsCollection.findOneAndUpdate(
-        { _id: rubric._id },
+    for await (const shopProduct of shopProductsWithIndex) {
+      await shopProductsCollection.findOneAndUpdate(
         {
-          $unset: {
-            attributesGroupIds: '',
-            filterVisibleAttributeIds: '',
-          },
+          _id: shopProduct.shopProduct._id,
         },
-      );
-
-      await rubricsCollection.findOneAndUpdate(
-        { _id: rubric._id },
         {
           $set: {
-            attributesGroupIds,
-            filterVisibleAttributeIds,
+            itemId: addZero(shopProduct.index, ID_COUNTER_DIGITS),
+          },
+          $unset: {
+            slug: '',
+            active: '',
+            originalName: '',
+            nameI18n: '',
+            descriptionI18n: '',
+            mainImage: '',
+            titleCategoriesSlugs: '',
+            selectedAttributesIds: '',
+            gender: '',
           },
         },
       );
     }
-
-    const categories = await categoriesCollection.find({});
-    for await (const category of categories) {
-      const attributesGroupIds: ObjectIdModel[] = [];
-      const filterVisibleAttributeIds: ObjectIdModel[] = [];
-
-      const rubricAttributes = await rubricAttributesCollection
-        .find({
-          categoryId: category._id,
-        })
-        .toArray();
-      rubricAttributes.forEach(({ attributeId, attributesGroupId }) => {
-        const attributeIdExist = filterVisibleAttributeIds.some((_id) => {
-          return _id.equals(attributeId);
-        });
-        if (!attributeIdExist) {
-          filterVisibleAttributeIds.push(attributeId);
-        }
-
-        const attributesGroupIdExist = attributesGroupIds.some((_id) => {
-          return _id.equals(attributesGroupId);
-        });
-        if (!attributesGroupIdExist) {
-          attributesGroupIds.push(attributesGroupId);
-        }
-      });
-
-      console.log({
-        attributesGroupIds: attributesGroupIds.length,
-        filterVisibleAttributeIds: filterVisibleAttributeIds.length,
-      });
-
-      await categoriesCollection.findOneAndUpdate(
-        { _id: category._id },
-        {
-          $unset: {
-            attributesGroupIds: '',
-            filterVisibleAttributeIds: '',
-          },
-        },
-      );
-
-      await categoriesCollection.findOneAndUpdate(
-        { _id: category._id },
-        {
-          $set: {
-            attributesGroupIds,
-            filterVisibleAttributeIds,
-          },
-        },
-      );
-    }
-
-    console.log(`rubrics updated in ${dbConfig.dbName} db`);
+    console.log(`Done shop product itemId in ${dbConfig.dbName} db`);
+    console.log(' ');
 
     // disconnect form db
     await client.close();

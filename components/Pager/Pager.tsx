@@ -42,6 +42,13 @@ export const useNavigateToPageHandler = () => {
 };
 
 const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
+  const onPageChange = React.useCallback(
+    (selectedItem: any) => {
+      setPage(selectedItem.selected + pageStep);
+    },
+    [setPage],
+  );
+
   if (totalPages < minimalPagesCount) {
     return null;
   }
@@ -63,9 +70,7 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         pageLinkClassName={classes.butn}
         breakLinkClassName={classes.butn}
         containerClassName={classes.container}
-        onPageChange={(selectedItem) => {
-          setPage(selectedItem.selected + pageStep);
-        }}
+        onPageChange={onPageChange}
       />
     </div>
   );

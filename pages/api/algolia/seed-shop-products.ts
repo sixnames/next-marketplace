@@ -27,7 +27,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     .toArray();
   const castedShopProducts = castDbData(shopProducts);
   const saveResult = await saveAlgoliaObjects({
-    indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
+    indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
     objects: castedShopProducts,
   });
 

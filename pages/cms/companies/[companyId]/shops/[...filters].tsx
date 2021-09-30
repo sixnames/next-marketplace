@@ -455,8 +455,6 @@ export const getServerSideProps = async (
       itemPath,
       clearSlug,
       page,
-      hasPrevPage: shopsAggregation.hasPrevPage,
-      hasNextPage: shopsAggregation.hasNextPage,
       totalPages: noNaN(shopsAggregation.totalPages),
       totalDocs: noNaN(shopsAggregation.totalDocs),
       docs: castDbData(docs),

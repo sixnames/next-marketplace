@@ -1,10 +1,6 @@
 import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'config/common';
-import {
-  AlgoliaShopProductInterface,
-  deleteAlgoliaObjects,
-  saveAlgoliaObjects,
-} from 'lib/algoliaUtils';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -33,7 +29,6 @@ import {
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   addManyProductsToShopSchema,
-  addProductToShopSchema,
   deleteProductFromShopSchema,
   updateShopSchema,
 } from 'validation/shopSchema';
@@ -612,166 +607,6 @@ export const ShopMutations = extendType({
       },
     });
 
-    // Should add product to the shop
-    t.nonNull.field('addProductToShop', {
-      type: 'ShopPayload',
-      description: 'Should add product to the shop',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'AddProductToShopInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-        const session = client.startSession();
-
-        let mutationPayload: ShopPayloadModel = {
-          success: false,
-          message: await getApiMessage('shops.addProduct.error'),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'createShopProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: addProductToShopSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const { input } = args;
-            const { shopId, productId, ...values } = input;
-
-            // Check shop and product availability
-            const shop = await shopsCollection.findOne({ _id: shopId });
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!shop || !product) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shops.addProduct.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if product already exist in the shop
-            const exist = await shopProductsCollection.findOne({
-              productId,
-              shopId: shop._id,
-            });
-            if (exist) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shops.addProduct.duplicate'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create shop product
-            const createdShopProductResult = await shopProductsCollection.insertOne({
-              ...values,
-              active: true,
-              discountedPercent: 0,
-              productId,
-              shopId: shop._id,
-              citySlug: shop.citySlug,
-              oldPrices: [],
-              rubricId: product.rubricId,
-              rubricSlug: product.rubricSlug,
-              companyId: shop.companyId,
-              itemId: product.itemId,
-              slug: product.slug,
-              originalName: product.originalName,
-              nameI18n: product.nameI18n,
-              descriptionI18n: product.descriptionI18n,
-              brandSlug: product.brandSlug,
-              brandCollectionSlug: product.brandCollectionSlug,
-              manufacturerSlug: product.manufacturerSlug,
-              mainImage: product.mainImage,
-              selectedOptionsSlugs: product.selectedOptionsSlugs,
-              titleCategoriesSlugs: product.titleCategoriesSlugs,
-              supplierSlugs: product.supplierSlugs,
-              selectedAttributesIds: product.selectedAttributesIds,
-              gender: product.gender,
-              updatedAt: new Date(),
-              createdAt: new Date(),
-              ...DEFAULT_COUNTERS_OBJECT,
-            });
-            const createdShopProduct = createdShopProductResult.ops[0];
-            if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shops.addProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const algoliaShopProductResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-              objects: [
-                {
-                  _id: createdShopProduct._id.toHexString(),
-                  objectID: createdShopProduct._id.toHexString(),
-                  itemId: createdShopProduct.itemId,
-                  originalName: createdShopProduct.originalName,
-                  nameI18n: createdShopProduct.nameI18n,
-                  descriptionI18n: createdShopProduct.descriptionI18n,
-                  barcode: createdShopProduct.barcode,
-                },
-              ],
-            });
-            if (!algoliaShopProductResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shops.addProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('shops.addProduct.success'),
-              payload: shop,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should add many products to the shop
     t.nonNull.field('addManyProductsToShop', {
       type: 'ShopPayload',
@@ -825,7 +660,6 @@ export const ShopMutations = extendType({
             await validationSchema.validate(args);
 
             let doneCount = 0;
-            const algoliaShopProducts: AlgoliaShopProductInterface[] = [];
             for await (const shopProductInput of args.input) {
               const { shopId, productId, ...values } = shopProductInput;
 
@@ -846,31 +680,23 @@ export const ShopMutations = extendType({
               }
 
               // Create shop product
+              const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
               const createdShopProductResult = await shopProductsCollection.insertOne({
                 ...values,
-                active: true,
-                discountedPercent: 0,
+                itemId,
                 productId,
+                discountedPercent: 0,
                 shopId: shop._id,
                 citySlug: shop.citySlug,
                 oldPrices: [],
                 rubricId: product.rubricId,
                 rubricSlug: product.rubricSlug,
                 companyId: shop.companyId,
-                itemId: product.itemId,
-                slug: product.slug,
-                originalName: product.originalName,
-                nameI18n: product.nameI18n,
-                descriptionI18n: product.descriptionI18n,
                 brandSlug: product.brandSlug,
                 brandCollectionSlug: product.brandCollectionSlug,
                 manufacturerSlug: product.manufacturerSlug,
-                mainImage: product.mainImage,
                 selectedOptionsSlugs: product.selectedOptionsSlugs,
-                titleCategoriesSlugs: product.titleCategoriesSlugs,
                 supplierSlugs: product.supplierSlugs,
-                selectedAttributesIds: product.selectedAttributesIds,
-                gender: product.gender,
                 updatedAt: new Date(),
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,
@@ -881,33 +707,9 @@ export const ShopMutations = extendType({
               }
 
               doneCount = doneCount + 1;
-
-              algoliaShopProducts.push({
-                _id: createdShopProduct._id.toHexString(),
-                objectID: createdShopProduct._id.toHexString(),
-                itemId: createdShopProduct.itemId,
-                originalName: createdShopProduct.originalName,
-                nameI18n: createdShopProduct.nameI18n,
-                descriptionI18n: createdShopProduct.descriptionI18n,
-                barcode: createdShopProduct.barcode,
-              });
             }
 
             if (doneCount !== args.input.length) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shops.addProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // save algolia shop products
-            const algoliaShopProductsResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-              objects: algoliaShopProducts,
-            });
-            if (!algoliaShopProductsResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shops.addProduct.error'),
@@ -994,12 +796,6 @@ export const ShopMutations = extendType({
               message: await getApiMessage('shops.deleteProduct.error'),
             };
           }
-
-          // delete algolia object
-          await deleteAlgoliaObjects({
-            indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-            objectIDs: [shopProductId.toHexString()],
-          });
 
           return {
             success: true,

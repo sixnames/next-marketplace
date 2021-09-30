@@ -9,19 +9,13 @@ describe('Catalogue filter', () => {
     // Should show search result
     cy.getByCy('header-search-trigger').click();
     cy.getByCy('search-dropdown').should('exist');
-    cy.getByCy('search-rubric').should(($rubric) => {
-      expect($rubric).to.have.length(3);
-    });
     cy.getByCy('search-product-name-grid').should(($rubric) => {
-      expect($rubric).to.have.length(4);
+      expect($rubric).to.have.length(5);
     });
 
     cy.getByCy('search-input').type(`vino`);
-    cy.getByCy('search-rubric').should(($rubric) => {
-      expect($rubric).to.have.length(3);
-    });
     cy.getByCy('search-product-name-grid').should(($rubric) => {
-      expect($rubric).to.have.length(4);
+      expect($rubric).to.have.length(5);
     });
     cy.get('body').click(0, 0);
     cy.getByCy('search-dropdown').should('not.exist');

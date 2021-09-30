@@ -337,23 +337,6 @@ export type CatalogueDataInput = {
   rubricSlug: Scalars['String'];
 };
 
-export type CatalogueSearchInput = {
-  search: Scalars['String'];
-  companyId?: Maybe<Scalars['ObjectId']>;
-  companySlug?: Maybe<Scalars['String']>;
-};
-
-export type CatalogueSearchResult = {
-  __typename?: 'CatalogueSearchResult';
-  rubrics: Array<Rubric>;
-  products: Array<Product>;
-};
-
-export type CatalogueSearchTopItemsInput = {
-  companyId?: Maybe<Scalars['ObjectId']>;
-  companySlug?: Maybe<Scalars['String']>;
-};
-
 export type Category = {
   __typename?: 'Category';
   _id: Scalars['ObjectId'];
@@ -1152,8 +1135,6 @@ export type Mutation = {
   deleteShopAsset: ShopPayload;
   /** Should update shop asset index */
   updateShopAssetIndex: ShopPayload;
-  /** Should add product to the shop */
-  addProductToShop: ShopPayload;
   /** Should add many products to the shop */
   addManyProductsToShop: ShopPayload;
   /** Should delete product from shop */
@@ -1738,11 +1719,6 @@ export type MutationUpdateShopAssetIndexArgs = {
 };
 
 
-export type MutationAddProductToShopArgs = {
-  input: AddProductToShopInput;
-};
-
-
 export type MutationAddManyProductsToShopArgs = {
   input: Array<AddProductToShopInput>;
 };
@@ -2189,10 +2165,6 @@ export type Query = {
   /** Should return brand collections grouped by alphabet */
   getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
   getCatalogueAdditionalOptions?: Maybe<Array<OptionsAlphabetList>>;
-  /** Should return top search items */
-  getCatalogueSearchTopItems: CatalogueSearchResult;
-  /** Should return top search items */
-  getCatalogueSearchResult: CatalogueSearchResult;
   /** Should return city by given id */
   getCity: City;
   /** Should return city by given slug */
@@ -2333,16 +2305,6 @@ export type QueryGetBrandCollectionAlphabetListsArgs = {
 
 export type QueryGetCatalogueAdditionalOptionsArgs = {
   input: CatalogueAdditionalOptionsInput;
-};
-
-
-export type QueryGetCatalogueSearchTopItemsArgs = {
-  input: CatalogueSearchTopItemsInput;
-};
-
-
-export type QueryGetCatalogueSearchResultArgs = {
-  input: CatalogueSearchInput;
 };
 
 
@@ -4719,19 +4681,6 @@ export type UpdateShopAssetIndexMutation = (
   ) }
 );
 
-export type AddProductToShopMutationVariables = Exact<{
-  input: AddProductToShopInput;
-}>;
-
-
-export type AddProductToShopMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductToShop: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
-
 export type UpdateShopProductMutationVariables = Exact<{
   input: UpdateShopProductInput;
 }>;
@@ -5248,58 +5197,6 @@ export type GetAllRubricVariantsQuery = (
   )> }
 );
 
-export type ProductSnippetFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'originalName' | 'slug' | 'rubricSlug' | 'mainImage' | 'shopsCount' | 'snippetTitle'>
-  & { cardPrices: (
-    { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
-  ) }
-);
-
-export type SearchRubricFragment = (
-  { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'name' | 'slug'>
-);
-
-export type GetCatalogueSearchTopItemsQueryVariables = Exact<{
-  input: CatalogueSearchTopItemsInput;
-}>;
-
-
-export type GetCatalogueSearchTopItemsQuery = (
-  { __typename?: 'Query' }
-  & { getCatalogueSearchTopItems: (
-    { __typename?: 'CatalogueSearchResult' }
-    & { rubrics: Array<(
-      { __typename?: 'Rubric' }
-      & SearchRubricFragment
-    )>, products: Array<(
-      { __typename?: 'Product' }
-      & ProductSnippetFragment
-    )> }
-  ) }
-);
-
-export type GetCatalogueSearchResultQueryVariables = Exact<{
-  input: CatalogueSearchInput;
-}>;
-
-
-export type GetCatalogueSearchResultQuery = (
-  { __typename?: 'Query' }
-  & { getCatalogueSearchResult: (
-    { __typename?: 'CatalogueSearchResult' }
-    & { rubrics: Array<(
-      { __typename?: 'Rubric' }
-      & SearchRubricFragment
-    )>, products: Array<(
-      { __typename?: 'Product' }
-      & ProductSnippetFragment
-    )> }
-  ) }
-);
-
 export type SelectOptionFragment = (
   { __typename?: 'SelectOption' }
   & Pick<SelectOption, '_id' | 'name' | 'icon'>
@@ -5762,30 +5659,6 @@ export const RubricVariantFragmentDoc = gql`
   _id
   name
   nameI18n
-}
-    `;
-export const ProductSnippetFragmentDoc = gql`
-    fragment ProductSnippet on Product {
-  _id
-  itemId
-  originalName
-  slug
-  rubricSlug
-  mainImage
-  shopsCount
-  snippetTitle
-  cardPrices {
-    _id
-    min
-    max
-  }
-}
-    `;
-export const SearchRubricFragmentDoc = gql`
-    fragment SearchRubric on Rubric {
-  _id
-  name
-  slug
 }
     `;
 export const SelectOptionFragmentDoc = gql`
@@ -9366,40 +9239,6 @@ export function useUpdateShopAssetIndexMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateShopAssetIndexMutationHookResult = ReturnType<typeof useUpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationResult = Apollo.MutationResult<UpdateShopAssetIndexMutation>;
 export type UpdateShopAssetIndexMutationOptions = Apollo.BaseMutationOptions<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>;
-export const AddProductToShopDocument = gql`
-    mutation AddProductToShop($input: AddProductToShopInput!) {
-  addProductToShop(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddProductToShopMutationFn = Apollo.MutationFunction<AddProductToShopMutation, AddProductToShopMutationVariables>;
-
-/**
- * __useAddProductToShopMutation__
- *
- * To run a mutation, you first call `useAddProductToShopMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductToShopMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductToShopMutation, { data, loading, error }] = useAddProductToShopMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductToShopMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToShopMutation, AddProductToShopMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductToShopMutation, AddProductToShopMutationVariables>(AddProductToShopDocument, options);
-      }
-export type AddProductToShopMutationHookResult = ReturnType<typeof useAddProductToShopMutation>;
-export type AddProductToShopMutationResult = Apollo.MutationResult<AddProductToShopMutation>;
-export type AddProductToShopMutationOptions = Apollo.BaseMutationOptions<AddProductToShopMutation, AddProductToShopMutationVariables>;
 export const UpdateShopProductDocument = gql`
     mutation UpdateShopProduct($input: UpdateShopProductInput!) {
   updateShopProduct(input: $input) {
@@ -10440,88 +10279,6 @@ export function useGetAllRubricVariantsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRubricVariantsQuery>;
 export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
 export type GetAllRubricVariantsQueryResult = Apollo.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
-export const GetCatalogueSearchTopItemsDocument = gql`
-    query GetCatalogueSearchTopItems($input: CatalogueSearchTopItemsInput!) {
-  getCatalogueSearchTopItems(input: $input) {
-    rubrics {
-      ...SearchRubric
-    }
-    products {
-      ...ProductSnippet
-    }
-  }
-}
-    ${SearchRubricFragmentDoc}
-${ProductSnippetFragmentDoc}`;
-
-/**
- * __useGetCatalogueSearchTopItemsQuery__
- *
- * To run a query within a React component, call `useGetCatalogueSearchTopItemsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueSearchTopItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueSearchTopItemsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetCatalogueSearchTopItemsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, options);
-      }
-export function useGetCatalogueSearchTopItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, options);
-        }
-export type GetCatalogueSearchTopItemsQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsQuery>;
-export type GetCatalogueSearchTopItemsLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsLazyQuery>;
-export type GetCatalogueSearchTopItemsQueryResult = Apollo.QueryResult<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>;
-export const GetCatalogueSearchResultDocument = gql`
-    query GetCatalogueSearchResult($input: CatalogueSearchInput!) {
-  getCatalogueSearchResult(input: $input) {
-    rubrics {
-      ...SearchRubric
-    }
-    products {
-      ...ProductSnippet
-    }
-  }
-}
-    ${SearchRubricFragmentDoc}
-${ProductSnippetFragmentDoc}`;
-
-/**
- * __useGetCatalogueSearchResultQuery__
- *
- * To run a query within a React component, call `useGetCatalogueSearchResultQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueSearchResultQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueSearchResultQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetCatalogueSearchResultQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, options);
-      }
-export function useGetCatalogueSearchResultLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, options);
-        }
-export type GetCatalogueSearchResultQueryHookResult = ReturnType<typeof useGetCatalogueSearchResultQuery>;
-export type GetCatalogueSearchResultLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchResultLazyQuery>;
-export type GetCatalogueSearchResultQueryResult = Apollo.QueryResult<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>;
 export const GetGenderOptionsDocument = gql`
     query GetGenderOptions {
   getGenderOptions {

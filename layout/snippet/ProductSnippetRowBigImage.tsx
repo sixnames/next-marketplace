@@ -11,7 +11,7 @@ import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
-  product,
+  shopProduct,
   testId,
   className,
   showSnippetBackground = true,
@@ -21,10 +21,13 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const { product } = shopProduct;
+  if (!product) {
+    return null;
+  }
   const {
     slug,
     cardPrices,
-    itemId,
     listFeatures,
     ratingFeatures,
     connections,
@@ -34,6 +37,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
     shopProductsIds,
     snippetTitle,
     name,
+    itemId,
   } = product;
 
   const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
@@ -143,7 +147,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
                   <div>
                     {(connectionProducts || []).map(({ option, productId }, index) => {
                       const isLast = (connectionProducts || []).length - 1 === index;
-                      const isCurrent = productId === product._id;
+                      const isCurrent = productId === shopProduct._id;
 
                       if (!option) {
                         return null;
@@ -195,13 +199,13 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
               if (shopProductsIds && shopProductsIds.length < 2) {
                 addProductToCart({
                   amount: 1,
-                  productId: product._id,
+                  productId: shopProduct._id,
                   shopProductId: `${shopProductsIds[0]}`,
                 });
               } else {
                 addShoplessProductToCart({
                   amount: 1,
-                  productId: product._id,
+                  productId: shopProduct._id,
                 });
               }
             }}

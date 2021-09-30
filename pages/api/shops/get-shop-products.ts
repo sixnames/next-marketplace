@@ -1,7 +1,8 @@
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel, ShopProductModel } from 'db/dbModels';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
@@ -35,7 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
 
   // get shop
   const shop = await shopsCollection.findOne({ token });
@@ -50,20 +51,39 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // get shop products
   const initialShopProducts = await shopProductsCollection
-    .find({
-      shopId: shop._id,
-    })
+    .aggregate([
+      {
+        $match: {
+          shopId: shop._id,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_PRODUCTS,
+          as: 'product',
+          localField: 'productId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $addFields: {
+          product: {
+            $arrayElemAt: ['$product', 0],
+          },
+        },
+      },
+    ])
     .toArray();
 
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
-    const { barcode, available, price, originalName } = shopProduct;
-    if (barcode) {
+    const { barcode, available, price, product } = shopProduct;
+    if (barcode && product) {
       shopProducts.push({
         barcode: [barcode],
         available,
         price,
-        name: originalName,
+        name: product.originalName,
       });
     }
   });

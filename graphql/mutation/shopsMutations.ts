@@ -36,15 +36,6 @@ export const UPDATE_SHOP_ASSET_INDEX_MUTATION = gql`
   }
 `;
 
-export const ADD_PRODUCT_TO_SHOP_MUTATION = gql`
-  mutation AddProductToShop($input: AddProductToShopInput!) {
-    addProductToShop(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const UPDATE_SHOP_PRODUCT_MUTATION = gql`
   mutation UpdateShopProduct($input: UpdateShopProductInput!) {
     updateShopProduct(input: $input) {

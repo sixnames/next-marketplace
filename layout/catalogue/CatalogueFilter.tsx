@@ -22,7 +22,6 @@ export interface CatalogueFilterInterface {
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
   companyId?: string;
-  route: string;
   isSearchResult?: boolean;
 }
 

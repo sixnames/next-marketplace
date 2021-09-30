@@ -109,15 +109,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return (
           <TableRowImage
             testId={'shop-product-main-image'}
-            src={`${dataItem.mainImage}`}
-            alt={`${dataItem.name}`}
-            title={`${dataItem.name}`}
+            src={`${dataItem.product?.mainImage}`}
+            alt={`${dataItem.product?.name}`}
+            title={`${dataItem.product?.name}`}
           />
         );
       },
     },
     {
-      accessor: 'snippetTitle',
+      accessor: 'product.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -158,20 +158,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       render: ({ cellData }) => cellData,
     },
     {
-      accessor: 'attributesCount',
-      headTitle: 'Атрибуты',
-      isHidden: !me?.role?.isStaff,
-      render: ({ cellData, dataItem }) => {
-        return (
-          <div className='flex gap-2'>
-            <div>{noNaN(cellData)}</div>
-            <div>/</div>
-            <div>{noNaN(dataItem.totalAttributesCount)}</div>
-          </div>
-        );
-      },
-    },
-    {
       render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
@@ -201,7 +187,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   testId: `delete-shop-product-modal`,
-                  message: `Вы уверенны, что хотите удалить ${dataItem.originalName} из магазина?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.product?.originalName} из магазина?`,
                   confirm: () => {
                     showLoading();
                     deleteProductFromShopMutation({

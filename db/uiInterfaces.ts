@@ -1,3 +1,4 @@
+import { ShopRubricProductsInterface } from 'components/shops/ShopRubricProducts';
 import {
   AddressModel,
   AssetModel,
@@ -734,3 +735,6 @@ export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductInterface> {
   rubric?: RubricInterface | null;
 }
+
+export interface CompanyShopProductsPageInterface
+  extends Omit<ShopRubricProductsInterface, 'layoutBasePath' | 'breadcrumbs' | 'itemPath'> {}

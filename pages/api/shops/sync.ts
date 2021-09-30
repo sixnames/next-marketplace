@@ -100,14 +100,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       if (!bodyItem.available || !bodyItem.price) {
-        notSyncedProducts.push({
-          _id: new ObjectId(),
-          name: `${bodyItem?.name}`,
-          price: noNaN(bodyItem?.price),
-          available: noNaN(bodyItem?.available),
-          barcode: `${bodyItem?.barcode}`,
-          shopId: shop._id,
-          createdAt: new Date(),
+        bodyItem.barcode.forEach((barcodeItem) => {
+          notSyncedProducts.push({
+            _id: new ObjectId(),
+            name: `${bodyItem?.name}`,
+            price: noNaN(bodyItem?.price),
+            available: noNaN(bodyItem?.available),
+            barcode: barcodeItem,
+            shopId: shop._id,
+            createdAt: new Date(),
+          });
         });
         continue;
       }

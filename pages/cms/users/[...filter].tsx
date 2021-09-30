@@ -404,8 +404,6 @@ export const getServerSideProps = async (
     clearSlug,
     totalDocs: usersResult.totalDocs,
     totalPages: usersResult.totalPages,
-    hasNextPage: usersResult.hasNextPage,
-    hasPrevPage: usersResult.hasPrevPage,
     itemPath,
     page,
     docs,

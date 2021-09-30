@@ -117,7 +117,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       },
     },
     {
-      accessor: 'snippetTitle',
+      accessor: 'product.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -156,20 +156,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'barcode',
       headTitle: 'Штрих-код',
       render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'attributesCount',
-      headTitle: 'Атрибуты',
-      isHidden: !me?.role?.isStaff,
-      render: ({ cellData, dataItem }) => {
-        return (
-          <div className='flex gap-2'>
-            <div>{noNaN(cellData)}</div>
-            <div>/</div>
-            <div>{noNaN(dataItem.product?.totalAttributesCount)}</div>
-          </div>
-        );
-      },
     },
     {
       render: ({ dataItem, rowIndex }) => {

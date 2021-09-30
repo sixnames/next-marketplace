@@ -1,9 +1,9 @@
-import { FILTER_SEPARATOR, QUERY_FILTER_PAGE, ROUTE_CMS } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import { alwaysArray } from 'lib/arrayUtils';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getConsoleShopProducts } from 'lib/consoleProductUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -11,7 +11,7 @@ import ShopRubricProducts, {
   ShopRubricProductsInterface,
 } from 'components/shops/ShopRubricProducts';
 
-export interface CompanyShopProductsListInterface
+interface CompanyShopProductsListInterface
   extends PagePropsInterface,
     Omit<ShopRubricProductsInterface, 'layoutBasePath'> {}
 
@@ -19,46 +19,38 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
   rubricName,
+  currentCompany,
   ...props
 }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
-
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: rubricName,
     config: [
       {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${shop.company?.name}`,
+        name: 'Магазины',
         href: companyBasePath,
       },
       {
-        name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
-      },
-      {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: `${companyBasePath}/shop/${shop._id}`,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shops/shop/${shop._id}/products`,
+        href: `${companyBasePath}/shop/${shop._id}/products`,
       },
     ],
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ShopRubricProducts
-        breadcrumbs={breadcrumbs}
-        layoutBasePath={`${companyBasePath}/shops/shop`}
-        shop={shop}
         rubricName={rubricName}
+        breadcrumbs={breadcrumbs}
+        layoutBasePath={`${companyBasePath}/shop`}
+        shop={shop}
         {...props}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -66,16 +58,15 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
   const { query } = context;
-  const { shopId, filters } = query;
-  const [rubricId] = alwaysArray(filters);
-  const initialProps = await getAppInitialData({ context });
+  const shopId = alwaysString(query.shopId);
+  const [rubricId] = alwaysArray(query.filters);
+  const initialProps = await getConsoleInitialData({ context });
   if (!initialProps || !initialProps.props) {
     return {
       notFound: true,
     };
   }
-
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
+  const basePath = `${ROUTE_CONSOLE}/${query.companyId}/shops/shop/${shopId}/products/${rubricId}`;
   const locale = initialProps.props.sessionLocale;
 
   const payload = await getConsoleShopProducts({
@@ -84,6 +75,7 @@ export const getServerSideProps = async (
     locale,
     query,
   });
+
   if (!payload) {
     return {
       notFound: true,

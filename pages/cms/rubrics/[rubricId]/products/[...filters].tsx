@@ -22,7 +22,7 @@ import usePageLoadingState from 'hooks/usePageLoadingState';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
-import { alwaysArray } from 'lib/arrayUtils';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -295,8 +295,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
   const { query } = context;
-  const { filter, search } = query;
-  const [rubricId, ...restFilter] = alwaysArray(filter);
+  const rubricId = alwaysString(query.rubricId);
   const initialProps = await getAppInitialData({ context });
 
   // Get shop
@@ -311,15 +310,10 @@ export const getServerSideProps = async (
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   const payload = await getConsoleRubricProducts({
-    locale,
     visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
+    query: context.query,
+    locale,
     basePath,
-    input: {
-      rubricId,
-      search: search ? `${search}` : null,
-      page: 1,
-      filters: restFilter,
-    },
   });
 
   const castedPayload = castDbData(payload);

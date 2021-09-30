@@ -27,6 +27,7 @@ import {
   ProductsAggregationInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -38,25 +39,23 @@ import {
 } from 'lib/productAttributesUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
 
-export interface GetCatalogueDataInterface {
+export interface GetConsoleRubricProductsInputInterface {
   locale: string;
   basePath: string;
   visibleOptionsCount: number;
-  input: {
-    search?: string | null;
-    rubricId: string;
-    filters: string[];
-    page: number;
-  };
+  query: ParsedUrlQuery;
+  page?: number;
 }
 
 export const getConsoleRubricProducts = async ({
   locale,
-  input,
   visibleOptionsCount,
   basePath,
-}: GetCatalogueDataInterface): Promise<ConsoleRubricProductsInterface> => {
+  page,
+  query,
+}: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   const fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
     page: 1,
@@ -70,7 +69,8 @@ export const getConsoleRubricProducts = async ({
   try {
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-    const { search } = input;
+    const [rubricId, ...filters] = alwaysArray(query.filters);
+    const search = alwaysString(query.search);
 
     // cast selected filters
     const {
@@ -82,14 +82,14 @@ export const getConsoleRubricProducts = async ({
       optionsStage,
       pricesStage,
     } = castCatalogueFilters({
-      filters: input.filters,
-      initialPage: input.page,
+      filters,
+      initialPage: page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
     });
 
     // rubric stage
     let rubricStage: Record<any, any> = {
-      rubricId: new ObjectId(input.rubricId),
+      rubricId: new ObjectId(rubricId),
     };
     if (rubricFilters && rubricFilters.length > 0) {
       rubricStage = {
@@ -493,7 +493,7 @@ export const getConsoleRubricProducts = async ({
     const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
       attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
       locale,
-      filters: input.filters,
+      filters,
       productsPrices: prices,
       basePath,
       visibleOptionsCount,

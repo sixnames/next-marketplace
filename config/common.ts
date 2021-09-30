@@ -249,6 +249,7 @@ export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';
 export const DEFAULT_PAGE = 1;
+export const DEFAULT_PAGE_FILTER = `${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
 
 // ORDER LOG VARIANTS
 export const ORDER_LOG_VARIANT_STATUS = 'status' as OrderLogVariantModel;

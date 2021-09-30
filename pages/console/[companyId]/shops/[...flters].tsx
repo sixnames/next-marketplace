@@ -413,8 +413,6 @@ export const getServerSideProps = async (
       clearSlug,
       page,
       currentCompany: props.currentCompany,
-      hasPrevPage: shopsAggregation.hasPrevPage,
-      hasNextPage: shopsAggregation.hasNextPage,
       totalPages: noNaN(shopsAggregation.totalPages),
       totalDocs: noNaN(shopsAggregation.totalDocs),
       docs: castDbData(docs),

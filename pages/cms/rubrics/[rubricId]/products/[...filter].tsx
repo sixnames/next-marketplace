@@ -3,65 +3,30 @@ import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
-import Currency from 'components/Currency';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import {
-  FILTER_SEPARATOR,
-  QUERY_FILTER_PAGE,
-  ROUTE_CMS,
-  SORT_DESC,
-  DEFAULT_SORT_STAGE,
-} from 'config/common';
-import {
-  getBrandFilterAttribute,
-  getCategoryFilterAttribute,
-  getPriceAttribute,
-} from 'config/constantAttributes';
+import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  brandPipeline,
-  filterAttributesPipeline,
-  filterCmsBrandsPipeline,
-  filterCmsCategoriesPipeline,
-  getCatalogueRubricPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-} from 'db/dao/constantPipelines';
-import { getDatabase } from 'db/mongodb';
-import {
-  ConsoleRubricProductsInterface,
-  ProductInterface,
-  ProductsAggregationInterface,
-  RubricInterface,
-} from 'db/uiInterfaces';
+import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
-import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from 'lib/i18n';
+import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
+import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import {
-  countProductAttributes,
-  getCategoryAllAttributes,
-  getRubricAllAttributes,
-} from 'lib/productAttributesUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { generateSnippetTitle } from 'lib/titleUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -127,20 +92,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
       },
     },
     {
-      accessor: 'cardPrices.min',
-      headTitle: 'Мин. цена',
-      render: ({ cellData }) => {
-        return <Currency value={cellData} noZeroValue />;
-      },
-    },
-    {
-      accessor: 'cardPrices.max',
-      headTitle: 'Макс. цена',
-      render: ({ cellData }) => {
-        return <Currency value={cellData} noZeroValue />;
-      },
-    },
-    {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
       render: ({ cellData }) => {
@@ -184,7 +135,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                 showModal<CreateNewProductModalInterface>({
                   variant: CREATE_NEW_PRODUCT_MODAL,
                   props: {
-                    rubricId: `${rubric._id}`,
+                    rubricId: `${rubric?._id}`,
                     product: dataItem,
                   },
                 });
@@ -207,7 +158,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                       deleteProductFromRubricMutation({
                         variables: {
                           input: {
-                            rubricId: rubric._id,
+                            rubricId: rubric?._id,
                             productId: dataItem._id,
                           },
                         },
@@ -245,11 +196,15 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric?._id}`,
       },
     ],
   };
+
+  if (!rubric) {
+    return <RequestError />;
+  }
 
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
@@ -339,17 +294,10 @@ const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...pr
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
-  const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const { query } = context;
   const { filter, search } = query;
   const [rubricId, ...restFilter] = alwaysArray(filter);
   const initialProps = await getAppInitialData({ context });
-  // console.log(' ');
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
-  // console.log('RubricProductsPage props ');
-  // const startTime = new Date().getTime();
 
   // Get shop
   if (!initialProps.props) {
@@ -359,320 +307,20 @@ export const getServerSideProps = async (
   }
   const locale = initialProps.props.sessionLocale;
 
-  // Cast filters
-  const {
-    page,
-    skip,
-    limit,
-    clearSlug,
-    optionsStage,
-    brandCollectionStage,
-    brandStage,
-    pricesStage,
-  } = castCatalogueFilters({
-    filters: restFilter,
-  });
-
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
+  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
-  // algolia
-  let searchIds: ObjectId[] = [];
-  if (search) {
-    searchIds = await getAlgoliaProductsSearch({
-      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-      search: `${search}`,
-    });
-
-    // return empty page if no search results
-    if (searchIds.length < 1) {
-      const rubric = await rubricsCollection.findOne({
-        _id: new ObjectId(rubricId),
-      });
-
-      if (!rubric) {
-        return {
-          notFound: true,
-        };
-      }
-
-      const payload: ConsoleRubricProductsInterface = {
-        rubric: {
-          ...(rubric || {}),
-          attributes: [],
-          name: getFieldStringLocale(rubric?.nameI18n, locale),
-        },
-        clearSlug: basePath,
-        totalDocs: 0,
-        totalPages: 0,
-        hasNextPage: false,
-        hasPrevPage: false,
-        attributes: [],
-        selectedAttributes: [],
-        page,
-        docs: [],
-      };
-
-      const castedPayload = castDbData(payload);
-
-      return {
-        props: {
-          ...initialProps.props,
-          ...castedPayload,
-        },
-      };
-    }
-  }
-  const searchStage =
-    search && search.length > 0 && searchIds.length > 0
-      ? {
-          _id: {
-            $in: searchIds,
-          },
-        }
-      : {};
-
-  const rubricsPipeline = getCatalogueRubricPipeline();
-
-  const productsAggregation = await productsCollection
-    .aggregate<ProductsAggregationInterface>(
-      [
-        {
-          $match: {
-            rubricId: new ObjectId(`${rubricId}`),
-            ...brandStage,
-            ...brandCollectionStage,
-            ...optionsStage,
-            ...pricesStage,
-            ...searchStage,
-          },
-        },
-        {
-          $facet: {
-            docs: [
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
-
-              // Lookup product brand
-              ...brandPipeline,
-
-              // Lookup product attributes
-              ...productAttributesPipeline,
-
-              // Lookup product brand
-              ...brandPipeline,
-
-              // Lookup product categories
-              ...productCategoriesPipeline(),
-
-              {
-                $lookup: {
-                  from: COL_SHOP_PRODUCTS,
-                  as: 'shopProducts',
-                  let: { productId: '$_id' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                      },
-                    },
-                    {
-                      $project: {
-                        price: true,
-                        available: true,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  shopsCount: {
-                    $size: '$shopProducts',
-                  },
-                  cardPrices: {
-                    min: {
-                      $min: '$shopProducts.price',
-                    },
-                    max: {
-                      $max: '$shopProducts.price',
-                    },
-                  },
-                },
-              },
-              {
-                $project: {
-                  shopProducts: false,
-                },
-              },
-            ],
-
-            // get rubrics
-            rubrics: rubricsPipeline,
-
-            // get categories
-            categories: filterCmsCategoriesPipeline,
-
-            // get brands and brand collections
-            brands: filterCmsBrandsPipeline,
-
-            // count documents
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-
-            // get attributes
-            attributes: filterAttributesPipeline(DEFAULT_SORT_STAGE),
-          },
-        },
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-            rubric: { $arrayElemAt: ['$rubrics', 0] },
-          },
-        },
-        {
-          $addFields: {
-            totalDocs: '$totalDocsObject.totalDocs',
-          },
-        },
-        {
-          $addFields: {
-            totalPagesFloat: {
-              $divide: ['$totalDocs', limit],
-            },
-          },
-        },
-        {
-          $addFields: {
-            totalPages: {
-              $ceil: '$totalPagesFloat',
-            },
-          },
-        },
-      ],
-      { allowDiskUse: true },
-    )
-    .toArray();
-  const productsResult = productsAggregation[0];
-  if (!productsResult) {
-    return {
-      notFound: true,
-    };
-  }
-  // console.log(productsResult);
-  // console.log('After products ', new Date().getTime() - startTime);
-
-  // Get filter attributes
-  // const beforeOptions = new Date().getTime();
-  let rubric: RubricInterface | null = productsResult.rubric;
-  if (!rubric) {
-    rubric = await rubricsCollection.findOne({
-      _id: new ObjectId(rubricId),
-    });
-  }
-  if (!rubric) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // price attribute
-  const priceAttribute = getPriceAttribute();
-
-  // category attribute
-  const categoryAttribute = getCategoryFilterAttribute({
+  const payload = await getConsoleRubricProducts({
     locale,
-    categories: productsResult.categories,
-  });
-
-  // brand attribute
-  const brandAttribute = getBrandFilterAttribute({
-    locale,
-    brands: productsResult.brands,
-  });
-
-  // rubric attributes
-  const rubricAttributes = productsResult.attributes || [];
-
-  const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-    attributes: [priceAttribute, categoryAttribute, brandAttribute, ...rubricAttributes],
-    locale: initialProps.props.sessionLocale,
-    filters: restFilter,
-    productsPrices: [],
+    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
     basePath,
-  });
-  // console.log('Options >>>>>>>>>>>>>>>> ', new Date().getTime() - beforeOptions);
-
-  // rubric attributes
-  const allRubricAttributes = await getRubricAllAttributes(rubricId);
-
-  const docs: ProductInterface[] = [];
-  for await (const product of productsResult.docs) {
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: `${noNaN(product.cardPrices?.min)}`,
-      max: `${noNaN(product.cardPrices?.max)}`,
-    };
-
-    const productCategoryAttributes = await getCategoryAllAttributes(product.selectedOptionsSlugs);
-
-    // title
-    const snippetTitle = generateSnippetTitle({
-      locale,
-      brand: product.brand,
-      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-      attributes: product.attributes || [],
-      categories: product.categories,
-      titleCategoriesSlugs: product.titleCategoriesSlugs,
-      originalName: product.originalName,
-      defaultGender: product.gender,
-    });
-
-    const castedProduct: ProductInterface = {
-      ...product,
-      cardPrices,
-      snippetTitle,
-      name: getFieldStringLocale(product.nameI18n, locale),
-      attributesCount: countProductAttributes(product.attributes),
-      totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
-    };
-
-    docs.push(castedProduct);
-  }
-
-  const payload: ConsoleRubricProductsInterface = {
-    rubric: {
-      ...(rubric || {}),
-      attributes: [],
-      name: getFieldStringLocale(rubric?.nameI18n, locale),
+    input: {
+      rubricId,
+      search: search ? `${search}` : null,
+      page: 1,
+      filters: restFilter,
     },
-    clearSlug,
-    totalDocs: productsResult.totalDocs,
-    totalPages: productsResult.totalPages,
-    hasNextPage: productsResult.hasNextPage,
-    hasPrevPage: productsResult.hasPrevPage,
-    attributes: castedAttributes,
-    itemPath,
-    selectedAttributes,
-    page,
-    docs,
-  };
+  });
 
   const castedPayload = castDbData(payload);
 
@@ -680,6 +328,7 @@ export const getServerSideProps = async (
     props: {
       ...initialProps.props,
       ...castedPayload,
+      itemPath,
     },
   };
 };

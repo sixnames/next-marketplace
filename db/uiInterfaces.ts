@@ -714,8 +714,6 @@ export interface AppPaginationAggregationInterface<Model> {
   docs: Model[];
   totalDocs: number;
   totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
 }
 
 export interface AppPaginationInterface<Model> {
@@ -723,14 +721,16 @@ export interface AppPaginationInterface<Model> {
   totalDocs: number;
   totalPages: number;
   page: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  clearSlug: string;
   itemPath?: string;
+  clearSlug: string;
 }
 
-export interface ConsoleRubricProductsInterface extends AppPaginationInterface<ProductInterface> {
-  rubric: RubricInterface;
+export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+}
+
+export interface ConsoleRubricProductsInterface
+  extends AppPaginationWithFiltersInterface<ProductInterface> {
+  rubric?: RubricInterface | null;
 }

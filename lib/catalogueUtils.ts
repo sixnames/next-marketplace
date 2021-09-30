@@ -861,7 +861,7 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    // shop products initial match
+    // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
       ...searchStage,

@@ -705,7 +705,6 @@ export interface ProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
-  rubric: RubricInterface;
   categories?: CategoryInterface[] | null;
   brands?: BrandInterface[] | null;
   attributes?: AttributeInterface[] | null;

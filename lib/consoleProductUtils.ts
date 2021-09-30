@@ -37,6 +37,7 @@ import {
   ProductAttributeInterface,
   ProductInterface,
   ProductsAggregationInterface,
+  RubricInterface,
   ShopInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
@@ -74,7 +75,7 @@ export const getConsoleRubricProducts = async ({
   query,
   excludedProductsIds,
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
-  const fallbackPayload: ConsoleRubricProductsInterface = {
+  let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
     page: 1,
     totalDocs: 0,
@@ -87,8 +88,23 @@ export const getConsoleRubricProducts = async ({
   try {
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const [rubricId, ...filters] = alwaysArray(query.filters);
     const search = alwaysString(query.search);
+
+    // get rubric
+    const rubric = await rubricsCollection.findOne({
+      _id: new ObjectId(rubricId),
+    });
+    if (!rubric) {
+      return fallbackPayload;
+    }
+
+    // update fallback payload
+    fallbackPayload = {
+      ...fallbackPayload,
+      rubric,
+    };
 
     // cast selected filters
     const {
@@ -474,12 +490,8 @@ export const getConsoleRubricProducts = async ({
       return fallbackPayload;
     }
 
-    const { totalDocs, totalPages, attributes, rubric, brands, categories, prices } =
+    const { totalDocs, totalPages, attributes, brands, categories, prices } =
       productDataAggregation;
-
-    if (!rubric) {
-      return fallbackPayload;
-    }
 
     // get filter attributes
     // price attribute

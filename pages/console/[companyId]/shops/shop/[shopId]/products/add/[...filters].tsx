@@ -120,6 +120,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
   const { query } = context;
+  const companyId = alwaysString(query.companyId);
   const shopId = alwaysString(query.shopId);
   const [rubricId] = alwaysArray(query.filters);
   const initialProps = await getConsoleInitialData({ context });
@@ -129,7 +130,7 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-  const basePath = `${ROUTE_CONSOLE}/shops/${query.companyId}/${shopId}/products/add/${rubricId}`;
+  const basePath = `${ROUTE_CONSOLE}/${companyId}/shops/shop/${shopId}/products/add/${rubricId}`;
 
   const payload = await getAddShopProductSsrData({
     locale,

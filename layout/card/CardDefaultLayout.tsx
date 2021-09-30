@@ -80,7 +80,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, cardDescription } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -282,7 +282,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               {/*text features*/}
-              <CardTextFeatures textFeatures={textFeatures} className='md:col-span-5'>
+              <CardTextFeatures
+                cardDescription={cardDescription}
+                textFeatures={textFeatures}
+                className='md:col-span-5'
+              >
                 {/*brand / brand collection / manufacturer as features*/}
                 {brand || manufacturer || brandCollection ? (
                   <section className='mb-8 max-w-[30rem]'>

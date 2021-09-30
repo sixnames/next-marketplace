@@ -63,7 +63,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, cardDescription } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -365,7 +365,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           </div>
 
           {/*text features*/}
-          <CardTextFeatures textFeatures={textFeatures} className='mb-28' />
+          <CardTextFeatures
+            textFeatures={textFeatures}
+            cardDescription={cardDescription}
+            className='mb-28'
+          />
 
           {/*dynamic content*/}
           <CardDynamicContent cardContent={cardContent} />

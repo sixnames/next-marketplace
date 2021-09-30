@@ -4,11 +4,13 @@ import * as React from 'react';
 interface CardTextFeaturesInterface {
   textFeatures: ProductAttributeInterface[];
   className?: string;
+  cardDescription?: string | null;
 }
 
 const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
   textFeatures,
   children,
+  cardDescription,
   className,
 }) => {
   if (textFeatures.length < 1) {
@@ -17,6 +19,15 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
 
   return (
     <div className={className}>
+      {cardDescription ? (
+        <section className='mb-8'>
+          <h2 className='text-2xl mb-4 font-medium'>Описание</h2>
+          <div className='prose max-w-full'>
+            <p>{cardDescription}</p>
+          </div>
+        </section>
+      ) : null}
+
       {textFeatures.map(({ _id, name, readableValue }) => {
         if (!readableValue) {
           return null;

@@ -1,6 +1,5 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
@@ -120,7 +119,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
                   />
                 </div>
 
-                <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
+                {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
 
                 <ProductMainFields seo={seo} />
 

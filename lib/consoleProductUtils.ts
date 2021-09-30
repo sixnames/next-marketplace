@@ -8,9 +8,11 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_COMPANIES,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_SHOPS,
 } from 'db/collectionNames';
 import {
   brandPipeline,
@@ -25,6 +27,7 @@ import {
   ConsoleRubricProductsInterface,
   ProductInterface,
   ProductsAggregationInterface,
+  ShopInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -39,6 +42,7 @@ import {
 } from 'lib/productAttributesUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
 import { ParsedUrlQuery } from 'querystring';
 
 export interface GetConsoleRubricProductsInputInterface {
@@ -47,6 +51,7 @@ export interface GetConsoleRubricProductsInputInterface {
   visibleOptionsCount: number;
   query: ParsedUrlQuery;
   page?: number;
+  excludedProductsIds?: ObjectIdModel[] | null;
 }
 
 export const getConsoleRubricProducts = async ({
@@ -55,6 +60,7 @@ export const getConsoleRubricProducts = async ({
   basePath,
   page,
   query,
+  excludedProductsIds,
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   const fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
@@ -106,6 +112,7 @@ export const getConsoleRubricProducts = async ({
       searchIds = await getAlgoliaProductsSearch({
         indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search,
+        excludedProductsIds,
       });
       searchStage = {
         _id: {
@@ -117,9 +124,20 @@ export const getConsoleRubricProducts = async ({
       return fallbackPayload;
     }
 
+    // excluded ids stage
+    const excludedIdsStage =
+      excludedProductsIds && excludedProductsIds.length > 0
+        ? {
+            _id: {
+              $nin: excludedProductsIds,
+            },
+          }
+        : {};
+
     // initial match
     const productsInitialMatch = {
       ...searchStage,
+      ...excludedIdsStage,
       ...rubricStage,
       ...brandStage,
       ...brandCollectionStage,
@@ -561,3 +579,103 @@ export const getConsoleRubricProducts = async ({
     return fallbackPayload;
   }
 };
+
+interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {
+  locale: string;
+  basePath: string;
+}
+
+export async function getAddShopProductSsrData({
+  locale,
+  basePath,
+  query,
+  visibleOptionsCount,
+}: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
+  const { db } = await getDatabase();
+  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const shopId = alwaysString(query.shopId);
+
+  // console.log(' ');
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>');
+  // console.log('CompanyShopProductsList props ');
+  // const startTime = new Date().getTime();
+
+  // Get shop
+  const shopAggregation = await shopsCollection
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(`${shopId}`) },
+      },
+
+      // get company
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          foreignField: '_id',
+          localField: 'companyId',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+
+      // get shop products
+      {
+        $lookup: {
+          from: COL_SHOP_PRODUCTS,
+          as: 'shopProducts',
+          let: {
+            shopId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$shopId', '$$shopId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+  const shop = shopAggregation[0];
+  if (!shop) {
+    return null;
+  }
+  const excludedProductsIds = (shop.shopProducts || []).map(({ productId }) => productId);
+
+  const { selectedAttributes, page, docs, clearSlug, attributes, totalPages, totalDocs, rubric } =
+    await getConsoleRubricProducts({
+      excludedProductsIds,
+      visibleOptionsCount,
+      query,
+      locale,
+      basePath,
+    });
+
+  if (!rubric) {
+    return null;
+  }
+
+  const payload: ShopAddProductsListRouteReduced = {
+    shop,
+    rubricId: rubric._id.toHexString(),
+    rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+    clearSlug,
+    totalDocs,
+    totalPages,
+    attributes,
+    selectedAttributes,
+    page,
+    docs,
+  };
+
+  return payload;
+}

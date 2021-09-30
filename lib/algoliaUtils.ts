@@ -1,7 +1,7 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
 import { HITS_PER_PAGE } from 'config/common';
-import { ProductModel } from 'db/dbModels';
+import { ObjectIdModel, ProductModel } from 'db/dbModels';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
@@ -79,7 +79,7 @@ export const deleteAlgoliaObjects = async ({
 interface GetAlgoliaProductsSearch {
   indexName: string;
   search: string;
-  excludedProductsIds?: ObjectId[] | null;
+  excludedProductsIds?: ObjectIdModel[] | null;
 }
 
 export const getAlgoliaProductsSearch = async ({

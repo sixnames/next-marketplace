@@ -219,7 +219,7 @@ export async function makeAnOrder({
         if (!shopProduct) {
           break;
         }
-        const { price, itemId, nameI18n, originalName, slug, shopId, companyId } = shopProduct;
+        const { price, itemId, shopId, companyId } = shopProduct;
 
         // check shop availability
         const shop = await shopsCollection.findOne({ _id: shopId });
@@ -281,9 +281,9 @@ export async function makeAnOrder({
           price,
           amount,
           totalPrice: price * amount,
-          slug,
-          originalName,
-          nameI18n,
+          slug: product.slug,
+          originalName: product.originalName,
+          nameI18n: product.nameI18n,
           customerId: user._id,
           productId: product._id,
           shopProductId: shopProduct._id,

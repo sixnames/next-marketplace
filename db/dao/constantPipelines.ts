@@ -18,7 +18,6 @@ import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 
 interface GetCatalogueRubricPipelineInterface {
@@ -300,113 +299,6 @@ export function getCatalogueRubricPipeline(
     },
   ];
 }
-
-export const productConnectionsPipeline = (city: string) => {
-  return [
-    {
-      $lookup: {
-        from: COL_PRODUCT_CONNECTIONS,
-        as: 'connections',
-        let: {
-          productId: '$_id',
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$$productId', '$productsIds'],
-              },
-            },
-          },
-          {
-            $lookup: {
-              from: COL_ATTRIBUTES,
-              as: 'attribute',
-              let: { attributeId: '$attributeId' },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$$attributeId', '$_id'],
-                    },
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              attribute: {
-                $arrayElemAt: ['$attribute', 0],
-              },
-            },
-          },
-          {
-            $lookup: {
-              from: COL_PRODUCT_CONNECTION_ITEMS,
-              as: 'connectionProducts',
-              let: {
-                connectionId: '$_id',
-              },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$connectionId', '$$connectionId'],
-                    },
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_OPTIONS,
-                    as: 'option',
-                    let: { optionId: '$optionId' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$optionId', '$_id'],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $lookup: {
-                    from: COL_SHOP_PRODUCTS,
-                    as: 'shopProduct',
-                    let: { productId: '$productId' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$$productId', '$productId'],
-                          },
-                          citySlug: city,
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $addFields: {
-                    option: {
-                      $arrayElemAt: ['$option', 0],
-                    },
-                    shopProduct: {
-                      $arrayElemAt: ['$shopProduct', 0],
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ];
-};
 
 export const productAttributesPipeline = [
   {
@@ -821,9 +713,6 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
               },
             },
           },
-          {
-            $sort: sortStage,
-          },
           // get attribute options
           {
             $lookup: {
@@ -881,6 +770,9 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
       $replaceRoot: {
         newRoot: '$attribute',
       },
+    },
+    {
+      $sort: sortStage,
     },
   ];
 };
@@ -1081,3 +973,158 @@ export const rubricAttributeGroupsPipeline = [
     },
   },
 ];
+
+export const shopProductFieldsPipeline = (idFieldName: string) => {
+  return [
+    {
+      $lookup: {
+        from: COL_PRODUCTS,
+        as: 'product',
+        let: {
+          productId: idFieldName,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$$productId', '$_id'],
+              },
+            },
+          },
+
+          // get product attributes
+          ...productAttributesPipeline,
+
+          // get product brand
+          ...brandPipeline,
+
+          // get product categories
+          ...productCategoriesPipeline(),
+
+          // get product connections
+          {
+            $lookup: {
+              from: COL_PRODUCT_CONNECTIONS,
+              as: 'connections',
+              let: {
+                productId: '$_id',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $in: ['$$productId', '$productsIds'],
+                    },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: COL_ATTRIBUTES,
+                    as: 'attribute',
+                    let: { attributeId: '$attributeId' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$$attributeId', '$_id'],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $addFields: {
+                    attribute: {
+                      $arrayElemAt: ['$attribute', 0],
+                    },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: COL_PRODUCT_CONNECTION_ITEMS,
+                    as: 'connectionProducts',
+                    let: {
+                      connectionId: '$_id',
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$connectionId', '$$connectionId'],
+                          },
+                        },
+                      },
+                      {
+                        $lookup: {
+                          from: COL_OPTIONS,
+                          as: 'option',
+                          let: { optionId: '$optionId' },
+                          pipeline: [
+                            {
+                              $match: {
+                                $expr: {
+                                  $eq: ['$$optionId', '$_id'],
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        $addFields: {
+                          option: {
+                            $arrayElemAt: ['$option', 0],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+
+          // get product rubric
+          {
+            $lookup: {
+              from: COL_RUBRICS,
+              as: 'rubric',
+              let: {
+                rubricId: '$rubricId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$rubricId', '$_id'],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    _id: true,
+                    slug: true,
+                    nameI18n: true,
+                    showRubricNameInProductTitle: true,
+                    showCategoryInProductTitle: true,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              rubric: { $arrayElemAt: ['$rubric', 0] },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        product: { $arrayElemAt: ['$product', 0] },
+      },
+    },
+  ];
+};

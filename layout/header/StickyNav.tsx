@@ -123,6 +123,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
         href={path}
         style={linkStyle}
         testId={`main-rubric-${rubric.slug}`}
+        onClick={hideDropdown}
         className='relative flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
       >
         {name}

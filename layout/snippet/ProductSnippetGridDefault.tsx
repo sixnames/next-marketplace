@@ -9,7 +9,7 @@ import ControlButton from 'components/ControlButton';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 
 const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
-  product,
+  shopProduct,
   testId,
   className,
   noAttributes,
@@ -20,18 +20,20 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const { _id, rubricSlug, product } = shopProduct;
+  if (!product) {
+    return null;
+  }
   const {
     snippetTitle,
     slug,
     cardPrices,
-    _id,
     listFeatures,
     ratingFeatures,
     shopsCount,
     mainImage,
-    rubricSlug,
-    itemId,
     shopProductsIds,
+    itemId,
     name,
   } = product;
   const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;

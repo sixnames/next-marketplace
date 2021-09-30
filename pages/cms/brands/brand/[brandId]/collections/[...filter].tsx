@@ -410,8 +410,6 @@ export const getServerSideProps = async (
     clearSlug,
     totalDocs: brandsResult.totalDocs || 0,
     totalPages: brandsResult.totalPages || 0,
-    hasNextPage: brandsResult.hasNextPage || false,
-    hasPrevPage: brandsResult.hasPrevPage || false,
     itemPath,
     page,
     docs,

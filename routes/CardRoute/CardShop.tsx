@@ -2,7 +2,7 @@ import { MapModalInterface } from 'components/Modal/MapModal';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { ShopInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import classes from './CardShop.module.css';
 import Image from 'next/image';
@@ -16,16 +16,14 @@ import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 
 interface CardShopInterface {
-  shopProduct: ShopProductInterface;
+  shop: ShopInterface;
   testId: string | number;
 }
 
-const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
+const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
-  const { shop, oldPrice, price, discountedPercent, available, productId } = shopProduct;
-  const inCartCount = getShopProductInCartCount(`${shopProduct._id}`);
 
   if (!shop) {
     return null;
@@ -39,7 +37,15 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
     mainImage,
     logo,
     license,
+    cardShopProduct,
   } = shop;
+
+  if (!cardShopProduct) {
+    return null;
+  }
+
+  const { oldPrice, price, discountedPercent, available, productId } = cardShopProduct;
+  const inCartCount = getShopProductInCartCount(`${cardShopProduct._id}`);
 
   const disabled = amount + noNaN(inCartCount) > available;
 
@@ -137,7 +143,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
               addProductToCart({
                 amount: 1,
                 productId,
-                shopProductId: shopProduct._id,
+                shopProductId: cardShopProduct._id,
               });
             }}
           >
@@ -166,7 +172,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct, testId }) => {
                 addProductToCart({
                   amount,
                   productId,
-                  shopProductId: shopProduct._id,
+                  shopProductId: cardShopProduct._id,
                 });
               }}
             >

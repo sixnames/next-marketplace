@@ -587,31 +587,31 @@ export interface ProductAttributeModel extends AttributeModel {
 }
 
 interface ProductMainFieldsInterface {
-  active: boolean;
-  slug: string;
-  originalName: string;
-  nameI18n?: TranslationModel | null;
-  descriptionI18n?: TranslationModel | null;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  mainImage: string;
   supplierSlugs?: string[] | null;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
-  titleCategoriesSlugs: string[];
-  selectedAttributesIds: ObjectId[];
-  gender: GenderModel;
 }
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
+  slug: string;
+  active: boolean;
+  originalName: string;
+  nameI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
+  mainImage: string;
+  titleCategoriesSlugs: string[];
+  selectedAttributesIds: ObjectId[];
+  gender: GenderModel;
   barcode?: string[] | null;
   cardDescriptionI18n?: TranslationModel | null;
 
   // types for aggregation
-  shopsCount?: number;
-  cardPrices?: ProductCardPricesModel;
+  shopsCount?: number | null;
+  cardPrices?: ProductCardPricesModel | null;
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[] | null;
   rubric?: RubricInterface | null;
@@ -982,12 +982,6 @@ export interface ProductsPaginationPayloadModel {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   docs: ProductModel[];
-}
-
-// Catalogue
-export interface CatalogueSearchResultModel {
-  rubrics: RubricModel[];
-  products: ProductModel[];
 }
 
 // SEO

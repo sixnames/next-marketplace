@@ -3,9 +3,9 @@ import Currency from 'components/Currency';
 
 interface ProductSnippetPriceInterface {
   value?: string | number | null;
-  className?: string;
   shopsCount?: number | null;
   size?: 'normal' | 'medium' | 'small';
+  className?: string;
 }
 
 const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({

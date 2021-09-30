@@ -8,6 +8,7 @@ import {
 import { NotSyncedProductModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
@@ -100,14 +101,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       if (!bodyItem.available || !bodyItem.price) {
-        notSyncedProducts.push({
-          _id: new ObjectId(),
-          name: `${bodyItem?.name}`,
-          price: noNaN(bodyItem?.price),
-          available: noNaN(bodyItem?.available),
-          barcode: `${bodyItem?.barcode}`,
-          shopId: shop._id,
-          createdAt: new Date(),
+        bodyItem.barcode.forEach((barcodeItem) => {
+          notSyncedProducts.push({
+            _id: new ObjectId(),
+            name: `${bodyItem?.name}`,
+            price: noNaN(bodyItem?.price),
+            available: noNaN(bodyItem?.available),
+            barcode: barcodeItem,
+            shopId: shop._id,
+            createdAt: new Date(),
+          });
         });
         continue;
       }
@@ -152,13 +155,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       // Create new shop product
       const { available, price, barcode } = bodyItem;
-
-      (barcode || []).forEach((barcodeItem) => {
+      for await (const barcodeItem of barcode) {
+        const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
         const shopProduct: ShopProductModel = {
           _id: new ObjectId(),
-          active: true,
           available,
           price,
+          itemId,
           discountedPercent: 0,
           productId: product._id,
           shopId: shop._id,
@@ -167,27 +170,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           rubricId: product.rubricId,
           rubricSlug: product.rubricSlug,
           companyId: shop.companyId,
-          itemId: product.itemId,
-          slug: product.slug,
-          originalName: product.originalName,
-          nameI18n: product.nameI18n,
-          descriptionI18n: product.descriptionI18n,
           brandSlug: product.brandSlug,
           brandCollectionSlug: product.brandCollectionSlug,
           manufacturerSlug: product.manufacturerSlug,
-          mainImage: product.mainImage,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
-          titleCategoriesSlugs: product.titleCategoriesSlugs,
           supplierSlugs: product.supplierSlugs,
-          selectedAttributesIds: product.selectedAttributesIds,
-          gender: product.gender,
           barcode: barcodeItem,
           updatedAt: new Date(),
           createdAt: new Date(),
           ...DEFAULT_COUNTERS_OBJECT,
         };
         shopProducts.push(shopProduct);
-      });
+      }
     }
 
     if (shopProducts.length > 0) {

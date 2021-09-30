@@ -9,6 +9,7 @@ import {
   GENDER_IT,
   CATALOGUE_PRICE_KEY,
   SECONDARY_LOCALE,
+  CATALOGUE_RUBRIC_KEY,
 } from 'config/common';
 import { ObjectIdModel } from 'db/dbModels';
 import {
@@ -16,6 +17,7 @@ import {
   CategoryInterface,
   OptionInterface,
   AttributeInterface,
+  RubricInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -152,6 +154,72 @@ export function getBrandFilterAttribute({
       [SECONDARY_LOCALE]: 'Brand',
     },
     slug: CATALOGUE_BRAND_KEY,
+    priorities: {},
+    views: {},
+    showInCatalogueNav: false,
+    showInCatalogueFilter: true,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
+    variant: ATTRIBUTE_VARIANT_SELECT,
+    showAsBreadcrumb: false,
+    showInCard: true,
+    showAsCatalogueBreadcrumb: true,
+    capitalise: true,
+    notShowAsAlphabet: true,
+    showInSnippet: false,
+    showInCardTitle: true,
+    showInCatalogueTitle: true,
+    showInSnippetTitle: true,
+    showNameInTitle: false,
+    showNameInCardTitle: false,
+    showNameInSelectedAttributes: false,
+    showNameInSnippetTitle: false,
+    positioningInTitle: {
+      [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+      [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+    },
+    options,
+  };
+
+  return attribute;
+}
+
+interface CastRubricsToCatalogueAttributeInterface {
+  rubrics: RubricInterface[];
+  locale: string;
+}
+
+export function getRubricFilterAttribute({
+  rubrics,
+  locale,
+}: CastRubricsToCatalogueAttributeInterface): AttributeInterface {
+  const optionsGroupId = new ObjectId();
+  const commonOptionFields = getCommonOptionFields(optionsGroupId);
+
+  function castRubricToOption(rubric: RubricInterface): OptionInterface {
+    const option: OptionInterface = {
+      ...commonOptionFields,
+      _id: rubric._id,
+      nameI18n: rubric.nameI18n,
+      name: getFieldStringLocale(rubric.nameI18n, locale),
+      slug: rubric.slug,
+      priorities: rubric.priorities,
+      views: rubric.views,
+      gender: rubric.catalogueTitle.gender,
+    };
+    return option;
+  }
+
+  const options: OptionInterface[] = rubrics.map(castRubricToOption);
+
+  const attribute: AttributeInterface = {
+    _id: new ObjectId(),
+    attributesGroupId: new ObjectId(),
+    optionsGroupId,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Рубрика',
+      [SECONDARY_LOCALE]: 'Rubric',
+    },
+    slug: CATALOGUE_RUBRIC_KEY,
     priorities: {},
     views: {},
     showInCatalogueNav: false,

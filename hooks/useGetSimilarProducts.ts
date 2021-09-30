@@ -1,4 +1,4 @@
-import { ProductInterface } from 'db/uiInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
 export interface UseGetSimilarProductsInterface {
@@ -7,7 +7,7 @@ export interface UseGetSimilarProductsInterface {
 }
 
 export interface UseGetSimilarProductsPayloadInterface {
-  similarProducts: ProductInterface[];
+  similarProducts: ShopProductInterface[];
   loading: boolean;
 }
 
@@ -16,7 +16,7 @@ const useGetSimilarProducts = ({
   companyId,
 }: UseGetSimilarProductsInterface): UseGetSimilarProductsPayloadInterface => {
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [similarProducts, setSimilarProducts] = React.useState<ProductInterface[]>([]);
+  const [similarProducts, setSimilarProducts] = React.useState<ShopProductInterface[]>([]);
 
   React.useEffect(() => {
     fetch(
@@ -25,7 +25,7 @@ const useGetSimilarProducts = ({
       }`,
     )
       .then((res) => res.json())
-      .then((res: ProductInterface[]) => {
+      .then((res: ShopProductInterface[]) => {
         if (res && res.length > 0) {
           setSimilarProducts(res);
         }

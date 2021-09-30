@@ -21,7 +21,7 @@ export function castProductConnectionForUI({
 }: CastProductConnectionForUI): ProductConnectionInterface | null {
   const connectionProducts = (connection.connectionProducts || []).reduce(
     (acc: ProductConnectionItemInterface[], connectionProduct) => {
-      if (!connectionProduct.shopProduct || !connectionProduct.option) {
+      if (!connectionProduct.option) {
         return acc;
       }
 

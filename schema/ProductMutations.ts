@@ -1,4 +1,4 @@
-import { AlgoliaShopProductInterface, saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { getParentTreeSlugs } from 'lib/optionsUtils';
 import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
@@ -452,38 +452,6 @@ export const ProductMutations = extendType({
               ],
             });
             if (!algoliaProductResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update algolia shop product objects
-            const shopProducts = await shopProductsCollection
-              .find({
-                productId,
-              })
-              .toArray();
-            const castedShopProductsForAlgolia: AlgoliaShopProductInterface[] = shopProducts.map(
-              (shopProduct) => {
-                return {
-                  _id: shopProduct._id.toHexString(),
-                  objectID: shopProduct._id.toHexString(),
-                  itemId: shopProduct.itemId,
-                  originalName: shopProduct.originalName,
-                  nameI18n: shopProduct.nameI18n,
-                  descriptionI18n: shopProduct.descriptionI18n,
-                  barcode: shopProduct.barcode,
-                };
-              },
-            );
-            const algoliaShopProductsResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-              objects: castedShopProductsForAlgolia,
-            });
-            if (!algoliaShopProductsResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -1202,63 +1170,31 @@ export const ProductMutations = extendType({
               return;
             }
 
+            const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
             const createdShopProductResult = await shopProductsCollection.insertOne({
               barcode,
               available,
               price,
-              active: true,
-              discountedPercent: 0,
+              itemId,
               productId,
+              discountedPercent: 0,
               shopId: shop._id,
               citySlug: shop.citySlug,
               oldPrices: [],
               rubricId: product.rubricId,
               rubricSlug: product.rubricSlug,
               companyId: shop.companyId,
-              itemId: product.itemId,
-              slug: product.slug,
-              originalName: product.originalName,
-              nameI18n: product.nameI18n,
-              descriptionI18n: product.descriptionI18n,
               brandSlug: product.brandSlug,
               brandCollectionSlug: product.brandCollectionSlug,
               manufacturerSlug: product.manufacturerSlug,
               supplierSlugs: product.supplierSlugs,
-              selectedAttributesIds: product.selectedAttributesIds,
-              mainImage: product.mainImage,
               selectedOptionsSlugs: product.selectedOptionsSlugs,
-              titleCategoriesSlugs: product.titleCategoriesSlugs,
-              gender: product.gender,
               updatedAt: new Date(),
               createdAt: new Date(),
               ...DEFAULT_COUNTERS_OBJECT,
             });
             const createdShopProduct = createdShopProductResult.ops[0];
             if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`shopProducts.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create shop product algolia object
-            const shopProductAlgoliaResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-              objects: [
-                {
-                  _id: createdShopProduct._id.toHexString(),
-                  objectID: createdShopProduct._id.toHexString(),
-                  itemId: createdShopProduct.itemId,
-                  originalName: createdShopProduct.originalName,
-                  nameI18n: createdShopProduct.nameI18n,
-                  descriptionI18n: createdShopProduct.descriptionI18n,
-                  barcode: createdShopProduct.barcode,
-                },
-              ],
-            });
-            if (!shopProductAlgoliaResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),
@@ -1389,14 +1325,14 @@ export const ProductMutations = extendType({
             }
 
             // Create product
-            const itemId = await getNextItemId(COL_PRODUCTS);
+            const productItemId = await getNextItemId(COL_PRODUCTS);
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...productFields,
               _id: productId,
-              itemId,
+              itemId: productItemId,
+              slug: productItemId,
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              slug: itemId,
               rubricId: rubric._id,
               rubricSlug: rubric.slug,
               active: false,
@@ -1453,63 +1389,31 @@ export const ProductMutations = extendType({
               return;
             }
 
+            const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
             const createdShopProductResult = await shopProductsCollection.insertOne({
               barcode,
               available,
               price,
-              active: true,
-              discountedPercent: 0,
+              itemId: shopProductItemId,
               productId,
+              discountedPercent: 0,
               shopId: shop._id,
               citySlug: shop.citySlug,
               oldPrices: [],
               rubricId: createdProduct.rubricId,
               rubricSlug: createdProduct.rubricSlug,
               companyId: shop.companyId,
-              itemId: createdProduct.itemId,
-              slug: createdProduct.slug,
-              originalName: createdProduct.originalName,
-              nameI18n: createdProduct.nameI18n,
-              descriptionI18n: createdProduct.descriptionI18n,
               brandSlug: createdProduct.brandSlug,
               brandCollectionSlug: createdProduct.brandCollectionSlug,
               manufacturerSlug: createdProduct.manufacturerSlug,
               supplierSlugs: createdProduct.supplierSlugs,
-              selectedAttributesIds: createdProduct.selectedAttributesIds,
-              mainImage: createdProduct.mainImage,
               selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
-              titleCategoriesSlugs: createdProduct.titleCategoriesSlugs,
-              gender: createdProduct.gender,
               updatedAt: new Date(),
               createdAt: new Date(),
               ...DEFAULT_COUNTERS_OBJECT,
             });
             const createdShopProduct = createdShopProductResult.ops[0];
             if (!createdShopProductResult.result.ok || !createdShopProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`shopProducts.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create shop product algolia object
-            const shopProductAlgoliaResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_SHOP_PRODUCTS}`,
-              objects: [
-                {
-                  _id: createdShopProduct._id.toHexString(),
-                  objectID: createdShopProduct._id.toHexString(),
-                  itemId: createdShopProduct.itemId,
-                  originalName: createdShopProduct.originalName,
-                  nameI18n: createdShopProduct.nameI18n,
-                  descriptionI18n: createdShopProduct.descriptionI18n,
-                  barcode: createdShopProduct.barcode,
-                },
-              ],
-            });
-            if (!shopProductAlgoliaResult) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),

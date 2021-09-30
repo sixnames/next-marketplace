@@ -1,4 +1,4 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
+const { fontFamily, screens } = require('tailwindcss/defaultTheme');
 // const colors = require('tailwindcss/colors');
 
 module.exports = {
@@ -94,6 +94,7 @@ module.exports = {
       },
       screens: {
         xs: '480px',
+        ...screens,
       },
       gridTemplateColumns: {
         13: 'repeat(13,1fr)',

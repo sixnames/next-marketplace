@@ -298,22 +298,6 @@ input CatalogueDataInput {
   rubricSlug: String!
 }
 
-input CatalogueSearchInput {
-  companyId: ObjectId
-  companySlug: String = "default"
-  search: String!
-}
-
-type CatalogueSearchResult {
-  products: [Product!]!
-  rubrics: [Rubric!]!
-}
-
-input CatalogueSearchTopItemsInput {
-  companyId: ObjectId
-  companySlug: String = "default"
-}
-
 type Category {
   _id: ObjectId!
   image: String
@@ -931,11 +915,6 @@ type Mutation {
   Should create product connection
   """
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
-
-  """
-  Should add product to the shop
-  """
-  addProductToShop(input: AddProductToShopInput!): ShopPayload!
 
   """
   Should add shop to the cart product
@@ -2019,16 +1998,6 @@ type Query {
     input: BrandCollectionAlphabetInput
   ): [BrandCollectionsAlphabetList!]!
   getCatalogueAdditionalOptions(input: CatalogueAdditionalOptionsInput!): [OptionsAlphabetList!]
-
-  """
-  Should return top search items
-  """
-  getCatalogueSearchResult(input: CatalogueSearchInput!): CatalogueSearchResult!
-
-  """
-  Should return top search items
-  """
-  getCatalogueSearchTopItems(input: CatalogueSearchTopItemsInput!): CatalogueSearchResult!
 
   """
   Should return city by given id

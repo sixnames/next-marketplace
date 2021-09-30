@@ -1,3 +1,4 @@
+import { ShopRubricProductsInterface } from 'components/shops/ShopRubricProducts';
 import {
   AddressModel,
   AssetModel,
@@ -266,7 +267,6 @@ export interface ProductInterface extends ProductModel {
   numberAttributesAST?: ProductAttributeInterface[] | null;
   multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
   selectAttributesAST?: ProductAttributeInterface[] | null;
-  similarProducts?: ProductInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
   cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
@@ -275,6 +275,7 @@ export interface ProductInterface extends ProductModel {
   snippetTitle?: string | null;
   cardTitle?: string | null;
   cardDescription?: string | null;
+  shops?: ShopInterface[] | null;
   seo?: ProductSeoModel | null;
 }
 
@@ -323,25 +324,28 @@ export interface CategoryInterface extends CategoryModel {
 }
 
 export interface ShopProductInterface extends ShopProductModel {
-  name?: string | null;
   shop?: ShopInterface | null;
   product?: ProductInterface | null;
   products?: ProductInterface[] | null;
-  connections?: ProductConnectionInterface[] | null;
-  attributes?: ProductAttributeInterface[] | null;
-  listFeatures?: ProductAttributeInterface[] | null;
-  textFeatures?: ProductAttributeInterface[] | null;
-  tagFeatures?: ProductAttributeInterface[] | null;
-  iconFeatures?: ProductAttributeInterface[] | null;
-  ratingFeatures?: ProductAttributeInterface[] | null;
   orders?: OrderInterface[] | null;
-  categories?: CategoryInterface[] | null;
-  brand?: BrandInterface | null;
-  snippetTitle?: string | null;
-  cardTitle?: string | null;
-  rubric?: RubricInterface | null;
-  attributesCount?: number | null;
-  totalAttributesCount?: number | null;
+  cardPrices?: ProductCardPricesModel | null;
+  shopsCount?: number | null;
+  similarProducts?: ShopProductInterface[] | null;
+  // name?: string | null;
+  // connections?: ProductConnectionInterface[] | null;
+  // attributes?: ProductAttributeInterface[] | null;
+  // listFeatures?: ProductAttributeInterface[] | null;
+  // textFeatures?: ProductAttributeInterface[] | null;
+  // tagFeatures?: ProductAttributeInterface[] | null;
+  // iconFeatures?: ProductAttributeInterface[] | null;
+  // ratingFeatures?: ProductAttributeInterface[] | null;
+  // categories?: CategoryInterface[] | null;
+  // brand?: BrandInterface | null;
+  // snippetTitle?: string | null;
+  // cardTitle?: string | null;
+  // rubric?: RubricInterface | null;
+  // attributesCount?: number | null;
+  // totalAttributesCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -351,6 +355,8 @@ export interface ShopInterface extends ShopModel {
   address: AddressInterface;
   orders?: OrderInterface[];
   company?: CompanyInterface | null;
+  shopProducts?: ShopProductInterface[] | null;
+  cardShopProduct?: ShopProductInterface | null;
 }
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
@@ -401,8 +407,14 @@ export interface CatalogueDataInterface {
   rubricName: string;
   rubricSlug: string;
   catalogueFilterLayout: string;
-  rubricVariant?: RubricVariantInterface | null;
-  products: ProductInterface[];
+  gridSnippetLayout: string;
+  rowSnippetLayout: string;
+  showSnippetConnections: boolean;
+  showSnippetBackground: boolean;
+  showSnippetArticle: boolean;
+  showSnippetButtonsOnHover: boolean;
+  gridCatalogueColumns: number;
+  products: ShopProductInterface[];
   totalProducts: number;
   catalogueTitle: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
@@ -423,9 +435,8 @@ export interface CatalogueProductPricesInterface {
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
-  docs: ProductInterface[];
-  rubric: RubricInterface;
-  rubrics?: RubricInterface[] | null;
+  docs: ShopProductInterface[];
+  rubrics: RubricInterface[];
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
@@ -521,25 +532,6 @@ export interface MobileTopFilters {
   hidden: TopFilterInterface[];
 }
 
-export interface AppPaginationAggregationInterface<Model> {
-  docs: Model[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
-export interface AppPaginationInterface<Model> {
-  docs: Model[];
-  totalDocs: number;
-  totalPages: number;
-  page: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  clearSlug: string;
-  itemPath?: string;
-}
-
 export interface PagesGroupInterface extends PagesGroupModel {
   name?: string | null;
   pages?: PageInterface[];
@@ -568,7 +560,7 @@ export interface ProductSnippetConfigInterface {
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
-  product: ProductInterface;
+  shopProduct: ShopProductInterface;
   testId?: string;
   className?: string;
   noAttributes?: boolean;
@@ -598,14 +590,13 @@ export interface InitialCardDataInterface {
   shopsCounterPostfix: string;
   isSingleImage: boolean;
   assets: AssetModel[];
-  cardShopProducts: ShopProductInterface[];
+  cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
   cardContent: ProductCardContentInterface | null;
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
-  shopProducts: ShopProductInterface[];
 }
 
 export interface SsrConfigsInterface {
@@ -714,8 +705,35 @@ export interface ProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
-  rubric: RubricInterface;
   categories?: CategoryInterface[] | null;
   brands?: BrandInterface[] | null;
   attributes?: AttributeInterface[] | null;
 }
+
+export interface AppPaginationAggregationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+}
+
+export interface AppPaginationInterface<Model> {
+  docs: Model[];
+  totalDocs: number;
+  totalPages: number;
+  page: number;
+  itemPath?: string;
+  clearSlug: string;
+}
+
+export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
+}
+
+export interface ConsoleRubricProductsInterface
+  extends AppPaginationWithFiltersInterface<ProductInterface> {
+  rubric?: RubricInterface | null;
+}
+
+export interface CompanyShopProductsPageInterface
+  extends Omit<ShopRubricProductsInterface, 'layoutBasePath' | 'breadcrumbs' | 'itemPath'> {}

@@ -1,4 +1,5 @@
-import { DEFAULT_CITY } from '../../../../config/common';
+import addZero from 'add-zero';
+import { DEFAULT_CITY, ID_COUNTER_DIGITS } from '../../../../config/common';
 import { ShopProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import products from '../products/products';
@@ -40,24 +41,15 @@ shops.forEach((shop) => {
             shopId: shop._id,
             companyId: shop.companyId,
             citySlug: DEFAULT_CITY,
-            mainImage: product.mainImage,
-            slug: product.slug,
-            originalName: product.originalName,
-            itemId: product.itemId,
-            active: product.active,
+            itemId: addZero(i, ID_COUNTER_DIGITS),
             brandCollectionSlug: product.brandCollectionSlug,
             brandSlug: product.brandSlug,
             manufacturerSlug: product.manufacturerSlug,
-            nameI18n: product.nameI18n,
-            descriptionI18n: product.descriptionI18n,
             rubricId: product.rubricId,
             rubricSlug: product.rubricSlug,
             selectedOptionsSlugs: product.selectedOptionsSlugs,
-            titleCategoriesSlugs: product.titleCategoriesSlugs,
             supplierSlugs: product.supplierSlugs,
-            selectedAttributesIds: product.selectedAttributesIds,
             discountedPercent: withDiscount ? discountedPercent : 0,
-            gender: product.gender,
             oldPrice,
             price,
             available,

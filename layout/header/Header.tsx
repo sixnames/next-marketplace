@@ -22,7 +22,6 @@ import HeaderSearch from 'layout/header/HeaderSearch';
 import { useUserContext } from 'context/userContext';
 import CounterSticker from 'components/CounterSticker';
 import CartDropdown from 'layout/header/CartDropdown';
-import { useGetCatalogueSearchTopItemsQuery } from 'generated/apolloComponents';
 import { get } from 'lodash';
 import {
   ROUTE_CONSOLE,
@@ -309,15 +308,6 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
-  const { data } = useGetCatalogueSearchTopItemsQuery({
-    ssr: false,
-    variables: {
-      input: {
-        companyId: company ? company._id : null,
-        companySlug: company ? company.slug : null,
-      },
-    },
-  });
 
   const siteLogoSrc = get(configs, logoSlug) || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const configLogoWidth = configs.siteLogoWidth || '10rem';
@@ -509,9 +499,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
           </div>
         </Inner>
 
-        {isSearchOpen ? (
-          <HeaderSearch setIsSearchOpen={setIsSearchOpen} initialData={data} />
-        ) : null}
+        {isSearchOpen ? <HeaderSearch setIsSearchOpen={setIsSearchOpen} company={company} /> : null}
       </header>
 
       <StickyNav />

@@ -594,16 +594,6 @@ interface ProductMainFieldsInterface {
   rubricSlug: string;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
-
-  // slug: string;
-  // active: boolean;
-  // originalName: string;
-  // nameI18n?: TranslationModel | null;
-  // descriptionI18n?: TranslationModel | null;
-  // mainImage: string;
-  // titleCategoriesSlugs: string[];
-  // selectedAttributesIds: ObjectId[];
-  // gender: GenderModel;
 }
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {

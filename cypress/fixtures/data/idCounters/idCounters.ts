@@ -7,6 +7,7 @@ import {
   COL_OPTIONS,
   COL_ORDERS,
   COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIERS,
   COL_USERS,
@@ -40,6 +41,10 @@ const idCounters: IdCounterModel[] = [
   },
   {
     collection: COL_PRODUCTS,
+    counter: 999999,
+  },
+  {
+    collection: COL_SHOP_PRODUCTS,
     counter: 999999,
   },
   {

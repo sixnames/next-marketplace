@@ -8,6 +8,7 @@ import {
 import { NotSyncedProductModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
@@ -154,12 +155,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       // Create new shop product
       const { available, price, barcode } = bodyItem;
-
-      (barcode || []).forEach((barcodeItem) => {
+      for await (const barcodeItem of barcode) {
+        const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
         const shopProduct: ShopProductModel = {
           _id: new ObjectId(),
           available,
           price,
+          itemId,
           discountedPercent: 0,
           productId: product._id,
           shopId: shop._id,
@@ -168,7 +170,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           rubricId: product.rubricId,
           rubricSlug: product.rubricSlug,
           companyId: shop.companyId,
-          itemId: product.itemId,
           brandSlug: product.brandSlug,
           brandCollectionSlug: product.brandCollectionSlug,
           manufacturerSlug: product.manufacturerSlug,
@@ -180,7 +181,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           ...DEFAULT_COUNTERS_OBJECT,
         };
         shopProducts.push(shopProduct);
-      });
+      }
     }
 
     if (shopProducts.length > 0) {

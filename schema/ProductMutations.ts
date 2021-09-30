@@ -1170,19 +1170,20 @@ export const ProductMutations = extendType({
               return;
             }
 
+            const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
             const createdShopProductResult = await shopProductsCollection.insertOne({
               barcode,
               available,
               price,
-              discountedPercent: 0,
+              itemId,
               productId,
+              discountedPercent: 0,
               shopId: shop._id,
               citySlug: shop.citySlug,
               oldPrices: [],
               rubricId: product.rubricId,
               rubricSlug: product.rubricSlug,
               companyId: shop.companyId,
-              itemId: product.itemId,
               brandSlug: product.brandSlug,
               brandCollectionSlug: product.brandCollectionSlug,
               manufacturerSlug: product.manufacturerSlug,
@@ -1324,14 +1325,14 @@ export const ProductMutations = extendType({
             }
 
             // Create product
-            const itemId = await getNextItemId(COL_PRODUCTS);
+            const productItemId = await getNextItemId(COL_PRODUCTS);
             const productId = new ObjectId();
             const createdProductResult = await productsCollection.insertOne({
               ...productFields,
               _id: productId,
-              itemId,
+              itemId: productItemId,
+              slug: productItemId,
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
-              slug: itemId,
               rubricId: rubric._id,
               rubricSlug: rubric.slug,
               active: false,
@@ -1388,19 +1389,20 @@ export const ProductMutations = extendType({
               return;
             }
 
+            const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
             const createdShopProductResult = await shopProductsCollection.insertOne({
               barcode,
               available,
               price,
-              discountedPercent: 0,
+              itemId: shopProductItemId,
               productId,
+              discountedPercent: 0,
               shopId: shop._id,
               citySlug: shop.citySlug,
               oldPrices: [],
               rubricId: createdProduct.rubricId,
               rubricSlug: createdProduct.rubricSlug,
               companyId: shop.companyId,
-              itemId: createdProduct.itemId,
               brandSlug: createdProduct.brandSlug,
               brandCollectionSlug: createdProduct.brandCollectionSlug,
               manufacturerSlug: createdProduct.manufacturerSlug,

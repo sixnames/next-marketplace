@@ -5,6 +5,7 @@ import {
   productCategoriesPipeline,
   productConnectionsSimplePipeline,
   productRubricPipeline,
+  productSeoPipeline,
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -75,6 +76,9 @@ export async function getCmsProduct({
 
       // Lookup product connections
       ...productConnectionsSimplePipeline,
+
+      // Lookup product seo info
+      ...productSeoPipeline,
     ])
     .toArray();
   const initialProduct = productAggregation[0];

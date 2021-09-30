@@ -15,6 +15,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_SEO,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -805,6 +806,34 @@ export const productRubricPipeline = [
   },
 ];
 
+export const productSeoPipeline = [
+  {
+    $lookup: {
+      from: COL_PRODUCT_SEO,
+      as: 'seo',
+      let: {
+        productId: '$_id',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$productId', '$$productId'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      seo: {
+        $arrayElemAt: ['$seo', 0],
+      },
+    },
+  },
+];
+
 export const productConnectionsSimplePipeline = [
   {
     $lookup: {
@@ -1116,6 +1145,12 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           {
             $addFields: {
               rubric: { $arrayElemAt: ['$rubric', 0] },
+            },
+          },
+          {
+            $project: {
+              descriptionI18n: false,
+              cardDescriptionI18n: false,
             },
           },
         ],

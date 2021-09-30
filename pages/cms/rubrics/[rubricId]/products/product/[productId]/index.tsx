@@ -53,6 +53,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     barcode,
     gender,
     cardDescriptionI18n,
+    seo,
   } = product;
 
   const initialValues: ProductFormValuesInterface = {
@@ -121,7 +122,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
 
                 <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
-                <ProductMainFields />
+                <ProductMainFields seo={seo} />
 
                 <FixedButtons>
                   <Button testId={'submit-product'} type={'submit'}>

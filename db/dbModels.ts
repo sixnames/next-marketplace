@@ -602,12 +602,12 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
+  cardDescriptionI18n?: TranslationModel | null;
   mainImage: string;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
   gender: GenderModel;
   barcode?: string[] | null;
-  cardDescriptionI18n?: TranslationModel | null;
 
   // types for aggregation
   shopsCount?: number | null;

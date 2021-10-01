@@ -237,6 +237,10 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   _id: ObjectIdModel;
   name?: string | null;
   attributes: ProductAttributeInterface[];
+  stringAttributesAST?: ProductAttributeInterface[] | null;
+  numberAttributesAST?: ProductAttributeInterface[] | null;
+  multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
+  selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
 export interface ProductInterface extends ProductModel {
@@ -331,21 +335,6 @@ export interface ShopProductInterface extends ShopProductModel {
   cardPrices?: ProductCardPricesModel | null;
   shopsCount?: number | null;
   similarProducts?: ShopProductInterface[] | null;
-  // name?: string | null;
-  // connections?: ProductConnectionInterface[] | null;
-  // attributes?: ProductAttributeInterface[] | null;
-  // listFeatures?: ProductAttributeInterface[] | null;
-  // textFeatures?: ProductAttributeInterface[] | null;
-  // tagFeatures?: ProductAttributeInterface[] | null;
-  // iconFeatures?: ProductAttributeInterface[] | null;
-  // ratingFeatures?: ProductAttributeInterface[] | null;
-  // categories?: CategoryInterface[] | null;
-  // brand?: BrandInterface | null;
-  // snippetTitle?: string | null;
-  // cardTitle?: string | null;
-  // rubric?: RubricInterface | null;
-  // attributesCount?: number | null;
-  // totalAttributesCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -402,6 +391,7 @@ export interface UserInterface extends UserModel {
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
+  basePath: string;
   clearSlug: string;
   filters: string[];
   rubricName: string;
@@ -728,6 +718,7 @@ export interface AppPaginationInterface<Model> {
 export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  basePath: string;
 }
 
 export interface ConsoleRubricProductsInterface

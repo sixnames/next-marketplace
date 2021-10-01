@@ -37,7 +37,6 @@ import {
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-  PAGINATION_DEFAULT_LIMIT,
   CATALOGUE_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
@@ -584,7 +583,7 @@ export function castCatalogueFilters({
   const defaultPage = initialPage || DEFAULT_PAGE;
   let page = defaultPage;
 
-  const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;
+  const defaultLimit = initialLimit || CATALOGUE_PRODUCTS_LIMIT;
   let limit = defaultLimit;
 
   // sort
@@ -808,7 +807,7 @@ export const getCatalogueData = async ({
     // fallback
     const fallbackPayload: CatalogueDataInterface = {
       _id: new ObjectId(),
-      clearSlug: `${ROUTE_CATALOGUE}/${input.rubricSlug}`,
+      clearSlug: basePath,
       filters: input.filters,
       rubricName: '',
       rubricSlug: '',
@@ -826,6 +825,7 @@ export const getCatalogueData = async ({
       showSnippetArticle: false,
       showSnippetButtonsOnHover: false,
       gridCatalogueColumns: CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
+      basePath,
       page,
     };
 
@@ -1547,12 +1547,12 @@ export const getCatalogueData = async ({
     // get clearSlug
     let clearSlug = basePath;
     if (showCategoriesInFilter) {
-      const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
+      const clearPath = [...categoryFilters, sortPathname]
         .filter((pathPart) => {
           return pathPart;
         })
         .join('/');
-      clearSlug = `${clearPath}`;
+      clearSlug = `${basePath}/${clearPath}`;
     }
     if (search) {
       clearSlug = basePath;
@@ -1565,11 +1565,11 @@ export const getCatalogueData = async ({
 
     const gridSnippetLayout = search
       ? GRID_SNIPPET_LAYOUT_BIG_IMAGE
-      : rubric.variant?.gridSnippetLayout || GRID_SNIPPET_LAYOUT_BIG_IMAGE;
+      : rubric.variant?.gridSnippetLayout || DEFAULT_LAYOUT;
 
     const rowSnippetLayout = search
       ? ROW_SNIPPET_LAYOUT_BIG_IMAGE
-      : rubric.variant?.rowSnippetLayout || ROW_SNIPPET_LAYOUT_BIG_IMAGE;
+      : rubric.variant?.rowSnippetLayout || DEFAULT_LAYOUT;
 
     const showSnippetConnections = search ? true : rubric.variant?.showSnippetConnections || true;
 
@@ -1611,6 +1611,7 @@ export const getCatalogueData = async ({
           }),
       page,
       breadcrumbs,
+      basePath,
     };
   } catch (e) {
     console.log(e);
@@ -1629,7 +1630,7 @@ export async function getCatalogueServerSideProps(
   const { props } = await getSiteInitialData({
     context,
   });
-  const { catalogue, rubricSlug } = query;
+  const { rubricSlug } = query;
 
   const notFoundResponse = {
     props: {
@@ -1655,7 +1656,7 @@ export async function getCatalogueServerSideProps(
     visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {
       rubricSlug: `${rubricSlug}`,
-      filters: alwaysArray(catalogue),
+      filters: alwaysArray(query.filters),
       page: 1,
     },
   });

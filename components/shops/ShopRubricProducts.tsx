@@ -1,4 +1,3 @@
-import Accordion from 'components/Accordion';
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
@@ -45,7 +44,9 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricId: string;
+  rubricSlug: string;
   layoutBasePath: string;
+  basePath: string;
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -60,7 +61,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricName,
   rubricId,
   layoutBasePath,
+  rubricSlug,
   breadcrumbs,
+  basePath,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -125,7 +128,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Наличие',
       render: ({ rowIndex, dataItem }) => {
         return (
-          <div data-cy={`${dataItem.itemId}-available`}>
+          <div data-cy={`${dataItem.barcode}-available`}>
             <FormikInput
               testId={`shop-product-available-${rowIndex}`}
               name={`input[${rowIndex}].available`}
@@ -141,7 +144,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Цена',
       render: ({ rowIndex, dataItem }) => {
         return (
-          <div data-cy={`${dataItem.itemId}-price`}>
+          <div data-cy={`${dataItem.barcode}-price`}>
             <FormikInput
               testId={`shop-product-price-${rowIndex}`}
               name={`input[${rowIndex}].price`}
@@ -239,23 +242,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         <div className={`max-w-full`}>
           {withProducts ? (
             <div className={'mb-8'}>
-              <Accordion
-                title={'Фильтр'}
-                titleRight={
-                  selectedAttributes.length > 0 ? (
-                    <Link href={clearSlug}>Очистить фильтр</Link>
-                  ) : null
-                }
-              >
-                <div className={`mt-8`}>
-                  <AppContentFilter
-                    attributes={attributes}
-                    selectedAttributes={selectedAttributes}
-                    clearSlug={clearSlug}
-                    className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
-                  />
-                </div>
-              </Accordion>
+              <AppContentFilter
+                excludedParams={[rubricId]}
+                rubricSlug={rubricSlug}
+                basePath={basePath}
+                attributes={attributes}
+                selectedAttributes={selectedAttributes}
+                clearSlug={clearSlug}
+                className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+              />
             </div>
           ) : null}
 

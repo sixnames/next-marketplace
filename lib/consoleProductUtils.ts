@@ -26,6 +26,7 @@ import {
   filterAttributesPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
+  productSeoPipeline,
   shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
@@ -77,6 +78,7 @@ export const getConsoleRubricProducts = async ({
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
+    basePath,
     page: 1,
     totalDocs: 0,
     totalPages: 0,
@@ -206,6 +208,9 @@ export const getConsoleRubricProducts = async ({
 
               // get product categories
               ...productCategoriesPipeline(),
+
+              // get product seo info
+              ...productSeoPipeline,
 
               // count shop products
               {
@@ -585,6 +590,7 @@ export const getConsoleRubricProducts = async ({
 
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
+      basePath,
       page: 1,
       totalDocs,
       totalPages,
@@ -659,6 +665,7 @@ export const getConsoleShopProducts = async ({
 
     const fallbackPayload: CompanyShopProductsPageInterface = {
       basePath: '',
+      rubricSlug: '',
       totalDocs: 0,
       totalPages: 0,
       page: 1,
@@ -1183,14 +1190,15 @@ export const getConsoleShopProducts = async ({
       shop,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricId: rubric._id.toHexString(),
+      rubricSlug: rubric.slug,
       clearSlug: basePath,
+      basePath,
       page: 1,
       totalDocs,
       totalPages,
-      docs,
       attributes: castedAttributes,
       selectedAttributes,
-      basePath,
+      docs,
     };
 
     return payload;
@@ -1288,7 +1296,9 @@ export async function getAddShopProductSsrData({
     shop,
     rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+    rubricSlug: rubric.slug,
     clearSlug,
+    basePath,
     totalDocs,
     totalPages,
     attributes,

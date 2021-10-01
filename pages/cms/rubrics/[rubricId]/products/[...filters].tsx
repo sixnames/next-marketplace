@@ -1,4 +1,3 @@
-import Accordion from 'components/Accordion';
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
@@ -9,12 +8,14 @@ import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
+import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -42,6 +43,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   page,
   totalPages,
   itemPath,
+  basePath,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -120,6 +122,43 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
             <div>{noNaN(cellData)}</div>
             <div>/</div>
             <div>{noNaN(dataItem.totalAttributesCount)}</div>
+          </div>
+        );
+      },
+    },
+    {
+      accessor: 'seo',
+      headTitle: 'Атрибуты',
+      render: ({ cellData }) => {
+        return (
+          <div className='space-y-3'>
+            {(cellData?.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
+              return (
+                <div key={seoLocale.locale}>
+                  <div className='mb-2 font-medium uppercase text-secondary-text'>
+                    {seoLocale.locale}
+                  </div>
+                  <div className='space-y-1 whitespace-nowrap'>
+                    <div className='flex gap-1'>
+                      <div>Слов</div>
+                      <div>{noNaN(seoLocale.seoCheck?.count_words)}</div>
+                    </div>
+
+                    <div className='flex gap-1'>
+                      <div>Символов</div>
+                      <div>{noNaN(seoLocale.seoCheck?.count_chars_with_space)}</div>
+                    </div>
+
+                    <div className='flex gap-1'>
+                      <div>Уникальность</div>
+                      <div>
+                        <Percent value={seoLocale.textUnique} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         );
       },
@@ -215,32 +254,22 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
-            <Accordion
-              title={'Фильтр'}
-              titleRight={
-                selectedAttributes.length > 0 ? (
-                  <Link href={`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`}>
-                    Очистить фильтр
-                  </Link>
-                ) : null
-              }
-            >
-              <div className={`mt-8`}>
-                <AppContentFilter
-                  attributes={attributes}
-                  selectedAttributes={selectedAttributes}
-                  clearSlug={clearSlug}
-                  className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
-                />
-              </div>
-            </Accordion>
+            <AppContentFilter
+              basePath={basePath}
+              rubricSlug={rubric.slug}
+              attributes={attributes}
+              selectedAttributes={selectedAttributes}
+              clearSlug={clearSlug}
+              className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+              excludedParams={[`${rubric._id}`]}
+            />
           </div>
 
           <div className={'max-w-full'}>
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                  router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
                 }}
                 columns={columns}
                 data={docs}

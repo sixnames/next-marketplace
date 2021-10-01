@@ -25,7 +25,6 @@ describe('Rubric products', () => {
     cy.getByCy('product-details').should('exist');
 
     // Should update rubric product
-    cy.getByCy(`active-checkbox`).check();
     cy.getByCy('nameI18n-ru').clear().type(updatedProductName);
     cy.getByCy('originalName').clear().type(updatedProductName);
     cy.getByCy('descriptionI18n-ru').clear().type(updatedProductDescription);

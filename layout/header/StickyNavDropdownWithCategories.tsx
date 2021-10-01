@@ -136,16 +136,13 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   categories,
   hideDropdown,
 }) => {
-  const { configs } = useConfigContext();
-  const stickyNavVisibleCategoriesCount = configs.stickyNavVisibleCategoriesCount;
-
   return (
     <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
       <Inner>
         <div className='grid grid-cols-6'>
-          <div className='grid gap-x-4 gap-y-8 grid-cols-4 col-span-4 border-r border-border-300 pr-8'>
-            {(categories || []).map((category, index) => {
-              if (index < stickyNavVisibleCategoriesCount) {
+          <div className='col-span-4 border-r border-border-300 pr-8'>
+            <div className='grid gap-x-4 gap-y-8 grid-cols-4 '>
+              {(categories || []).map((category) => {
                 return (
                   <StickyNavCategory
                     hideDropdown={hideDropdown}
@@ -156,10 +153,8 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
                     attributeLinkStyle={attributeLinkStyle}
                   />
                 );
-              }
-
-              return null;
-            })}
+              })}
+            </div>
           </div>
           <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2'>
             {(attributes || []).map((attribute) => {

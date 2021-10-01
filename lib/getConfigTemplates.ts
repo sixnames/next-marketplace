@@ -1166,6 +1166,22 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'project',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'uniqueTextApiKey',
+      name: 'API ключ для проверки уникальности текса',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
       variant: CONFIG_VARIANT_BOOLEAN,
       slug: 'useUniqueConstructor',
       name: 'Использовать уникальный конструктор в карточке товара для каждой компании',

@@ -27,7 +27,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   const disabledClassName = disabled
     ? 'opacity-60 pointer-events-none secondary-text'
     : 'text-theme';
-  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] rounded border-1 bg-checkbox overflow-hidden cursor-pointer ${additionalClassName} ${errorClassName} ${disabledClassName}`;
+  const checkboxClassName = `flex flex-shrink-0 items-center relative w-[18px] h-[18px] border border-border-400 rounded border-1 bg-checkbox overflow-hidden cursor-pointer ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
   return (
     <label className={checkboxClassName}>
@@ -41,7 +41,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
         data-cy={`${testId}-checkbox`}
       />
       {checked ? (
-        <Icon className='absolute w-[10px] h-[10px] top-[4px] left-[4px] z-10' name={'check'} />
+        <Icon className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10' name={'check'} />
       ) : null}
     </label>
   );

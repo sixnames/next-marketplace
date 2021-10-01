@@ -1,31 +1,35 @@
+import Button from 'components/Button';
+import FixedButtons from 'components/FixedButtons';
+import ContentItemControls from 'components/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import LinkPhone from 'components/Link/LinkPhone';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
-import { COL_ORDERS, COL_USERS } from 'db/collectionNames';
+import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
+import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import {
-  AppPaginationInterface,
-  OrderInterface,
-  RoleInterface,
-  UserInterface,
-} from 'db/uiInterfaces';
+import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
+import { useDeleteUserMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { ObjectId } from 'mongodb';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {
   roles: RoleInterface[];
@@ -35,27 +39,33 @@ interface UsersConsumerInterface extends AppPaginationInterface<UserInterface> {
   filters: UsersConsumerFiltersInterface;
 }
 
-const pageTitle = 'Клиенты';
+const pageTitle = 'Пользователи';
 
 const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   docs,
   page,
   totalPages,
-  // itemPath
+  itemPath,
+  filters: { roles },
 }) => {
-  // const router = useRouter();
+  const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
+  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+
+  const [deleteUserMutation] = useDeleteUserMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteUser),
+    onError: onErrorCallback,
+  });
 
   const columns: TableColumn<UserInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-      /*render: ({ cellData, dataItem }) => {
+      render: ({ cellData, dataItem }) => {
         return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
-      },*/
+      },
     },
     {
       headTitle: 'Имя',
@@ -71,6 +81,49 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       accessor: 'formattedPhone',
       headTitle: 'Телефон',
       render: ({ cellData }) => <LinkPhone value={cellData} />,
+    },
+    {
+      headTitle: 'Роль',
+      accessor: 'role.name',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Сотрудник сайта',
+      accessor: 'role.isStaff',
+      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={`${dataItem.name}`}
+              updateTitle={'Редактировать пользователя'}
+              updateHandler={() => {
+                router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+              }}
+              deleteTitle={'Удалить пользователя'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-user-modal',
+                    message: `Вы уверены, что хотите удалить пользователя ${dataItem.fullName}?`,
+                    confirm: () => {
+                      showLoading();
+                      deleteUserMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -89,9 +142,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
               columns={columns}
               data={docs}
               testIdKey={'name'}
-              /*onRowDoubleClick={(dataItem) => {
+              onRowDoubleClick={(dataItem) => {
                 router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
-              }}*/
+              }}
             />
           </div>
 
@@ -102,6 +155,23 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
               setPageHandler(newPage);
             }}
           />
+
+          <FixedButtons>
+            <Button
+              testId={'create-user'}
+              size={'small'}
+              onClick={() => {
+                showModal<CreateUserModalInterface>({
+                  variant: CREATE_USER_MODAL,
+                  props: {
+                    roles,
+                  },
+                });
+              }}
+            >
+              Добавить пользователя
+            </Button>
+          </FixedButtons>
         </div>
       </Inner>
     </AppContentWrapper>
@@ -110,11 +180,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
 interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
+const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <CmsLayout pageUrls={pageUrls}>
       <UsersConsumer {...props} />
-    </ConsoleLayout>
+    </CmsLayout>
   );
 };
 
@@ -129,15 +199,15 @@ interface UsersAggregationInterface {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
-  const { query } = context;
-  const { search, filter, companyId } = query;
-  const { props } = await getConsoleInitialData({ context });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
+  const { query } = context;
+  const { filters, search } = query;
   const locale = props.sessionLocale;
 
   // Cast filters
@@ -149,9 +219,9 @@ export const getServerSideProps = async (
     limit,
     clearSlug,
   } = castCatalogueFilters({
-    filters: alwaysArray(filter),
+    filters: alwaysArray(filters),
   });
-  const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/customer`;
+  const itemPath = `${ROUTE_CMS}/users/user`;
 
   const regexSearch = {
     $regex: search,
@@ -188,53 +258,13 @@ export const getServerSideProps = async (
     : [];
 
   const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
 
-  const usersAggregationResult = await ordersCollection
+  const usersAggregationResult = await usersCollection
     .aggregate<UsersAggregationInterface>(
       [
-        {
-          $match: {
-            companyId: new ObjectId(`${companyId}`),
-          },
-        },
         ...searchStage,
-        {
-          $group: {
-            _id: '$customerId',
-          },
-        },
-        {
-          $lookup: {
-            from: COL_USERS,
-            as: 'user',
-            let: {
-              customerId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$customerId'],
-                  },
-                },
-              },
-              {
-                $project: {
-                  password: false,
-                  notifications: false,
-                },
-              },
-            ],
-          },
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $arrayElemAt: ['$user', 0],
-            },
-          },
-        },
         {
           $facet: {
             docs: [
@@ -248,6 +278,32 @@ export const getServerSideProps = async (
               },
               {
                 $limit: limit,
+              },
+              {
+                $lookup: {
+                  from: COL_ROLES,
+                  as: 'role',
+                  let: { roleId: '$roleId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$roleId'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  role: { $arrayElemAt: ['$role', 0] },
+                },
+              },
+              {
+                $project: {
+                  password: false,
+                },
               },
             ],
             countAllDocs: [
@@ -298,28 +354,10 @@ export const getServerSideProps = async (
       { allowDiskUse: true },
     )
     .toArray();
-
   const usersResult = usersAggregationResult[0];
-
   if (!usersResult) {
-    const payload: UsersConsumerInterface = {
-      clearSlug,
-      totalDocs: 0,
-      totalPages: 0,
-      itemPath,
-      page,
-      docs: [],
-      filters: {
-        roles: [],
-      },
-    };
-
-    const castedPayload = castDbData(payload);
     return {
-      props: {
-        ...props,
-        ...castedPayload,
-      },
+      notFound: true,
     };
   }
 
@@ -341,6 +379,27 @@ export const getServerSideProps = async (
     });
   }
 
+  const rolesQueryResult = await rolesCollection
+    .find(
+      {},
+      {
+        projection: {
+          slug: false,
+        },
+        sort: {
+          _id: SORT_DESC,
+        },
+      },
+    )
+    .toArray();
+
+  const roles = rolesQueryResult.map((role) => {
+    return {
+      ...role,
+      name: getFieldStringLocale(role.nameI18n, locale),
+    };
+  });
+
   const payload: UsersConsumerInterface = {
     clearSlug,
     totalDocs: usersResult.totalDocs,
@@ -349,7 +408,7 @@ export const getServerSideProps = async (
     page,
     docs,
     filters: {
-      roles: [],
+      roles,
     },
   };
   const castedPayload = castDbData(payload);

@@ -88,6 +88,7 @@ export interface GetCatalogueNavRubricsInterface {
   locale: string;
   city: string;
   company?: CompanyModel | null;
+  stickyNavVisibleCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
 }
@@ -117,6 +118,7 @@ export const getCatalogueNavRubrics = async ({
   city,
   locale,
   company,
+  stickyNavVisibleCategoriesCount,
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
@@ -152,6 +154,14 @@ export const getCatalogueNavRubrics = async ({
     ? [
         {
           $limit: stickyNavVisibleOptionsCount,
+        },
+      ]
+    : [];
+
+  const categoriesLimit = stickyNavVisibleCategoriesCount
+    ? [
+        {
+          $limit: stickyNavVisibleCategoriesCount,
         },
       ]
     : [];
@@ -464,6 +474,7 @@ export const getCatalogueNavRubrics = async ({
                 },
               },
             },
+            ...categoriesLimit,
             {
               $lookup: {
                 from: COL_ICONS,
@@ -1588,6 +1599,7 @@ export async function getSiteInitialData({
     locale: sessionLocale,
     city: sessionCity,
     company,
+    stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
   });

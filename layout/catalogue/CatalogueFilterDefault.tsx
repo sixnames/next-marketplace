@@ -21,6 +21,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   onClick,
   isSearchResult,
   attributeIndex,
+  basePath,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -71,6 +72,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 title: attribute.name,
                 companyId,
                 isSearchResult,
+                basePath,
               },
             });
           }}
@@ -92,6 +94,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   companyId,
   isSearchResult,
   clearSlug,
+  basePath,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -161,6 +164,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
               key={`${attribute._id}`}
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
+              basePath={basePath}
             />
           );
         })}

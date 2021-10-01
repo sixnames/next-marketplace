@@ -263,7 +263,14 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
         titleCategoriesSlugs.push(categorySlug);
       });
 
-      const categoriesSlugs = [...categoriesSlugsForTitle, `${CATEGORY_SLUG_PREFIX}5`];
+      const categoriesSlugs = [
+        ...categoriesSlugsForTitle,
+        `${CATEGORY_SLUG_PREFIX}5`,
+        `${CATEGORY_SLUG_PREFIX}6`,
+        `${CATEGORY_SLUG_PREFIX}7`,
+        `${CATEGORY_SLUG_PREFIX}8`,
+        `${CATEGORY_SLUG_PREFIX}9`,
+      ];
       categoriesSlugs.forEach((categorySlug) => {
         selectedOptionsSlugs.push(categorySlug);
       });

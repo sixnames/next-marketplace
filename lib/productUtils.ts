@@ -5,6 +5,7 @@ import {
   productCategoriesPipeline,
   productConnectionsSimplePipeline,
   productRubricPipeline,
+  productSeoPipeline,
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -44,7 +45,7 @@ export async function getCmsProduct({
         },
       },
 
-      // Lookup product assets
+      // get product assets
       {
         $lookup: {
           as: 'assets',
@@ -61,20 +62,23 @@ export async function getCmsProduct({
         },
       },
 
-      // Lookup product rubric
+      // get product rubric
       ...productRubricPipeline,
 
-      // Lookup product attributes
+      // get product attributes
       ...productAttributesPipeline,
 
-      // Lookup product brand
+      // get product brand
       ...brandPipeline,
 
-      // Lookup product categories
+      // get product categories
       ...productCategoriesPipeline(),
 
-      // Lookup product connections
+      // get product connections
       ...productConnectionsSimplePipeline,
+
+      // get product seo info
+      ...productSeoPipeline,
     ])
     .toArray();
   const initialProduct = productAggregation[0];

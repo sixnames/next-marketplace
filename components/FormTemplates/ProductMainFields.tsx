@@ -2,11 +2,14 @@ import Button from 'components/Button';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { ProductSeoModel } from 'db/dbModels';
 import { useFormikContext } from 'formik';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -19,7 +22,11 @@ export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
 }
 
-const ProductMainFields: React.FC = () => {
+interface ProductMainFieldsInterface {
+  seo?: ProductSeoModel | null;
+}
+
+const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
   const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { showModal } = useAppContext();
   const barcode = get(values, 'barcode') || [''];
@@ -93,17 +100,51 @@ const ProductMainFields: React.FC = () => {
       </div>
 
       <FormikTranslationsInput
-        variant={'textarea'}
-        label={'Описание карточки товара'}
-        name={'cardDescriptionI18n'}
-        testId={'cardDescriptionI18n'}
-      />
-
-      <FormikTranslationsInput
         label={'Мета-тег Description'}
         name={'descriptionI18n'}
         testId={'descriptionI18n'}
         showInlineError
+      />
+
+      <FormikTranslationsInput
+        variant={'textarea'}
+        className='h-[30rem]'
+        label={'Описание карточки товара'}
+        name={'cardDescriptionI18n'}
+        testId={'cardDescriptionI18n'}
+        additionalUi={(currentLocale) => {
+          if (!seo) {
+            return null;
+          }
+          const seoLocale = seo.locales.find(({ locale }) => {
+            return locale === currentLocale;
+          });
+
+          if (!seoLocale) {
+            return <div className='mb-4 font-medium'>Текст проверяется</div>;
+          }
+
+          return (
+            <div className='mb-4 font-medium space-y-3'>
+              <div className='flex flex-wrap gap-4'>
+                <div>Кол-во слов</div>
+                <div>{noNaN(seoLocale.seoCheck?.count_words)}</div>
+              </div>
+
+              <div className='flex flex-wrap gap-4'>
+                <div>Кол-во символов</div>
+                <div>{noNaN(seoLocale.seoCheck?.count_chars_with_space)}</div>
+              </div>
+
+              <div className='flex flex-wrap gap-4'>
+                <div>Уникальность текста</div>
+                <div>
+                  <Percent value={seoLocale.textUnique} />
+                </div>
+              </div>
+            </div>
+          );
+        }}
       />
     </React.Fragment>
   );

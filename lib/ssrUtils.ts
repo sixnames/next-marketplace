@@ -158,14 +158,6 @@ export const getCatalogueNavRubrics = async ({
       ]
     : [];
 
-  const categoriesLimit = stickyNavVisibleCategoriesCount
-    ? [
-        {
-          $limit: stickyNavVisibleCategoriesCount,
-        },
-      ]
-    : [];
-
   const catalogueNavConfigs = await shopProductsCollection
     .aggregate<CatalogueNavConfigsInterface>([
       {
@@ -474,7 +466,6 @@ export const getCatalogueNavRubrics = async ({
                 },
               },
             },
-            ...categoriesLimit,
             {
               $lookup: {
                 from: COL_ICONS,
@@ -505,15 +496,17 @@ export const getCatalogueNavRubrics = async ({
           .toArray();
       }
 
+      const categoriesTree = getTreeFromList({
+        list: categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
       rubrics.push({
         ...rubric,
         nameI18n: {},
         name: getFieldStringLocale(rubric.nameI18n, locale),
-        categories: getTreeFromList({
-          list: categories,
-          childrenFieldName: 'categories',
-          locale,
-        }),
+        categories: categoriesTree.slice(0, stickyNavVisibleCategoriesCount),
         attributes: rubricAttributesAggregation.map((attribute) => {
           return castAttributeForUI({
             attribute,

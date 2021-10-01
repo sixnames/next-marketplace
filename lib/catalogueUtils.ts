@@ -37,7 +37,6 @@ import {
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-  PAGINATION_DEFAULT_LIMIT,
   CATALOGUE_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
@@ -584,7 +583,7 @@ export function castCatalogueFilters({
   const defaultPage = initialPage || DEFAULT_PAGE;
   let page = defaultPage;
 
-  const defaultLimit = initialLimit || PAGINATION_DEFAULT_LIMIT;
+  const defaultLimit = initialLimit || CATALOGUE_PRODUCTS_LIMIT;
   let limit = defaultLimit;
 
   // sort

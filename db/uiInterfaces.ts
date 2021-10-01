@@ -237,6 +237,10 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   _id: ObjectIdModel;
   name?: string | null;
   attributes: ProductAttributeInterface[];
+  stringAttributesAST?: ProductAttributeInterface[] | null;
+  numberAttributesAST?: ProductAttributeInterface[] | null;
+  multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
+  selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
 export interface ProductInterface extends ProductModel {

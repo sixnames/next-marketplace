@@ -52,7 +52,7 @@ export const THEME_LIGHT = 'light';
 export const THEME_NOT_ALL = 'not all';
 
 // I18n
-export const DEFAULT_LOCALE = 'ru';
+export const DEFAULT_LOCALE = `${process.env.DEFAULT_LOCALE}`;
 export const SECONDARY_LOCALE = 'en';
 export const LOCALES = [DEFAULT_LOCALE, SECONDARY_LOCALE];
 
@@ -64,7 +64,7 @@ export const LOCALE_HEADER = 'content-language';
 // Cities and countries
 export const DEFAULT_COUNTRY = 'Россия';
 export const SECONDARY_COUNTRY = 'USA';
-export const DEFAULT_CITY = 'msk';
+export const DEFAULT_CITY = `${process.env.DEFAULT_CITY}`;
 export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'р.';
 export const SECONDARY_CURRENCY = '$';

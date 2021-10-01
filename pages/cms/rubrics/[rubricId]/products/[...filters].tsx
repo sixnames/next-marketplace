@@ -1,4 +1,3 @@
-import Accordion from 'components/Accordion';
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
@@ -254,25 +253,12 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
-            <Accordion
-              title={'Фильтр'}
-              titleRight={
-                selectedAttributes.length > 0 ? (
-                  <Link href={`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`}>
-                    Очистить фильтр
-                  </Link>
-                ) : null
-              }
-            >
-              <div className={`mt-8`}>
-                <AppContentFilter
-                  attributes={attributes}
-                  selectedAttributes={selectedAttributes}
-                  clearSlug={clearSlug}
-                  className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
-                />
-              </div>
-            </Accordion>
+            <AppContentFilter
+              attributes={attributes}
+              selectedAttributes={selectedAttributes}
+              clearSlug={clearSlug}
+              className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+            />
           </div>
 
           <div className={'max-w-full'}>

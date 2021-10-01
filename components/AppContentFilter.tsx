@@ -1,3 +1,4 @@
+import Accordion from 'components/Accordion';
 import FilterCheckbox from 'components/FilterCheckbox';
 import Icon from 'components/Icon';
 import FilterLink from 'components/Link/FilterLink';
@@ -105,62 +106,70 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = ({
   attributes,
   selectedAttributes,
   className,
+  clearSlug,
 }) => {
   const { currency } = useLocaleContext();
 
   return (
-    <div>
-      {selectedAttributes.length > 0 ? (
-        <div className='mb-8'>
-          <div className='mb-3 font-medium text-lg text-secondary-text'>Выбранные фильтры</div>
+    <Accordion
+      title={'Фильтр'}
+      titleRight={
+        selectedAttributes.length > 0 ? <Link href={clearSlug}>Очистить фильтр</Link> : null
+      }
+    >
+      <div className='mt-8'>
+        {selectedAttributes.length > 0 ? (
+          <div className='mb-8'>
+            <div className='mb-3 font-medium text-lg text-secondary-text'>Выбранные фильтры</div>
 
-          {selectedAttributes.map((attribute, attributeIndex) => {
-            const { name, clearSlug, options, isSelected, metric, slug } = attribute;
-            const isPrice = slug === CATALOGUE_PRICE_KEY;
-            const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
-            const selectedOptions = options.reduce(
-              (acc: CatalogueFilterAttributeOptionInterface[], option) => {
-                return [...acc, ...getSelectedOptions(option, [])];
-              },
-              [],
-            );
+            {selectedAttributes.map((attribute, attributeIndex) => {
+              const { name, clearSlug, options, isSelected, metric, slug } = attribute;
+              const isPrice = slug === CATALOGUE_PRICE_KEY;
+              const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
+              const selectedOptions = options.reduce(
+                (acc: CatalogueFilterAttributeOptionInterface[], option) => {
+                  return [...acc, ...getSelectedOptions(option, [])];
+                },
+                [],
+              );
 
-            return (
-              <div className='mb-4' key={slug}>
-                <div className={`flex mb-2 items-baseline`}>
-                  <span className={`font-medium text-lg`}>{name}</span>
-                  {isSelected ? (
-                    <Link href={clearSlug} className={`ml-4`}>
-                      Очистить
-                    </Link>
-                  ) : null}
+              return (
+                <div className='mb-4' key={slug}>
+                  <div className={`flex mb-2 items-baseline`}>
+                    <span className={`font-medium text-lg`}>{name}</span>
+                    {isSelected ? (
+                      <Link href={clearSlug} className={`ml-4`}>
+                        Очистить
+                      </Link>
+                    ) : null}
+                  </div>
+
+                  <div className='flex flex-wrap gap-2'>
+                    {selectedOptions.map((option, optionIndex) => {
+                      const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
+                      return (
+                        <FilterLink
+                          withCross
+                          option={option}
+                          key={option.slug}
+                          testId={testId}
+                          postfix={postfix}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-
-                <div className='flex flex-wrap gap-2'>
-                  {selectedOptions.map((option, optionIndex) => {
-                    const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-                    return (
-                      <FilterLink
-                        withCross
-                        option={option}
-                        key={option.slug}
-                        testId={testId}
-                        postfix={postfix}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            );
+              );
+            })}
+          </div>
+        ) : null}
+        <div className={className ? className : ''}>
+          {attributes.map((attribute) => {
+            return <AppContentFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
           })}
         </div>
-      ) : null}
-      <div className={className ? className : ''}>
-        {attributes.map((attribute) => {
-          return <AppContentFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
-        })}
       </div>
-    </div>
+    </Accordion>
   );
 };
 

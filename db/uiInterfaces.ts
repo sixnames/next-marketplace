@@ -391,6 +391,7 @@ export interface UserInterface extends UserModel {
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
+  basePath: string;
   clearSlug: string;
   filters: string[];
   rubricName: string;
@@ -717,6 +718,7 @@ export interface AppPaginationInterface<Model> {
 export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  basePath: string;
 }
 
 export interface ConsoleRubricProductsInterface

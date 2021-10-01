@@ -43,6 +43,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   page,
   totalPages,
   itemPath,
+  basePath,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -254,10 +255,13 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <AppContentFilter
+              basePath={basePath}
+              rubricSlug={rubric.slug}
               attributes={attributes}
               selectedAttributes={selectedAttributes}
               clearSlug={clearSlug}
               className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+              excludedParams={[`${rubric._id}`]}
             />
           </div>
 
@@ -265,7 +269,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                  router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
                 }}
                 columns={columns}
                 data={docs}

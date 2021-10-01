@@ -1,5 +1,5 @@
 import OptionsModal, { OptionsModalInterface } from 'components/Modal/OptionsModal';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE, ROUTE_SEARCH_RESULT } from 'config/common';
+import { FILTER_SEPARATOR } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useGetCatalogueAdditionalOptionsQuery } from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -13,6 +13,8 @@ export interface CatalogueAdditionalOptionsModalInterface
   companyId?: string;
   rubricSlug: string;
   isSearchResult?: boolean;
+  basePath: string;
+  excludedParams?: string[];
 }
 
 const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalInterface> = ({
@@ -22,6 +24,8 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
   notShowAsAlphabet,
   rubricSlug,
   isSearchResult,
+  basePath,
+  excludedParams,
 }) => {
   const router = useRouter();
   const { hideModal } = useAppContext();
@@ -52,14 +56,18 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
         const selectedOptionsSlugs = options.map(({ slug }) => {
           return `${attributeSlug}${FILTER_SEPARATOR}${slug}`;
         });
-        const nextParams = [...alwaysArray(query.catalogue), ...selectedOptionsSlugs].join('/');
-        router
-          .push(
-            `${isSearchResult ? ROUTE_SEARCH_RESULT : ROUTE_CATALOGUE}/${rubricSlug}/${nextParams}`,
-          )
-          .catch((e) => {
-            console.log(e);
-          });
+        const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs].filter(
+          (param) => {
+            if (!excludedParams) {
+              return param;
+            }
+            return !excludedParams.includes(param);
+          },
+        );
+        const nextParams = nextParamsList.join('/');
+        router.push(`${basePath}/${nextParams}`).catch((e) => {
+          console.log(e);
+        });
       }}
     />
   );

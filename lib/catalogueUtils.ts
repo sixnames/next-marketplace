@@ -807,7 +807,7 @@ export const getCatalogueData = async ({
     // fallback
     const fallbackPayload: CatalogueDataInterface = {
       _id: new ObjectId(),
-      clearSlug: `${ROUTE_CATALOGUE}/${input.rubricSlug}`,
+      clearSlug: basePath,
       filters: input.filters,
       rubricName: '',
       rubricSlug: '',
@@ -825,6 +825,7 @@ export const getCatalogueData = async ({
       showSnippetArticle: false,
       showSnippetButtonsOnHover: false,
       gridCatalogueColumns: CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
+      basePath,
       page,
     };
 
@@ -1546,12 +1547,12 @@ export const getCatalogueData = async ({
     // get clearSlug
     let clearSlug = basePath;
     if (showCategoriesInFilter) {
-      const clearPath = [rubricSlug, ...categoryFilters, sortPathname]
+      const clearPath = [...categoryFilters, sortPathname]
         .filter((pathPart) => {
           return pathPart;
         })
         .join('/');
-      clearSlug = `${clearPath}`;
+      clearSlug = `${basePath}/${clearPath}`;
     }
     if (search) {
       clearSlug = basePath;
@@ -1610,6 +1611,7 @@ export const getCatalogueData = async ({
           }),
       page,
       breadcrumbs,
+      basePath,
     };
   } catch (e) {
     console.log(e);
@@ -1628,7 +1630,7 @@ export async function getCatalogueServerSideProps(
   const { props } = await getSiteInitialData({
     context,
   });
-  const { catalogue, rubricSlug } = query;
+  const { rubricSlug } = query;
 
   const notFoundResponse = {
     props: {
@@ -1654,7 +1656,7 @@ export async function getCatalogueServerSideProps(
     visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {
       rubricSlug: `${rubricSlug}`,
-      filters: alwaysArray(catalogue),
+      filters: alwaysArray(query.filters),
       page: 1,
     },
   });

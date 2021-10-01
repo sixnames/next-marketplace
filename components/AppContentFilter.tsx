@@ -1,9 +1,11 @@
 import Accordion from 'components/Accordion';
 import FilterCheckbox from 'components/FilterCheckbox';
-import Icon from 'components/Icon';
 import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
-import { CATALOGUE_PRICE_KEY } from 'config/common';
+import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS, CATALOGUE_PRICE_KEY } from 'config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import {
@@ -14,20 +16,25 @@ import * as React from 'react';
 
 interface AppContentFilterAttributeInterface {
   attribute: CatalogueFilterAttributeInterface;
+  basePath: string;
+  rubricSlug: string;
+  excludedParams: string[];
 }
 
-const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = ({ attribute }) => {
+const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = ({
+  attribute,
+  rubricSlug,
+  basePath,
+  excludedParams,
+}) => {
+  const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
-  const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
-  const maxVisibleOptions = configs.catalogueFilterVisibleOptionsCount;
+  const maxVisibleOptions =
+    configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
 
-  const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(+maxVisibleOptions);
-  const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
-  const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
   const isPrice = slug === CATALOGUE_PRICE_KEY;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
@@ -43,27 +50,30 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
       </div>
 
       <div className={``}>
-        {visibleOptions.map((option) => {
+        {options.map((option) => {
           const testId = `${option.slug}`;
           return <FilterCheckbox option={option} testId={testId} key={testId} postfix={postfix} />;
         })}
-        {isOptionsOpen
-          ? hiddenOptions.map((option) => {
-              const testId = `${option.slug}`;
-              return (
-                <FilterCheckbox option={option} testId={testId} key={testId} postfix={postfix} />
-              );
-            })
-          : null}
       </div>
 
-      {hiddenOptions.length > 0 ? (
+      {totalOptionsCount > maxVisibleOptions && !isPrice ? (
         <div
-          className={`flex items-center cursor-pointer mt-4`}
-          onClick={() => setIsOptionsOpen((prevState) => !prevState)}
+          className='uppercase cursor-pointer hover:text-theme mt-6'
+          onClick={() => {
+            showModal<CatalogueAdditionalOptionsModalInterface>({
+              variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+              props: {
+                rubricSlug,
+                excludedParams,
+                attributeSlug: attribute.slug,
+                notShowAsAlphabet: attribute.notShowAsAlphabet,
+                title: attribute.name,
+                basePath,
+              },
+            });
+          }}
         >
-          <Icon className={'w-4 h-4 mr-4'} name={moreTriggerIcon} />
-          {moreTriggerText}
+          Показать еще
         </div>
       ) : null}
     </div>
@@ -98,7 +108,10 @@ function getSelectedOptions(
 interface AppContentFilterInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  excludedParams: string[];
   clearSlug: string;
+  basePath: string;
+  rubricSlug: string;
   className?: string;
 }
 
@@ -107,6 +120,9 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = ({
   selectedAttributes,
   className,
   clearSlug,
+  basePath,
+  rubricSlug,
+  excludedParams,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -165,7 +181,15 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = ({
         ) : null}
         <div className={className ? className : ''}>
           {attributes.map((attribute) => {
-            return <AppContentFilterAttribute attribute={attribute} key={`${attribute._id}`} />;
+            return (
+              <AppContentFilterAttribute
+                excludedParams={excludedParams}
+                basePath={basePath}
+                rubricSlug={rubricSlug}
+                attribute={attribute}
+                key={`${attribute._id}`}
+              />
+            );
           })}
         </div>
       </div>

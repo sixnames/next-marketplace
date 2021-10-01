@@ -44,7 +44,9 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricId: string;
+  rubricSlug: string;
   layoutBasePath: string;
+  basePath: string;
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -59,7 +61,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricName,
   rubricId,
   layoutBasePath,
+  rubricSlug,
   breadcrumbs,
+  basePath,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -239,6 +243,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           {withProducts ? (
             <div className={'mb-8'}>
               <AppContentFilter
+                excludedParams={[rubricId]}
+                rubricSlug={rubricSlug}
+                basePath={basePath}
                 attributes={attributes}
                 selectedAttributes={selectedAttributes}
                 clearSlug={clearSlug}

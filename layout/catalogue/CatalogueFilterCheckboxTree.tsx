@@ -22,6 +22,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   onClick,
   isSearchResult,
   attributeIndex,
+  basePath,
 }) => {
   const { showModal } = useAppContext();
   const { currency } = useLocaleContext();
@@ -49,6 +50,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
               showModal<CatalogueAdditionalOptionsModalInterface>({
                 variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
                 props: {
+                  basePath,
                   rubricSlug,
                   attributeSlug: attribute.slug,
                   notShowAsAlphabet: attribute.notShowAsAlphabet,
@@ -74,6 +76,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
   companyId,
   isSearchResult,
   clearSlug,
+  basePath,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -138,6 +141,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
             <CatalogueFilterAttribute
               onClick={hideFilterHandler}
               rubricSlug={rubricSlug}
+              basePath={basePath}
               companyId={companyId}
               attribute={attribute}
               key={`${attribute._id}`}

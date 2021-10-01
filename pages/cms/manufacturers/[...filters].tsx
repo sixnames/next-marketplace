@@ -4,7 +4,7 @@ import ContentItemControls from 'components/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { SupplierModalInterface } from 'components/Modal/SupplierModal';
+import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
@@ -12,15 +12,15 @@ import {
   ISO_LANGUAGES,
   DEFAULT_PAGE,
   SORT_DESC,
-  CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
   SORT_ASC,
+  CMS_BRANDS_LIMIT,
 } from 'config/common';
-import { CONFIRM_MODAL, SUPPLIER_MODAL } from 'config/modalVariants';
-import { COL_SUPPLIERS } from 'db/collectionNames';
+import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'config/modalVariants';
+import { COL_MANUFACTURERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, SupplierInterface } from 'db/uiInterfaces';
-import { useDeleteSupplierMutation } from 'generated/apolloComponents';
+import { AppPaginationInterface, ManufacturerInterface } from 'db/uiInterfaces';
+import { useDeleteManufacturerMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
@@ -33,35 +33,39 @@ import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
+import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
 
-type SuppliersConsumerInterface = AppPaginationInterface<SupplierInterface>;
+type ManufacturersConsumerInterface = AppPaginationInterface<ManufacturerInterface>;
 
-const pageTitle = 'Поставщики';
+const pageTitle = 'Производители';
 
-const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, totalPages }) => {
+const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
+  docs,
+  page,
+  totalPages,
+}) => {
   const setPageHandler = useNavigateToPageHandler();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deleteSupplierMutation] = useDeleteSupplierMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteSupplier),
+  const [deleteManufacturerMutation] = useDeleteManufacturerMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteManufacturer),
     onError: onErrorCallback,
   });
   const createValidationSchema = useValidationSchema({
-    schema: createSupplierSchema,
+    schema: createManufacturerSchema,
   });
   const updateValidationSchema = useValidationSchema({
-    schema: updateSupplierSchema,
+    schema: updateManufacturerSchema,
   });
 
-  const updateSupplierHandler = React.useCallback(
-    (dataItem: SupplierInterface) => {
-      showModal<SupplierModalInterface>({
-        variant: SUPPLIER_MODAL,
+  const updateManufacturerHandler = React.useCallback(
+    (dataItem: ManufacturerInterface) => {
+      showModal<ManufacturerModalInterface>({
+        variant: MANUFACTURER_MODAL,
         props: {
-          supplier: dataItem,
+          manufacturer: dataItem,
           validationSchema: updateValidationSchema,
         },
       });
@@ -69,7 +73,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
     [showModal, updateValidationSchema],
   );
 
-  const columns: TableColumn<SupplierInterface>[] = [
+  const columns: TableColumn<ManufacturerInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
@@ -78,7 +82,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
           <div
             className='cursor-pointer text-theme hover:underline'
             onClick={() => {
-              updateSupplierHandler(dataItem);
+              updateManufacturerHandler(dataItem);
             }}
           >
             {cellData}
@@ -97,20 +101,20 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать поставщика'}
+              updateTitle={'Редактировать производителя'}
               updateHandler={() => {
-                updateSupplierHandler(dataItem);
+                updateManufacturerHandler(dataItem);
               }}
-              deleteTitle={'Удалить поставщика'}
+              deleteTitle={'Удалить производителя'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
-                    testId: 'delete-supplier-modal',
-                    message: `Вы уверены, что хотите удалить поставщика ${dataItem.name}?`,
+                    testId: 'delete-manufacturer-modal',
+                    message: `Вы уверены, что хотите удалить производителя ${dataItem.name}?`,
                     confirm: () => {
                       showLoading();
-                      deleteSupplierMutation({
+                      deleteManufacturerMutation({
                         variables: {
                           _id: dataItem._id,
                         },
@@ -127,7 +131,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
   ];
 
   return (
-    <AppContentWrapper testId={'suppliers-list'}>
+    <AppContentWrapper testId={'manufacturers-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
@@ -137,12 +141,12 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<SupplierInterface>
+            <Table<ManufacturerInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
               onRowDoubleClick={(dataItem) => {
-                updateSupplierHandler(dataItem);
+                updateManufacturerHandler(dataItem);
               }}
             />
           </div>
@@ -157,18 +161,18 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
 
           <FixedButtons>
             <Button
-              testId={'create-supplier'}
+              testId={'create-manufacturer'}
               size={'small'}
               onClick={() => {
-                showModal<SupplierModalInterface>({
-                  variant: SUPPLIER_MODAL,
+                showModal<ManufacturerModalInterface>({
+                  variant: MANUFACTURER_MODAL,
                   props: {
                     validationSchema: createValidationSchema,
                   },
                 });
               }}
             >
-              Добавить поставщика
+              Добавить производителя
             </Button>
           </FixedButtons>
         </div>
@@ -177,19 +181,19 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
   );
 };
 
-interface SuppliersPageInterface extends PagePropsInterface, SuppliersConsumerInterface {}
+interface ManufacturersPageInterface extends PagePropsInterface, ManufacturersConsumerInterface {}
 
-const SuppliersPage: NextPage<SuppliersPageInterface> = ({ pageUrls, ...props }) => {
+const ManufacturersPage: NextPage<ManufacturersPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <SuppliersConsumer {...props} />
+      <ManufacturersConsumer {...props} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<SuppliersPageInterface>> => {
+): Promise<GetServerSidePropsResult<ManufacturersPageInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -198,7 +202,7 @@ export const getServerSideProps = async (
   }
 
   const { query } = context;
-  const { filter, search } = query;
+  const { filters, search } = query;
   const locale = props.sessionLocale;
 
   // Cast filters
@@ -210,7 +214,7 @@ export const getServerSideProps = async (
     limit,
     clearSlug,
   } = castCatalogueFilters({
-    filters: alwaysArray(filter),
+    filters: alwaysArray(filters),
     initialLimit: CMS_BRANDS_LIMIT,
   });
   const itemPath = ``;
@@ -251,10 +255,10 @@ export const getServerSideProps = async (
     : [];
 
   const { db } = await getDatabase();
-  const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
+  const manufacturersCollection = db.collection<ManufacturerInterface>(COL_MANUFACTURERS);
 
-  const suppliersAggregationResult = await suppliersCollection
-    .aggregate<SuppliersConsumerInterface>(
+  const manufacturersAggregationResult = await manufacturersCollection
+    .aggregate<ManufacturersConsumerInterface>(
       [
         ...searchStage,
         {
@@ -321,25 +325,25 @@ export const getServerSideProps = async (
       { allowDiskUse: true },
     )
     .toArray();
-  const suppliersResult = suppliersAggregationResult[0];
-  if (!suppliersResult) {
+  const manufacturersResult = manufacturersAggregationResult[0];
+  if (!manufacturersResult) {
     return {
       notFound: true,
     };
   }
 
-  const docs: SupplierInterface[] = [];
-  for await (const supplier of suppliersResult.docs) {
+  const docs: ManufacturerInterface[] = [];
+  for await (const manufacturer of manufacturersResult.docs) {
     docs.push({
-      ...supplier,
-      name: getFieldStringLocale(supplier.nameI18n, locale),
+      ...manufacturer,
+      name: getFieldStringLocale(manufacturer.nameI18n, locale),
     });
   }
 
-  const payload: SuppliersConsumerInterface = {
+  const payload: ManufacturersConsumerInterface = {
     clearSlug,
-    totalDocs: suppliersResult.totalDocs,
-    totalPages: suppliersResult.totalPages,
+    totalDocs: manufacturersResult.totalDocs,
+    totalPages: manufacturersResult.totalPages,
     itemPath,
     page,
     docs,
@@ -353,4 +357,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default SuppliersPage;
+export default ManufacturersPage;

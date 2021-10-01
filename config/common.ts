@@ -244,7 +244,7 @@ export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
 export const QUERY_FILTER_PAGE = 'page';
-export const PAGINATION_DEFAULT_LIMIT = 100;
+export const PAGINATION_DEFAULT_LIMIT = 50;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';
